@@ -7,13 +7,15 @@ const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 
 const CONTROLS := [
-	"Left-click: select    Drag box: multi-select    Shift: add to selection",
-	"Right-click: move / attack    A: attack-move    S: stop    H: hold    P: patrol    G: guard",
+	"Left-click: select    Drag box: multi-select    Shift+click/drag: add to selection",
+	"Right-click: contextual move / attack / gather / rally / repair",
+	"A: attack-move at cursor    S: stop    H: hold    P: patrol",
 	"Q / W / E / R: hero abilities",
-	"Ctrl+1-5: set control group    1-5: select group    Ctrl+A: select whole army",
-	"F: next idle worker    Space: cycle to hero",
+	"Ctrl+1-5: set control group    1-5: select group    Tab: select army",
+	"F: select an idle worker    Space: focus hero",
+	"Build mode: left-click to place    Right-click: cancel",
 	"Arrow keys / screen edge: move camera    Z / C: rotate    Mouse wheel: zoom",
-	"F12: debug overlay    Esc: pause",
+	"F3: debug overlay    Esc: pause",
 ]
 
 func _ready() -> void:

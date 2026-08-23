@@ -109,12 +109,12 @@ func setup(p_world, p_rts) -> void:
 func _build_steps() -> void:
 	_steps = [
 		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "The camera focus moves to a new position.", "check": "camera"},
-		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Your units glow with your color when selected.", "success": "A player-owned unit is selected.", "check": "select"},
+		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press Tab to select your army. Your units glow with your color when selected.", "success": "A player-owned unit is selected.", "check": "select"},
 		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a glowing resource pile (timber, stone or gold) to send them gathering.", "success": "A worker extracts a real resource from the node.", "check": "gather"},
-		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot.", "success": "The placed structure finishes construction.", "check": "build"},
+		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "The placed structure finishes construction.", "check": "build"},
 		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "A newly queued military unit completes training.", "check": "train"},
-		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to jump to your Hero. Move them into battle and unlock abilities on the Hero screen between fights.", "success": "Your selected hero receives a real move order and changes position.", "check": "hero"},
-		{"id": "combat", "title": "Attack the Enemy", "text": "Press A then click the ground for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
+		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and unlock abilities on the Hero screen between fights.", "success": "Your selected hero receives a real move order and changes position.", "check": "hero"},
+		{"id": "combat", "title": "Attack the Enemy", "text": "Point at the ground and press A for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
 		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Your units enter the site, capture progress completes, and the Lume becomes yours.", "check": "final"},
 	]
 

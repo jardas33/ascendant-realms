@@ -1,5 +1,5 @@
 extends Control
-## Debug overlay — hidden by default, toggled with F12. Shows dev diagnostics
+## Debug overlay — hidden by default, toggled with F3. Shows dev diagnostics
 ## WITHOUT contaminating the clean Player Mode presentation.
 
 var world = null
@@ -56,7 +56,7 @@ func _update_text() -> void:
 	if not is_instance_valid(world):
 		return
 	var lines := []
-	lines.append("=== DEBUG (F12) ===")
+	lines.append("=== DEBUG (F3) ===")
 	lines.append("FPS: %d" % Engine.get_frames_per_second())
 	lines.append("Match time: %.1fs" % world.match_time)
 	lines.append("Units: %d  Buildings: %d" % [world.all_units().size(), world.all_buildings().size()])
