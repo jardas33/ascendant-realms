@@ -102,12 +102,12 @@ func _run_extended_command_cases() -> void:
 	var hold_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	_record_extended_ack("HOLD", "HOLD", hold_feedback, bool(hold_feedback.get("accepted", false)) and worker.state == Unit.State.HOLD)
 
-	var patrol_destination := worker.global_position + Vector3(9.0, 0.0, 1.0)
+	var patrol_destination: Vector3 = worker.global_position + Vector3(9.0, 0.0, 1.0)
 	_rts.issue_patrol(patrol_destination)
 	var patrol_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	_record_extended_ack("PATROL", "PATROL", patrol_feedback, bool(patrol_feedback.get("accepted", false)) and worker.state == Unit.State.PATROL and _feedback_matches_position(patrol_feedback, patrol_destination))
 
-	var state_before_guard := worker.state
+	var state_before_guard: int = worker.state
 	_rts._cmd_guard()
 	var guard_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	_record_extended_ack("GUARD_UNAVAILABLE", "UNAVAILABLE", guard_feedback, not bool(guard_feedback.get("accepted", true)) and String(guard_feedback.get("intent", "")) == "GUARD" and worker.state == state_before_guard)
@@ -116,9 +116,9 @@ func _run_extended_command_cases() -> void:
 	if not is_instance_valid(hq):
 		return
 	_rts.enter_build_mode("barrosan_clan_croft")
-	var building_count_before := _world.commanders[0].buildings.size()
+	var building_count_before: int = _world.commanders[0].buildings.size()
 	var resources_before: Dictionary = _world.commanders[0].resources.duplicate(true)
-	var invalid_result := _rts._try_place_building_at(hq.global_position)
+	var invalid_result: bool = _rts._try_place_building_at(hq.global_position)
 	var invalid_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	_record_extended_ack("BUILD_REJECTED", "REJECTED", invalid_feedback, not invalid_result and not bool(invalid_feedback.get("accepted", true)) and String(invalid_feedback.get("intent", "")) == "BUILD_OR_REPAIR" and _world.commanders[0].buildings.size() == building_count_before and _world.commanders[0].resources == resources_before)
 	_rts.cancel_build_mode()
@@ -128,7 +128,7 @@ func _run_extended_command_cases() -> void:
 		_failures.append("missing_valid_build_position")
 		return
 	_extended_valid_build_position = valid_position
-	var valid_result := _rts._try_place_building_at(valid_position)
+	var valid_result: bool = _rts._try_place_building_at(valid_position)
 	var valid_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	_record_extended_ack("BUILD_VALID", "BUILD PLACEMENT", valid_feedback, valid_result and bool(valid_feedback.get("accepted", false)) and String(valid_feedback.get("intent", "")) == "BUILD_OR_REPAIR")
 
@@ -152,7 +152,7 @@ func _capture_extended_command_frames() -> void:
 	_rts.issue_hold()
 	var hold_feedback: Dictionary = _rts.get_command_feedback_snapshot()
 	await _render_frame("11_HOLD_ACK", worker, "HOLD", "HOLD", null, hold_feedback, worker.global_position)
-	var patrol_destination := worker.global_position + Vector3(9.0, 0.0, 1.0)
+	var patrol_destination: Vector3 = worker.global_position + Vector3(9.0, 0.0, 1.0)
 	_clear_fx()
 	_rts.issue_patrol(patrol_destination)
 	var patrol_feedback: Dictionary = _rts.get_command_feedback_snapshot()
