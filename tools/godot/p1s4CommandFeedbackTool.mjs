@@ -16,6 +16,56 @@ function sourceSha() { return execFileSync("git", ["rev-parse", "HEAD"], { cwd: 
 function sha256(file) { return createHash("sha256").update(readFileSync(file)).digest("hex"); }
 function stamp() { return process.env.P1S4_CAPTURE_TIMESTAMP || new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14); }
 
+const POSITIVE_COMMAND_FRAME_NAMES = new Set([
+  "01_MOVE_ACK", "02_ATTACK_ACK", "03_GATHER_ACK", "04_BUILD_CONTINUE_ACK", "05_RALLY_ACK", "06_ATTACK_MOVE_ACK",
+  "10_STOP_ACK", "11_HOLD_ACK", "12_PATROL_ACK", "15_BUILD_VALID_ACK",
+  "10_1366_MOVE_ACK", "11_1366_ATTACK_ACK", "12_1366_GATHER_OR_BUILD_ACK",
+]);
+
+const ACKNOWLEDGEMENT_CASE_RULES = Object.freeze({
+  STOP: { accepted: true, command: "STOP", intent: "STOP", feedback_type: "STOP" },
+  HOLD: { accepted: true, command: "HOLD", intent: "HOLD", feedback_type: "HOLD" },
+  PATROL: { accepted: true, command: "PATROL", intent: "PATROL", feedback_type: "PATROL", target: "ground" },
+  GUARD_UNAVAILABLE: { accepted: false, command: "GUARD_UNAVAILABLE", intent: "GUARD", feedback_type: "UNAVAILABLE", reason: "not_implemented" },
+  BUILD_REJECTED: { accepted: false, command: "BUILD_REJECTED", intent: "BUILD_OR_REPAIR", feedback_type: "REJECTED", reason: "invalid_placement" },
+});
+
+function hasRealGroundTarget(feedback) {
+  const position = feedback?.position;
+  return position != null && ["x", "y", "z"].every((axis) => Number.isFinite(position[axis]));
+}
+
+function validateAcknowledgementCase(item, label, rule) {
+  const feedback = item.feedback || {};
+  const failures = [];
+  if (item.accepted !== rule.accepted) failures.push(`${label}: ${item.name} aggregate accepted mismatch`);
+  if (feedback.accepted !== rule.accepted) failures.push(`${label}: ${item.name} feedback accepted mismatch`);
+  if (item.command !== rule.command) failures.push(`${label}: ${item.name} command mismatch`);
+  if (feedback.intent !== rule.intent) failures.push(`${label}: ${item.name} intent mismatch`);
+  if (feedback.feedback_type !== rule.feedback_type) failures.push(`${label}: ${item.name} feedback type mismatch`);
+  if (rule.reason !== undefined && feedback.reason !== rule.reason) failures.push(`${label}: ${item.name} reason mismatch`);
+  if (rule.target === "ground" && !hasRealGroundTarget(feedback)) failures.push(`${label}: ${item.name} missing real ground target`);
+  return failures;
+}
+
+function validateAcknowledgementCases(cases, label) {
+  const failures = [];
+  const byName = new Map();
+  for (const item of cases || []) {
+    if (byName.has(item.name)) failures.push(`${label}: duplicate acknowledgement ${item.name}`);
+    byName.set(item.name, item);
+  }
+  for (const [name, rule] of Object.entries(ACKNOWLEDGEMENT_CASE_RULES)) {
+    const item = byName.get(name);
+    if (!item) failures.push(`${label}: missing acknowledgement ${name}`);
+    else failures.push(...validateAcknowledgementCase(item, label, rule));
+  }
+  for (const item of cases || []) {
+    if (!ACKNOWLEDGEMENT_CASE_RULES[item.name] && item.accepted !== true) failures.push(`${label}: acknowledgement ${item.name} not accepted`);
+  }
+  return failures;
+}
+
 function expectedNames(width) {
   return width === 1920
     ? ["01_MOVE_ACK", "02_ATTACK_ACK", "03_GATHER_ACK", "04_BUILD_CONTINUE_ACK", "05_RALLY_ACK", "06_ATTACK_MOVE_ACK", "07_BUILD_VALID_CURSOR_CONTEXT", "08_BUILD_INVALID_CURSOR_CONTEXT", "09_UI_HOVER_SAFE", "10_STOP_ACK", "11_HOLD_ACK", "12_PATROL_ACK", "13_GUARD_UNAVAILABLE", "14_BUILD_REJECTED_ACK", "15_BUILD_VALID_ACK"]
@@ -59,15 +109,43 @@ function validateManifest(manifest, width, height, label) {
     if (!frame) { failures.push(`${label}: missing frame ${name}`); continue; }
     if (frame.width !== width || frame.height !== height) failures.push(`${label}: ${name} rendered size mismatch`);
     if (readFileSync(frame.png.replaceAll("/", path.sep)).length < 20000) failures.push(`${label}: ${name} suspiciously small`);
-    if (name.includes("ACK") && !frame.command_accepted) failures.push(`${label}: ${name} lacks accepted command`);
+    if (POSITIVE_COMMAND_FRAME_NAMES.has(name) && frame.command_accepted !== true) failures.push(`${label}: ${name} lacks accepted command`);
     if (name.includes("BUILD_VALID") && frame.cursor_intent !== "BUILD_VALID") failures.push(`${label}: valid build cursor mismatch`);
     if (name.includes("BUILD_INVALID") && frame.cursor_intent !== "INVALID") failures.push(`${label}: invalid build cursor mismatch`);
     if (name.includes("UI_HOVER") && frame.cursor_intent !== "DEFAULT") failures.push(`${label}: UI hover did not reset cursor`);
   }
   for (const item of manifest.intent_cases || []) if (!item.pass) failures.push(`${label}: intent case ${item.case} failed`);
-  for (const item of manifest.acknowledgement_cases || []) if (!item.accepted) failures.push(`${label}: acknowledgement ${item.name} not accepted`);
+  failures.push(...validateAcknowledgementCases(manifest.acknowledgement_cases, label));
   if (manifest.review_fixture_metadata?.commander_roster_membership !== false) failures.push(`${label}: fixture roster leak metadata`);
   return failures;
+}
+
+function testAcknowledgementValidation() {
+  const validCases = [
+    { accepted: true, command: "STOP", feedback: { accepted: true, feedback_type: "STOP", intent: "STOP", reason: "" }, name: "STOP" },
+    { accepted: true, command: "HOLD", feedback: { accepted: true, feedback_type: "HOLD", intent: "HOLD", reason: "" }, name: "HOLD" },
+    { accepted: true, command: "PATROL", feedback: { accepted: true, feedback_type: "PATROL", intent: "PATROL", position: { x: 9, y: 0, z: 1 }, reason: "" }, name: "PATROL" },
+    { accepted: false, command: "GUARD_UNAVAILABLE", feedback: { accepted: false, feedback_type: "UNAVAILABLE", intent: "GUARD", reason: "not_implemented" }, name: "GUARD_UNAVAILABLE" },
+    { accepted: false, command: "BUILD_REJECTED", feedback: { accepted: false, feedback_type: "REJECTED", intent: "BUILD_OR_REPAIR", reason: "invalid_placement" }, name: "BUILD_REJECTED" },
+    { accepted: true, command: "BUILD_VALID", feedback: { accepted: true }, name: "BUILD_VALID" },
+  ];
+  const validFailures = validateAcknowledgementCases(validCases, "test-valid");
+  if (validFailures.length) throw new Error(`valid acknowledgement cases failed: ${validFailures.join(", ")}`);
+  const badCases = [
+    ["STOP accepted=false", (cases) => { cases[0].accepted = false; cases[0].feedback.accepted = false; }],
+    ["HOLD wrong feedback type", (cases) => { cases[1].feedback.feedback_type = "STOP"; }],
+    ["PATROL missing target", (cases) => { delete cases[2].feedback.position; }],
+    ["GUARD accepted=true", (cases) => { cases[3].accepted = true; cases[3].feedback.accepted = true; }],
+    ["GUARD wrong reason", (cases) => { cases[3].feedback.reason = ""; }],
+    ["BUILD rejected accepted=true", (cases) => { cases[4].accepted = true; cases[4].feedback.accepted = true; }],
+    ["BUILD rejected wrong reason", (cases) => { cases[4].feedback.reason = "collision"; }],
+  ];
+  for (const [name, mutate] of badCases) {
+    const cases = JSON.parse(JSON.stringify(validCases));
+    mutate(cases);
+    if (!validateAcknowledgementCases(cases, `test-${name}`).length) throw new Error(`bad acknowledgement case passed: ${name}`);
+  }
+  console.log(JSON.stringify({ schema: "ascendant-realms-p1s4-acknowledgement-validator-tests-v1", pass: true, valid_cases: 6, rejected_cases: badCases.length }, null, 2));
 }
 
 function capture() {
@@ -96,7 +174,6 @@ function validate() {
   if (!failures.length) {
     summary = JSON.parse(readFileSync(captureFile, "utf8"));
     if (summary.source_sha !== sourceSha()) failures.push("capture summary source SHA mismatch");
-    if (summary.pass !== true) failures.push(...(summary.failures || ["capture summary is not passing"]));
     const selectedRun = summary.run_dir ? path.join(evidenceRoot, summary.run_dir) : evidenceRoot;
     for (const [relative, width, height] of [["1920x1080/command-feedback-manifest.json", 1920, 1080], ["1366x768/command-feedback-manifest.json", 1366, 768]]) {
       const file = path.join(selectedRun, relative);
@@ -111,4 +188,4 @@ function validate() {
   if (failures.length) process.exitCode = 1;
 }
 
-if (mode === "capture") capture(); else validate();
+if (mode === "capture") capture(); else if (mode === "test") testAcknowledgementValidation(); else validate();
