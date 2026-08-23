@@ -69,6 +69,12 @@ var _unit_cache_timer := 0.0
 
 var _theme := {}
 
+# WORLD-03 player-facing environment dressing. These counts affect only
+# non-colliding scenery; gameplay positions, resources, navigation, and map
+# topology remain owned by the existing systems.
+const WORLD03_INTERIOR_DECOR_TARGET := 40
+const WORLD03_ROADSIDE_DRESSING_TARGET := 32
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1":
 		return null
@@ -366,7 +372,7 @@ func _scatter_environment() -> void:
 	# tactical lanes and resource clusters remain readable at default zoom.
 	var placed := 0
 	var attempts := 0
-	var interior_target: int = int(24 * density)
+	var interior_target: int = int(WORLD03_INTERIOR_DECOR_TARGET * density)
 	var interior_start := Time.get_ticks_usec()
 	while placed < interior_target and attempts < 400:
 		attempts += 1
@@ -377,6 +383,55 @@ func _scatter_environment() -> void:
 		placed += 1
 	if recorder:
 		recorder.record_population("interior_decor", placed, float(Time.get_ticks_usec() - interior_start) / 1000.0, 0.0, "game_world._scatter_environment")
+
+	_scatter_world03_roadside_dressing(decor, trees, rocks, starts, rng)
+	_scatter_world03_landmarks(decor, trees, rocks, starts, rng)
+
+
+func _scatter_world03_roadside_dressing(parent: Node3D, trees: Array, rocks: Array, starts: Array, rng: RandomNumberGenerator) -> void:
+	if map.get("id", "") != "hollowspan":
+		return
+	var roads: Array = map.get("overview", {}).get("roads", [])
+	var placed := 0
+	for road in roads:
+		if placed >= WORLD03_ROADSIDE_DRESSING_TARGET:
+			break
+		if not road is Array or road.size() < 2:
+			continue
+		for segment_index in range(road.size() - 1):
+			if placed >= WORLD03_ROADSIDE_DRESSING_TARGET:
+				break
+			var a: Vector3 = road[segment_index]
+			var b: Vector3 = road[segment_index + 1]
+			var direction := Vector2(b.x - a.x, b.z - a.z)
+			if direction.length_squared() < 1.0:
+				continue
+			direction = direction.normalized()
+			var side := Vector2(-direction.y, direction.x)
+			var center := a.lerp(b, 0.34 if placed % 2 == 0 else 0.68)
+			var offset := 10.0 + float((placed % 3) * 3)
+			var pos := Vector3(center.x + side.x * offset, 0.0, center.z + side.y * offset)
+			if _too_close_to_key(pos, starts):
+				continue
+			_place_decor(parent, (trees if placed % 3 == 0 else rocks), pos, rng)
+			placed += 1
+
+
+func _scatter_world03_landmarks(parent: Node3D, trees: Array, rocks: Array, starts: Array, rng: RandomNumberGenerator) -> void:
+	if map.get("id", "") != "hollowspan":
+		return
+	# Fixed landmark pockets give the center and crossing approach a readable
+	# authored rhythm without introducing collision or gameplay affordances.
+	var landmarks := [
+		Vector3(-44.0, 0.0, -42.0), Vector3(44.0, 0.0, 42.0),
+		Vector3(42.0, 0.0, -42.0), Vector3(-42.0, 0.0, 42.0),
+		Vector3(-18.0, 0.0, -31.0), Vector3(18.0, 0.0, 31.0),
+		Vector3(-31.0, 0.0, 18.0), Vector3(31.0, 0.0, -18.0),
+	]
+	for pos in landmarks:
+		if _too_close_to_key(pos, starts):
+			continue
+		_place_decor(parent, (trees if rng.randf() < 0.58 else rocks), pos, rng)
 
 func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 	for s in starts:

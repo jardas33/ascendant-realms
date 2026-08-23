@@ -32,6 +32,18 @@ var _theme := {}
 var _water_on := true
 var _bay_open := true
 
+# WORLD-03 is a player-facing environment layer for Hollowspan only. These
+# shelves are shallow, non-colliding visual landforms over the existing flat
+# playable plane; they do not alter the navmesh, topology, or object positions.
+const WORLD03_HOLLOWSPAN_SHELVES := [
+	[Vector3(-58.0, 0.0, -54.0), Vector2(13.0, 8.5), 0.18],
+	[Vector3(58.0, 0.0, 54.0), Vector2(13.0, 8.5), -0.22],
+	[Vector3(54.0, 0.0, -54.0), Vector2(11.0, 7.5), 0.36],
+	[Vector3(-54.0, 0.0, 54.0), Vector2(11.0, 7.5), -0.34],
+	[Vector3(-28.0, 0.0, -18.0), Vector2(9.0, 6.5), 0.20],
+	[Vector3(28.0, 0.0, 18.0), Vector2(9.0, 6.5), -0.20],
+]
+
 
 func build(map: Dictionary) -> void:
 	_rng.seed = 776644
@@ -39,6 +51,7 @@ func build(map: Dictionary) -> void:
 	_water_on = _theme.get("water", {}).get("enabled", false)
 	_bay_open = _water_on   # open the north bay only when this map has a lake
 	_build_ground(map)
+	_build_world03_landforms(map)
 	_build_mountains()
 	if _water_on:
 		_build_lake()
@@ -57,6 +70,59 @@ func _build_ground(map: Dictionary) -> void:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.material_override = _make_ground_material(map)
 	add_child(mi)
+
+
+func _build_world03_landforms(map: Dictionary) -> void:
+	if map.get("id", "") != "hollowspan":
+		return
+	var layer := Node3D.new()
+	layer.name = "World03TerrainShelves"
+	add_child(layer)
+	for index in WORLD03_HOLLOWSPAN_SHELVES.size():
+		var spec: Array = WORLD03_HOLLOWSPAN_SHELVES[index]
+		var shelf := _make_world03_shelf(spec[1], float(spec[2]), index)
+		shelf.position = spec[0]
+		shelf.add_to_group("world03_shelves")
+		layer.add_child(shelf)
+
+
+func _make_world03_shelf(size: Vector2, rotation_y: float, index: int) -> MeshInstance3D:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var segments := 16
+	var crown := Vector2(size.x * 0.48, size.y * 0.48)
+	for i in segments:
+		var a0 := TAU * float(i) / float(segments)
+		var a1 := TAU * float(i + 1) / float(segments)
+		var wob0 := 1.0 + 0.13 * sin(float(i * 7 + index * 3)) + 0.05 * sin(float(i * 3 + index))
+		var wob1 := 1.0 + 0.13 * sin(float((i + 1) * 7 + index * 3)) + 0.05 * sin(float((i + 1) * 3 + index))
+		var outer0 := Vector3(cos(a0) * size.x * wob0, 0.012 + 0.008 * sin(float(i * 5 + index)), sin(a0) * size.y * wob0)
+		var outer1 := Vector3(cos(a1) * size.x * wob1, 0.012 + 0.008 * sin(float((i + 1) * 5 + index)), sin(a1) * size.y * wob1)
+		var crown0 := Vector3(cos(a0) * crown.x * wob0, 0.042 + 0.01 * sin(float(i * 2 + index)), sin(a0) * crown.y * wob0)
+		var crown1 := Vector3(cos(a1) * crown.x * wob1, 0.042 + 0.01 * sin(float((i + 1) * 2 + index)), sin(a1) * crown.y * wob1)
+		var center := Vector3(0.0, 0.055 + 0.008 * sin(float(index + 1)), 0.0)
+		st.set_uv(Vector2(0.0, 0.0)); st.add_vertex(outer0)
+		st.set_uv(Vector2(1.0, 0.0)); st.add_vertex(outer1)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown1)
+		st.set_uv(Vector2(0.0, 0.0)); st.add_vertex(outer0)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown1)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown0)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(center)
+	st.generate_normals()
+	var mi := MeshInstance3D.new()
+	mi.name = "World03FieldShelf_%02d" % index
+	mi.mesh = st.commit()
+	mi.rotation.y = rotation_y
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var mat := StandardMaterial3D.new()
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	if ResourceLoader.exists(GROUND_TEX["meadow"]):
+		mat.albedo_texture = load(GROUND_TEX["meadow"])
+		mat.uv1_scale = Vector3(0.08, 0.08, 1.0)
+	mat.albedo_color = Color(0.82, 0.86, 0.64)
+	mat.roughness = 0.96
+	mi.material_override = mat
+	return mi
 
 
 func _make_ground_material(map: Dictionary) -> Material:
@@ -110,7 +176,9 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		"ashen":
 			return {"ground_base": Color(0.38, 0.39, 0.40), "road_base": Color(0.46, 0.42, 0.36), "road_edge_color": Color(0.23, 0.24, 0.24), "surface_detail": 0.30, "surface_macro": 0.13, "road_detail": 0.36, "road_edge_strength": 0.13, "surface_saturation": 0.66}
 		_:
-			return {"ground_base": Color(0.34, 0.42, 0.28), "road_base": Color(0.49, 0.39, 0.26), "road_edge_color": Color(0.22, 0.25, 0.18), "surface_detail": 0.34, "surface_macro": 0.14, "road_detail": 0.42, "road_edge_strength": 0.22, "surface_saturation": 0.9}
+			# WORLD-03 highland grade: broader value variation and a clearer
+			# road verge, while keeping the grass palette restrained for units.
+			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.76}
 
 
 # ---------------------------------------------------------------------------
