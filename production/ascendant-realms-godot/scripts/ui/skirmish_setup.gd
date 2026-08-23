@@ -10,8 +10,8 @@ const DIFFICULTIES := ["easy", "normal", "hard", "brutal"]
 const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
 const RES_KINDS := ["standard", "quick", "rich"]
 const RES_LABELS := ["Standard", "Quick", "Rich"]
-const VICTORY_KINDS := ["conquest", "domination"]
-const VICTORY_LABELS := ["Conquest", "Domination"]
+const VICTORY_KINDS := ["conquest"]
+const VICTORY_LABELS := ["Conquest"]
 
 var _player_race := "barrosan"
 var _player_opt: OptionButton

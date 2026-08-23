@@ -14,19 +14,27 @@ func default_config() -> Dictionary:
 		"opponents": [{"race": "vorthak", "difficulty": "normal"}],
 		"map": "hollowspan",
 		"start_resources": "standard",   # standard | quick | rich
-		"victory": "conquest",           # conquest | domination
+		"victory": "conquest",           # conquest is the only supported player-facing rule
 		"mode": "skirmish",              # skirmish | campaign | tutorial
 		"campaign_node": 0,
 		"game_speed": 1.0,
 	}
 
 func set_config(cfg: Dictionary) -> void:
-	config = cfg
+	config = _normalize_supported_victory(cfg)
 
 func get_config() -> Dictionary:
 	if config.is_empty():
 		return default_config()
+	config = _normalize_supported_victory(config)
 	return config
+
+func _normalize_supported_victory(cfg: Dictionary) -> Dictionary:
+	var normalized := cfg.duplicate(true)
+	var requested := str(normalized.get("victory", "conquest"))
+	if requested != "conquest":
+		normalized["victory"] = "conquest"
+	return normalized
 
 func get_identity_snapshot() -> Dictionary:
 	var cfg := get_config()
