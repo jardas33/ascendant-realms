@@ -1354,6 +1354,10 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 		"BUILD_OR_REPAIR": "Construction order",
 		"RALLY": "Rally point",
 		"ATTACK_MOVE": "Attack-move order",
+		"STOP": "Stop order",
+		"HOLD": "Hold position",
+		"PATROL": "Patrol order",
+		"GUARD": "Guard unavailable",
 	}
 	var message := String(labels.get(intent, "Command"))
 	var col := Color(0.45, 0.85, 1.0)
@@ -1364,7 +1368,12 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 	elif intent == "BUILD_OR_REPAIR":
 		col = Color(0.5, 0.95, 0.55)
 	if not accepted:
-		message = "No valid target"
+		if intent == "GUARD" or String(feedback.get("feedback_type", "")) == "UNAVAILABLE":
+			message = "Guard unavailable"
+		elif intent == "BUILD_OR_REPAIR" and String(feedback.get("feedback_type", "")) == "REJECTED":
+			message = "Build placement rejected"
+		else:
+			message = "No valid target"
 		col = Color(1.0, 0.5, 0.42)
 	_show_command_feedback(message, col)
 

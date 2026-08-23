@@ -16,6 +16,8 @@ var _failures: Array = []
 var _entities: Dictionary = {}
 var _fixture_building = null
 var _fixture_metadata: Dictionary = {}
+var _extended_feedback: Dictionary = {}
+var _extended_valid_build_position := Vector3.INF
 
 func _ready() -> void:
 	call_deferred("_begin")
@@ -53,6 +55,7 @@ func _begin() -> void:
 	_create_review_fixture()
 	await _wait_fixture_physics()
 	_run_intent_cases()
+	await _run_extended_command_cases()
 	if _width == 1920:
 		await _capture_command("01_MOVE_ACK", "worker", null, _move_destination(), "MOVE", "MOVE", _move_destination())
 		await _capture_command("02_ATTACK_ACK", "military", _entities.get("enemy"), _entities.get("enemy").global_position if is_instance_valid(_entities.get("enemy")) else Vector3.ZERO, "ATTACK", "ATTACK", _entities.get("enemy").global_position if is_instance_valid(_entities.get("enemy")) else Vector3.ZERO)
@@ -63,6 +66,7 @@ func _begin() -> void:
 		await _capture_build_context("07_BUILD_VALID_CURSOR_CONTEXT", true)
 		await _capture_build_context("08_BUILD_INVALID_CURSOR_CONTEXT", false)
 		await _capture_ui_hover("09_UI_HOVER_SAFE")
+		await _capture_extended_command_frames()
 	else:
 		await _capture_command("10_1366_MOVE_ACK", "worker", null, _move_destination(), "MOVE", "MOVE", _move_destination())
 		await _capture_command("11_1366_ATTACK_ACK", "military", _entities.get("enemy"), _entities.get("enemy").global_position if is_instance_valid(_entities.get("enemy")) else Vector3.ZERO, "ATTACK", "ATTACK", _entities.get("enemy").global_position if is_instance_valid(_entities.get("enemy")) else Vector3.ZERO)
@@ -72,6 +76,117 @@ func _begin() -> void:
 	await get_tree().process_frame
 	_write_manifest()
 	get_tree().quit(0 if _failures.is_empty() else 1)
+
+func _run_extended_command_cases() -> void:
+	var source := FileAccess.get_file_as_string("res://scripts/world/rts_controller.gd")
+	for mapping in [
+		'cmd_stop"): _cmd_stop()',
+		'cmd_hold"): _cmd_hold()',
+		'cmd_patrol"): _cmd_patrol_prompt()',
+		'cmd_guard"): _cmd_guard()'
+	]:
+		if not source.contains(mapping):
+			_failures.append("missing_input_mapping_" + mapping.get_slice('"', 0))
+	if source.contains('cmd_guard"): pass') or source.contains("command_guard("):
+		_failures.append("guard_issued_gameplay_command")
+
+	_select("worker")
+	var worker = _entities.get("worker")
+	if not is_instance_valid(worker):
+		return
+	_rts.issue_stop()
+	var stop_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("STOP", "STOP", stop_feedback, bool(stop_feedback.get("accepted", false)) and worker.state == Unit.State.IDLE)
+
+	_rts.issue_hold()
+	var hold_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("HOLD", "HOLD", hold_feedback, bool(hold_feedback.get("accepted", false)) and worker.state == Unit.State.HOLD)
+
+	var patrol_destination := worker.global_position + Vector3(9.0, 0.0, 1.0)
+	_rts.issue_patrol(patrol_destination)
+	var patrol_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("PATROL", "PATROL", patrol_feedback, bool(patrol_feedback.get("accepted", false)) and worker.state == Unit.State.PATROL and _feedback_matches_position(patrol_feedback, patrol_destination))
+
+	var state_before_guard := worker.state
+	_rts._cmd_guard()
+	var guard_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("GUARD_UNAVAILABLE", "UNAVAILABLE", guard_feedback, not bool(guard_feedback.get("accepted", true)) and String(guard_feedback.get("intent", "")) == "GUARD" and worker.state == state_before_guard)
+
+	var hq = _entities.get("hq")
+	if not is_instance_valid(hq):
+		return
+	_rts.enter_build_mode("barrosan_clan_croft")
+	var building_count_before := _world.commanders[0].buildings.size()
+	var resources_before: Dictionary = _world.commanders[0].resources.duplicate(true)
+	var invalid_result := _rts._try_place_building_at(hq.global_position)
+	var invalid_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("BUILD_REJECTED", "REJECTED", invalid_feedback, not invalid_result and not bool(invalid_feedback.get("accepted", true)) and String(invalid_feedback.get("intent", "")) == "BUILD_OR_REPAIR" and _world.commanders[0].buildings.size() == building_count_before and _world.commanders[0].resources == resources_before)
+	_rts.cancel_build_mode()
+
+	var valid_position := _find_valid_build_position()
+	if valid_position == Vector3.INF:
+		_failures.append("missing_valid_build_position")
+		return
+	_extended_valid_build_position = valid_position
+	var valid_result := _rts._try_place_building_at(valid_position)
+	var valid_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	_record_extended_ack("BUILD_VALID", "BUILD PLACEMENT", valid_feedback, valid_result and bool(valid_feedback.get("accepted", false)) and String(valid_feedback.get("intent", "")) == "BUILD_OR_REPAIR")
+
+func _record_extended_ack(name: String, expected_feedback_type: String, feedback: Dictionary, passed: bool) -> void:
+	_extended_feedback[name] = feedback.duplicate(true)
+	_ack_cases.append({"name": name, "command": name, "accepted": bool(feedback.get("accepted", false)), "feedback": feedback, "pass": passed})
+	if String(feedback.get("feedback_type", "")) != expected_feedback_type or not passed:
+		_failures.append("ack_" + name.to_lower())
+
+func _capture_extended_command_frames() -> void:
+	var worker = _entities.get("worker")
+	var hq = _entities.get("hq")
+	if not is_instance_valid(worker) or not is_instance_valid(hq):
+		return
+	_select("worker")
+	_clear_fx()
+	_rts.issue_stop()
+	var stop_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	await _render_frame("10_STOP_ACK", worker, "STOP", "STOP", null, stop_feedback, worker.global_position)
+	_clear_fx()
+	_rts.issue_hold()
+	var hold_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	await _render_frame("11_HOLD_ACK", worker, "HOLD", "HOLD", null, hold_feedback, worker.global_position)
+	var patrol_destination := worker.global_position + Vector3(9.0, 0.0, 1.0)
+	_clear_fx()
+	_rts.issue_patrol(patrol_destination)
+	var patrol_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	await _render_frame("12_PATROL_ACK", worker, "PATROL", "PATROL", null, patrol_feedback, patrol_destination)
+	_clear_fx()
+	_rts._cmd_guard()
+	var guard_feedback: Dictionary = _rts.get_command_feedback_snapshot()
+	await _render_frame("13_GUARD_UNAVAILABLE", worker, "DEFAULT", "GUARD (G)", null, guard_feedback, worker.global_position)
+	_clear_fx()
+	var rejected_feedback: Dictionary = _extended_feedback.get("BUILD_REJECTED", {"accepted": false, "feedback_type": "REJECTED"})
+	_rts._record_command_feedback(false, "BUILD_OR_REPAIR", "REJECTED", null, hq.global_position, String(rejected_feedback.get("reason", "invalid_placement")))
+	rejected_feedback = _rts.get_command_feedback_snapshot()
+	await _render_frame("14_BUILD_REJECTED_ACK", worker, "INVALID", "BUILD REJECTED", null, rejected_feedback, hq.global_position)
+	if _extended_valid_build_position != Vector3.INF:
+		var valid_feedback: Dictionary = _extended_feedback.get("BUILD_VALID", {"accepted": false, "feedback_type": "BUILD PLACEMENT"})
+		_rts._record_command_feedback(true, "BUILD_OR_REPAIR", "BUILD PLACEMENT", null, _extended_valid_build_position)
+		valid_feedback = _rts.get_command_feedback_snapshot()
+		await _render_frame("15_BUILD_VALID_ACK", worker, "BUILD_VALID", "BUILD PLACEMENT", null, valid_feedback, _extended_valid_build_position)
+
+func _find_valid_build_position() -> Vector3:
+	var hq = _entities.get("hq")
+	if not is_instance_valid(hq):
+		return Vector3.INF
+	_rts.enter_build_mode("barrosan_clan_croft")
+	for radius in [24.0, 30.0, 36.0]:
+		for i in range(16):
+			var candidate: Vector3 = hq.global_position + Vector3(cos(TAU * i / 16.0), 0.0, sin(TAU * i / 16.0)) * radius
+			if _rts._is_build_spot_valid(candidate):
+				return candidate
+	return Vector3.INF
+
+func _feedback_matches_position(feedback: Dictionary, expected: Vector3) -> bool:
+	var position: Dictionary = feedback.get("position", {})
+	return is_equal_approx(float(position.get("x", INF)), expected.x) and is_equal_approx(float(position.get("z", INF)), expected.z)
 
 func _wait_for_runtime() -> void:
 	var deadline := Time.get_ticks_msec() + 20000

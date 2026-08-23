@@ -56,6 +56,10 @@ const COMMAND_RALLY := "RALLY"
 const COMMAND_BUILD_VALID := "BUILD_VALID"
 const COMMAND_INVALID := "INVALID"
 const COMMAND_ATTACK_MOVE := "ATTACK_MOVE"
+const COMMAND_STOP := "STOP"
+const COMMAND_HOLD := "HOLD"
+const COMMAND_PATROL := "PATROL"
+const COMMAND_GUARD := "GUARD"
 var _last_cursor_intent := COMMAND_DEFAULT
 var _last_cursor_shape := Input.CURSOR_ARROW
 var _last_command_feedback: Dictionary = {"accepted": false, "intent": "", "feedback_type": ""}
@@ -294,7 +298,7 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("cmd_stop"): _cmd_stop()
 	elif Input.is_action_just_pressed("cmd_hold"): _cmd_hold()
 	elif Input.is_action_just_pressed("cmd_patrol"): _cmd_patrol_prompt()
-	elif Input.is_action_just_pressed("cmd_guard"): pass
+	elif Input.is_action_just_pressed("cmd_guard"): _cmd_guard()
 	elif Input.is_action_just_pressed("idle_worker"): _select_idle_worker()
 	elif Input.is_action_just_pressed("cycle_hero"): _cycle_hero()
 	elif Input.is_action_just_pressed("select_army"): _select_army()
@@ -562,20 +566,23 @@ func _feedback_target_id(target) -> String:
 		return "resource:" + str(target.get_instance_id())
 	return ""
 
-func _record_command_feedback(accepted: bool, intent: String, feedback_type: String, target, position: Vector3) -> void:
+func _record_command_feedback(accepted: bool, intent: String, feedback_type: String, target, position: Vector3, reason: String = "") -> void:
 	_last_command_feedback = {
 		"accepted": accepted,
 		"intent": intent,
 		"feedback_type": feedback_type,
+		"reason": reason,
 		"target_id": _feedback_target_id(target),
 		"position": {"x": position.x, "y": position.y, "z": position.z},
 		"timestamp_unix_ms": Time.get_unix_time_from_system() * 1000.0
 	}
 	command_feedback_changed.emit(_last_command_feedback.duplicate(true))
 
-func _emit_command_feedback(intent: String, feedback_type: String, position: Vector3, target) -> void:
+func _emit_command_feedback(intent: String, feedback_type: String, position: Vector3, target, show_ring: bool = true) -> void:
 	_record_command_feedback(true, intent, feedback_type, target, position)
 	if not world:
+		return
+	if not show_ring:
 		return
 	var color: Color = world.player_commander.color if is_instance_valid(world.player_commander) else Color(0.35, 0.75, 1.0)
 	match intent:
@@ -597,17 +604,43 @@ func issue_stop() -> bool:
 	for u in _selected_units():
 		u.command_stop()
 		issued = true
+	if issued:
+		_emit_command_feedback(COMMAND_STOP, "STOP", Vector3.ZERO, null, false)
 	return issued
 
 func _cmd_hold() -> void:
+	issue_hold()
+
+func issue_hold() -> bool:
+	var issued := false
 	for u in _selected_units():
 		u.command_hold()
+		issued = true
+	if issued:
+		_emit_command_feedback(COMMAND_HOLD, "HOLD", Vector3.ZERO, null, false)
+	return issued
 
 func _cmd_patrol_prompt() -> void:
 	var ground = _raycast_ground()
-	if ground != null:
-		for u in _selected_units():
-			u.command_patrol(ground)
+	issue_patrol(ground)
+
+func issue_patrol(ground) -> bool:
+	if ground == null:
+		return false
+	var issued := false
+	for u in _selected_units():
+		u.command_patrol(ground)
+		issued = true
+	if issued:
+		_emit_command_feedback(COMMAND_PATROL, "PATROL", ground, null)
+	return issued
+
+func _cmd_guard() -> void:
+	issue_guard_unavailable()
+
+func issue_guard_unavailable() -> bool:
+	_record_command_feedback(false, COMMAND_GUARD, "UNAVAILABLE", null, Vector3.ZERO, "not_implemented")
+	return false
 
 func _selected_units() -> Array:
 	var out := []
@@ -787,16 +820,23 @@ func _is_build_spot_valid(pos: Vector3) -> bool:
 func _try_place_building() -> void:
 	var g = _raycast_ground()
 	if g == null:
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, Vector3.ZERO, "no_ground_target")
 		return
+	_try_place_building_at(g)
+
+func _try_place_building_at(g: Vector3) -> bool:
 	if not _is_build_spot_valid(g):
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "invalid_placement")
 		Sfx.play("select", -14.0)
-		return
+		return false
 	var bid := _build_id
 	var cmd = world.commanders[player_team]
 	if not cmd.can_afford(GameData.get_building(bid).get("cost", {})):
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "insufficient_resources")
 		cancel_build_mode()
-		return
+		return false
 	var b = world.place_building(bid, player_team, g)
+	var placed := false
 	if b:
 		# assign a selected worker (or nearest) to build it
 		var worker = _nearest_free_worker(g)
@@ -804,9 +844,13 @@ func _try_place_building() -> void:
 			worker.command_build(b)
 		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)
 		Sfx.play("select", -6.0)
+		placed = true
+	else:
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "transaction_rejected")
 	# stay in build mode if shift held for multiple
 	if not Input.is_key_pressed(KEY_SHIFT):
 		cancel_build_mode()
+	return placed
 
 func _nearest_free_worker(pos: Vector3):
 	# prefer a selected worker
