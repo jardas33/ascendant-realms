@@ -286,8 +286,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var has_preview := not preview_definition.is_empty()
 	var label_prefix := "     " if has_preview else ""
-	var btn := _mk_button("" if has_preview else "%s%s\n%s%s" % [label_prefix, title, label_prefix, state_text + detail], 12 if has_preview else 13)
-	btn.custom_minimum_size = Vector2(174, 72 if has_preview else 62)
+	# Production/research cards do not have a portrait column. Use the same
+	# explicit text-column treatment as preview cards so the compact two-column
+	# grid can wrap long names and cost lines instead of clipping them.
+	var btn := _mk_button("" if has_preview else "", 12 if has_preview else 13)
+	btn.custom_minimum_size = Vector2(174, 72 if has_preview else 74)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
@@ -326,11 +329,26 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
 	else:
-		var icon_path := _command_icon_path(title, detail)
-		if ResourceLoader.exists(icon_path):
-			btn.icon = load(icon_path)
-			btn.expand_icon = true
-			btn.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var text_col := VBoxContainer.new()
+		text_col.position = Vector2(7, 7)
+		text_col.size = Vector2(160, 60)
+		text_col.custom_minimum_size = Vector2(160, 60)
+		text_col.add_theme_constant_override("separation", 1)
+		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var title_color := Color(0.48, 0.47, 0.43, 0.9) if state == "LOCKED" else FONT_COLOR
+		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
+		var title_label := _mk_label(title, 12, title_color)
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_col.add_child(title_label)
+		var detail_label := _mk_label(state_text + detail, 11, detail_color)
+		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		text_col.add_child(detail_label)
+		btn.add_child(text_col)
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = Color(0.10, 0.12, 0.14, 0.96)
