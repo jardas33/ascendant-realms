@@ -164,7 +164,9 @@ func _build() -> void:
 	# Description panel at bottom
 	var desc_panel := Panel.new()
 	desc_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	desc_panel.offset_top = -108.0
+	# Keep enough vertical room for the title/difficulty line plus the wrapped
+	# story line at the supported 16 px presentation size.
+	desc_panel.offset_top = -128.0
 	desc_panel.offset_bottom = -70.0
 	desc_panel.offset_left = 180.0
 	desc_panel.offset_right = -180.0
