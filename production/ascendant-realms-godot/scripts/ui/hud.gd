@@ -1442,7 +1442,18 @@ func _build_building_card(b) -> void:
 			if _commander.has_method("can_research"):
 				available = _commander.can_research(tid)
 			var affordable: bool = _commander.can_afford(cost)
-			var reason: String = "Already researched or unavailable" if not available else (_commander.missing_resource_summary(cost) if not affordable else "")
+			var reason := ""
+			if not available:
+				if tdef.get("kind", "") == "tier":
+					var required_tier := int(tdef.get("tier", 2)) - 1
+					var required_age := GameData.get_tech("advance_tier_%d" % required_tier)
+					var required_age_name := String(required_age.get("name", "Age %d" % required_tier))
+					required_age_name = required_age_name.trim_prefix("Advance to ")
+					reason = "Requires %s" % required_age_name
+				else:
+					reason = "Already researched or unavailable"
+			elif not affordable:
+				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
 			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not ready_to_research else "READY")
 			btn.disabled = not ready_to_research
