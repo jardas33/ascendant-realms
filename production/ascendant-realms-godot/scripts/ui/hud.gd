@@ -429,8 +429,13 @@ func _build_top_bar() -> void:
 	# population
 	var pop_cell := HBoxContainer.new()
 	pop_cell.add_theme_constant_override("separation", 6)
-	pop_cell.add_child(_mk_label("Pop", 17, Color(0.85, 0.83, 0.75)))
+	var pop_title := _mk_label("Pop", 17, Color(0.85, 0.83, 0.75))
+	pop_title.custom_minimum_size = Vector2(34, 0)
+	pop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pop_cell.add_child(pop_title)
 	_pop_label = _mk_label("0/0", 22)
+	_pop_label.custom_minimum_size = Vector2(64, 0)
+	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
 	row.add_child(pop_cell)
 
@@ -444,6 +449,8 @@ func _build_top_bar() -> void:
 
 	# age / tier
 	_tier_label = _mk_label("Age I", 22, Color(0.98, 0.88, 0.55))
+	_tier_label.custom_minimum_size = Vector2(68, 0)
+	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(_tier_label)
 
 	# menu button (top-right corner)
