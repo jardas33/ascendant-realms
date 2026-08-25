@@ -1395,7 +1395,11 @@ func _build_worker_card() -> void:
 		# canonical resource name/amount but dropping the redundant "Cost:" prefix
 		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
 		# without changing resource definitions or the command-card geometry.
-		var btn := _mk_command_button(str(bdef.get("name", bid)), _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef, str(bdef.get("desc", "")), "Purpose")
+		var build_detail := _cost_string(cost).trim_prefix("  (").trim_suffix(")")
+		var grants_pop := int(bdef.get("grants_pop", 0))
+		if grants_pop > 0:
+			build_detail += " · Provides: +%d population" % grants_pop
+		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef, str(bdef.get("desc", "")), "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
@@ -1451,7 +1455,8 @@ func _build_building_card(b) -> void:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
-			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY", {}, str(udef.get("desc", "")), "Role")
+			var train_detail := "Tier %d | Population: %d | Cost: %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY", {}, str(udef.get("desc", "")), "Role")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
