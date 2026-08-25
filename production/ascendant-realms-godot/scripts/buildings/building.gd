@@ -22,6 +22,9 @@ var footprint := 4.0
 const PRESENTATION_HEIGHT_MULTIPLIER := 1.15
 const PRESENTATION_HEIGHT_MIN := 3.2
 const PRESENTATION_HEIGHT_MAX := 12.0
+const BUILD_COMPLETION_CUE_SCALE := 1.045
+const BUILD_COMPLETION_CUE_OUT_DURATION := 0.12
+const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
 
 func _debug_review_presentation() -> bool:
 	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
@@ -52,6 +55,7 @@ var _construction_stage_meshes: Array = []
 var _construction_status_label: Label3D
 var _construction_status_track: MeshInstance3D
 var _construction_status_fill: MeshInstance3D
+var _completion_cue_tween: Tween
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
 
@@ -325,6 +329,7 @@ func _complete_build() -> void:
 	build_progress = 1.0
 	hp = max_hp
 	_set_construction_visual(1.0)
+	_play_build_completion_cue()
 	Sfx.play("build_complete", -4.0)
 	if commander:
 		commander.recompute_pop()
@@ -332,6 +337,21 @@ func _complete_build() -> void:
 			commander.tier = int(def["tier_unlock"])
 	if world:
 		world.on_building_completed(self)
+
+func _play_build_completion_cue() -> void:
+	# The construction stage and progress bar disappear at completion. A short
+	# eased pulse on the existing visual root makes that state transition legible
+	# without adding gameplay, collision, or persistent VFX state.
+	if not is_instance_valid(model_root):
+		return
+	if is_instance_valid(_completion_cue_tween):
+		_completion_cue_tween.kill()
+	var base_scale := model_root.scale
+	_completion_cue_tween = create_tween()
+	_completion_cue_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_completion_cue_tween.tween_property(model_root, "scale", base_scale * BUILD_COMPLETION_CUE_SCALE, BUILD_COMPLETION_CUE_OUT_DURATION)
+	_completion_cue_tween.set_ease(Tween.EASE_IN_OUT)
+	_completion_cue_tween.tween_property(model_root, "scale", base_scale, BUILD_COMPLETION_CUE_RETURN_DURATION)
 
 # --------------------------------------------------------------------------
 # Production
