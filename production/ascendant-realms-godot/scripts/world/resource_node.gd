@@ -234,26 +234,47 @@ func _add_gold_dressing() -> void:
 
 func _add_food_dressing() -> void:
 	var dressing := Node3D.new()
-	dressing.name = "FoodHayDressing"
+	dressing.name = "FoodProvisionDressing"
 	model_root.add_child(dressing)
-	var positions := [Vector3(-0.42, 0.20, 0.08), Vector3(0.42, 0.18, 0.18), Vector3(0.04, 0.32, -0.32)]
+	# Food deliberately reads as compact, upright provisions rather than a
+	# second horizontal log pile. These are presentation-only children: they
+	# carry no collision, gathering, or targeting semantics.
+	var positions := [Vector3(-0.46, 1.02, 0.20), Vector3(0.46, 0.96, 0.30), Vector3(0.02, 1.12, -0.28)]
 	for i in positions.size():
-		var bale := MeshInstance3D.new()
-		bale.name = "HayBale%d" % (i + 1)
-		var bale_mesh := CylinderMesh.new()
-		bale_mesh.top_radius = 0.34
-		bale_mesh.bottom_radius = 0.36
-		bale_mesh.height = 0.42
-		bale_mesh.radial_segments = 8
-		bale.mesh = bale_mesh
-		bale.position = positions[i]
-		bale.rotation.y = 0.22 * float(i)
-		bale.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		var bale_mat := StandardMaterial3D.new()
-		bale_mat.albedo_color = [Color(0.62, 0.42, 0.15, 1.0), Color(0.74, 0.52, 0.18, 1.0), Color(0.52, 0.34, 0.11, 1.0)][i]
-		bale_mat.roughness = 0.94
-		bale.material_override = bale_mat
-		dressing.add_child(bale)
+		var sack := MeshInstance3D.new()
+		sack.name = "ProvisionSack%d" % (i + 1)
+		var sack_mesh := CapsuleMesh.new()
+		sack_mesh.radius = 0.36
+		sack_mesh.height = 1.02
+		sack_mesh.radial_segments = 8
+		sack_mesh.rings = 3
+		sack.mesh = sack_mesh
+		sack.position = positions[i]
+		sack.rotation.y = -0.16 + 0.18 * float(i)
+		sack.scale = Vector3(0.90 + 0.04 * float(i), 1.10, 0.80)
+		sack.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		var sack_mat := StandardMaterial3D.new()
+		sack_mat.albedo_color = [Color(0.68, 0.52, 0.27, 1.0), Color(0.78, 0.63, 0.34, 1.0), Color(0.58, 0.42, 0.20, 1.0)][i]
+		sack_mat.roughness = 0.94
+		sack.material_override = sack_mat
+		dressing.add_child(sack)
+
+		var tie := MeshInstance3D.new()
+		tie.name = "ProvisionTie%d" % (i + 1)
+		var tie_mesh := TorusMesh.new()
+		tie_mesh.inner_radius = 0.13
+		tie_mesh.outer_radius = 0.17
+		tie_mesh.rings = 8
+		tie_mesh.ring_segments = 6
+		tie.mesh = tie_mesh
+		tie.position = positions[i] + Vector3(0.0, 0.46, 0.0)
+		tie.scale = Vector3(0.88, 1.0, 0.74)
+		tie.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var tie_mat := StandardMaterial3D.new()
+		tie_mat.albedo_color = Color(0.26, 0.18, 0.08, 1.0)
+		tie_mat.roughness = 0.98
+		tie.material_override = tie_mat
+		dressing.add_child(tie)
 
 func _add_stone_quarry_dressing() -> void:
 	# A low, non-colliding quarry apron and three faceted fragments turn the
