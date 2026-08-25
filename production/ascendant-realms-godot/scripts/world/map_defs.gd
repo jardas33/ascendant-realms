@@ -148,8 +148,9 @@ static func _cluster(c: Vector3, rich: float) -> Array:
 		out.append({"kind": "gold", "pos": c + toward * 22.0})
 		out.append({"kind": "stone", "pos": c - side * 15.0})
 	elif rich <= 0.7:
+		# Preserve the minimum food spawn from the standard cluster contract;
+		# scarcity removes one timber node, not the only food source.
 		out.remove_at(4)
-		out.remove_at(0)
 	return out
 
 static func _contested(rich: float) -> Array:
