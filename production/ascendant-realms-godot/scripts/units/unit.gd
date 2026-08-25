@@ -100,6 +100,7 @@ var _team_marker: MeshInstance3D
 var _p1r22_contact_shadow: MeshInstance3D
 var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
+var _attack_range_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
 var _selection_pick_radius := 0.5
 var _selection_indicator_radius := 0.5
@@ -275,6 +276,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_build_model()
 	_add_pick_shape()
 	_build_selection_ring()
+	_build_attack_range_ring()
 	_build_health_bar()
 	_build_r15_combat_presentation()
 	refresh_upgrade_bonuses()
@@ -592,6 +594,31 @@ func _build_selection_ring() -> void:
 	selection_ring.visible = false
 	add_child(selection_ring)
 
+func _build_attack_range_ring() -> void:
+	if atk_range <= 0.0:
+		return
+	_attack_range_ring = MeshInstance3D.new()
+	_attack_range_ring.name = "UnitAttackRange"
+	var torus := TorusMesh.new()
+	torus.inner_radius = atk_range * 0.985
+	torus.outer_radius = atk_range * 1.015
+	torus.rings = 64
+	torus.ring_segments = 8
+	_attack_range_ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	var team_color: Color = commander.color if commander else Color.WHITE
+	mat.albedo_color = Color(team_color.r, team_color.g, team_color.b, 0.26)
+	mat.emission_enabled = true
+	mat.emission = team_color
+	mat.emission_energy_multiplier = 1.25
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_attack_range_ring.material_override = mat
+	_attack_range_ring.position.y = 0.08
+	_attack_range_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_attack_range_ring.visible = false
+	add_child(_attack_range_ring)
+
 func _measure_selection_visual_radius() -> float:
 	if is_instance_valid(model_root):
 		var measured := ModelUtils.measure_radius(model_root)
@@ -616,7 +643,19 @@ func get_selection_geometry() -> Dictionary:
 func set_selected(sel: bool) -> void:
 	if selection_ring:
 		selection_ring.visible = sel
+	if _attack_range_ring:
+		_attack_range_ring.visible = false
+		call_deferred("_sync_attack_range_ring")
 	_update_health_bar()
+
+func _sync_attack_range_ring() -> void:
+	if not is_instance_valid(_attack_range_ring) or is_dead:
+		return
+	var selected_units := 0
+	for other in get_tree().get_nodes_in_group("units"):
+		if is_instance_valid(other) and is_instance_valid(other.selection_ring) and other.selection_ring.visible:
+			selected_units += 1
+	_attack_range_ring.visible = selected_units == 1 and is_instance_valid(selection_ring) and selection_ring.visible
 
 func _build_health_bar() -> void:
 	_health_bar_root = Node3D.new()
