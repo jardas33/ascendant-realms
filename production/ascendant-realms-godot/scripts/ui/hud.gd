@@ -998,9 +998,40 @@ func _refresh_single_live() -> void:
 				overlay.text = ""
 
 
+func _selection_type_summary(units: Array) -> String:
+	var counts: Dictionary = {}
+	var order: Array[String] = []
+	for u in units:
+		if not is_instance_valid(u):
+			continue
+		var label := String(u.def.get("name", "Unit"))
+		if bool(u.is_worker):
+			label = "Workers"
+		else:
+			label = label.trim_prefix("Highland ")
+			label = label.trim_prefix("Clan ")
+		if not counts.has(label):
+			counts[label] = 0
+			order.append(label)
+		counts[label] = int(counts[label]) + 1
+	var parts: Array[String] = []
+	for label in order:
+		parts.append("%s x%d" % [label, int(counts[label])])
+	return " · ".join(parts)
+
+
 func _build_multi(units: Array) -> void:
+	var selected_label := _mk_label("Group · %d units  •  %s" % [units.size(), _selection_type_summary(units)], 12, Color(0.95, 0.85, 0.55))
+	selected_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	selected_label.offset_left = 8
+	selected_label.offset_right = -8
+	selected_label.offset_top = 0
+	selected_label.offset_bottom = 20
+	_sel_body.add_child(selected_label)
+
 	var scroll := ScrollContainer.new()
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scroll.offset_top = 22
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	_sel_body.add_child(scroll)
@@ -1013,8 +1044,6 @@ func _build_multi(units: Array) -> void:
 	scroll.add_child(grid)
 
 	var shown := 0
-	var selected_label := _mk_label("Group · %d units" % units.size(), 13, Color(0.95, 0.85, 0.55))
-	_sel_body.add_child(selected_label)
 	for u in units:
 		if shown >= 24:
 			break
