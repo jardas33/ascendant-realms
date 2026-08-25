@@ -290,6 +290,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var has_preview := not preview_definition.is_empty()
 	var effect_text := visible_effect.strip_edges()
 	var has_effect := not effect_text.is_empty()
+	var role_card := visible_effect_prefix == "Role"
 	var detail_text := detail + ("\n" + disabled_reason if not disabled_reason.is_empty() else "")
 	if has_effect:
 		detail_text += "\n" + visible_effect_prefix + ": " + effect_text
@@ -299,7 +300,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var btn := _mk_button("" if has_preview else "", 12 if has_preview else 13)
 	var card_height := 72 if has_preview else 74
 	if has_effect:
-		card_height = 104
+		card_height = 128 if role_card else 104
 	btn.custom_minimum_size = Vector2(174, card_height)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
@@ -342,7 +343,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(7, 7)
-		var text_height := 88 if has_effect else 60
+		var text_height := (112 if role_card else 88) if has_effect else 60
 		text_col.size = Vector2(160, text_height)
 		text_col.custom_minimum_size = Vector2(160, text_height)
 		text_col.add_theme_constant_override("separation", 1)
@@ -1450,7 +1451,7 @@ func _build_building_card(b) -> void:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
-			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY")
+			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY", {}, str(udef.get("desc", "")), "Role")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
