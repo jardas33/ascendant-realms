@@ -373,7 +373,7 @@ func queue_unit(unit_id: String) -> Dictionary:
 	if int(udef.get("tier", 1)) > commander.tier:
 		return {"ok": false, "reason": "Requires higher Age"}
 	if not commander.can_afford(udef.get("cost", {})):
-		return {"ok": false, "reason": "Need " + commander.missing_resource(udef.get("cost", {}))}
+		return {"ok": false, "reason": commander.missing_resource_summary(udef.get("cost", {}))}
 	if not commander.reserve_pop(udef):
 		return {"ok": false, "reason": "Need more housing"}
 	if not commander.spend(udef.get("cost", {})):
@@ -392,7 +392,7 @@ func queue_tech(tech_id: String) -> Dictionary:
 		return {"ok": false, "reason": "Unavailable"}
 	var t := GameData.get_tech(tech_id)
 	if not commander.can_afford(t.get("cost", {})):
-		return {"ok": false, "reason": "Need " + commander.missing_resource(t.get("cost", {}))}
+		return {"ok": false, "reason": commander.missing_resource_summary(t.get("cost", {}))}
 	commander.spend(t.get("cost", {}))
 	commander.researching[tech_id] = true
 	var time := float(t.get("time", 30))

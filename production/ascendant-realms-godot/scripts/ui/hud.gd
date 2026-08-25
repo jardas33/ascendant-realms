@@ -286,7 +286,7 @@ func _command_icon_path(title: String, detail: String) -> String:
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}) -> Button:
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var has_preview := not preview_definition.is_empty()
-	var label_prefix := "     " if has_preview else ""
+	var detail_text := detail + ("\n" + disabled_reason if not disabled_reason.is_empty() else "")
 	# Production/research cards do not have a portrait column. Use the same
 	# explicit text-column treatment as preview cards so the compact two-column
 	# grid can wrap long names and cost lines instead of clipping them.
@@ -322,7 +322,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var title_label := _mk_label(title, 12)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail, 11, Color(0.86, 0.84, 0.76))
+		var detail_label := _mk_label(state_text + detail_text, 11, Color(0.86, 0.84, 0.76))
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -343,7 +343,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail, 11, detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 11, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1329,7 +1329,7 @@ func _build_worker_card() -> void:
 		var affordable: bool = _commander.can_afford(cost)
 		var reason: String = ""
 		if not affordable:
-			reason = "Need " + _commander.missing_resource(cost)
+			reason = _commander.missing_resource_summary(cost)
 		# The Build section already establishes this as a cost line. Keeping the
 		# canonical resource name/amount but dropping the redundant "Cost:" prefix
 		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
@@ -1389,7 +1389,7 @@ func _build_building_card(b) -> void:
 			elif not housed:
 				reason = "Need more housing"
 			elif not affordable:
-				reason = "Need " + _commander.missing_resource(cost)
+				reason = _commander.missing_resource_summary(cost)
 			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
@@ -1419,9 +1419,11 @@ func _build_building_card(b) -> void:
 			var available := true
 			if _commander.has_method("can_research"):
 				available = _commander.can_research(tid)
-			var reason := "Already researched or unavailable" if not available else ""
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not available else "READY")
-			btn.disabled = not available
+			var affordable: bool = _commander.can_afford(cost)
+			var reason: String = "Already researched or unavailable" if not available else (_commander.missing_resource_summary(cost) if not affordable else "")
+			var ready_to_research: bool = available and affordable
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not ready_to_research else "READY")
+			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
 			btn.pressed.connect(func(): _try_queue_tech(cap_b, cap_tid))

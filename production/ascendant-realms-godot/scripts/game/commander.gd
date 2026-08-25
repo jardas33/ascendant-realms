@@ -60,6 +60,14 @@ func missing_resource(cost: Dictionary) -> String:
 			return k
 	return ""
 
+func missing_resource_summary(cost: Dictionary) -> String:
+	var shortages: Array[String] = []
+	for k in cost:
+		var missing := int(cost[k]) - int(resources.get(k, 0))
+		if missing > 0:
+			shortages.append("%d %s" % [missing, k])
+	return "Missing: " + ", ".join(shortages)
+
 func spend(cost: Dictionary) -> bool:
 	if not can_afford(cost):
 		return false
