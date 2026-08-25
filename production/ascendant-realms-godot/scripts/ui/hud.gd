@@ -1375,6 +1375,16 @@ func _rebuild_command_card(single, selection: Array) -> void:
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
 		return
 
+	var has_military := false
+	for item in selection:
+		if item is Unit and not item.is_worker and not item.is_dead:
+			has_military = true
+			break
+	if has_military:
+		_build_military_card()
+		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		return
+
 	_cmd_panel.visible = false
 
 
@@ -1406,6 +1416,40 @@ func _build_worker_card() -> void:
 			if is_instance_valid(rts) and rts.has_method("enter_build_mode"):
 				rts.enter_build_mode(cap_id))
 		grid.add_child(btn)
+
+
+func _build_military_card() -> void:
+	_add_command_section("Commands", "Orders for selected combat units.")
+	var grid := _mk_command_grid()
+	_cmd_body.add_child(grid)
+	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
+	_add_military_command_button(grid, "Stop", "Stop current orders.", "Stop: clear the selected units' current orders.", "stop")
+	_add_military_command_button(grid, "Hold", "Hold this position.", "Hold: keep the selected units here while retaining their current combat behavior.", "hold")
+	_add_military_command_button(grid, "Patrol", "Move between chosen points.", "Patrol: choose a destination to begin the existing patrol behavior.", "patrol")
+
+
+func _add_military_command_button(grid: GridContainer, title: String, detail: String, tooltip: String, action: String) -> void:
+	var btn := _mk_command_button(title, detail, tooltip)
+	btn.pressed.connect(func(): _invoke_military_command(action))
+	grid.add_child(btn)
+
+
+func _invoke_military_command(action: String) -> void:
+	if not is_instance_valid(rts):
+		return
+	match action:
+		"attack_move":
+			if rts.has_method("_begin_attack_move"):
+				rts._begin_attack_move()
+		"stop":
+			if rts.has_method("issue_stop"):
+				rts.issue_stop()
+		"hold":
+			if rts.has_method("issue_hold"):
+				rts.issue_hold()
+		"patrol":
+			if rts.has_method("_cmd_patrol_prompt"):
+				rts._cmd_patrol_prompt()
 
 
 func _build_building_card(b) -> void:
