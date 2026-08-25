@@ -168,6 +168,9 @@ const COMBAT_HIT_FLASH_EXTENSION := 0.14
 const COMBAT_HIT_FLASH_RADIUS := 0.46
 const COMBAT_HIT_FLASH_HEIGHT := 0.92
 const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
+const DEATH_VISUAL_CUE_DURATION := 0.55
+const DEATH_VISUAL_CUE_SCALE := 0.72
+const DEATH_VISUAL_CUE_DROP := 0.24
 
 func _building_route_clearance() -> float:
 	# Workers do not use physics collisions against buildings (their body mask is
@@ -1903,6 +1906,13 @@ func _die(from = null) -> void:
 	set_selected(false)
 	collision_layer = 0
 	_play_sfx("death", -12.0)
+	if is_instance_valid(model_root):
+		# Presentation-only death cue. Logical removal, collision ownership, and
+		# target validity are already settled above and remain unchanged.
+		var death_cue := create_tween().set_parallel(true)
+		death_cue.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		death_cue.tween_property(model_root, "scale", model_root.scale * DEATH_VISUAL_CUE_SCALE, DEATH_VISUAL_CUE_DURATION)
+		death_cue.tween_property(model_root, "position:y", model_root.position.y - DEATH_VISUAL_CUE_DROP, DEATH_VISUAL_CUE_DURATION)
 	var credit_source = _last_damage_source if is_instance_valid(_last_damage_source) else from
 	if is_instance_valid(credit_source):
 		if credit_source.has_method("gain_veterancy"):
