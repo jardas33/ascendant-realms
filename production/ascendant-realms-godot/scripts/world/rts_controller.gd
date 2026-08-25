@@ -750,8 +750,22 @@ func enter_build_mode(building_id: String) -> void:
 		_apply_build_ghost_surface_materials(m)
 	var ring := MeshInstance3D.new()
 	var footprint := float(bdef.get("footprint", 4.0))
+	var footprint_fill := MeshInstance3D.new()
+	var footprint_mesh := CylinderMesh.new()
+	footprint_mesh.top_radius = footprint
+	footprint_mesh.bottom_radius = footprint
+	footprint_mesh.height = 0.04
+	footprint_mesh.radial_segments = 48
+	footprint_fill.mesh = footprint_mesh
+	footprint_fill.position.y = 0.03
+	_ghost_fill_mat = StandardMaterial3D.new()
+	_ghost_fill_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_ghost_fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_ghost_fill_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	footprint_fill.material_override = _ghost_fill_mat
+	_build_ghost.add_child(footprint_fill)
 	var torus := TorusMesh.new()
-	torus.inner_radius = maxf(0.15, footprint - 0.18)
+	torus.inner_radius = maxf(0.15, footprint - 0.30)
 	torus.outer_radius = footprint
 	torus.rings = 32
 	torus.ring_segments = 8
@@ -767,6 +781,7 @@ func enter_build_mode(building_id: String) -> void:
 	emit_signal("build_mode_changed", true, building_id)
 
 var _ghost_mat: StandardMaterial3D
+var _ghost_fill_mat: StandardMaterial3D
 
 func _build_ghost_identity_tint(bdef: Dictionary) -> Color:
 	match String(bdef.get("kind", "")):
@@ -795,7 +810,13 @@ func _apply_build_ghost_surface_materials(root: Node3D) -> void:
 func _set_build_ghost_state(valid: bool) -> void:
 	var state_color := Color(0.30, 0.90, 0.40, 0.30) if valid else Color(0.90, 0.30, 0.30, 0.30)
 	if _ghost_mat:
-		_ghost_mat.albedo_color = state_color
+		var ring_color := state_color
+		ring_color.a = 0.78
+		_ghost_mat.albedo_color = ring_color
+	if _ghost_fill_mat:
+		var fill_color := state_color
+		fill_color.a = 0.13
+		_ghost_fill_mat.albedo_color = fill_color
 	for mat in _ghost_surface_mats:
 		if is_instance_valid(mat):
 			var surface_color := _ghost_identity_tint.lerp(state_color, 0.22)
