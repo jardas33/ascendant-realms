@@ -211,6 +211,11 @@ const P1R22_CONTACT_SHADOW_ALPHA := 0.18
 const P1R21_MIN_WALK_ANIMATION_SCALE := 0.72
 const P1R21_MAX_WALK_ANIMATION_SCALE := 1.18
 
+# P1-R24 critical-health readability: only damaged friendly units change the
+# existing bar grammar, so healthy armies keep their quiet presentation.
+const P1R24_LOW_HEALTH_RATIO := 0.60
+const P1R24_CRITICAL_HEALTH_RATIO := 0.35
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -634,11 +639,22 @@ func _build_health_bar() -> void:
 	fill_mesh.size = Vector3(1.3, 0.07, 0.045)
 	_health_bar_fill.mesh = fill_mesh
 	var fill_mat := StandardMaterial3D.new()
-	fill_mat.albedo_color = Color(0.25, 0.8, 0.35) if team == 0 else Color(0.85, 0.25, 0.2)
+	fill_mat.albedo_color = _p1r24_health_bar_color(1.0)
 	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_health_bar_fill.material_override = fill_mat
 	_health_bar_root.add_child(_health_bar_fill)
 	_update_health_bar()
+
+func _p1r24_health_bar_color(ratio: float) -> Color:
+	if team != 0:
+		return Color(0.85, 0.25, 0.2)
+	if ratio <= P1R24_CRITICAL_HEALTH_RATIO:
+		return Color(1.0, 0.32, 0.12)
+	if ratio <= P1R24_LOW_HEALTH_RATIO:
+		return Color(1.0, 0.72, 0.18)
+	if ratio < 0.999:
+		return Color(1.0, 0.82, 0.25)
+	return Color(0.25, 0.8, 0.35)
 
 func _update_health_bar() -> void:
 	if not is_instance_valid(_health_bar_root) or is_dead:
@@ -649,6 +665,13 @@ func _update_health_bar() -> void:
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)
 		_health_bar_fill.position.x = -0.65 * (1.0 - ratio)
+		var fill_mat := _health_bar_fill.material_override as StandardMaterial3D
+		if is_instance_valid(fill_mat):
+			fill_mat.albedo_color = _p1r24_health_bar_color(ratio)
+	if is_instance_valid(_health_bar_back):
+		var back_mat := _health_bar_back.material_override as StandardMaterial3D
+		if is_instance_valid(back_mat):
+			back_mat.albedo_color = Color(0.22, 0.045, 0.018, 0.95) if team == 0 and ratio <= P1R24_CRITICAL_HEALTH_RATIO else Color(0.03, 0.04, 0.04, 0.9)
 
 func _build_r15_combat_presentation() -> void:
 	# Presentation-only cues: no target, damage, timing or combat outcome is
