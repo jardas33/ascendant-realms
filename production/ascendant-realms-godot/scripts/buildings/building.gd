@@ -48,6 +48,7 @@ var _aura_timer := 0.0
 
 var model_root: Node3D
 var selection_ring: MeshInstance3D
+var _tower_range_ring: MeshInstance3D
 var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
 var _construction_stage_root: Node3D
@@ -85,6 +86,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	_build_construction_stage_visual()
 	_build_damage_status_visual()
 	_build_selection_ring()
+	_build_tower_range_ring()
 	if prebuilt:
 		is_built = true
 		build_progress = 1.0
@@ -249,6 +251,34 @@ func _build_selection_ring() -> void:
 	selection_ring.visible = false
 	add_child(selection_ring)
 
+func _build_tower_range_ring() -> void:
+	if not def.has("tower_dmg") or not def.has("tower_range"):
+		return
+	_tower_range_ring = MeshInstance3D.new()
+	_tower_range_ring.name = "TowerAttackRange"
+	var torus := TorusMesh.new()
+	var tower_range := maxf(0.5, float(def.get("tower_range", 18.0)))
+	torus.inner_radius = tower_range * 0.985
+	torus.outer_radius = tower_range * 1.015
+	torus.rings = 64
+	torus.ring_segments = 8
+	_tower_range_ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	var team_color: Color = Color.WHITE
+	if commander:
+		team_color = commander.color
+	mat.albedo_color = Color(team_color.r, team_color.g, team_color.b, 0.30)
+	mat.emission_enabled = true
+	mat.emission = team_color
+	mat.emission_energy_multiplier = 1.25
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_tower_range_ring.material_override = mat
+	_tower_range_ring.position.y = 0.08
+	_tower_range_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_tower_range_ring.visible = false
+	add_child(_tower_range_ring)
+
 func _measure_selection_visual_extents() -> Vector2:
 	if not is_instance_valid(model_root):
 		return Vector2(footprint * 0.7, footprint * 0.7)
@@ -285,6 +315,8 @@ func get_selection_geometry() -> Dictionary:
 func set_selected(sel: bool) -> void:
 	if selection_ring:
 		selection_ring.visible = sel
+	if _tower_range_ring:
+		_tower_range_ring.visible = sel and is_built and not is_dead
 
 func _set_construction_visual(p: float) -> void:
 	# Keep the footprint visibly grounded while construction progresses. The old
@@ -390,6 +422,8 @@ func _complete_build() -> void:
 	build_progress = 1.0
 	hp = max_hp
 	_set_construction_visual(1.0)
+	if is_instance_valid(selection_ring) and selection_ring.visible:
+		set_selected(true)
 	_play_build_completion_cue()
 	Sfx.play("build_complete", -4.0)
 	if commander:
