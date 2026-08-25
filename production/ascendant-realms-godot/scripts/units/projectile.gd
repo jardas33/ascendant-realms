@@ -22,6 +22,13 @@ var _alive_time := 0.0
 
 var _mesh: MeshInstance3D
 
+# P1 task 266 presentation tuning. These values enlarge only the rendered
+# projectile silhouette and contrast; movement, collision, impact timing, and
+# damage remain unchanged.
+const P1_PROJECTILE_RADIUS := 0.09
+const P1_PROJECTILE_HEIGHT := 1.28
+const P1_PROJECTILE_EMISSION := 3.8
+
 func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0, p_source = null, p_attack_event_id: String = "") -> void:
 	global_position = from
 	target = tgt
@@ -53,11 +60,11 @@ func _build_visual() -> void:
 			var cap := CylinderMesh.new()
 			# R15 presentation-only readability at the default RTS camera. Flight
 			# speed, collision/impact timing and damage remain unchanged.
-			cap.top_radius = 0.06
-			cap.bottom_radius = 0.06
-			cap.height = 0.92
+			cap.top_radius = P1_PROJECTILE_RADIUS
+			cap.bottom_radius = P1_PROJECTILE_RADIUS
+			cap.height = P1_PROJECTILE_HEIGHT
 			m = cap
-			col = Color(0.8, 0.7, 0.45) if kind != "thorn" else Color(0.5, 0.8, 0.5)
+			col = Color(1.0, 0.84, 0.36) if kind != "thorn" else Color(0.58, 0.95, 0.46)
 			_mesh.rotation_degrees.x = 90.0
 		"cinder", "void_bolt", "lume_bolt", "rift_shell", "thornpod", "cannon":
 			var sp := SphereMesh.new()
@@ -78,7 +85,7 @@ func _build_visual() -> void:
 	mat.albedo_color = col
 	mat.emission_enabled = true
 	mat.emission = col
-	mat.emission_energy_multiplier = 2.9
+	mat.emission_energy_multiplier = P1_PROJECTILE_EMISSION
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	_mesh.material_override = mat
 	add_child(_mesh)
