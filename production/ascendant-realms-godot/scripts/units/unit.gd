@@ -160,8 +160,14 @@ const V0436_R1F_AUDIT_CAP := 512
 const ATTACK_RESUME_MARGIN := 0.65
 const ATTACK_SETTLE_MARGIN := 0.12
 const BUILDING_ROUTE_CLEARANCE := 1.0
-const COMBAT_DAMAGE_LABEL_DURATION := 0.72
-const COMBAT_HIT_FLASH_EXTENSION := 0.08
+# P1 task 265 presentation tuning. These values only control how an already
+# recorded combat result is seen at the normal RTS camera; damage, attack
+# cadence, range, HP, and death semantics remain unchanged.
+const COMBAT_DAMAGE_LABEL_DURATION := 0.96
+const COMBAT_HIT_FLASH_EXTENSION := 0.14
+const COMBAT_HIT_FLASH_RADIUS := 0.46
+const COMBAT_HIT_FLASH_HEIGHT := 0.92
+const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
 
 func _building_route_clearance() -> float:
 	# Workers do not use physics collisions against buildings (their body mask is
@@ -666,8 +672,8 @@ func _build_r15_combat_presentation() -> void:
 	_r15_hit_flash = MeshInstance3D.new()
 	_r15_hit_flash.name = "CombatHitFlash"
 	var flash_mesh := SphereMesh.new()
-	flash_mesh.radius = 0.32
-	flash_mesh.height = 0.64
+	flash_mesh.radius = COMBAT_HIT_FLASH_RADIUS
+	flash_mesh.height = COMBAT_HIT_FLASH_HEIGHT
 	_r15_hit_flash.mesh = flash_mesh
 	_r15_hit_flash.position.y = maxf(0.6, _visual_height * 0.52)
 	_r15_hit_flash.visible = false
@@ -682,11 +688,11 @@ func _build_r15_combat_presentation() -> void:
 
 	_r15_damage_label = Label3D.new()
 	_r15_damage_label.name = "CombatDamageLabel"
-	_r15_damage_label.font_size = 44
-	_r15_damage_label.outline_size = 10
+	_r15_damage_label.font_size = 56
+	_r15_damage_label.outline_size = 14
 	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_r15_damage_label.no_depth_test = true
-	_r15_damage_label.pixel_size = 0.005
+	_r15_damage_label.pixel_size = COMBAT_DAMAGE_LABEL_PIXEL_SIZE
 	_r15_damage_label.visible = false
 	add_child(_r15_damage_label)
 
@@ -697,13 +703,19 @@ func _update_r15_combat_presentation(delta: float) -> void:
 		_r15_hit_flash_time = maxf(0.0, _r15_hit_flash_time - delta)
 	if is_instance_valid(_r15_hit_flash):
 		_r15_hit_flash.visible = _r15_hit_flash_time > 0.0 and not is_dead
+		if _r15_hit_flash.visible:
+			# A short scale pulse makes the existing hit confirmation survive the
+			# normal RTS zoom without particles or per-frame allocations.
+			var flash_progress := clampf(_r15_hit_flash_time / (0.16 + COMBAT_HIT_FLASH_EXTENSION), 0.0, 1.0)
+			var flash_scale := 0.92 + sin((1.0 - flash_progress) * PI) * 0.28
+			_r15_hit_flash.scale = Vector3.ONE * flash_scale
 	if _r15_damage_label_time > 0.0:
 		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
 	if is_instance_valid(_r15_damage_label):
 		_r15_damage_label.visible = _r15_damage_label_time > 0.0 and not is_dead
 		if _r15_damage_label.visible:
 			var progress := 1.0 - (_r15_damage_label_time / COMBAT_DAMAGE_LABEL_DURATION)
-			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + progress * 0.65
+			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + progress * 0.80
 			_r15_damage_label.modulate.a = 1.0 - progress
 
 func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
