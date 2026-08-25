@@ -43,6 +43,7 @@ var _body_font: Font = null
 # --- top bar labels ---
 var _res_labels := {}                  # kind -> Label
 var _pop_label: Label = null
+var _idle_worker_label: Label = null
 var _tier_label: Label = null
 var _top_panel: PanelContainer = null
 var _menu_button: Button = null
@@ -433,6 +434,14 @@ func _build_top_bar() -> void:
 	pop_cell.add_child(_pop_label)
 	row.add_child(pop_cell)
 
+	# idle workers: persistent economy awareness in the existing player-status bar.
+	# The count is refreshed at the same low rate as resources/population and does
+	# not create a toast or world marker for every short worker transition.
+	_idle_worker_label = _mk_label("Idle 0", 16, Color(0.72, 0.73, 0.68))
+	_idle_worker_label.custom_minimum_size = Vector2(70, 0)
+	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(_idle_worker_label)
+
 	# age / tier
 	_tier_label = _mk_label("Age I", 22, Color(0.98, 0.88, 0.55))
 	row.add_child(_tier_label)
@@ -782,6 +791,35 @@ func _poll_top_bar() -> void:
 	_on_resources_changed(_commander.resources)
 	_on_pop_changed(_commander.pop_used + _commander.reserved_pop, _commander.pop_cap)
 	_on_tier_changed(_commander.tier)
+	_on_idle_worker_count(_count_meaningfully_idle_workers())
+
+
+func _worker_is_meaningfully_idle(unit) -> bool:
+	if not is_instance_valid(unit) or unit.is_dead or not unit.is_worker:
+		return false
+	if int(unit.state) != Unit.State.IDLE or int(unit.get("_carry")) > 0:
+		return false
+	return not is_instance_valid(unit.get("_gather_node")) \
+		and not is_instance_valid(unit.get("_pending_gather_node")) \
+		and not is_instance_valid(unit.get("_build_target"))
+
+
+func _count_meaningfully_idle_workers() -> int:
+	if not is_instance_valid(_commander):
+		return 0
+	var count := 0
+	for unit in _commander.units:
+		if _worker_is_meaningfully_idle(unit):
+			count += 1
+	return count
+
+
+func _on_idle_worker_count(count: int) -> void:
+	if not is_instance_valid(_idle_worker_label):
+		return
+	_idle_worker_label.text = "Idle %d" % count
+	_idle_worker_label.add_theme_color_override("font_color",
+		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
 
 # ---------------------------------------------------------------------------
