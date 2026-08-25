@@ -1117,8 +1117,15 @@ func _build_single_building(b) -> void:
 		_queue_container = HBoxContainer.new()
 		_queue_container.add_theme_constant_override("separation", 4)
 		_queue_container.mouse_filter = Control.MOUSE_FILTER_STOP
-		col.add_child(_mk_label("Queue", 12, Color(0.8, 0.78, 0.7)))
-		col.add_child(_queue_container)
+		# Keep the compact queue inside the building identity row so the fixed
+		# selection panel can show the full slot and progress bar at the bottom
+		# of the viewport instead of pushing it below the panel boundary.
+		var queue_row := HBoxContainer.new()
+		queue_row.add_theme_constant_override("separation", 4)
+		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		queue_row.add_child(_mk_label("Queue", 11, Color(0.8, 0.78, 0.7)))
+		queue_row.add_child(_queue_container)
+		identity_info.add_child(queue_row)
 		# watch production updates
 		if b.production_updated.is_connected(_on_production_updated):
 			b.production_updated.disconnect(_on_production_updated)
@@ -1133,6 +1140,16 @@ func _on_production_updated() -> void:
 	_refresh_queue()
 
 
+func _queue_slot_label(display_name: String) -> String:
+	# The full entity name remains in the tooltip; use the distinctive final
+	# name token in the compact slot so players can recognize the queue at a
+	# glance instead of decoding two ambiguous initials.
+	var words := display_name.strip_edges().split(" ", false)
+	if words.is_empty():
+		return display_name
+	return String(words[words.size() - 1])
+
+
 func _refresh_queue() -> void:
 	if not is_instance_valid(_queue_container):
 		return
@@ -1143,7 +1160,8 @@ func _refresh_queue() -> void:
 	var idx := 0
 	for item in b.queue:
 		var slot := _mk_button("", 12)
-		slot.custom_minimum_size = Vector2(38, 38)
+		slot.custom_minimum_size = Vector2(48, 28)
+		slot.add_theme_font_size_override("font_size", 9)
 		var kind: String = item.get("kind", "unit")
 		var iid: String = item.get("id", "")
 		var disp_name := ""
@@ -1151,7 +1169,7 @@ func _refresh_queue() -> void:
 			disp_name = GameData.get_unit(iid).get("name", iid)
 		else:
 			disp_name = GameData.get_tech(iid).get("name", iid)
-		slot.text = disp_name.left(2)
+		slot.text = _queue_slot_label(disp_name)
 		var total: float = float(item.get("total", 1.0))
 		var left: float = float(item.get("time_left", 0.0))
 		var prog: float = 1.0 - clampf(left / maxf(0.01, total), 0.0, 1.0)
@@ -1164,10 +1182,10 @@ func _refresh_queue() -> void:
 		# progress mini-bar under text
 		var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
 		pbar.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-		pbar.custom_minimum_size = Vector2(34, 6)
+		pbar.custom_minimum_size = Vector2(44, 5)
 		pbar.value = prog
-		pbar.position = Vector2(2, 30)
-		pbar.size = Vector2(34, 6)
+		pbar.position = Vector2(2, 20)
+		pbar.size = Vector2(44, 5)
 		slot.add_child(pbar)
 		_queue_container.add_child(slot)
 		idx += 1
