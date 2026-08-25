@@ -44,6 +44,7 @@ var _body_font: Font = null
 var _res_labels := {}                  # kind -> Label
 var _pop_label: Label = null
 var _idle_worker_label: Label = null
+var _idle_military_label: Label = null
 var _tier_label: Label = null
 var _top_panel: PanelContainer = null
 var _menu_button: Button = null
@@ -448,6 +449,13 @@ func _build_top_bar() -> void:
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(_idle_worker_label)
 
+	# Military awareness sits beside the existing worker awareness, but is kept
+	# separate so "Idle 3" can never be mistaken for an idle army count.
+	_idle_military_label = _mk_label("Idle Army 0", 16, Color(0.72, 0.73, 0.68))
+	_idle_military_label.custom_minimum_size = Vector2(96, 0)
+	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(_idle_military_label)
+
 	# age / tier
 	_tier_label = _mk_label("Age I", 22, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(68, 0)
@@ -800,6 +808,7 @@ func _poll_top_bar() -> void:
 	_on_pop_changed(_commander.pop_used + _commander.reserved_pop, _commander.pop_cap)
 	_on_tier_changed(_commander.tier)
 	_on_idle_worker_count(_count_meaningfully_idle_workers())
+	_on_idle_military_count(_count_meaningfully_idle_military())
 
 
 func _worker_is_meaningfully_idle(unit) -> bool:
@@ -822,11 +831,31 @@ func _count_meaningfully_idle_workers() -> int:
 	return count
 
 
+func _count_meaningfully_idle_military() -> int:
+	if not is_instance_valid(_commander):
+		return 0
+	var count := 0
+	for unit in _commander.units:
+		if not is_instance_valid(unit) or unit.is_dead or unit.is_worker:
+			continue
+		if int(unit.state) == Unit.State.IDLE:
+			count += 1
+	return count
+
+
 func _on_idle_worker_count(count: int) -> void:
 	if not is_instance_valid(_idle_worker_label):
 		return
 	_idle_worker_label.text = "Idle %d" % count
 	_idle_worker_label.add_theme_color_override("font_color",
+		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
+
+
+func _on_idle_military_count(count: int) -> void:
+	if not is_instance_valid(_idle_military_label):
+		return
+	_idle_military_label.text = "Idle Army %d" % count
+	_idle_military_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
 
