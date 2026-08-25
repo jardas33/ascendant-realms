@@ -1500,6 +1500,8 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 		"GUARD": "Guard unavailable",
 	}
 	var message := String(labels.get(intent, "Command"))
+	if intent == "BUILD_OR_REPAIR" and String(feedback.get("feedback_type", "")) == "REPAIR":
+		message = "Repair order"
 	var col := Color(0.45, 0.85, 1.0)
 	if intent == "ATTACK" or intent == "ATTACK_MOVE":
 		col = Color(1.0, 0.55, 0.35)

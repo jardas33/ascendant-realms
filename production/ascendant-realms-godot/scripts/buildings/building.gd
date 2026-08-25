@@ -324,6 +324,15 @@ func add_build_progress(delta: float, worker) -> void:
 	if build_progress >= 1.0:
 		_complete_build()
 
+func add_repair_progress(delta: float, worker) -> void:
+	if not is_built or is_dead or hp >= max_hp:
+		return
+	# Reuse the established construction HP work rate: the same max HP fraction
+	# restored per effective build second, with no new resource economy.
+	var repair_amount := max_hp * 0.85 * delta / maxf(0.1, build_time)
+	hp = minf(max_hp, hp + maxf(0.0, repair_amount))
+	_update_damage_visual()
+
 func _complete_build() -> void:
 	is_built = true
 	build_progress = 1.0

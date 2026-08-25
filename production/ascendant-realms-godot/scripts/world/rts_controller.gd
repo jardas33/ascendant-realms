@@ -440,9 +440,9 @@ func classify_command_intent(target = null, ground = null, ui_surface: bool = fa
 	if is_instance_valid(target) and ("team" in target):
 		if int(target.team) != player_team and _can_accept_attack_target(target, units):
 			return COMMAND_ATTACK
-	if target is Building and int(target.team) == player_team and not target.is_built:
+	if target is Building and int(target.team) == player_team and (not target.is_built or target.hp < target.max_hp):
 		for u in units:
-			if u.is_worker:
+			if u.is_worker and (not target.is_built or target.hp < target.max_hp):
 				return COMMAND_BUILD_OR_REPAIR
 	return COMMAND_MOVE if ground != null else COMMAND_INVALID
 
@@ -491,11 +491,19 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 				u.command_gather(hit)
 		_emit_command_feedback(COMMAND_GATHER, "GATHER", hit.global_position, hit)
 		return
-	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team and not hit.is_built:
+	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team:
+		var repair_issued := false
+		var construction_issued := false
 		for u in units:
 			if u.is_worker:
-				u.command_build(hit)
-		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD/CONTINUE", hit.global_position, hit)
+				if not hit.is_built:
+					u.command_build(hit)
+					construction_issued = true
+				elif hit.hp < hit.max_hp:
+					u.command_repair(hit)
+					repair_issued = true
+		if repair_issued or construction_issued:
+			_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "REPAIR" if repair_issued and not construction_issued else "BUILD/CONTINUE", hit.global_position, hit)
 		return
 	if intent == COMMAND_MOVE and ground != null:
 		_formation_move(units, ground)

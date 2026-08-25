@@ -91,6 +91,7 @@ var _last_deposit_sequence := 0
 
 # build
 var _build_target = null
+var _repair_target := false
 
 # nodes
 var agent: NavigationAgent3D
@@ -769,6 +770,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
+	_repair_target = false
 	_follow_target = null
 	_attack_settled = false
 	_attack_target_anchor_valid = false
@@ -790,6 +792,7 @@ func command_stop() -> void:
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
+	_repair_target = false
 	_follow_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -822,6 +825,7 @@ func command_attack(tgt, r1j_order_id: String = "") -> void:
 	_hold_position = false
 	_gather_node = null
 	_build_target = null
+	_repair_target = false
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_attack_settled = false
@@ -875,6 +879,7 @@ func command_gather(node) -> void:
 	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_build_target = null
+	_repair_target = false
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_carry_hold = false
@@ -902,6 +907,22 @@ func command_build(building) -> void:
 	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_build_target = building
+	_repair_target = false
+	state = State.BUILDING
+
+func command_repair(building) -> void:
+	if is_dead or not is_worker or not is_instance_valid(building):
+		return
+	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
+		return
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
+	_hold_position = false
+	_v0436_r1j_set_target(null, "public_order")
+	_gather_node = null
+	_pending_gather_node = null
+	_build_target = building
+	_repair_target = true
 	state = State.BUILDING
 
 static func construction_interaction_for_point(point: Vector3, building_center: Vector3, extents: Vector2, threshold: float) -> Dictionary:
@@ -1565,6 +1586,8 @@ func get_economy_snapshot() -> Dictionary:
 		State.MOVING: activity = "Moving"
 		State.BUILDING: activity = "Building"
 		State.HOLD: activity = "Holding"
+	if _repair_target and state == State.BUILDING:
+		activity = "Repairing"
 	var target_kind := _desired_gather_kind.capitalize() if _desired_gather_kind != "" else ""
 	var target_text := target_kind
 	if is_instance_valid(_gather_node):
@@ -1598,9 +1621,15 @@ func get_economy_text() -> String:
 func _state_build(delta: float) -> void:
 	if not is_instance_valid(_build_target) or _build_target.is_dead:
 		_build_target = null
+		_repair_target = false
 		state = State.IDLE
 		return
-	if _build_target.is_built:
+	if _repair_target and (not _build_target.is_built or _build_target.hp >= _build_target.max_hp):
+		_build_target = null
+		_repair_target = false
+		state = State.IDLE
+		return
+	if not _repair_target and _build_target.is_built:
 		_build_target = null
 		state = State.IDLE
 		return
@@ -1620,7 +1649,10 @@ func _state_build(delta: float) -> void:
 	else:
 		_hold_worker_interaction(_build_target.global_position)
 		_play("work")
-		_build_target.add_build_progress(delta, self)
+		if _repair_target:
+			_build_target.add_repair_progress(delta, self)
+		else:
+			_build_target.add_build_progress(delta, self)
 
 func _hold_worker_interaction(target_position: Vector3) -> void:
 	# Once a worker reaches its work radius, cancel the stale navigation target
