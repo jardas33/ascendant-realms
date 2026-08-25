@@ -55,6 +55,9 @@ var _construction_stage_meshes: Array = []
 var _construction_status_label: Label3D
 var _construction_status_track: MeshInstance3D
 var _construction_status_fill: MeshInstance3D
+var _damage_status_label: Label3D
+var _damage_status_track: MeshInstance3D
+var _damage_status_fill: MeshInstance3D
 var _completion_cue_tween: Tween
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
@@ -80,6 +83,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	rally_point = global_position + Vector3(0, 0, footprint + 3.0)
 	_build_model()
 	_build_construction_stage_visual()
+	_build_damage_status_visual()
 	_build_selection_ring()
 	if prebuilt:
 		is_built = true
@@ -91,6 +95,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 		build_progress = 0.0
 		hp = max_hp * 0.15
 		_set_construction_visual(0.0)
+	_update_damage_visual()
 
 func _build_model() -> void:
 	model_root = Node3D.new()
@@ -299,7 +304,7 @@ func _set_construction_visual(p: float) -> void:
 	if is_instance_valid(_construction_status_fill):
 		_construction_status_fill.visible = building_now
 		_construction_status_fill.scale.x = maxf(0.02, clampf(p, 0.0, 1.0))
-		_construction_status_fill.position.x = (maxf(1.8, footprint * 0.85) * (clampf(p, 0.0, 1.0) - 1.0)) * 0.5
+	_construction_status_fill.position.x = (maxf(1.8, footprint * 0.85) * (clampf(p, 0.0, 1.0) - 1.0)) * 0.5
 	if is_instance_valid(_construction_stage_root):
 		var stage := clampf(p, 0.0, 1.0)
 		_construction_stage_root.visible = stage < 0.9
@@ -313,7 +318,54 @@ func _set_construction_visual(p: float) -> void:
 		if building_now:
 			if not (mi.material_override is StandardMaterial3D) or mi.get_meta("scaffold", false) == false:
 				pass
-		mi.transparency = clamp(1.0 - p, 0.0, 0.6) if building_now else 0.0
+				mi.transparency = clamp(1.0 - p, 0.0, 0.6) if building_now else 0.0
+
+func _build_damage_status_visual() -> void:
+	# Keep completed-building damage readable from the battlefield without a
+	# persistent warning wall. Every element follows authoritative hp/max_hp.
+	_damage_status_label = Label3D.new()
+	_damage_status_label.name = "DamageStatus"
+	_damage_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_damage_status_label.no_depth_test = true
+	_damage_status_label.font_size = 48
+	_damage_status_label.outline_size = 12
+	_damage_status_label.pixel_size = 0.008
+	_damage_status_label.modulate = Color(1.0, 0.48, 0.32, 1.0)
+	_damage_status_label.position = Vector3(0, _presentation_height() + 1.18, 0)
+	_damage_status_label.text = "DAMAGED"
+	_damage_status_label.visible = false
+	add_child(_damage_status_label)
+
+	var width := maxf(2.0, footprint * 0.72)
+	_damage_status_track = MeshInstance3D.new()
+	_damage_status_track.name = "DamageStatusTrack"
+	var track_mesh := BoxMesh.new()
+	track_mesh.size = Vector3(width, 0.10, 0.09)
+	_damage_status_track.mesh = track_mesh
+	var track_mat := StandardMaterial3D.new()
+	track_mat.albedo_color = Color(0.06, 0.025, 0.02, 0.9)
+	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_damage_status_track.material_override = track_mat
+	_damage_status_track.position = Vector3(0, _presentation_height() + 0.82, 0)
+	_damage_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_damage_status_track.visible = false
+	add_child(_damage_status_track)
+
+	_damage_status_fill = MeshInstance3D.new()
+	_damage_status_fill.name = "DamageStatusFill"
+	var fill_mesh := BoxMesh.new()
+	fill_mesh.size = Vector3(width, 0.12, 0.11)
+	_damage_status_fill.mesh = fill_mesh
+	var fill_mat := StandardMaterial3D.new()
+	fill_mat.albedo_color = Color(0.92, 0.16, 0.08, 0.98)
+	fill_mat.emission_enabled = true
+	fill_mat.emission = Color(0.45, 0.04, 0.015)
+	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_damage_status_fill.material_override = fill_mat
+	_damage_status_fill.position = Vector3(0, _presentation_height() + 0.82, 0.06)
+	_damage_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_damage_status_fill.visible = false
+	add_child(_damage_status_fill)
 
 func add_build_progress(delta: float, worker) -> void:
 	if is_built or is_dead:
@@ -552,6 +604,16 @@ func take_damage(amount: float, from = null) -> void:
 
 func _update_damage_visual() -> void:
 	var ratio := get_hp_ratio()
+	var damaged := is_built and not is_dead and ratio < 0.99
+	if is_instance_valid(_damage_status_label):
+		_damage_status_label.visible = damaged
+	if is_instance_valid(_damage_status_track):
+		_damage_status_track.visible = damaged
+	if is_instance_valid(_damage_status_fill):
+		var width := maxf(2.0, footprint * 0.72)
+		_damage_status_fill.visible = damaged
+		_damage_status_fill.scale.x = maxf(0.02, ratio)
+		_damage_status_fill.position.x = width * (clampf(ratio, 0.0, 1.0) - 1.0) * 0.5
 	if ratio < 0.35:
 		for mi in _mesh_instances:
 			if is_instance_valid(mi):
