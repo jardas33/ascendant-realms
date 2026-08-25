@@ -10,6 +10,13 @@ var max_amount := 1000
 var depleted := false
 var model_root: Node3D
 var footprint := 2.5
+var _authored_visual_model: Node3D
+var _authored_visual_base_scale := Vector3.ONE
+var _depletion_status_label: Label3D
+var _depletion_status_track: MeshInstance3D
+var _depletion_status_fill: MeshInstance3D
+var _depletion_status_fill_material: StandardMaterial3D
+var _depletion_status_width := 1.8
 const GATHER_CUE_EXPANSION := 1.18
 const GATHER_CUE_OUT_DURATION := 0.08
 const GATHER_CUE_RETURN_DURATION := 0.18
@@ -93,6 +100,8 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 				collider.reparent(model_root, true)
 		m21_collision_attach_us = Time.get_ticks_usec() - attach_start
 		m.scale *= _presentation_scale_for_kind(kind)
+		_authored_visual_model = m
+		_authored_visual_base_scale = m.scale
 		_apply_p1r14_resource_readability(m)
 		_add_p1r14_resource_accent()
 		m21_remaining_us = Time.get_ticks_usec() - (collision_start + m21_collision_helper_us + m21_collision_attach_us)
@@ -107,6 +116,8 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		mi.position.y = 1.0
 		model_root.add_child(mi)
 		m21_remaining_us = Time.get_ticks_usec() - m21_tree_start
+	_build_depletion_status_visual(scale_h)
+	_update_depletion_visual()
 	if m21_recorder:
 		_m21_record({"index":m21_index, "resource_kind":kind, "model_path":model_path, "scale_height":scale_h, "configure_total_us":Time.get_ticks_usec() - m21_total_start, "tree_setup_us":m21_tree_end - m21_tree_start, "model_acquisition_us":m21_model_acquisition_us, "model_instantiation_us":m21_model_instantiation_us, "visual_setup_us":m21_visual_setup_us, "collision_helper_us":m21_collision_helper_us, "collision_attach_us":m21_collision_attach_us, "remaining_us":m21_remaining_us, "mesh_identities":m21_meshes, "collision_shape_count":m21_collision_shapes, "collision_body_count":m21_collision_bodies, "collision_layer":collision_layer, "collision_cache_hits":m21_collision_cache_hits, "collision_cache_misses":m21_collision_cache_misses})
 
@@ -296,11 +307,79 @@ func _p1r14_resource_color() -> Color:
 		"food": return Color(0.42, 0.78, 0.40, 0.72)
 		_: return Color(0.72, 0.72, 0.72, 0.70)
 
+func _build_depletion_status_visual(scale_h: float) -> void:
+	# This is a compact battlefield cue, not a second resource counter. It is
+	# driven only by the authoritative amount/max_amount ratio and never enters
+	# collision, targeting, or gathering calculations.
+	_depletion_status_label = Label3D.new()
+	_depletion_status_label.name = "ResourceDepletionStatus"
+	_depletion_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_depletion_status_label.no_depth_test = true
+	_depletion_status_label.font_size = 38
+	_depletion_status_label.outline_size = 10
+	_depletion_status_label.pixel_size = 0.007
+	_depletion_status_label.position = Vector3(0, maxf(1.8, scale_h * 0.90) + 0.42, 0)
+	_depletion_status_label.visible = false
+	model_root.add_child(_depletion_status_label)
+
+	_depletion_status_width = maxf(1.6, footprint * 0.62)
+	_depletion_status_track = MeshInstance3D.new()
+	_depletion_status_track.name = "ResourceDepletionStatusTrack"
+	var track_mesh := BoxMesh.new()
+	track_mesh.size = Vector3(_depletion_status_width, 0.08, 0.07)
+	_depletion_status_track.mesh = track_mesh
+	var track_mat := StandardMaterial3D.new()
+	track_mat.albedo_color = Color(0.06, 0.045, 0.025, 0.86)
+	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_depletion_status_track.material_override = track_mat
+	_depletion_status_track.position = Vector3(0, maxf(1.8, scale_h * 0.90), 0)
+	_depletion_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_depletion_status_track.visible = false
+	model_root.add_child(_depletion_status_track)
+
+	_depletion_status_fill = MeshInstance3D.new()
+	_depletion_status_fill.name = "ResourceDepletionStatusFill"
+	var fill_mesh := BoxMesh.new()
+	fill_mesh.size = Vector3(_depletion_status_width, 0.10, 0.09)
+	_depletion_status_fill.mesh = fill_mesh
+	var fill_mat := StandardMaterial3D.new()
+	fill_mat.albedo_color = Color(0.82, 0.57, 0.22, 0.94)
+	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_depletion_status_fill_material = fill_mat
+	_depletion_status_fill.material_override = fill_mat
+	_depletion_status_fill.position = Vector3(0, maxf(1.8, scale_h * 0.90), 0.05)
+	_depletion_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_depletion_status_fill.visible = false
+	model_root.add_child(_depletion_status_fill)
+
+func _update_depletion_visual() -> void:
+	if not is_instance_valid(model_root):
+		return
+	var ratio := clampf(float(amount) / float(max(1, max_amount)), 0.0, 1.0)
+	if is_instance_valid(_authored_visual_model):
+		var depletion_scale: float = 0.18 if ratio <= 0.2 else (0.10 if ratio <= 0.5 else 0.0)
+		_authored_visual_model.scale = _authored_visual_base_scale * (1.0 - depletion_scale)
+	if not is_instance_valid(_depletion_status_label):
+		return
+	var show_status := ratio > 0.0 and ratio <= 0.5
+	_depletion_status_label.visible = show_status
+	_depletion_status_track.visible = show_status
+	_depletion_status_fill.visible = show_status
+	if not show_status:
+		return
+	var near_empty := ratio <= 0.2
+	_depletion_status_label.text = "NEAR EMPTY" if near_empty else "LOW"
+	_depletion_status_label.modulate = Color(0.82, 0.70, 0.48, 1.0) if near_empty else Color(0.96, 0.78, 0.38, 1.0)
+	_depletion_status_fill_material.albedo_color = Color(0.52, 0.46, 0.34, 0.90) if near_empty else Color(0.82, 0.57, 0.22, 0.94)
+	_depletion_status_fill.scale.x = maxf(0.02, ratio)
+	_depletion_status_fill.position.x = -_depletion_status_width * 0.5 + (_depletion_status_width * ratio * 0.5)
+
 func extract(per_tick: int) -> int:
 	if depleted or per_tick <= 0:
 		return 0
 	var got: int = min(max(0, per_tick), max(0, amount))
 	amount -= got
+	_update_depletion_visual()
 	if got > 0 and not depleted:
 		_gather_visual_cue()
 	if amount <= 0:
