@@ -285,15 +285,19 @@ func _command_icon_path(title: String, detail: String) -> String:
 	return FRAME_PORTRAIT
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}) -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "") -> Button:
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var has_preview := not preview_definition.is_empty()
+	var effect_text := visible_effect.strip_edges()
+	var has_effect := not effect_text.is_empty()
 	var detail_text := detail + ("\n" + disabled_reason if not disabled_reason.is_empty() else "")
+	if has_effect:
+		detail_text += "\nEffect: " + effect_text
 	# Production/research cards do not have a portrait column. Use the same
 	# explicit text-column treatment as preview cards so the compact two-column
 	# grid can wrap long names and cost lines instead of clipping them.
 	var btn := _mk_button("" if has_preview else "", 12 if has_preview else 13)
-	btn.custom_minimum_size = Vector2(174, 72 if has_preview else 74)
+	btn.custom_minimum_size = Vector2(174, 72 if has_preview else (104 if has_effect else 74))
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
@@ -334,8 +338,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(7, 7)
-		text_col.size = Vector2(160, 60)
-		text_col.custom_minimum_size = Vector2(160, 60)
+		var text_height := 88 if has_effect else 60
+		text_col.size = Vector2(160, text_height)
+		text_col.custom_minimum_size = Vector2(160, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.48, 0.47, 0.43, 0.9) if state == "LOCKED" else FONT_COLOR
@@ -1484,7 +1489,7 @@ func _build_building_card(b) -> void:
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not ready_to_research else "READY")
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not ready_to_research else "READY", {}, str(tdef.get("desc", "")))
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
