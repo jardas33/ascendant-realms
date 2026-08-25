@@ -285,19 +285,22 @@ func _command_icon_path(title: String, detail: String) -> String:
 	return FRAME_PORTRAIT
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "") -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect") -> Button:
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var has_preview := not preview_definition.is_empty()
 	var effect_text := visible_effect.strip_edges()
 	var has_effect := not effect_text.is_empty()
 	var detail_text := detail + ("\n" + disabled_reason if not disabled_reason.is_empty() else "")
 	if has_effect:
-		detail_text += "\nEffect: " + effect_text
+		detail_text += "\n" + visible_effect_prefix + ": " + effect_text
 	# Production/research cards do not have a portrait column. Use the same
 	# explicit text-column treatment as preview cards so the compact two-column
 	# grid can wrap long names and cost lines instead of clipping them.
 	var btn := _mk_button("" if has_preview else "", 12 if has_preview else 13)
-	btn.custom_minimum_size = Vector2(174, 72 if has_preview else (104 if has_effect else 74))
+	var card_height := 72 if has_preview else 74
+	if has_effect:
+		card_height = 104
+	btn.custom_minimum_size = Vector2(174, card_height)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
@@ -321,8 +324,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# ellipsize even when the canonical resource names were short enough.
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(58, 7)
-		text_col.size = Vector2(108, 58)
-		text_col.custom_minimum_size = Vector2(108, 58)
+		var preview_text_height := 88 if has_effect else 58
+		text_col.size = Vector2(108, preview_text_height)
+		text_col.custom_minimum_size = Vector2(108, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_label := _mk_label(title, 12)
@@ -1390,7 +1394,7 @@ func _build_worker_card() -> void:
 		# canonical resource name/amount but dropping the redundant "Cost:" prefix
 		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
 		# without changing resource definitions or the command-card geometry.
-		var btn := _mk_command_button(str(bdef.get("name", bid)), _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef)
+		var btn := _mk_command_button(str(bdef.get("name", bid)), _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef, str(bdef.get("desc", "")), "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
