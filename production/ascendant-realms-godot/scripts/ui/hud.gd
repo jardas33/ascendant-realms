@@ -70,6 +70,7 @@ var _single_economy_label: Label = null
 var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
+var _production_status_label: Label = null
 var _watched_building = null           # building whose production we listen to
 
 # --- alerts ---
@@ -874,6 +875,7 @@ func _reset_selection_widgets() -> void:
 	_ability_widgets.clear()
 	_multi_bars.clear()
 	_queue_container = null
+	_production_status_label = null
 	if is_instance_valid(_watched_building) and _watched_building.production_updated.is_connected(_on_production_updated):
 		_watched_building.production_updated.disconnect(_on_production_updated)
 	_watched_building = null
@@ -1198,6 +1200,10 @@ func _build_single_building(b) -> void:
 		queue_row.add_theme_constant_override("separation", 4)
 		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		queue_row.add_child(_mk_label("Queue", 11, Color(0.8, 0.78, 0.7)))
+		_production_status_label = _mk_label("Idle", 11, Color(0.95, 0.82, 0.42))
+		_production_status_label.custom_minimum_size = Vector2(108, 20)
+		_production_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		queue_row.add_child(_production_status_label)
 		queue_row.add_child(_queue_container)
 		identity_info.add_child(queue_row)
 		# watch production updates
@@ -1225,12 +1231,28 @@ func _queue_slot_label(display_name: String) -> String:
 
 
 func _refresh_queue() -> void:
-	if not is_instance_valid(_queue_container):
+	if not is_instance_valid(_queue_container) or not is_instance_valid(_production_status_label):
 		return
 	_clear_children(_queue_container)
 	var b = _watched_building
 	if not is_instance_valid(b):
 		return
+	if b.queue.is_empty():
+		_production_status_label.text = "Idle"
+		return
+	var active = b.queue[0]
+	var active_kind: String = active.get("kind", "unit")
+	var active_id: String = active.get("id", "")
+	var active_name := ""
+	if active_kind == "unit":
+		active_name = GameData.get_unit(active_id).get("name", active_id)
+	else:
+		active_name = GameData.get_tech(active_id).get("name", active_id)
+	var active_display := _queue_slot_label(active_name)
+	var active_total: float = float(active.get("total", 1.0))
+	var active_left: float = float(active.get("time_left", 0.0))
+	var active_prog := clampf(1.0 - active_left / maxf(0.01, active_total), 0.0, 1.0)
+	_production_status_label.text = "Active: %s %d%%" % [active_display, roundi(active_prog * 100.0)]
 	var idx := 0
 	for item in b.queue:
 		var slot := _mk_button("", 12)
