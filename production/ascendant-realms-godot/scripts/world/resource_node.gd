@@ -10,6 +10,10 @@ var max_amount := 1000
 var depleted := false
 var model_root: Node3D
 var footprint := 2.5
+const GATHER_CUE_EXPANSION := 1.18
+const GATHER_CUE_OUT_DURATION := 0.08
+const GATHER_CUE_RETURN_DURATION := 0.18
+var _gather_cue_tween: Tween
 
 func _m21_recorder():
 	if OS.get_environment("ASCENDANT_HP4_M21_DIAGNOSTICS") != "1":
@@ -297,12 +301,32 @@ func extract(per_tick: int) -> int:
 		return 0
 	var got: int = min(max(0, per_tick), max(0, amount))
 	amount -= got
+	if got > 0 and not depleted:
+		_gather_visual_cue()
 	if amount <= 0:
 		amount = 0
 		depleted = true
 		emit_signal("depleted_once", self)
 		_deplete_visual()
 	return got
+
+func _gather_visual_cue() -> void:
+	# Extraction already drives the authoritative amount change. Pulse only the
+	# existing non-colliding accent so the world visibly acknowledges successful
+	# gathering without changing the authored resource mesh or gameplay state.
+	if not is_instance_valid(model_root):
+		return
+	var accent := model_root.get_node_or_null("ResourceReadabilityAccent") as MeshInstance3D
+	if not is_instance_valid(accent):
+		return
+	if is_instance_valid(_gather_cue_tween):
+		_gather_cue_tween.kill()
+	accent.scale = Vector3.ONE
+	_gather_cue_tween = create_tween()
+	_gather_cue_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_gather_cue_tween.tween_property(accent, "scale", Vector3(GATHER_CUE_EXPANSION, 1.0, GATHER_CUE_EXPANSION), GATHER_CUE_OUT_DURATION)
+	_gather_cue_tween.set_ease(Tween.EASE_IN_OUT)
+	_gather_cue_tween.tween_property(accent, "scale", Vector3.ONE, GATHER_CUE_RETURN_DURATION)
 
 func _deplete_visual() -> void:
 	var t := create_tween()
