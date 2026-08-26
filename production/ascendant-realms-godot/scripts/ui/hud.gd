@@ -71,6 +71,7 @@ var _single_hp_text: Label = null
 var _single_mana_bar: ProgressBar = null
 var _single_stat_label: Label = null
 var _single_activity_label: Label = null
+var _single_target_label: Label = null
 var _single_economy_label: Label = null
 var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
@@ -998,6 +999,7 @@ func _reset_selection_widgets() -> void:
 	_single_mana_bar = null
 	_single_stat_label = null
 	_single_activity_label = null
+	_single_target_label = null
 	_single_economy_label = null
 	_ability_widgets.clear()
 	_multi_bars.clear()
@@ -1146,6 +1148,11 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	if not read_only:
 		_single_activity_label = _mk_label("", 14, Color(0.82, 0.86, 0.78))
 		info.add_child(_single_activity_label)
+		_single_target_label = _mk_label("", 14, Color(1.0, 0.74, 0.38))
+		_single_target_label.name = "CombatTargetLabel"
+		_single_target_label.custom_minimum_size = Vector2(0, 18)
+		_single_target_label.visible = false
+		info.add_child(_single_target_label)
 	if read_only:
 		var public_role := String(u.def.get("role", "unit")).capitalize()
 		_single_stat_label.text = "Hostile · %s" % public_role
@@ -1238,6 +1245,12 @@ func _refresh_single_live() -> void:
 				_compact_combat_stat(u.cur_dmg()), _compact_combat_stat(u.cur_armor()), u.cur_range(), role.capitalize()]
 	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
 		_single_activity_label.text = "Status: " + _unit_activity_label(u)
+	if is_instance_valid(_single_target_label):
+		var target = u.get("_target") if u is Unit else null
+		var target_valid: bool = u is Unit and not _single_read_only and int(u.state) == Unit.State.ATTACKING \
+			and is_instance_valid(target) and not target.is_dead and int(target.team) != int(u.team)
+		_single_target_label.visible = target_valid
+		_single_target_label.text = "Target: %s" % String(target.def.get("name", "Unit")) if target_valid else ""
 	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_snapshot"):
 		_single_economy_label.text = _worker_cargo_text(u)
 	# ability cooldown / affordability visuals
