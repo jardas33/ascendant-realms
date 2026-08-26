@@ -429,7 +429,7 @@ func _select_same_type_on_screen(proto) -> void:
 	var vs := get_viewport().get_visible_rect().size
 	var screen := Rect2(Vector2.ZERO, vs)
 	for u in world.all_units():
-		if not is_instance_valid(u) or u.is_dead or u.team != player_team:
+		if not is_instance_valid(u) or u.is_dead or u.team != player_team or u._is_defeated_remnant():
 			continue
 		if u.unit_id == proto.unit_id:
 			var sp: Vector2 = camera.unproject_position(u.global_position)
