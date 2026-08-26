@@ -1232,6 +1232,8 @@ func _refresh_single_live() -> void:
 	if (u is Building and u.is_dead) or (u is Unit and u.is_dead and (not u.is_hero or _single_read_only)):
 		_rebuild_selection([])
 		return
+	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
+		_single_activity_label.text = "Status: " + _unit_activity_label(u)
 	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
 	if not unavailable_reason.is_empty():
 		for w in _ability_widgets:
@@ -1257,8 +1259,6 @@ func _refresh_single_live() -> void:
 			var role: String = u.def.get("role", "")
 			_single_stat_label.text = "DMG %s   ARM %s   RNG %.1f   %s" % [
 				_compact_combat_stat(u.cur_dmg()), _compact_combat_stat(u.cur_armor()), u.cur_range(), role.capitalize()]
-	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
-		_single_activity_label.text = "Status: " + _unit_activity_label(u)
 	if is_instance_valid(_single_target_label):
 		var target = u.get("_target") if u is Unit else null
 		var target_valid: bool = u is Unit and not _single_read_only and int(u.state) == Unit.State.ATTACKING \
@@ -1486,7 +1486,7 @@ func _unit_activity_label(u) -> String:
 	if not is_instance_valid(u) or u.is_dead:
 		return "Dead"
 	if u.has_method("_is_defeated_remnant") and u._is_defeated_remnant():
-		return "Idle"
+		return "Defeated"
 	match int(u.state):
 		Unit.State.MOVING:
 			return "Moving"
@@ -1652,7 +1652,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 
 	var has_military := false
 	for item in selection:
-		if item is Unit and not item.is_worker and not item.is_dead:
+		if item is Unit and not item.is_worker and not item.is_dead and not item._is_defeated_remnant():
 			has_military = true
 			break
 	if has_military:

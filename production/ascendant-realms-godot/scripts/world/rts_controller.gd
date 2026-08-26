@@ -65,6 +65,7 @@ const COMMAND_GUARD := "GUARD"
 var _last_cursor_intent := COMMAND_DEFAULT
 var _last_cursor_shape := Input.CURSOR_ARROW
 var _last_command_feedback: Dictionary = {"accepted": false, "intent": "", "feedback_type": ""}
+var _defeated_hero_selection_notified := false
 
 func setup(p_world, p_team: int) -> void:
 	world = p_world
@@ -472,14 +473,20 @@ func _clear_selection() -> void:
 func _clean_selection() -> void:
 	var valid := []
 	var changed := false
+	var has_defeated_hero := false
 	for u in selected:
 		if is_instance_valid(u) and not (("is_dead" in u) and u.is_dead) and not (u is Unit and u._is_defeated_remnant() and not u.is_hero):
 			valid.append(u)
+			if u is Unit and u.is_hero and u._is_defeated_remnant():
+				has_defeated_hero = true
 		else:
 			changed = true
 			if is_instance_valid(u) and u.has_method("set_selected"):
 				u.set_selected(false)
 	selected = valid
+	if has_defeated_hero != _defeated_hero_selection_notified:
+		_defeated_hero_selection_notified = has_defeated_hero
+		changed = true
 	if changed:
 		emit_signal("selection_changed", selected)
 
@@ -717,7 +724,7 @@ func issue_guard_unavailable() -> bool:
 func _selected_units() -> Array:
 	var out := []
 	for u in selected:
-		if is_instance_valid(u) and (u is Unit) and not u.is_dead:
+		if is_instance_valid(u) and (u is Unit) and not u.is_dead and not u._is_defeated_remnant():
 			out.append(u)
 	return out
 
