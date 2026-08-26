@@ -670,7 +670,7 @@ func _launch_attack() -> void:
 		commander.hero_ref.command_move(target, true)
 
 func _pick_attack_target() -> Vector3:
-	# attack nearest enemy building; fallback to player start
+	# Preserve the existing nearest built hostile Building priority.
 	var best := Vector3.ZERO
 	var best_d := INF
 	for b in world.all_buildings():
@@ -680,7 +680,24 @@ func _pick_attack_target() -> Vector3:
 		if d < best_d:
 			best_d = d
 			best = b.global_position
-	return best
+	if best != Vector3.ZERO:
+		return best
+	# Conquest still requires live Workers after the last hostile Building falls.
+	# Use the existing world unit query, Worker role flag, team hostility, and
+	# Commander defeat authority; no strategic military fallback is intended.
+	var worker_target := Vector3.ZERO
+	var worker_d := INF
+	for u in world.all_units():
+		if not is_instance_valid(u) or u.is_dead or not u.is_worker or u.team == commander.team:
+			continue
+		var worker_commander = world.commander_for_team(u.team)
+		if not is_instance_valid(worker_commander) or worker_commander.defeated:
+			continue
+		var d = _base_pos.distance_squared_to(u.global_position)
+		if d < worker_d:
+			worker_d = d
+			worker_target = u.global_position
+	return worker_target
 
 # --- capture --------------------------------------------------------------
 func _manage_capture() -> void:
