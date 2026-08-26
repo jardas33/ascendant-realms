@@ -85,6 +85,16 @@ var _alert_box: VBoxContainer = null
 var _gameover_layer: Control = null
 var _command_feedback_box: PanelContainer = null
 
+# Resource nodes are world landmarks rather than selectable entities. This
+# read-only tooltip reuses the RTS pointer raycast and deliberately ignores
+# mouse input so left-click selection and right-click gathering remain owned by
+# RTSController.
+var _resource_tooltip: PanelContainer = null
+var _resource_tooltip_label: Label = null
+var _hovered_resource = null
+var _resource_tooltip_accum := 0.0
+const RESOURCE_TOOLTIP_POLL_INTERVAL := 0.08
+
 # --- refresh cadence ---
 var _slow_accum := 0.0
 var _map_accum := 0.0
@@ -136,6 +146,7 @@ func setup(p_world, p_rts) -> void:
 	_build_minimap()
 	_build_selection_panel()
 	_build_command_panel()
+	_build_resource_tooltip()
 	_build_alert_feed()
 	_fit_to_viewport()
 
@@ -178,6 +189,67 @@ func _fit_to_viewport() -> void:
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -104.0
 		_menu_button.offset_right = -margin
+
+
+func _build_resource_tooltip() -> void:
+	_resource_tooltip = PanelContainer.new()
+	_resource_tooltip.name = "ResourceHoverTooltip"
+	_resource_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_resource_tooltip.visible = false
+	_resource_tooltip.custom_minimum_size = Vector2(188.0, 56.0)
+	_resource_tooltip.add_theme_stylebox_override("panel", _resource_tooltip_stylebox())
+	_resource_tooltip_label = _mk_label("", 15, Color(0.96, 0.91, 0.79))
+	_resource_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_resource_tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_resource_tooltip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_resource_tooltip_label.custom_minimum_size = Vector2(164.0, 44.0)
+	_resource_tooltip_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	_resource_tooltip.add_child(_resource_tooltip_label)
+	add_child(_resource_tooltip)
+
+
+func _resource_tooltip_stylebox() -> StyleBoxFlat:
+	var sb := _hud_stylebox()
+	sb.bg_color = Color(0.05, 0.06, 0.075, 0.96)
+	sb.border_color = Color(0.82, 0.65, 0.30, 0.98)
+	sb.set_content_margin_all(10.0)
+	return sb
+
+
+func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -> void:
+	if not is_instance_valid(_resource_tooltip) or not is_instance_valid(rts):
+		return
+	var hovered_control := get_viewport().gui_get_hovered_control()
+	if is_instance_valid(hovered_control):
+		_hovered_resource = null
+		_resource_tooltip.visible = false
+		return
+	var pointer := get_viewport().get_mouse_position()
+	if pointer_override.x >= 0.0 and pointer_override.y >= 0.0:
+		pointer = pointer_override
+	var hovered = rts.raycast_selection_at(pointer)
+	if not (hovered is ResourceNode) or not is_instance_valid(hovered) or bool(hovered.get("depleted")):
+		_hovered_resource = null
+		_resource_tooltip.visible = false
+		return
+	_hovered_resource = hovered
+	var kind := String(hovered.get("resource_kind")).capitalize()
+	var amount := maxi(0, int(hovered.get("amount")))
+	_resource_tooltip_label.text = "%s\n%d remaining" % [kind, amount]
+	_resource_tooltip.reset_size()
+	var viewport_size := get_viewport_rect().size
+	var tooltip_size := _resource_tooltip.size
+	var margin := Vector2(8.0, 8.0)
+	var offset := Vector2(16.0, 18.0)
+	var tooltip_pos := pointer + offset
+	if tooltip_pos.x + tooltip_size.x > viewport_size.x - margin.x:
+		tooltip_pos.x = pointer.x - tooltip_size.x - offset.x
+	if tooltip_pos.y + tooltip_size.y > viewport_size.y - margin.y:
+		tooltip_pos.y = pointer.y - tooltip_size.y - offset.y
+	_resource_tooltip.position = Vector2(
+		clampf(tooltip_pos.x, margin.x, maxf(margin.x, viewport_size.x - tooltip_size.x - margin.x)),
+		clampf(tooltip_pos.y, margin.y, maxf(margin.y, viewport_size.y - tooltip_size.y - margin.y)))
+	_resource_tooltip.visible = true
 
 
 func _connect_signals() -> void:
@@ -808,6 +880,11 @@ func _process(delta: float) -> void:
 		_map_accum = 0.0
 		if is_instance_valid(_minimap):
 			_minimap.queue_redraw()
+
+	_resource_tooltip_accum += delta
+	if _resource_tooltip_accum >= RESOURCE_TOOLTIP_POLL_INTERVAL:
+		_resource_tooltip_accum = 0.0
+		_update_resource_tooltip()
 
 	_slow_accum += delta
 	if _slow_accum >= 0.25:
