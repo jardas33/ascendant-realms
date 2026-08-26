@@ -473,7 +473,7 @@ func _clean_selection() -> void:
 	var valid := []
 	var changed := false
 	for u in selected:
-		if is_instance_valid(u) and not (("is_dead" in u) and u.is_dead) and not (u is Unit and u._is_defeated_remnant()):
+		if is_instance_valid(u) and not (("is_dead" in u) and u.is_dead) and not (u is Unit and u._is_defeated_remnant() and not u.is_hero):
 			valid.append(u)
 		else:
 			changed = true
