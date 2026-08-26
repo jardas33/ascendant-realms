@@ -929,6 +929,10 @@ func _reset_selection_widgets() -> void:
 
 
 func _on_selection_changed(units: Array) -> void:
+	# Hostile inspection is a read-only presentation state. A late selection
+	# refresh must not rebuild the player's actionable command card over it.
+	if is_instance_valid(_inspection_target):
+		return
 	_rebuild_selection(units)
 
 
@@ -1479,6 +1483,9 @@ func _build_command_panel() -> void:
 
 func _rebuild_command_card(single, selection: Array) -> void:
 	_clear_children(_cmd_body)
+	if is_instance_valid(_inspection_target):
+		_cmd_panel.visible = false
+		return
 	if not is_instance_valid(_commander):
 		_cmd_panel.visible = false
 		return
