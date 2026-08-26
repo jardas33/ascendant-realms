@@ -1070,9 +1070,15 @@ func _hero_unavailable_reason(u) -> String:
 
 func _refresh_single_live() -> void:
 	var u = _tracked_single
-	if not is_instance_valid(u):
+	if u == null:
 		return
-	var unavailable_reason := _hero_unavailable_reason(u) if bool(u.get("is_hero")) else ""
+	if not is_instance_valid(u):
+		_rebuild_selection([])
+		return
+	if (u is Building and u.is_dead) or (u is Unit and u.is_dead and not u.is_hero):
+		_rebuild_selection([])
+		return
+	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
 	if not unavailable_reason.is_empty():
 		for w in _ability_widgets:
 			var unavailable_button: Button = w["button"]
