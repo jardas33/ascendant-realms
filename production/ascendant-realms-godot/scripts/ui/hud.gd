@@ -1267,6 +1267,7 @@ func _selection_type_summary(units: Array) -> String:
 		else:
 			label = label.trim_prefix("Highland ")
 			label = label.trim_prefix("Clan ")
+			label = label.trim_prefix("Stoneward ")
 		if not counts.has(label):
 			counts[label] = 0
 			order.append(label)
@@ -1315,6 +1316,11 @@ func _build_multi(units: Array) -> void:
 			portrait.custom_minimum_size = Vector2(54, 46)
 			cell.add_child(portrait)
 			portrait.configure_entity(u)
+			# EntityPortraitView restores its full-card minimum during _ready();
+			# defer the compact override so 8–20 member groups keep both rows
+			# inside the fixed selection panel at narrow and wide viewports.
+			portrait.set_deferred("custom_minimum_size", Vector2(54, 46))
+			portrait.set_deferred("size", Vector2(54, 46))
 		else:
 			cell.add_child(_mk_icon(FRAME_PORTRAIT, 46))
 		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + str(u.def.get("name", "Unit")), 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
