@@ -598,8 +598,12 @@ func _process_production(delta: float) -> void:
 			if not spawned:
 				commander.refund(udef.get("cost", {}), 1.0)
 		else:
-			commander.researching.erase(item["id"])
-			commander.apply_tech(item["id"])
+			var completed_tech_id: String = String(item["id"])
+			commander.researching.erase(completed_tech_id)
+			commander.apply_tech(completed_tech_id)
+			if world and team == world.player_team:
+				var completed_tech_name := String(GameData.get_tech(completed_tech_id).get("name", completed_tech_id))
+				world.emit_signal("alert", "Research complete: %s" % completed_tech_name, global_position)
 		queue.remove_at(0)
 		emit_signal("production_updated")
 	else:
