@@ -1272,6 +1272,7 @@ func _update_command_auras() -> void:
 
 func _check_victory() -> void:
 	# Conquest requires no HQ, no live rebuilding worker, and no live buildings.
+	var newly_defeated_opponents: Array = []
 	for cmd in commanders:
 		if cmd.defeated:
 			continue
@@ -1282,6 +1283,8 @@ func _check_victory() -> void:
 			cmd.defeated = true
 			cmd.defeat_reason = "conquest_rebuild_capability_eliminated"
 			_freeze_defeated_commander(cmd)
+			if cmd.team != player_team:
+				newly_defeated_opponents.append(cmd)
 			if cmd.team == player_team:
 				_end_game(false, "hq_destroyed" if no_hq else "no_live_buildings")
 				return
@@ -1293,6 +1296,16 @@ func _check_victory() -> void:
 			alive_teams += 1
 			if cmd.team == player_team:
 				player_alive = true
+	# The existing alert surface confirms an intermediate strategic defeat while
+	# another hostile Commander remains. The transition list makes this exactly
+	# once without adding a second victory-state registry or world scan.
+	if player_alive and alive_teams > 1:
+		for defeated_cmd in newly_defeated_opponents:
+			var race_def: Dictionary = GameData.get_race(String(defeated_cmd.race))
+			var faction_name := String(race_def.get("name", defeated_cmd.race)).strip_edges()
+			if faction_name.is_empty():
+				faction_name = String(defeated_cmd.race)
+			emit_signal("alert", "%s defeated" % faction_name, Vector3.ZERO)
 	if player_alive and alive_teams == 1:
 		for cmd in commanders:
 			if cmd.team != player_team and cmd.defeated and cmd.defeat_reason == "":
