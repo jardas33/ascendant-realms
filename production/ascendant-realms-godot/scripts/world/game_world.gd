@@ -1482,8 +1482,10 @@ func on_building_destroyed(building) -> void:
 		"kind": String(building.def.get("kind", "")), "is_hq": bool(building.def.get("is_hq", false)),
 		"source_id": source_id, "source_team": source_team, "destroyed_once": true,
 		"queue_cleared": building.queue.is_empty(), "collision_disabled": building.collision_layer == 0})
-	if building.team == player_team:
-		emit_signal("alert", "You lost a %s!" % building.def.get("name", "building"), building.global_position)
+	# Only a completed friendly structure is a strategic loss. Construction sites
+	# are transient and already have their own teardown/transaction semantics.
+	if building.team == player_team and building.is_built:
+		emit_signal("alert", "Building lost: %s" % building.def.get("name", "building"), building.global_position)
 
 # --------------------------------------------------------------------------
 # Hero abilities
