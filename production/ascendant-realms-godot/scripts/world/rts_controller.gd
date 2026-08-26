@@ -799,7 +799,7 @@ func _select_army() -> void:
 	_set_inspection_target(null)
 	_clear_selection()
 	for u in world.commanders[player_team].units:
-		if is_instance_valid(u) and not u.is_dead and not u.is_worker:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u._is_defeated_remnant():
 			_add_to_selection(u)
 	emit_signal("selection_changed", selected)
 
