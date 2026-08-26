@@ -169,7 +169,10 @@ func _fit_to_viewport() -> void:
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 	var margin := 12.0
-	var selection_height := minf(SELECTION_PANEL_HEIGHT, maxf(156.0, viewport_size.y - margin * 2.0))
+	var requested_selection_height := SELECTION_PANEL_HEIGHT
+	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
+		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
+	var selection_height := minf(requested_selection_height, maxf(156.0, viewport_size.y - margin * 2.0))
 	var command_height := minf(360.0, maxf(220.0, viewport_size.y - margin * 2.0))
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
@@ -1024,6 +1027,8 @@ func _on_inspection_changed(target) -> void:
 func _rebuild_selection(sel: Array) -> void:
 	_reset_selection_widgets()
 	_clear_children(_sel_body)
+	if is_instance_valid(_sel_panel):
+		_sel_panel.remove_meta("multi_selection_height")
 
 	# filter to valid
 	var valid := []
@@ -1279,6 +1284,13 @@ func _selection_type_summary(units: Array) -> String:
 
 
 func _build_multi(units: Array) -> void:
+	var displayed_count := mini(units.size(), 24)
+	var row_count := ceili(float(displayed_count) / 6.0)
+	# Keep the existing six-column card layout, but let dense selections grow
+	# their anchored panel enough to show the complete 3–4 row composition.
+	if is_instance_valid(_sel_panel) and row_count > 2:
+		_sel_panel.set_meta("multi_selection_height", 34.0 + float(row_count) * 72.0)
+		_fit_to_viewport()
 	var selected_label := _mk_label("Group · %d units  •  %s" % [units.size(), _selection_type_summary(units)], 12, Color(0.95, 0.85, 0.55))
 	selected_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	selected_label.offset_left = 8
