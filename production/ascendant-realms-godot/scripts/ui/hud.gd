@@ -1410,7 +1410,8 @@ func _refresh_queue() -> void:
 	var active_total: float = float(active.get("total", 1.0))
 	var active_left: float = float(active.get("time_left", 0.0))
 	var active_prog := clampf(1.0 - active_left / maxf(0.01, active_total), 0.0, 1.0)
-	_production_status_label.text = "Active: %s %d%%" % [active_display, roundi(active_prog * 100.0)]
+	var active_verb := "Training" if active_kind == "unit" else "Researching"
+	_production_status_label.text = "%s: %s %d%%" % [active_verb, active_display, roundi(active_prog * 100.0)]
 	var idx := 0
 	for item in b.queue:
 		var slot := _mk_button("", 12)
