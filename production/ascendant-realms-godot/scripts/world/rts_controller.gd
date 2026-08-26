@@ -48,6 +48,8 @@ var _ghost_identity_tint := Color(0.58, 0.42, 0.25, 0.52)
 
 # transient attack-move destination targeting mode
 var _attack_move_mode := false
+# transient patrol destination targeting mode
+var _patrol_mode := false
 
 # commands
 var _last_click_time := 0.0
@@ -162,7 +164,7 @@ func _apply_cursor_intent(intent: String) -> void:
 	match intent:
 		COMMAND_MOVE:
 			shape = Input.CURSOR_MOVE
-		COMMAND_ATTACK, COMMAND_RALLY, COMMAND_ATTACK_MOVE:
+		COMMAND_ATTACK, COMMAND_RALLY, COMMAND_ATTACK_MOVE, COMMAND_PATROL:
 			shape = Input.CURSOR_CROSS
 		COMMAND_GATHER:
 			shape = Input.CURSOR_POINTING_HAND
@@ -289,6 +291,12 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 					issue_attack_move_destination(destination)
 				else:
 					cancel_attack_move_mode()
+			elif _patrol_mode:
+				var patrol_destination = _raycast_ground()
+				if patrol_destination != null:
+					issue_patrol_destination(patrol_destination)
+				else:
+					cancel_patrol_mode()
 			else:
 				_dragging = true
 				_drag_start = event.position
@@ -302,14 +310,20 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			cancel_build_mode()
 		elif _attack_move_mode:
 			cancel_attack_move_mode()
+		elif _patrol_mode:
+			cancel_patrol_mode()
 		else:
 			_issue_context_command(event.shift_pressed)
 
 func _handle_key(event: InputEventKey) -> void:
 	var kc := event.keycode
-	if kc == KEY_ESCAPE and _attack_move_mode:
-		cancel_attack_move_mode()
-		return
+	if kc == KEY_ESCAPE:
+		if _attack_move_mode:
+			cancel_attack_move_mode()
+			return
+		if _patrol_mode:
+			cancel_patrol_mode()
+			return
 	if event.ctrl_pressed and kc >= KEY_1 and kc <= KEY_5:
 		_assign_group(kc - KEY_1 + 1)
 		return
@@ -363,6 +377,7 @@ func _finish_drag_selection(additive: bool) -> void:
 
 func _single_click_select(additive: bool) -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	var hit = _raycast_object()
 	_apply_single_click_target(hit, additive)
 
@@ -481,6 +496,7 @@ func _remove_from_selection(u) -> void:
 
 func _clear_selection() -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	for u in selected:
 		if is_instance_valid(u):
 			u.set_selected(false)
@@ -500,6 +516,9 @@ func _clean_selection() -> void:
 			if is_instance_valid(u) and u.has_method("set_selected"):
 				u.set_selected(false)
 	selected = valid
+	if (_attack_move_mode or _patrol_mode) and _selected_units().is_empty():
+		_attack_move_mode = false
+		_patrol_mode = false
 	if has_defeated_hero != _defeated_hero_selection_notified:
 		_defeated_hero_selection_notified = has_defeated_hero
 		changed = true
@@ -515,6 +534,8 @@ func classify_command_intent(target = null, ground = null, ui_surface: bool = fa
 	_clean_selection()
 	if _attack_move_mode:
 		return COMMAND_ATTACK_MOVE if ground != null else COMMAND_INVALID
+	if _patrol_mode:
+		return COMMAND_PATROL if ground != null else COMMAND_INVALID
 	if _build_id != "":
 		return COMMAND_BUILD_VALID if _build_valid else COMMAND_INVALID
 	if selected.is_empty():
@@ -639,6 +660,8 @@ func _begin_attack_move() -> void:
 	if _attack_move_mode:
 		cancel_attack_move_mode()
 		return
+	if _patrol_mode:
+		cancel_patrol_mode()
 	if _selected_units().is_empty():
 		_record_command_feedback(false, COMMAND_ATTACK_MOVE, "REJECTED", null, Vector3.ZERO, "no_eligible_selection")
 		return
@@ -709,6 +732,7 @@ func _cmd_stop() -> void:
 
 func issue_stop() -> bool:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	var issued := false
 	for u in _selected_units():
 		u.command_stop()
@@ -722,6 +746,7 @@ func _cmd_hold() -> void:
 
 func issue_hold() -> bool:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	var issued := false
 	for u in _selected_units():
 		u.command_hold()
@@ -731,11 +756,21 @@ func issue_hold() -> bool:
 	return issued
 
 func _cmd_patrol_prompt() -> void:
-	var ground = _raycast_ground()
-	issue_patrol(ground)
+	_clean_selection()
+	if _patrol_mode:
+		cancel_patrol_mode()
+		return
+	if _attack_move_mode:
+		cancel_attack_move_mode()
+	if _selected_units().is_empty():
+		_record_command_feedback(false, COMMAND_PATROL, "REJECTED", null, Vector3.ZERO, "no_eligible_selection")
+		return
+	_patrol_mode = true
+	_update_command_cursor()
 
 func issue_patrol(ground) -> bool:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	if ground == null:
 		return false
 	var issued := false
@@ -746,11 +781,17 @@ func issue_patrol(ground) -> bool:
 		_emit_command_feedback(COMMAND_PATROL, "PATROL", ground, null)
 	return issued
 
+func issue_patrol_destination(ground) -> bool:
+	var issued := issue_patrol(ground)
+	cancel_patrol_mode()
+	return issued
+
 func _cmd_guard() -> void:
 	issue_guard_unavailable()
 
 func issue_guard_unavailable() -> bool:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	_record_command_feedback(false, COMMAND_GUARD, "UNAVAILABLE", null, Vector3.ZERO, "not_implemented")
 	return false
 
@@ -766,6 +807,7 @@ func _selected_units() -> Array:
 # --------------------------------------------------------------------------
 func _queue_ability(id: String) -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	if inspection_target != null:
 		return
 	var hero = _selected_hero()
@@ -827,6 +869,7 @@ func _emit_control_group_feedback(n: int, action: String, member_count: int) -> 
 
 func _select_idle_worker() -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	_set_inspection_target(null)
 	for u in world.commanders[player_team].units:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE and not u._is_defeated_remnant():
@@ -838,6 +881,7 @@ func _select_idle_worker() -> void:
 
 func _cycle_hero() -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	_set_inspection_target(null)
 	var hero = world.commanders[player_team].hero_ref
 	if is_instance_valid(hero) and not hero.is_dead and not hero._is_defeated_remnant():
@@ -848,6 +892,7 @@ func _cycle_hero() -> void:
 
 func _select_army() -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	_set_inspection_target(null)
 	_clear_selection()
 	for u in world.commanders[player_team].units:
@@ -860,6 +905,7 @@ func _select_army() -> void:
 # --------------------------------------------------------------------------
 func enter_build_mode(building_id: String) -> void:
 	cancel_attack_move_mode()
+	cancel_patrol_mode()
 	cancel_build_mode()
 	_build_id = building_id
 	var bdef := GameData.get_building(building_id)
@@ -965,8 +1011,15 @@ func cancel_attack_move_mode() -> void:
 	_attack_move_mode = false
 	_update_command_cursor()
 
+func cancel_patrol_mode() -> void:
+	_patrol_mode = false
+	_update_command_cursor()
+
 func get_attack_move_mode_snapshot() -> Dictionary:
 	return {"active": _attack_move_mode, "eligible_units": _selected_units().size() if _attack_move_mode else 0}
+
+func get_patrol_mode_snapshot() -> Dictionary:
+	return {"active": _patrol_mode, "eligible_units": _selected_units().size() if _patrol_mode else 0}
 
 func _update_build_ghost() -> void:
 	var g = _raycast_ground()
