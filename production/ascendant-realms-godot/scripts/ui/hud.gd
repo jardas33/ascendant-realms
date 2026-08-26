@@ -21,6 +21,7 @@ const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.08)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.96)
 const COMMAND_PANEL_WIDTH := 390.0
+const SELECTION_PANEL_HEIGHT := 220.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const PLAYER_ALERT_LIMIT := 1
 const DEBUG_REVIEW_ALERT_LIMIT := 4
@@ -69,6 +70,7 @@ var _single_hp_bar: ProgressBar = null
 var _single_hp_text: Label = null
 var _single_mana_bar: ProgressBar = null
 var _single_stat_label: Label = null
+var _single_activity_label: Label = null
 var _single_economy_label: Label = null
 var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
@@ -156,7 +158,7 @@ func _fit_to_viewport() -> void:
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 	var margin := 12.0
-	var selection_height := minf(186.0, maxf(156.0, viewport_size.y - margin * 2.0))
+	var selection_height := minf(SELECTION_PANEL_HEIGHT, maxf(156.0, viewport_size.y - margin * 2.0))
 	var command_height := minf(360.0, maxf(220.0, viewport_size.y - margin * 2.0))
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
@@ -879,7 +881,7 @@ func _on_idle_military_count(count: int) -> void:
 func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel()
 	_sel_panel.name = "SelectionPanel"
-	_sel_panel.custom_minimum_size = Vector2(480, 186)
+	_sel_panel.custom_minimum_size = Vector2(480, SELECTION_PANEL_HEIGHT)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	# center it: anchor middle-bottom
@@ -915,6 +917,7 @@ func _reset_selection_widgets() -> void:
 	_single_hp_text = null
 	_single_mana_bar = null
 	_single_stat_label = null
+	_single_activity_label = null
 	_single_economy_label = null
 	_ability_widgets.clear()
 	_multi_bars.clear()
@@ -1044,6 +1047,9 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 
 	_single_stat_label = _mk_label("", 15, Color(0.88, 0.85, 0.75))
 	info.add_child(_single_stat_label)
+	if not read_only:
+		_single_activity_label = _mk_label("", 14, Color(0.82, 0.86, 0.78))
+		info.add_child(_single_activity_label)
 	if read_only:
 		var public_role := String(u.def.get("role", "unit")).capitalize()
 		_single_stat_label.text = "Hostile · %s" % public_role
@@ -1138,6 +1144,8 @@ func _refresh_single_live() -> void:
 			var role: String = u.def.get("role", "")
 			_single_stat_label.text = "DMG %d   ARM %d   %s" % [
 				int(u.cur_dmg()), int(u.cur_armor()), role.capitalize()]
+	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
+		_single_activity_label.text = "Status: " + _unit_activity_label(u)
 	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_text"):
 		_single_economy_label.text = u.get_economy_text()
 	# ability cooldown / affordability visuals
@@ -1335,6 +1343,35 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		_refresh_queue()
 
 	_refresh_single_live()
+
+
+func _unit_activity_label(u) -> String:
+	if not is_instance_valid(u) or u.is_dead:
+		return "Dead"
+	if u.has_method("_is_defeated_remnant") and u._is_defeated_remnant():
+		return "Idle"
+	match int(u.state):
+		Unit.State.MOVING:
+			return "Moving"
+		Unit.State.ATTACK_MOVE:
+			return "Attack-Moving"
+		Unit.State.ATTACKING:
+			return "Attacking"
+		Unit.State.GATHERING:
+			var resource_kind := String(u.get("_desired_gather_kind")).capitalize()
+			return "Gathering %s" % resource_kind if not resource_kind.is_empty() else "Gathering"
+		Unit.State.RETURNING:
+			return "Returning Resources"
+		Unit.State.BUILDING:
+			return "Repairing" if bool(u.get("_repair_target")) else "Building"
+		Unit.State.HOLD:
+			return "Holding Position"
+		Unit.State.PATROL:
+			return "Patrolling"
+		Unit.State.FOLLOW:
+			return "Guarding"
+		_:
+			return "Idle"
 
 
 func _on_production_updated() -> void:
