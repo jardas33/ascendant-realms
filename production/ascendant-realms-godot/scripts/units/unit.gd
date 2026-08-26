@@ -886,6 +886,7 @@ func command_stop() -> void:
 	var before_state := state
 	var before_target = _target
 	_carry_hold = _carry > 0
+	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_gather_node = null
 	_pending_gather_node = null
