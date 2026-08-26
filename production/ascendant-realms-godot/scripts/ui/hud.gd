@@ -154,7 +154,7 @@ func _fit_to_viewport() -> void:
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 	var margin := 12.0
-	var selection_height := minf(156.0, maxf(128.0, viewport_size.y - margin * 2.0))
+	var selection_height := minf(186.0, maxf(156.0, viewport_size.y - margin * 2.0))
 	var command_height := minf(360.0, maxf(220.0, viewport_size.y - margin * 2.0))
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
@@ -875,7 +875,7 @@ func _on_idle_military_count(count: int) -> void:
 func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel()
 	_sel_panel.name = "SelectionPanel"
-	_sel_panel.custom_minimum_size = Vector2(480, 156)
+	_sel_panel.custom_minimum_size = Vector2(480, 186)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	# center it: anchor middle-bottom
@@ -885,7 +885,7 @@ func _build_selection_panel() -> void:
 	_sel_panel.anchor_bottom = 1.0
 	_sel_panel.offset_left = -240
 	_sel_panel.offset_right = 240
-	_sel_panel.offset_top = -168
+	_sel_panel.offset_top = -198
 	_sel_panel.offset_bottom = -12
 	add_child(_sel_panel)
 
@@ -1025,18 +1025,23 @@ func _build_single_unit(u) -> void:
 		var abilities: Dictionary = SkillDefs.get_abilities()
 		for id in u.abilities:
 			var ab: Dictionary = abilities.get(id, {})
-			var btn := _mk_button(str(ab.get("name", id)).left(1), 15)
-			btn.custom_minimum_size = Vector2(34, 30)
-			btn.tooltip_text = "%s\n%s\nMana: %d" % [ab.get("name", id), ab.get("desc", ""), int(ab.get("mana", 0))]
 			var cap_id := String(id)
+			var key_label := _ability_key_label(cap_id)
+			var button_label := key_label if not key_label.is_empty() else cap_id.left(2).to_upper()
+			var key_hint := "\nHotkey: " + key_label if not key_label.is_empty() else ""
+			var btn := _mk_button(button_label, 12)
+			btn.custom_minimum_size = Vector2(42, 40)
+			btn.tooltip_text = "%s\n%s\nMana: %d%s" % [ab.get("name", id), ab.get("desc", ""), int(ab.get("mana", 0)), key_hint]
 			var cap_u = u
 			btn.pressed.connect(func():
 				if is_instance_valid(cap_u) and not cap_u.is_dead and cap_u.has_method("cast_ability"):
 					cap_u.cast_ability(cap_id, cap_u.global_position))
 			ab_row.add_child(btn)
 			# cooldown overlay label
-			var cd_overlay := _mk_label("", 13, Color(1, 1, 1))
-			cd_overlay.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+			var cd_overlay := _mk_label("READY", 9, Color(1, 1, 1))
+			cd_overlay.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+			cd_overlay.offset_top = -17.0
+			cd_overlay.offset_bottom = -1.0
 			cd_overlay.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			cd_overlay.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			btn.add_child(cd_overlay)
@@ -1045,9 +1050,37 @@ func _build_single_unit(u) -> void:
 	_refresh_single_live()
 
 
+func _ability_key_label(id: String) -> String:
+	var hotkeys := {"rally": "Q", "slam": "W", "charge": "E", "bolt": "R"}
+	return String(hotkeys.get(id, ""))
+
+
+func _hero_unavailable_reason(u) -> String:
+	if not is_instance_valid(u):
+		return "UNAVAILABLE"
+	if bool(u.get("is_dead")):
+		return "DEAD"
+	if u.has_method("_is_defeated_remnant") and u._is_defeated_remnant():
+		return "DEFEATED"
+	var hero_commander = u.get("commander")
+	if is_instance_valid(hero_commander) and bool(hero_commander.get("defeated")):
+		return "DEFEATED"
+	return ""
+
+
 func _refresh_single_live() -> void:
 	var u = _tracked_single
-	if not is_instance_valid(u) or (("is_dead" in u) and u.is_dead):
+	if not is_instance_valid(u):
+		return
+	var unavailable_reason := _hero_unavailable_reason(u) if bool(u.get("is_hero")) else ""
+	if not unavailable_reason.is_empty():
+		for w in _ability_widgets:
+			var unavailable_button: Button = w["button"]
+			var unavailable_overlay: Label = w["overlay"]
+			if is_instance_valid(unavailable_button):
+				unavailable_button.disabled = true
+			if is_instance_valid(unavailable_overlay):
+				unavailable_overlay.text = unavailable_reason
 		return
 	if is_instance_valid(_single_hp_bar):
 		_single_hp_bar.value = clamp(u.get_hp_ratio(), 0.0, 1.0)
@@ -1077,11 +1110,11 @@ func _refresh_single_live() -> void:
 		if cd > 0.05:
 			btn.disabled = true
 			if is_instance_valid(overlay):
-				overlay.text = str(int(ceil(cd)))
+				overlay.text = "CD %d" % int(ceil(cd))
 		else:
 			btn.disabled = not mana_ok
 			if is_instance_valid(overlay):
-				overlay.text = ""
+				overlay.text = "READY" if mana_ok else "MANA"
 
 
 func _selection_type_summary(units: Array) -> String:
