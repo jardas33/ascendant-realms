@@ -789,7 +789,7 @@ func _select_idle_worker() -> void:
 func _cycle_hero() -> void:
 	_set_inspection_target(null)
 	var hero = world.commanders[player_team].hero_ref
-	if is_instance_valid(hero) and not hero.is_dead:
+	if is_instance_valid(hero) and not hero.is_dead and not hero._is_defeated_remnant():
 		_clear_selection()
 		_add_to_selection(hero)
 		focus_on(hero.global_position)
