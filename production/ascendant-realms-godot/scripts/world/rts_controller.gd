@@ -336,7 +336,7 @@ func _finish_drag_selection(additive: bool) -> void:
 	if not additive:
 		_clear_selection()
 	for u in world.all_units():
-		if not is_instance_valid(u) or u.is_dead or u.team != player_team:
+		if not is_instance_valid(u) or u.is_dead or u.team != player_team or u._is_defeated_remnant():
 			continue
 		var sp: Vector2 = camera.unproject_position(u.global_position + Vector3.UP)
 		if rect.has_point(sp) and not camera.is_position_behind(u.global_position):
