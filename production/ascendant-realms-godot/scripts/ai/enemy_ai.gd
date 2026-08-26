@@ -674,7 +674,7 @@ func _pick_attack_target() -> Vector3:
 	var best := Vector3.ZERO
 	var best_d := INF
 	for b in world.all_buildings():
-		if not is_instance_valid(b) or b.is_dead or b.team == commander.team:
+		if not is_instance_valid(b) or b.is_dead or not b.is_built or b.team == commander.team:
 			continue
 		var d = _base_pos.distance_squared_to(b.global_position)
 		if d < best_d:
