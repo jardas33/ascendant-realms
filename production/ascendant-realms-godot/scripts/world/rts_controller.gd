@@ -759,7 +759,7 @@ func _recall_group(n: int) -> void:
 	_set_inspection_target(null)
 	_clear_selection()
 	for u in _groups[n]:
-		if is_instance_valid(u) and not u.is_dead:
+		if is_instance_valid(u) and not u.is_dead and not u._is_defeated_remnant():
 			_add_to_selection(u)
 	emit_signal("selection_changed", selected)
 	# center camera on group
