@@ -44,6 +44,7 @@ var _body_font: Font = null
 # --- top bar labels ---
 var _res_labels := {}                  # kind -> Label
 var _pop_label: Label = null
+var _opponent_count_label: Label = null
 var _idle_worker_label: Label = null
 var _idle_military_label: Label = null
 var _tier_label: Label = null
@@ -156,6 +157,7 @@ func setup(p_world, p_rts) -> void:
 		_on_resources_changed(_commander.resources)
 		_on_pop_changed(_commander.pop_used, _commander.pop_cap)
 		_on_tier_changed(_commander.tier)
+		_refresh_opponent_count()
 	_rebuild_selection([])
 	_last_viewport_size = get_viewport_rect().size
 	_m20_end(stage)
@@ -547,6 +549,15 @@ func _build_top_bar() -> void:
 	pop_cell.add_child(_pop_label)
 	row.add_child(pop_cell)
 
+	# Strategic opposition remains visible after transient defeat alerts expire.
+	# This reads only the authoritative Commander roster and stays subordinate to
+	# the existing resource/population status language.
+	_opponent_count_label = _mk_label("Opponents 0", 16, Color(0.82, 0.84, 0.78))
+	_opponent_count_label.name = "OpponentCountLabel"
+	_opponent_count_label.custom_minimum_size = Vector2(100, 0)
+	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(_opponent_count_label)
+
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
@@ -598,6 +609,17 @@ func _on_pop_changed(used: int, cap: int) -> void:
 func _on_tier_changed(tier: int) -> void:
 	if is_instance_valid(_tier_label):
 		_tier_label.text = TIER_NAMES.get(tier, "Age %d" % tier)
+
+
+func _refresh_opponent_count() -> void:
+	if not is_instance_valid(_opponent_count_label) or not is_instance_valid(world):
+		return
+	var count := 0
+	for i in range(1, world.commanders.size()):
+		var cmd = world.commanders[i]
+		if is_instance_valid(cmd) and not cmd.defeated:
+			count += 1
+	_opponent_count_label.text = "Opponents %d" % count
 
 
 # ---------------------------------------------------------------------------
@@ -1973,6 +1995,7 @@ func _build_alert_feed() -> void:
 
 
 func _on_alert(message: String, _pos: Vector3) -> void:
+	_refresh_opponent_count()
 	_push_alert(message, Color(0.95, 0.9, 0.75))
 
 
