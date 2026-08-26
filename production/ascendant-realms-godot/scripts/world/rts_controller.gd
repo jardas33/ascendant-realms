@@ -779,7 +779,7 @@ func _emit_control_group_feedback(n: int, action: String, member_count: int) -> 
 func _select_idle_worker() -> void:
 	_set_inspection_target(null)
 	for u in world.commanders[player_team].units:
-		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE:
+		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE and not u._is_defeated_remnant():
 			_clear_selection()
 			_add_to_selection(u)
 			focus_on(u.global_position)
