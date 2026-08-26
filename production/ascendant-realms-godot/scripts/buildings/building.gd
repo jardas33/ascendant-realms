@@ -505,6 +505,8 @@ func _complete_build() -> void:
 			commander.tier = int(def["tier_unlock"])
 	if world:
 		world.on_building_completed(self)
+		if team == world.player_team:
+			world.emit_signal("alert", "Building ready: %s" % String(def.get("name", building_id)), global_position)
 
 func _play_build_completion_cue() -> void:
 	# The construction stage and progress bar disappear at completion. A short
