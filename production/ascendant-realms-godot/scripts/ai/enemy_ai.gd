@@ -419,10 +419,13 @@ func _easy_army() -> Array:
 	return out
 
 func _find_player_target() -> Vector3:
+	var player_commander = null
 	if world.commanders.size() > 0:
+		player_commander = world.commanders[0]
+	if is_instance_valid(player_commander) and not player_commander.defeated:
 		var fallback := Vector3.ZERO
-		for b in world.commanders[0].buildings:
-			if not is_instance_valid(b) or b.is_dead:
+		for b in player_commander.buildings:
+			if not is_instance_valid(b) or b.is_dead or not b.is_built:
 				continue
 			if fallback == Vector3.ZERO:
 				fallback = b.global_position
@@ -430,6 +433,15 @@ func _find_player_target() -> Vector3:
 				return b.global_position
 		if fallback != Vector3.ZERO:
 			return fallback
+	# Easy keeps its current building/HQ priority, but must still be able to
+	# deliberately hunt a live hostile Worker after buildings are exhausted.
+	for u in world.all_units():
+		if not is_instance_valid(u) or u.is_dead or not u.is_worker or u.team == commander.team:
+			continue
+		var worker_commander = world.commander_for_team(u.team)
+		if not is_instance_valid(worker_commander) or worker_commander.defeated:
+			continue
+		return u.global_position
 	return Vector3.ZERO
 
 func _vec_payload(pos: Vector3) -> Dictionary:
