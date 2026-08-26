@@ -86,10 +86,9 @@ var _alert_box: VBoxContainer = null
 var _gameover_layer: Control = null
 var _command_feedback_box: PanelContainer = null
 
-# Resource nodes are world landmarks rather than selectable entities. This
-# read-only tooltip reuses the RTS pointer raycast and deliberately ignores
-# mouse input so left-click selection and right-click gathering remain owned by
-# RTSController.
+# This read-only hover tooltip reuses the RTS pointer raycast for public
+# battlefield identity. It deliberately ignores mouse input so left-click
+# selection and right-click commands remain owned by RTSController.
 var _resource_tooltip: PanelContainer = null
 var _resource_tooltip_label: Label = null
 var _hovered_resource = null
@@ -232,14 +231,29 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 	if pointer_override.x >= 0.0 and pointer_override.y >= 0.0:
 		pointer = pointer_override
 	var hovered = rts.raycast_selection_at(pointer)
-	if not (hovered is ResourceNode) or not is_instance_valid(hovered) or bool(hovered.get("depleted")):
+	if not is_instance_valid(hovered):
 		_hovered_resource = null
 		_resource_tooltip.visible = false
 		return
-	_hovered_resource = hovered
-	var kind := String(hovered.get("resource_kind")).capitalize()
-	var amount := maxi(0, int(hovered.get("amount")))
-	_resource_tooltip_label.text = "%s\n%d remaining" % [kind, amount]
+	if hovered is ResourceNode:
+		if bool(hovered.get("depleted")):
+			_hovered_resource = null
+			_resource_tooltip.visible = false
+			return
+		_hovered_resource = hovered
+		var kind := String(hovered.get("resource_kind")).capitalize()
+		var amount := maxi(0, int(hovered.get("amount")))
+		_resource_tooltip_label.text = "%s\n%d remaining" % [kind, amount]
+	elif hovered is Unit or hovered is Building:
+		_hovered_resource = null
+		var fallback_name := "Unit" if hovered is Unit else "Building"
+		var public_name := String(hovered.def.get("name", fallback_name))
+		var hostile: bool = "team" in hovered and int(hovered.team) != int(rts.player_team)
+		_resource_tooltip_label.text = "%s\nHostile" % public_name if hostile else public_name
+	else:
+		_hovered_resource = null
+		_resource_tooltip.visible = false
+		return
 	_resource_tooltip.reset_size()
 	var viewport_size := get_viewport_rect().size
 	var tooltip_size := _resource_tooltip.size
