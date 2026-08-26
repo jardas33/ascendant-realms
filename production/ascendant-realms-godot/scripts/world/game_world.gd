@@ -1459,6 +1459,17 @@ func on_building_destroyed(building) -> void:
 	if building.get_meta("v0436_destruction_recorded", false):
 		return
 	building.set_meta("v0436_destruction_recorded", true)
+	# A placed-but-unfinished Croft owns the legacy single-live-transaction guard.
+	# Destruction already owns the current no-refund accounting and site teardown;
+	# retire only the stale guard so a later valid player placement can proceed.
+	var tx_id := String(building.get_meta("v0431_transaction_id", ""))
+	if tx_id != "" and tx_id == _active_build_transaction:
+		for tx in build_transactions:
+			if String(tx.get("id", "")) == tx_id and not tx.get("completed", false):
+				tx["status"] = "destroyed"
+				tx["destroyed"] = true
+				_active_build_transaction = ""
+				break
 	var source_team := -1
 	var source_id := ""
 	if not building_damage_events.is_empty():
