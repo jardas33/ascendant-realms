@@ -25,6 +25,9 @@ const PRESENTATION_HEIGHT_MAX := 12.0
 const BUILD_COMPLETION_CUE_SCALE := 1.045
 const BUILD_COMPLETION_CUE_OUT_DURATION := 0.12
 const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
+const RALLY_MARKER_COLOR := Color(1.0, 0.78, 0.30)
+const RALLY_MARKER_RING_INNER_RADIUS := 0.62
+const RALLY_MARKER_RING_OUTER_RADIUS := 0.78
 
 func _debug_review_presentation() -> bool:
 	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
@@ -60,6 +63,7 @@ var _damage_status_label: Label3D
 var _damage_status_track: MeshInstance3D
 var _damage_status_fill: MeshInstance3D
 var _completion_cue_tween: Tween
+var _rally_marker: Node3D
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
 
@@ -87,6 +91,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	_build_damage_status_visual()
 	_build_selection_ring()
 	_build_tower_range_ring()
+	_build_rally_marker()
 	if prebuilt:
 		is_built = true
 		build_progress = 1.0
@@ -317,6 +322,74 @@ func set_selected(sel: bool) -> void:
 		selection_ring.visible = sel
 	if _tower_range_ring:
 		_tower_range_ring.visible = sel and is_built and not is_dead
+	_refresh_rally_marker(sel)
+
+func _is_rally_capable() -> bool:
+	return is_built and not is_dead and not Array(def.get("produces", [])).is_empty()
+
+func _build_rally_marker() -> void:
+	_rally_marker = Node3D.new()
+	_rally_marker.name = "RallyDestinationMarker"
+	_rally_marker.visible = false
+	add_child(_rally_marker)
+
+	var ring := MeshInstance3D.new()
+	ring.name = "RallyGroundReticle"
+	var torus := TorusMesh.new()
+	torus.inner_radius = RALLY_MARKER_RING_INNER_RADIUS
+	torus.outer_radius = RALLY_MARKER_RING_OUTER_RADIUS
+	torus.rings = 24
+	torus.ring_segments = 8
+	ring.mesh = torus
+	ring.position.y = 0.08
+	ring.material_override = _rally_marker_material()
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_rally_marker.add_child(ring)
+
+	var post := MeshInstance3D.new()
+	post.name = "RallyBeaconPost"
+	var post_mesh := CylinderMesh.new()
+	post_mesh.top_radius = 0.045
+	post_mesh.bottom_radius = 0.07
+	post_mesh.height = 0.9
+	post.mesh = post_mesh
+	post.position.y = 0.52
+	post.material_override = _rally_marker_material()
+	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_rally_marker.add_child(post)
+
+	for side in [-1.0, 1.0]:
+		var chevron := MeshInstance3D.new()
+		chevron.name = "RallyBeaconChevron%s" % ("Left" if side < 0.0 else "Right")
+		var chevron_mesh := BoxMesh.new()
+		chevron_mesh.size = Vector3(0.10, 0.34, 0.10)
+		chevron.mesh = chevron_mesh
+		chevron.position = Vector3(side * 0.11, 0.98, 0.0)
+		chevron.rotation.z = deg_to_rad(35.0 * side)
+		chevron.material_override = _rally_marker_material()
+		chevron.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_rally_marker.add_child(chevron)
+
+	_update_rally_marker_position()
+
+func _rally_marker_material() -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = RALLY_MARKER_COLOR
+	mat.emission_enabled = true
+	mat.emission = RALLY_MARKER_COLOR
+	mat.emission_energy_multiplier = 1.15
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	return mat
+
+func _update_rally_marker_position() -> void:
+	if is_instance_valid(_rally_marker):
+		_rally_marker.position = to_local(rally_point)
+
+func _refresh_rally_marker(selected: bool) -> void:
+	if not is_instance_valid(_rally_marker):
+		return
+	_update_rally_marker_position()
+	_rally_marker.visible = selected and _has_rally and _is_rally_capable()
 
 func _set_construction_visual(p: float) -> void:
 	# Keep the footprint visibly grounded while construction progresses. The old
@@ -570,6 +643,7 @@ func _spawn_unit(unit_id: String) -> bool:
 func set_rally(pos: Vector3) -> void:
 	rally_point = pos
 	_has_rally = true
+	_refresh_rally_marker(is_instance_valid(selection_ring) and selection_ring.visible)
 
 # --------------------------------------------------------------------------
 # Combat / tower / aura
