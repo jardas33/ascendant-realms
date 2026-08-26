@@ -998,6 +998,8 @@ func command_gather(node) -> void:
 func command_build(building) -> void:
 	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
 		return
+	if not (building is Building) or building.is_dead or building.is_built or building.team != team:
+		return
 	_reset_ordinary_move_settlement()
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -2102,6 +2104,11 @@ func _die(from = null) -> void:
 		return
 	is_dead = true
 	state = State.DEAD
+	# Retire construction ownership immediately. DEAD units no longer tick the
+	# BUILDING state, so leaving this reference live would retain a stale site
+	# target until the deferred death cleanup frees the unit.
+	_build_target = null
+	_repair_target = false
 	_r15_hit_flash_time = 0.0
 	_r15_damage_label_time = 0.0
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
