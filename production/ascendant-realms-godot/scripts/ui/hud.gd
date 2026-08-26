@@ -63,6 +63,8 @@ var _cmd_body: Control = null
 
 # live-tracked selection widgets (refreshed in _process)
 var _tracked_single = null             # currently shown single Unit/Building
+var _inspection_target = null           # hostile read-only inspection target
+var _single_read_only := false
 var _single_hp_bar: ProgressBar = null
 var _single_hp_text: Label = null
 var _single_mana_bar: ProgressBar = null
@@ -183,6 +185,8 @@ func _connect_signals() -> void:
 		_commander.tier_changed.connect(_on_tier_changed)
 	if rts:
 		rts.selection_changed.connect(_on_selection_changed)
+		if rts.has_signal("inspection_changed"):
+			rts.inspection_changed.connect(_on_inspection_changed)
 		if rts.has_signal("command_feedback_changed"):
 			rts.command_feedback_changed.connect(_on_command_feedback_changed)
 	if world:
@@ -906,6 +910,7 @@ func _clear_children(node: Node) -> void:
 
 func _reset_selection_widgets() -> void:
 	_tracked_single = null
+	_single_read_only = false
 	_single_hp_bar = null
 	_single_hp_text = null
 	_single_mana_bar = null
@@ -922,6 +927,14 @@ func _reset_selection_widgets() -> void:
 
 func _on_selection_changed(units: Array) -> void:
 	_rebuild_selection(units)
+
+
+func _on_inspection_changed(target) -> void:
+	_inspection_target = target
+	if is_instance_valid(target):
+		_rebuild_inspection(target)
+	else:
+		_rebuild_selection([])
 
 
 func _rebuild_selection(sel: Array) -> void:
@@ -944,13 +957,29 @@ func _rebuild_selection(sel: Array) -> void:
 	if valid.size() == 1:
 		var one = valid[0]
 		if one is Building:
-			_build_single_building(one)
+			_build_single_building(one, false)
 		else:
-			_build_single_unit(one)
+			_build_single_unit(one, false)
 		_rebuild_command_card(one, valid)
 	else:
 		_build_multi(valid)
 		_rebuild_command_card(null, valid)
+
+
+func _rebuild_inspection(target) -> void:
+	_reset_selection_widgets()
+	_clear_children(_sel_body)
+	if not is_instance_valid(target):
+		_sel_panel.visible = false
+		_rebuild_command_card(null, [])
+		return
+	_sel_panel.visible = true
+	if target is Building:
+		_build_single_building(target, true)
+	else:
+		_build_single_unit(target, true)
+	# Inspected enemies are never passed to the player command-card builders.
+	_rebuild_command_card(null, [])
 
 
 func _mk_bar(col: Color) -> ProgressBar:
@@ -971,8 +1000,9 @@ func _mk_bar(col: Color) -> ProgressBar:
 	return bar
 
 
-func _build_single_unit(u) -> void:
+func _build_single_unit(u, read_only: bool = false) -> void:
 	_tracked_single = u
+	_single_read_only = read_only
 	var row := HBoxContainer.new()
 	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	row.add_theme_constant_override("separation", 10)
@@ -998,7 +1028,9 @@ func _build_single_unit(u) -> void:
 	row.add_child(info)
 
 	var uname: String = u.def.get("name", "Unit")
-	info.add_child(_mk_label(uname, 18, Color(0.95, 0.85, 0.55)))
+	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
+	var identity_text := ("HOSTILE · " if read_only else "") + uname
+	info.add_child(_mk_label(identity_text, 18, identity_color))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -1006,19 +1038,22 @@ func _build_single_unit(u) -> void:
 	_single_hp_text = _mk_label("", 15)
 	info.add_child(_single_hp_text)
 
-	if u.is_hero and u.max_mana > 0.0:
+	if not read_only and u.is_hero and u.max_mana > 0.0:
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		info.add_child(_single_mana_bar)
 
 	_single_stat_label = _mk_label("", 15, Color(0.88, 0.85, 0.75))
 	info.add_child(_single_stat_label)
-	if u.is_worker and u.has_method("get_economy_text"):
+	if read_only:
+		var public_role := String(u.def.get("role", "unit")).capitalize()
+		_single_stat_label.text = "Hostile · %s" % public_role
+	if not read_only and u.is_worker and u.has_method("get_economy_text"):
 		_single_economy_label = _mk_label("", 14, Color(0.78, 0.9, 0.72))
 		_single_economy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(_single_economy_label)
 
 	# ability buttons for hero
-	if u.is_hero and not u.abilities.is_empty():
+	if not read_only and u.is_hero and not u.abilities.is_empty():
 		var ab_row := HBoxContainer.new()
 		ab_row.add_theme_constant_override("separation", 6)
 		info.add_child(ab_row)
@@ -1075,7 +1110,7 @@ func _refresh_single_live() -> void:
 	if not is_instance_valid(u):
 		_rebuild_selection([])
 		return
-	if (u is Building and u.is_dead) or (u is Unit and u.is_dead and not u.is_hero):
+	if (u is Building and u.is_dead) or (u is Unit and u.is_dead and (not u.is_hero or _single_read_only)):
 		_rebuild_selection([])
 		return
 	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
@@ -1095,7 +1130,9 @@ func _refresh_single_live() -> void:
 	if is_instance_valid(_single_mana_bar) and "max_mana" in u and u.max_mana > 0.0:
 		_single_mana_bar.value = clamp(u.mana / u.max_mana, 0.0, 1.0)
 	if is_instance_valid(_single_stat_label):
-		if u is Building:
+		if _single_read_only:
+			pass
+		elif u is Building:
 			pass
 		elif u.has_method("cur_dmg"):
 			var role: String = u.def.get("role", "")
@@ -1212,8 +1249,9 @@ func _refresh_multi_live() -> void:
 			bar.value = 0.0
 
 
-func _build_single_building(b) -> void:
+func _build_single_building(b, read_only: bool = false) -> void:
 	_tracked_single = b
+	_single_read_only = read_only
 	var col := VBoxContainer.new()
 	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	col.add_theme_constant_override("separation", 3)
@@ -1238,13 +1276,18 @@ func _build_single_building(b) -> void:
 	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	identity.add_child(identity_info)
-	identity_info.add_child(_mk_label(b.def.get("name", "Building"), 18, Color(0.95, 0.85, 0.55)))
+	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
+	var identity_text := ("HOSTILE · " if read_only else "") + String(b.def.get("name", "Building"))
+	identity_info.add_child(_mk_label(identity_text, 18, identity_color))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
 	identity_info.add_child(_single_hp_bar)
 	_single_hp_text = _mk_label("", 15)
 	identity_info.add_child(_single_hp_text)
+	if read_only:
+		_single_stat_label = _mk_label("Hostile · Built structure", 15, Color(0.88, 0.85, 0.75))
+		identity_info.add_child(_single_stat_label)
 
-	if not b.is_built:
+	if not read_only and not b.is_built:
 		var pb := _mk_bar(Color(0.85, 0.7, 0.3))
 		pb.value = clamp(b.build_progress, 0.0, 1.0)
 		var progress_label := _mk_label("Construction progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
@@ -1266,7 +1309,7 @@ func _build_single_building(b) -> void:
 					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0))
 
 	# production queue row (only meaningful when it produces)
-	if not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
+	if not read_only and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty()) \
 			or b.def.get("is_hq", false) or b.def.get("kind", "") == "main":
 		_queue_container = HBoxContainer.new()
 		_queue_container.add_theme_constant_override("separation", 4)

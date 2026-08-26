@@ -3,6 +3,7 @@ extends Node3D
 ## Attach as a child of game_world. Emits selection changes for the HUD.
 
 signal selection_changed(units: Array)
+signal inspection_changed(target)
 signal build_mode_changed(active: bool, building_id: String)
 signal command_feedback_changed(feedback: Dictionary)
 signal camera_moved
@@ -29,6 +30,7 @@ var _reduce_shake := false
 
 # selection
 var selected: Array = []
+var inspection_target = null
 var _dragging := false
 var _drag_start := Vector2.ZERO
 var _drag_now := Vector2.ZERO
@@ -129,6 +131,7 @@ func _build_select_box() -> void:
 # --------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	_update_camera(delta)
+	_maintain_inspection()
 	if _build_id != "":
 		_update_build_ghost()
 	if _dragging:
@@ -322,6 +325,7 @@ func _update_drag_box() -> void:
 
 func _finish_drag_selection(additive: bool) -> void:
 	select_box.visible = false
+	_set_inspection_target(null)
 	var drag_dist := (_drag_now - _drag_start).length()
 	if drag_dist < 8.0:
 		_single_click_select(additive)
@@ -343,8 +347,16 @@ func _finish_drag_selection(additive: bool) -> void:
 
 func _single_click_select(additive: bool) -> void:
 	var hit = _raycast_object()
+	_apply_single_click_target(hit, additive)
+
+# Shared single-target path keeps deterministic inspection proof on the same
+# authority as the real mouse click, without putting hostile entities into the
+# player command-selection array.
+func _apply_single_click_target(hit, additive: bool) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
+	var hostile_inspection = null
 	if hit and (hit is Unit) and hit.team == player_team:
+		_set_inspection_target(null)
 		# double-click: select all same type on screen
 		if _last_clicked == hit and now - _last_click_time < 0.35:
 			_select_same_type_on_screen(hit)
@@ -359,14 +371,58 @@ func _single_click_select(additive: bool) -> void:
 		_last_clicked = hit
 		_last_click_time = now
 	elif hit and (hit is Building) and hit.team == player_team:
+		_set_inspection_target(null)
 		if not additive:
 			_clear_selection()
 		_add_to_selection(hit)
 		Sfx.play("select", -10.0)
+	elif hit and _is_hostile_inspectable(hit):
+		_clear_selection()
+		hostile_inspection = hit
+		Sfx.play("select", -10.0)
 	else:
+		_set_inspection_target(null)
 		if not additive:
 			_clear_selection()
 	emit_signal("selection_changed", selected)
+	if hostile_inspection != null:
+		_set_inspection_target(hostile_inspection)
+
+func _is_hostile_inspectable(target) -> bool:
+	if not is_instance_valid(target) or not (target is Unit or target is Building):
+		return false
+	if not ("team" in target) or int(target.team) == player_team:
+		return false
+	if ("is_dead" in target) and target.is_dead:
+		return false
+	return not (target is Building) or target.is_built
+
+func _set_inspection_target(target) -> void:
+	if target == inspection_target:
+		return
+	if is_instance_valid(inspection_target):
+		_set_inspection_indicator(inspection_target, false)
+	inspection_target = target if _is_hostile_inspectable(target) else null
+	if is_instance_valid(inspection_target):
+		_set_inspection_indicator(inspection_target, true)
+	emit_signal("inspection_changed", inspection_target)
+
+func _set_inspection_indicator(target, active: bool) -> void:
+	if not is_instance_valid(target):
+		return
+	if "selection_ring" in target and is_instance_valid(target.selection_ring):
+		target.selection_ring.visible = active
+	if target is Unit and target.has_method("_update_health_bar"):
+		target._update_health_bar()
+	if target is Building and target.has_method("_refresh_rally_marker"):
+		# Rally information is owner-private; hostile inspection never reveals it.
+		target._refresh_rally_marker(false)
+
+func _maintain_inspection() -> void:
+	if inspection_target == null:
+		return
+	if not _is_hostile_inspectable(inspection_target):
+		_set_inspection_target(null)
 
 func _select_same_type_on_screen(proto) -> void:
 	_clear_selection()
@@ -661,6 +717,8 @@ func _selected_units() -> Array:
 # Abilities
 # --------------------------------------------------------------------------
 func _queue_ability(id: String) -> void:
+	if inspection_target != null:
+		return
 	var hero = _selected_hero()
 	if not hero:
 		hero = world.player_commander.hero_ref
@@ -694,6 +752,7 @@ func _assign_group(n: int) -> void:
 func _recall_group(n: int) -> void:
 	if not _groups.has(n):
 		return
+	_set_inspection_target(null)
 	_clear_selection()
 	for u in _groups[n]:
 		if is_instance_valid(u) and not u.is_dead:
@@ -704,6 +763,7 @@ func _recall_group(n: int) -> void:
 		focus_on(selected[0].global_position)
 
 func _select_idle_worker() -> void:
+	_set_inspection_target(null)
 	for u in world.commanders[player_team].units:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE:
 			_clear_selection()
@@ -713,6 +773,7 @@ func _select_idle_worker() -> void:
 			return
 
 func _cycle_hero() -> void:
+	_set_inspection_target(null)
 	var hero = world.commanders[player_team].hero_ref
 	if is_instance_valid(hero) and not hero.is_dead:
 		_clear_selection()
@@ -721,6 +782,7 @@ func _cycle_hero() -> void:
 		emit_signal("selection_changed", selected)
 
 func _select_army() -> void:
+	_set_inspection_target(null)
 	_clear_selection()
 	for u in world.commanders[player_team].units:
 		if is_instance_valid(u) and not u.is_dead and not u.is_worker:
