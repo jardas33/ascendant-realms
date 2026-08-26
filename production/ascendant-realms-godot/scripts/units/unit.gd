@@ -843,6 +843,9 @@ func cur_armor() -> float:
 			a += 3.0 if not commander.build_flags.get("fortify_boost", false) else 6.0
 	return a
 
+func cur_range() -> float:
+	return _engage_range()
+
 func get_hp_ratio() -> float:
 	return hp / max_hp if max_hp > 0 else 0.0
 

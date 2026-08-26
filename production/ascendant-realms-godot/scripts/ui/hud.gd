@@ -1234,8 +1234,8 @@ func _refresh_single_live() -> void:
 			pass
 		elif u.has_method("cur_dmg"):
 			var role: String = u.def.get("role", "")
-			_single_stat_label.text = "DMG %d   ARM %d   %s" % [
-				int(u.cur_dmg()), int(u.cur_armor()), role.capitalize()]
+			_single_stat_label.text = "DMG %s   ARM %s   RNG %.1f   %s" % [
+				_compact_combat_stat(u.cur_dmg()), _compact_combat_stat(u.cur_armor()), u.cur_range(), role.capitalize()]
 	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
 		_single_activity_label.text = "Status: " + _unit_activity_label(u)
 	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_snapshot"):
@@ -1281,6 +1281,11 @@ func _selection_type_summary(units: Array) -> String:
 	for label in order:
 		parts.append("%s x%d" % [label, int(counts[label])])
 	return " · ".join(parts)
+
+
+func _compact_combat_stat(value: float) -> String:
+	var rounded := round(value)
+	return str(int(rounded)) if is_equal_approx(value, rounded) else "%.1f" % value
 
 
 func _build_multi(units: Array) -> void:
