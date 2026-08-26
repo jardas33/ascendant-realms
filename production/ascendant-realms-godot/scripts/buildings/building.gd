@@ -597,6 +597,9 @@ func _process_production(delta: float) -> void:
 				commander.release_reserved_pop(udef)
 			if not spawned:
 				commander.refund(udef.get("cost", {}), 1.0)
+			elif world and team == world.player_team:
+				var spawned_unit_name := String(udef.get("name", item["id"]))
+				world.emit_signal("alert", "Unit ready: %s" % spawned_unit_name, global_position)
 		else:
 			var completed_tech_id: String = String(item["id"])
 			commander.researching.erase(completed_tech_id)

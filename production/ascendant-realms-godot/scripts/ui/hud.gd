@@ -1968,7 +1968,7 @@ func _push_alert(message: String, col: Color) -> void:
 	var l := _mk_label(message, 15, col)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(340, 0)
+	l.custom_minimum_size = Vector2(340, 24)
 	_alert_box.add_child(l)
 	var tw := l.create_tween()
 	tw.tween_interval(3.2)
