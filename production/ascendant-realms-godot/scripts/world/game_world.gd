@@ -43,6 +43,8 @@ var _aura_timer := 0.0
 var _slow_timer := 0.0
 var _battle_music := false
 var _combat_intensity := 0.0
+const BASE_ATTACK_ALERT_COOLDOWN_SEC := 6.0
+var _base_attack_alert_until_msec := 0
 var match_time := 0.0
 var kills_by_player := 0
 var combat_damage_events: Array = []
@@ -1398,8 +1400,12 @@ func on_building_damaged(building, from, hp_before: float = -1.0, final_damage: 
 		"damage_type": kind, "raw_damage": final_damage, "effective_damage": final_damage,
 		"final_damage": final_damage, "hp_before": hp_before, "hp_after": building.hp,
 		"killing_blow": building.hp <= 0.0, "timestamp": Time.get_ticks_msec()})
-	if building.team == player_team:
-		if randf() < 0.02:
+	# Strategic warning is presentation-only: require a known hostile damage
+	# source, then debounce the shared player-facing cue across all buildings.
+	if building.team == player_team and source_team >= 0 and source_team != player_team:
+		var now_msec := Time.get_ticks_msec()
+		if now_msec >= _base_attack_alert_until_msec:
+			_base_attack_alert_until_msec = now_msec + int(BASE_ATTACK_ALERT_COOLDOWN_SEC * 1000.0)
 			Sfx.play("under_attack", -6.0)
 			emit_signal("alert", "Your base is under attack!", building.global_position)
 
