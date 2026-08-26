@@ -56,6 +56,7 @@ var _attack_move_ordered := false
 var _attack_move_destination := Vector3.ZERO
 var _patrol_a := Vector3.ZERO
 var _patrol_b := Vector3.ZERO
+var _patrol_resume_after_combat := false
 var _follow_target = null
 var _hold_position := false
 var _stun := 0.0
@@ -855,6 +856,7 @@ func get_hp_ratio() -> float:
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead or _is_defeated_remnant():
 		return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
@@ -879,6 +881,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 
 func command_stop() -> void:
 	if is_dead or _is_defeated_remnant(): return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
@@ -915,6 +918,7 @@ func command_hold() -> void:
 func command_attack(tgt, r1j_order_id: String = "") -> void:
 	if _is_defeated_remnant() or not _can_attack_target(tgt):
 		return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
@@ -949,6 +953,8 @@ func _can_attack_target(tgt) -> bool:
 
 func command_patrol(pos: Vector3) -> void:
 	if is_dead or _is_defeated_remnant(): return
+	_patrol_resume_after_combat = true
+	_v0436_r1j_set_target(null, "command_cancellation")
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_patrol_a = global_position
@@ -958,6 +964,7 @@ func command_patrol(pos: Vector3) -> void:
 
 func command_guard(tgt) -> void:
 	if is_dead or _is_defeated_remnant() or not is_instance_valid(tgt): return
+	_patrol_resume_after_combat = false
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_follow_target = tgt
@@ -972,6 +979,7 @@ func command_gather(node) -> void:
 		if world and world.has_method("record_resource_command_rejection"):
 			world.record_resource_command_rejection(self, node, "depleted_or_unreachable")
 		return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
@@ -1000,6 +1008,7 @@ func command_build(building) -> void:
 		return
 	if not (building is Building) or building.is_dead or building.is_built or building.team != team:
 		return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -1015,6 +1024,7 @@ func command_repair(building) -> void:
 		return
 	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
 		return
+	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -1551,6 +1561,9 @@ func _state_attack(delta: float) -> void:
 			_move_target = _attack_move_destination
 			_set_agent_target(_attack_move_destination, "attack_move")
 			state = State.ATTACK_MOVE
+		elif _patrol_resume_after_combat:
+			state = State.PATROL
+			_set_agent_target(_patrol_b, "patrol")
 		else:
 			state = State.HOLD if _hold_position else State.IDLE
 		return
