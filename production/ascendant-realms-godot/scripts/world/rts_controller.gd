@@ -748,6 +748,10 @@ func _assign_group(n: int) -> void:
 	for u in _selected_units():
 		g.append(u)
 	_groups[n] = g
+	# Only acknowledge a real friendly group mutation. Empty selections (including
+	# hostile inspection) must never produce a false success confirmation.
+	if not g.is_empty():
+		_emit_control_group_feedback(n, "SET", g.size())
 
 func _recall_group(n: int) -> void:
 	if not _groups.has(n):
@@ -761,6 +765,16 @@ func _recall_group(n: int) -> void:
 	# center camera on group
 	if not selected.is_empty():
 		focus_on(selected[0].global_position)
+		_emit_control_group_feedback(n, "SELECTED", selected.size())
+
+func _emit_control_group_feedback(n: int, action: String, member_count: int) -> void:
+	command_feedback_changed.emit({
+		"accepted": true,
+		"intent": "CONTROL_GROUP",
+		"feedback_type": action,
+		"group_slot": n,
+		"member_count": member_count,
+	})
 
 func _select_idle_worker() -> void:
 	_set_inspection_target(null)

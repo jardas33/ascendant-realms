@@ -1833,6 +1833,13 @@ func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
 func _on_command_feedback_changed(feedback: Dictionary) -> void:
 	var intent := String(feedback.get("intent", ""))
 	var accepted := bool(feedback.get("accepted", false))
+	if intent == "CONTROL_GROUP":
+		var slot := int(feedback.get("group_slot", 0))
+		var member_count := int(feedback.get("member_count", 0))
+		var unit_word := "unit" if member_count == 1 else "units"
+		var action := "set" if String(feedback.get("feedback_type", "")) == "SET" else "selected"
+		_show_command_feedback("Group %d %s · %d %s" % [slot, action, member_count, unit_word], Color(0.65, 0.9, 1.0))
+		return
 	var labels := {
 		"MOVE": "Move order",
 		"ATTACK": "Attack order",
