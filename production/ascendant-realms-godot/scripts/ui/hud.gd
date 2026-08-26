@@ -1049,6 +1049,16 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		info.add_child(_single_mana_bar)
 
+	if not read_only and u.is_worker and u.has_method("get_economy_snapshot"):
+		info.add_theme_constant_override("separation", 0)
+		_single_economy_label = _mk_label("", 14, Color(0.78, 0.9, 0.72))
+		_single_economy_label.custom_minimum_size = Vector2(0, 18)
+		_single_economy_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		_single_economy_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_single_economy_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		_single_economy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(_single_economy_label)
+
 	_single_stat_label = _mk_label("", 15, Color(0.88, 0.85, 0.75))
 	info.add_child(_single_stat_label)
 	if not read_only:
@@ -1057,10 +1067,6 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	if read_only:
 		var public_role := String(u.def.get("role", "unit")).capitalize()
 		_single_stat_label.text = "Hostile · %s" % public_role
-	if not read_only and u.is_worker and u.has_method("get_economy_text"):
-		_single_economy_label = _mk_label("", 14, Color(0.78, 0.9, 0.72))
-		_single_economy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		info.add_child(_single_economy_label)
 
 	# ability buttons for hero
 	if not read_only and u.is_hero and not u.abilities.is_empty():
@@ -1150,8 +1156,8 @@ func _refresh_single_live() -> void:
 				int(u.cur_dmg()), int(u.cur_armor()), role.capitalize()]
 	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
 		_single_activity_label.text = "Status: " + _unit_activity_label(u)
-	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_text"):
-		_single_economy_label.text = u.get_economy_text()
+	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_snapshot"):
+		_single_economy_label.text = _worker_cargo_text(u)
 	# ability cooldown / affordability visuals
 	for w in _ability_widgets:
 		var btn: Button = w["button"]
@@ -1376,6 +1382,21 @@ func _unit_activity_label(u) -> String:
 			return "Guarding"
 		_:
 			return "Idle"
+
+
+func _worker_cargo_text(u) -> String:
+	# Read the live Worker economy snapshot; HUD owns only the player-facing
+	# wording and never maintains a parallel cargo value.
+	if not is_instance_valid(u) or not u.has_method("get_economy_snapshot"):
+		return "Cargo: Empty"
+	var snapshot: Dictionary = u.get_economy_snapshot()
+	var carried := int(snapshot.get("carry", 0))
+	if carried <= 0:
+		return "Cargo: Empty"
+	var kind := String(snapshot.get("carry_kind", "")).strip_edges()
+	if kind.is_empty() or kind == "None":
+		return "Cargo: %d" % carried
+	return "Cargo: %d %s" % [carried, kind]
 
 
 func _on_production_updated() -> void:
