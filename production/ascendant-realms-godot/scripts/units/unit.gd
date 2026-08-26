@@ -1093,6 +1093,11 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
 	if command_type != "":
 		_navigation_command_type = command_type
+	if agent:
+		# Attack waypoints are deliberately placed just inside the authored
+		# combat reach. The normal movement arrival tolerance would stop short
+		# of that waypoint and leave melee units permanently out of range.
+		agent.target_desired_distance = 0.05 if command_type == "attack" else ARRIVE_DIST
 	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= 0.1 and _navigation_last_command == _navigation_command_type
 	if same_request and not _navigation_target_pending and not _navigation_waypoints.is_empty():
 		return
