@@ -130,6 +130,7 @@ func _build_select_box() -> void:
 
 # --------------------------------------------------------------------------
 func _process(delta: float) -> void:
+	_clean_selection()
 	_update_camera(delta)
 	_maintain_inspection()
 	if _build_id != "":
@@ -470,10 +471,17 @@ func _clear_selection() -> void:
 
 func _clean_selection() -> void:
 	var valid := []
+	var changed := false
 	for u in selected:
-		if is_instance_valid(u) and not (("is_dead" in u) and u.is_dead):
+		if is_instance_valid(u) and not (("is_dead" in u) and u.is_dead) and not (u is Unit and u._is_defeated_remnant()):
 			valid.append(u)
+		else:
+			changed = true
+			if is_instance_valid(u) and u.has_method("set_selected"):
+				u.set_selected(false)
 	selected = valid
+	if changed:
+		emit_signal("selection_changed", selected)
 
 # --------------------------------------------------------------------------
 # Commands
