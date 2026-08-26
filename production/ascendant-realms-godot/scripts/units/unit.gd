@@ -2109,6 +2109,10 @@ func _die(from = null) -> void:
 	# target until the deferred death cleanup frees the unit.
 	_build_target = null
 	_repair_target = false
+	# Gathering has the same deferred-free boundary: a dead Worker must not keep
+	# advertising or retaining a ResourceNode target while its death cue plays.
+	_gather_node = null
+	_pending_gather_node = null
 	_r15_hit_flash_time = 0.0
 	_r15_damage_label_time = 0.0
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false

@@ -506,8 +506,8 @@ func classify_command_intent(target = null, ground = null, ui_surface: bool = fa
 	var units := _selected_units()
 	if units.is_empty():
 		return COMMAND_INVALID
-	if target is ResourceNode and _can_accept_gather(target, units):
-		return COMMAND_GATHER
+	if target is ResourceNode:
+		return COMMAND_GATHER if _can_accept_gather(target, units) else COMMAND_INVALID
 	if is_instance_valid(target) and ("team" in target):
 		if int(target.team) != player_team and _can_accept_attack_target(target, units):
 			return COMMAND_ATTACK
@@ -521,7 +521,7 @@ func _can_accept_gather(target, units: Array) -> bool:
 	if not is_instance_valid(target) or not (target is ResourceNode):
 		return false
 	for u in units:
-		if u.is_worker:
+		if u.is_worker and world and world.has_method("is_resource_command_valid") and world.is_resource_command_valid(target, u):
 			return true
 	return false
 
