@@ -130,6 +130,10 @@ var _navigation_waypoints: Array = []
 var _navigation_waypoint_index := 0
 var _navigation_last_requested := Vector3(INF, INF, INF)
 var _navigation_last_command := ""
+const ORDINARY_MOVE_SETTLE_WINDOW := 0.75
+const ORDINARY_MOVE_PROGRESS_THRESHOLD := 0.05
+var _ordinary_move_best_distance := INF
+var _ordinary_move_stalled_elapsed := 0.0
 var _boundary_recovery_active := false
 var _boundary_recovery_target := Vector3.ZERO
 var _boundary_resume_state := State.IDLE
@@ -848,6 +852,7 @@ func get_hp_ratio() -> float:
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead or _is_defeated_remnant():
 		return
+	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
 	_carry_hold = _carry > 0
@@ -871,6 +876,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 
 func command_stop() -> void:
 	if is_dead or _is_defeated_remnant(): return
+	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
 	_carry_hold = _carry > 0
@@ -906,6 +912,7 @@ func command_hold() -> void:
 func command_attack(tgt, r1j_order_id: String = "") -> void:
 	if _is_defeated_remnant() or not _can_attack_target(tgt):
 		return
+	_reset_ordinary_move_settlement()
 	var before_state := state
 	var before_target = _target
 	_hold_position = false
@@ -962,6 +969,7 @@ func command_gather(node) -> void:
 		if world and world.has_method("record_resource_command_rejection"):
 			world.record_resource_command_rejection(self, node, "depleted_or_unreachable")
 		return
+	_reset_ordinary_move_settlement()
 	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_build_target = null
@@ -987,6 +995,7 @@ func command_gather(node) -> void:
 func command_build(building) -> void:
 	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
 		return
+	_reset_ordinary_move_settlement()
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
@@ -1001,6 +1010,7 @@ func command_repair(building) -> void:
 		return
 	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
 		return
+	_reset_ordinary_move_settlement()
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
@@ -1304,12 +1314,16 @@ func _physics_process(delta: float) -> void:
 	if r1j_recorder:
 		r1j_recorder.record_unit_sample(self)
 	if world and not world.game_running:
+		_reset_ordinary_move_settlement()
 		velocity = Vector3.ZERO
 		return
 	if is_dead:
+		_reset_ordinary_move_settlement()
 		if is_instance_valid(_health_bar_root):
 			_health_bar_root.visible = false
 		return
+	if _is_defeated_remnant():
+		_reset_ordinary_move_settlement()
 	_update_r15_combat_presentation(delta)
 	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
 	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
@@ -1422,10 +1436,61 @@ func _state_move(delta: float, attack_move: bool) -> void:
 			_v0436_r1j_set_target(e, "auto_acquisition")
 			state = State.ATTACKING
 			return
-	if _move_along_path(delta):
+	var arrived := _move_along_path(delta)
+	if not attack_move and not arrived and _try_ordinary_move_settlement(delta):
+		return
+	if arrived:
+		_reset_ordinary_move_settlement()
 		_attack_move_ordered = false
 		_attack_move_destination = Vector3.ZERO
 		state = State.IDLE
+	elif attack_move:
+		_reset_ordinary_move_settlement()
+
+func _reset_ordinary_move_settlement() -> void:
+	_ordinary_move_best_distance = INF
+	_ordinary_move_stalled_elapsed = 0.0
+
+func _try_ordinary_move_settlement(delta: float) -> bool:
+	if state != State.MOVING or _navigation_command_type != "move" or not is_instance_valid(agent):
+		_reset_ordinary_move_settlement()
+		return false
+	var target: Vector3 = _navigation_effective_target
+	if not _finite_position(target):
+		_reset_ordinary_move_settlement()
+		return false
+	var distance := global_position.distance_to(target)
+	var settle_radius := ARRIVE_DIST + agent.radius
+	if distance > settle_radius:
+		_reset_ordinary_move_settlement()
+		return false
+	if _ordinary_move_best_distance == INF:
+		_ordinary_move_best_distance = distance
+		return false
+	if _ordinary_move_best_distance - distance >= ORDINARY_MOVE_PROGRESS_THRESHOLD:
+		_ordinary_move_best_distance = distance
+		_ordinary_move_stalled_elapsed = 0.0
+		return false
+	_ordinary_move_stalled_elapsed += delta
+	if _ordinary_move_stalled_elapsed < ORDINARY_MOVE_SETTLE_WINDOW:
+		return false
+	_navigation_waypoints.clear()
+	_navigation_waypoint_index = 0
+	_navigation_effective_target = global_position
+	_navigation_last_target = global_position
+	_navigation_target_pending = false
+	_navigation_retry_elapsed = 0.0
+	_navigation_invalid_consecutive = 0
+	_move_target = global_position
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
+	velocity = Vector3.ZERO
+	if agent:
+		agent.target_position = global_position
+		agent.set_velocity(Vector3.ZERO)
+	state = State.IDLE
+	_reset_ordinary_move_settlement()
+	return true
 
 func _state_patrol(delta: float) -> void:
 	var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
