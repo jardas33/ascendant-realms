@@ -46,6 +46,9 @@ var _build_valid := false
 var _ghost_surface_mats := []
 var _ghost_identity_tint := Color(0.58, 0.42, 0.25, 0.52)
 
+# transient attack-move destination targeting mode
+var _attack_move_mode := false
+
 # commands
 var _last_click_time := 0.0
 var _last_clicked = null
@@ -280,6 +283,12 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		if event.pressed:
 			if _build_id != "":
 				_try_place_building()
+			elif _attack_move_mode:
+				var destination = _raycast_ground()
+				if destination != null:
+					issue_attack_move_destination(destination)
+				else:
+					cancel_attack_move_mode()
 			else:
 				_dragging = true
 				_drag_start = event.position
@@ -291,11 +300,16 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		if _build_id != "":
 			cancel_build_mode()
+		elif _attack_move_mode:
+			cancel_attack_move_mode()
 		else:
 			_issue_context_command(event.shift_pressed)
 
 func _handle_key(event: InputEventKey) -> void:
 	var kc := event.keycode
+	if kc == KEY_ESCAPE and _attack_move_mode:
+		cancel_attack_move_mode()
+		return
 	if event.ctrl_pressed and kc >= KEY_1 and kc <= KEY_5:
 		_assign_group(kc - KEY_1 + 1)
 		return
@@ -348,6 +362,7 @@ func _finish_drag_selection(additive: bool) -> void:
 	emit_signal("selection_changed", selected)
 
 func _single_click_select(additive: bool) -> void:
+	cancel_attack_move_mode()
 	var hit = _raycast_object()
 	_apply_single_click_target(hit, additive)
 
@@ -465,6 +480,7 @@ func _remove_from_selection(u) -> void:
 		u.set_selected(false)
 
 func _clear_selection() -> void:
+	cancel_attack_move_mode()
 	for u in selected:
 		if is_instance_valid(u):
 			u.set_selected(false)
@@ -497,6 +513,8 @@ func classify_command_intent(target = null, ground = null, ui_surface: bool = fa
 	if ui_surface or world == null or not world.game_running:
 		return COMMAND_DEFAULT
 	_clean_selection()
+	if _attack_move_mode:
+		return COMMAND_ATTACK_MOVE if ground != null else COMMAND_INVALID
 	if _build_id != "":
 		return COMMAND_BUILD_VALID if _build_valid else COMMAND_INVALID
 	if selected.is_empty():
@@ -617,13 +635,23 @@ func _formation_move(units: Array, target: Vector3) -> void:
 		i += 1
 
 func _begin_attack_move() -> void:
-	var ground = _raycast_ground()
-	if ground != null:
-		issue_attack_move_destination(ground)
+	_clean_selection()
+	if _attack_move_mode:
+		cancel_attack_move_mode()
+		return
+	if _selected_units().is_empty():
+		_record_command_feedback(false, COMMAND_ATTACK_MOVE, "REJECTED", null, Vector3.ZERO, "no_eligible_selection")
+		return
+	_attack_move_mode = true
+	_update_command_cursor()
 
 func issue_attack_move_destination(destination: Vector3) -> bool:
 	_clean_selection()
 	var units := _selected_units()
+	if units.is_empty():
+		_record_command_feedback(false, COMMAND_ATTACK_MOVE, "REJECTED", null, destination, "no_eligible_selection")
+		cancel_attack_move_mode()
+		return false
 	var recorder = _v0436_r1j_recorder()
 	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
 	var issued := false
@@ -632,6 +660,7 @@ func issue_attack_move_destination(destination: Vector3) -> bool:
 		issued = true
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK_MOVE, "ATTACK-MOVE", destination, null)
+	cancel_attack_move_mode()
 	return issued
 
 func _feedback_target_id(target) -> String:
@@ -679,6 +708,7 @@ func _cmd_stop() -> void:
 	issue_stop()
 
 func issue_stop() -> bool:
+	cancel_attack_move_mode()
 	var issued := false
 	for u in _selected_units():
 		u.command_stop()
@@ -691,6 +721,7 @@ func _cmd_hold() -> void:
 	issue_hold()
 
 func issue_hold() -> bool:
+	cancel_attack_move_mode()
 	var issued := false
 	for u in _selected_units():
 		u.command_hold()
@@ -704,6 +735,7 @@ func _cmd_patrol_prompt() -> void:
 	issue_patrol(ground)
 
 func issue_patrol(ground) -> bool:
+	cancel_attack_move_mode()
 	if ground == null:
 		return false
 	var issued := false
@@ -718,6 +750,7 @@ func _cmd_guard() -> void:
 	issue_guard_unavailable()
 
 func issue_guard_unavailable() -> bool:
+	cancel_attack_move_mode()
 	_record_command_feedback(false, COMMAND_GUARD, "UNAVAILABLE", null, Vector3.ZERO, "not_implemented")
 	return false
 
@@ -732,6 +765,7 @@ func _selected_units() -> Array:
 # Abilities
 # --------------------------------------------------------------------------
 func _queue_ability(id: String) -> void:
+	cancel_attack_move_mode()
 	if inspection_target != null:
 		return
 	var hero = _selected_hero()
@@ -792,6 +826,7 @@ func _emit_control_group_feedback(n: int, action: String, member_count: int) -> 
 	})
 
 func _select_idle_worker() -> void:
+	cancel_attack_move_mode()
 	_set_inspection_target(null)
 	for u in world.commanders[player_team].units:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE and not u._is_defeated_remnant():
@@ -802,6 +837,7 @@ func _select_idle_worker() -> void:
 			return
 
 func _cycle_hero() -> void:
+	cancel_attack_move_mode()
 	_set_inspection_target(null)
 	var hero = world.commanders[player_team].hero_ref
 	if is_instance_valid(hero) and not hero.is_dead and not hero._is_defeated_remnant():
@@ -811,6 +847,7 @@ func _cycle_hero() -> void:
 		emit_signal("selection_changed", selected)
 
 func _select_army() -> void:
+	cancel_attack_move_mode()
 	_set_inspection_target(null)
 	_clear_selection()
 	for u in world.commanders[player_team].units:
@@ -822,6 +859,7 @@ func _select_army() -> void:
 # Build mode
 # --------------------------------------------------------------------------
 func enter_build_mode(building_id: String) -> void:
+	cancel_attack_move_mode()
 	cancel_build_mode()
 	_build_id = building_id
 	var bdef := GameData.get_building(building_id)
@@ -922,6 +960,13 @@ func cancel_build_mode() -> void:
 		_build_ghost.queue_free()
 	_build_ghost = null
 	emit_signal("build_mode_changed", false, "")
+
+func cancel_attack_move_mode() -> void:
+	_attack_move_mode = false
+	_update_command_cursor()
+
+func get_attack_move_mode_snapshot() -> Dictionary:
+	return {"active": _attack_move_mode, "eligible_units": _selected_units().size() if _attack_move_mode else 0}
 
 func _update_build_ghost() -> void:
 	var g = _raycast_ground()
