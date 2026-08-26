@@ -658,7 +658,7 @@ func set_rally(pos: Vector3) -> void:
 # Combat / tower / aura
 # --------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
-	if is_dead:
+	if is_dead or (commander and commander.defeated):
 		return
 	if is_built:
 		_process_production(delta)
