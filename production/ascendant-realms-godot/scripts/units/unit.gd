@@ -1437,7 +1437,7 @@ func _state_move(delta: float, attack_move: bool) -> void:
 			state = State.ATTACKING
 			return
 	var arrived := _move_along_path(delta)
-	if not attack_move and not arrived and _try_ordinary_move_settlement(delta):
+	if not arrived and _try_near_destination_settlement(delta, attack_move):
 		return
 	if arrived:
 		_reset_ordinary_move_settlement()
@@ -1451,8 +1451,13 @@ func _reset_ordinary_move_settlement() -> void:
 	_ordinary_move_best_distance = INF
 	_ordinary_move_stalled_elapsed = 0.0
 
-func _try_ordinary_move_settlement(delta: float) -> bool:
-	if state != State.MOVING or _navigation_command_type != "move" or not is_instance_valid(agent):
+func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
+	var ordinary_move := state == State.MOVING and _navigation_command_type == "move"
+	var attack_move_travel := attack_move and state == State.ATTACK_MOVE and _navigation_command_type == "attack_move" and _attack_move_ordered
+	if (not ordinary_move and not attack_move_travel) or not is_instance_valid(agent):
+		_reset_ordinary_move_settlement()
+		return false
+	if attack_move_travel and is_instance_valid(_target) and _can_attack_target(_target):
 		_reset_ordinary_move_settlement()
 		return false
 	var target: Vector3 = _navigation_effective_target
