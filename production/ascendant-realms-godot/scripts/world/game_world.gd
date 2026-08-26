@@ -1279,6 +1279,7 @@ func _check_victory() -> void:
 		if no_hq and no_workers and no_buildings:
 			cmd.defeated = true
 			cmd.defeat_reason = "conquest_rebuild_capability_eliminated"
+			_freeze_defeated_commander(cmd)
 			if cmd.team == player_team:
 				_end_game(false, "hq_destroyed" if no_hq else "no_live_buildings")
 				return
@@ -1301,6 +1302,11 @@ func _no_workers(cmd) -> bool:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker:
 			return false
 	return true
+
+func _freeze_defeated_commander(cmd) -> void:
+	for u in cmd.units:
+		if is_instance_valid(u) and not u.is_dead and u.has_method("freeze_as_defeated_remnant"):
+			u.freeze_as_defeated_remnant()
 
 func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	if match_ended:

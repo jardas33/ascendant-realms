@@ -648,6 +648,30 @@ func set_selected(sel: bool) -> void:
 		call_deferred("_sync_attack_range_ring")
 	_update_health_bar()
 
+func _is_defeated_remnant() -> bool:
+	return is_instance_valid(commander) and commander.defeated and not is_dead
+
+func freeze_as_defeated_remnant() -> void:
+	if is_dead:
+		return
+	_v0436_r1j_set_target(null, "commander_defeated")
+	_gather_node = null
+	_pending_gather_node = null
+	_build_target = null
+	_repair_target = false
+	_follow_target = null
+	_move_target = global_position
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
+	_attack_settled = false
+	_attack_target_anchor_valid = false
+	_hold_position = true
+	state = State.IDLE
+	velocity = Vector3.ZERO
+	if agent:
+		agent.target_position = global_position
+		agent.set_velocity(Vector3.ZERO)
+
 func _sync_attack_range_ring() -> void:
 	if not is_instance_valid(_attack_range_ring) or is_dead:
 		return
@@ -822,7 +846,7 @@ func get_hp_ratio() -> float:
 # Commands
 # --------------------------------------------------------------------------
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
-	if is_dead:
+	if is_dead or _is_defeated_remnant():
 		return
 	var before_state := state
 	var before_target = _target
@@ -846,7 +870,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 		recorder.record_unit_command(self, r1j_order_id, "attack_move" if attack_move else "move", before_state, state, before_target, _target, pos)
 
 func command_stop() -> void:
-	if is_dead: return
+	if is_dead or _is_defeated_remnant(): return
 	var before_state := state
 	var before_target = _target
 	_carry_hold = _carry > 0
@@ -874,13 +898,13 @@ func command_stop() -> void:
 		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
 
 func command_hold() -> void:
-	if is_dead: return
+	if is_dead or _is_defeated_remnant(): return
 	command_stop()
 	_hold_position = true
 	state = State.HOLD
 
 func command_attack(tgt, r1j_order_id: String = "") -> void:
-	if not _can_attack_target(tgt):
+	if _is_defeated_remnant() or not _can_attack_target(tgt):
 		return
 	var before_state := state
 	var before_target = _target
@@ -914,7 +938,7 @@ func _can_attack_target(tgt) -> bool:
 	return tgt.has_method("take_damage") and tgt.has_method("get_hp_ratio")
 
 func command_patrol(pos: Vector3) -> void:
-	if is_dead: return
+	if is_dead or _is_defeated_remnant(): return
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_patrol_a = global_position
@@ -923,14 +947,14 @@ func command_patrol(pos: Vector3) -> void:
 	_set_agent_target(_patrol_b, "patrol")
 
 func command_guard(tgt) -> void:
-	if is_dead or not is_instance_valid(tgt): return
+	if is_dead or _is_defeated_remnant() or not is_instance_valid(tgt): return
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_follow_target = tgt
 	state = State.FOLLOW
 
 func command_gather(node) -> void:
-	if is_dead or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
+	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
 		if world and world.has_method("record_resource_command_rejection"):
 			world.record_resource_command_rejection(self, node, "not_a_live_resource_node")
 		return
@@ -961,7 +985,7 @@ func command_gather(node) -> void:
 	state = State.GATHERING
 
 func command_build(building) -> void:
-	if is_dead or not is_worker or not is_instance_valid(building):
+	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
 		return
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -973,7 +997,7 @@ func command_build(building) -> void:
 	state = State.BUILDING
 
 func command_repair(building) -> void:
-	if is_dead or not is_worker or not is_instance_valid(building):
+	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
 		return
 	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
 		return
@@ -1367,6 +1391,8 @@ func _state_idle(delta: float) -> void:
 	velocity.z = 0
 	move_and_slide()
 	_play("idle")
+	if _is_defeated_remnant():
+		return
 	if is_worker and _carry > 0 and not _carry_hold:
 		if _dropoff_retry > 0.0:
 			_dropoff_retry -= delta
@@ -1430,6 +1456,10 @@ func _engage_range() -> float:
 	return atk_range if atk_range > 0.0 else 1.6
 
 func _state_attack(delta: float) -> void:
+	if _is_defeated_remnant():
+		_v0436_r1j_set_target(null, "commander_defeated")
+		state = State.IDLE
+		return
 	if not _can_attack_target(_target):
 		var invalid_reason := "target_dead" if is_instance_valid(_target) and _target.is_dead else "target_invalid"
 		_v0436_r1j_set_target(null, invalid_reason)
@@ -1492,6 +1522,8 @@ func _attack_position_for_target(target) -> Vector3:
 	return target.global_position + away * desired
 
 func _do_attack() -> void:
+	if _is_defeated_remnant():
+		return
 	_attack_timer = attack_cd
 	_play("attack", true)
 	var r1j_recorder = _v0436_r1j_recorder()
@@ -1523,7 +1555,7 @@ func _do_attack() -> void:
 		)
 
 func _spawn_projectile(attack_event_id: String = "") -> void:
-	if not world:
+	if not world or _is_defeated_remnant():
 		return
 	var muzzle := global_position + Vector3.UP * 1.2
 	world.spawn_projectile(muzzle, _target, cur_dmg(), dmg_type, team,
@@ -1535,7 +1567,7 @@ func _on_dealt_damage(dealt: float, tgt) -> void:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
 
 func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_event_id: String = "") -> float:
-	if not _can_attack_target(tgt):
+	if _is_defeated_remnant() or not _can_attack_target(tgt):
 		return 0.0
 	var ac: String = tgt.armor_class if "armor_class" in tgt else "medium"
 	var ar: float = tgt.cur_armor() if tgt.has_method("cur_armor") else 0.0
