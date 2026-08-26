@@ -1547,7 +1547,8 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 
 func _nearest_enemy_to(pos: Vector3, team: int, exclude: Array):
 	var best = null
-	var best_d := 22.0 * 22.0
+	var bolt_range := float(SkillDefs.get_abilities().get("bolt", {}).get("range", 20.0))
+	var best_d := bolt_range * bolt_range
 	for u in all_units():
 		if not is_instance_valid(u) or u.is_dead or u.team == team or u in exclude:
 			continue
