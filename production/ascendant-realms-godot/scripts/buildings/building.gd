@@ -754,6 +754,10 @@ func _destroy(from = null) -> void:
 	if is_dead:
 		return
 	is_dead = true
+	# Retire the existing damage-status presentation at the same logical
+	# boundary as destruction. Without this refresh, a dead building can retain
+	# a stale live damage bar while its collapse cue is still playing.
+	_update_damage_visual()
 	set_selected(false)
 	collision_layer = 0
 	set_meta("v0436_destroyed_once", true)
