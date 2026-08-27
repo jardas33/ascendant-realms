@@ -45,6 +45,10 @@ var _build_ghost: Node3D = null
 var _build_valid := false
 var _build_reason := ""
 var _build_reason_label: Label3D = null
+const BUILD_REASON_LABEL_DEFAULT_OFFSET := Vector3(0.0, 5.0, 0.0)
+const BUILD_REASON_LABEL_SCREEN_MARGIN := 22.0
+const BUILD_REASON_LABEL_TOP_SAFE_MARGIN := 82.0
+const BUILD_REASON_LABEL_BOTTOM_SAFE_MARGIN := 22.0
 var _ghost_surface_mats := []
 var _ghost_identity_tint := Color(0.58, 0.42, 0.25, 0.52)
 
@@ -976,7 +980,7 @@ func enter_build_mode(building_id: String) -> void:
 	_build_ghost.add_child(ring)
 	_build_reason_label = Label3D.new()
 	_build_reason_label.name = "BuildPlacementReason"
-	_build_reason_label.position = Vector3(0.0, 5.0, 0.0)
+	_build_reason_label.position = BUILD_REASON_LABEL_DEFAULT_OFFSET
 	_build_reason_label.font_size = 24
 	_build_reason_label.pixel_size = 0.001
 	_build_reason_label.fixed_size = true
@@ -1037,6 +1041,32 @@ func _set_build_ghost_state(valid: bool) -> void:
 	if is_instance_valid(_build_reason_label):
 		_build_reason_label.text = _build_reason
 		_build_reason_label.visible = not valid and not _build_reason.is_empty()
+		_update_build_reason_label_position()
+
+func _update_build_reason_label_position() -> void:
+	if not is_instance_valid(_build_reason_label) or not is_instance_valid(_build_ghost):
+		return
+	if camera == null or _build_reason_label.text.is_empty() or not _build_reason_label.visible:
+		_build_reason_label.position = BUILD_REASON_LABEL_DEFAULT_OFFSET
+		return
+	var anchor_world := _build_ghost.to_global(BUILD_REASON_LABEL_DEFAULT_OFFSET)
+	var screen_anchor := camera.unproject_position(anchor_world)
+	var viewport_size := get_viewport().get_visible_rect().size
+	var estimated_half_width := clampf(float(_build_reason_label.text.length()) * 6.5, 72.0, 170.0)
+	var estimated_half_height := 18.0
+	var safe_left := BUILD_REASON_LABEL_SCREEN_MARGIN + estimated_half_width
+	var safe_right := viewport_size.x - BUILD_REASON_LABEL_SCREEN_MARGIN - estimated_half_width
+	var safe_top := BUILD_REASON_LABEL_TOP_SAFE_MARGIN + estimated_half_height
+	var safe_bottom := viewport_size.y - BUILD_REASON_LABEL_BOTTOM_SAFE_MARGIN - estimated_half_height
+	var clamped_screen := Vector2(
+		clampf(screen_anchor.x, safe_left, maxf(safe_left, safe_right)),
+		clampf(screen_anchor.y, safe_top, maxf(safe_top, safe_bottom)))
+	if screen_anchor.distance_squared_to(clamped_screen) < 0.01:
+		_build_reason_label.position = BUILD_REASON_LABEL_DEFAULT_OFFSET
+		return
+	var depth := camera.global_position.distance_to(anchor_world)
+	var clamped_world := camera.project_position(clamped_screen, depth)
+	_build_reason_label.position = _build_ghost.to_local(clamped_world)
 
 func cancel_build_mode() -> void:
 	_build_id = ""
