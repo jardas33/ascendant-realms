@@ -1891,6 +1891,8 @@ func _hold_worker_interaction(target_position: Vector3) -> void:
 
 # --- healer support unit --------------------------------------------------
 func _healer_tick(delta: float) -> void:
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
+		return
 	# handled inside attack/idle by targeting wounded allies
 	if state == State.IDLE or state == State.HOLD:
 		var ally = world.find_wounded_ally(self, float(def.get("heal_range", 12.0))) if world else null
