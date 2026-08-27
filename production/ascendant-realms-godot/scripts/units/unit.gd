@@ -1340,6 +1340,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if _is_defeated_remnant():
 		_reset_ordinary_move_settlement()
+		velocity = Vector3.ZERO
+		return
 	_update_r15_combat_presentation(delta)
 	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
 	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
