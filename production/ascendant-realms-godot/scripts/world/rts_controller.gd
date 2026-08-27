@@ -141,6 +141,8 @@ func _process(delta: float) -> void:
 	_maintain_inspection()
 	if _attack_move_mode and not _has_live_attack_move_authority():
 		cancel_attack_move_mode()
+	if _patrol_mode and not _has_live_patrol_authority():
+		cancel_patrol_mode()
 	if _build_id != "" and not _has_live_selected_builder():
 		# Placement is a transient command owned by the selected Worker. Do not
 		# leave a ghost/cursor mode visible after that authority disappears.
@@ -529,9 +531,10 @@ func _clean_selection() -> void:
 	selected = valid
 	if (_attack_move_mode or _patrol_mode) and _selected_units().is_empty():
 		var attack_move_was_active := _attack_move_mode
+		var patrol_was_active := _patrol_mode
 		_attack_move_mode = false
 		_patrol_mode = false
-		if attack_move_was_active:
+		if attack_move_was_active or patrol_was_active:
 			_update_command_cursor()
 	if has_defeated_hero != _defeated_hero_selection_notified:
 		_defeated_hero_selection_notified = has_defeated_hero
@@ -776,7 +779,7 @@ func _cmd_patrol_prompt() -> void:
 		return
 	if _attack_move_mode:
 		cancel_attack_move_mode()
-	if _selected_units().is_empty():
+	if not _has_live_patrol_authority():
 		_record_command_feedback(false, COMMAND_PATROL, "REJECTED", null, Vector3.ZERO, "no_eligible_selection")
 		return
 	_patrol_mode = true
@@ -785,7 +788,7 @@ func _cmd_patrol_prompt() -> void:
 func issue_patrol(ground) -> bool:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
-	if ground == null:
+	if ground == null or not _has_live_patrol_authority():
 		return false
 	var issued := false
 	for u in _selected_units():
@@ -1034,6 +1037,13 @@ func cancel_patrol_mode() -> void:
 
 func _has_live_attack_move_authority() -> bool:
 	if not is_instance_valid(world) or not world.game_running:
+		return false
+	return not _selected_units().is_empty()
+
+func _has_live_patrol_authority() -> bool:
+	if not is_instance_valid(world) or not world.game_running:
+		return false
+	if not is_instance_valid(world.player_commander) or world.player_commander.defeated:
 		return false
 	return not _selected_units().is_empty()
 
