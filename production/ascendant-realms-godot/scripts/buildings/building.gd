@@ -485,6 +485,8 @@ func add_build_progress(delta: float, worker) -> void:
 func add_repair_progress(delta: float, worker) -> void:
 	if not is_built or is_dead or hp >= max_hp:
 		return
+	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != team or (worker.has_method("_is_defeated_remnant") and worker._is_defeated_remnant()) or (world and not world.game_running):
+		return
 	# Reuse the established construction HP work rate: the same max HP fraction
 	# restored per effective build second, with no new resource economy.
 	var repair_amount := max_hp * 0.85 * delta / maxf(0.1, build_time)
