@@ -2220,7 +2220,7 @@ func _combat_source_type(from) -> String:
 # Hero abilities
 # --------------------------------------------------------------------------
 func can_cast(id: String) -> bool:
-	if is_dead or _is_defeated_remnant() or not is_hero or not abilities.has(id):
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_hero or not abilities.has(id):
 		return false
 	var ab := SkillDefs.get_abilities().get(id, {})
 	if mana < float(ab.get("mana", 0)):
