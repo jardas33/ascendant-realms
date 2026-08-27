@@ -531,7 +531,7 @@ func can_produce(unit_id: String) -> bool:
 	return unit_id in def.get("produces", [])
 
 func queue_unit(unit_id: String) -> Dictionary:
-	if not is_built or is_dead or (world and not world.game_running):
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
 	if not can_produce(unit_id):
 		return {"ok": false, "reason": "Not produced here"}
