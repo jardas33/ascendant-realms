@@ -127,6 +127,10 @@ func apply_tech(tech_id: String) -> void:
 	var t := GameData.get_tech(tech_id)
 	if t.is_empty():
 		return
+	# Completion is a one-time Commander-wide state transition. A stale queue
+	# callback or duplicate completion path must not stack the authored effect.
+	if completed_tech.has(tech_id):
+		return
 	completed_tech[tech_id] = true
 	match t.get("kind", ""):
 		"tier":

@@ -559,9 +559,19 @@ func queue_unit(unit_id: String) -> Dictionary:
 func queue_tech(tech_id: String) -> Dictionary:
 	if not is_built or is_dead or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
+	var t := GameData.get_tech(tech_id)
+	if t.is_empty():
+		return {"ok": false, "reason": "Unavailable"}
+	# The HUD lists only authored research entries, but this method is also an
+	# authoritative command boundary for stale/direct callers. Keep ordinary
+	# upgrades on their owning research Building and tier advances on the HQ.
+	if t.get("kind", "") == "tier":
+		if not def.get("is_hq", false) and def.get("kind", "") != "main":
+			return {"ok": false, "reason": "Unavailable"}
+	elif tech_id not in def.get("research", []):
+		return {"ok": false, "reason": "Unavailable"}
 	if not commander.can_research(tech_id):
 		return {"ok": false, "reason": "Unavailable"}
-	var t := GameData.get_tech(tech_id)
 	if not commander.can_afford(t.get("cost", {})):
 		return {"ok": false, "reason": commander.missing_resource_summary(t.get("cost", {}))}
 	commander.spend(t.get("cost", {}))
