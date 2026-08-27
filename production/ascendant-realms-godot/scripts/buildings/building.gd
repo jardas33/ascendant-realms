@@ -582,6 +582,8 @@ func queue_tech(tech_id: String) -> Dictionary:
 	return {"ok": true}
 
 func cancel_queue_item(index: int) -> void:
+	if is_dead or (world and not world.game_running) or (world and team != world.player_team):
+		return
 	if index < 0 or index >= queue.size():
 		return
 	var item = queue[index]
