@@ -2225,8 +2225,28 @@ func can_cast(id: String) -> bool:
 		return false
 	return true
 
+func _hero_ability_target_is_valid(id: String, target_pos: Vector3) -> bool:
+	# Keep target policy bounded to the existing authored effect semantics. Self/
+	# hero-centered abilities do not require a point target; Charge already clamps
+	# its dash distance in GameWorld and therefore keeps its existing behavior.
+	match id:
+		"root":
+			var planar_target := Vector3(target_pos.x, global_position.y, target_pos.z)
+			var root_range := float(SkillDefs.get_abilities().get(id, {}).get("range", 0.0))
+			return global_position.distance_to(planar_target) <= root_range
+		"bolt":
+			# Bolt's existing authoritative range semantics are the nearest live
+			# hostile within its 20-unit search radius around the chosen point.
+			if not is_instance_valid(world) or not world.has_method("_nearest_enemy_to"):
+				return false
+			return is_instance_valid(world._nearest_enemy_to(target_pos, team, []))
+		_:
+			return true
+
 func cast_ability(id: String, target_pos: Vector3) -> bool:
 	if not can_cast(id):
+		return false
+	if not _hero_ability_target_is_valid(id, target_pos):
 		return false
 	var ab := SkillDefs.get_abilities().get(id, {})
 	mana -= float(ab.get("mana", 0))
