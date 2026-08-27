@@ -139,7 +139,11 @@ func _process(delta: float) -> void:
 	_clean_selection()
 	_update_camera(delta)
 	_maintain_inspection()
-	if _build_id != "":
+	if _build_id != "" and not _has_live_selected_builder():
+		# Placement is a transient command owned by the selected Worker. Do not
+		# leave a ghost/cursor mode visible after that authority disappears.
+		cancel_build_mode()
+	elif _build_id != "":
 		_update_build_ghost()
 	if _dragging:
 		_update_drag_box()
@@ -318,6 +322,9 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 func _handle_key(event: InputEventKey) -> void:
 	var kc := event.keycode
 	if kc == KEY_ESCAPE:
+		if _build_id != "":
+			cancel_build_mode()
+			return
 		if _attack_move_mode:
 			cancel_attack_move_mode()
 			return
@@ -495,6 +502,8 @@ func _remove_from_selection(u) -> void:
 		u.set_selected(false)
 
 func _clear_selection() -> void:
+	if _build_id != "":
+		cancel_build_mode()
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
 	for u in selected:
@@ -906,6 +915,9 @@ func _select_army() -> void:
 func enter_build_mode(building_id: String) -> void:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
+	if not _has_live_selected_builder():
+		cancel_build_mode()
+		return
 	cancel_build_mode()
 	_build_id = building_id
 	var bdef := GameData.get_building(building_id)
@@ -1014,6 +1026,17 @@ func cancel_attack_move_mode() -> void:
 func cancel_patrol_mode() -> void:
 	_patrol_mode = false
 	_update_command_cursor()
+
+func _has_live_selected_builder() -> bool:
+	if not is_instance_valid(world) or not world.game_running:
+		return false
+	if not is_instance_valid(world.player_commander) or world.player_commander.defeated:
+		return false
+	for u in selected:
+		if is_instance_valid(u) and u is Unit and u.is_worker and u.team == player_team \
+				and not u.is_dead and not u._is_defeated_remnant():
+			return true
+	return false
 
 func get_attack_move_mode_snapshot() -> Dictionary:
 	return {"active": _attack_move_mode, "eligible_units": _selected_units().size() if _attack_move_mode else 0}
