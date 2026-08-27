@@ -582,25 +582,37 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			if incoming_clear and outgoing_clear and exits_away_from_target:
 				legal_candidates.append(candidate)
 		var candidate: Vector3 = candidates.front()
+		var fallback_second: Vector3 = candidate
 		if not legal_candidates.is_empty():
 			candidate = legal_candidates[0]
 			for alternative in legal_candidates:
 				if _route_cost(current, alternative, final_target) < _route_cost(current, candidate, final_target):
 					candidate = alternative
 		else:
-			# Never use an arbitrary perimeter point when the sampled legal set is
-			# empty. Pick the best available two-leg clearance instead, which keeps
-			# the route as far from the blocker as the deterministic sample allows.
+			# A single perimeter point cannot always satisfy both tangent legs of a
+			# circular clearance envelope. Search a bounded pair so the fallback
+			# never cuts back through the completed Building before it is ignored.
 			var best_clearance := -INF
-			for alternative in candidates:
-				var incoming_score := _segment_clearance(current, alternative, blocker.global_position)
-				var outgoing_score := _segment_clearance(alternative, final_target, blocker.global_position)
-				var score := minf(incoming_score if not origin_inside_clearance else INF, outgoing_score if not destination_inside else INF)
-				if score > best_clearance:
-					best_clearance = score
-					candidate = alternative
+			for first in candidates:
+				var incoming_score := _segment_clearance(current, first, blocker.global_position)
+				if origin_inside_clearance:
+					incoming_score = INF
+				for second in candidates:
+					var middle_score := _segment_clearance(first, second, blocker.global_position)
+					var outgoing_score := _segment_clearance(second, final_target, blocker.global_position)
+					if destination_inside:
+						outgoing_score = INF
+					var score := minf(incoming_score, minf(middle_score, outgoing_score))
+					if score > best_clearance:
+						best_clearance = score
+						candidate = first
+						fallback_second = second
 		points.append(candidate)
+		if fallback_second.distance_to(candidate) > 0.01:
+			points.append(fallback_second)
 		current = candidate
+		if fallback_second.distance_to(candidate) > 0.01:
+			current = fallback_second
 		ignored.append(blocker)
 		# A destination inside a building is a semantic interaction request, not
 		# a valid ground position. Stop at its safe perimeter instead.
