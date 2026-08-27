@@ -1043,6 +1043,12 @@ func _try_place_building() -> void:
 	_try_place_building_at(g)
 
 func _try_place_building_at(g: Vector3) -> bool:
+	var worker = _nearest_free_worker(g)
+	if worker == null:
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "no_worker")
+		Sfx.play("select", -14.0)
+		cancel_build_mode()
+		return false
 	if not _is_build_spot_valid(g):
 		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "invalid_placement")
 		Sfx.play("select", -14.0)
@@ -1057,7 +1063,6 @@ func _try_place_building_at(g: Vector3) -> bool:
 	var placed := false
 	if b:
 		# assign a selected worker (or nearest) to build it
-		var worker = _nearest_free_worker(g)
 		if worker:
 			worker.command_build(b)
 		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)
@@ -1073,7 +1078,7 @@ func _try_place_building_at(g: Vector3) -> bool:
 func _nearest_free_worker(pos: Vector3):
 	# prefer a selected worker
 	for u in _selected_units():
-		if u.is_worker:
+		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.team == player_team and u.state != u.State.BUILDING and not u._is_defeated_remnant():
 			return u
 	var best = null
 	var best_d := INF

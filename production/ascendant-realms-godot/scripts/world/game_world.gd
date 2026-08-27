@@ -917,6 +917,8 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 	var bdef := GameData.get_building(building_id)
 	if bdef.is_empty() or team < 0 or team >= commanders.size():
 		return false
+	if not game_running:
+		return false
 	var cmd = commanders[team]
 	if not is_instance_valid(cmd) or cmd.defeated:
 		return false
