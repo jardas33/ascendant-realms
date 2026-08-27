@@ -911,7 +911,7 @@ func command_stop() -> void:
 		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
 
 func command_hold() -> void:
-	if is_dead or _is_defeated_remnant(): return
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running): return
 	command_stop()
 	_hold_position = true
 	state = State.HOLD
@@ -955,6 +955,7 @@ func _can_attack_target(tgt) -> bool:
 func command_patrol(pos: Vector3) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running): return
 	_patrol_resume_after_combat = true
+	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -1426,6 +1427,8 @@ func _update_m_motion_presentation(delta: float) -> void:
 			_play("idle")
 
 func _state_idle(delta: float) -> void:
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
+		return
 	velocity.x = 0
 	velocity.z = 0
 	move_and_slide()
