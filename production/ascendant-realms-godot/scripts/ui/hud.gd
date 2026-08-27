@@ -1566,6 +1566,14 @@ func _worker_cargo_text(u) -> String:
 
 func _on_production_updated() -> void:
 	_refresh_queue()
+	# A completed research item changes the selected producer's command-card
+	# truth even though the queue refresh above is sufficient for its status row.
+	# Rebuild only on the terminal transition so the card exposes the completed
+	# technology without changing research or production semantics.
+	if is_instance_valid(_watched_building) and not _watched_building.queue.is_empty():
+		return
+	if is_instance_valid(_watched_building) and (not _watched_building.def.get("research", []).is_empty() or bool(_watched_building.def.get("is_hq", false))):
+		_rebuild_command_card(_watched_building, [_watched_building])
 
 
 func _queue_slot_label(display_name: String) -> String:
@@ -1845,7 +1853,11 @@ func _build_building_card(b) -> void:
 			var affordable: bool = _commander.can_afford(cost)
 			var reason := ""
 			if not available:
-				if tdef.get("kind", "") == "tier":
+				if _commander.completed_tech.has(tid):
+					reason = "Completed"
+				elif _commander.researching.has(tid):
+					reason = "Researching"
+				elif tdef.get("kind", "") == "tier":
 					var required_tier := int(tdef.get("tier", 2)) - 1
 					var required_age := GameData.get_tech("advance_tier_%d" % required_tier)
 					var required_age_name := String(required_age.get("name", "Age %d" % required_tier))
