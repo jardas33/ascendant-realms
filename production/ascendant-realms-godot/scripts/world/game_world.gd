@@ -1142,7 +1142,10 @@ func find_nearest_dropoff(pos: Vector3, team: int):
 
 func near_friendly_hq(pos: Vector3, team: int, rng: float) -> bool:
 	for b in all_buildings():
-		if not is_instance_valid(b) or b.is_dead or b.team != team:
+		if not is_instance_valid(b) or b.is_dead or not b.is_built or b.team != team:
+			continue
+		var owner = commander_for_team(b.team)
+		if not is_instance_valid(owner) or owner.defeated:
 			continue
 		if b.def.get("is_hq", false) and pos.distance_to(b.global_position) <= rng:
 			return true
