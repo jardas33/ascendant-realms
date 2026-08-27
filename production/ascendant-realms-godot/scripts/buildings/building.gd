@@ -559,7 +559,7 @@ func queue_unit(unit_id: String) -> Dictionary:
 	return {"ok": true}
 
 func queue_tech(tech_id: String) -> Dictionary:
-	if not is_built or is_dead or (world and not world.game_running):
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
 	var t := GameData.get_tech(tech_id)
 	if t.is_empty():
