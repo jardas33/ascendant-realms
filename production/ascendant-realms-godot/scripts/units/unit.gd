@@ -1351,13 +1351,15 @@ func _physics_process(delta: float) -> void:
 	_update_health_bar()
 	# timers
 	if _attack_timer > 0.0: _attack_timer -= delta
+	# Timed movement effects use wall-clock simulation time even while a stun
+	# suppresses movement. Keep their expiry independent of the stun early exit.
+	if _rooted > 0.0: _rooted -= delta
+	if _slow > 0.0: _slow -= delta
 	if _stun > 0.0:
 		_stun -= delta
 		velocity = Vector3.ZERO
 		move_and_slide()
 		return
-	if _rooted > 0.0: _rooted -= delta
-	if _slow > 0.0: _slow -= delta
 
 	# regen / mana
 	if regen > 0.0 and hp < max_hp:
