@@ -139,6 +139,8 @@ func _process(delta: float) -> void:
 	_clean_selection()
 	_update_camera(delta)
 	_maintain_inspection()
+	if _attack_move_mode and not _has_live_attack_move_authority():
+		cancel_attack_move_mode()
 	if _build_id != "" and not _has_live_selected_builder():
 		# Placement is a transient command owned by the selected Worker. Do not
 		# leave a ghost/cursor mode visible after that authority disappears.
@@ -526,8 +528,11 @@ func _clean_selection() -> void:
 				u.set_selected(false)
 	selected = valid
 	if (_attack_move_mode or _patrol_mode) and _selected_units().is_empty():
+		var attack_move_was_active := _attack_move_mode
 		_attack_move_mode = false
 		_patrol_mode = false
+		if attack_move_was_active:
+			_update_command_cursor()
 	if has_defeated_hero != _defeated_hero_selection_notified:
 		_defeated_hero_selection_notified = has_defeated_hero
 		changed = true
@@ -1026,6 +1031,11 @@ func cancel_attack_move_mode() -> void:
 func cancel_patrol_mode() -> void:
 	_patrol_mode = false
 	_update_command_cursor()
+
+func _has_live_attack_move_authority() -> bool:
+	if not is_instance_valid(world) or not world.game_running:
+		return false
+	return not _selected_units().is_empty()
 
 func _has_live_selected_builder() -> bool:
 	if not is_instance_valid(world) or not world.game_running:
