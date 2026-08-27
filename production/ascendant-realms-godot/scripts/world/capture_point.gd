@@ -84,6 +84,12 @@ func _physics_process(delta: float) -> void:
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead:
 			continue
+		# Defeated-Commander remnants remain physically present for world
+		# readability, but they are no longer an active capture authority.
+		# Reuse the existing Unit lifecycle predicate; do not invent a second
+		# defeated/remnant state machine in the capture point.
+		if u.has_method("_is_defeated_remnant") and u._is_defeated_remnant():
+			continue
 		if u.global_position.distance_to(global_position) <= 7.5:
 			counts[u.team] = int(counts.get(u.team, 0)) + 1
 	var lead_team := -1
