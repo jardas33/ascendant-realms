@@ -917,7 +917,7 @@ func command_hold() -> void:
 	state = State.HOLD
 
 func command_attack(tgt, r1j_order_id: String = "") -> void:
-	if _is_defeated_remnant() or not _can_attack_target(tgt):
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not _can_attack_target(tgt):
 		return
 	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
@@ -1553,6 +1553,8 @@ func _engage_range() -> float:
 	return atk_range if atk_range > 0.0 else 1.6
 
 func _state_attack(delta: float) -> void:
+	if is_dead or (world and not world.game_running):
+		return
 	if _is_defeated_remnant():
 		_v0436_r1j_set_target(null, "commander_defeated")
 		state = State.IDLE
@@ -1622,7 +1624,7 @@ func _attack_position_for_target(target) -> Vector3:
 	return target.global_position + away * desired
 
 func _do_attack() -> void:
-	if _is_defeated_remnant():
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
 	_attack_timer = attack_cd
 	_play("attack", true)
