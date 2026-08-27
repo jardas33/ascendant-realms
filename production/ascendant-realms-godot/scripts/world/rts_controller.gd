@@ -1086,6 +1086,10 @@ func _try_place_building() -> void:
 	_try_place_building_at(g)
 
 func _try_place_building_at(g: Vector3) -> bool:
+	if not _has_live_selected_builder():
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "no_builder")
+		cancel_build_mode()
+		return false
 	var worker = _nearest_free_worker(g)
 	if worker == null:
 		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "no_worker")
