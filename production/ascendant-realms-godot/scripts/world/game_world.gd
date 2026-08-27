@@ -932,6 +932,12 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 			var other_fp := float(b.def.get("footprint", 4.0))
 			if pos.distance_to(b.global_position) < fp + other_fp:
 				return false
+	# A green preview must also reserve space from every live Unit. Units use a
+	# fixed 0.5 navigation/body radius in the current RTS contract; dead Units
+	# are already removed from gameplay occupancy and must not block new sites.
+	for u in all_units():
+		if is_instance_valid(u) and not u.is_dead and pos.distance_to(u.global_position) < fp + 0.5:
+			return false
 	for r in get_tree().get_nodes_in_group("resources"):
 		if is_instance_valid(r) and not r.depleted and pos.distance_to(r.global_position) < fp + 2.0:
 			return false
