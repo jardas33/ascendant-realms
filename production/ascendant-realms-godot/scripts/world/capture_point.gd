@@ -77,7 +77,10 @@ func _build_beam() -> void:
 	add_child(beam)
 
 func _physics_process(delta: float) -> void:
-	if not world:
+	# Capture ownership, progress, and benefits are match mutations. Once the
+	# existing world terminal commits, freeze this child-owned tick alongside
+	# GameWorld, Units, AI, and input; do not create a second terminal state.
+	if not world or not world.game_running:
 		return
 	# find which team dominates the ring
 	var counts := {}
