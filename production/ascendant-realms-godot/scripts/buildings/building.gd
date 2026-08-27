@@ -476,6 +476,10 @@ func _build_damage_status_visual() -> void:
 func add_build_progress(delta: float, worker) -> void:
 	if is_built or is_dead:
 		return
+	if not world or not world.game_running:
+		return
+	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != team or (worker.has_method("_is_defeated_remnant") and worker._is_defeated_remnant()) or worker.state != worker.State.BUILDING or worker.get("_build_target") != self:
+		return
 	build_progress += delta / max(0.1, build_time)
 	hp = max_hp * (0.15 + 0.85 * build_progress)
 	_set_construction_visual(build_progress)
