@@ -972,7 +972,7 @@ func command_guard(tgt) -> void:
 	state = State.FOLLOW
 
 func command_gather(node) -> void:
-	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
 		if world and world.has_method("record_resource_command_rejection"):
 			world.record_resource_command_rejection(self, node, "not_a_live_resource_node")
 		return
@@ -1688,6 +1688,8 @@ func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_e
 
 # --- worker: gathering ----------------------------------------------------
 func _state_gather(delta: float) -> void:
+	if world and not world.game_running:
+		return
 	if _carry >= CARRY_MAX:
 		state = State.RETURNING
 		return
@@ -1730,6 +1732,8 @@ func _state_gather(delta: float) -> void:
 				state = State.RETURNING if _carry > 0 else State.IDLE
 
 func _state_return(delta: float) -> void:
+	if world and not world.game_running:
+		return
 	var drop = world.find_nearest_dropoff(global_position, team) if world else null
 	if not is_instance_valid(drop):
 		_dropoff_retry = 2.0
