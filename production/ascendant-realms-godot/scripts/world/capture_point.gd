@@ -139,6 +139,8 @@ func _apply_benefit() -> void:
 			pass
 
 func _set_owner(team: int) -> void:
+	if not world or not world.game_running:
+		return
 	owner_team = team
 	_progress = 1.0
 	_contesting_team = -1
