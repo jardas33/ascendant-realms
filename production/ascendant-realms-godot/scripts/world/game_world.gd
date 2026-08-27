@@ -959,7 +959,18 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 			return false
 	return true
 
+func _projectile_source_is_live(source, p_team: int) -> bool:
+	if not is_instance_valid(source):
+		return false
+	if source is Unit:
+		return source.world == self and source.team == p_team and not source.is_dead and not source._is_defeated_remnant()
+	if source is Building:
+		return source.world == self and source.team == p_team and source.is_built and not source.is_dead and not (source.commander and source.commander.defeated)
+	return false
+
 func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source, attack_event_id: String = "") -> void:
+	if not game_running or not _projectile_source_is_live(source, team):
+		return
 	var p = ProjectileScript.new()
 	_projectile_container.add_child(p)
 	p.setup(from, target, dmg, dtype, team, self, kind, splash, source, attack_event_id)

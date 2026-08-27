@@ -715,7 +715,7 @@ func _tower_tick(delta: float) -> void:
 		_tower_cd = float(def.get("tower_cd", 1.2))
 		world.spawn_projectile(global_position + Vector3.UP * footprint,
 			e, float(def.get("tower_dmg", 20)), def.get("tower_type", "pierce"),
-			team, def.get("projectile", "bolt"), 0.0, null)
+			team, def.get("projectile", "bolt"), 0.0, self)
 
 func _aura_tick(delta: float) -> void:
 	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
