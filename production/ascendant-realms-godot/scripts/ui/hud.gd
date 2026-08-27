@@ -79,6 +79,7 @@ var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
 var _production_status_label: Label = null
 var _watched_building = null           # building whose production we listen to
+var _watched_construction_building = null # selected building whose construction can complete
 
 # --- alerts ---
 var _alert_box: VBoxContainer = null
@@ -1044,6 +1045,9 @@ func _reset_selection_widgets() -> void:
 	if is_instance_valid(_watched_building) and _watched_building.production_updated.is_connected(_on_production_updated):
 		_watched_building.production_updated.disconnect(_on_production_updated)
 	_watched_building = null
+	if is_instance_valid(_watched_construction_building) and _watched_construction_building.construction_completed.is_connected(_on_tracked_building_construction_completed):
+		_watched_construction_building.construction_completed.disconnect(_on_tracked_building_construction_completed)
+	_watched_construction_building = null
 
 
 func _on_selection_changed(units: Array) -> void:
@@ -1060,6 +1064,15 @@ func _on_inspection_changed(target) -> void:
 		_rebuild_inspection(target)
 	else:
 		_rebuild_selection([])
+
+
+func _on_tracked_building_construction_completed(building) -> void:
+	# The building's model and world transaction complete before the next HUD
+	# selection event. Refresh this selected card immediately so a completed
+	# building cannot retain a stale construction panel or progress copy.
+	if building != _tracked_single or _single_read_only or not is_instance_valid(rts):
+		return
+	_rebuild_selection(rts.selected)
 
 
 func _rebuild_selection(sel: Array) -> void:
@@ -1419,6 +1432,9 @@ func _refresh_multi_live() -> void:
 func _build_single_building(b, read_only: bool = false) -> void:
 	_tracked_single = b
 	_single_read_only = read_only
+	if not read_only and b.has_signal("construction_completed"):
+		b.construction_completed.connect(_on_tracked_building_construction_completed)
+		_watched_construction_building = b
 	var col := VBoxContainer.new()
 	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	col.add_theme_constant_override("separation", 3)

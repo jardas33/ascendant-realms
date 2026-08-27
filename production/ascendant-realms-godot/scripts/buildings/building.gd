@@ -5,6 +5,7 @@ extends StaticBody3D
 
 signal died(building)
 signal production_updated
+signal construction_completed(building)
 
 var def := {}
 var building_id := ""
@@ -514,6 +515,7 @@ func _complete_build() -> void:
 		world.on_building_completed(self)
 		if team == world.player_team:
 			world.emit_signal("alert", "Building ready: %s" % String(def.get("name", building_id)), global_position)
+	emit_signal("construction_completed", self)
 
 func _play_build_completion_cue() -> void:
 	# The construction stage and progress bar disappear at completion. A short
