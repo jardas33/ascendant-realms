@@ -699,6 +699,8 @@ func _physics_process(delta: float) -> void:
 			_aura_tick(delta)
 
 func _tower_tick(delta: float) -> void:
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
+		return
 	if _tower_cd > 0.0:
 		_tower_cd -= delta
 		return
