@@ -122,6 +122,8 @@ func _physics_process(delta: float) -> void:
 			_apply_benefit()
 
 func _apply_benefit() -> void:
+	if not world or not world.game_running:
+		return
 	var cmd = world.commander_for_team(owner_team)
 	if not cmd or cmd.defeated:
 		return
