@@ -1021,7 +1021,7 @@ func command_build(building) -> void:
 	state = State.BUILDING
 
 func command_repair(building) -> void:
-	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(building):
 		return
 	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
 		return
