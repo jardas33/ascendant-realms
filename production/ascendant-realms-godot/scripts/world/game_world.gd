@@ -913,23 +913,23 @@ func place_building(building_id: String, team: int, pos: Vector3):
 ## nodes. A caller still owns the construction transaction through
 ## place_building(), so invalid previews and failed AI attempts are side-effect
 ## free.
-func can_place_building(building_id: String, team: int, pos: Vector3, check_affordability: bool = true, worker = null) -> bool:
+func get_building_placement_reason(building_id: String, team: int, pos: Vector3, check_affordability: bool = true, worker = null) -> String:
 	var bdef := GameData.get_building(building_id)
 	if bdef.is_empty() or team < 0 or team >= commanders.size():
-		return false
+		return "Cannot build this"
 	if not game_running:
-		return false
+		return "Cannot build this"
 	var cmd = commanders[team]
 	if not is_instance_valid(cmd) or cmd.defeated:
-		return false
+		return "Cannot build this"
 	if building_id not in GameData.buildings_for_race(String(cmd.race)):
-		return false
+		return "Cannot build this"
 	if check_affordability and not cmd.can_afford(bdef.get("cost", {})):
-		return false
+		return "Not enough resources"
 	var fp := float(bdef.get("footprint", 4.0))
 	var lim := float(map.get("size", MapDefs.MAP_SIZE)) - 6.0
 	if abs(pos.x) > lim or abs(pos.z) > lim or abs(pos.y) > 1.0:
-		return false
+		return "Outside build area"
 	# A real construction worker is required, but the worker is not reserved by
 	# this pure validation call. This catches AI/player attempts that could never
 	# be serviced while leaving the existing worker command as the authority.
@@ -940,24 +940,27 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 				has_worker = true
 				break
 	if not has_worker:
-		return false
+		return "No available Worker"
 	# Entire radial footprint must clear every friendly and enemy building,
 	# including unfinished buildings, and resource nodes.
 	for b in all_buildings():
 		if is_instance_valid(b) and not b.is_dead:
 			var other_fp := float(b.def.get("footprint", 4.0))
 			if pos.distance_to(b.global_position) < fp + other_fp:
-				return false
+				return "Blocked by building"
 	# A green preview must also reserve space from every live Unit. Units use a
 	# fixed 0.5 navigation/body radius in the current RTS contract; dead Units
 	# are already removed from gameplay occupancy and must not block new sites.
 	for u in all_units():
 		if is_instance_valid(u) and not u.is_dead and pos.distance_to(u.global_position) < fp + 0.5:
-			return false
+			return "Blocked by unit"
 	for r in get_tree().get_nodes_in_group("resources"):
 		if is_instance_valid(r) and not r.depleted and pos.distance_to(r.global_position) < fp + 2.0:
-			return false
-	return true
+			return "Blocked by resource"
+	return ""
+
+func can_place_building(building_id: String, team: int, pos: Vector3, check_affordability: bool = true, worker = null) -> bool:
+	return get_building_placement_reason(building_id, team, pos, check_affordability, worker).is_empty()
 
 func _projectile_source_is_live(source, p_team: int) -> bool:
 	if not is_instance_valid(source):

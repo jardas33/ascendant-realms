@@ -43,6 +43,8 @@ var _groups := {}          # int -> Array[Unit]
 var _build_id := ""
 var _build_ghost: Node3D = null
 var _build_valid := false
+var _build_reason := ""
+var _build_reason_label: Label3D = null
 var _ghost_surface_mats := []
 var _ghost_identity_tint := Color(0.58, 0.42, 0.25, 0.52)
 
@@ -972,6 +974,21 @@ func enter_build_mode(building_id: String) -> void:
 	_ghost_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = _ghost_mat
 	_build_ghost.add_child(ring)
+	_build_reason_label = Label3D.new()
+	_build_reason_label.name = "BuildPlacementReason"
+	_build_reason_label.position = Vector3(0.0, 5.0, 0.0)
+	_build_reason_label.font_size = 24
+	_build_reason_label.pixel_size = 0.001
+	_build_reason_label.fixed_size = true
+	_build_reason_label.outline_size = 5
+	_build_reason_label.modulate = Color(1.0, 0.72, 0.60, 0.96)
+	_build_reason_label.outline_modulate = Color(0.04, 0.02, 0.02, 0.94)
+	_build_reason_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_build_reason_label.no_depth_test = true
+	_build_reason_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_build_reason_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_build_reason_label.visible = false
+	_build_ghost.add_child(_build_reason_label)
 	_set_build_ghost_state(false)
 	emit_signal("build_mode_changed", true, building_id)
 
@@ -1017,10 +1034,15 @@ func _set_build_ghost_state(valid: bool) -> void:
 			var surface_color := _ghost_identity_tint.lerp(state_color, 0.22)
 			surface_color.a = 0.46
 			mat.albedo_color = surface_color
+	if is_instance_valid(_build_reason_label):
+		_build_reason_label.text = _build_reason
+		_build_reason_label.visible = not valid and not _build_reason.is_empty()
 
 func cancel_build_mode() -> void:
 	_build_id = ""
 	_build_valid = false
+	_build_reason = ""
+	_build_reason_label = null
 	_ghost_surface_mats.clear()
 	if is_instance_valid(_build_ghost):
 		_build_ghost.queue_free()
@@ -1069,7 +1091,8 @@ func _update_build_ghost() -> void:
 	if g == null or not is_instance_valid(_build_ghost):
 		return
 	_build_ghost.global_position = g
-	_build_valid = _is_build_spot_valid(g)
+	_build_reason = world.get_building_placement_reason(_build_id, player_team, g, true) if world and is_instance_valid(world) else "Cannot build this"
+	_build_valid = _build_reason.is_empty()
 	_set_build_ghost_state(_build_valid)
 
 func _is_build_spot_valid(pos: Vector3) -> bool:
@@ -1096,8 +1119,11 @@ func _try_place_building_at(g: Vector3) -> bool:
 		Sfx.play("select", -14.0)
 		cancel_build_mode()
 		return false
-	if not _is_build_spot_valid(g):
-		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "invalid_placement")
+	_build_reason = world.get_building_placement_reason(_build_id, player_team, g, true)
+	_build_valid = _build_reason.is_empty()
+	_set_build_ghost_state(_build_valid)
+	if not _build_valid:
+		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, _build_reason)
 		Sfx.play("select", -14.0)
 		return false
 	var bid := _build_id
