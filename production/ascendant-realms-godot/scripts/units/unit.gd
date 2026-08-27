@@ -1005,7 +1005,7 @@ func command_gather(node) -> void:
 	state = State.GATHERING
 
 func command_build(building) -> void:
-	if is_dead or _is_defeated_remnant() or not is_worker or not is_instance_valid(building):
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(building):
 		return
 	if not (building is Building) or building.is_dead or building.is_built or building.team != team:
 		return
@@ -1824,6 +1824,8 @@ func get_economy_text() -> String:
 
 # --- worker: building -----------------------------------------------------
 func _state_build(delta: float) -> void:
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
+		return
 	if not is_instance_valid(_build_target) or _build_target.is_dead:
 		_build_target = null
 		_repair_target = false
