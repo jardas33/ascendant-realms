@@ -953,7 +953,7 @@ func _can_attack_target(tgt) -> bool:
 	return tgt.has_method("take_damage") and tgt.has_method("get_hp_ratio")
 
 func command_patrol(pos: Vector3) -> void:
-	if is_dead or _is_defeated_remnant(): return
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running): return
 	_patrol_resume_after_combat = true
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_attack_move_ordered = false
@@ -1520,6 +1520,8 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	return true
 
 func _state_patrol(delta: float) -> void:
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
+		return
 	var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 	if e:
 		_v0436_r1j_set_target(e, "auto_acquisition")
