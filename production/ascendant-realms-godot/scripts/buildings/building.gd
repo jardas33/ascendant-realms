@@ -602,7 +602,7 @@ func cancel_queue_item(index: int) -> void:
 	emit_signal("production_updated")
 
 func _process_production(delta: float) -> void:
-	if is_dead or (world and not world.game_running) or queue.is_empty():
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running) or queue.is_empty():
 		return
 	var item = queue[0]
 	item["time_left"] -= delta
@@ -630,7 +630,7 @@ func _process_production(delta: float) -> void:
 		emit_signal("production_updated")
 
 func _spawn_unit(unit_id: String) -> bool:
-	if not world:
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running) or not world:
 		return false
 	var forward := (rally_point - global_position).normalized()
 	if forward.length_squared() < 0.1:
