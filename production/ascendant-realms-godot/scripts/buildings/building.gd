@@ -673,6 +673,10 @@ func _physics_process(delta: float) -> void:
 		return
 	if is_built:
 		_process_production(delta)
+		# Match terminality stops new autonomous gameplay while preserving the
+		# existing death/collapse/cleanup lifecycle above this shared branch.
+		if world == null or not world.game_running:
+			return
 		if def.has("tower_dmg"):
 			_tower_tick(delta)
 		if def.has("heal_aura"):
