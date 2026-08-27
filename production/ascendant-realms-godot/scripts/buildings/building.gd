@@ -674,6 +674,10 @@ func _spawn_unit(unit_id: String) -> bool:
 			continue
 		var u = world.spawn_unit(unit_id, team, candidate)
 		if u:
+			# The authoritative spawn has succeeded. Start the Unit-local
+			# presentation handoff before the existing ready audio and Rally order.
+			if u.has_method("play_production_arrival_cue"):
+				u.play_production_arrival_cue()
 			Sfx.play("ready", -6.0) if commander.is_human else null
 			if _has_rally:
 				u.command_move(rally_point)

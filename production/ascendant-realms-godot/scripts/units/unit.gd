@@ -152,6 +152,7 @@ var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
 var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
+var _production_arrival_tween: Tween
 var _attack_settled := false
 var _attack_target_anchor := Vector3.ZERO
 var _attack_target_anchor_valid := false
@@ -178,6 +179,12 @@ const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
 const DEATH_VISUAL_CUE_DURATION := 0.55
 const DEATH_VISUAL_CUE_SCALE := 0.72
 const DEATH_VISUAL_CUE_DROP := 0.24
+# P1 Task541: a brief presentation-only settle makes a newly spawned Unit
+# readable at the normal RTS camera without touching the Unit body, movement,
+# navigation, collision, or authoritative scale.
+const PRODUCTION_ARRIVAL_CUE_DURATION := 0.48
+const PRODUCTION_ARRIVAL_MODEL_START_SCALE := 1.10
+const PRODUCTION_ARRIVAL_SHADOW_START := 0.58
 
 func _building_route_clearance() -> float:
 	# Workers do not use physics collisions against buildings (their body mask is
@@ -285,6 +292,28 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_build_health_bar()
 	_build_r15_combat_presentation()
 	refresh_upgrade_bonuses()
+
+func play_production_arrival_cue() -> void:
+	# Called only after GameWorld has returned a valid Unit from a production
+	# completion. The child model and contact shadow are presentation-only nodes;
+	# the Unit's CharacterBody3D transform and all gameplay state remain intact.
+	if is_dead or not is_instance_valid(model_root):
+		return
+	if is_instance_valid(_production_arrival_tween):
+		_production_arrival_tween.kill()
+	var settled_scale := model_root.scale
+	model_root.scale = settled_scale * PRODUCTION_ARRIVAL_MODEL_START_SCALE
+	var settled_shadow_scale := Vector3.ONE
+	if is_instance_valid(_p1r22_contact_shadow):
+		settled_shadow_scale = _p1r22_contact_shadow.scale
+		_p1r22_contact_shadow.scale = settled_shadow_scale * PRODUCTION_ARRIVAL_SHADOW_START
+	_production_arrival_tween = create_tween()
+	_production_arrival_tween.set_parallel(true)
+	_production_arrival_tween.set_trans(Tween.TRANS_QUAD)
+	_production_arrival_tween.set_ease(Tween.EASE_OUT)
+	_production_arrival_tween.tween_property(model_root, "scale", settled_scale, PRODUCTION_ARRIVAL_CUE_DURATION)
+	if is_instance_valid(_p1r22_contact_shadow):
+		_production_arrival_tween.tween_property(_p1r22_contact_shadow, "scale", settled_shadow_scale, PRODUCTION_ARRIVAL_CUE_DURATION)
 
 ## A capsule shape purely so mouse raycasts can pick this unit for selection.
 ## The body's collision_mask stays 0, so this never causes physical collisions.
