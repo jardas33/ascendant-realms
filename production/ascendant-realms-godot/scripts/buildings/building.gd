@@ -28,6 +28,7 @@ const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
 const RALLY_MARKER_COLOR := Color(1.0, 0.78, 0.30)
 const RALLY_MARKER_RING_INNER_RADIUS := 0.62
 const RALLY_MARKER_RING_OUTER_RADIUS := 0.78
+const SPAWN_UNIT_CLEARANCE := 1.1
 
 func _debug_review_presentation() -> bool:
 	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
@@ -639,6 +640,16 @@ func _spawn_unit(unit_id: String) -> bool:
 			if is_instance_valid(r) and candidate.distance_to(r.global_position) < footprint + 1.0:
 				blocked = true
 				break
+		if blocked:
+			continue
+		# Repeated completions from the same producer begin with the same forward
+		# candidate. Reject live Unit occupancy so rapid production advances to the
+		# next radial candidate instead of stacking runtime bodies exactly.
+		if world.has_method("all_units"):
+			for u in world.all_units():
+				if is_instance_valid(u) and not u.is_dead and candidate.distance_to(u.global_position) < SPAWN_UNIT_CLEARANCE:
+					blocked = true
+					break
 		if blocked:
 			continue
 		var u = world.spawn_unit(unit_id, team, candidate)
