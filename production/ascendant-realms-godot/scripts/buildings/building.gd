@@ -671,7 +671,9 @@ func _spawn_unit(unit_id: String) -> bool:
 	return false
 
 func set_rally(pos: Vector3) -> void:
-	rally_point = pos
+	if not _is_rally_capable() or (commander and commander.defeated) or (world and not world.game_running) or (world and team != world.player_team):
+		return
+	rally_point = world.clamp_to_playable_bounds(pos) if world and world.has_method("clamp_to_playable_bounds") else pos
 	_has_rally = true
 	_refresh_rally_marker(is_instance_valid(selection_ring) and selection_ring.visible)
 
