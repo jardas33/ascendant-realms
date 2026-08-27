@@ -714,6 +714,8 @@ func _tower_tick(delta: float) -> void:
 			team, def.get("projectile", "bolt"), 0.0, null)
 
 func _aura_tick(delta: float) -> void:
+	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
+		return
 	_aura_timer += delta
 	if _aura_timer < 0.5:
 		return
