@@ -920,6 +920,8 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 	var cmd = commanders[team]
 	if not is_instance_valid(cmd) or cmd.defeated:
 		return false
+	if building_id not in GameData.buildings_for_race(String(cmd.race)):
+		return false
 	if check_affordability and not cmd.can_afford(bdef.get("cost", {})):
 		return false
 	var fp := float(bdef.get("footprint", 4.0))
