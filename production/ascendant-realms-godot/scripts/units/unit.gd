@@ -1630,14 +1630,23 @@ func _do_attack() -> void:
 	else:
 		# melee: apply after small delay
 		_play_sfx("sword", -8.0)
-		var tgt = _target
+		# Capture a stable runtime identity instead of the Node reference itself.
+		# A target can be queue_freed during the windup; resolving the ID at hit
+		# time lets the existing validity guard run before any stale dereference.
+		var captured_target_runtime_id: int = _target.get_instance_id()
 		get_tree().create_timer(0.25).timeout.connect(func():
+			var tgt = instance_from_id(captured_target_runtime_id)
+			# Revalidate the captured target before reading its transform. A target
+			# can be queue_freed during the windup, and stale closures must not
+			# dereference it before the existing attack-validity guards run.
+			if is_dead or not _can_attack_target(tgt):
+				return
 			var in_resolution_range := global_position.distance_to(tgt.global_position) <= _combat_reach(tgt) + 0.15
 			if tgt is Unit:
 				in_resolution_range = global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15
 			# Unit-vs-unit damage keeps the original authoritative range contract;
 			# buildings use their physical edge reach so attackers never enter them.
-			if not is_dead and _can_attack_target(tgt) and in_resolution_range:
+			if in_resolution_range:
 				if r1j_recorder:
 					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
 				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
