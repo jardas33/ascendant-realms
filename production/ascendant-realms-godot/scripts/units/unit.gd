@@ -854,7 +854,7 @@ func get_hp_ratio() -> float:
 # Commands
 # --------------------------------------------------------------------------
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
-	if is_dead or _is_defeated_remnant():
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
 	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
@@ -1450,6 +1450,8 @@ func _state_idle(delta: float) -> void:
 				state = State.ATTACKING
 
 func _state_move(delta: float, attack_move: bool) -> void:
+	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
+		return
 	if attack_move and _attack_move_ordered:
 		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 		if e and _can_attack_target(e):
