@@ -1136,7 +1136,21 @@ func _construction_interaction_target(building, interaction: Dictionary) -> Vect
 		var final_snapshot := construction_interaction_for_point(final_point, center, Vector2(half_x, half_z), threshold)
 		if not bool(final_snapshot.get("valid", false)):
 			continue
-		var cost := global_position.distance_to(candidate)
+		# Multiple Workers can legitimately share one construction site, but
+		# sending every final approach to the same perimeter point lets
+		# NavigationAgent avoidance crowd one Worker outside the authored
+		# interaction range. Prefer an otherwise-unoccupied construction slot;
+		# this is local target selection and does not alter global avoidance.
+		var slot_occupied := false
+		if world and world.has_method("all_units"):
+			for peer in world.all_units():
+				if peer == self or not is_instance_valid(peer) or peer.is_dead or not peer.is_worker or peer.get("_build_target") != building:
+					continue
+				var peer_target = peer.get("_move_target")
+				if peer_target is Vector3 and peer_target.distance_to(candidate) < 2.0:
+					slot_occupied = true
+					break
+		var cost := global_position.distance_to(candidate) + (1000.0 if slot_occupied else 0.0)
 		if cost < best_cost:
 			best = candidate
 			best_cost = cost
@@ -1153,7 +1167,18 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 		# Attack waypoints are deliberately placed just inside the authored
 		# combat reach. The normal movement arrival tolerance would stop short
 		# of that waypoint and leave melee units permanently out of range.
-		agent.target_desired_distance = 0.05 if command_type == "attack" else ARRIVE_DIST
+		var desired_distance := 0.05 if command_type == "attack" else ARRIVE_DIST
+		if command_type == "build" and is_instance_valid(_build_target):
+			# Construction navigation targets are already offset to the safe side
+			# of the building perimeter. Reusing the generic 1.2m arrival distance
+			# would stop another 1.2m short and leave the Worker outside the
+			# authored construction interaction range. Keep the interaction
+			# threshold unchanged; only make the final approach consistent with
+			# the perimeter target's route clearance.
+			var interaction := get_construction_interaction_snapshot(_build_target)
+			var interaction_threshold := float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2))
+			desired_distance = maxf(0.05, interaction_threshold - _building_route_clearance())
+		agent.target_desired_distance = desired_distance
 	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= 0.1 and _navigation_last_command == _navigation_command_type
 	if same_request and not _navigation_target_pending and not _navigation_waypoints.is_empty():
 		return
