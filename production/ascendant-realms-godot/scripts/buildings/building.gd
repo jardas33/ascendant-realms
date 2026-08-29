@@ -138,6 +138,7 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
 		_strip_a02_review_staging(m, path)
+		_normalize_a02_imported_materials(m, path)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
@@ -162,6 +163,30 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
 	_add_selection_pick_shape()
+
+
+func _normalize_a02_imported_materials(model: Node3D, path: String) -> void:
+	# Task606-R1: the accepted A02 GLB carries albedo-only textures, but the
+	# colliding loose texture imports can make Godot bind each albedo texture as
+	# both albedo and normal. Duplicate only the affected A02 surface material so
+	# the source GLB and all other building presentation remain untouched.
+	if path != TASK606_A02_MODEL_PATH:
+		return
+	for child in model.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh or not mesh.mesh:
+			continue
+		for surface in mesh.mesh.get_surface_count():
+			var material := mesh.get_active_material(surface)
+			if not material is BaseMaterial3D:
+				continue
+			var base := material as BaseMaterial3D
+			if not base.normal_enabled or base.normal_texture == null or base.normal_texture != base.albedo_texture:
+				continue
+			var repaired := base.duplicate() as BaseMaterial3D
+			repaired.normal_enabled = false
+			repaired.normal_texture = null
+			mesh.set_surface_override_material(surface, repaired)
 
 
 func _strip_a01_review_staging(model: Node3D, path: String) -> void:
