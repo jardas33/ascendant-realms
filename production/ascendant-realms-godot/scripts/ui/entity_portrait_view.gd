@@ -127,6 +127,8 @@ func _apply_definition(definition: Dictionary, is_building: bool) -> void:
 		_pivot.add_child(model)
 		ModelUtils.scale_to_height(model, target_height)
 		ModelUtils.ground_model(model)
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.recenter_a03_house_a_visual_only(model)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
 		var mesh := MeshInstance3D.new()

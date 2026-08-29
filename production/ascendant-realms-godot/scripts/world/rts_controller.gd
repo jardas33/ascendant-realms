@@ -967,6 +967,8 @@ func enter_build_mode(building_id: String) -> void:
 		var presentation_height := clampf(float(bdef.get("footprint", 4.0)) * 1.15, 3.2, 12.0)
 		ModelUtils.scale_to_height(m, presentation_height)
 		ModelUtils.ground_model(m)
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.recenter_a03_house_a_visual_only(m)
 		_apply_build_ghost_surface_materials(m)
 	var ring := MeshInstance3D.new()
 	var footprint := float(bdef.get("footprint", 4.0))

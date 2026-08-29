@@ -150,6 +150,8 @@ func _build_model() -> void:
 		ModelUtils.scale_to_height(m, target_h)
 		ModelUtils.ground_model(m)
 		ModelUtils.add_per_part_convex_collision(m, 4)
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.recenter_a03_house_a_visual_only(m)
 		for mi in m.find_children("*", "MeshInstance3D"):
 			_mesh_instances.append(mi)
 	else:

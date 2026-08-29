@@ -57,6 +57,62 @@ static func isolate_a03_house_a(node: Node3D) -> Dictionary:
 		removed_meshes += 1
 	return {"selected_house": "HOUSE_A", "removed_meshes": removed_meshes}
 
+## Recenter only the instantiated House A visual around its owning Building
+## origin. A03 is authored as a combined A/B pair, so filtering B geometry does
+## not remove House A's source-space offset. Existing generated collision bodies
+## are restored to their pre-recenter world transforms so gameplay/collision
+## authority remains at the Building origin.
+static func recenter_a03_house_a_visual_only(node: Node3D) -> Dictionary:
+	var reference := node.get_parent() as Node3D
+	if not reference:
+		return {"applied": false, "offset": Vector3.ZERO, "bounds": AABB()}
+	var combined := AABB()
+	var first := true
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mesh := child as MeshInstance3D
+		if not mesh or not mesh.mesh:
+			continue
+		var local_transform := reference.global_transform.inverse() * mesh.global_transform
+		var transformed := local_transform * mesh.mesh.get_aabb()
+		if first:
+			combined = transformed
+			first = false
+		else:
+			combined = combined.merge(transformed)
+	if first:
+		return {"applied": false, "offset": Vector3.ZERO, "bounds": AABB()}
+	var pre_recenter_collision: Array[Dictionary] = []
+	for child in node.find_children("*", "StaticBody3D", true, false):
+		var body := child as StaticBody3D
+		if body:
+			pre_recenter_collision.append({"body": body, "transform": body.global_transform})
+	var center := combined.position + combined.size * 0.5
+	var offset := Vector3(-center.x, 0.0, -center.z)
+	# center and position are both expressed in the visual root's parent space.
+	# Moving only this imported visual node leaves the Building origin,
+	# selection ring, navigation, and gameplay collision authority untouched.
+	node.position += offset
+	node.force_update_transform()
+	var post_combined := AABB()
+	var post_first := true
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mesh := child as MeshInstance3D
+		if not mesh or not mesh.mesh:
+			continue
+		var local_transform := reference.global_transform.inverse() * mesh.global_transform
+		var transformed := local_transform * mesh.mesh.get_aabb()
+		if post_first:
+			post_combined = transformed
+			post_first = false
+		else:
+			post_combined = post_combined.merge(transformed)
+	var post_center := post_combined.position + post_combined.size * 0.5 if not post_first else Vector3.ZERO
+	for entry in pre_recenter_collision:
+		var body = entry["body"] as StaticBody3D
+		if is_instance_valid(body):
+			body.global_transform = entry["transform"]
+	return {"applied": true, "offset": offset, "bounds": combined, "pre_center": center, "post_center": post_center, "collision_bodies_preserved": not pre_recenter_collision.is_empty()}
+
 static func setup_character_for_movement(node: Node3D, target_height: float = 1.8) -> void:
 	scale_to_height(node, target_height)
 	ground_model(node)
