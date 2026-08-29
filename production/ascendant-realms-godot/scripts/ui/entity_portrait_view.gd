@@ -122,6 +122,8 @@ func _apply_definition(definition: Dictionary, is_building: bool) -> void:
 		if packed:
 			model = packed.instantiate()
 	if is_instance_valid(model):
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.isolate_a03_house_a(model)
 		_pivot.add_child(model)
 		ModelUtils.scale_to_height(model, target_height)
 		ModelUtils.ground_model(model)

@@ -960,6 +960,8 @@ func enter_build_mode(building_id: String) -> void:
 	if path != "" and ResourceLoader.exists(path):
 		var m = load(path).instantiate()
 		_build_ghost.add_child(m)
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.isolate_a03_house_a(m)
 		# Match Building's presentation envelope without changing the authoritative
 		# footprint used by placement and affordability checks.
 		var presentation_height := clampf(float(bdef.get("footprint", 4.0)) * 1.15, 3.2, 12.0)

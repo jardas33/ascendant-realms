@@ -19,7 +19,7 @@ static func get_all() -> Dictionary:
 		"desc": "The clan's heart. Trains workers, stores resources, and fortifies nearby structures.",
 	},
 	"barrosan_clan_croft": {
-		"race": "barrosan", "name": "Clan Croft", "kind": "house", "model": _b("barrosan_clan_croft"),
+		"race": "barrosan", "name": "Clan Croft", "kind": "house", "model": _b("barrosan_houses_a03"),
 		"hp": 550, "armor_class": "medium", "armor": 2, "footprint": 3.6,
 		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
 		"produces": [], "desc": "Highland homestead. Raises your population capacity.",

@@ -37,6 +37,26 @@ static func scale_to_height(node: Node3D, target_meters: float) -> void:
 	var factor = target_meters / current
 	node.scale *= factor
 
+## Isolate the documented House A sub-asset from the frozen A03 hero-pair GLB.
+## The current game has one Barrosan housing definition and no visual-variant
+## system, so House B and the review-only ground leaves must not enter the
+## Clan Croft presentation or its generated collision envelope.
+static func isolate_a03_house_a(node: Node3D) -> Dictionary:
+	var removed_meshes := 0
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mesh := child as MeshInstance3D
+		if not mesh:
+			continue
+		var lower_name := mesh.name.to_lower()
+		if not lower_name.begins_with("b_") and lower_name != "grass" and lower_name != "lanedirt":
+			continue
+		var parent := mesh.get_parent()
+		if parent:
+			parent.remove_child(mesh)
+		mesh.free()
+		removed_meshes += 1
+	return {"selected_house": "HOUSE_A", "removed_meshes": removed_meshes}
+
 static func setup_character_for_movement(node: Node3D, target_height: float = 1.8) -> void:
 	scale_to_height(node, target_height)
 	ground_model(node)

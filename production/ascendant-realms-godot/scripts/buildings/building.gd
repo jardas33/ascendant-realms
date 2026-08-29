@@ -138,6 +138,8 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
 		_strip_a02_review_staging(m, path)
+		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
+			ModelUtils.isolate_a03_house_a(m)
 		_normalize_a02_imported_materials(m, path)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
