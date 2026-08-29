@@ -6,6 +6,7 @@ class_name EntityPortraitView
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
+const PORTRAIT_FRAME_INSET := 5.0
 static var _portrait_texture_cache: Dictionary = {}
 
 var _viewport_container: SubViewportContainer
@@ -49,6 +50,8 @@ func _build_view() -> void:
 	_artwork = TextureRect.new()
 	_artwork.name = "PortraitArtwork"
 	_artwork.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	# Preserve the authored aspect ratio and show the full source image. The
+	# frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_artwork.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -95,6 +98,10 @@ func _build_view() -> void:
 	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	frame.offset_left = PORTRAIT_FRAME_INSET
+	frame.offset_top = PORTRAIT_FRAME_INSET
+	frame.offset_right = -PORTRAIT_FRAME_INSET
+	frame.offset_bottom = -PORTRAIT_FRAME_INSET
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
@@ -132,7 +139,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			if texture:
 				_active_portrait_path = portrait_path
 				_artwork.texture = texture
-				_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if custom_minimum_size.x < 80.0 else TextureRect.STRETCH_KEEP_ASPECT_COVERED
+				_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 				_artwork.visible = true
 				_viewport_container.visible = false
 		if _active_portrait_path.is_empty():
