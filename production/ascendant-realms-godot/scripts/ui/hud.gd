@@ -21,7 +21,7 @@ const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.08)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.96)
 const COMMAND_PANEL_WIDTH := 430.0
-const SELECTION_PANEL_HEIGHT := 220.0
+const SELECTION_PANEL_HEIGHT := 280.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
 const COMMAND_SURFACE := Color(0.075, 0.09, 0.11, 0.98)
@@ -77,7 +77,9 @@ var _single_read_only := false
 var _single_hp_bar: ProgressBar = null
 var _single_hp_text: Label = null
 var _single_mana_bar: ProgressBar = null
+var _single_mana_text: Label = null
 var _single_stat_label: Label = null
+var _single_stat_cards := []
 var _single_activity_label: Label = null
 var _single_target_label: Label = null
 var _single_economy_label: Label = null
@@ -460,6 +462,27 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge.add_child(label)
 	return badge
+
+
+func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: String, accent: Color) -> void:
+	var chip := PanelContainer.new()
+	chip.custom_minimum_size = Vector2(64, 34)
+	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.08, 0.095, 0.11, 0.98)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.52)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(4)
+	sb.set_content_margin_all(4)
+	chip.add_theme_stylebox_override("panel", sb)
+	var label := _mk_label("%s  %s" % [caption, value], 10, FONT_COLOR)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.tooltip_text = "%s: %s" % [caption, value]
+	chip.add_child(label)
+	row.add_child(chip)
+	_single_stat_cards.append({"kind": kind, "label": label, "caption": caption})
 
 
 func _apply_ability_button_style(button: Button, accent: Color) -> void:
@@ -1136,6 +1159,12 @@ func _on_idle_military_count(count: int) -> void:
 func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel()
 	_sel_panel.name = "SelectionPanel"
+	var selection_surface := _hud_stylebox()
+	selection_surface.bg_color = Color(0.028, 0.038, 0.052, 0.98)
+	selection_surface.border_color = Color(0.82, 0.65, 0.30, 0.98)
+	selection_surface.set_corner_radius_all(8)
+	selection_surface.set_content_margin_all(10)
+	_sel_panel.add_theme_stylebox_override("panel", selection_surface)
 	_sel_panel.custom_minimum_size = Vector2(480, SELECTION_PANEL_HEIGHT)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -1171,7 +1200,9 @@ func _reset_selection_widgets() -> void:
 	_single_hp_bar = null
 	_single_hp_text = null
 	_single_mana_bar = null
+	_single_mana_text = null
 	_single_stat_label = null
+	_single_stat_cards.clear()
 	_single_activity_label = null
 	_single_target_label = null
 	_single_economy_label = null
@@ -1306,8 +1337,17 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 
 	var uname: String = u.def.get("name", "Unit")
 	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
-	var identity_text := ("HOSTILE · " if read_only else "") + uname
-	info.add_child(_mk_label(identity_text, 18, identity_color))
+	var role_label := "HERO" if u.is_hero else ("WORKER" if u.is_worker else "MILITARY")
+	var role_accent := Color(1.0, 0.55, 0.45) if read_only else (COMMAND_SKY if u.is_hero else (COMMAND_MINT if u.is_worker else COMMAND_FLAME))
+	var identity_header := HBoxContainer.new()
+	identity_header.add_theme_constant_override("separation", 6)
+	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, 18, identity_color)
+	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity_header.add_child(identity_name)
+	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
+	info.add_child(identity_header)
+	info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -1316,8 +1356,25 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	info.add_child(_single_hp_text)
 
 	if not read_only and u.is_hero and u.max_mana > 0.0:
+		var mana_header := HBoxContainer.new()
+		mana_header.add_theme_constant_override("separation", 6)
+		mana_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mana_header.add_child(_mk_label("MANA", 9, COMMAND_SKY))
+		_single_mana_text = _mk_label("", 11, Color(0.78, 0.86, 1.0))
+		_single_mana_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		mana_header.add_child(_single_mana_text)
+		info.add_child(mana_header)
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		info.add_child(_single_mana_bar)
+
+	if not read_only and not u.is_worker and u.has_method("cur_dmg"):
+		var stat_row := HBoxContainer.new()
+		stat_row.add_theme_constant_override("separation", 4)
+		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_add_stat_chip(stat_row, "DMG", _compact_combat_stat(u.cur_dmg()), "dmg", role_accent)
+		_add_stat_chip(stat_row, "ARM", _compact_combat_stat(u.cur_armor()), "armor", role_accent)
+		_add_stat_chip(stat_row, "RNG", "%.1f" % u.cur_range(), "range", role_accent)
+		info.add_child(stat_row)
 
 	if not read_only and u.is_worker and u.has_method("get_economy_snapshot"):
 		info.add_theme_constant_override("separation", 0)
@@ -1329,10 +1386,11 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		_single_economy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(_single_economy_label)
 
-	_single_stat_label = _mk_label("", 15, Color(0.88, 0.85, 0.75))
-	info.add_child(_single_stat_label)
+	if read_only:
+		_single_stat_label = _mk_label("", 12, Color(0.88, 0.85, 0.75))
+		info.add_child(_single_stat_label)
 	if not read_only:
-		_single_activity_label = _mk_label("", 14, Color(0.82, 0.86, 0.78))
+		_single_activity_label = _mk_label("", 12, Color(0.82, 0.86, 0.78))
 		info.add_child(_single_activity_label)
 		_single_target_label = _mk_label("", 14, Color(1.0, 0.74, 0.38))
 		_single_target_label.name = "CombatTargetLabel"
@@ -1407,7 +1465,7 @@ func _refresh_single_live() -> void:
 		_rebuild_selection([])
 		return
 	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
-		_single_activity_label.text = "Status: " + _unit_activity_label(u)
+		_single_activity_label.text = "STATUS  ·  " + _unit_activity_label(u)
 	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
 	if not unavailable_reason.is_empty():
 		for w in _ability_widgets:
@@ -1424,6 +1482,20 @@ func _refresh_single_live() -> void:
 		_single_hp_text.text = "HP %d / %d" % [int(max(0.0, u.hp)), int(u.max_hp)]
 	if is_instance_valid(_single_mana_bar) and "max_mana" in u and u.max_mana > 0.0:
 		_single_mana_bar.value = clamp(u.mana / u.max_mana, 0.0, 1.0)
+	if is_instance_valid(_single_mana_text) and "max_mana" in u:
+		_single_mana_text.text = "%d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
+	if u is Unit and not _single_stat_cards.is_empty() and u.has_method("cur_dmg"):
+		for stat in _single_stat_cards:
+			var stat_label: Label = stat["label"]
+			if not is_instance_valid(stat_label):
+				continue
+			var stat_value := ""
+			match String(stat["kind"]):
+				"dmg": stat_value = _compact_combat_stat(u.cur_dmg())
+				"armor": stat_value = _compact_combat_stat(u.cur_armor())
+				"range": stat_value = "%.1f" % u.cur_range()
+			stat_label.text = "%s  %s" % [stat["caption"], stat_value]
+			stat_label.tooltip_text = "%s: %s" % [stat["caption"], stat_value]
 	if is_instance_valid(_single_stat_label):
 		if _single_read_only:
 			pass
@@ -1495,19 +1567,35 @@ func _build_multi(units: Array) -> void:
 	# Keep the existing six-column card layout, but let dense selections grow
 	# their anchored panel enough to show the complete 3–4 row composition.
 	if is_instance_valid(_sel_panel) and row_count > 2:
-		_sel_panel.set_meta("multi_selection_height", 34.0 + float(row_count) * 72.0)
+		_sel_panel.set_meta("multi_selection_height", 52.0 + float(row_count) * 72.0)
 		_fit_to_viewport()
-	var selected_label := _mk_label("Group · %d units  •  %s" % [units.size(), _selection_type_summary(units)], 12, Color(0.95, 0.85, 0.55))
-	selected_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	selected_label.offset_left = 8
-	selected_label.offset_right = -8
-	selected_label.offset_top = 0
-	selected_label.offset_bottom = 20
-	_sel_body.add_child(selected_label)
+	var formation_header := PanelContainer.new()
+	formation_header.custom_minimum_size = Vector2(0, 42)
+	formation_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var formation_style := StyleBoxFlat.new()
+	formation_style.bg_color = Color(0.1, 0.075, 0.065, 0.98)
+	formation_style.border_color = Color(COMMAND_FLAME.r, COMMAND_FLAME.g, COMMAND_FLAME.b, 0.72)
+	formation_style.set_border_width_all(1)
+	formation_style.set_corner_radius_all(6)
+	formation_style.set_content_margin_all(6)
+	formation_header.add_theme_stylebox_override("panel", formation_style)
+	var formation_row := HBoxContainer.new()
+	formation_row.add_theme_constant_override("separation", 7)
+	formation_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	formation_row.add_child(_mk_command_badge("FORMATION", COMMAND_FLAME, 78.0))
+	var formation_info := VBoxContainer.new()
+	formation_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	formation_info.add_theme_constant_override("separation", 0)
+	formation_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	formation_info.add_child(_mk_label("%d UNITS SELECTED" % units.size(), 13, FONT_COLOR))
+	formation_info.add_child(_mk_label(_selection_type_summary(units), 9, Color(0.76, 0.79, 0.75)))
+	formation_row.add_child(formation_info)
+	formation_header.add_child(formation_row)
+	_sel_body.add_child(formation_header)
 
 	var scroll := ScrollContainer.new()
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scroll.offset_top = 22
+	scroll.offset_top = 46
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	_sel_body.add_child(scroll)
@@ -1600,11 +1688,22 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	identity.add_child(identity_info)
 	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
 	var identity_text := ("HOSTILE · " if read_only else "") + String(b.def.get("name", "Building"))
-	identity_info.add_child(_mk_label(identity_text, 18, identity_color))
+	var building_header := HBoxContainer.new()
+	building_header.add_theme_constant_override("separation", 6)
+	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var building_name := _mk_label(identity_text, 18, identity_color)
+	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	building_header.add_child(building_name)
+	building_header.add_child(_mk_command_badge("BUILDING", Color(0.93, 0.72, 0.32) if not read_only else Color(1.0, 0.55, 0.45), 70.0))
+	identity_info.add_child(building_header)
+	identity_info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
 	identity_info.add_child(_single_hp_bar)
 	_single_hp_text = _mk_label("", 15)
 	identity_info.add_child(_single_hp_text)
+	if not read_only:
+		_single_activity_label = _mk_label("STATUS  ·  " + ("Built" if b.is_built else "Under Construction"), 12, Color(0.82, 0.86, 0.78))
+		identity_info.add_child(_single_activity_label)
 	if read_only:
 		_single_stat_label = _mk_label("Hostile · Built structure", 15, Color(0.88, 0.85, 0.75))
 		identity_info.add_child(_single_stat_label)
