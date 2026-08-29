@@ -17,6 +17,8 @@ const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 232.0
 const MINIMAP_RASTER_SIZE := 160
+const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
+const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 52.0
 const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.08)
@@ -1160,9 +1162,10 @@ func _draw_minimap() -> void:
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
-	# The cached image is the geographic base. The authored water lane, terrain
-	# variation, landform pockets and principal tracks establish a real
-	# battlefield read before live markers are layered on top.
+	# The cached image is the geographic base. Water and world shelves are read
+	# from the same map/world that renders the battlefield; live markers are
+	# layered separately below. Avoid synthetic camouflage blobs or a decorative
+	# board-game overlay that has no spatial correspondence to the world.
 	var edge := Color(0.86, 0.78, 0.58, 0.68)
 	_minimap.draw_rect(Rect2(Vector2(6, 6), size - Vector2(12, 12)), edge, false, 2.0)
 	var water: Dictionary = world.map.get("water", {})
@@ -1171,23 +1174,15 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 		var axis := str(overview.get("water_axis", "north_bay"))
 		var center_z := float(overview.get("water_center_z", 118.0))
 		var half_width := float(overview.get("water_width", 34.0)) * 0.5
-		var top_edge := _world_to_map(Vector3(-MAP_HALF, 0.0, center_z - half_width))
-		var bottom_edge := _world_to_map(Vector3(MAP_HALF, 0.0, center_z - half_width))
 		if axis == "crossing":
-			var crossing_top := _world_to_map(Vector3(-MAP_HALF, 0.0, center_z - half_width))
-			var crossing_bottom := _world_to_map(Vector3(MAP_HALF, 0.0, center_z + half_width))
-			_minimap.draw_line(crossing_top, Vector2(size.x, crossing_top.y), Color(0.44, 0.78, 0.82, 0.54), 2.0, true)
-			_minimap.draw_line(Vector2(0, crossing_bottom.y), crossing_bottom, Color(0.16, 0.42, 0.52, 0.42), 1.0, true)
+			var crossing_top_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
+			var crossing_bottom_y := _world_to_map(Vector3(0.0, 0.0, center_z + half_width)).y
+			_minimap.draw_line(Vector2(7.0, crossing_top_y), Vector2(size.x - 7.0, crossing_top_y), Color(0.52, 0.82, 0.86, 0.60), 1.5, true)
+			_minimap.draw_line(Vector2(7.0, crossing_bottom_y), Vector2(size.x - 7.0, crossing_bottom_y), Color(0.16, 0.42, 0.52, 0.48), 1.0, true)
 		else:
-			_minimap.draw_line(top_edge, bottom_edge, Color(0.44, 0.78, 0.82, 0.54), 2.0, true)
-			_minimap.draw_line(Vector2(0, top_edge.y + 4.0), Vector2(size.x, bottom_edge.y + 4.0), Color(0.16, 0.42, 0.52, 0.38), 1.0, true)
+			var shore_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
+			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), Color(0.52, 0.82, 0.86, 0.56), 1.5, true)
 	_draw_minimap_roads(size)
-	for start in world.map.get("start_positions", []):
-		var p := _world_to_map(start)
-		_draw_minimap_region(p, Vector2(18.0, 14.0), Color(0.75, 0.68, 0.42, 0.055), Color(0.78, 0.72, 0.48, 0.52))
-		_minimap.draw_circle(p, 2.5, Color(0.96, 0.86, 0.52, 0.76))
-	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(16.0, 13.0), Color(0.9, 0.78, 0.38, 0.055), Color(0.9, 0.78, 0.38, 0.46))
-	_minimap.draw_circle(_world_to_map(Vector3.ZERO), 3.0, Color(0.98, 0.84, 0.36, 0.82))
 
 func _draw_minimap_frame(size: Vector2) -> void:
 	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 5.0)
@@ -1217,30 +1212,16 @@ func _draw_minimap_resource(p: Vector2, col: Color) -> void:
 func _draw_minimap_roads(_size: Vector2) -> void:
 	if not is_instance_valid(world):
 		return
-	var roads: Array = world.map.get("overview", {}).get("roads", [])
-	for road in roads:
-		if not road is Array or road.size() < 2:
-			continue
-		var points := PackedVector2Array()
-		for point in road:
-			if point is Vector3:
-				points.append(_world_to_map(point))
-		if points.size() < 2:
-			continue
-		# A narrow, low-contrast track sits inside the terrain instead of reading
-		# as the oversized X-shaped debug overlay used by the old minimap.
-		_minimap.draw_polyline(points, Color(0.12, 0.10, 0.075, 0.78), 3.0, true)
-		_minimap.draw_polyline(points, Color(0.76, 0.60, 0.34, 0.62), 1.0, true)
-
-func _draw_minimap_region(center: Vector2, radius: Vector2, fill: Color, edge: Color) -> void:
-	var points := PackedVector2Array()
-	for i in range(20):
-		var angle := TAU * float(i) / 20.0
-		points.append(center + Vector2(cos(angle) * radius.x, sin(angle) * radius.y))
-	_minimap.draw_colored_polygon(points, fill)
-	var outline := PackedVector2Array(points)
-	outline.append(points[0])
-	_minimap.draw_polyline(outline, edge, 1.2, true)
+	# The ground shader burns these same start-to-centre segments into the
+	# authored battlefield material. Mirror that source geometry as subdued
+	# navigation tracks instead of consuming presentation-only overview roads.
+	var route_color := Color(0.25, 0.19, 0.12, 0.24)
+	for start in world.map.get("start_positions", []):
+		if start is Vector3:
+			_minimap.draw_line(_world_to_map(start), _world_to_map(Vector3.ZERO), route_color, 1.25, true)
+	# This is the corresponding authored contested-middle link in
+	# TerrainBuilder._make_ground_material(). Keep it subordinate to terrain.
+	_minimap.draw_line(_world_to_map(Vector3(-30.0, 0.0, -20.0)), _world_to_map(Vector3(30.0, 0.0, 20.0)), Color(0.28, 0.23, 0.15, 0.18), 0.8, true)
 
 func _minimap_resource_color(kind: String) -> Color:
 	match kind:
@@ -1258,28 +1239,24 @@ func _minimap_theme_color(theme_name: String, accent: bool) -> Color:
 		_: return Color(0.22, 0.30, 0.20, 1.0) if not accent else Color(0.30, 0.38, 0.24, 1.0)
 
 
-func _minimap_landform_specs() -> Array:
-	# These are a bounded presentation projection of existing world dressing and
-	# authored landmark pockets. They are deliberately not collision or nav data.
+func _minimap_world_landform_specs() -> Array:
+	# Project the actual visual shelf nodes built by TerrainBuilder. These are
+	# presentation-only scenery over the existing flat playable plane, so their
+	# centre/extent is safe to read once into the cached raster and never during
+	# the live marker refresh.
 	if not is_instance_valid(world):
 		return []
-	var map_id := str(world.map.get("id", ""))
-	if map_id == "hollowspan":
-		return [
-			{"center": Vector2(-104.0, -92.0), "radius": Vector2(25.0, 18.0)},
-			{"center": Vector2(104.0, 92.0), "radius": Vector2(25.0, 18.0)},
-			{"center": Vector2(86.0, -86.0), "radius": Vector2(18.0, 24.0)},
-			{"center": Vector2(-86.0, 86.0), "radius": Vector2(18.0, 24.0)},
-			{"center": Vector2(-48.0, -48.0), "radius": Vector2(15.0, 12.0)},
-			{"center": Vector2(48.0, 48.0), "radius": Vector2(15.0, 12.0)},
-		]
 	var specs: Array = []
-	var starts: Array = world.map.get("start_positions", [])
-	for start in starts:
-		if start is Vector3:
-			var toward := Vector2(-start.x, -start.z).normalized()
-			var center := Vector2(start.x, start.z) + toward * 24.0
-			specs.append({"center": center, "radius": Vector2(18.0, 13.0)})
+	for shelf in world.get_tree().get_nodes_in_group("world03_shelves"):
+		if not is_instance_valid(shelf) or not shelf is MeshInstance3D or shelf.mesh == null:
+			continue
+		var aabb: AABB = shelf.mesh.get_aabb()
+		var radius := Vector2(maxf(aabb.size.x * 0.44, 4.0), maxf(aabb.size.z * 0.44, 4.0))
+		specs.append({
+			"center": Vector2(shelf.global_position.x, shelf.global_position.z),
+			"radius": radius,
+			"rotation": -float(shelf.global_rotation.y),
+		})
 	return specs
 
 func _ensure_minimap_background() -> void:
@@ -1287,7 +1264,8 @@ func _ensure_minimap_background() -> void:
 		return
 	var map_id := str(world.map.get("id", ""))
 	var theme_name := str(world.map.get("theme", "highland"))
-	var cache_key := map_id + ":" + theme_name
+	var shelf_count: int = world.get_tree().get_nodes_in_group("world03_shelves").size()
+	var cache_key := map_id + ":" + theme_name + ":" + str(shelf_count)
 	if cache_key == _minimap_background_key and is_instance_valid(_minimap_background):
 		return
 	var image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
@@ -1300,22 +1278,31 @@ func _ensure_minimap_background() -> void:
 	var half_width := float(overview.get("water_width", 34.0)) * 0.5
 	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
 	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
-	var landforms: Array = _minimap_landform_specs()
+	var landforms: Array = _minimap_world_landform_specs()
+	var ground_image := Image.new()
+	var meadow_image := Image.new()
+	var has_ground_image: bool = ground_image.load(MINIMAP_GROUND_TEXTURE) == OK
+	var has_meadow_image: bool = meadow_image.load(MINIMAP_MEADOW_TEXTURE) == OK
 	for y in range(MINIMAP_RASTER_SIZE):
 		for x in range(MINIMAP_RASTER_SIZE):
 			var wp := Vector3(
 				(float(x) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
 				0.0,
 				(float(y) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
-			var col := base
-			# Low-frequency value variation gives the landmass readable meadows,
-			# worn ground and highland shelves without loading another texture or
-			# rebuilding anything during the minimap's 0.15s live refresh.
-			var terrain_value := 0.5 + 0.25 * sin(wp.x * 0.065 + wp.z * 0.027) + 0.18 * cos(wp.x * 0.021 - wp.z * 0.079)
-			if terrain_value > 0.68:
-				col = col.lightened(0.16)
-			elif terrain_value < 0.31:
-				col = col.darkened(0.20)
+			# A restrained north-to-south grade gives the miniature depth without
+			# inventing random blobs that the player cannot find in the world.
+			var latitude := float(y) / float(MINIMAP_RASTER_SIZE - 1)
+			var col := base.lerp(base.lightened(0.10), 1.0 - absf(latitude - 0.5) * 1.45)
+			# Reuse the same authored ground materials as TerrainBuilder. This is a
+			# one-time cache build, not a live texture load or a second world render.
+			if has_ground_image:
+				var tx: int = posmod(int(floor(wp.x * 0.92)), ground_image.get_width())
+				var tz: int = posmod(int(floor(wp.z * 0.92)), ground_image.get_height())
+				var ground_sample: Color = ground_image.get_pixel(tx, tz)
+				if has_meadow_image:
+					var meadow_sample: Color = meadow_image.get_pixel(posmod(tx, meadow_image.get_width()), posmod(tz, meadow_image.get_height()))
+					ground_sample = ground_sample.lerp(meadow_sample, 0.28)
+				col = col.lerp(ground_sample, 0.24)
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1328,13 +1315,14 @@ func _ensure_minimap_background() -> void:
 			for landform in landforms:
 				var center: Vector2 = landform["center"]
 				var radius: Vector2 = landform["radius"]
-				var dx := (wp.x - center.x) / radius.x
-				var dz := (wp.z - center.y) / radius.y
+				var local := Vector2(wp.x - center.x, wp.z - center.y).rotated(float(landform.get("rotation", 0.0)))
+				var dx := local.x / radius.x
+				var dz := local.y / radius.y
 				var landform_distance := dx * dx + dz * dz
 				if landform_distance < 0.78:
-					col = Color(0.22, 0.25, 0.24, 1.0)
+					col = Color(0.26, 0.29, 0.25, 1.0)
 				elif landform_distance < 1.0:
-					col = Color(0.36, 0.39, 0.34, 1.0)
+					col = Color(0.40, 0.42, 0.35, 1.0)
 			image.set_pixel(x, y, col)
 	_minimap_background = ImageTexture.create_from_image(image)
 	_minimap_background_key = cache_key
