@@ -25,7 +25,7 @@ static func get_all() -> Dictionary:
 		"produces": [], "desc": "Highland homestead. Raises your population capacity.",
 	},
 	"barrosan_war_hall": {
-		"race": "barrosan", "name": "War Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
+		"race": "barrosan", "name": "War Hall", "kind": "barracks", "model": "res://assets/environment/buildings/barrosan_war_hall_a02.glb",
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
 		"produces": ["barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer",

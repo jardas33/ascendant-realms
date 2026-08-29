@@ -28,6 +28,11 @@ const PRESENTATION_HEIGHT_MAX := 12.0
 ## hierarchy at the normal RTS camera distance.
 const TASK604_A01_R1_SCALE := 1.20
 const TASK604_A01_R1_YAW_DEGREES := 24.0
+## Task606: A02's isolation pad is review staging, not gameplay architecture.
+## Strip only the explicitly documented pad leaves before the existing model
+## scale/ground/collision flow; the hall, yard wall, gate, training props, and
+## other authored architecture remain intact.
+const TASK606_A02_MODEL_PATH := "res://assets/environment/buildings/barrosan_war_hall_a02.glb"
 const BUILD_COMPLETION_CUE_SCALE := 1.045
 const BUILD_COMPLETION_CUE_OUT_DURATION := 0.12
 const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
@@ -132,6 +137,7 @@ func _build_model() -> void:
 			recorder.record_resource_load(path, "building._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
+		_strip_a02_review_staging(m, path)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
@@ -171,6 +177,25 @@ func _strip_a01_review_staging(model: Node3D, path: String) -> void:
 			continue
 		var lower_name := mesh.name.to_lower()
 		if not ("yard" in lower_name or "fence" in lower_name):
+			continue
+		var parent := mesh.get_parent()
+		if parent:
+			parent.remove_child(mesh)
+		mesh.free()
+
+func _strip_a02_review_staging(model: Node3D, path: String) -> void:
+	# GROK-ART-A02-R2 documents the grass/isolation pad and packed-yard planes
+	# as review convention only. Remove only those exact authored leaves; do not
+	# treat legitimate hall, palisade, gate, dummy, rack, banner, or shed meshes
+	# as staging merely because they are decorative.
+	if path != TASK606_A02_MODEL_PATH:
+		return
+	for child in model.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh:
+			continue
+		var lower_name := mesh.name.to_lower()
+		if lower_name not in ["yardgrass", "yardpacked", "yardpackedwear"]:
 			continue
 		var parent := mesh.get_parent()
 		if parent:
