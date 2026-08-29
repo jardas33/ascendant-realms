@@ -126,6 +126,7 @@ func _build_model() -> void:
 		if recorder and OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1":
 			recorder.record_resource_load(path, "building._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
+		_strip_a01_review_staging(m, path)
 		# scale building to a sensible footprint-based size
 		var target_h: float = _presentation_height()
 		ModelUtils.scale_to_height(m, target_h)
@@ -146,6 +147,26 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
 	_add_selection_pick_shape()
+
+
+func _strip_a01_review_staging(model: Node3D, path: String) -> void:
+	# A01's yard and fence are review-scene staging geometry, not part of the
+	# production main hall. Remove only those named mesh leaves before height,
+	# grounding, and standard collision generation so the authored keep remains
+	# inside the existing gameplay footprint and interaction contract.
+	if path != "res://assets/environment/buildings/barrosan_civic_keep_a01.glb":
+		return
+	for child in model.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh:
+			continue
+		var lower_name := mesh.name.to_lower()
+		if not ("yard" in lower_name or "fence" in lower_name):
+			continue
+		var parent := mesh.get_parent()
+		if parent:
+			parent.remove_child(mesh)
+		mesh.free()
 
 
 func _build_construction_stage_visual() -> void:
