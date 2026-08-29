@@ -1,0 +1,10 @@
+{
+  "direct_progress_write": false,
+  "direct_spawn": false,
+  "queue_result": {
+    "ok": true
+  },
+  "route": "Worker -> public War Hall construction -> natural completion -> War Hall queue -> natural Clan Levy production",
+  "training_seconds": 14,
+  "unit_id": "barrosan_clan_levy"
+}
