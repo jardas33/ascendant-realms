@@ -661,84 +661,131 @@ func _add_command_section(title: String, hint: String = "") -> void:
 # ---------------------------------------------------------------------------
 # 1. TOP BAR
 # ---------------------------------------------------------------------------
+func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String) -> Dictionary:
+	var surface := PanelContainer.new()
+	surface.custom_minimum_size = Vector2(width, 54)
+	surface.mouse_filter = Control.MOUSE_FILTER_STOP
+	surface.tooltip_text = tooltip
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.055, 0.067, 0.085, 0.92)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.48)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(5)
+	sb.set_content_margin_all(6)
+	surface.add_theme_stylebox_override("panel", sb)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", 1)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title_label := _mk_label(title.to_upper(), 9, Color(0.64, 0.67, 0.66))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(title_label)
+	var value_row := HBoxContainer.new()
+	value_row.add_theme_constant_override("separation", 5)
+	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(value_row)
+	surface.add_child(stack)
+	return {"surface": surface, "value_row": value_row}
+
+
 func _build_top_bar() -> void:
 	var panel := _mk_hud_panel()
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	panel.offset_bottom = 66.0
+	panel.offset_bottom = 76.0
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(0, 66)
+	panel.custom_minimum_size = Vector2(0, 76)
 	add_child(panel)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_right", 118)  # keep clear of the Menu button
-	margin.add_theme_constant_override("margin_top", 0)
-	margin.add_theme_constant_override("margin_bottom", 0)
+	margin.add_theme_constant_override("margin_left", 9)
+	margin.add_theme_constant_override("margin_right", 116)  # keep clear of the Menu button
+	margin.add_theme_constant_override("margin_top", 5)
+	margin.add_theme_constant_override("margin_bottom", 5)
 	panel.add_child(margin)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 26)
+	row.add_theme_constant_override("separation", 7)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	margin.add_child(row)
 
+	var resource_accents := {
+		"food": Color(0.96, 0.72, 0.32),
+		"timber": Color(0.76, 0.54, 0.32),
+		"stone": Color(0.63, 0.72, 0.78),
+		"gold": Color(0.98, 0.86, 0.42),
+	}
 	for k in RES_ORDER:
-		var cell := HBoxContainer.new()
-		cell.add_theme_constant_override("separation", 7)
-		cell.add_child(_mk_icon(RES_ICONS[k], 30))
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 106.0, "%s resource" % k.capitalize())
+		var cell: HBoxContainer = metric["value_row"]
+		cell.add_child(_mk_icon(RES_ICONS[k], 22))
 		var l := _mk_label("0", 22)
-		l.custom_minimum_size = Vector2(58, 0)
+		l.custom_minimum_size = Vector2(62, 0)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
 		cell.add_child(l)
-		row.add_child(cell)
+		row.add_child(metric["surface"])
 
 	var sep := VSeparator.new()
-	sep.custom_minimum_size = Vector2(2, 0)
+	sep.custom_minimum_size = Vector2(2, 44)
+	sep.modulate = Color(0.75, 0.62, 0.36, 0.75)
 	row.add_child(sep)
 
-	# population
-	var pop_cell := HBoxContainer.new()
-	pop_cell.add_theme_constant_override("separation", 6)
-	var pop_title := _mk_label("Pop", 17, Color(0.85, 0.83, 0.75))
-	pop_title.custom_minimum_size = Vector2(34, 0)
-	pop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	pop_cell.add_child(pop_title)
-	_pop_label = _mk_label("0/0", 22)
-	_pop_label.custom_minimum_size = Vector2(64, 0)
+	# Population remains a force metric rather than another resource number.
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 112.0, "Population: current units / population cap")
+	var pop_cell: HBoxContainer = pop_metric["value_row"]
+	var pop_badge := _mk_command_badge("POP", COMMAND_GOLD, 30.0)
+	pop_cell.add_child(pop_badge)
+	_pop_label = _mk_label("0/0", 20)
+	_pop_label.custom_minimum_size = Vector2(62, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
-	row.add_child(pop_cell)
+	row.add_child(pop_metric["surface"])
 
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	_opponent_count_label = _mk_label("Opponents 0", 16, Color(0.82, 0.84, 0.78))
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 112.0, "Living opposing commanders")
+	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
+	_opponent_count_label = _mk_label("0", 19, Color(0.88, 0.82, 0.72))
 	_opponent_count_label.name = "OpponentCountLabel"
-	_opponent_count_label.custom_minimum_size = Vector2(100, 0)
+	_opponent_count_label.custom_minimum_size = Vector2(92, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	row.add_child(_opponent_count_label)
+	opponent_cell.add_child(_opponent_count_label)
+	row.add_child(opponent_metric["surface"])
 
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	_idle_worker_label = _mk_label("Idle 0", 16, Color(0.72, 0.73, 0.68))
-	_idle_worker_label.custom_minimum_size = Vector2(70, 0)
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 112.0, "Workers without an active order")
+	var worker_cell: HBoxContainer = worker_metric["value_row"]
+	worker_cell.add_child(_mk_command_badge("W", COMMAND_MINT, 24.0))
+	_idle_worker_label = _mk_label("0", 19, Color(0.78, 0.9, 0.76))
+	_idle_worker_label.custom_minimum_size = Vector2(72, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	row.add_child(_idle_worker_label)
+	worker_cell.add_child(_idle_worker_label)
+	row.add_child(worker_metric["surface"])
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	_idle_military_label = _mk_label("Idle Army 0", 16, Color(0.72, 0.73, 0.68))
-	_idle_military_label.custom_minimum_size = Vector2(96, 0)
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 106.0, "Military units without an active order")
+	var army_cell: HBoxContainer = army_metric["value_row"]
+	army_cell.add_child(_mk_command_badge("A", COMMAND_SKY, 24.0))
+	_idle_military_label = _mk_label("0", 19, Color(0.78, 0.86, 0.96))
+	_idle_military_label.custom_minimum_size = Vector2(68, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	row.add_child(_idle_military_label)
+	army_cell.add_child(_idle_military_label)
+	row.add_child(army_metric["surface"])
 
 	# age / tier
-	_tier_label = _mk_label("Age I", 22, Color(0.98, 0.88, 0.55))
-	_tier_label.custom_minimum_size = Vector2(68, 0)
+	var tier_metric := _top_metric_surface("Progression", COMMAND_GOLD, 106.0, "Current Age")
+	var tier_cell: HBoxContainer = tier_metric["value_row"]
+	_tier_label = _mk_label("Age I", 19, Color(0.98, 0.88, 0.55))
+	_tier_label.custom_minimum_size = Vector2(92, 0)
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	row.add_child(_tier_label)
+	tier_cell.add_child(_tier_label)
+	row.add_child(tier_metric["surface"])
 
 	# menu button (top-right corner)
 	var menu_btn := _mk_button("Menu", 16)
@@ -780,7 +827,7 @@ func _refresh_opponent_count() -> void:
 		var cmd = world.commanders[i]
 		if is_instance_valid(cmd) and not cmd.defeated:
 			count += 1
-	_opponent_count_label.text = "Opponents %d" % count
+	_opponent_count_label.text = str(count)
 
 
 # ---------------------------------------------------------------------------
@@ -1140,7 +1187,7 @@ func _count_meaningfully_idle_military() -> int:
 func _on_idle_worker_count(count: int) -> void:
 	if not is_instance_valid(_idle_worker_label):
 		return
-	_idle_worker_label.text = "Idle %d" % count
+	_idle_worker_label.text = str(count)
 	_idle_worker_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
@@ -1148,7 +1195,7 @@ func _on_idle_worker_count(count: int) -> void:
 func _on_idle_military_count(count: int) -> void:
 	if not is_instance_valid(_idle_military_label):
 		return
-	_idle_military_label.text = "Idle Army %d" % count
+	_idle_military_label.text = str(count)
 	_idle_military_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
