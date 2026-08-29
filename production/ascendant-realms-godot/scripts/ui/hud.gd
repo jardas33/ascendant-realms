@@ -13,6 +13,7 @@ const FONT_PATH := "res://assets/fonts/cinzel.ttf"
 const THEME_PATH := "res://assets/ui/theme.tres"
 const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
+const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 200.0
 const MINIMAP_RASTER_SIZE := 128
@@ -69,6 +70,7 @@ var _sel_panel: PanelContainer = null
 var _sel_body: Control = null
 var _cmd_panel: PanelContainer = null
 var _cmd_body: Control = null
+var _command_tooltip: PanelContainer = null
 
 # live-tracked selection widgets (refreshed in _process)
 var _tracked_single = null             # currently shown single Unit/Building
@@ -483,6 +485,66 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	return badge
 
 
+func _mk_command_keycap(text: String, accent: Color) -> PanelContainer:
+	var cap := PanelContainer.new()
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cap.custom_minimum_size = Vector2(30, 25)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.035, 0.045, 0.06, 0.98)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.95)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(5)
+	sb.set_content_margin_all(3)
+	cap.add_theme_stylebox_override("panel", sb)
+	var label := _mk_label(text, 11, Color(1.0, 0.96, 0.82))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	cap.add_child(label)
+	return cap
+
+
+func _command_icon_kind(title: String, command_kind: String) -> String:
+	if command_kind == "ABILITY":
+		return "ability"
+	var haystack := title.to_lower()
+	if haystack.contains("attack"):
+		return "attack"
+	if haystack.contains("stop"):
+		return "stop"
+	if haystack.contains("hold"):
+		return "hold"
+	if haystack.contains("patrol"):
+		return "patrol"
+	if command_kind == "BUILD":
+		return "build"
+	if command_kind == "TRAIN":
+		return "train"
+	if command_kind == "RESEARCH":
+		return "research"
+	return "command"
+
+
+func _mk_command_icon(kind: String, accent: Color, size_px: float) -> Control:
+	if not ResourceLoader.exists(COMMAND_GLYPH_SCRIPT):
+		return Control.new()
+	var icon: Control = load(COMMAND_GLYPH_SCRIPT).new()
+	icon.custom_minimum_size = Vector2(size_px, size_px)
+	icon.size = Vector2(size_px, size_px)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.configure(kind, accent)
+	return icon
+
+
+func _command_icon_stylebox(accent: Color, ability_card: bool) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.18 if ability_card else 0.10)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.96)
+	sb.set_border_width_all(2 if ability_card else 1)
+	sb.set_corner_radius_all(8 if ability_card else 6)
+	sb.set_content_margin_all(3)
+	return sb
+
+
 func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: String, accent: Color) -> void:
 	var chip := PanelContainer.new()
 	chip.custom_minimum_size = Vector2(64, 34)
@@ -583,13 +645,14 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
 	else:
-		var glyph := _mk_command_badge(_command_glyph(title), accent, 34.0)
-		glyph.position = Vector2(8, 8)
-		glyph.size = Vector2(38 if ability_card else 34, 38 if ability_card else 34)
-		if ability_card:
-			glyph.custom_minimum_size = Vector2(38, 38)
-			glyph.add_theme_stylebox_override("panel", _ability_glyph_stylebox(accent))
-		btn.add_child(glyph)
+		var glyph_plate := PanelContainer.new()
+		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		glyph_plate.position = Vector2(8, 8)
+		glyph_plate.size = Vector2(38 if ability_card else 34, 38 if ability_card else 34)
+		glyph_plate.custom_minimum_size = glyph_plate.size
+		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
+		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 30.0 if ability_card else 26.0))
+		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(54 if ability_card else 51, 8)
 		var text_height := (card_height - 42 if ability_card else (96 if role_card else 82)) if has_effect else 64
@@ -612,11 +675,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
-		var key_badge := _mk_command_badge(hotkey, Color(0.95, 0.9, 0.76), 24.0)
-		key_badge.position = Vector2(8, 8) if ability_card else Vector2(158, 8)
-		key_badge.size = Vector2(38, 38) if ability_card else Vector2(24, 20)
-		if ability_card:
-			key_badge.visible = false
+		var key_badge := _mk_command_keycap(hotkey, accent)
+		key_badge.position = Vector2(154, 8)
+		key_badge.size = Vector2(28, 24)
 		btn.add_child(key_badge)
 	var kind_badge := _mk_command_badge(command_kind, accent, 64.0 if ability_card else 58.0)
 	kind_badge.position = Vector2(8, card_height - 27)
@@ -633,7 +694,13 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
 		tooltip_text += "\nHotkey: " + hotkey
-	btn.tooltip_text = tooltip_text if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip_text, disabled_reason]
+	var full_tooltip := tooltip_text if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip_text, disabled_reason]
+	# The default floating tooltip is intentionally replaced by the anchored
+	# command tooltip panel so the information stays compact and deliberate.
+	btn.tooltip_text = ""
+	btn.set_meta("command_tooltip_text", full_tooltip)
+	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, disabled_reason, accent))
+	btn.mouse_exited.connect(_hide_command_tooltip)
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = Color(0.055, 0.09, 0.145, 0.99) if ability_card else COMMAND_SURFACE
 	normal.border_color = Color(accent.r, accent.g, accent.b, 0.68)
@@ -1978,8 +2045,71 @@ func _build_command_panel() -> void:
 	scroll.add_child(_cmd_body)
 	_cmd_panel.visible = false
 
+	_command_tooltip = PanelContainer.new()
+	_command_tooltip.name = "CommandTooltip"
+	_command_tooltip.visible = false
+	_command_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_command_tooltip.custom_minimum_size = Vector2(270, 0)
+	var tooltip_style := _hud_stylebox()
+	tooltip_style.bg_color = Color(0.035, 0.045, 0.06, 0.985)
+	tooltip_style.border_color = Color(0.88, 0.72, 0.36, 0.98)
+	tooltip_style.set_border_width_all(2)
+	tooltip_style.set_corner_radius_all(7)
+	tooltip_style.set_content_margin_all(10)
+	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
+	add_child(_command_tooltip)
+
+
+func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip: String, disabled_reason: String, accent: Color) -> void:
+	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel):
+		return
+	_clear_children(_command_tooltip)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", 5)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 7)
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(_mk_label(title, 13, FONT_COLOR))
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(spacer)
+	header.add_child(_mk_command_badge(kind, accent, 64.0))
+	if not hotkey.is_empty():
+		header.add_child(_mk_command_keycap(hotkey, accent))
+	stack.add_child(header)
+	var rule := HSeparator.new()
+	rule.modulate = Color(accent.r, accent.g, accent.b, 0.72)
+	stack.add_child(rule)
+	var body_text := tooltip.strip_edges()
+	if not disabled_reason.is_empty():
+		body_text += "\nUnavailable: " + disabled_reason
+	var body := _mk_label(body_text, 10, Color(0.88, 0.87, 0.8))
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	body.custom_minimum_size = Vector2(244, 0)
+	stack.add_child(body)
+	_command_tooltip.add_child(stack)
+	_command_tooltip.reset_size()
+	var deck_rect := _cmd_panel.get_global_rect()
+	var viewport_size := get_viewport_rect().size
+	var tooltip_size := _command_tooltip.size
+	var tooltip_pos := Vector2(deck_rect.position.x + 8.0, deck_rect.position.y - tooltip_size.y - 10.0)
+	if tooltip_pos.y < 8.0:
+		tooltip_pos.y = deck_rect.end.y + 8.0
+	_command_tooltip.position = Vector2(
+		clampf(tooltip_pos.x, 8.0, maxf(8.0, viewport_size.x - tooltip_size.x - 8.0)),
+		clampf(tooltip_pos.y, 8.0, maxf(8.0, viewport_size.y - tooltip_size.y - 8.0)))
+	_command_tooltip.visible = true
+
+
+func _hide_command_tooltip() -> void:
+	if is_instance_valid(_command_tooltip):
+		_command_tooltip.visible = false
+
 
 func _rebuild_command_card(single, selection: Array) -> void:
+	_hide_command_tooltip()
 	_clear_children(_cmd_body)
 	if is_instance_valid(_inspection_target):
 		_cmd_panel.visible = false

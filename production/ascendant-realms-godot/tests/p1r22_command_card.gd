@@ -82,10 +82,49 @@ func _begin() -> void:
 	for _i in 12: await get_tree().process_frame
 	var command_panel := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
 	var command_buttons: Array = command_panel.find_children("*", "Button", true, false) if command_panel else []
+	var command_tooltip := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandTooltip", true, false)
+	var selection_switch_regression := false
+	if _view == "selection_switch":
+		var switch_targets: Array = [target]
+		for unit in get_tree().get_nodes_in_group("units"):
+			if unit.team == 0 and not unit.is_worker and not unit.is_hero and not unit.is_dead:
+				switch_targets.append(unit)
+				break
+		for unit in get_tree().get_nodes_in_group("units"):
+			if unit.team == 0 and unit.is_hero and not unit.is_dead:
+				switch_targets.append(unit)
+				break
+		for building in _world.all_buildings():
+			if building.team == 0 and (bool(building.def.get("is_hq", false)) or building.def.get("kind", "") == "main"):
+				switch_targets.append(building)
+				break
+		if switch_targets.size() < 4:
+			_failures.append("selection_switch_targets_missing")
+		else:
+			Input.warp_mouse(Vector2(20, 20))
+			if is_instance_valid(command_tooltip): command_tooltip.hide()
+			for switch_target in switch_targets:
+				_rts._clear_selection()
+				_rts._add_to_selection(switch_target)
+				_rts.emit_signal("selection_changed", _rts.selected)
+				Input.warp_mouse(Vector2(20, 20))
+				for _i in 8: await get_tree().process_frame
+				var switched_panel := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
+				var switched_buttons: Array = switched_panel.find_children("*", "Button", true, false) if switched_panel else []
+				if switched_buttons.is_empty():
+					_failures.append("selection_switch_command_surface_missing")
+			_rts._clear_selection()
+			_rts._add_to_selection(target)
+			_rts.emit_signal("selection_changed", _rts.selected)
+			for _i in 8: await get_tree().process_frame
+			command_panel = get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
+			command_buttons = command_panel.find_children("*", "Button", true, false) if command_panel else []
+			command_tooltip = get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandTooltip", true, false)
+			selection_switch_regression = _failures.is_empty()
 	if _view == "hero_cooldown":
 		var cast_button = null
 		for command_button in command_buttons:
-			if String(command_button.tooltip_text).contains("Ground Slam"):
+			if String(command_button.get_meta("command_tooltip_text", "")).contains("Ground Slam"):
 				cast_button = command_button
 				break
 		if cast_button == null:
@@ -97,11 +136,16 @@ func _begin() -> void:
 				_failures.append("public_slam_did_not_enter_cooldown")
 	if _view == "tooltip":
 		var tooltip_button = command_buttons[0] if not command_buttons.is_empty() else null
-		if tooltip_button == null or String(tooltip_button.tooltip_text).is_empty():
+		if tooltip_button == null or String(tooltip_button.get_meta("command_tooltip_text", "")).is_empty():
 			_failures.append("missing_genuine_command_tooltip")
 		else:
 			Input.warp_mouse(tooltip_button.get_global_rect().get_center())
+			# Headless/windowed capture does not always synthesize a hover signal
+			# after warp_mouse; exercise the same production signal path directly.
+			tooltip_button.mouse_entered.emit()
 			for _i in 48: await get_tree().process_frame
+			if not is_instance_valid(command_tooltip) or not command_tooltip.visible:
+				_failures.append("anchored_command_tooltip_not_visible")
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	if image == null or image.is_empty(): _failures.append("empty_frame")
@@ -113,11 +157,11 @@ func _begin() -> void:
 		var commander_race := str(player_commander.race) if player_commander else ""
 		var available_buildings: Array = GameData.buildings_for_race(commander_race) if not commander_race.is_empty() else []
 		var png := _output.path_join("%s.png" % OS.get_environment("ASCENDANT_P1R22_NAME")); image.save_png(png)
-		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts,"commander_race":commander_race,"available_building_count":available_buildings.size(),"command_body_child_count":command_panel.get_child_count() if command_panel else 0,"hero_ability_review_fixture":_view == "hero"})
+		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts,"commander_race":commander_race,"available_building_count":available_buildings.size(),"command_body_child_count":command_panel.get_child_count() if command_panel else 0,"command_tooltip_visible":is_instance_valid(command_tooltip) and command_tooltip.visible,"selection_switch_regression":selection_switch_regression,"hero_ability_review_fixture":_view == "hero"})
 	_write_manifest(); get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _pick_target():
-	if _view == "worker" or _view == "worker_build" or _view == "tooltip":
+	if _view == "worker" or _view == "worker_build" or _view == "tooltip" or _view == "selection_switch":
 		for u in get_tree().get_nodes_in_group("units"):
 			if u.team == 0 and bool(u.is_worker): return u
 	if _view == "military" or _view == "hero" or _view == "hero_cooldown":
