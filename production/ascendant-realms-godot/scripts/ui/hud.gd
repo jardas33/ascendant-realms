@@ -561,10 +561,12 @@ func _mk_command_icon(kind: String, accent: Color, size_px: float) -> Control:
 
 func _command_icon_stylebox(accent: Color, ability_card: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.18 if ability_card else 0.10)
+	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.22 if ability_card else 0.14)
 	sb.border_color = Color(accent.r, accent.g, accent.b, 0.96)
-	sb.set_border_width_all(2 if ability_card else 1)
-	sb.set_corner_radius_all(8 if ability_card else 6)
+	sb.set_border_width_all(0)
+	sb.border_width_left = 2
+	sb.border_width_bottom = 1
+	sb.set_corner_radius_all(4)
 	sb.set_content_margin_all(3)
 	return sb
 
@@ -633,9 +635,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	var card_height := 122 if ability_card else (102 if (not has_preview and detail.contains("\n")) else (82 if has_preview else 84))
+	var card_height := 104 if ability_card else (92 if (not has_preview and detail.contains("\n")) else (76 if has_preview else 74))
 	if has_effect:
-		card_height = 116 if role_card else (122 if ability_card else 102)
+		card_height = 100 if role_card else (108 if ability_card else 90)
 	btn.custom_minimum_size = Vector2(190, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -644,22 +646,22 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(7, 8)
-		preview.size = Vector2(48, 48)
-		preview.custom_minimum_size = Vector2(48, 48)
+		preview.position = Vector2(8, 9)
+		preview.size = Vector2(46, 46)
+		preview.custom_minimum_size = Vector2(46, 46)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
 		# EntityPortraitView raises its own minimum to 112px for full-size cards;
 		# defer the compact-card override until its _ready() has run so the preview
 		# cannot expand back over the cost text column.
-		preview.set_deferred("custom_minimum_size", Vector2(48, 48))
-		preview.set_deferred("size", Vector2(48, 48))
+		preview.set_deferred("custom_minimum_size", Vector2(46, 46))
+		preview.set_deferred("size", Vector2(46, 46))
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(62, 8)
+		text_col.position = Vector2(60, 8)
 		var preview_text_height := card_height - 42 if has_effect else 62
-		text_col.size = Vector2(122, preview_text_height)
-		text_col.custom_minimum_size = Vector2(122, preview_text_height)
+		text_col.size = Vector2(136, preview_text_height)
+		text_col.custom_minimum_size = Vector2(136, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_label := _mk_label(title, 11, FONT_COLOR)
@@ -675,17 +677,17 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(8, 8)
-		glyph_plate.size = Vector2(38 if ability_card else 34, 38 if ability_card else 34)
+		glyph_plate.position = Vector2(8, 9)
+		glyph_plate.size = Vector2(40 if ability_card else 38, 40 if ability_card else 38)
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
-		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 30.0 if ability_card else 26.0))
+		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 31.0 if ability_card else 29.0))
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(54 if ability_card else 51, 8)
+		text_col.position = Vector2(58 if ability_card else 55, 8)
 		var text_height := (card_height - 42 if ability_card else (96 if role_card else 82)) if has_effect else 64
-		text_col.size = Vector2(126, text_height)
-		text_col.custom_minimum_size = Vector2(126, text_height)
+		text_col.size = Vector2(140, text_height)
+		text_col.custom_minimum_size = Vector2(140, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
@@ -707,17 +709,20 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		key_badge.position = Vector2(154, 8)
 		key_badge.size = Vector2(28, 24)
 		btn.add_child(key_badge)
-	var kind_badge := _mk_command_badge(command_kind, accent, 64.0 if ability_card else 58.0)
-	kind_badge.position = Vector2(8, card_height - 27)
-	kind_badge.size = Vector2(70 if ability_card else 58, 20)
-	btn.add_child(kind_badge)
+	var kind_label := _mk_label(command_kind, 9, Color(accent.r, accent.g, accent.b, 0.82))
+	kind_label.position = Vector2(9, card_height - 20)
+	kind_label.size = Vector2(86, 16)
+	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_badge := _mk_command_badge(status, accent if status != "UNAVAILABLE" else COMMAND_MUTED, 70.0 if ability_card else 58.0)
-		status_badge.position = Vector2(112 if ability_card else 126, card_height - 27)
-		status_badge.size = Vector2(70 if ability_card else 58, 20)
-		btn.add_child(status_badge)
-		btn.set_meta("command_status_label", status_badge.get_child(0))
+		var status_label := _mk_label(status, 9, accent if status != "UNAVAILABLE" else COMMAND_MUTED)
+		status_label.position = Vector2(118 if ability_card else 132, card_height - 20)
+		status_label.size = Vector2(68, 16)
+		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(status_label)
+		btn.set_meta("command_status_label", status_label)
 	btn.set_meta("command_kind", command_kind)
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
@@ -730,15 +735,18 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, disabled_reason, accent))
 	btn.mouse_exited.connect(_hide_command_tooltip)
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.055, 0.09, 0.145, 0.99) if ability_card else COMMAND_SURFACE
+	normal.bg_color = Color(0.055, 0.09, 0.145, 0.99) if ability_card else Color(0.065, 0.08, 0.095, 0.98)
 	normal.border_color = Color(accent.r, accent.g, accent.b, 0.68)
-	normal.set_border_width_all(2 if ability_card else 1)
-	normal.set_corner_radius_all(8 if ability_card else 6)
-	normal.set_content_margin_all(6)
+	normal.set_border_width_all(0)
+	normal.border_width_left = 3 if ability_card else 2
+	normal.border_width_bottom = 1
+	normal.set_corner_radius_all(5)
+	normal.set_content_margin_all(5)
 	var hover := normal.duplicate()
 	hover.bg_color = Color(accent.r, accent.g, accent.b, 0.17)
 	hover.border_color = accent
-	hover.set_border_width_all(2)
+	hover.border_width_left = 3
+	hover.border_width_bottom = 2
 	var pressed := hover.duplicate()
 	pressed.bg_color = Color(accent.r, accent.g, accent.b, 0.28)
 	var disabled := normal.duplicate()
@@ -811,31 +819,47 @@ func _add_command_section(title: String, hint: String = "") -> void:
 # 1. TOP BAR
 # ---------------------------------------------------------------------------
 func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String) -> Dictionary:
-	var surface := PanelContainer.new()
-	surface.custom_minimum_size = Vector2(width, 58)
+	# Metrics live inside a family ribbon rather than reading as independent
+	# telemetry cards. The value row contract is retained so all authoritative
+	# refresh handlers remain unchanged.
+	var surface := VBoxContainer.new()
+	surface.custom_minimum_size = Vector2(width, 53)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.06, 0.072, 0.086, 0.72)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.72)
-	sb.border_width_left = 2
-	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(3)
-	sb.set_content_margin_all(7)
-	surface.add_theme_stylebox_override("panel", sb)
-	var stack := VBoxContainer.new()
-	stack.add_theme_constant_override("separation", 1)
-	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var title_label := _mk_label(title.to_upper(), 10, HUD_TEXT_MUTED)
+	surface.add_theme_constant_override("separation", 1)
+	var title_label := _mk_label(title.to_upper(), 9, accent.lerp(HUD_TEXT_MUTED, 0.42))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stack.add_child(title_label)
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	surface.add_child(title_label)
 	var value_row := HBoxContainer.new()
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stack.add_child(value_row)
-	surface.add_child(stack)
+	value_row.custom_minimum_size = Vector2(0, 34)
+	surface.add_child(value_row)
 	return {"surface": surface, "value_row": value_row}
+
+
+func _top_group(title: String, accent: Color, width: float) -> Dictionary:
+	var group := VBoxContainer.new()
+	group.custom_minimum_size = Vector2(width, 62)
+	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	group.add_theme_constant_override("separation", 2)
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var heading := _mk_label(title, 9, accent)
+	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(heading)
+	var rule := ColorRect.new()
+	rule.custom_minimum_size = Vector2(0, 2)
+	rule.color = Color(accent.r, accent.g, accent.b, 0.66)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(rule)
+	var metrics := HBoxContainer.new()
+	metrics.add_theme_constant_override("separation", 5)
+	metrics.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(metrics)
+	return {"group": group, "metrics": metrics}
 
 
 func _build_top_bar() -> void:
@@ -856,7 +880,7 @@ func _build_top_bar() -> void:
 	panel.add_child(margin)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 4)
+	row.add_theme_constant_override("separation", 10)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	margin.add_child(row)
 
@@ -866,76 +890,84 @@ func _build_top_bar() -> void:
 		"stone": Color(0.63, 0.72, 0.78),
 		"gold": Color(0.98, 0.86, 0.42),
 	}
+	var economy := _top_group("ECONOMY", COMMAND_GOLD, 370.0)
+	var economy_metrics: HBoxContainer = economy["metrics"]
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 104.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 86.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
 		cell.add_child(_mk_icon(RES_ICONS[k], 22))
-		var l := _mk_label("0", 22)
-		l.custom_minimum_size = Vector2(62, 0)
+		var l := _mk_label("0", 22, FONT_COLOR)
+		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
 		cell.add_child(l)
-		row.add_child(metric["surface"])
+		economy_metrics.add_child(metric["surface"])
+	row.add_child(economy["group"])
 
 	var sep := VSeparator.new()
-	sep.custom_minimum_size = Vector2(2, 44)
-	sep.modulate = Color(0.75, 0.62, 0.36, 0.75)
+	sep.custom_minimum_size = Vector2(1, 46)
+	sep.modulate = Color(0.75, 0.62, 0.36, 0.62)
 	row.add_child(sep)
 
+	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 385.0)
+	var force_metrics: HBoxContainer = force["metrics"]
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 108.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 94.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	var pop_badge := _mk_command_badge("POP", COMMAND_GOLD, 30.0)
-	pop_cell.add_child(pop_badge)
-	_pop_label = _mk_label("0/0", 20)
-	_pop_label.custom_minimum_size = Vector2(62, 0)
+	pop_cell.add_child(_mk_icon(RES_ICONS["food"], 18))
+	_pop_label = _mk_label("0/0", 19)
+	_pop_label.custom_minimum_size = Vector2(68, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
-	row.add_child(pop_metric["surface"])
+	force_metrics.add_child(pop_metric["surface"])
 
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 108.0, "Living opposing commanders")
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 88.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
 	_opponent_count_label = _mk_label("0", 19, Color(0.88, 0.82, 0.72))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(92, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	opponent_cell.add_child(_opponent_count_label)
-	row.add_child(opponent_metric["surface"])
+	force_metrics.add_child(opponent_metric["surface"])
 
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 108.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 98.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_command_badge("W", COMMAND_MINT, 24.0))
+	worker_cell.add_child(_mk_icon(RES_ICONS["food"], 18))
 	_idle_worker_label = _mk_label("0", 19, Color(0.78, 0.9, 0.76))
 	_idle_worker_label.custom_minimum_size = Vector2(72, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
-	row.add_child(worker_metric["surface"])
+	force_metrics.add_child(worker_metric["surface"])
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 104.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 94.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_command_badge("A", COMMAND_SKY, 24.0))
+	army_cell.add_child(_mk_icon(RES_ICONS["stone"], 18))
 	_idle_military_label = _mk_label("0", 19, Color(0.78, 0.86, 0.96))
 	_idle_military_label.custom_minimum_size = Vector2(68, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
-	row.add_child(army_metric["surface"])
+	force_metrics.add_child(army_metric["surface"])
+	row.add_child(force["group"])
 
 	# age / tier
-	var tier_metric := _top_metric_surface("Age / Progression", COMMAND_GOLD, 116.0, "Current Age")
+	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 126.0)
+	var progression_metrics: HBoxContainer = progression["metrics"]
+	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 116.0, "Current Age")
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
 	_tier_label = _mk_label("Age I", 19, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(92, 0)
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_cell.add_child(_tier_label)
-	row.add_child(tier_metric["surface"])
+	progression_metrics.add_child(tier_metric["surface"])
+	row.add_child(progression["group"])
 
 	# menu button (top-right corner)
 	var menu_btn := _mk_button("Menu", 16)
@@ -1057,7 +1089,6 @@ func _draw_minimap() -> void:
 		else:
 			_minimap.draw_rect(Rect2(Vector2.ZERO, size), _minimap_theme_color(str(world.map.get("theme", "highland")), false), true)
 		_draw_minimap_terrain(size)
-	_draw_minimap_roads(size)
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
 		var bridge_p := _world_to_map(bridge_data["pos"])
@@ -1127,19 +1158,30 @@ func _draw_minimap() -> void:
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
-	# Subtle grid and broad land shelves create tactical scale without adding
-	# fake gameplay zones or a second map representation.
-	var edge := Color(0.10, 0.13, 0.10, 0.62)
-	for i in range(1, MINIMAP_GRID_DIVISIONS):
-		var x := size.x * float(i) / float(MINIMAP_GRID_DIVISIONS)
-		var y := size.y * float(i) / float(MINIMAP_GRID_DIVISIONS)
-		_minimap.draw_line(Vector2(x, 0), Vector2(x, size.y), Color(0.86, 0.84, 0.68, 0.10), 1.0, true)
-		_minimap.draw_line(Vector2(0, y), Vector2(size.x, y), Color(0.86, 0.84, 0.68, 0.10), 1.0, true)
-	_minimap.draw_rect(Rect2(Vector2(7, 7), size - Vector2(14, 14)), edge, false, 5.0)
+	# The cached image is the geographic base: terrain, water and coast edges
+	# carry the spatial read. Avoid a second schematic road drawing over it.
+	var edge := Color(0.78, 0.72, 0.54, 0.42)
+	_minimap.draw_rect(Rect2(Vector2(6, 6), size - Vector2(12, 12)), edge, false, 2.0)
+	var water: Dictionary = world.map.get("water", {})
+	var overview: Dictionary = world.map.get("overview", {})
+	if bool(water.get("enabled", false)):
+		var axis := str(overview.get("water_axis", "north_bay"))
+		var center_z := float(overview.get("water_center_z", 118.0))
+		var half_width := float(overview.get("water_width", 34.0)) * 0.5
+		var top_edge := _world_to_map(Vector3(-MAP_HALF, 0.0, center_z - half_width))
+		var bottom_edge := _world_to_map(Vector3(MAP_HALF, 0.0, center_z - half_width))
+		if axis == "crossing":
+			var crossing_top := _world_to_map(Vector3(-MAP_HALF, 0.0, center_z - half_width))
+			var crossing_bottom := _world_to_map(Vector3(MAP_HALF, 0.0, center_z + half_width))
+			_minimap.draw_line(crossing_top, Vector2(size.x, crossing_top.y), Color(0.44, 0.78, 0.82, 0.54), 2.0, true)
+			_minimap.draw_line(Vector2(0, crossing_bottom.y), crossing_bottom, Color(0.16, 0.42, 0.52, 0.42), 1.0, true)
+		else:
+			_minimap.draw_line(top_edge, bottom_edge, Color(0.44, 0.78, 0.82, 0.54), 2.0, true)
+			_minimap.draw_line(Vector2(0, top_edge.y + 4.0), Vector2(size.x, bottom_edge.y + 4.0), Color(0.16, 0.42, 0.52, 0.38), 1.0, true)
 	for start in world.map.get("start_positions", []):
 		var p := _world_to_map(start)
-		_draw_minimap_region(p, Vector2(19.0, 15.0), Color(0.75, 0.68, 0.42, 0.07), Color(0.78, 0.72, 0.48, 0.56))
-	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(17.0, 14.0), Color(0.9, 0.78, 0.38, 0.06), Color(0.9, 0.78, 0.38, 0.38))
+		_draw_minimap_region(p, Vector2(17.0, 13.0), Color(0.75, 0.68, 0.42, 0.035), Color(0.78, 0.72, 0.48, 0.34))
+	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(15.0, 12.0), Color(0.9, 0.78, 0.38, 0.03), Color(0.9, 0.78, 0.38, 0.26))
 
 func _draw_minimap_frame(size: Vector2) -> void:
 	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 5.0)
@@ -1166,20 +1208,10 @@ func _draw_minimap_resource(p: Vector2, col: Color) -> void:
 	_minimap.draw_line(p + Vector2(-1.5, -1.5), p + Vector2(1.5, 1.5), Color(1, 1, 1, 0.55), 1.0, true)
 
 
-func _draw_minimap_roads(size: Vector2) -> void:
-	if not is_instance_valid(world):
-		return
-	var road_shadow := Color(0.12, 0.13, 0.1, 0.8)
-	var road := Color(0.68, 0.55, 0.33, 0.92)
-	var overview: Dictionary = world.map.get("overview", {})
-	for route in overview.get("roads", []):
-		if not route is Array or route.size() < 2:
-			continue
-		var points := PackedVector2Array()
-		for world_point in route:
-			points.append(_world_to_map(world_point))
-		_minimap.draw_polyline(points, road_shadow, 9.0, true)
-		_minimap.draw_polyline(points, road, 5.0, true)
+func _draw_minimap_roads(_size: Vector2) -> void:
+	# Retained as a compatibility seam for older callers. The live overlay no
+	# longer paints a schematic road network over the geographic map base.
+	return
 
 func _draw_minimap_region(center: Vector2, radius: Vector2, fill: Color, edge: Color) -> void:
 	var points := PackedVector2Array()
@@ -1218,7 +1250,6 @@ func _ensure_minimap_background() -> void:
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
 	var base := _minimap_theme_color(theme_name, false)
-	var accent := _minimap_theme_color(theme_name, true)
 	var water_enabled := bool(water.get("enabled", false))
 	var axis := str(overview.get("water_axis", "north_bay"))
 	var center_z := float(overview.get("water_center_z", 118.0))
@@ -1241,14 +1272,6 @@ func _ensure_minimap_background() -> void:
 					col = deep
 				elif distance < 5.0:
 					col = shallow.lerp(base, distance / 5.0)
-			var road_distance := 9999.0
-			for route in overview.get("roads", []):
-				if not route is Array:
-					continue
-				for index in range(route.size() - 1):
-					road_distance = minf(road_distance, _minimap_segment_distance(wp, route[index], route[index + 1]))
-			if road_distance < 6.0:
-				col = Color(0.16, 0.13, 0.09, 1.0) if road_distance < 2.3 else accent.darkened(0.12)
 			image.set_pixel(x, y, col)
 	_minimap_background = ImageTexture.create_from_image(image)
 	_minimap_background_key = cache_key
