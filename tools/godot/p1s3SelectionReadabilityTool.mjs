@@ -20,10 +20,9 @@ function withCaptureAutoload(fn) {
   const file = path.join(project, "project.godot");
   const original = readFileSync(file, "utf8");
   const marker = 'P1S3Capture="*res://tests/p1s3_selection_readability.gd"';
-  const patched = original.includes(marker) ? original : original.replace(
-    'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"',
-    'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"\n' + marker,
-  );
+  const patched = original.includes(marker) ? original : original.includes("[autoload]\n")
+    ? original.replace("[autoload]\n", "[autoload]\n" + marker + "\n")
+    : (() => { throw new Error("project.godot has no [autoload] section"); })();
   writeFileSync(file, patched);
   try { return fn(); } finally { writeFileSync(file, original); }
 }

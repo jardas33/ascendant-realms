@@ -408,6 +408,10 @@ func _command_hotkey(title: String) -> String:
 
 func _command_glyph(title: String) -> String:
 	var haystack := title.to_lower()
+	if haystack.contains("rally"):
+		return "Q"
+	if haystack.contains("slam"):
+		return "W"
 	if haystack.contains("attack"):
 		return "A"
 	if haystack.contains("stop"):
@@ -436,6 +440,8 @@ func _command_glyph(title: String) -> String:
 func _command_accent(title: String, state: String) -> Color:
 	if state == "LOCKED":
 		return COMMAND_MUTED
+	if state == "COOLDOWN":
+		return Color(0.52, 0.7, 0.9)
 	var haystack := title.to_lower()
 	if haystack.contains("attack"):
 		return COMMAND_FLAME
@@ -507,8 +513,8 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect") -> Button:
-	var state_text := "LOCKED · " if state == "LOCKED" else ""
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "") -> Button:
+	var state_text := "LOCKED · " if state == "LOCKED" else ("COOLDOWN · " if state == "COOLDOWN" else "")
 	var has_preview := not preview_definition.is_empty()
 	var effect_text := visible_effect.strip_edges()
 	var has_effect := not effect_text.is_empty()
@@ -517,9 +523,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_effect:
 		detail_text += "\n" + visible_effect_prefix + ": " + effect_text
 	var accent := _command_accent(title, state)
-	var hotkey := _command_hotkey(title)
+	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	var card_height := 82 if has_preview else 84
+	var card_height := 102 if (not has_preview and detail.contains("\n")) else (82 if has_preview else 84)
 	if has_effect:
 		card_height = 116 if role_card else 102
 	btn.custom_minimum_size = Vector2(190, card_height)
@@ -590,11 +596,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		key_badge.size = Vector2(24, 20)
 		btn.add_child(key_badge)
 	if not has_preview:
-		var status := "UNAVAILABLE" if not disabled_reason.is_empty() else ("ACTIVE" if state == "ACTIVE" else "READY")
+		var status := state if state in ["READY", "ACTIVE", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
 		var status_badge := _mk_command_badge(status, accent if status != "UNAVAILABLE" else COMMAND_MUTED, 58.0)
 		status_badge.position = Vector2(126, card_height - 27)
 		status_badge.size = Vector2(58, 20)
 		btn.add_child(status_badge)
+		btn.set_meta("command_status_label", status_badge.get_child(0))
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
 		tooltip_text += "\nHotkey: " + hotkey
@@ -1448,38 +1455,6 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		var public_role := String(u.def.get("role", "unit")).capitalize()
 		_single_stat_label.text = "Hostile · %s" % public_role
 
-	# ability buttons for hero
-	if not read_only and u.is_hero and not u.abilities.is_empty():
-		var ab_row := HBoxContainer.new()
-		ab_row.add_theme_constant_override("separation", 6)
-		info.add_child(ab_row)
-		var abilities: Dictionary = SkillDefs.get_abilities()
-		for id in u.abilities:
-			var ab: Dictionary = abilities.get(id, {})
-			var cap_id := String(id)
-			var key_label := _ability_key_label(cap_id)
-			var button_label := key_label if not key_label.is_empty() else cap_id.left(2).to_upper()
-			var key_hint := "\nHotkey: " + key_label if not key_label.is_empty() else ""
-			var display_name := String(ab.get("name", id)).to_upper()
-			var btn := _mk_button("%s\n%s" % [button_label, display_name], 10)
-			btn.custom_minimum_size = Vector2(70, 48)
-			btn.tooltip_text = "%s\n%s\nMana: %d\nCooldown: %.1fs%s" % [ab.get("name", id), ab.get("desc", ""), int(ab.get("mana", 0)), float(ab.get("cd", 0.0)), key_hint]
-			_apply_ability_button_style(btn, COMMAND_SKY if cap_id == "rally" else COMMAND_FLAME)
-			var cap_u = u
-			btn.pressed.connect(func():
-				if is_instance_valid(cap_u) and not cap_u.is_dead and cap_u.has_method("cast_ability"):
-					cap_u.cast_ability(cap_id, cap_u.global_position))
-			ab_row.add_child(btn)
-			# cooldown overlay label
-			var cd_overlay := _mk_label("READY", 9, Color(0.92, 0.95, 1.0))
-			cd_overlay.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-			cd_overlay.offset_top = -18.0
-			cd_overlay.offset_bottom = -2.0
-			cd_overlay.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			cd_overlay.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			btn.add_child(cd_overlay)
-			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": cd_overlay})
-
 	_refresh_single_live()
 
 
@@ -1988,6 +1963,15 @@ func _rebuild_command_card(single, selection: Array) -> void:
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
 		return
 
+	# HERO -> abilities first, then the same combat orders used by military units.
+	# Keeping this in the command deck makes the authored Q/W actions visible at
+	# the moment the player selects the hero instead of burying them below the
+	# selection portrait's fixed-height information surface.
+	if single != null and single is Unit and single.is_hero:
+		_build_hero_command_card(single)
+		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		return
+
 	var has_military := false
 	for item in selection:
 		if item is Unit and not item.is_worker and not item.is_dead and not item._is_defeated_remnant():
@@ -2104,6 +2088,46 @@ func _build_worker_card() -> void:
 			if is_instance_valid(rts) and rts.has_method("enter_build_mode"):
 				rts.enter_build_mode(cap_id))
 		grid.add_child(btn)
+
+
+func _build_hero_command_card(u) -> void:
+	_add_context_hints(["RMB  MOVE", "Q / W  ABILITIES", "A  ATTACK-MOVE"])
+	if not u.abilities.is_empty():
+		_add_command_section("Abilities", "Cast when ready.")
+		var ability_grid := _mk_command_grid()
+		_cmd_body.add_child(ability_grid)
+		var abilities: Dictionary = SkillDefs.get_abilities()
+		for id in u.abilities:
+			var cap_id := String(id)
+			var ab: Dictionary = abilities.get(cap_id, {})
+			if ab.is_empty():
+				continue
+			var key_label := _ability_key_label(cap_id)
+			var mana_cost := int(ab.get("mana", 0))
+			var cooldown := float(ab.get("cd", 0.0))
+			var remaining := float(u.ability_cd.get(cap_id, 0.0)) if "ability_cd" in u else 0.0
+			var mana_ready: bool = "mana" in u and u.mana >= mana_cost
+			var ready: bool = remaining <= 0.05 and mana_ready
+			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
+			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
+			var detail := "%d mana  ·  %.0fs cooldown\n%s" % [mana_cost, cooldown, String(ab.get("desc", ""))]
+			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label)
+			btn.disabled = not ready
+			var cap_u = u
+			btn.pressed.connect(func():
+				if is_instance_valid(cap_u) and not cap_u.is_dead and cap_u.has_method("cast_ability"):
+					cap_u.cast_ability(cap_id, cap_u.global_position))
+			ability_grid.add_child(btn)
+			var status_label: Label = btn.get_meta("command_status_label")
+			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})
+
+	_add_command_section("Orders", "Shared combat commands.")
+	var order_grid := _mk_command_grid()
+	_cmd_body.add_child(order_grid)
+	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
+	_add_military_command_button(order_grid, "Stop", "Stop current orders.", "Stop: clear the selected hero's current orders.", "stop")
+	_add_military_command_button(order_grid, "Hold", "Hold this position.", "Hold: keep the selected hero here while retaining current combat behavior.", "hold")
+	_add_military_command_button(order_grid, "Patrol", "Move between chosen points.", "Patrol: choose a destination to begin the existing patrol behavior.", "patrol")
 
 
 func _build_military_card() -> void:

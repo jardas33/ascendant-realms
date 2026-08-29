@@ -38,6 +38,13 @@ func _begin() -> void:
 	var target = _pick_target()
 	if not target:
 		_failures.append("missing_target:%s" % _view); _write_manifest(); get_tree().quit(1); return
+	# The default fresh profile intentionally has no spent skill nodes. For the
+	# hero presentation cell only, expose the already-authored public abilities
+	# so the command-card review can inspect their real UI states without saving
+	# or changing progression data.
+	if _view == "hero" and target is Unit:
+		target.abilities = {"rally": 1, "slam": 1}
+		target.ability_cd = {"rally": 0.0, "slam": 0.0}
 	_rts._clear_selection()
 	_rts._add_to_selection(target)
 	_rts.emit_signal("selection_changed", _rts.selected)
@@ -81,13 +88,18 @@ func _begin() -> void:
 		var commander_race := str(player_commander.race) if player_commander else ""
 		var available_buildings: Array = GameData.buildings_for_race(commander_race) if not commander_race.is_empty() else []
 		var png := _output.path_join("%s.png" % OS.get_environment("ASCENDANT_P1R22_NAME")); image.save_png(png)
-		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts,"commander_race":commander_race,"available_building_count":available_buildings.size(),"command_body_child_count":command_panel.get_child_count() if command_panel else 0})
+		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts,"commander_race":commander_race,"available_building_count":available_buildings.size(),"command_body_child_count":command_panel.get_child_count() if command_panel else 0,"hero_ability_review_fixture":_view == "hero"})
 	_write_manifest(); get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _pick_target():
 	if _view == "worker":
 		for u in get_tree().get_nodes_in_group("units"):
 			if u.team == 0 and bool(u.is_worker): return u
+	if _view == "military" or _view == "hero":
+		for u in get_tree().get_nodes_in_group("units"):
+			if u.team != 0 or u.is_dead: continue
+			if _view == "hero" and bool(u.is_hero): return u
+			if _view == "military" and not bool(u.is_worker) and not bool(u.is_hero): return u
 	var buildings: Array = _world.all_buildings() if _world and _world.has_method("all_buildings") else []
 	for b in buildings:
 		if b.team != 0: continue
