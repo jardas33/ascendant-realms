@@ -21,6 +21,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_clan_levy": {
 		"race": "barrosan", "name": "Clan Levy", "role": "melee", "tier": 1,
+		"portrait": "res://assets/ui/portraits/barrosan/a08_b1_portrait_clan_levy.jpg",
 		"model": _char("barrosan_clan_levy"), "height": 1.8,
 		"hp": 130, "dmg": 12, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
@@ -29,6 +30,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_spear_guard": {
 		"race": "barrosan", "name": "Stoneward Spears", "role": "defender", "tier": 1,
+		"portrait": "res://assets/ui/portraits/barrosan/a08_b1_portrait_stoneward_spears.jpg",
 		"model": _char("barrosan_spear_guard"), "height": 1.85,
 		"hp": 180, "dmg": 14, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
