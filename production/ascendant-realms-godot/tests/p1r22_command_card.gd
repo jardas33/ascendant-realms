@@ -42,9 +42,14 @@ func _begin() -> void:
 	# hero presentation cell only, expose the already-authored public abilities
 	# so the command-card review can inspect their real UI states without saving
 	# or changing progression data.
-	if _view == "hero" and target is Unit:
+	if _view in ["hero", "hero_cooldown"] and target is Unit:
 		target.abilities = {"rally": 1, "slam": 1}
 		target.ability_cd = {"rally": 0.0, "slam": 0.0}
+	if _view == "disabled" and _world.player_commander:
+		# Fixture-only affordability state for the real disabled presentation.
+		# This does not call a gameplay command or persist profile state.
+		for kind in ["food", "timber", "stone", "gold"]:
+			_world.player_commander.resources[kind] = 0
 	_rts._clear_selection()
 	_rts._add_to_selection(target)
 	_rts.emit_signal("selection_changed", _rts.selected)
@@ -75,12 +80,32 @@ func _begin() -> void:
 		get_tree().quit(1)
 		return
 	for _i in 12: await get_tree().process_frame
+	var command_panel := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
+	var command_buttons: Array = command_panel.find_children("*", "Button", true, false) if command_panel else []
+	if _view == "hero_cooldown":
+		var cast_button = null
+		for command_button in command_buttons:
+			if String(command_button.tooltip_text).contains("Ground Slam"):
+				cast_button = command_button
+				break
+		if cast_button == null:
+			_failures.append("missing_public_slam_button")
+		else:
+			cast_button.pressed.emit()
+			for _i in 4: await get_tree().process_frame
+			if not target.ability_cd.has("slam") or float(target.ability_cd.get("slam", 0.0)) <= 0.05:
+				_failures.append("public_slam_did_not_enter_cooldown")
+	if _view == "tooltip":
+		var tooltip_button = command_buttons[0] if not command_buttons.is_empty() else null
+		if tooltip_button == null or String(tooltip_button.tooltip_text).is_empty():
+			_failures.append("missing_genuine_command_tooltip")
+		else:
+			Input.warp_mouse(tooltip_button.get_global_rect().get_center())
+			for _i in 48: await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	if image == null or image.is_empty(): _failures.append("empty_frame")
 	else:
-		var command_panel := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
-		var command_buttons: Array = command_panel.find_children("*", "Button", true, false) if command_panel else []
 		var command_button_texts: Array[String] = []
 		for command_button in command_buttons:
 			command_button_texts.append(str(command_button.text))
@@ -92,22 +117,25 @@ func _begin() -> void:
 	_write_manifest(); get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _pick_target():
-	if _view == "worker":
+	if _view == "worker" or _view == "worker_build" or _view == "tooltip":
 		for u in get_tree().get_nodes_in_group("units"):
 			if u.team == 0 and bool(u.is_worker): return u
-	if _view == "military" or _view == "hero":
+	if _view == "military" or _view == "hero" or _view == "hero_cooldown":
 		for u in get_tree().get_nodes_in_group("units"):
 			if u.team != 0 or u.is_dead: continue
-			if _view == "hero" and bool(u.is_hero): return u
+			if (_view == "hero" or _view == "hero_cooldown") and bool(u.is_hero): return u
 			if _view == "military" and not bool(u.is_worker) and not bool(u.is_hero): return u
 	var buildings: Array = _world.all_buildings() if _world and _world.has_method("all_buildings") else []
 	for b in buildings:
 		if b.team != 0: continue
 		var def: Dictionary = b.def
-		if _view == "hq" and (bool(def.get("is_hq",false)) or def.get("kind","") == "main"): return b
+		if _view == "hq" or _view == "clanhold":
+			if bool(def.get("is_hq",false)) or def.get("kind","") == "main": return b
+		if _view == "warhall" and (String(def.get("id","")).contains("war_hall") or String(def.get("name","")).to_lower().contains("war hall")): return b
 		if _view == "production" and not def.get("produces",[]).is_empty(): return b
 		if _view == "research" and (not def.get("research",[]).is_empty() or bool(def.get("is_research",false))): return b
 		if _view == "disabled" and not def.get("produces",[]).is_empty(): return b
+	if _view == "warhall": return null
 	return buildings[0] if not buildings.is_empty() else null
 
 func _write_manifest() -> void:

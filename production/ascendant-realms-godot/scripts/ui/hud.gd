@@ -437,6 +437,19 @@ func _command_glyph(title: String) -> String:
 	return "•"
 
 
+func _command_kind(title: String, visible_effect_prefix: String, has_preview: bool, has_effect: bool) -> String:
+	if visible_effect_prefix == "Effect" and has_effect:
+		return "ABILITY"
+	if visible_effect_prefix == "Purpose" or has_preview:
+		return "BUILD"
+	var haystack := title.to_lower()
+	if haystack.contains("research") or haystack.contains("age"):
+		return "RESEARCH"
+	if haystack.contains("train"):
+		return "TRAIN"
+	return "ORDER"
+
+
 func _command_accent(title: String, state: String) -> Color:
 	if state == "LOCKED":
 		return COMMAND_MUTED
@@ -518,6 +531,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var has_preview := not preview_definition.is_empty()
 	var effect_text := visible_effect.strip_edges()
 	var has_effect := not effect_text.is_empty()
+	# Hero abilities provide their authored Q/W hotkey explicitly while ordinary
+	# order cards derive their hotkeys from the title. That keeps the ability
+	# treatment distinct without changing any command dispatch semantics.
+	var ability_card := visible_effect_prefix == "Effect" and not hotkey_override.is_empty()
+	var command_kind := "ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, has_effect)
 	var role_card := visible_effect_prefix == "Role"
 	var detail_text := detail + ("\n" + disabled_reason if not disabled_reason.is_empty() else "")
 	if has_effect:
@@ -525,9 +543,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	var card_height := 102 if (not has_preview and detail.contains("\n")) else (82 if has_preview else 84)
+	var card_height := 122 if ability_card else (102 if (not has_preview and detail.contains("\n")) else (82 if has_preview else 84))
 	if has_effect:
-		card_height = 116 if role_card else 102
+		card_height = 116 if role_card else (122 if ability_card else 102)
 	btn.custom_minimum_size = Vector2(190, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -549,7 +567,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		preview.set_deferred("size", Vector2(48, 48))
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(62, 8)
-		var preview_text_height := 96 if has_effect else 62
+		var preview_text_height := card_height - 42 if has_effect else 62
 		text_col.size = Vector2(122, preview_text_height)
 		text_col.custom_minimum_size = Vector2(122, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
@@ -566,12 +584,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	else:
 		var glyph := _mk_command_badge(_command_glyph(title), accent, 34.0)
-		glyph.position = Vector2(8, 9)
-		glyph.size = Vector2(34, 34)
+		glyph.position = Vector2(8, 8)
+		glyph.size = Vector2(38 if ability_card else 34, 38 if ability_card else 34)
+		if ability_card:
+			glyph.custom_minimum_size = Vector2(38, 38)
+			glyph.add_theme_stylebox_override("panel", _ability_glyph_stylebox(accent))
 		btn.add_child(glyph)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(51, 8)
-		var text_height := (96 if role_card else 82) if has_effect else 64
+		text_col.position = Vector2(54 if ability_card else 51, 8)
+		var text_height := (card_height - 42 if ability_card else (96 if role_card else 82)) if has_effect else 64
 		text_col.size = Vector2(126, text_height)
 		text_col.custom_minimum_size = Vector2(126, text_height)
 		text_col.add_theme_constant_override("separation", 1)
@@ -592,25 +613,32 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
 		var key_badge := _mk_command_badge(hotkey, Color(0.95, 0.9, 0.76), 24.0)
-		key_badge.position = Vector2(158, 8)
-		key_badge.size = Vector2(24, 20)
+		key_badge.position = Vector2(8, 8) if ability_card else Vector2(158, 8)
+		key_badge.size = Vector2(38, 38) if ability_card else Vector2(24, 20)
+		if ability_card:
+			key_badge.visible = false
 		btn.add_child(key_badge)
+	var kind_badge := _mk_command_badge(command_kind, accent, 64.0 if ability_card else 58.0)
+	kind_badge.position = Vector2(8, card_height - 27)
+	kind_badge.size = Vector2(70 if ability_card else 58, 20)
+	btn.add_child(kind_badge)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_badge := _mk_command_badge(status, accent if status != "UNAVAILABLE" else COMMAND_MUTED, 58.0)
-		status_badge.position = Vector2(126, card_height - 27)
-		status_badge.size = Vector2(58, 20)
+		var status_badge := _mk_command_badge(status, accent if status != "UNAVAILABLE" else COMMAND_MUTED, 70.0 if ability_card else 58.0)
+		status_badge.position = Vector2(112 if ability_card else 126, card_height - 27)
+		status_badge.size = Vector2(70 if ability_card else 58, 20)
 		btn.add_child(status_badge)
 		btn.set_meta("command_status_label", status_badge.get_child(0))
+	btn.set_meta("command_kind", command_kind)
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
 		tooltip_text += "\nHotkey: " + hotkey
 	btn.tooltip_text = tooltip_text if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip_text, disabled_reason]
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = COMMAND_SURFACE
+	normal.bg_color = Color(0.055, 0.09, 0.145, 0.99) if ability_card else COMMAND_SURFACE
 	normal.border_color = Color(accent.r, accent.g, accent.b, 0.68)
-	normal.set_border_width_all(1)
-	normal.set_corner_radius_all(6)
+	normal.set_border_width_all(2 if ability_card else 1)
+	normal.set_corner_radius_all(8 if ability_card else 6)
 	normal.set_content_margin_all(6)
 	var hover := normal.duplicate()
 	hover.bg_color = Color(accent.r, accent.g, accent.b, 0.17)
@@ -619,7 +647,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var pressed := hover.duplicate()
 	pressed.bg_color = Color(accent.r, accent.g, accent.b, 0.28)
 	var disabled := normal.duplicate()
-	disabled.bg_color = Color(0.045, 0.05, 0.06, 0.94)
+	disabled.bg_color = Color(0.045, 0.05, 0.06, 0.94) if not ability_card else Color(0.06, 0.065, 0.08, 0.98)
 	disabled.border_color = Color(0.25, 0.26, 0.27, 0.7)
 	btn.add_theme_stylebox_override("normal", normal)
 	btn.add_theme_stylebox_override("hover", hover)
@@ -627,6 +655,16 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.add_theme_stylebox_override("disabled", disabled)
 	btn.add_theme_color_override("font_disabled_color", Color(0.48, 0.47, 0.43, 0.9))
 	return btn
+
+
+func _ability_glyph_stylebox(accent: Color) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.20)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.95)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(8)
+	sb.set_content_margin_all(3)
+	return sb
 
 
 func _mk_command_grid() -> GridContainer:
