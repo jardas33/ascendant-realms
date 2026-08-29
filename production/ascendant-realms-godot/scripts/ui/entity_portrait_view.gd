@@ -6,11 +6,14 @@ class_name EntityPortraitView
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
+static var _portrait_texture_cache: Dictionary = {}
 
 var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
 var _pivot: Node3D
 var _camera: Camera3D
+var _artwork: TextureRect
+var _active_portrait_path := ""
 var _pending_entity = null
 var _pending_definition: Dictionary = {}
 
@@ -42,6 +45,15 @@ func _build_view() -> void:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_viewport.transparent_bg = true
 	_viewport_container.add_child(_viewport)
+
+	_artwork = TextureRect.new()
+	_artwork.name = "PortraitArtwork"
+	_artwork.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_artwork.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_artwork.visible = false
+	add_child(_artwork)
 
 	var world := World3D.new()
 	_viewport.world_3d = world
@@ -106,12 +118,27 @@ func _apply_entity(entity) -> void:
 	_pending_entity = null
 	_pending_definition = {}
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
-	_apply_definition(definition, entity.get_class() == "Building")
+	_apply_definition(definition, entity.get_class() == "Building", String(entity.unit_id) if entity is Unit else "")
 
 
-func _apply_definition(definition: Dictionary, is_building: bool) -> void:
+func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
 	if not is_instance_valid(_pivot):
 		return
+	_active_portrait_path = ""
+	if is_instance_valid(_artwork):
+		var portrait_path := _portrait_path_for_definition(definition, is_building, unit_id)
+		if not portrait_path.is_empty() and ResourceLoader.exists(portrait_path):
+			var texture := _load_portrait_texture(portrait_path)
+			if texture:
+				_active_portrait_path = portrait_path
+				_artwork.texture = texture
+				_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if custom_minimum_size.x < 80.0 else TextureRect.STRETCH_KEEP_ASPECT_COVERED
+				_artwork.visible = true
+				_viewport_container.visible = false
+		if _active_portrait_path.is_empty():
+			_artwork.texture = null
+			_artwork.visible = false
+			_viewport_container.visible = true
 	for child in _pivot.get_children():
 		child.queue_free()
 	var path := str(definition.get("model", ""))
@@ -150,3 +177,26 @@ func _apply_definition(definition: Dictionary, is_building: bool) -> void:
 	_camera.fov = 56.0 if compact_card else 62.0
 	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	_pivot.rotation_degrees.y = -18.0
+
+
+func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
+	if is_building:
+		return ""
+	var portrait_path := String(definition.get("portrait", ""))
+	if portrait_path.is_empty() and not unit_id.is_empty():
+		portrait_path = String(GameData.get_unit(unit_id).get("portrait", ""))
+	return portrait_path
+
+
+func _load_portrait_texture(path: String) -> Texture2D:
+	if _portrait_texture_cache.has(path):
+		return _portrait_texture_cache[path]
+	var texture = load(path)
+	if texture is Texture2D:
+		_portrait_texture_cache[path] = texture
+		return texture
+	return null
+
+
+func get_active_portrait_path() -> String:
+	return _active_portrait_path

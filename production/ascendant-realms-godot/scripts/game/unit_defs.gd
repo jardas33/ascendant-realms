@@ -12,6 +12,7 @@ static func get_all() -> Dictionary:
 	# ---------------- BARROSAN CLANS ----------------
 	"barrosan_worker": {
 		"race": "barrosan", "name": "Highland Worker", "role": "worker", "tier": 1,
+		"portrait": "res://assets/ui/portraits/barrosan/a08_portrait_worker.jpg",
 		"model": _char("barrosan_highlander_worker"), "height": 1.8,
 		"hp": 60, "dmg": 5, "dmg_type": "blunt", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 1.2, "speed": 3.6, "vision": 18.0,
@@ -187,6 +188,7 @@ static func get_all() -> Dictionary:
 	# ---------------- HEROES ----------------
 	"barrosan_hero_thane": {
 		"race": "barrosan", "name": "War-Thane", "role": "hero", "tier": 1, "is_hero": true,
+		"portrait": "res://assets/ui/portraits/barrosan/a08_portrait_warthane.jpg",
 		"model": _char("barrosan_hero_thane"), "height": 2.0,
 		"hp": 400, "dmg": 34, "dmg_type": "slash", "armor_class": "heavy", "armor": 6,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.9, "vision": 28.0, "pop": 0,
