@@ -21,8 +21,10 @@ const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 52.0
 const MINIMAP_GRID_DIVISIONS := 4
-const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.08)
-const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.96)
+const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
+const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
+const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
+const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
 const COMMAND_PANEL_WIDTH := 472.0
 const SELECTION_PANEL_WIDTH := 432.0
 const SELECTION_PANEL_HEIGHT := 240.0
@@ -1125,7 +1127,9 @@ func _draw_minimap() -> void:
 	for b in world.all_buildings():
 		if not is_instance_valid(b) or b.is_dead:
 			continue
-		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE))
+		var building_def: Dictionary = b.def if b.def is Dictionary else {}
+		var is_major := bool(building_def.get("is_hq", false)) or str(building_def.get("kind", "")) == "main"
+		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE), is_major)
 
 	# Live resource landmarks make the miniature useful without inventing a
 	# second simulation. Depleted nodes remain absent, matching the world.
@@ -1155,10 +1159,9 @@ func _draw_minimap() -> void:
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
 		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
-		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.9), 3.5, true)
-		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, true)
-		for corner in corners.slice(0, 4):
-			_minimap.draw_circle(corner, 2.0, MINIMAP_VIEW_EDGE)
+		# The footprint is a quiet navigation cue, not a competing selection box.
+		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.36), 1.8, false)
+		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.0, false)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
@@ -1177,11 +1180,11 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 		if axis == "crossing":
 			var crossing_top_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
 			var crossing_bottom_y := _world_to_map(Vector3(0.0, 0.0, center_z + half_width)).y
-			_minimap.draw_line(Vector2(7.0, crossing_top_y), Vector2(size.x - 7.0, crossing_top_y), Color(0.52, 0.82, 0.86, 0.60), 1.5, true)
-			_minimap.draw_line(Vector2(7.0, crossing_bottom_y), Vector2(size.x - 7.0, crossing_bottom_y), Color(0.16, 0.42, 0.52, 0.48), 1.0, true)
+			_minimap.draw_line(Vector2(7.0, crossing_top_y), Vector2(size.x - 7.0, crossing_top_y), MINIMAP_WATER_SHORE, 1.25, true)
+			_minimap.draw_line(Vector2(7.0, crossing_bottom_y), Vector2(size.x - 7.0, crossing_bottom_y), MINIMAP_WATER_BANK, 0.9, true)
 		else:
 			var shore_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
-			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), Color(0.52, 0.82, 0.86, 0.56), 1.5, true)
+			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), MINIMAP_WATER_SHORE, 1.25, true)
 	_draw_minimap_roads(size)
 
 func _draw_minimap_frame(size: Vector2) -> void:
@@ -1190,23 +1193,30 @@ func _draw_minimap_frame(size: Vector2) -> void:
 	for corner in [Vector2(4, 4), Vector2(size.x - 4, 4), Vector2(size.x - 4, size.y - 4), Vector2(4, size.y - 4)]:
 		_minimap.draw_circle(corner, 2.0, Color(0.95, 0.79, 0.38, 0.95))
 
-func _draw_minimap_building(p: Vector2, col: Color) -> void:
-	_minimap.draw_rect(Rect2(p - Vector2(5.5, 5.5), Vector2(11, 11)), Color(0.03, 0.04, 0.04, 0.95), true)
-	_minimap.draw_rect(Rect2(p - Vector2(4.5, 4.5), Vector2(9, 9)), col.darkened(0.24), true)
-	_minimap.draw_line(p + Vector2(-3.0, 3.0), p + Vector2(3.0, -3.0), col.lightened(0.25), 1.5, true)
-	_minimap.draw_line(p + Vector2(-3.0, -3.0), p + Vector2(3.0, 3.0), col.lightened(0.10), 1.0, true)
+func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false) -> void:
+	var radius := 7.0 if is_major else 5.0
+	_minimap.draw_circle(p, radius + 1.8, Color(0.02, 0.03, 0.03, 0.9))
+	var points := PackedVector2Array([
+		p + Vector2(0, -radius), p + Vector2(radius, 0),
+		p + Vector2(0, radius), p + Vector2(-radius, 0)])
+	_minimap.draw_colored_polygon(points, col.darkened(0.20 if is_major else 0.30))
+	_minimap.draw_polyline(PackedVector2Array([points[0], points[1], points[2], points[3], points[0]]), col.lightened(0.18), 1.4 if is_major else 0.9, true)
+	if is_major:
+		_minimap.draw_rect(Rect2(p - Vector2(2.2, 2.2), Vector2(4.4, 4.4)), col.lightened(0.30), true)
+	else:
+		_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), col.lightened(0.12), 0.8, true)
 
 func _draw_minimap_unit(p: Vector2, col: Color) -> void:
-	var r := 4.0
-	_minimap.draw_circle(p, r + 1.7, Color(0.02, 0.03, 0.03, 0.95))
+	var r := 3.2
+	_minimap.draw_circle(p, r + 1.25, Color(0.02, 0.03, 0.03, 0.86))
 	_minimap.draw_colored_polygon(PackedVector2Array([
 		p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)]), col)
 	_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), Color(1, 1, 1, 0.76), 1.0, true)
 
 func _draw_minimap_resource(p: Vector2, col: Color) -> void:
-	_minimap.draw_circle(p, 4.3, Color(0.03, 0.04, 0.04, 0.95))
-	_minimap.draw_circle(p, 2.8, col)
-	_minimap.draw_line(p + Vector2(-1.5, -1.5), p + Vector2(1.5, 1.5), Color(1, 1, 1, 0.55), 1.0, true)
+	_minimap.draw_circle(p, 3.3, Color(0.03, 0.04, 0.04, 0.82))
+	_minimap.draw_circle(p, 2.05, col)
+	_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
 
 
 func _draw_minimap_roads(_size: Vector2) -> void:
@@ -1279,10 +1289,12 @@ func _ensure_minimap_background() -> void:
 	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
 	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
 	var landforms: Array = _minimap_world_landform_specs()
-	var ground_image := Image.new()
-	var meadow_image := Image.new()
-	var has_ground_image: bool = ground_image.load(MINIMAP_GROUND_TEXTURE) == OK
-	var has_meadow_image: bool = meadow_image.load(MINIMAP_MEADOW_TEXTURE) == OK
+	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
+	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
+	var has_ground_image: bool = is_instance_valid(ground_texture)
+	var has_meadow_image: bool = is_instance_valid(meadow_texture)
+	var ground_image: Image = ground_texture.get_image() if has_ground_image else Image.new()
+	var meadow_image: Image = meadow_texture.get_image() if has_meadow_image else Image.new()
 	for y in range(MINIMAP_RASTER_SIZE):
 		for x in range(MINIMAP_RASTER_SIZE):
 			var wp := Vector3(
@@ -1301,17 +1313,24 @@ func _ensure_minimap_background() -> void:
 				var ground_sample: Color = ground_image.get_pixel(tx, tz)
 				if has_meadow_image:
 					var meadow_sample: Color = meadow_image.get_pixel(posmod(tx, meadow_image.get_width()), posmod(tz, meadow_image.get_height()))
-					ground_sample = ground_sample.lerp(meadow_sample, 0.28)
-				col = col.lerp(ground_sample, 0.24)
+					ground_sample = ground_sample.lerp(meadow_sample, 0.36)
+				col = col.lerp(ground_sample, 0.42)
+				# Keep authored texture variation readable at minimap scale while
+				# avoiding any newly invented landform shapes.
+				var texture_luma := (ground_sample.r + ground_sample.g + ground_sample.b) / 3.0
+				col = col.lightened(clampf((texture_luma - 0.42) * 0.16, -0.05, 0.08))
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
 			if water_enabled:
 				var distance := _minimap_water_distance(wp, axis, center_z, half_width)
 				if distance <= 0.0:
-					col = deep
+					# Tint the authored water toward the surrounding material so the
+					# crossing reads as a world feature rather than a UI stripe.
+					var water_tint := deep.lerp(shallow, 0.12 + clampf(absf(wp.x) / MAP_HALF, 0.0, 1.0) * 0.10)
+					col = water_tint.lerp(base, 0.16)
 				elif distance < 5.0:
-					col = shallow.lerp(base, distance / 5.0)
+					col = shallow.lerp(base, distance / 5.0).lerp(base, 0.08)
 			for landform in landforms:
 				var center: Vector2 = landform["center"]
 				var radius: Vector2 = landform["radius"]
