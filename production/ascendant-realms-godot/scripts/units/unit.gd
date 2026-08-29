@@ -101,6 +101,8 @@ var _team_marker: MeshInstance3D
 var _p1r22_contact_shadow: MeshInstance3D
 var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
+var _hover_ring: MeshInstance3D
+var _hovered := false
 var _attack_range_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
 var _selection_pick_radius := 0.5
@@ -229,6 +231,11 @@ const P1R21_MAX_WALK_ANIMATION_SCALE := 1.18
 const P1R24_LOW_HEALTH_RATIO := 0.60
 const P1R24_CRITICAL_HEALTH_RATIO := 0.35
 
+# P1 Task603 battlefield readability. Hover is a transient, non-selecting cue;
+# it uses team polarity rather than changing any unit ownership or command data.
+const TASK603_HOVER_RING_WIDTH := 0.055
+const TASK603_HOVER_RING_ALPHA := 0.82
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -288,6 +295,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_build_model()
 	_add_pick_shape()
 	_build_selection_ring()
+	_build_hover_ring()
 	_build_attack_range_ring()
 	_build_health_bar()
 	_build_r15_combat_presentation()
@@ -628,6 +636,40 @@ func _build_selection_ring() -> void:
 	selection_ring.visible = false
 	add_child(selection_ring)
 
+func _task603_player_friendly() -> bool:
+	return not is_instance_valid(world) or int(team) == int(world.player_team)
+
+func _task603_hover_color() -> Color:
+	return Color(0.48, 0.86, 1.0, TASK603_HOVER_RING_ALPHA) if _task603_player_friendly() else Color(1.0, 0.30, 0.22, TASK603_HOVER_RING_ALPHA)
+
+func _build_hover_ring() -> void:
+	_hover_ring = MeshInstance3D.new()
+	_hover_ring.name = "HoverIntentRing"
+	var torus := TorusMesh.new()
+	var radius := clampf(_selection_indicator_radius * 1.08, 0.54, 1.22)
+	torus.inner_radius = radius - TASK603_HOVER_RING_WIDTH
+	torus.outer_radius = radius
+	torus.rings = 32
+	torus.ring_segments = 8
+	_hover_ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = _task603_hover_color()
+	mat.emission_enabled = true
+	mat.emission = _task603_hover_color()
+	mat.emission_energy_multiplier = 1.15
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_hover_ring.material_override = mat
+	_hover_ring.position.y = 0.095
+	_hover_ring.visible = false
+	_hover_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_hover_ring)
+
+func set_hovered(active: bool) -> void:
+	_hovered = active
+	if is_instance_valid(_hover_ring):
+		# Selection remains the stronger state; hover never obscures it.
+		_hover_ring.visible = active and not is_dead and not (is_instance_valid(selection_ring) and selection_ring.visible)
+
 func _build_attack_range_ring() -> void:
 	if atk_range <= 0.0:
 		return
@@ -677,6 +719,7 @@ func get_selection_geometry() -> Dictionary:
 func set_selected(sel: bool) -> void:
 	if selection_ring:
 		selection_ring.visible = sel
+	set_hovered(_hovered)
 	if _attack_range_ring:
 		_attack_range_ring.visible = false
 		call_deferred("_sync_attack_range_ring")
@@ -757,7 +800,7 @@ func _update_health_bar() -> void:
 	if not is_instance_valid(_health_bar_root) or is_dead:
 		return
 	var ratio := clamp(get_hp_ratio(), 0.0, 1.0)
-	var show_bar: bool = ratio < 0.999 or (is_instance_valid(selection_ring) and selection_ring.visible)
+	var show_bar: bool = ratio <= P1R24_LOW_HEALTH_RATIO or (is_instance_valid(selection_ring) and selection_ring.visible)
 	_health_bar_root.visible = show_bar
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)

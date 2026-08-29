@@ -31,6 +31,7 @@ var _reduce_shake := false
 # selection
 var selected: Array = []
 var inspection_target = null
+var _hover_target = null
 var _dragging := false
 var _drag_start := Vector2.ZERO
 var _drag_now := Vector2.ZERO
@@ -143,6 +144,7 @@ func _build_select_box() -> void:
 # --------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	_clean_selection()
+	_update_hover_target()
 	_update_camera(delta)
 	_maintain_inspection()
 	if _attack_move_mode and not _has_live_attack_move_authority():
@@ -161,6 +163,21 @@ func _process(delta: float) -> void:
 
 func _exit_tree() -> void:
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+
+func _update_hover_target() -> void:
+	var next = null
+	if world != null and world.game_running and get_viewport().gui_get_hovered_control() == null:
+		var hit = _raycast_object()
+		if is_instance_valid(hit) and (hit is Unit or hit is Building) and not hit.is_dead:
+			if not (hit is Building) or hit.is_built:
+				next = hit
+	if next == _hover_target:
+		return
+	if is_instance_valid(_hover_target) and _hover_target.has_method("set_hovered"):
+		_hover_target.set_hovered(false)
+	_hover_target = next
+	if is_instance_valid(_hover_target) and _hover_target.has_method("set_hovered"):
+		_hover_target.set_hovered(true)
 
 func _update_command_cursor() -> void:
 	if world == null or not world.game_running:

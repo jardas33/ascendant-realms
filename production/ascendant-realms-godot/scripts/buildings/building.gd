@@ -31,6 +31,11 @@ const RALLY_MARKER_RING_INNER_RADIUS := 0.62
 const RALLY_MARKER_RING_OUTER_RADIUS := 0.78
 const SPAWN_UNIT_CLEARANCE := 1.1
 
+# P1 Task603: footprint-aware hover intent, kept separate from owner-only
+# selection treatment and never used for placement, collision, or commands.
+const TASK603_HOVER_RING_WIDTH := 0.055
+const TASK603_HOVER_RING_ALPHA := 0.82
+
 func _debug_review_presentation() -> bool:
 	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
 
@@ -53,6 +58,8 @@ var _aura_timer := 0.0
 
 var model_root: Node3D
 var selection_ring: MeshInstance3D
+var _hover_ring: MeshInstance3D
+var _hovered := false
 var _tower_range_ring: MeshInstance3D
 var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
@@ -92,6 +99,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	_build_construction_stage_visual()
 	_build_damage_status_visual()
 	_build_selection_ring()
+	_build_hover_ring()
 	_build_tower_range_ring()
 	_build_rally_marker()
 	if prebuilt:
@@ -258,6 +266,39 @@ func _build_selection_ring() -> void:
 	selection_ring.visible = false
 	add_child(selection_ring)
 
+func _task603_player_friendly() -> bool:
+	return not is_instance_valid(world) or int(team) == int(world.player_team)
+
+func _task603_hover_color() -> Color:
+	return Color(0.48, 0.86, 1.0, TASK603_HOVER_RING_ALPHA) if _task603_player_friendly() else Color(1.0, 0.30, 0.22, TASK603_HOVER_RING_ALPHA)
+
+func _build_hover_ring() -> void:
+	_hover_ring = MeshInstance3D.new()
+	_hover_ring.name = "HoverIntentRing"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.91
+	torus.outer_radius = 0.965
+	torus.rings = 32
+	torus.ring_segments = 8
+	_hover_ring.mesh = torus
+	_hover_ring.scale = Vector3(_selection_indicator_extents.x * 1.06, 1.0, _selection_indicator_extents.y * 1.06)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = _task603_hover_color()
+	mat.emission_enabled = true
+	mat.emission = _task603_hover_color()
+	mat.emission_energy_multiplier = 1.15
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_hover_ring.material_override = mat
+	_hover_ring.position.y = 0.13
+	_hover_ring.visible = false
+	_hover_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_hover_ring)
+
+func set_hovered(active: bool) -> void:
+	_hovered = active
+	if is_instance_valid(_hover_ring):
+		_hover_ring.visible = active and is_built and not is_dead and not (is_instance_valid(selection_ring) and selection_ring.visible)
+
 func _build_tower_range_ring() -> void:
 	if not def.has("tower_dmg") or not def.has("tower_range"):
 		return
@@ -322,6 +363,7 @@ func get_selection_geometry() -> Dictionary:
 func set_selected(sel: bool) -> void:
 	if selection_ring:
 		selection_ring.visible = sel
+	set_hovered(_hovered)
 	if _tower_range_ring:
 		_tower_range_ring.visible = sel and is_built and not is_dead
 	_refresh_rally_marker(sel)
