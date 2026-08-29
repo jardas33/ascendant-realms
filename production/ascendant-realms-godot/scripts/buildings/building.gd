@@ -23,6 +23,11 @@ var footprint := 4.0
 const PRESENTATION_HEIGHT_MULTIPLIER := 1.15
 const PRESENTATION_HEIGHT_MIN := 3.2
 const PRESENTATION_HEIGHT_MAX := 12.0
+## Task604-R1: A01-only presentation lift. GameData.footprint remains the
+## gameplay authority; this only gives the authored Clanhold more screen-space
+## hierarchy at the normal RTS camera distance.
+const TASK604_A01_R1_SCALE := 1.20
+const TASK604_A01_R1_YAW_DEGREES := 24.0
 const BUILD_COMPLETION_CUE_SCALE := 1.045
 const BUILD_COMPLETION_CUE_OUT_DURATION := 0.12
 const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
@@ -127,8 +132,12 @@ func _build_model() -> void:
 			recorder.record_resource_load(path, "building._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
+		if _is_a01_model_path(path):
+			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
 		var target_h: float = _presentation_height()
+		if _is_a01_model_path(path):
+			target_h = minf(PRESENTATION_HEIGHT_MAX, target_h * TASK604_A01_R1_SCALE)
 		ModelUtils.scale_to_height(m, target_h)
 		ModelUtils.ground_model(m)
 		ModelUtils.add_per_part_convex_collision(m, 4)
@@ -167,6 +176,9 @@ func _strip_a01_review_staging(model: Node3D, path: String) -> void:
 		if parent:
 			parent.remove_child(mesh)
 		mesh.free()
+
+func _is_a01_model_path(path: String) -> bool:
+	return path == "res://assets/environment/buildings/barrosan_civic_keep_a01.glb"
 
 
 func _build_construction_stage_visual() -> void:
