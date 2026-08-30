@@ -5,6 +5,7 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const SPACING := Vector2(174.0, 86.0)
+const FOCUSED_SPACING := Vector2(220.0, 86.0)
 const MARGIN := Vector2(34.0, 48.0)
 const NODE_SIZE := Vector2(160.0, 72.0)
 const GRAPH_ZOOM := 0.82
@@ -93,6 +94,7 @@ var _points_label: Label
 var _points_subtitle: Label
 var _detail_title: Label
 var _detail_type: Label
+var _detail_glyph: Glyph
 var _detail_meta: Label
 var _detail_body: Label
 var _detail_requirements: Label
@@ -176,11 +178,22 @@ func _build() -> void:
 	detail_box.add_theme_constant_override("separation", 10)
 	detail_margin.add_child(detail_box)
 	detail_box.add_child(_label("SELECTED STAR", 11, MUTED))
-	_detail_title = _label("Choose a skill", 27, PAPER)
+	var detail_header := HBoxContainer.new()
+	detail_header.add_theme_constant_override("separation", 12)
+	_detail_glyph = Glyph.new()
+	_detail_glyph.custom_minimum_size = Vector2(50.0, 50.0)
+	_detail_glyph.size = Vector2(50.0, 50.0)
+	_detail_glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	detail_header.add_child(_detail_glyph)
+	var detail_title_col := VBoxContainer.new()
+	detail_title_col.add_theme_constant_override("separation", 4)
+	detail_header.add_child(detail_title_col)
+	_detail_title = _label("Choose a skill", 23, PAPER)
 	_detail_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	detail_box.add_child(_detail_title)
 	_detail_type = _label("A path waits in the dark", 14, GOLD)
-	detail_box.add_child(_detail_type)
+	detail_title_col.add_child(_detail_title)
+	detail_title_col.add_child(_detail_type)
+	detail_box.add_child(detail_header)
 	var rule := HSeparator.new()
 	rule.modulate = Color(0.5, 0.58, 0.7, 0.45)
 	detail_box.add_child(rule)
@@ -309,14 +322,14 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 12, PAPER)
+	var name_label := _label(str(n.get("name", "")), 14, PAPER)
 	name_label.position = Vector2(60.0, 6.0)
 	name_label.size = Vector2(94.0, 42.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 10, MUTED)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 11, MUTED)
 	cost_label.position = Vector2(60.0, 54.0)
 	cost_label.size = Vector2(94.0, 16.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -332,7 +345,7 @@ func _node_pos(n: Dictionary) -> Vector2:
 	return MARGIN + Vector2(p.x, p.y) * _layout_spacing()
 
 func _layout_spacing() -> Vector2:
-	return Vector2(280.0, 86.0) if _branch_filter != "" else SPACING
+	return FOCUSED_SPACING if _branch_filter != "" else SPACING
 
 func _display_grid_pos(n: Dictionary) -> Vector2:
 	var id := str(n.get("id", ""))
@@ -356,11 +369,6 @@ func _rebuild_layout() -> void:
 	var column_map := {}
 	for i in range(columns.size()):
 		column_map[columns[i]] = i
-	var branch_map := {}
-	for n in visible:
-		var branch := str(n.get("branch", ""))
-		if not branch_map.has(branch):
-			branch_map[branch] = branch_map.size()
 	visible.sort_custom(func(a, b):
 		var ap: Vector2 = a.get("pos", Vector2.ZERO)
 		var bp: Vector2 = b.get("pos", Vector2.ZERO)
@@ -369,10 +377,21 @@ func _rebuild_layout() -> void:
 		return ap.y < bp.y
 	)
 	var occupied := {}
+	var branch_map := {}
 	for n in visible:
+		var branch := str(n.get("branch", ""))
+		if not branch_map.has(branch):
+			branch_map[branch] = branch_map.size()
+	var focused_sequence := [1, 0, 2, 3, 1, 2, 0, 3]
+	for i in range(visible.size()):
+		var n: Dictionary = visible[i]
 		var id := str(n.get("id", ""))
 		var authored: Vector2 = n.get("pos", Vector2.ZERO)
-		var column := int(branch_map[str(n.get("branch", ""))]) if _branch_filter == "" else int(column_map[float(authored.x)])
+		var column := int(branch_map[str(n.get("branch", ""))])
+		if _branch_filter != "":
+			# Focused paths use a restrained four-column constellation pattern.
+			# This changes presentation only; prerequisite links remain authored.
+			column = focused_sequence[i % focused_sequence.size()]
 		var row := maxi(0, int(round(authored.y)))
 		var key := "%d:%d" % [column, row]
 		while occupied.has(key):
@@ -645,6 +664,13 @@ func _on_node_pressed(n: Dictionary) -> void:
 func _update_detail(n: Dictionary) -> void:
 	var state := _node_state(n)
 	var has_ability: bool = bool(n.get("effect", {}).has("ability"))
+	if is_instance_valid(_detail_glyph):
+		_detail_glyph.kind = "active" if has_ability else "passive"
+		_detail_glyph.kind = "keystone" if n.get("keystone", false) else _detail_glyph.kind
+		_detail_glyph.accent = _branch_color(str(n.get("branch", "")))
+		_detail_glyph.locked = state == "PREREQUISITE_BLOCKED"
+		_detail_glyph.texture = _skill_glyph_texture(n)
+		_detail_glyph.queue_redraw()
 	_detail_title.text = str(n.get("name", ""))
 	_detail_type.text = ("ACTIVE ABILITY" if has_ability else "PASSIVE AUGMENT") + ("  •  KEYSTONE" if n.get("keystone", false) else "")
 	_detail_type.modulate = ACTIVE if has_ability else GOLD
