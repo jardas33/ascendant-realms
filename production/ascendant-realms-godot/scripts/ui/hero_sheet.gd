@@ -104,7 +104,14 @@ func _refresh() -> void:
 	pts.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	pts.add_theme_constant_override("outline_size", 3)
 	pts.add_theme_font_size_override("font_size", 17)
-	_body.add_child(pts)
+	var progression_row := HBoxContainer.new()
+	progression_row.add_theme_constant_override("separation", 18)
+	progression_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	progression_row.add_child(pts)
+	var constellation_button := _nav_button("Skill Constellation", func(): _goto("res://scenes/ui/skill_tree.tscn"))
+	constellation_button.custom_minimum_size = Vector2(250, 50)
+	progression_row.add_child(constellation_button)
+	_body.add_child(progression_row)
 
 	_body.add_child(_hsep())
 
@@ -197,7 +204,6 @@ func _refresh() -> void:
 	nav.add_theme_constant_override("separation", 16)
 	nav.alignment = BoxContainer.ALIGNMENT_CENTER
 	_body.add_child(nav)
-	nav.add_child(_nav_button("Skill Constellation", func(): _goto("res://scenes/ui/skill_tree.tscn")))
 	nav.add_child(_nav_button("Inventory", func(): _goto("res://scenes/ui/inventory.tscn")))
 	nav.add_child(_nav_button("Battle!", func(): _goto("res://scenes/ui/skirmish_setup.tscn")))
 	nav.add_child(_nav_button("Back", func(): _goto("res://scenes/ui/main_menu.tscn")))
