@@ -59,22 +59,38 @@ func _refresh() -> void:
 		return
 
 	var h := ProfileManager.hero()
+	var rd: Dictionary = GameData.get_race(str(h.get("race", "")))
+	var hero_unit_id := str(rd.get("hero", ""))
+	var hero_definition: Dictionary = GameData.get_unit(hero_unit_id) if not hero_unit_id.is_empty() else {}
+	var hero_portrait_path := str(hero_definition.get("portrait", ""))
+	var has_exact_hero_portrait := not hero_unit_id.is_empty() and not hero_portrait_path.is_empty() and ResourceLoader.exists(hero_portrait_path)
 
-	# Header
+	# Header: reuse the canonical entity portrait renderer when the profile's
+	# race-to-hero definition provides an exact, production-safe portrait.
+	var identity_row := HBoxContainer.new()
+	identity_row.add_theme_constant_override("separation", 18)
+	if has_exact_hero_portrait:
+		var portrait := EntityPortraitView.new()
+		portrait.name = "HeroPortrait"
+		portrait.custom_minimum_size = Vector2(180, 180)
+		portrait.configure_definition(hero_definition, false)
+		identity_row.add_child(portrait)
+	var identity := VBoxContainer.new()
+	identity.add_theme_constant_override("separation", 5)
 	var header := Label.new()
 	header.text = str(h.get("name", "Hero"))
 	header.add_theme_font_override("font", _title_font())
 	header.add_theme_font_size_override("font_size", 40)
 	header.add_theme_color_override("font_color", Color(0.96, 0.9, 0.7))
-	_body.add_child(header)
-
-	var rd: Dictionary = GameData.get_race(str(h.get("race", "")))
+	identity.add_child(header)
 	var sub := Label.new()
 	sub.text = "%s  -  %s  -  Level %d" % [rd.get("name", h.get("race", "")), h.get("archetype", ""), int(h.get("level", 1))]
 	sub.add_theme_font_override("font", _body_font())
 	sub.add_theme_color_override("font_color", Color(0.85, 0.85, 0.78))
 	sub.add_theme_font_size_override("font_size", 18)
-	_body.add_child(sub)
+	identity.add_child(sub)
+	identity_row.add_child(identity)
+	_body.add_child(identity_row)
 
 	# XP bar
 	var lvl := int(h.get("level", 1))

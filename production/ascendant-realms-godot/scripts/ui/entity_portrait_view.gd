@@ -17,6 +17,7 @@ var _artwork: TextureRect
 var _active_portrait_path := ""
 var _pending_entity = null
 var _pending_definition: Dictionary = {}
+var _pending_definition_is_building := true
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -25,7 +26,7 @@ func _ready() -> void:
 	if is_instance_valid(_pending_entity):
 		_apply_entity(_pending_entity)
 	elif not _pending_definition.is_empty():
-		_apply_definition(_pending_definition, true)
+		_apply_definition(_pending_definition, _pending_definition_is_building)
 
 func _build_view() -> void:
 	var bg := ColorRect.new()
@@ -114,10 +115,11 @@ func configure_entity(entity) -> void:
 	_apply_entity(entity)
 
 
-func configure_definition(definition: Dictionary) -> void:
+func configure_definition(definition: Dictionary, is_building: bool = true) -> void:
 	_pending_definition = definition.duplicate(true)
+	_pending_definition_is_building = is_building
 	if is_instance_valid(_pivot):
-		_apply_definition(_pending_definition, true)
+		_apply_definition(_pending_definition, is_building)
 
 func _apply_entity(entity) -> void:
 	if not is_instance_valid(entity) or not is_instance_valid(_pivot):
