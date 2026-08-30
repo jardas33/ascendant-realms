@@ -2192,7 +2192,11 @@ func _refresh_queue() -> void:
 				cap_b.cancel_queue_item(cap_idx))
 		# progress mini-bar under text
 		var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
-		pbar.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+		# Queue slots have an explicit compact size. Keep the progress bar on a
+		# fixed top-left anchor so the authored offsets remain authoritative and
+		# Godot does not repeatedly warn about conflicting opposite anchors while
+		# production_updated rebuilds the queue row.
+		pbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		pbar.custom_minimum_size = Vector2(44, 5)
 		pbar.value = prog
 		pbar.position = Vector2(2, 20)
