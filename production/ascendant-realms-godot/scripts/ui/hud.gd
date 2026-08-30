@@ -642,7 +642,10 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	var card_height := 106 if ability_card else (94 if (not has_preview and detail.contains("\n")) else (80 if has_preview else 78))
+	# Build cards need one extra visual beat for the name/cost/state scan. Keep
+	# the deck compact enough for five authored structures without changing the
+	# command surface's existing two-column layout.
+	var card_height := 106 if ability_card else (86 if has_preview else (94 if detail.contains("\n") else 78))
 	if has_effect:
 		card_height = 100 if role_card else (110 if ability_card else 94)
 	btn.custom_minimum_size = Vector2(218, card_height)
@@ -653,28 +656,29 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(10, 10)
-		preview.size = Vector2(62, 62)
-		preview.custom_minimum_size = Vector2(62, 62)
+		preview.position = Vector2(9, 9)
+		preview.size = Vector2(64, 64)
+		preview.custom_minimum_size = Vector2(64, 64)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
 		# EntityPortraitView raises its own minimum to 112px for full-size cards;
 		# defer the compact-card override until its _ready() has run so the preview
 		# cannot expand back over the cost text column.
-		preview.set_deferred("custom_minimum_size", Vector2(62, 62))
-		preview.set_deferred("size", Vector2(62, 62))
+		preview.set_deferred("custom_minimum_size", Vector2(64, 64))
+		preview.set_deferred("size", Vector2(64, 64))
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(84, 9)
-		var preview_text_height := card_height - 42 if has_effect else 66
-		text_col.size = Vector2(124, preview_text_height)
-		text_col.custom_minimum_size = Vector2(124, preview_text_height)
+		text_col.position = Vector2(82, 8)
+		var preview_text_height := card_height - 38 if has_effect else 66
+		text_col.size = Vector2(130, preview_text_height)
+		text_col.custom_minimum_size = Vector2(130, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 12, FONT_COLOR)
+		var title_label := _mk_label(title, 13, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail_text, 10, Color(0.86, 0.84, 0.76))
+		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
+		var detail_label := _mk_label(state_text + detail_text, 10, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -730,6 +734,17 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)
 		btn.set_meta("command_status_label", status_label)
+	else:
+		# The worker deck already labels the family as BUILD. Use the lower-right
+		# slot for the actionable state so READY versus LOCKED is readable without
+		# relying on a paragraph of disabled-reason text.
+		var build_status := _mk_label(state, 9, accent if state == "READY" else COMMAND_MUTED)
+		build_status.position = Vector2(132, card_height - 20)
+		build_status.size = Vector2(60, 17)
+		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(build_status)
+		btn.set_meta("command_status_label", build_status)
 	btn.set_meta("command_kind", command_kind)
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
