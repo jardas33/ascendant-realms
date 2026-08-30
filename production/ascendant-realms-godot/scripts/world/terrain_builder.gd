@@ -166,6 +166,10 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("road_detail", grade.road_detail)
 	sm.set_shader_parameter("road_edge_strength", grade.road_edge_strength)
 	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
+	sm.set_shader_parameter("snow_shadow_color", grade.get("snow_shadow_color", Color(0.62, 0.69, 0.80)))
+	sm.set_shader_parameter("snow_highlight_color", grade.get("snow_highlight_color", Color(0.90, 0.95, 1.0)))
+	sm.set_shader_parameter("snow_underlay_strength", float(grade.get("snow_underlay_strength", 0.24)))
+	sm.set_shader_parameter("snow_variation_strength", float(grade.get("snow_variation_strength", 0.78)))
 	return sm
 
 
@@ -174,7 +178,13 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		"volcanic":
 			return {"ground_base": Color(0.29, 0.29, 0.28), "road_base": Color(0.40, 0.35, 0.30), "road_edge_color": Color(0.15, 0.16, 0.15), "surface_detail": 0.20, "surface_macro": 0.12, "road_detail": 0.34, "road_edge_strength": 0.13, "surface_saturation": 0.22}
 		"ashen":
-			return {"ground_base": Color(0.38, 0.39, 0.40), "road_base": Color(0.46, 0.42, 0.36), "road_edge_color": Color(0.23, 0.24, 0.24), "surface_detail": 0.30, "surface_macro": 0.13, "road_detail": 0.36, "road_edge_strength": 0.13, "surface_saturation": 0.66}
+			# Ashen needs a firmer value floor and broader breakup so the existing
+			# stone/dirt inputs survive the full battlefield view.
+			return {"ground_base": Color(0.31, 0.32, 0.35), "road_base": Color(0.46, 0.37, 0.29), "road_edge_color": Color(0.16, 0.17, 0.19), "surface_detail": 0.52, "surface_macro": 0.34, "road_detail": 0.54, "road_edge_strength": 0.23, "surface_saturation": 0.64}
+		"snow":
+			# Snow stays cool and bright, but not uniformly white.  The blue-grey
+			# shadow range keeps the ground readable beneath the production light.
+			return {"ground_base": Color(0.34, 0.40, 0.49), "road_base": Color(0.43, 0.39, 0.34), "road_edge_color": Color(0.19, 0.23, 0.29), "surface_detail": 0.48, "surface_macro": 0.32, "road_detail": 0.44, "road_edge_strength": 0.22, "surface_saturation": 0.70, "snow_shadow_color": Color(0.58, 0.66, 0.77), "snow_highlight_color": Color(0.88, 0.93, 1.0), "snow_underlay_strength": 0.30, "snow_variation_strength": 0.82}
 		_:
 			# WORLD-03 highland grade: broader value variation and a clearer
 			# road verge, while keeping the grass palette restrained for units.

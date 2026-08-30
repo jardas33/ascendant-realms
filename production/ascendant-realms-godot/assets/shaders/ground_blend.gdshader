@@ -26,6 +26,10 @@ uniform float surface_macro = 0.14;
 uniform float road_detail = 0.42;
 uniform float road_edge_strength = 0.16;
 uniform float surface_saturation = 0.9;
+uniform vec3 snow_shadow_color : source_color = vec3(0.62, 0.69, 0.80);
+uniform vec3 snow_highlight_color : source_color = vec3(0.90, 0.95, 1.0);
+uniform float snow_underlay_strength = 0.24;
+uniform float snow_variation_strength = 0.78;
 
 // Path segments in world XZ: xy = start, zw = end. Up to 8 roads.
 uniform vec4 paths[8];
@@ -125,9 +129,18 @@ void fragment() {
 	float luma = dot(ground, vec3(0.299, 0.587, 0.114));
 	ground = mix(vec3(luma), ground, clamp(surface_saturation, 0.0, 1.0));
 
-	// snow blanket for frozen biomes, broken up by noise so it isn't flat white
-	float snow_mask = snow_amt * (0.75 + 0.25 * fbm(wxz * 0.03 + 12.0));
-	ground = mix(ground, vec3(0.9, 0.93, 0.98), clamp(snow_mask, 0.0, 1.0));
+	// Snow keeps its identity while preserving truthful material structure.  The
+	// former near-white blanket erased most macro/value separation at the normal
+	// RTS camera distance; this grade layers existing ground response underneath
+	// a theme-compatible snow range instead of painting fake geography.
+	float snow_macro = fbm(wxz * 0.022 + 12.0);
+	float snow_micro = fbm(wxz * 0.085 + 41.0);
+	float snow_mask = snow_amt * (0.72 + 0.28 * snow_macro);
+	float snow_value = smoothstep(0.20, 0.82, snow_macro);
+	vec3 snow_surface = mix(snow_shadow_color, snow_highlight_color, snow_value);
+	snow_surface *= mix(0.92, 1.04, snow_micro) * mix(1.0, 0.94, snow_variation_strength * (1.0 - snow_value));
+	snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
+	ground = mix(ground, snow_surface, clamp(snow_mask, 0.0, 1.0));
 
 	ALBEDO = ground;
 	ROUGHNESS = mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0));

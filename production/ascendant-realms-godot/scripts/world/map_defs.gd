@@ -242,8 +242,8 @@ static func theme(name: String) -> Dictionary:
 		"snow": {
 			"ground_tint": Color(0.9, 0.95, 1.05), "dirt_bias": -0.05, "rock_bias": 0.1, "snow": 0.62,
 			"rock_tint": Color(0.7, 0.74, 0.8),
-			"fog_color": Color(0.85, 0.9, 0.96), "fog_density": 0.0024,
-			"sun_color": Color(0.9, 0.94, 1.0), "sun_energy": 1.05, "ambient_energy": 0.7,
+			"fog_color": Color(0.79, 0.85, 0.93), "fog_density": 0.00145,
+			"sun_color": Color(0.9, 0.94, 1.0), "sun_energy": 1.02, "ambient_energy": 0.58,
 			"decor_density": 0.6,
 			"water": {"enabled": true, "deep": Color(0.12, 0.3, 0.4), "shallow": Color(0.4, 0.62, 0.72), "foam": Color(0.95, 0.98, 1.0)},
 		},
@@ -266,8 +266,8 @@ static func theme(name: String) -> Dictionary:
 		"ashen": {
 			"ground_tint": Color(0.84, 0.84, 0.88), "dirt_bias": 0.2, "rock_bias": 0.22, "snow": 0.0,
 			"rock_tint": Color(0.55, 0.55, 0.58),
-			"fog_color": Color(0.6, 0.6, 0.64), "fog_density": 0.0022,
-			"sun_color": Color(0.88, 0.86, 0.86), "sun_energy": 0.9, "ambient_energy": 0.55,
+			"fog_color": Color(0.55, 0.56, 0.61), "fog_density": 0.00135,
+			"sun_color": Color(0.88, 0.86, 0.86), "sun_energy": 0.96, "ambient_energy": 0.48,
 			"decor_density": 0.7,
 			"water": {"enabled": false},
 		},
