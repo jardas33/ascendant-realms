@@ -4,9 +4,9 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(165.0, 80.0)
+const SPACING := Vector2(174.0, 86.0)
 const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(152.0, 68.0)
+const NODE_SIZE := Vector2(160.0, 72.0)
 const GRAPH_ZOOM := 0.82
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
@@ -31,10 +31,18 @@ const BRANCH_COLORS := {
 	"race": Color("#c59b62")
 }
 
+const GLYPH_TEXTURES := {
+	"cmb_2": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_battle_fury.png",
+	"act_1": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_rallying_cry.png",
+	"act_2": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_ground_slam.png",
+	"act_3": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_deepened_reserves.png"
+}
+
 class Glyph extends Control:
 	var kind := "passive"
 	var accent := Color.WHITE
 	var locked := false
+	var texture: Texture2D
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -42,6 +50,15 @@ class Glyph extends Control:
 
 	func _draw() -> void:
 		var c := LOCKED if locked else accent
+		if texture:
+			var tint := Color(0.68, 0.72, 0.78, 0.78) if locked else Color.WHITE
+			draw_texture_rect(texture, Rect2(Vector2.ZERO, Vector2(50.0, 50.0)), false, tint)
+			draw_arc(Vector2(25.0, 25.0), 24.0, 0.0, TAU, 32, Color(c, 0.82), 1.6, true)
+			if locked:
+				draw_circle(Vector2(39.0, 39.0), 8.0, Color(INK, 0.92))
+				draw_rect(Rect2(35.0, 39.0, 8.0, 7.0), LOCKED, false, 1.5)
+				draw_arc(Vector2(39.0, 39.0), 3.5, PI, TAU, 10, LOCKED, 1.5, true)
+			return
 		var center := Vector2(22.0, 28.0)
 		draw_circle(center, 17.0, Color(c, 0.12))
 		draw_arc(center, 17.0, 0.0, TAU, 20, Color(c, 0.7), 1.5, true)
@@ -82,7 +99,10 @@ var _detail_requirements: Label
 var _detail_action: Label
 var _status_label: Label
 var _path_filter: OptionButton
+var _legend_panel: PanelContainer
 var _node_buttons := {}
+var _layout_positions := {}
+var _glyph_texture_cache := {}
 var _nodes: Array = []
 var _selected_id := ""
 var _hovered_id := ""
@@ -96,6 +116,7 @@ func _ready() -> void:
 	_build()
 	ProfileManager.profile_changed.connect(_refresh_nodes)
 	_refresh_nodes()
+	call_deferred("_fit_default_zoom")
 
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
@@ -141,32 +162,32 @@ func _build() -> void:
 	detail_bg.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	detail_bg.offset_left = 24.0
 	detail_bg.offset_top = 128.0
-	detail_bg.offset_right = 300.0
+	detail_bg.offset_right = 330.0
 	detail_bg.offset_bottom = -116.0
 	detail_bg.add_theme_stylebox_override("panel", _panel_style(PANEL, Color("#34445d"), 14, 1))
 	add_child(detail_bg)
 	var detail_margin := MarginContainer.new()
-	detail_margin.add_theme_constant_override("margin_left", 18)
-	detail_margin.add_theme_constant_override("margin_right", 18)
-	detail_margin.add_theme_constant_override("margin_top", 17)
-	detail_margin.add_theme_constant_override("margin_bottom", 15)
+	detail_margin.add_theme_constant_override("margin_left", 20)
+	detail_margin.add_theme_constant_override("margin_right", 20)
+	detail_margin.add_theme_constant_override("margin_top", 19)
+	detail_margin.add_theme_constant_override("margin_bottom", 17)
 	detail_bg.add_child(detail_margin)
 	var detail_box := VBoxContainer.new()
-	detail_box.add_theme_constant_override("separation", 8)
+	detail_box.add_theme_constant_override("separation", 10)
 	detail_margin.add_child(detail_box)
 	detail_box.add_child(_label("SELECTED STAR", 11, MUTED))
-	_detail_title = _label("Choose a skill", 23, PAPER)
+	_detail_title = _label("Choose a skill", 27, PAPER)
 	_detail_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_box.add_child(_detail_title)
-	_detail_type = _label("A path waits in the dark", 13, GOLD)
+	_detail_type = _label("A path waits in the dark", 14, GOLD)
 	detail_box.add_child(_detail_type)
 	var rule := HSeparator.new()
 	rule.modulate = Color(0.5, 0.58, 0.7, 0.45)
 	detail_box.add_child(rule)
-	_detail_meta = _label("", 14, PAPER)
+	_detail_meta = _label("", 15, PAPER)
 	_detail_meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_box.add_child(_detail_meta)
-	_detail_body = _label("Hover a star to reveal its power, then click to inspect its place in your build.", 14, MUTED)
+	_detail_body = _label("Hover a star to reveal its power, then click to inspect its place in your build.", 15, MUTED)
 	_detail_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_box.add_child(_detail_body)
 	_detail_requirements = _label("", 13, Color("#c6a9e8"))
@@ -184,7 +205,7 @@ func _build() -> void:
 
 	_viewport = Control.new()
 	_viewport.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_viewport.offset_left = 318.0
+	_viewport.offset_left = 346.0
 	_viewport.offset_top = 124.0
 	_viewport.offset_right = -24.0
 	_viewport.offset_bottom = -116.0
@@ -196,6 +217,7 @@ func _build() -> void:
 	_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_viewport.add_child(_canvas)
 
+	_rebuild_layout()
 	for n in _nodes:
 		var race: String = str(n.get("race", ""))
 		if race != "" and race != _hero_race():
@@ -205,11 +227,12 @@ func _build() -> void:
 		_selected_id = "act_1"
 
 	var legend := PanelContainer.new()
-	legend.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	legend.offset_left = -314.0
-	legend.offset_right = -24.0
-	legend.offset_top = 128.0
-	legend.offset_bottom = 226.0
+	legend.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	legend.offset_left = 430.0
+	legend.offset_right = 850.0
+	legend.offset_top = -116.0
+	legend.offset_bottom = -24.0
+	_legend_panel = legend
 	legend.add_theme_stylebox_override("panel", _panel_style(Color("#101729"), Color("#283850"), 12, 1))
 	add_child(legend)
 	var legend_margin := MarginContainer.new()
@@ -224,7 +247,7 @@ func _build() -> void:
 	legend_box.add_child(_label("READ THE CONSTELLATION", 11, MUTED))
 	legend_box.add_child(_label("PATH FOCUS", 10, Color("#73839b")))
 	_path_filter = OptionButton.new()
-	_path_filter.custom_minimum_size = Vector2(258.0, 30.0)
+	_path_filter.custom_minimum_size = Vector2(390.0, 30.0)
 	_path_filter.focus_mode = Control.FOCUS_NONE
 	_path_filter.add_theme_font_override("font", _title_font())
 	_path_filter.add_theme_font_size_override("font_size", 11)
@@ -247,7 +270,7 @@ func _build() -> void:
 
 	var footer := HBoxContainer.new()
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	footer.offset_left = 318.0
+	footer.offset_left = 346.0
 	footer.offset_right = -24.0
 	footer.offset_top = -92.0
 	footer.offset_bottom = -24.0
@@ -259,7 +282,7 @@ func _build() -> void:
 	footer.add_child(footer_spacer)
 	footer.add_child(_tool_button("− ZOOM", func(): _set_zoom(_zoom - 0.08)))
 	footer.add_child(_tool_button("+ ZOOM", func(): _set_zoom(_zoom + 0.08)))
-	footer.add_child(_tool_button("RECENTER", func(): _pan = Vector2.ZERO; _set_zoom(GRAPH_ZOOM)))
+	footer.add_child(_tool_button("RECENTER", _recenter_view))
 	footer.add_child(_tool_button("RESPEC", _on_respec))
 	_update_canvas_size()
 
@@ -278,22 +301,24 @@ func _add_node_button(n: Dictionary) -> void:
 	b.tooltip_text = ""
 	b.add_theme_font_size_override("font_size", 1)
 	var glyph := Glyph.new()
-	glyph.position = Vector2(8.0, 13.0)
-	glyph.size = Vector2(44.0, 56.0)
+	glyph.position = Vector2(6.0, 11.0)
+	glyph.size = Vector2(50.0, 50.0)
+	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	glyph.kind = "active" if n.get("effect", {}).has("ability") else "passive"
 	glyph.kind = "keystone" if n.get("keystone", false) else glyph.kind
 	glyph.accent = _branch_color(str(n.get("branch", "")))
+	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 13, PAPER)
-	name_label.position = Vector2(48.0, 8.0)
-	name_label.size = Vector2(86.0, 39.0)
+	var name_label := _label(str(n.get("name", "")), 12, PAPER)
+	name_label.position = Vector2(60.0, 6.0)
+	name_label.size = Vector2(94.0, 42.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 11, MUTED)
-	cost_label.position = Vector2(48.0, 54.0)
-	cost_label.size = Vector2(86.0, 18.0)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 10, MUTED)
+	cost_label.position = Vector2(60.0, 54.0)
+	cost_label.size = Vector2(94.0, 16.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(cost_label)
 	b.pressed.connect(_on_node_pressed.bind(n))
@@ -304,22 +329,57 @@ func _add_node_button(n: Dictionary) -> void:
 
 func _node_pos(n: Dictionary) -> Vector2:
 	var p := _display_grid_pos(n)
-	return MARGIN + Vector2(p.x, p.y) * SPACING
+	return MARGIN + Vector2(p.x, p.y) * _layout_spacing()
+
+func _layout_spacing() -> Vector2:
+	return Vector2(280.0, 86.0) if _branch_filter != "" else SPACING
 
 func _display_grid_pos(n: Dictionary) -> Vector2:
+	var id := str(n.get("id", ""))
+	if _layout_positions.has(id):
+		return _layout_positions[id]
 	var p: Vector2 = n.get("pos", Vector2.ZERO)
-	if _branch_filter == "":
-		return p
-	var columns := []
-	for other in _nodes:
-		if not _is_visible_node(other):
+	return p
+
+func _rebuild_layout() -> void:
+	_layout_positions.clear()
+	var visible: Array = []
+	var columns: Array = []
+	for n in _nodes:
+		if not _is_visible_node(n):
 			continue
-		var x := float((other.get("pos", Vector2.ZERO) as Vector2).x)
+		visible.append(n)
+		var x := float((n.get("pos", Vector2.ZERO) as Vector2).x)
 		if not columns.has(x):
 			columns.append(x)
 	columns.sort()
-	var column_index := columns.find(float(p.x))
-	return Vector2(float(column_index), p.y)
+	var column_map := {}
+	for i in range(columns.size()):
+		column_map[columns[i]] = i
+	var branch_map := {}
+	for n in visible:
+		var branch := str(n.get("branch", ""))
+		if not branch_map.has(branch):
+			branch_map[branch] = branch_map.size()
+	visible.sort_custom(func(a, b):
+		var ap: Vector2 = a.get("pos", Vector2.ZERO)
+		var bp: Vector2 = b.get("pos", Vector2.ZERO)
+		if ap.y == bp.y:
+			return ap.x < bp.x
+		return ap.y < bp.y
+	)
+	var occupied := {}
+	for n in visible:
+		var id := str(n.get("id", ""))
+		var authored: Vector2 = n.get("pos", Vector2.ZERO)
+		var column := int(branch_map[str(n.get("branch", ""))]) if _branch_filter == "" else int(column_map[float(authored.x)])
+		var row := maxi(0, int(round(authored.y)))
+		var key := "%d:%d" % [column, row]
+		while occupied.has(key):
+			row += 1
+			key = "%d:%d" % [column, row]
+		occupied[key] = id
+		_layout_positions[id] = Vector2(column, row)
 
 func _is_visible_node(n: Dictionary) -> bool:
 	if n.is_empty():
@@ -330,6 +390,7 @@ func _is_visible_node(n: Dictionary) -> bool:
 	return _branch_filter == "" or str(n.get("branch", "")) == _branch_filter
 
 func _update_canvas_size() -> void:
+	_rebuild_layout()
 	var max_x := 0.0
 	var max_y := 0.0
 	for n in _nodes:
@@ -338,19 +399,42 @@ func _update_canvas_size() -> void:
 		var p := _display_grid_pos(n)
 		max_x = maxf(max_x, p.x)
 		max_y = maxf(max_y, p.y)
-	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y) * SPACING + NODE_SIZE
+	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y) * _layout_spacing() + NODE_SIZE
 	_canvas.size = _canvas.custom_minimum_size
+	_apply_transform()
+
+func _fit_default_zoom() -> void:
+	if not is_instance_valid(_viewport) or _viewport.size.x <= 0.0:
+		return
+	if is_instance_valid(_legend_panel):
+		var guide_left := 430.0 if size.x < 1500.0 else 600.0
+		_legend_panel.offset_left = guide_left
+		_legend_panel.offset_right = guide_left + 420.0
+	var target := GRAPH_ZOOM
+	if _branch_filter == "":
+		target = minf(target, maxf(0.62, (_viewport.size.x - 36.0) / maxf(1.0, _canvas.size.x)))
+	_zoom = clampf(target, 0.52, 1.16)
 	_apply_transform()
 
 func _apply_transform() -> void:
 	_canvas.scale = Vector2(_zoom, _zoom)
-	_canvas.position = GRAPH_ORIGIN + _pan
+	var view_size := _viewport.size
+	var scaled_size := _canvas.size * _zoom
+	var centered := Vector2(GRAPH_ORIGIN.x, GRAPH_ORIGIN.y)
+	if view_size.x > 0.0:
+		centered.x = maxf(GRAPH_ORIGIN.x, (view_size.x - scaled_size.x) * 0.5)
+		centered.y = maxf(GRAPH_ORIGIN.y, (view_size.y - scaled_size.y) * 0.5)
+	_canvas.position = centered + _pan
 	_canvas.queue_redraw()
 
 func _set_zoom(z: float) -> void:
 	Sfx.play("select")
 	_zoom = clampf(z, 0.52, 1.16)
 	_apply_transform()
+
+func _recenter_view() -> void:
+	_pan = Vector2.ZERO
+	_fit_default_zoom()
 
 func _on_viewport_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -371,7 +455,7 @@ func _draw_background() -> void:
 		draw_line(Vector2(x, 0), Vector2(x + 160.0, size.y), Color(0.18, 0.25, 0.38, 0.08), 1.0)
 	for i in range(6):
 		var y := 120.0 + float(i) * maxf(1.0, (size.y - 170.0) / 5.0)
-		draw_line(Vector2(318.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
+		draw_line(Vector2(346.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
 	for p in [Vector2(size.x * 0.48, 130), Vector2(size.x * 0.82, 760), Vector2(size.x * 0.2, 860)]:
 		draw_circle(p, 120.0, Color(0.14, 0.2, 0.34, 0.12))
 		draw_arc(p, 120.0, 0.0, TAU, 40, Color(GOLD, 0.08), 1.0, true)
@@ -529,6 +613,15 @@ func _on_path_filter_selected(index: int) -> void:
 				break
 	_update_canvas_size()
 	_refresh_nodes()
+
+func _skill_glyph_texture(n: Dictionary) -> Texture2D:
+	var id := str(n.get("id", ""))
+	if _glyph_texture_cache.has(id):
+		return _glyph_texture_cache[id]
+	var path := str(GLYPH_TEXTURES.get(id, ""))
+	var texture: Texture2D = load(path) if path != "" and ResourceLoader.exists(path) else null
+	_glyph_texture_cache[id] = texture
+	return texture
 
 func _on_node_pressed(n: Dictionary) -> void:
 	_selected_id = str(n.get("id", ""))
