@@ -81,10 +81,12 @@ var _detail_body: Label
 var _detail_requirements: Label
 var _detail_action: Label
 var _status_label: Label
+var _path_filter: OptionButton
 var _node_buttons := {}
 var _nodes: Array = []
 var _selected_id := ""
 var _hovered_id := ""
+var _branch_filter := ""
 var _zoom := GRAPH_ZOOM
 var _pan := Vector2.ZERO
 var _dragging := false
@@ -220,12 +222,27 @@ func _build() -> void:
 	legend_box.add_theme_constant_override("separation", 7)
 	legend_margin.add_child(legend_box)
 	legend_box.add_child(_label("READ THE CONSTELLATION", 11, MUTED))
+	legend_box.add_child(_label("PATH FOCUS", 10, Color("#73839b")))
+	_path_filter = OptionButton.new()
+	_path_filter.custom_minimum_size = Vector2(258.0, 30.0)
+	_path_filter.focus_mode = Control.FOCUS_NONE
+	_path_filter.add_theme_font_override("font", _title_font())
+	_path_filter.add_theme_font_size_override("font_size", 11)
+	_path_filter.add_theme_color_override("font_color", PAPER)
+	_path_filter.add_theme_stylebox_override("normal", _panel_style(Color("#182238"), Color("#52657e"), 7, 1))
+	_path_filter.add_theme_stylebox_override("hover", _panel_style(Color("#26334d"), GOLD, 7, 1))
+	_path_filter.add_theme_stylebox_override("pressed", _panel_style(Color("#332b1d"), GOLD_BRIGHT, 7, 1))
+	_path_filter.add_item("ALL PATHS")
+	for branch in BRANCH_COLORS.keys():
+		_path_filter.add_item(str(branch).to_upper())
+	_path_filter.item_selected.connect(_on_path_filter_selected)
+	legend_box.add_child(_path_filter)
 	var legend_row := HBoxContainer.new()
 	legend_row.add_theme_constant_override("separation", 12)
 	legend_box.add_child(legend_row)
-	legend_row.add_child(_legend_item("PURCHASED", MINT))
-	legend_row.add_child(_legend_item("READY", GOLD_BRIGHT))
-	legend_row.add_child(_legend_item("LOCKED", LOCKED))
+	legend_row.add_child(_legend_item("UNLOCKED", MINT))
+	legend_row.add_child(_legend_item("PURCHASABLE", GOLD_BRIGHT))
+	legend_row.add_child(_legend_item("BLOCKED", LOCKED))
 	legend_row.add_child(_legend_item("ACTIVE", ACTIVE))
 
 	var footer := HBoxContainer.new()
@@ -256,7 +273,9 @@ func _add_node_button(n: Dictionary) -> void:
 	b.custom_minimum_size = NODE_SIZE
 	b.size = NODE_SIZE
 	b.position = _node_pos(n)
-	b.tooltip_text = str(n.get("name", ""))
+	# The selected-star panel is the authoritative detail surface. Avoid the
+	# engine's delayed one-line tooltip obscuring neighboring constellation nodes.
+	b.tooltip_text = ""
 	b.add_theme_font_size_override("font_size", 1)
 	var glyph := Glyph.new()
 	glyph.position = Vector2(8.0, 13.0)
@@ -272,7 +291,7 @@ func _add_node_button(n: Dictionary) -> void:
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("COST %d" % int(n.get("cost", 1)), 11, MUTED)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 11, MUTED)
 	cost_label.position = Vector2(48.0, 54.0)
 	cost_label.size = Vector2(86.0, 18.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -284,17 +303,39 @@ func _add_node_button(n: Dictionary) -> void:
 	_node_buttons[id] = b
 
 func _node_pos(n: Dictionary) -> Vector2:
-	var p: Vector2 = n.get("pos", Vector2.ZERO)
+	var p := _display_grid_pos(n)
 	return MARGIN + Vector2(p.x, p.y) * SPACING
+
+func _display_grid_pos(n: Dictionary) -> Vector2:
+	var p: Vector2 = n.get("pos", Vector2.ZERO)
+	if _branch_filter == "":
+		return p
+	var columns := []
+	for other in _nodes:
+		if not _is_visible_node(other):
+			continue
+		var x := float((other.get("pos", Vector2.ZERO) as Vector2).x)
+		if not columns.has(x):
+			columns.append(x)
+	columns.sort()
+	var column_index := columns.find(float(p.x))
+	return Vector2(float(column_index), p.y)
+
+func _is_visible_node(n: Dictionary) -> bool:
+	if n.is_empty():
+		return false
+	var race: String = str(n.get("race", ""))
+	if race != "" and race != _hero_race():
+		return false
+	return _branch_filter == "" or str(n.get("branch", "")) == _branch_filter
 
 func _update_canvas_size() -> void:
 	var max_x := 0.0
 	var max_y := 0.0
 	for n in _nodes:
-		var race: String = str(n.get("race", ""))
-		if race != "" and race != _hero_race():
+		if not _is_visible_node(n):
 			continue
-		var p: Vector2 = n.get("pos", Vector2.ZERO)
+		var p := _display_grid_pos(n)
 		max_x = maxf(max_x, p.x)
 		max_y = maxf(max_y, p.y)
 	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y) * SPACING + NODE_SIZE
@@ -341,7 +382,7 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 	var branch_seen := {}
 	for n in _nodes:
 		var id := str(n.get("id", ""))
-		if not _node_buttons.has(id):
+		if not _node_buttons.has(id) or not _is_visible_node(n):
 			continue
 		var branch := str(n.get("branch", ""))
 		var anchor := _node_pos(n)
@@ -349,9 +390,10 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			branch_seen[branch] = anchor.x
 			canvas.draw_string(_title_font(), Vector2(anchor.x, 25.0), branch.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, Color(_branch_color(branch), 0.82))
 		for req in n.get("req", []):
-			if not _node_buttons.has(req):
+			var required := _find_node(str(req))
+			if not _node_buttons.has(req) or not _is_visible_node(required):
 				continue
-			var from_node := _find_node(req)
+			var from_node := required
 			if from_node.is_empty():
 				continue
 			var from := _node_pos(from_node) + Vector2(NODE_SIZE.x * 0.5, NODE_SIZE.y)
@@ -382,31 +424,42 @@ func _prereqs_met(n: Dictionary) -> bool:
 func _node_state(n: Dictionary) -> String:
 	var id := str(n.get("id", ""))
 	if _is_unlocked(id):
-		return "PURCHASED"
-	if _prereqs_met(n) and int(ProfileManager.hero().get("skill_points", 0)) >= int(n.get("cost", 1)):
-		return "READY"
-	if _prereqs_met(n):
-		return "ELIGIBLE"
-	return "LOCKED"
+		return "UNLOCKED"
+	if not _prereqs_met(n):
+		return "PREREQUISITE_BLOCKED"
+	if int(ProfileManager.hero().get("skill_points", 0)) >= int(n.get("cost", 1)):
+		return "PURCHASABLE"
+	return "INSUFFICIENT_POINTS"
+
+func _node_tag(n: Dictionary) -> String:
+	match _node_state(n):
+		"UNLOCKED":
+			return "UNLOCKED"
+		"PURCHASABLE":
+			return "CLAIM"
+		"INSUFFICIENT_POINTS":
+			return "OPEN"
+		_:
+			return "LOCKED"
 
 func _node_style(n: Dictionary, selected: bool, hovered: bool) -> StyleBoxFlat:
 	var state := _node_state(n)
 	var bg := Color("#172238")
 	var border := Color(0.27, 0.34, 0.47, 0.9)
-	if state == "PURCHASED":
+	if state == "UNLOCKED":
 		bg = Color("#14352f")
 		border = MINT
-	elif state == "READY":
+	elif state == "PURCHASABLE":
 		bg = Color("#3a2d18")
 		border = GOLD_BRIGHT
-	elif state == "ELIGIBLE":
+	elif state == "INSUFFICIENT_POINTS":
 		bg = Color("#272638")
 		border = Color(GOLD, 0.75)
-	elif state == "LOCKED":
+	elif state == "PREREQUISITE_BLOCKED":
 		bg = Color("#131a29")
 		border = Color(LOCKED, 0.7)
 	if n.get("keystone", false):
-		border = GOLD_BRIGHT if state != "PURCHASED" else MINT
+		border = GOLD_BRIGHT if state != "UNLOCKED" else MINT
 	if hovered:
 		bg = bg.lightened(0.14)
 		border = PAPER
@@ -428,18 +481,24 @@ func _refresh_nodes() -> void:
 		if not _node_buttons.has(id):
 			continue
 		var b: Button = _node_buttons[id]
+		b.visible = _is_visible_node(n)
+		b.position = _node_pos(n)
 		var state := _node_state(n)
+		var cost_label: Label = b.get_child(2) as Label
+		cost_label.text = "%d SP  •  %s" % [int(n.get("cost", 1)), _node_tag(n)]
+		cost_label.modulate = GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
 		b.add_theme_stylebox_override("normal", _node_style(n, id == _selected_id, id == _hovered_id))
 		b.add_theme_stylebox_override("hover", _node_style(n, id == _selected_id, true))
 		b.add_theme_stylebox_override("pressed", _node_style(n, true, true))
 		var glyph: Glyph = b.get_child(0) as Glyph
-		glyph.locked = state == "LOCKED"
+		glyph.locked = state == "PREREQUISITE_BLOCKED"
 		glyph.accent = _branch_color(str(n.get("branch", "")))
 		glyph.queue_redraw()
 	var edge_count := 0
 	for n in _nodes:
 		edge_count += (n.get("req", []) as Array).size()
-	_status_label.text = "%d authored stars  •  %d prerequisite links  •  %s" % [_nodes.size(), edge_count, _hero_race().to_upper()]
+	var focus_text := "ALL PATHS" if _branch_filter == "" else _branch_filter.to_upper()
+	_status_label.text = "%d authored stars  •  %d prerequisite links  •  %s  •  FOCUS: %s" % [_nodes.size(), edge_count, _hero_race().to_upper(), focus_text]
 	_canvas.queue_redraw()
 	if _selected_id != "":
 		var selected := _find_node(_selected_id)
@@ -460,6 +519,17 @@ func _on_node_exited(n: Dictionary) -> void:
 				_update_detail(selected)
 	_refresh_nodes()
 
+func _on_path_filter_selected(index: int) -> void:
+	_branch_filter = "" if index == 0 else str(BRANCH_COLORS.keys()[index - 1])
+	if _selected_id != "" and not _is_visible_node(_find_node(_selected_id)):
+		_selected_id = ""
+		for n in _nodes:
+			if _is_visible_node(n):
+				_selected_id = str(n.get("id", ""))
+				break
+	_update_canvas_size()
+	_refresh_nodes()
+
 func _on_node_pressed(n: Dictionary) -> void:
 	_selected_id = str(n.get("id", ""))
 	_update_detail(n)
@@ -476,7 +546,7 @@ func _on_node_pressed(n: Dictionary) -> void:
 			Sfx.play("select")
 	else:
 		Sfx.play("select")
-		_detail_action.text = "LOCKED PATH  •  See the requirement above"
+		_detail_action.text = "NOT READY  •  See the requirement above"
 	_refresh_nodes()
 
 func _update_detail(n: Dictionary) -> void:
@@ -485,7 +555,7 @@ func _update_detail(n: Dictionary) -> void:
 	_detail_title.text = str(n.get("name", ""))
 	_detail_type.text = ("ACTIVE ABILITY" if has_ability else "PASSIVE AUGMENT") + ("  •  KEYSTONE" if n.get("keystone", false) else "")
 	_detail_type.modulate = ACTIVE if has_ability else GOLD
-	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", state]
+	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", state.replace("_", " ")]
 	_detail_body.text = str(n.get("desc", ""))
 	var req_names: Array[String] = []
 	for req in n.get("req", []):
@@ -494,15 +564,15 @@ func _update_detail(n: Dictionary) -> void:
 	if req_names.is_empty():
 		_detail_requirements.text = "ROOT STAR  •  No prerequisite"
 	else:
-		_detail_requirements.text = ("REQUIRES  " + "  +  ".join(req_names)) if state == "LOCKED" else ("PATH FROM  " + "  +  ".join(req_names))
-	if state == "PURCHASED":
+		_detail_requirements.text = ("REQUIRES  " + "  +  ".join(req_names)) if state == "PREREQUISITE_BLOCKED" else ("PATH FROM  " + "  +  ".join(req_names))
+	if state == "UNLOCKED":
 		_detail_action.text = "UNLOCKED  •  This power is active in your build"
-	elif state == "READY":
+	elif state == "PURCHASABLE":
 		_detail_action.text = "READY TO CLAIM  •  Click to spend %d point%s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "s"]
-	elif state == "ELIGIBLE":
-		_detail_action.text = "ELIGIBLE  •  Earn more Skill Points to claim it"
+	elif state == "INSUFFICIENT_POINTS":
+		_detail_action.text = "AVAILABLE  •  INSUFFICIENT POINTS to claim it"
 	else:
-		_detail_action.text = "LOCKED  •  Follow the parent path to reveal it"
+		_detail_action.text = "PREREQUISITE BLOCKED  •  Follow the parent path"
 
 func _legend_item(text: String, color: Color) -> Label:
 	var label := _label("●  " + text, 10, color)
