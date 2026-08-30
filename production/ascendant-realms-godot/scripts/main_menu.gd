@@ -48,6 +48,8 @@ func _start_v0431_capture_scene() -> void:
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 0.1)
 
 func _build() -> void:
+	const MENU_HEIGHT := 406.0
+	const MENU_FOOTER_GAP := 82.0
 	var bg := TextureRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -75,14 +77,19 @@ func _build() -> void:
 	add_child(word)
 
 	var col := VBoxContainer.new()
-	col.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	col.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_theme_constant_override("separation", 14)
 	col.custom_minimum_size = Vector2(340, 0)
 	col.offset_left = -170.0
 	col.offset_right = 170.0
-	col.offset_top = 40.0
-	col.offset_bottom = 360.0
+	# Keep the authored desktop placement when there is room, but lift the
+	# complete six-button stack above the footer at compact heights. The
+	# children still determine their natural content height; these offsets only
+	# provide a responsive safe-area envelope for the container.
+	var menu_top := minf(580.0, maxf(260.0, get_viewport_rect().size.y - MENU_HEIGHT - MENU_FOOTER_GAP))
+	col.offset_top = menu_top
+	col.offset_bottom = menu_top + MENU_HEIGHT
 	add_child(col)
 
 	col.add_child(_make_button("Play Campaign", _on_campaign))
