@@ -1592,7 +1592,22 @@ func _rebuild_selection(sel: Array) -> void:
 			_build_single_unit(one, false)
 		_rebuild_command_card(one, valid)
 	else:
-		_build_multi(valid)
+		# RTS selection can legitimately contain a mixed unit/building set while
+		# the player switches context with additive selection. The formation
+		# renderer is intentionally unit-only; normalize at this HUD boundary
+		# instead of dereferencing unit fields on a Building or changing the
+		# controller's authoritative selection semantics.
+		var selected_units: Array = []
+		var selected_buildings: Array = []
+		for item in valid:
+			if item is Unit:
+				selected_units.append(item)
+			elif item is Building:
+				selected_buildings.append(item)
+		if not selected_units.is_empty():
+			_build_multi(selected_units)
+		elif not selected_buildings.is_empty():
+			_build_single_building(selected_buildings[0], false)
 		_rebuild_command_card(null, valid)
 
 
