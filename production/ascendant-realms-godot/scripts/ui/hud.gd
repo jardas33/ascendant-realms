@@ -206,15 +206,16 @@ func _fit_to_viewport() -> void:
 		_minimap_panel.offset_top = -margin - MINIMAP_PANEL_HEIGHT
 		_minimap_panel.offset_bottom = -margin
 	if is_instance_valid(_sel_panel):
-		# At compact desktop widths the command deck owns the right edge. Shift
-		# the entity module left as a unit so the three bottom regions retain
-		# their own readable surfaces instead of overlapping.
-		if viewport_size.x < 1520.0:
-			_sel_panel.offset_left = -350.0
-			_sel_panel.offset_right = 82.0
-		else:
-			_sel_panel.offset_left = -216.0
-			_sel_panel.offset_right = 216.0
+		# Treat the selected entity and command deck as one interaction system:
+		# keep a deliberate 12px seam between their shared bottom baseline at
+		# every supported desktop width. This removes the disconnected floating
+		# card feeling without stealing the tactical-map or battlefield region.
+		var command_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH
+		var interaction_gap := 12.0
+		var selection_right := command_left - interaction_gap
+		var selection_left := selection_right - SELECTION_PANEL_WIDTH
+		_sel_panel.offset_left = selection_left - viewport_size.x * 0.5
+		_sel_panel.offset_right = selection_right - viewport_size.x * 0.5
 		_sel_panel.offset_top = -margin - selection_height
 		_sel_panel.offset_bottom = -margin
 	if is_instance_valid(_cmd_panel):
@@ -582,10 +583,11 @@ func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: St
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.08, 0.095, 0.11, 0.98)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.52)
-	sb.set_border_width_all(1)
-	sb.set_corner_radius_all(4)
+	sb.bg_color = Color(0.055, 0.07, 0.082, 0.98)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.58)
+	sb.border_width_left = 2
+	sb.border_width_bottom = 1
+	sb.set_corner_radius_all(3)
 	sb.set_content_margin_all(4)
 	chip.add_theme_stylebox_override("panel", sb)
 	var label := _mk_label("%s  %s" % [caption, value], 10, FONT_COLOR)
@@ -640,9 +642,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	var card_height := 112 if ability_card else (100 if (not has_preview and detail.contains("\n")) else (86 if has_preview else 84))
+	var card_height := 106 if ability_card else (94 if (not has_preview and detail.contains("\n")) else (80 if has_preview else 78))
 	if has_effect:
-		card_height = 106 if role_card else (116 if ability_card else 98)
+		card_height = 100 if role_card else (110 if ability_card else 94)
 	btn.custom_minimum_size = Vector2(218, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -682,27 +684,27 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(10, 10)
-		glyph_plate.size = Vector2(62 if ability_card else 58, 62 if ability_card else 58)
+		glyph_plate.position = Vector2(9, 9)
+		glyph_plate.size = Vector2(58 if ability_card else 52, 58 if ability_card else 52)
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
-		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 46.0 if ability_card else 42.0))
+		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 42.0 if ability_card else 38.0))
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(84 if ability_card else 78, 9)
-		var text_height := (card_height - 42 if ability_card else (96 if role_card else 82)) if has_effect else 66
-		text_col.size = Vector2(132, text_height)
-		text_col.custom_minimum_size = Vector2(132, text_height)
+		text_col.position = Vector2(76 if ability_card else 68, 8)
+		var text_height := (card_height - 36 if ability_card else (card_height - 28 if role_card else 60)) if has_effect else 58
+		text_col.size = Vector2(140, text_height)
+		text_col.custom_minimum_size = Vector2(140, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
 		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 13, title_color)
+		var title_label := _mk_label(title, 12, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail_text, 10, detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 9, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -711,18 +713,18 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
 		var key_badge := _mk_command_keycap(hotkey, accent)
-		key_badge.position = Vector2(188, 9)
-		key_badge.size = Vector2(28, 25)
+		key_badge.position = Vector2(188, 8)
+		key_badge.size = Vector2(27, 24)
 		btn.add_child(key_badge)
 	var kind_label := _mk_label(command_kind, 9, Color(accent.r, accent.g, accent.b, 0.82))
-	kind_label.position = Vector2(10, card_height - 21)
+	kind_label.position = Vector2(9, card_height - 20)
 	kind_label.size = Vector2(96, 17)
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
 		var status_label := _mk_label(status, 9, accent if status != "UNAVAILABLE" else COMMAND_MUTED)
-		status_label.position = Vector2(136 if ability_card else 144, card_height - 21)
+		status_label.position = Vector2(126 if ability_card else 132, card_height - 20)
 		status_label.size = Vector2(60, 17)
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1451,8 +1453,8 @@ func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel()
 	_sel_panel.name = "SelectionPanel"
 	var selection_surface := _hud_stylebox()
-	selection_surface.bg_color = Color(0.028, 0.038, 0.052, 0.98)
-	selection_surface.border_color = Color(0.82, 0.65, 0.30, 0.98)
+	selection_surface.bg_color = Color(0.035, 0.048, 0.062, 0.985)
+	selection_surface.border_color = Color(0.82, 0.65, 0.30, 0.96)
 	selection_surface.set_corner_radius_all(8)
 	selection_surface.set_content_margin_all(10)
 	_sel_panel.add_theme_stylebox_override("panel", selection_surface)
@@ -2018,8 +2020,8 @@ func _build_single_building(b, read_only: bool = false) -> void:
 					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0))
 
 	# production queue row (only meaningful when it produces)
-	if not read_only and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty()) \
-			or b.def.get("is_hq", false) or b.def.get("kind", "") == "main":
+	if not read_only and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
+			or b.def.get("is_hq", false) or b.def.get("kind", "") == "main"):
 		_queue_container = HBoxContainer.new()
 		_queue_container.add_theme_constant_override("separation", 4)
 		_queue_container.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -2177,8 +2179,8 @@ func _build_command_panel() -> void:
 	_cmd_panel = _mk_hud_panel()
 	_cmd_panel.name = "CommandPanel"
 	var command_surface := _hud_stylebox()
-	command_surface.bg_color = COMMAND_INK
-	command_surface.border_color = Color(0.83, 0.65, 0.28, 0.96)
+	command_surface.bg_color = Color(0.035, 0.048, 0.062, 0.985)
+	command_surface.border_color = Color(0.82, 0.65, 0.30, 0.96)
 	command_surface.set_corner_radius_all(8)
 	command_surface.set_content_margin_all(10)
 	_cmd_panel.add_theme_stylebox_override("panel", command_surface)
@@ -2342,10 +2344,11 @@ func _add_command_context(single, selection: Array) -> void:
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header.custom_minimum_size = Vector2(0, 58)
 	var header_style := StyleBoxFlat.new()
-	header_style.bg_color = Color(0.1, 0.12, 0.14, 0.98)
+	header_style.bg_color = Color(0.06, 0.078, 0.094, 0.98)
 	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.76)
-	header_style.set_border_width_all(1)
-	header_style.set_corner_radius_all(6)
+	header_style.border_width_left = 3
+	header_style.border_width_bottom = 1
+	header_style.set_corner_radius_all(4)
 	header_style.set_content_margin_all(8)
 	header.add_theme_stylebox_override("panel", header_style)
 	var row := HBoxContainer.new()
@@ -2374,9 +2377,9 @@ func _add_context_hints(hints: Array[String]) -> void:
 	strip.custom_minimum_size = Vector2(0, 28)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.03, 0.04, 0.05, 0.72)
-	sb.border_color = Color(0.34, 0.4, 0.4, 0.6)
+	sb.border_color = Color(0.34, 0.4, 0.4, 0.46)
 	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(3)
+	sb.set_corner_radius_all(2)
 	sb.set_content_margin_all(4)
 	strip.add_theme_stylebox_override("panel", sb)
 	var row := HBoxContainer.new()
