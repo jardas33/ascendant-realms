@@ -107,6 +107,8 @@ func _make_world03_shelf(size: Vector2, rotation_y: float, index: int) -> MeshIn
 		st.set_uv(Vector2(0.0, 0.0)); st.add_vertex(outer0)
 		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown1)
 		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown0)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown0)
+		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(crown1)
 		st.set_uv(Vector2(0.5, 1.0)); st.add_vertex(center)
 	st.generate_normals()
 	var mi := MeshInstance3D.new()
