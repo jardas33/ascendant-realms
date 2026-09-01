@@ -9,6 +9,7 @@ const VIEW_SIZE := Vector2i(128, 128)
 const PORTRAIT_MIN_SIZE := 46.0
 const PORTRAIT_MAX_SIZE := 116.0
 const PORTRAIT_FRAME_INSET := 5.0
+const PORTRAIT_ARTWORK_INSET := 8.0
 const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
 static var _portrait_texture_cache: Dictionary = {}
 
@@ -59,10 +60,10 @@ func _build_view() -> void:
 	# and show the full source image; the frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_artwork.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_artwork.offset_left = PORTRAIT_FRAME_INSET
-	_artwork.offset_top = PORTRAIT_FRAME_INSET
-	_artwork.offset_right = -PORTRAIT_FRAME_INSET
-	_artwork.offset_bottom = -PORTRAIT_FRAME_INSET
+	_artwork.offset_left = PORTRAIT_ARTWORK_INSET
+	_artwork.offset_top = PORTRAIT_ARTWORK_INSET
+	_artwork.offset_right = -PORTRAIT_ARTWORK_INSET
+	_artwork.offset_bottom = -PORTRAIT_ARTWORK_INSET
 	_artwork.texture_filter = PORTRAIT_TEXTURE_FILTER
 	_artwork.clip_contents = true
 	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
