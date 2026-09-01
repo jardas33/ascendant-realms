@@ -6,7 +6,10 @@ class_name EntityPortraitView
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
+const PORTRAIT_MIN_SIZE := 46.0
+const PORTRAIT_MAX_SIZE := 116.0
 const PORTRAIT_FRAME_INSET := 5.0
+const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
 static var _portrait_texture_cache: Dictionary = {}
 
 var _viewport_container: SubViewportContainer
@@ -21,7 +24,8 @@ var _pending_definition_is_building := true
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	custom_minimum_size = Vector2(112, 112)
+	custom_minimum_size = Vector2(PORTRAIT_MAX_SIZE, PORTRAIT_MAX_SIZE)
+	clip_contents = true
 	_build_view()
 	if is_instance_valid(_pending_entity):
 		_apply_entity(_pending_entity)
@@ -51,10 +55,16 @@ func _build_view() -> void:
 	_artwork = TextureRect.new()
 	_artwork.name = "PortraitArtwork"
 	_artwork.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	# Preserve the authored aspect ratio and show the full source image. The
-	# frame is decoration, never a crop mask.
+	# The artwork owns the safe content area. Preserve the authored aspect ratio
+	# and show the full source image; the frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_artwork.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_artwork.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_artwork.offset_left = PORTRAIT_FRAME_INSET
+	_artwork.offset_top = PORTRAIT_FRAME_INSET
+	_artwork.offset_right = -PORTRAIT_FRAME_INSET
+	_artwork.offset_bottom = -PORTRAIT_FRAME_INSET
+	_artwork.texture_filter = PORTRAIT_TEXTURE_FILTER
+	_artwork.clip_contents = true
 	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_artwork.visible = false
 	add_child(_artwork)
@@ -99,10 +109,7 @@ func _build_view() -> void:
 	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	frame.offset_left = PORTRAIT_FRAME_INSET
-	frame.offset_top = PORTRAIT_FRAME_INSET
-	frame.offset_right = -PORTRAIT_FRAME_INSET
-	frame.offset_bottom = -PORTRAIT_FRAME_INSET
+	frame.texture_filter = PORTRAIT_TEXTURE_FILTER
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
