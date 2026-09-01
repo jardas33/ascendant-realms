@@ -846,11 +846,11 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	# telemetry cards. The value row contract is retained so all authoritative
 	# refresh handlers remain unchanged.
 	var surface := VBoxContainer.new()
-	surface.custom_minimum_size = Vector2(width, 68)
+	surface.custom_minimum_size = Vector2(width, 62)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 9, accent.lerp(HUD_TEXT_MUTED, 0.16))
+	var title_label := _mk_label(title.to_upper(), 10, accent.lerp(HUD_TEXT_MUTED, 0.16))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -858,14 +858,14 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	value_row.custom_minimum_size = Vector2(0, 42)
+	value_row.custom_minimum_size = Vector2(0, 36)
 	surface.add_child(value_row)
 	return {"surface": surface, "value_row": value_row}
 
 
 func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	var group := VBoxContainer.new()
-	group.custom_minimum_size = Vector2(width, 74)
+	group.custom_minimum_size = Vector2(width, 68)
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -890,20 +890,20 @@ func _build_top_bar() -> void:
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	panel.offset_bottom = 86.0
+	panel.offset_bottom = 78.0
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(0, 86)
+	panel.custom_minimum_size = Vector2(0, 78)
 	add_child(panel)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 9)
-	margin.add_theme_constant_override("margin_right", 116)  # keep clear of the Menu button
-	margin.add_theme_constant_override("margin_top", 6)
-	margin.add_theme_constant_override("margin_bottom", 6)
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_right", 112)  # keep clear of the Menu button
+	margin.add_theme_constant_override("margin_top", 5)
+	margin.add_theme_constant_override("margin_bottom", 5)
 	panel.add_child(margin)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", 14)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	margin.add_child(row)
 
@@ -913,10 +913,10 @@ func _build_top_bar() -> void:
 		"stone": Color(0.63, 0.72, 0.78),
 		"gold": Color(0.98, 0.86, 0.42),
 	}
-	var economy := _top_group("ECONOMY", COMMAND_GOLD, 394.0)
+	var economy := _top_group("ECONOMY", COMMAND_GOLD, 370.0)
 	var economy_metrics: HBoxContainer = economy["metrics"]
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 94.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 88.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
 		cell.add_child(_mk_icon(RES_ICONS[k], 25))
 		var l := _mk_label("0", 30, FONT_COLOR)
@@ -932,10 +932,10 @@ func _build_top_bar() -> void:
 	sep.modulate = Color(0.75, 0.62, 0.36, 0.62)
 	row.add_child(sep)
 
-	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 430.0)
+	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 410.0)
 	var force_metrics: HBoxContainer = force["metrics"]
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 102.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 98.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
 	pop_cell.add_child(_mk_icon(RES_ICONS["food"], 21))
 	_pop_label = _mk_label("0/0", 28)
@@ -981,9 +981,9 @@ func _build_top_bar() -> void:
 	row.add_child(force["group"])
 
 	# age / tier
-	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 148.0)
+	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 132.0)
 	var progression_metrics: HBoxContainer = progression["metrics"]
-	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 138.0, "Current Age")
+	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age")
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
 	_tier_label = _mk_label("Age I", 29, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(122, 0)
@@ -1000,8 +1000,8 @@ func _build_top_bar() -> void:
 	menu_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	menu_btn.offset_left = -104.0
 	menu_btn.offset_right = -14.0
-	menu_btn.offset_top = 15.0
-	menu_btn.offset_bottom = 51.0
+	menu_btn.offset_top = 12.0
+	menu_btn.offset_bottom = 48.0
 	menu_btn.pressed.connect(func(): emit_signal("pause_requested"))
 	add_child(menu_btn)
 
