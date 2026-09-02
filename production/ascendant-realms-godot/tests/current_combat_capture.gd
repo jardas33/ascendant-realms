@@ -38,6 +38,14 @@ func _wait(seconds: float) -> void:
 func _unit_payload(u: Node) -> Dictionary:
 	return {"unit_id":String(u.unit_id), "team":int(u.team), "hp":float(u.hp), "max_hp":float(u.max_hp), "is_dead":bool(u.is_dead), "state":int(u.state), "position":{"x":u.global_position.x,"y":u.global_position.y,"z":u.global_position.z}}
 
+func _path_audit(from_unit: Node, target: Node) -> Dictionary:
+	var nav_map: RID = from_unit.agent.get_navigation_map() if is_instance_valid(from_unit.agent) else RID()
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from_unit.global_position, target.global_position, true) if nav_map.is_valid() else PackedVector3Array()
+	var length := 0.0
+	for i in range(1, path.size()): length += path[i - 1].distance_to(path[i])
+	var end_distance := path[path.size() - 1].distance_to(target.global_position) if not path.is_empty() else INF
+	return {"nav_position_valid":nav_map.is_valid(), "path_query_valid":nav_map.is_valid(), "path_point_count":path.size(), "path_total_length":length, "path_end_distance_to_target":end_distance}
+
 func capture_gameplay(root: Node) -> void:
 	var world := root.get_node_or_null("GameWorld")
 	var rts := root.get_node_or_null("RTS")
@@ -54,15 +62,26 @@ func capture_gameplay(root: Node) -> void:
 	if player_candidates.is_empty() or enemy_candidates.is_empty():
 		await _finish("live_military_units_missing", 11); return
 	player_unit = player_candidates[0]
+	var target_audit: Array = []
+	for candidate in enemy_candidates.slice(0, 10):
+		var audit := _path_audit(player_unit, candidate)
+		audit.merge({"enemy_id":String(candidate.unit_id), "enemy_type":String(candidate.get("dmg_type")), "alive":not candidate.is_dead, "valid_attack_target":player_unit._can_attack_target(candidate), "world_position":_unit_payload(candidate).get("position"), "straight_line_distance":player_unit.global_position.distance_to(candidate.global_position)})
+		target_audit.append(audit)
+	var eligible: Array = target_audit.filter(func(a: Dictionary): return a["alive"] and a["valid_attack_target"] and a["nav_position_valid"] and a["path_query_valid"] and int(a["path_point_count"]) > 0)
+	eligible.sort_custom(func(a: Dictionary, b: Dictionary):
+		if is_equal_approx(float(a["path_total_length"]), float(b["path_total_length"])): return float(a["straight_line_distance"]) < float(b["straight_line_distance"])
+		return float(a["path_total_length"]) < float(b["path_total_length"])
+	)
 	enemy_unit = enemy_candidates[0]
+	var preferred_id := ""
+	if not eligible.is_empty():
+		preferred_id = String(eligible[0]["enemy_id"])
+		for candidate in enemy_candidates:
+			if String(candidate.unit_id) == preferred_id: enemy_unit = candidate; break
+	_phase("TARGET_SELECTION_AUDIT", {"candidates":target_audit, "eligible_target_count":eligible.size(), "nearest_eligible_target_id":preferred_id if not eligible.is_empty() else "", "selected_target_id":String(enemy_unit.unit_id), "selection_changed":enemy_unit != enemy_candidates[0]})
 	_phase("PLAYER_COMBATANT_DISCOVERED", {"unit":_unit_payload(player_unit), "present_at_start":true, "acquisition_route":"normal_gameworld_start_units"})
 	_phase("ENEMY_TARGET_DISCOVERED", {"unit":_unit_payload(enemy_unit), "selection":"first live opposing military unit from world.all_units"})
 	_phase("COMBATANT_STATS", {"attacker_reach":float(player_unit.get("atk_range")) if float(player_unit.get("atk_range")) > 0.0 else 1.6, "attacker_move_speed":float(player_unit.get("move_speed")), "attacker_attack_interval":float(player_unit.get("attack_cd")), "attacker_damage":float(player_unit.cur_dmg()), "attacker_type":String(player_unit.get("dmg_type")), "target_move_speed":float(enemy_unit.get("move_speed")), "target_state":int(enemy_unit.state)})
-	var target_audit: Array = []
-	for candidate in enemy_candidates:
-		target_audit.append({"enemy_id":String(candidate.unit_id), "type":String(candidate.get("dmg_type")), "straight_line_distance":player_unit.global_position.distance_to(candidate.global_position), "alive":not candidate.is_dead, "valid_attack_target":player_unit._can_attack_target(candidate)})
-	target_audit.sort_custom(func(a: Dictionary, b: Dictionary): return float(a["straight_line_distance"]) < float(b["straight_line_distance"]))
-	_phase("TARGET_SELECTION_AUDIT", {"targets":target_audit.slice(0, 5), "selected_rank_by_distance":target_audit.find_custom(func(a: Dictionary): return a["enemy_id"] == String(enemy_unit.unit_id)) + 1})
 	if rts:
 		rts._clear_selection(); rts._add_to_selection(player_unit); rts.emit_signal("selection_changed", rts.selected)
 	_phase("PLAYER_UNIT_SELECTED", {"selected_unit":_unit_payload(player_unit)})
