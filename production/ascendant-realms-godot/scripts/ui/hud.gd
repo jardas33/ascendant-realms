@@ -102,6 +102,7 @@ var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
 var _production_status_label: Label = null
 var _watched_building = null           # building whose production we listen to
+var _production_card_queue_key := ""
 var _watched_construction_building = null # selected building whose construction can complete
 
 # --- alerts ---
@@ -726,7 +727,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
-		var status := state if state in ["READY", "ACTIVE", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
+		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
 		var status_label := _mk_label(status, 9, accent if status != "UNAVAILABLE" else COMMAND_MUTED)
 		status_label.position = Vector2(126 if ability_card else 132, card_height - 20)
 		status_label.size = Vector2(60, 17)
@@ -1549,6 +1550,7 @@ func _reset_selection_widgets() -> void:
 	_multi_bars.clear()
 	_queue_container = null
 	_production_status_label = null
+	_production_card_queue_key = ""
 	if is_instance_valid(_watched_building) and _watched_building.production_updated.is_connected(_on_production_updated):
 		_watched_building.production_updated.disconnect(_on_production_updated)
 	_watched_building = null
@@ -2126,12 +2128,19 @@ func _worker_cargo_text(u) -> String:
 
 func _on_production_updated() -> void:
 	_refresh_queue()
+	var queue_key := ""
+	if is_instance_valid(_watched_building):
+		for item in _watched_building.queue:
+			queue_key += "%s:%s|" % [String(item.get("kind", "unit")), String(item.get("id", ""))]
+	if queue_key != _production_card_queue_key:
+		_production_card_queue_key = queue_key
+		if is_instance_valid(_watched_building):
+			_rebuild_command_card(_watched_building, [_watched_building])
+		return
 	# A completed research item changes the selected producer's command-card
 	# truth even though the queue refresh above is sufficient for its status row.
 	# Rebuild only on the terminal transition so the card exposes the completed
 	# technology without changing research or production semantics.
-	if is_instance_valid(_watched_building) and not _watched_building.queue.is_empty():
-		return
 	if is_instance_valid(_watched_building) and (not _watched_building.def.get("research", []).is_empty() or bool(_watched_building.def.get("is_hq", false))):
 		_rebuild_command_card(_watched_building, [_watched_building])
 
@@ -2578,19 +2587,27 @@ func _build_building_card(b) -> void:
 			var udef := GameData.get_unit(uid)
 			if udef.is_empty():
 				continue
+			var queued_for_training := false
+			for queued_item in b.queue:
+				if queued_item.get("kind", "unit") == "unit" and String(queued_item.get("id", "")) == String(uid):
+					queued_for_training = true
+					break
 			var cost: Dictionary = udef.get("cost", {})
 			var tier := int(udef.get("tier", 1))
 			var affordable: bool = _commander.can_afford(cost)
 			var housed: bool = _commander.has_pop_for(udef)
 			var reason: String = ""
-			if tier > _commander.tier:
+			if queued_for_training:
+				reason = "Already training"
+			elif tier > _commander.tier:
 				reason = "Requires Age %d" % tier
 			elif not housed:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
 			var train_detail := "Tier %d | Population: %d | Cost: %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY", {}, str(udef.get("desc", "")), "Role")
+			var train_state := "TRAINING" if queued_for_training else ("LOCKED" if not reason.is_empty() else "READY")
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -2653,6 +2670,7 @@ func _try_queue_unit(b, uid: String) -> void:
 		var nm: String = GameData.get_unit(uid).get("name", "Unit")
 		_flash_notice("Training %s..." % nm, Color(0.6, 0.95, 0.6))
 		Sfx.play("select", -8.0)
+		_rebuild_command_card(b, [b])
 	else:
 		_flash_notice(str(res.get("reason", "Cannot train")), Color(1, 0.55, 0.45))
 
