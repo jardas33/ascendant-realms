@@ -620,7 +620,9 @@ func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
 	_selection_visual_radius = _measure_selection_visual_radius()
-	_selection_indicator_radius = clampf(_selection_visual_radius * (1.25 if is_hero else 1.18), 0.5, 1.15)
+	# Give selected units a readable ground contact cue at normal RTS distance.
+	# This is presentation-only; the measured visual/pick radii remain unchanged.
+	_selection_indicator_radius = clampf(_selection_visual_radius * (1.25 if is_hero else 1.34), 0.58, 1.28)
 	var r: float = _selection_indicator_radius
 	torus.inner_radius = r * 0.78
 	torus.outer_radius = r
