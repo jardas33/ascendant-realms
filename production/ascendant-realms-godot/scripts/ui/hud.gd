@@ -727,8 +727,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
-		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 9, accent if status != "UNAVAILABLE" else COMMAND_MUTED)
+		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
+		var status_label := _mk_label(status, 9, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
 		status_label.position = Vector2(126 if ability_card else 132, card_height - 20)
 		status_label.size = Vector2(60, 17)
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -2654,7 +2654,8 @@ func _build_building_card(b) -> void:
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not ready_to_research else "READY", {}, str(tdef.get("desc", "")))
+			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")))
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
