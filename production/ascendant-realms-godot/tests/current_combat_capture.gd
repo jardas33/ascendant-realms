@@ -57,6 +57,12 @@ func capture_gameplay(root: Node) -> void:
 	enemy_unit = enemy_candidates[0]
 	_phase("PLAYER_COMBATANT_DISCOVERED", {"unit":_unit_payload(player_unit), "present_at_start":true, "acquisition_route":"normal_gameworld_start_units"})
 	_phase("ENEMY_TARGET_DISCOVERED", {"unit":_unit_payload(enemy_unit), "selection":"first live opposing military unit from world.all_units"})
+	_phase("COMBATANT_STATS", {"attacker_reach":float(player_unit.get("atk_range")) if float(player_unit.get("atk_range")) > 0.0 else 1.6, "attacker_move_speed":float(player_unit.get("move_speed")), "attacker_attack_interval":float(player_unit.get("attack_cd")), "attacker_damage":float(player_unit.cur_dmg()), "attacker_type":String(player_unit.get("dmg_type")), "target_move_speed":float(enemy_unit.get("move_speed")), "target_state":int(enemy_unit.state)})
+	var target_audit: Array = []
+	for candidate in enemy_candidates:
+		target_audit.append({"enemy_id":String(candidate.unit_id), "type":String(candidate.get("dmg_type")), "straight_line_distance":player_unit.global_position.distance_to(candidate.global_position), "alive":not candidate.is_dead, "valid_attack_target":player_unit._can_attack_target(candidate)})
+	target_audit.sort_custom(func(a: Dictionary, b: Dictionary): return float(a["straight_line_distance"]) < float(b["straight_line_distance"]))
+	_phase("TARGET_SELECTION_AUDIT", {"targets":target_audit.slice(0, 5), "selected_rank_by_distance":target_audit.find_custom(func(a: Dictionary): return a["enemy_id"] == String(enemy_unit.unit_id)) + 1})
 	if rts:
 		rts._clear_selection(); rts._add_to_selection(player_unit); rts.emit_signal("selection_changed", rts.selected)
 	_phase("PLAYER_UNIT_SELECTED", {"selected_unit":_unit_payload(player_unit)})
@@ -65,9 +71,11 @@ func capture_gameplay(root: Node) -> void:
 	player_unit.command_attack(enemy_unit)
 	_phase("PUBLIC_ATTACK_COMMAND_ISSUED", {"attacker":String(player_unit.unit_id), "target":String(enemy_unit.unit_id), "target_hp_before":hp_before})
 	started_at = Time.get_ticks_msec() / 1000.0
+	var previous_position: Vector3 = player_unit.global_position
+	var previous_target_position: Vector3 = enemy_unit.global_position
 	var last_sample_at := -5.0
 	var range_reached := false
-	while is_instance_valid(enemy_unit) and not enemy_unit.is_dead and float(enemy_unit.hp) >= hp_before and Time.get_ticks_msec() / 1000.0 - started_at < 75.0:
+	while is_instance_valid(enemy_unit) and not enemy_unit.is_dead and float(enemy_unit.hp) >= hp_before and Time.get_ticks_msec() / 1000.0 - started_at < 90.0:
 		await _wait(0.5)
 		var elapsed: float = Time.get_ticks_msec() / 1000.0 - started_at
 		var distance: float = player_unit.global_position.distance_to(enemy_unit.global_position)
@@ -77,7 +85,11 @@ func capture_gameplay(root: Node) -> void:
 			_phase("IN_ATTACK_RANGE", {"elapsed_seconds":elapsed, "distance":distance, "engage_range":engage_range})
 		if elapsed - last_sample_at >= 5.0:
 			last_sample_at = elapsed
-			_phase("APPROACH_DISTANCE_SAMPLE", {"elapsed_seconds":elapsed, "distance":distance, "attacker_position":_unit_payload(player_unit).get("position"), "target_position":_unit_payload(enemy_unit).get("position"), "attack_settled":bool(player_unit.get("_attack_settled")), "attack_timer":float(player_unit.get("_attack_timer")), "attack_command":String(player_unit.get("_navigation_command_type"))})
+			var nav_target: Vector3 = player_unit.get("_requested_move_target")
+			var next_path: Vector3 = player_unit.agent.get_next_path_position() if is_instance_valid(player_unit.agent) else Vector3.ZERO
+			_phase("APPROACH_DISTANCE_SAMPLE", {"elapsed_seconds":elapsed, "distance":distance, "attacker_position":_unit_payload(player_unit).get("position"), "target_position":_unit_payload(enemy_unit).get("position"), "attacker_displacement_since_prior":player_unit.global_position.distance_to(previous_position), "target_displacement_since_prior":enemy_unit.global_position.distance_to(previous_target_position), "distance_delta":distance - previous_position.distance_to(previous_target_position), "attacker_state":int(player_unit.state), "target_state":int(enemy_unit.state), "nav_target_position":{"x":nav_target.x,"y":nav_target.y,"z":nav_target.z}, "next_path_position":{"x":next_path.x,"y":next_path.y,"z":next_path.z}, "navigation_finished":player_unit.agent.is_navigation_finished() if is_instance_valid(player_unit.agent) else false, "attack_settled":bool(player_unit.get("_attack_settled")), "attack_timer":float(player_unit.get("_attack_timer")), "attack_command":String(player_unit.get("_navigation_command_type"))})
+			previous_position = player_unit.global_position
+			previous_target_position = enemy_unit.global_position
 	if not is_instance_valid(enemy_unit) or enemy_unit.is_dead:
 		await _finish("target_died_before_bounded_observation", 12); return
 	var hp_after := float(enemy_unit.hp)
