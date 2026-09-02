@@ -121,7 +121,9 @@ func _ready() -> void:
 		tut_layer.add_child(tutorial)
 		tutorial.setup(world, rts)
 	_m20_end(ready_stage)
-	if OS.get_environment("ASCENDANT_CURRENT_MILITARY_PRODUCTION_CAPTURE") == "1":
+	if OS.get_environment("ASCENDANT_CURRENT_RESEARCH_CAPTURE") == "1":
+		call_deferred("_start_current_research_capture")
+	elif OS.get_environment("ASCENDANT_CURRENT_MILITARY_PRODUCTION_CAPTURE") == "1":
 		call_deferred("_start_current_military_production_capture")
 	elif OS.get_environment("ASCENDANT_CURRENT_WORKER_ECONOMY_CAPTURE") == "1":
 		call_deferred("_start_current_worker_economy_capture")
@@ -168,6 +170,11 @@ func _start_current_worker_economy_capture() -> void:
 
 func _start_current_military_production_capture() -> void:
 	var runner = get_node_or_null("/root/CurrentMilitaryProductionCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_current_research_capture() -> void:
+	var runner = get_node_or_null("/root/CurrentResearchCapture")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
 
