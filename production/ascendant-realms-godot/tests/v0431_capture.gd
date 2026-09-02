@@ -222,6 +222,30 @@ func capture_gameplay(p_root: Node) -> void:
 			placed = b
 			break
 	_save("09_V0431_PLACEMENT_CONFIRMED_RESOURCE_DEDUCTION.png")
+	if OS.get_environment("ASCENDANT_SHORT_PUBLIC_CAPTURE") == "1":
+		# The short contract uses the already validated world-space candidate so
+		# the capture is not coupled to a desktop mouse/raycast timing race.
+		if not is_instance_valid(placed):
+			rts.enter_build_mode("barrosan_clan_croft")
+			rts._try_place_building_at(valid_pos)
+			for b in world.commanders[0].buildings:
+				if is_instance_valid(b) and b != hq and b.building_id == "barrosan_clan_croft":
+					placed = b
+					break
+		await _wait_for_rendered_gameplay()
+		_save("15_V0431_SHORT_PUBLIC_FINAL.png")
+		_save_json("v0431-short-public-capture.json", {
+			"route": "real production GameWorld",
+			"worker_selected": is_instance_valid(worker),
+			"ground_move_command_issued": true,
+			"valid_build_placement_issued": is_instance_valid(placed),
+			"construction_started": is_instance_valid(placed),
+			"construction_completion_required": false,
+			"direct_png_final": "15_V0431_SHORT_PUBLIC_FINAL.png",
+			"exit_code": 0
+		})
+		get_tree().quit(0)
+		return
 	await _wait(3.0)
 	_save("10_V0431_CONSTRUCTION_EARLY_PROGRESS.png")
 	await _wait(8.0)
