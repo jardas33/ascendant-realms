@@ -4,6 +4,7 @@ extends RefCounted
 
 const DRIVER_SPECS: Array[Dictionary] = [
 	{"env": "ASCENDANT_CURRENT_RESEARCH_CAPTURE", "name": "CurrentResearchCapture", "path": "res://tests/current_research_capture.gd"},
+	{"env": "ASCENDANT_CURRENT_COMBAT_CAPTURE", "name": "CurrentCombatCapture", "path": "res://tests/current_combat_capture.gd"},
 	{"env": "ASCENDANT_CURRENT_MILITARY_PRODUCTION_CAPTURE", "name": "CurrentMilitaryProductionCapture", "path": "res://tests/current_military_production_capture.gd"},
 	{"env": "ASCENDANT_CURRENT_WORKER_ECONOMY_CAPTURE", "name": "CurrentWorkerEconomyCapture", "path": "res://tests/current_worker_economy_capture.gd"},
 	{"env": "ASCENDANT_CURRENT_SHORT_PUBLIC_CAPTURE", "name": "CurrentShortPublicCapture", "path": "res://tests/current_short_public_capture.gd"},
