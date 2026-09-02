@@ -1224,7 +1224,9 @@ func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false) -> v
 		_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), col.lightened(0.12), 0.8, true)
 
 func _draw_minimap_unit(p: Vector2, col: Color) -> void:
-	var r := 3.2
+	# Unit diamonds need to remain legible beside the larger building and
+	# resource landmarks at the authored 232px tactical-map size.
+	var r := 4.0
 	_minimap.draw_circle(p, r + 1.25, Color(0.02, 0.03, 0.03, 0.86))
 	_minimap.draw_colored_polygon(PackedVector2Array([
 		p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)]), col)
