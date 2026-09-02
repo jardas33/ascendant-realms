@@ -2447,10 +2447,14 @@ func _build_worker_card() -> void:
 		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
 		# without changing resource definitions or the command-card geometry.
 		var build_detail := _cost_string(cost).trim_prefix("  (").trim_suffix(")")
+		# Keep the scan line to the actionable cost only. Population benefit and
+		# the full authored explanation remain available in the anchored tooltip;
+		# this prevents the narrow two-column cards from truncating secondary text.
+		var tooltip_detail := str(bdef.get("desc", ""))
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
-			build_detail += " · Provides: +%d population" % grants_pop
-		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef, str(bdef.get("desc", "")), "Purpose")
+			tooltip_detail += "\nProvides: +%d population" % grants_pop
+		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", bdef, tooltip_detail, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
