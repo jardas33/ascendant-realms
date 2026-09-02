@@ -2431,7 +2431,7 @@ func _add_context_hints(hints: Array[String]) -> void:
 
 
 func _build_worker_card() -> void:
-	_add_context_hints(["RMB  MOVE", "RMB  GATHER", "CLICK  BUILD"])
+	_add_context_hints(["RMB  MOVE", "RMB  GATHER", "CLICK  BUILD", "ESC  CANCEL BUILD"])
 	_add_command_section("Build", "Choose a structure.")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
