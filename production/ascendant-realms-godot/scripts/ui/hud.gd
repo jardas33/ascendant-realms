@@ -2720,6 +2720,8 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 		"GUARD": "Guard unavailable",
 	}
 	var message := String(labels.get(intent, "Command"))
+	if intent == "BUILD_OR_REPAIR" and accepted and String(feedback.get("feedback_type", "")) == "BUILD PLACEMENT":
+		message = "Build placement confirmed"
 	if intent == "BUILD_OR_REPAIR" and String(feedback.get("feedback_type", "")) == "REPAIR":
 		message = "Repair order"
 	var col := Color(0.45, 0.85, 1.0)
@@ -2760,8 +2762,10 @@ func _show_command_feedback(message: String, col: Color) -> void:
 	_command_feedback_box.anchor_bottom = 1.0
 	_command_feedback_box.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_command_feedback_box.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_command_feedback_box.offset_top = -212
-	_command_feedback_box.offset_bottom = -176
+	# Keep transient order feedback in the clear visual band above the bottom
+	# interaction modules instead of covering the selected-entity card.
+	_command_feedback_box.offset_top = -292
+	_command_feedback_box.offset_bottom = -256
 	add_child(_command_feedback_box)
 	var label := _mk_label(message, 16, col)
 	label.custom_minimum_size = Vector2(198, 20)
