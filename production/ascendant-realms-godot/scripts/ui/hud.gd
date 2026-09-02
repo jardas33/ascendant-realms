@@ -1834,7 +1834,8 @@ func _refresh_single_live() -> void:
 		var target_valid: bool = u is Unit and not _single_read_only and int(u.state) == Unit.State.ATTACKING \
 			and is_instance_valid(target) and not target.is_dead and int(target.team) != int(u.team)
 		_single_target_label.visible = target_valid
-		_single_target_label.text = "Target: %s" % String(target.def.get("name", "Unit")) if target_valid else ""
+		_single_target_label.text = "Target: %s  ·  HP %d/%d" % [
+			String(target.def.get("name", "Unit")), int(ceil(target.hp)), int(ceil(target.max_hp))] if target_valid else ""
 	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_snapshot"):
 		_single_economy_label.text = _worker_cargo_text(u)
 	# ability cooldown / affordability visuals
