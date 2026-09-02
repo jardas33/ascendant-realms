@@ -1205,10 +1205,10 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	_draw_minimap_roads(size)
 
 func _draw_minimap_frame(size: Vector2) -> void:
-	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 5.0)
-	_minimap.draw_rect(Rect2(Vector2(3, 3), size - Vector2(6, 6)), Color(0.68, 0.55, 0.30, 0.92), false, 1.0)
-	for corner in [Vector2(4, 4), Vector2(size.x - 4, 4), Vector2(size.x - 4, size.y - 4), Vector2(4, size.y - 4)]:
-		_minimap.draw_circle(corner, 2.0, Color(0.95, 0.79, 0.38, 0.95))
+	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 3.0)
+	_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color(0.68, 0.55, 0.30, 0.92), false, 1.0)
+	for corner in [Vector2(5, 5), Vector2(size.x - 5, 5), Vector2(size.x - 5, size.y - 5), Vector2(5, size.y - 5)]:
+		_minimap.draw_circle(corner, 1.5, Color(0.95, 0.79, 0.38, 0.95))
 
 func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false) -> void:
 	var radius := 7.0 if is_major else 5.0
