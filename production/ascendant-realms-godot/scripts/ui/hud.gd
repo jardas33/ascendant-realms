@@ -1006,6 +1006,29 @@ func _build_top_bar() -> void:
 	menu_btn.pressed.connect(func(): emit_signal("pause_requested"))
 	add_child(menu_btn)
 
+	# Compact persistent match identity: keeps the authoritative matchup and
+	# victory rule visible without introducing a new panel or changing gameplay.
+	var identity := Match.get_identity_snapshot() if Match else {}
+	var player_race := str(identity.get("player_race", ""))
+	var opponent_race := ""
+	var opponents: Array = identity.get("opponents", [])
+	if not opponents.is_empty():
+		opponent_race = str(opponents[0].get("race", ""))
+	var player_name := str(GameData.RACES.get(player_race, {}).get("name", player_race)).strip_edges()
+	var opponent_name := str(GameData.RACES.get(opponent_race, {}).get("name", opponent_race)).strip_edges()
+	var mode_name := str(identity.get("mode", "skirmish")).capitalize()
+	var identity_label := _mk_label("%s  vs  %s  •  %s" % [player_name, opponent_name, mode_name], 12, Color(0.88, 0.82, 0.7))
+	identity_label.name = "MatchIdentityLabel"
+	identity_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	identity_label.offset_left = -560.0
+	identity_label.offset_right = -122.0
+	identity_label.offset_top = 51.0
+	identity_label.offset_bottom = 72.0
+	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(identity_label)
+
 
 func _on_resources_changed(res: Dictionary) -> void:
 	for k in RES_ORDER:
