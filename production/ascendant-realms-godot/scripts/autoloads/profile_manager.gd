@@ -32,6 +32,7 @@ func _default_settings() -> Dictionary:
 		"music_vol": 0.7, "sfx_vol": 0.8,
 		"edge_scroll": true, "camera_speed": 1.0, "zoom_sens": 1.0,
 		"reduce_shake": false, "reduce_flash": false,
+		"display_mode": "windowed", "vsync": true,
 		"colorblind": false, "ui_scale": 1.0, "game_speed": 1.0,
 	}
 

@@ -79,6 +79,15 @@ func _build() -> void:
 			ProfileManager.update_setting("sfx_vol", val)
 			AudioManager.set_bus_volume("SFX", val)))
 
+	v.add_child(_heading("Display"))
+	v.add_child(_option_row("Window Mode", ["Windowed", "Fullscreen"], _display_mode_index(s.get("display_mode", "windowed")), func(index):
+		var fullscreen := index == 1
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
+		ProfileManager.update_setting("display_mode", "fullscreen" if fullscreen else "windowed")))
+	v.add_child(_toggle_row("VSync", bool(s.get("vsync", true)), func(on):
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if on else DisplayServer.VSYNC_DISABLED)
+		ProfileManager.update_setting("vsync", on)))
+
 	v.add_child(_heading("Camera"))
 	v.add_child(_toggle_row("Edge Scrolling", bool(s.get("edge_scroll", true)),
 		func(on): ProfileManager.update_setting("edge_scroll", on)))
@@ -176,6 +185,28 @@ func _toggle_row(name: String, on: bool, cb: Callable) -> HBoxContainer:
 	check.toggled.connect(func(pressed): Sfx.play("select"); cb.call(pressed))
 	row.add_child(check)
 	return row
+
+func _option_row(name: String, options: Array[String], selected: int, cb: Callable) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	var lbl := Label.new()
+	lbl.text = name
+	lbl.custom_minimum_size = Vector2(240, 32)
+	lbl.add_theme_font_override("font", _body_font())
+	lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
+	lbl.add_theme_font_size_override("font_size", 16)
+	row.add_child(lbl)
+	var menu := OptionButton.new()
+	menu.custom_minimum_size = Vector2(320, 38)
+	for option in options:
+		menu.add_item(option)
+	menu.select(clampi(selected, 0, options.size() - 1))
+	menu.item_selected.connect(func(index): Sfx.play("select"); cb.call(index))
+	row.add_child(menu)
+	return row
+
+func _display_mode_index(value: Variant) -> int:
+	return 1 if String(value) == "fullscreen" else 0
 
 func _button(text: String, col: Color, cb: Callable) -> Button:
 	var b := Button.new()
