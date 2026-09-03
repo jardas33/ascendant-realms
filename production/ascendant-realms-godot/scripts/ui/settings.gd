@@ -90,8 +90,6 @@ func _build() -> void:
 	v.add_child(_heading("Accessibility"))
 	v.add_child(_toggle_row("Reduce Flashing", bool(s.get("reduce_flash", false)),
 		func(on): ProfileManager.update_setting("reduce_flash", on)))
-	v.add_child(_slider_row("Interface Scale", 0.8, 1.4, 0.05, float(s.get("ui_scale", 1.0)),
-		func(val): ProfileManager.update_setting("ui_scale", val)))
 
 	v.add_child(_heading("Gameplay"))
 	v.add_child(_slider_row("Default Game Speed", 0.5, 2.0, 0.1, float(s.get("game_speed", 1.0)),
