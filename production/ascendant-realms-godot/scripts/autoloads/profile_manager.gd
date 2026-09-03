@@ -33,7 +33,7 @@ func _default_settings() -> Dictionary:
 		"edge_scroll": true, "camera_speed": 1.0, "zoom_sens": 1.0,
 		"reduce_shake": false, "reduce_flash": false,
 		"display_mode": "windowed", "vsync": true,
-		"colorblind": false, "ui_scale": 1.0, "game_speed": 1.0,
+		"colorblind": false, "game_speed": 1.0,
 	}
 
 func has_hero() -> bool:
@@ -353,7 +353,7 @@ func _normalize_profile(d: Dictionary) -> Dictionary:
 			d["settings"][key] = settings_defaults[key]
 	if not ["windowed", "fullscreen"].has(String(d["settings"].get("display_mode", "windowed"))):
 		d["settings"]["display_mode"] = settings_defaults["display_mode"]
-	for key in ["music_vol", "sfx_vol", "camera_speed", "zoom_sens", "ui_scale", "game_speed"]:
+	for key in ["music_vol", "sfx_vol", "camera_speed", "zoom_sens", "game_speed"]:
 		var numeric = float(d["settings"].get(key, settings_defaults[key]))
 		if numeric < 0.0: d["settings"][key] = settings_defaults[key]
 	for key in ["node", "wins"]:
