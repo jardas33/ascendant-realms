@@ -4,12 +4,10 @@ extends Node
 
 const SAVE_PATH := "user://ascendant_save.json"
 const SAVE_TEMP_PATH := "user://ascendant_save.json.tmp"
-const SAVE_CORRUPT_PATH := "user://ascendant_save.json.corrupt"
 const SAVE_VERSION := 1
 
 signal profile_changed
 signal hero_created
-signal persistence_error(message: String)
 
 # Attribute base values
 const ATTRIBUTES := ["might", "endurance", "agility", "intellect", "willpower", "command", "fortune"]
@@ -276,25 +274,21 @@ func save_game() -> void:
 	var serialized := JSON.stringify(data, "  ")
 	var f := FileAccess.open(SAVE_TEMP_PATH, FileAccess.WRITE)
 	if not f:
-		_report_persistence_error("Could not open temporary profile file for writing: %s" % error_string(FileAccess.get_open_error()))
+		push_error("SAVE_TEMP_OPEN_FAILED: %s" % error_string(FileAccess.get_open_error()))
 		return
 	f.store_string(serialized)
 	f.flush()
 	var write_error := f.get_error()
 	f.close()
 	if write_error != OK:
-		_report_persistence_error("Could not write temporary profile file: %s" % error_string(write_error))
+		push_error("SAVE_TEMP_WRITE_FAILED: %s" % error_string(write_error))
 		return
 	var replace_error := DirAccess.rename_absolute(
 		ProjectSettings.globalize_path(SAVE_TEMP_PATH),
 		ProjectSettings.globalize_path(SAVE_PATH))
 	if replace_error != OK:
-		_report_persistence_error("Could not replace profile file: %s" % error_string(replace_error))
+		push_error("SAVE_REPLACE_FAILED: %s" % error_string(replace_error))
 		return
-
-func _report_persistence_error(message: String) -> void:
-	push_warning("Profile persistence: %s" % message)
-	persistence_error.emit(message)
 
 func load_game() -> void:
 	if not FileAccess.file_exists(SAVE_PATH):
@@ -303,34 +297,16 @@ func load_game() -> void:
 		return
 	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if not f:
-		_report_persistence_error("Could not open profile file: %s" % error_string(FileAccess.get_open_error()))
 		data = _default_data()
 		return
 	var txt := f.get_as_text()
 	f.close()
 	var parsed = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
-		_recover_malformed_save()
-		data = _default_data()
-		save_game()
-		return
-	if int(parsed.get("version", 0)) > SAVE_VERSION:
-		_report_persistence_error("Profile version %s is newer than supported version %s; keeping defaults without overwriting it." % [str(parsed.get("version")), str(SAVE_VERSION)])
 		data = _default_data()
 		return
 	data = _migrate(parsed)
 	emit_signal("profile_changed")
-
-func _recover_malformed_save() -> void:
-	var source := ProjectSettings.globalize_path(SAVE_PATH)
-	var recovery := ProjectSettings.globalize_path(SAVE_CORRUPT_PATH)
-	if FileAccess.file_exists(SAVE_CORRUPT_PATH):
-		DirAccess.remove_absolute(recovery)
-	var recovery_error := DirAccess.rename_absolute(source, recovery)
-	if recovery_error != OK:
-		_report_persistence_error("Profile data is malformed and could not be quarantined: %s" % error_string(recovery_error))
-	else:
-		_report_persistence_error("Malformed profile data was quarantined at %s and defaults were restored." % SAVE_CORRUPT_PATH)
 
 func _migrate(d: Dictionary) -> Dictionary:
 	# Fill in any missing top-level keys against defaults; never wipe existing hero.
@@ -339,11 +315,7 @@ func _migrate(d: Dictionary) -> Dictionary:
 		if not d.has(k):
 			d[k] = base[k]
 	if not d.has("version"):
-		_report_persistence_error("Profile has no version; treating it as version 0 and applying compatible defaults.")
-		d["version"] = 0
-	var source_version := int(d.get("version", 0))
-	if source_version < SAVE_VERSION:
-		_report_persistence_error("Migrating profile from version %s to version %s." % [str(source_version), str(SAVE_VERSION)])
+		d["version"] = SAVE_VERSION
 	# Ensure settings completeness
 	var ds := _default_settings()
 	for k in ds:
