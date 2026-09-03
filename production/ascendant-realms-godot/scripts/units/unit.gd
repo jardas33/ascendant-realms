@@ -2201,7 +2201,13 @@ func take_damage(amount: float, from = null) -> void:
 	_last_damage_source_id = _combat_source_id(from)
 	_last_damage_kind = _combat_source_kind(from)
 	_last_damage_type = _combat_source_type(from)
-	_r15_hit_flash_time = 0.16 + COMBAT_HIT_FLASH_EXTENSION
+	# Accessibility: the existing combat impact cue is a short, player-visible
+	# flash. Read the preference only at the authored impact event (not per frame)
+	# so the setting controls this presentation without touching damage semantics.
+	if not bool(ProfileManager.settings().get("reduce_flash", false)):
+		_r15_hit_flash_time = 0.16 + COMBAT_HIT_FLASH_EXTENSION
+	else:
+		_r15_hit_flash_time = 0.0
 	_show_r15_damage_feedback(applied, hp <= 0.0)
 	if world:
 		world.on_unit_damaged(self, from)
