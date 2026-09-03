@@ -369,8 +369,11 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("idle_worker"): _select_idle_worker()
 	elif Input.is_action_just_pressed("cycle_hero"): _cycle_hero()
 	elif Input.is_action_just_pressed("select_army"): _select_army()
-	elif kc >= KEY_1 and kc <= KEY_5:
-		_recall_group(kc - KEY_1 + 1)
+	elif Input.is_action_just_pressed("group_1"): _recall_group(1)
+	elif Input.is_action_just_pressed("group_2"): _recall_group(2)
+	elif Input.is_action_just_pressed("group_3"): _recall_group(3)
+	elif Input.is_action_just_pressed("group_4"): _recall_group(4)
+	elif Input.is_action_just_pressed("group_5"): _recall_group(5)
 	# ability hotkeys
 	elif Input.is_action_just_pressed("ability_1"): _queue_ability("rally")
 	elif Input.is_action_just_pressed("ability_2"): _queue_ability("slam")
