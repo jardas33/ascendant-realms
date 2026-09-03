@@ -92,8 +92,6 @@ func _build() -> void:
 		func(on): ProfileManager.update_setting("reduce_flash", on)))
 
 	v.add_child(_heading("Gameplay"))
-	v.add_child(_slider_row("Default Game Speed", 0.5, 2.0, 0.1, float(s.get("game_speed", 1.0)),
-		func(val): ProfileManager.update_setting("game_speed", val)))
 
 	# Controls reference
 	v.add_child(_heading("Controls"))
