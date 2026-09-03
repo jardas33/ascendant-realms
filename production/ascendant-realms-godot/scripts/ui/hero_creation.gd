@@ -341,7 +341,7 @@ func _build() -> void:
 	back.focus_mode = Control.FOCUS_NONE
 	back.add_theme_color_override("font_color", Color.WHITE)
 	back.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
-	back.pressed.connect(func(): Sfx.play("select"); get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn"))
+	back.pressed.connect(func(): Sfx.play("select"); Match.clear_pending_hero_origin(); get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn"))
 	footer.add_child(back)
 	var forge := Button.new()
 	forge.text = "Forge Hero"
