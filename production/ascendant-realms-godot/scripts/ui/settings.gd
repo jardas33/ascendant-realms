@@ -88,8 +88,6 @@ func _build() -> void:
 		func(val): ProfileManager.update_setting("zoom_sens", val)))
 
 	v.add_child(_heading("Accessibility"))
-	v.add_child(_toggle_row("Reduce Screen Shake", bool(s.get("reduce_shake", false)),
-		func(on): ProfileManager.update_setting("reduce_shake", on)))
 	v.add_child(_toggle_row("Reduce Flashing", bool(s.get("reduce_flash", false)),
 		func(on): ProfileManager.update_setting("reduce_flash", on)))
 	v.add_child(_toggle_row("Colorblind-Friendly", bool(s.get("colorblind", false)),
