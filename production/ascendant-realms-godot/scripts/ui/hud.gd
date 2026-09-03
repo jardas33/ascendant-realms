@@ -1028,7 +1028,9 @@ func _build_top_bar() -> void:
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(identity_label)
-	var objective_label := _mk_label("CONQUEST  •  ELIMINATE THE ENEMY'S REBUILD CAPABILITY", 11, Color(0.62, 0.67, 0.7))
+	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
+	var objective_text := "CONQUEST  •  ELIMINATE THE ENEMY'S REBUILD CAPABILITY" if victory_kind == "conquest" else victory_kind.capitalize()
+	var objective_label := _mk_label(objective_text, 11, Color(0.62, 0.67, 0.7))
 	objective_label.name = "MatchObjectiveLabel"
 	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	objective_label.offset_left = 830.0
