@@ -1028,6 +1028,17 @@ func _build_top_bar() -> void:
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(identity_label)
+	var objective_label := _mk_label("CONQUEST  •  ELIMINATE THE ENEMY'S REBUILD CAPABILITY", 11, Color(0.62, 0.67, 0.7))
+	objective_label.name = "MatchObjectiveLabel"
+	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	objective_label.offset_left = 830.0
+	objective_label.offset_right = 1200.0
+	objective_label.offset_top = 75.0
+	objective_label.offset_bottom = 94.0
+	objective_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	objective_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(objective_label)
 
 
 func _on_resources_changed(res: Dictionary) -> void:
