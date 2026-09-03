@@ -214,4 +214,10 @@ func _on_delete() -> void:
 
 func _goto(path: String) -> void:
 	Sfx.play("select")
+	if bool(get_meta("return_to_pause", false)) and path == "res://scenes/ui/main_menu.tscn":
+		var pause_owner = get_meta("pause_menu_owner", null)
+		if is_instance_valid(pause_owner):
+			pause_owner._return_from_settings()
+		queue_free()
+		return
 	get_tree().change_scene_to_file(path)

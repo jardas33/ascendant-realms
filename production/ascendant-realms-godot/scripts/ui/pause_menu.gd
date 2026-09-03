@@ -5,6 +5,7 @@ signal resume_requested
 signal quit_requested
 
 var _panel: Panel
+var _settings_overlay: Control
 
 func setup() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -60,6 +61,7 @@ func setup() -> void:
 	vb.add_child(title)
 
 	vb.add_child(_make_btn("Resume", func(): emit_signal("resume_requested")))
+	vb.add_child(_make_btn("Settings", _open_settings))
 	vb.add_child(_make_btn("Music +/-", func(): _cycle_music()))
 	var hint := Label.new()
 	hint.text = "Controls:\nLeft-click select · drag box select · Shift+click/drag add to selection · Tab select army\nRight-click contextual move / attack / gather / rally / repair · A attack-move at cursor · S stop · H hold · P patrol\nCtrl+1-5 set group · 1-5 select group · F select idle worker · Space focus hero · Q/W/E/R hero abilities\nBuild mode: left-click place · right-click cancel · F3 debug overlay · Esc pause · wheel zoom · Z/C rotate camera"
@@ -91,6 +93,19 @@ func _cycle_music() -> void:
 	var v := float(_music_step) / 4.0
 	AudioManager.set_bus_volume("Music", v)
 	ProfileManager.update_setting("music_vol", v)
+
+func _open_settings() -> void:
+	if is_instance_valid(_settings_overlay):
+		return
+	_settings_overlay = load("res://scripts/ui/settings.gd").new()
+	_settings_overlay.set_meta("return_to_pause", true)
+	_settings_overlay.set_meta("pause_menu_owner", self)
+	add_child(_settings_overlay)
+	_panel.visible = false
+
+func _return_from_settings() -> void:
+	_settings_overlay = null
+	_panel.visible = true
 
 func set_shown(s: bool) -> void:
 	visible = s
