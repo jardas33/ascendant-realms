@@ -1,7 +1,8 @@
-# game-20260729-9c88f83b
+# Ascendant Realms — Alpha 0.1.0
 
-Exported from Tesana on 2026-07-29.
-Game ID: `game-20260729-9c88f83b`.
+Ascendant Realms is an unfinished alpha pre-release. The public version is
+`0.1.0-alpha`; this documentation describes the reproducible Godot project
+and Windows package identity.
 
 This zip is a clean Godot 4.x project — open it in the editor,
 edit it, re-export it, version-control it however you like.
@@ -26,8 +27,8 @@ edit it, re-export it, version-control it however you like.
   without them Godot re-imports with defaults on first open and your scenes
   can break.
 - `addons/` — third-party Godot addons your game uses (if any).
-- `export_presets.cfg` — the same preset config Tesana uses to build for
-  macOS, Windows, and Web. Keep this if you want to re-export with the
+- `export_presets.cfg` — the project's export preset configuration. Keep this
+  if you want to re-export with the
   exact configuration we use.
 - This `README_EXPORT.md`.
 
@@ -68,13 +69,13 @@ Windows, and Linux. From the project root:
 godot --headless --export-release "Web" web/index.html
 
 # macOS (unsigned .app bundle, zipped) — see the Gatekeeper note below.
-godot --headless --export-release "macOS" build/game-20260729-9c88f83b.app.zip
+godot --headless --export-release "macOS" build/AscendantRealms.app.zip
 
 # Windows desktop (.exe + data.pck)
-godot --headless --export-release "Windows Desktop" build/game-20260729-9c88f83b.exe
+godot --headless --export-release "Windows Desktop" build/AscendantRealms.exe
 
 # Linux desktop
-godot --headless --export-release "Linux" build/game-20260729-9c88f83b.x86_64
+godot --headless --export-release "Linux" build/AscendantRealms.x86_64
 ```
 
 You'll need the matching Godot **export templates** installed
@@ -89,7 +90,7 @@ under `~/.local/share/godot/export_templates/<version>/`).
 cd <unzipped-folder>
 git init
 git add .
-git commit -m "Initial export from Tesana"
+git commit -m "Initial Ascendant Realms project import"
 ```
 
 We pre-supply a sane `.gitignore` (see `.gitignore` if present, otherwise
@@ -107,7 +108,7 @@ developer cannot be verified" dialog. To bypass:
   in the confirmation dialog. macOS remembers the choice afterwards.
 - **Or** strip the quarantine attribute from the terminal:
   ```sh
-  xattr -dr com.apple.quarantine path/to/game-20260729-9c88f83b.app
+  xattr -dr com.apple.quarantine path/to/AscendantRealms.app
   ```
 
 To produce a signed bundle yourself you'll need an Apple Developer
@@ -118,13 +119,6 @@ under the macOS preset.
 
 ## Branding & redistribution
 
-Games exported from Tesana are yours to modify, host, and distribute
-under our Terms of Service. For commercial use, attribution requirements,
-or platform store submission guidance, see <https://tesana.ai/terms>
-and <https://tesana.ai/help>.
-
-## Get help
-
-- Help: <https://tesana.ai/help>
-- Help: support@tesana.ai
-- Discord: <https://discord.gg/tesana>
+This project uses the Ascendant Realms product identity defined above. Confirm
+any distribution, licensing, and legal ownership details separately before a
+public release; this document intentionally does not invent those details.
