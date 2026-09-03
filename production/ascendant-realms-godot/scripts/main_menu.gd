@@ -119,6 +119,32 @@ func _build() -> void:
 	footer.offset_right = 300.0
 	add_child(footer)
 
+	var release_label := Label.new()
+	release_label.name = "PublicReleaseIdentity"
+	release_label.text = _public_release_label()
+	release_label.add_theme_color_override("font_color", Color(0.72, 0.70, 0.63, 0.82))
+	release_label.add_theme_font_size_override("font_size", 16)
+	if ResourceLoader.exists(FONT):
+		release_label.add_theme_font_override("font", load(FONT))
+	release_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	release_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	release_label.offset_top = -22.0
+	release_label.offset_bottom = 4.0
+	release_label.offset_left = -300.0
+	release_label.offset_right = 300.0
+	add_child(release_label)
+
+func _public_release_label() -> String:
+	var raw_version := str(ProjectSettings.get_setting("application/config/version", "")).strip_edges()
+	if raw_version.is_empty():
+		return ""
+	var separator := raw_version.find("-")
+	if separator < 1 or separator == raw_version.length() - 1:
+		return raw_version
+	var public_version := raw_version.substr(0, separator)
+	var channel := raw_version.substr(separator + 1).capitalize()
+	return "%s %s" % [channel, public_version]
+
 func _make_button(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.custom_minimum_size = Vector2(320, 56)
