@@ -4,6 +4,21 @@ extends Node
 
 var config := {}
 var last_result := {}
+var pending_hero_origin := ""
+
+func set_pending_hero_origin(origin: String) -> void:
+	if origin == "campaign" or origin == "skirmish":
+		pending_hero_origin = origin
+	else:
+		pending_hero_origin = ""
+
+func consume_pending_hero_origin() -> String:
+	var origin := pending_hero_origin
+	pending_hero_origin = ""
+	return origin
+
+func clear_pending_hero_origin() -> void:
+	pending_hero_origin = ""
 
 func clear_result() -> void:
 	last_result = {}

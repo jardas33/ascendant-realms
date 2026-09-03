@@ -458,4 +458,11 @@ func _on_forge() -> void:
 		return
 	Sfx.play("select")
 	ProfileManager.create_hero(hname, _race_id, _archetype, _appearance, _strength, _weakness, _attrs)
-	get_tree().change_scene_to_file("res://scenes/ui/hero_sheet.tscn")
+	var origin := Match.consume_pending_hero_origin()
+	match origin:
+		"campaign":
+			get_tree().change_scene_to_file("res://scenes/ui/campaign_map.tscn")
+		"skirmish":
+			get_tree().change_scene_to_file("res://scenes/ui/skirmish_setup.tscn")
+		_:
+			get_tree().change_scene_to_file("res://scenes/ui/hero_sheet.tscn")

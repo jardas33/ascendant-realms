@@ -91,17 +91,22 @@ func _goto(path: String) -> void:
 
 func _on_campaign() -> void:
 	if not ProfileManager.has_hero():
+		Match.set_pending_hero_origin("campaign")
 		_goto("res://scenes/ui/hero_creation.tscn")
 		return
+	Match.clear_pending_hero_origin()
 	_goto("res://scenes/ui/campaign_map.tscn")
 
 func _on_skirmish() -> void:
 	if not ProfileManager.has_hero():
+		Match.set_pending_hero_origin("skirmish")
 		_goto("res://scenes/ui/hero_creation.tscn")
 		return
+	Match.clear_pending_hero_origin()
 	_goto("res://scenes/ui/skirmish_setup.tscn")
 
 func _on_hero() -> void:
+	Match.clear_pending_hero_origin()
 	if ProfileManager.has_hero():
 		_goto("res://scenes/ui/hero_sheet.tscn")
 	else:
