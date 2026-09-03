@@ -305,9 +305,61 @@ func load_game() -> void:
 	var parsed = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		data = _default_data()
+		# Recover through the existing atomic save path so a valid default is not
+		# left only in memory after a usable-but-wrong JSON root is encountered.
+		save_game()
 		return
-	data = _migrate(parsed)
+	data = _normalize_profile(_migrate(parsed))
 	emit_signal("profile_changed")
+
+func _normalize_profile(d: Dictionary) -> Dictionary:
+	var defaults := _default_data()
+	for key in ["settings", "campaign", "stats"]:
+		if typeof(d.get(key)) != TYPE_DICTIONARY:
+			d[key] = defaults[key].duplicate(true)
+	if typeof(d.get("hero")) != TYPE_DICTIONARY:
+		d["hero"] = {}
+	var h: Dictionary = d["hero"]
+	if not h.is_empty():
+		var hero_defaults := {"name":"Hero", "race":"barrosan", "archetype":"Warrior", "appearance":0,
+			"strength":"", "weakness":"", "level":1, "xp":0.0, "skill_points":0, "attr_points":0,
+			"attributes":{}, "skills":[], "mastery":0, "mastery_points":0, "mastery_spent":{},
+			"inventory":[], "equipment":{}, "loadouts":[], "history":[]}
+		for key in hero_defaults:
+			if not h.has(key): h[key] = hero_defaults[key]
+		if typeof(h.get("attributes")) != TYPE_DICTIONARY: h["attributes"] = {}
+		if typeof(h.get("skills")) != TYPE_ARRAY: h["skills"] = []
+		if typeof(h.get("mastery_spent")) != TYPE_DICTIONARY: h["mastery_spent"] = {}
+		if typeof(h.get("inventory")) != TYPE_ARRAY: h["inventory"] = []
+		if typeof(h.get("equipment")) != TYPE_DICTIONARY: h["equipment"] = {}
+		if typeof(h.get("loadouts")) != TYPE_ARRAY: h["loadouts"] = []
+		if typeof(h.get("history")) != TYPE_ARRAY: h["history"] = []
+		if typeof(h.get("name")) != TYPE_STRING or String(h["name"]).strip_edges() == "": h["name"] = "Hero"
+		if typeof(h.get("race")) != TYPE_STRING or not GameData.RACES.has(String(h["race"])): h["race"] = "barrosan"
+		if typeof(h.get("archetype")) != TYPE_STRING or not ["Warrior", "Commander", "Ranger", "Mage", "Summoner"].has(String(h["archetype"])): h["archetype"] = "Warrior"
+		for key in ["level", "skill_points", "attr_points", "mastery", "mastery_points"]:
+			if typeof(h.get(key)) not in [TYPE_INT, TYPE_FLOAT] or int(h[key]) < 0: h[key] = hero_defaults[key]
+		for key in ["xp"]:
+			if typeof(h.get(key)) not in [TYPE_INT, TYPE_FLOAT] or float(h[key]) < 0.0: h[key] = hero_defaults[key]
+		for key in ATTRIBUTES:
+			if typeof(h["attributes"].get(key, 0)) not in [TYPE_INT, TYPE_FLOAT] or int(h["attributes"].get(key, 0)) < 0: h["attributes"][key] = 0
+	if typeof(d["stats"].get("battles", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("battles", 0)) < 0: d["stats"]["battles"] = 0
+	if typeof(d["stats"].get("victories", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("victories", 0)) < 0: d["stats"]["victories"] = 0
+	if typeof(d["stats"].get("units_killed", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("units_killed", 0)) < 0: d["stats"]["units_killed"] = 0
+	var settings_defaults := _default_settings()
+	for key in settings_defaults:
+		var value = d["settings"].get(key, settings_defaults[key])
+		if typeof(value) != typeof(settings_defaults[key]):
+			d["settings"][key] = settings_defaults[key]
+	if not ["windowed", "fullscreen"].has(String(d["settings"].get("display_mode", "windowed"))):
+		d["settings"]["display_mode"] = settings_defaults["display_mode"]
+	for key in ["music_vol", "sfx_vol", "camera_speed", "zoom_sens", "ui_scale", "game_speed"]:
+		var numeric = float(d["settings"].get(key, settings_defaults[key]))
+		if numeric < 0.0: d["settings"][key] = settings_defaults[key]
+	for key in ["node", "wins"]:
+		if typeof(d["campaign"].get(key, 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["campaign"].get(key, 0)) < 0:
+			d["campaign"][key] = 0
+	return d
 
 func _migrate(d: Dictionary) -> Dictionary:
 	# Fill in any missing top-level keys against defaults; never wipe existing hero.
@@ -319,6 +371,8 @@ func _migrate(d: Dictionary) -> Dictionary:
 		d["version"] = SAVE_VERSION
 	# Ensure settings completeness
 	var ds := _default_settings()
+	if typeof(d.get("settings")) != TYPE_DICTIONARY:
+		d["settings"] = ds.duplicate(true)
 	for k in ds:
 		if not d["settings"].has(k):
 			d["settings"][k] = ds[k]
