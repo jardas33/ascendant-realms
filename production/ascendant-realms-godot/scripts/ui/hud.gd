@@ -15,19 +15,19 @@ const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
-const MINIMAP_SIZE := 232.0
+const MINIMAP_SIZE := 232.0 # R3 preserves Emanuel's GOOD minimap-size verdict.
 const MINIMAP_RASTER_SIZE := 160
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
-const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 52.0
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 48.0
 const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
 const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
-const COMMAND_PANEL_WIDTH := 472.0
-const SELECTION_PANEL_WIDTH := 432.0
-const SELECTION_PANEL_HEIGHT := 240.0
+const COMMAND_PANEL_WIDTH := 430.0
+const SELECTION_PANEL_WIDTH := 390.0
+const SELECTION_PANEL_HEIGHT := 198.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
 const COMMAND_SURFACE := Color(0.075, 0.09, 0.11, 0.98)
@@ -199,8 +199,8 @@ func _fit_to_viewport() -> void:
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
-	var selection_height := minf(requested_selection_height, maxf(196.0, viewport_size.y - margin * 2.0))
-	var command_height := minf(360.0, maxf(220.0, viewport_size.y - margin * 2.0))
+	var selection_height := minf(requested_selection_height, maxf(184.0, viewport_size.y - margin * 2.0))
+	var command_height := minf(220.0, maxf(184.0, viewport_size.y - margin * 2.0))
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
 		_minimap_panel.offset_right = margin + MINIMAP_SIZE + 24.0
@@ -635,7 +635,10 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var role_card := visible_effect_prefix == "Role"
 	# The card is a scan surface. Full authored explanations stay in the
 	# anchored tooltip so the grid no longer reads like a stack of debug forms.
-	var detail_text := _command_card_summary(detail)
+	# Normal cards are scan surfaces. Full authored prose belongs in the
+	# tooltip; only build costs/requirements and authored ability effects stay
+	# visible because they are essential state, not explanations.
+	var detail_text := _command_card_summary(detail) if has_preview or ability_card else ""
 	if not disabled_reason.is_empty():
 		detail_text += "\n" + disabled_reason
 	if has_effect:
@@ -646,10 +649,10 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	# Build cards need one extra visual beat for the name/cost/state scan. Keep
 	# the deck compact enough for five authored structures without changing the
 	# command surface's existing two-column layout.
-	var card_height := 106 if ability_card else (86 if has_preview else (94 if detail.contains("\n") else 78))
+	var card_height := 88 if ability_card else (82 if has_preview else 72)
 	if has_effect:
 		card_height = 100 if role_card else (110 if ability_card else 94)
-	btn.custom_minimum_size = Vector2(218, card_height)
+	btn.custom_minimum_size = Vector2(198, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = false
@@ -671,15 +674,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(82, 8)
 		var preview_text_height := card_height - 38 if has_effect else 66
-		text_col.size = Vector2(130, preview_text_height)
-		text_col.custom_minimum_size = Vector2(130, preview_text_height)
+		text_col.size = Vector2(108, preview_text_height)
+		text_col.custom_minimum_size = Vector2(108, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 13, FONT_COLOR)
+		var title_label := _mk_label(title, 14, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(state_text + detail_text, 10, preview_detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 12, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -697,19 +700,19 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(76 if ability_card else 68, 8)
-		var text_height := (card_height - 36 if ability_card else (card_height - 28 if role_card else 60)) if has_effect else 58
-		text_col.size = Vector2(140, text_height)
-		text_col.custom_minimum_size = Vector2(140, text_height)
+		var text_height := (card_height - 32 if ability_card else 42) if has_effect else 42
+		text_col.size = Vector2(118, text_height)
+		text_col.custom_minimum_size = Vector2(118, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
 		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 12, title_color)
+		var title_label := _mk_label(title, 15, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail_text, 9, detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 13, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -718,19 +721,19 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
 		var key_badge := _mk_command_keycap(hotkey, accent)
-		key_badge.position = Vector2(188, 8)
+		key_badge.position = Vector2(160, 8)
 		key_badge.size = Vector2(27, 24)
 		btn.add_child(key_badge)
 	var kind_label := _mk_label(command_kind, 9, Color(accent.r, accent.g, accent.b, 0.82))
-	kind_label.position = Vector2(9, card_height - 20)
+	kind_label.position = Vector2(9, card_height - 18)
 	kind_label.size = Vector2(96, 17)
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
 		var status_label := _mk_label(status, 9, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
-		status_label.position = Vector2(126 if ability_card else 132, card_height - 20)
-		status_label.size = Vector2(60, 17)
+		status_label.position = Vector2(124 if ability_card else 122, card_height - 18)
+		status_label.size = Vector2(64, 16)
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)
@@ -740,8 +743,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# slot for the actionable state so READY versus LOCKED is readable without
 		# relying on a paragraph of disabled-reason text.
 		var build_status := _mk_label(state, 9, accent if state == "READY" else COMMAND_MUTED)
-		build_status.position = Vector2(132, card_height - 20)
-		build_status.size = Vector2(60, 17)
+		build_status.position = Vector2(122, card_height - 18)
+		build_status.size = Vector2(64, 16)
 		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
@@ -847,11 +850,11 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	# telemetry cards. The value row contract is retained so all authoritative
 	# refresh handlers remain unchanged.
 	var surface := VBoxContainer.new()
-	surface.custom_minimum_size = Vector2(width, 62)
+	surface.custom_minimum_size = Vector2(width, 52)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 10, accent.lerp(HUD_TEXT_MUTED, 0.16))
+	var title_label := _mk_label(title.to_upper(), 9, accent.lerp(HUD_TEXT_MUTED, 0.16))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -859,18 +862,18 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	value_row.custom_minimum_size = Vector2(0, 36)
+	value_row.custom_minimum_size = Vector2(0, 30)
 	surface.add_child(value_row)
 	return {"surface": surface, "value_row": value_row}
 
 
 func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	var group := VBoxContainer.new()
-	group.custom_minimum_size = Vector2(width, 68)
+	group.custom_minimum_size = Vector2(width, 56)
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_label(title, 10, accent)
+	var heading := _mk_label(title, 9, accent)
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -891,16 +894,16 @@ func _build_top_bar() -> void:
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	panel.offset_bottom = 78.0
+	panel.offset_bottom = 64.0
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(0, 78)
+	panel.custom_minimum_size = Vector2(0, 64)
 	add_child(panel)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 12)
 	margin.add_theme_constant_override("margin_right", 112)  # keep clear of the Menu button
-	margin.add_theme_constant_override("margin_top", 5)
-	margin.add_theme_constant_override("margin_bottom", 5)
+	margin.add_theme_constant_override("margin_top", 3)
+	margin.add_theme_constant_override("margin_bottom", 3)
 	panel.add_child(margin)
 
 	var row := HBoxContainer.new()
@@ -2285,6 +2288,7 @@ func _build_command_panel() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_cmd_panel.add_child(scroll)
+	scroll.gui_input.connect(_consume_hud_wheel)
 
 	_cmd_body = VBoxContainer.new()
 	_cmd_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2305,6 +2309,14 @@ func _build_command_panel() -> void:
 	tooltip_style.set_content_margin_all(10)
 	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
 	add_child(_command_tooltip)
+
+
+func _consume_hud_wheel(event: InputEvent) -> void:
+	# Scrollable HUD surfaces must terminate wheel input before the world
+	# controller's _unhandled_input can interpret it as camera zoom. This is
+	# event-driven and preserves the camera's existing behavior elsewhere.
+	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+		get_viewport().set_input_as_handled()
 
 
 func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip: String, disabled_reason: String, accent: Color) -> void:
