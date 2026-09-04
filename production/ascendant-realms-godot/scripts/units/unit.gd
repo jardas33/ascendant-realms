@@ -1020,6 +1020,10 @@ func _can_attack_target(tgt) -> bool:
 		return false
 	if not ("team" in tgt) or not ("is_dead" in tgt) or tgt.is_dead:
 		return false
+	if tgt is Unit and tgt._is_defeated_remnant():
+		return false
+	if tgt is Building and tgt.commander and tgt.commander.defeated:
+		return false
 	if int(tgt.team) == team:
 		return false
 	if tgt is Building and not tgt.is_built:
