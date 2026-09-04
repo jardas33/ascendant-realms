@@ -920,7 +920,7 @@ func _destroy(from = null) -> void:
 	# cancel_queue_item(). That method intentionally rejects already-dead
 	# buildings; setting is_dead first silently left destroyed producers with
 	# stale queues and researching flags.
-	var is_player_building := world != null and team == world.player_team
+	var is_player_building: bool = world != null and team == world.player_team
 	for i in range(queue.size() - 1, -1, -1):
 		if is_player_building:
 			cancel_queue_item(i)
