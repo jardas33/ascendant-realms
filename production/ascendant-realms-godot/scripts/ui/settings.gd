@@ -81,7 +81,7 @@ func _build() -> void:
 
 	v.add_child(_heading("Display"))
 	v.add_child(_option_row("Window Mode", ["Windowed", "Fullscreen"], _display_mode_index(s.get("display_mode", "windowed")), func(index):
-		var fullscreen := index == 1
+		var fullscreen: bool = index == 1
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		ProfileManager.update_setting("display_mode", "fullscreen" if fullscreen else "windowed")))
 	v.add_child(_toggle_row("VSync", bool(s.get("vsync", true)), func(on):
