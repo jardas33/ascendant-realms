@@ -429,9 +429,9 @@ func _command_icon_path(title: String, detail: String) -> String:
 func _command_hotkey(title: String) -> String:
 	var haystack := title.to_lower()
 	if haystack.contains("attack"):
-		return "A"
+		return "J"
 	if haystack.contains("stop"):
-		return "S"
+		return "K"
 	if haystack.contains("hold"):
 		return "H"
 	if haystack.contains("patrol"):
@@ -1802,7 +1802,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 
 
 func _ability_key_label(id: String) -> String:
-	var hotkeys := {"rally": "Q", "slam": "W", "charge": "E", "bolt": "R"}
+	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R"}
 	return String(hotkeys.get(id, ""))
 
 
