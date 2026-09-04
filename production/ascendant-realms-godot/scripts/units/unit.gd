@@ -1796,6 +1796,11 @@ func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_e
 		tgt.take_damage(dmg, {"source_unit":self, "source_team":team, "source_unit_id":unit_id, "source_runtime_id":str(get_instance_id()), "projectile_kind":"melee", "damage_type":dmg_type, "raw_damage":raw, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dmg_type, ac), "calculated_damage_before_clamp":raw * GameData.damage_multiplier(dmg_type, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":dmg, "attack_event_id":attack_event_id, "projectile_event_id":projectile_event_id})
 	else:
 		tgt.take_damage(dmg, self)
+	# Combat Presentation R1: make a resolved melee contact visible through the
+	# existing lightweight world FX path. Damage timing and authority remain
+	# exactly the same; this is emitted only after the existing hit is applied.
+	if world and world.has_method("spawn_hit_fx") and is_instance_valid(tgt):
+		world.spawn_hit_fx(tgt.global_position + Vector3.UP * 0.55, "melee")
 	return dmg
 
 # --- worker: gathering ----------------------------------------------------
