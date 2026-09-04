@@ -916,6 +916,26 @@ func _update_damage_visual() -> void:
 func _destroy(from = null) -> void:
 	if is_dead:
 		return
+	# Clear queued production/research while the building is still eligible for
+	# cancel_queue_item(). That method intentionally rejects already-dead
+	# buildings; setting is_dead first silently left destroyed producers with
+	# stale queues and researching flags.
+	var is_player_building := world != null and team == world.player_team
+	for i in range(queue.size() - 1, -1, -1):
+		if is_player_building:
+			cancel_queue_item(i)
+		else:
+			var item: Dictionary = queue[i]
+			if item.get("kind", "") == "unit":
+				var udef := GameData.get_unit(String(item.get("id", "")))
+				if item.get("pop_reserved", false) and commander:
+					commander.release_reserved_pop(udef)
+			else:
+				if commander:
+					commander.researching.erase(String(item.get("id", "")))
+			queue.remove_at(i)
+			_last_queue_frame = -1
+			emit_signal("production_updated")
 	is_dead = true
 	# Retire the existing damage-status presentation at the same logical
 	# boundary as destruction. Without this refresh, a dead building can retain
@@ -924,9 +944,6 @@ func _destroy(from = null) -> void:
 	set_selected(false)
 	collision_layer = 0
 	set_meta("v0436_destroyed_once", true)
-	# refund queue
-	for i in range(queue.size() - 1, -1, -1):
-		cancel_queue_item(i)
 	if commander:
 		commander.recompute_pop()
 	emit_signal("died", self)
