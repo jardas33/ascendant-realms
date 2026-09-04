@@ -831,7 +831,7 @@ func _add_command_section(title: String, hint: String = "") -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
 	if not hint.is_empty():
-		var hint_label := _mk_label(hint, 10, Color(0.68, 0.7, 0.68))
+		var hint_label := _mk_label(hint, 11, Color(0.68, 0.7, 0.68))
 		hint_label.custom_minimum_size = Vector2(130, 24)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -870,7 +870,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_label(title, 9, accent)
+	var heading := _mk_label(title, 10, accent)
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -2222,7 +2222,7 @@ func _refresh_queue() -> void:
 	for item in b.queue:
 		var slot := _mk_button("", 12)
 		slot.custom_minimum_size = Vector2(48, 28)
-		slot.add_theme_font_size_override("font_size", 9)
+		slot.add_theme_font_size_override("font_size", 10)
 		var kind: String = item.get("kind", "unit")
 		var iid: String = item.get("id", "")
 		var disp_name := ""
@@ -2334,7 +2334,7 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	var body_text := tooltip.strip_edges()
 	if not disabled_reason.is_empty():
 		body_text += "\nUnavailable: " + disabled_reason
-	var body := _mk_label(body_text, 10, Color(0.88, 0.87, 0.8))
+	var body := _mk_label(body_text, 12, Color(0.88, 0.87, 0.8))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	body.custom_minimum_size = Vector2(244, 0)
