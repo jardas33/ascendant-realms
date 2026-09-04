@@ -180,7 +180,7 @@ func setup(p_world, p_rts) -> void:
 	# prime displays
 	if _commander:
 		_on_resources_changed(_commander.resources)
-		_on_pop_changed(_commander.pop_used, _commander.pop_cap)
+		_on_pop_changed(_commander.pop_used + _commander.reserved_pop, _commander.pop_cap)
 		_on_tier_changed(_commander.tier)
 		_refresh_opponent_count()
 	_rebuild_selection([])
