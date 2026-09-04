@@ -1017,7 +1017,9 @@ func _build_top_bar() -> void:
 	var player_name := str(GameData.RACES.get(player_race, {}).get("name", player_race)).strip_edges()
 	var opponent_name := str(GameData.RACES.get(opponent_race, {}).get("name", opponent_race)).strip_edges()
 	var mode_name := str(identity.get("mode", "skirmish")).capitalize()
-	var identity_label := _mk_label("%s  vs  %s  •  %s" % [player_name, opponent_name, mode_name], 12, Color(0.88, 0.82, 0.7))
+	var map_id := str(identity.get("map", "hollowspan"))
+	var map_name := str(MapDefs.get_map(map_id).get("name", map_id)).strip_edges()
+	var identity_label := _mk_label("%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name], 12, Color(0.88, 0.82, 0.7))
 	identity_label.name = "MatchIdentityLabel"
 	identity_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	identity_label.offset_left = -560.0
