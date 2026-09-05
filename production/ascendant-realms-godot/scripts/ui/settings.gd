@@ -9,8 +9,8 @@ const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 const CONTROLS := [
 	"Left-click: select    Drag box: multi-select    Shift+click/drag: add to selection",
 	"Right-click: contextual move / attack / gather / rally / repair",
-	"A: attack-move at cursor    S: stop    H: hold    P: patrol",
-	"Q / W / E / R: hero abilities",
+	"J: attack-move at cursor    K: stop    H: hold    P: patrol",
+	"Q / T / E / R: hero abilities",
 	"Ctrl+1-5: set control group    1-5: select group    Tab: select army",
 	"F: select an idle worker    Space: focus hero",
 	"Build mode: left-click to place    Right-click: cancel",

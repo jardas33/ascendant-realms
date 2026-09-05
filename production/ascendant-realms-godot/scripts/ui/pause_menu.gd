@@ -62,7 +62,7 @@ func setup() -> void:
 	vb.add_child(_make_btn("Resume", func(): emit_signal("resume_requested")))
 	vb.add_child(_make_btn("Music +/-", func(): _cycle_music()))
 	var hint := Label.new()
-	hint.text = "Controls:\nLeft-click select · drag box select · Shift+click/drag add to selection · Tab select army\nRight-click contextual move / attack / gather / rally / repair · A attack-move at cursor · S stop · H hold · P patrol\nCtrl+1-5 set group · 1-5 select group · F select idle worker · Space focus hero · Q/W/E/R hero abilities\nBuild mode: left-click place · right-click cancel · F3 debug overlay · Esc pause · wheel zoom · Z/C rotate camera"
+	hint.text = "Controls:\nLeft-click select · drag box select · Shift+click/drag add to selection · Tab select army\nRight-click contextual move / direct attack / gather / rally / repair · J attack-move at cursor · K stop · H hold · P patrol\nCtrl+1-5 set group · 1-5 select group · F select idle worker · Space focus hero · Q/T/E/R hero abilities\nBuild mode: left-click place · right-click cancel · F3 debug overlay · Esc pause · wheel zoom · Z/C rotate camera"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.size_flags_vertical = Control.SIZE_EXPAND_FILL

@@ -2526,7 +2526,7 @@ func _build_worker_card() -> void:
 
 
 func _build_hero_command_card(u) -> void:
-	_add_context_hints(["RMB  MOVE", "Q / W  ABILITIES", "A  ATTACK-MOVE"])
+	_add_context_hints(["RMB  MOVE / ATTACK", "Q / T / E / R  ABILITIES", "J  ATTACK-MOVE"])
 	if not u.abilities.is_empty():
 		_add_command_section("Abilities", "Cast when ready.")
 		var ability_grid := _mk_command_grid()
@@ -2566,7 +2566,7 @@ func _build_hero_command_card(u) -> void:
 
 
 func _build_military_card() -> void:
-	_add_context_hints(["RMB  MOVE", "RMB  ATTACK", "A  ATTACK-MOVE"])
+	_add_context_hints(["RMB  MOVE / ATTACK", "J  ATTACK-MOVE", "K  STOP"])
 	_add_command_section("Commands", "Orders for selected combat units.")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
