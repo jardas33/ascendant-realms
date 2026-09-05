@@ -2001,6 +2001,33 @@ func _hold_worker_interaction(target_position: Vector3) -> void:
 	move_and_slide()
 	_face(target_position)
 
+func _worker_interaction_is_stationary() -> bool:
+	# A late NavigationAgent avoidance callback can arrive after the interaction
+	# branch has already cleared the agent and body velocity. Treat only the
+	# actual in-range interaction phase as stationary; approach movement keeps
+	# the normal avoidance callback path.
+	if not is_worker:
+		return false
+	if state == State.GATHERING:
+		if not is_instance_valid(_gather_node) or _gather_node.depleted:
+			return true
+		return global_position.distance_to(_gather_node.global_position) <= 2.2
+	if state == State.BUILDING:
+		if not is_instance_valid(_build_target) or _build_target.is_dead:
+			return true
+		if _repair_target and (not _build_target.is_built or _build_target.hp >= _build_target.max_hp):
+			return true
+		if not _repair_target and _build_target.is_built:
+			return true
+		return bool(get_construction_interaction_snapshot(_build_target).get("valid", false))
+	return false
+
+func _worker_interaction_transition_is_pending() -> bool:
+	# Gather/build can hand off to RETURNING at the end of the same physics tick.
+	# Until _state_return installs the new return target, a callback carrying the
+	# old interaction velocity must not move the Worker in the old direction.
+	return is_worker and state == State.RETURNING and (_navigation_command_type == "gather" or _navigation_command_type == "build")
+
 # --- healer support unit --------------------------------------------------
 func _healer_tick(delta: float) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
@@ -2142,7 +2169,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 	var audit_frame := Engine.get_physics_frames()
 	var callback_position_before := global_position
 	var recovery_already_moved := _v0436_r1f_last_recovery_move_frame == audit_frame
-	if state == State.IDLE or state == State.HOLD or state == State.DEAD or (state == State.ATTACKING and _attack_settled):
+	if state == State.IDLE or state == State.HOLD or state == State.DEAD or (state == State.ATTACKING and _attack_settled) or _worker_interaction_is_stationary() or _worker_interaction_transition_is_pending():
 		velocity = Vector3.ZERO
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
