@@ -236,6 +236,24 @@ const P1R24_CRITICAL_HEALTH_RATIO := 0.35
 const TASK603_HOVER_RING_WIDTH := 0.055
 const TASK603_HOVER_RING_ALPHA := 0.82
 
+# Visual Convergence R1 Slice 4: compact role cues attached to the existing
+# production skeleton. These are presentation-only paths; no unit definition,
+# weapon damage, attack range, animation state, collision, or selection data is
+# derived from them.
+const SLICE4_ACCESSORIES := {
+	"barrosan_clan_levy": [
+		{"path": "res://assets/characters/visual_convergence/barrosan_clan_levy_accessories.glb", "prefix": "Levy", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.82},
+	],
+	"barrosan_spear_guard": [
+		{"path": "res://assets/characters/visual_convergence/barrosan_spear_guard_accessories.glb", "prefix": "Spear", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.52},
+		{"path": "res://assets/characters/visual_convergence/barrosan_spear_guard_accessories.glb", "prefix": "Shield", "bone": "LeftLowerArm", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 0.72},
+	],
+	"barrosan_crag_archer": [
+		{"path": "res://assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb", "prefix": "Bow", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.72},
+		{"path": "res://assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb", "prefix": "Quiver", "bone": "Spine", "position": Vector3(0.0, 0.04, 0.22), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 0.68},
+	],
+}
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -423,6 +441,7 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, _visual_height)
 		_apply_p1r20_model_materials(m)
+		_build_slice4_role_accessories(m)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
@@ -461,6 +480,54 @@ func _build_model() -> void:
 		_add_team_marker()
 	# M7: establish a stable battlefield-facing pose after the world places the unit.
 	call_deferred("_apply_m_initial_facing")
+
+
+func _build_slice4_role_accessories(model: Node3D) -> void:
+	var specs: Array = SLICE4_ACCESSORIES.get(unit_id, [])
+	if specs.is_empty():
+		return
+	var skeleton := model.find_child("GeneralSkeleton", true, false) as Skeleton3D
+	if not skeleton:
+		for candidate in model.find_children("*", "Skeleton3D", true, false):
+			if candidate is Skeleton3D:
+				skeleton = candidate
+				break
+	if not skeleton:
+		return
+	for spec in specs:
+		var bone_name := String(spec.get("bone", ""))
+		if bone_name.is_empty() or skeleton.find_bone(bone_name) < 0:
+			continue
+		var scene_path := String(spec.get("path", ""))
+		if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
+			continue
+		var scene := load(scene_path) as PackedScene
+		if not scene:
+			continue
+		var attachment := BoneAttachment3D.new()
+		attachment.name = "Slice4_%s" % scene_path.get_file().get_basename()
+		attachment.bone_name = bone_name
+		skeleton.add_child(attachment)
+		var accessory := scene.instantiate() as Node3D
+		if not accessory:
+			attachment.queue_free()
+			continue
+		attachment.add_child(accessory)
+		var prefix := String(spec.get("prefix", ""))
+		var retained_mesh := false
+		for mesh in accessory.find_children("*", "MeshInstance3D", true, false):
+			if prefix.is_empty() or mesh.name.begins_with(prefix):
+				retained_mesh = true
+			else:
+				mesh.queue_free()
+		if not retained_mesh:
+			attachment.queue_free()
+			continue
+		accessory.position = spec.get("position", Vector3.ZERO)
+		accessory.rotation_degrees = spec.get("rotation", Vector3.ZERO)
+		accessory.scale = Vector3.ONE * float(spec.get("scale", 1.0))
+		for mesh in accessory.find_children("*", "GeometryInstance3D", true, false):
+			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 func _apply_m_initial_facing() -> void:
 	if not model_root or is_dead:
