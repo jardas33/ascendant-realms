@@ -388,6 +388,107 @@ func _scatter_environment() -> void:
 
 	_scatter_world03_roadside_dressing(decor, trees, rocks, starts, rng)
 	_scatter_world03_landmarks(decor, trees, rocks, starts, rng)
+	_build_visual_convergence_hollowspan(decor, starts)
+
+
+func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void:
+	# Slice 1 is a presentation-only authored layer for the Barrosan starting
+	# base on Hollowspan. These shallow opaque meshes have no collision, are not
+	# part of the navmesh, and do not replace any authoritative map geometry.
+	if map.get("id", "") != "hollowspan" or starts.is_empty():
+		return
+	var origin: Vector3 = starts[0]
+	var layer := Node3D.new()
+	layer.name = "VisualConvergenceBarrosanBase"
+	parent.add_child(layer)
+	var apron_mat := _visual_convergence_material("Barrosan apron", Color(0.23, 0.19, 0.15), 0.98)
+	var road_mat := _visual_convergence_material("Barrosan worn path", Color(0.30, 0.24, 0.18), 1.0)
+	var boundary_mat := _visual_convergence_material("Barrosan boundary timber", Color(0.16, 0.10, 0.07), 0.88)
+
+	var aprons := [
+		{ "offset": Vector3(0.0, 0.0, 0.0), "size": Vector2(22.0, 18.0), "rotation": 0.0 },
+		{ "offset": Vector3(14.0, 0.0, -8.0), "size": Vector2(8.0, 7.0), "rotation": 0.14 },
+		{ "offset": Vector3(-8.0, 0.0, 14.0), "size": Vector2(8.0, 7.0), "rotation": -0.18 },
+	]
+	for spec in aprons:
+		_add_visual_convergence_apron(layer, origin + spec["offset"], spec["size"], float(spec["rotation"]), apron_mat)
+
+	var main_path_end := origin + Vector3(58.0, 0.0, 58.0)
+	_add_visual_convergence_path(layer, origin + Vector3(9.0, 0.0, 9.0), main_path_end, 5.5, road_mat)
+	_add_visual_convergence_path(layer, origin + Vector3(8.0, 0.0, -5.0), origin + Vector3(25.0, 0.0, 12.0), 3.4, road_mat)
+	_add_visual_convergence_path(layer, origin + Vector3(-5.0, 0.0, 8.0), origin + Vector3(12.0, 0.0, 25.0), 3.4, road_mat)
+
+	var boundary_points := [
+		origin + Vector3(-12.0, 0.0, -11.0), origin + Vector3(12.0, 0.0, -11.0),
+		origin + Vector3(-12.0, 0.0, 11.0), origin + Vector3(12.0, 0.0, 11.0),
+	]
+	for point in boundary_points:
+		_add_visual_convergence_post(layer, point, boundary_mat)
+	_add_visual_convergence_rail(layer, boundary_points[0], boundary_points[1], boundary_mat)
+	_add_visual_convergence_rail(layer, boundary_points[2], boundary_points[3], boundary_mat)
+
+
+func _visual_convergence_material(name: String, color: Color, roughness: float) -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.resource_name = name
+	mat.albedo_color = color
+	mat.roughness = roughness
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	return mat
+
+
+func _add_visual_convergence_apron(parent: Node3D, position: Vector3, size: Vector2, rotation_y: float, mat: Material) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(size.x, 0.035, size.y)
+	var mi := MeshInstance3D.new()
+	mi.name = "BuildingApron"
+	mi.mesh = mesh
+	mi.position = position + Vector3(0.0, 0.02, 0.0)
+	mi.rotation.y = rotation_y
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
+
+
+func _add_visual_convergence_path(parent: Node3D, from: Vector3, to: Vector3, width: float, mat: Material) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(width, 0.04, from.distance_to(to))
+	var mi := MeshInstance3D.new()
+	mi.name = "WornPath"
+	mi.mesh = mesh
+	mi.position = from.lerp(to, 0.5) + Vector3(0.0, 0.025, 0.0)
+	mi.rotation.y = atan2(to.x - from.x, to.z - from.z)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
+
+
+func _add_visual_convergence_post(parent: Node3D, position: Vector3, mat: Material) -> void:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 0.12
+	mesh.bottom_radius = 0.18
+	mesh.height = 1.1
+	mesh.radial_segments = 8
+	var mi := MeshInstance3D.new()
+	mi.name = "TimberBoundaryPost"
+	mi.mesh = mesh
+	mi.position = position + Vector3(0.0, 0.55, 0.0)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
+
+
+func _add_visual_convergence_rail(parent: Node3D, from: Vector3, to: Vector3, mat: Material) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.16, 0.16, from.distance_to(to))
+	var mi := MeshInstance3D.new()
+	mi.name = "TimberBoundaryRail"
+	mi.mesh = mesh
+	mi.position = from.lerp(to, 0.5) + Vector3(0.0, 0.58, 0.0)
+	mi.rotation.y = atan2(to.x - from.x, to.z - from.z)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
 
 
 func _scatter_world03_roadside_dressing(parent: Node3D, trees: Array, rocks: Array, starts: Array, rng: RandomNumberGenerator) -> void:
