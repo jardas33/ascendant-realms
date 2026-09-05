@@ -86,6 +86,10 @@ var _rally_marker: Node3D
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
 
+static var _visual_identity_materials: Dictionary = {}
+static var _visual_identity_box_mesh: BoxMesh
+static var _visual_identity_cylinder_mesh: CylinderMesh
+
 func _ready() -> void:
 	add_to_group("buildings")
 	collision_layer = 4
@@ -106,6 +110,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 		build_time *= commander.build_speed_mult()
 	rally_point = global_position + Vector3(0, 0, footprint + 3.0)
 	_build_model()
+	_build_visual_convergence_identity_dressing()
 	_build_construction_stage_visual()
 	_build_damage_status_visual()
 	_build_selection_ring()
@@ -167,6 +172,125 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
 	_add_selection_pick_shape()
+
+
+func _build_visual_convergence_identity_dressing() -> void:
+	# Slice 2 is a Hollowspan-only presentation layer. It gives each Barrosan
+	# building a restrained functional ground transition and a small identity
+	# cluster without replacing the authored source model or touching gameplay
+	# collision, footprint, navigation, or buildability.
+	if not world or world.map.get("id", "") != "hollowspan":
+		return
+	if String(def.get("race", "")) != "barrosan":
+		return
+	var root := Node3D.new()
+	root.name = "VisualConvergenceIdentityDressing"
+	add_child(root)
+	var apron := _visual_identity_material("ground", Color(0.22, 0.18, 0.14), 0.98)
+	var stone := _visual_identity_material("stone", Color(0.26, 0.27, 0.25), 0.94)
+	var timber := _visual_identity_material("timber", Color(0.15, 0.09, 0.055), 0.9)
+	var iron := _visual_identity_material("iron", Color(0.32, 0.24, 0.17), 0.76, 0.12)
+	var accent := _visual_identity_material("accent", Color(0.42, 0.12, 0.095), 0.92)
+	_add_visual_identity_box(root, Vector3(maxf(footprint * 2.25, 5.0), 0.04, maxf(footprint * 2.25, 5.0)), Vector3(0, 0.035, 0), apron, "FunctionApron")
+
+	match building_id:
+		"barrosan_clanhold":
+			for x in [-footprint * 0.92, footprint * 0.92]:
+				for z in [-footprint * 0.92, footprint * 0.92]:
+					_add_visual_identity_cylinder(root, 0.16, 0.72, Vector3(x, 0.36, z), stone, "ClanholdFoundationMarker")
+			_add_visual_identity_box(root, Vector3(0.10, 1.45, 0.62), Vector3(-footprint - 0.25, 0.82, 0), accent, "ClanholdBanner")
+			_add_visual_identity_box(root, Vector3(0.10, 1.45, 0.62), Vector3(footprint + 0.25, 0.82, 0), accent, "ClanholdBanner")
+		"barrosan_war_hall":
+			for point in [Vector3(-footprint * 0.86, 0.42, -footprint * 0.86), Vector3(footprint * 0.86, 0.42, -footprint * 0.86), Vector3(-footprint * 0.86, 0.42, footprint * 0.86), Vector3(footprint * 0.86, 0.42, footprint * 0.86)]:
+				_add_visual_identity_cylinder(root, 0.14, 0.84, point, timber, "TrainingPost")
+			_add_visual_identity_rail(root, Vector3(-footprint * 0.95, 0.58, -footprint - 0.6), Vector3(footprint * 0.95, 0.58, -footprint - 0.6), timber, "WarHallTrainingRail")
+			_add_visual_identity_box(root, Vector3(footprint * 1.4, 0.13, 0.13), Vector3(0, 0.92, -footprint - 0.6), iron, "WarHallWeaponRack")
+		"barrosan_clan_croft":
+			var span := footprint * 1.1
+			for point in [Vector3(-span, 0.34, -span), Vector3(span, 0.34, -span), Vector3(-span, 0.34, span), Vector3(span, 0.34, span)]:
+				_add_visual_identity_cylinder(root, 0.12, 0.68, point, timber, "CroftFencePost")
+			_add_visual_identity_rail(root, Vector3(-span, 0.46, -span), Vector3(span, 0.46, -span), timber, "CroftFenceRail")
+			_add_visual_identity_rail(root, Vector3(span, 0.46, -span), Vector3(span, 0.46, span), timber, "CroftFenceRail")
+			_add_visual_identity_cylinder(root, 0.34, 0.72, Vector3(-footprint - 0.55, 0.36, footprint * 0.5), timber, "CroftHayBale")
+			_add_visual_identity_cylinder(root, 0.34, 0.72, Vector3(-footprint - 0.55, 0.36, -footprint * 0.5), timber, "CroftHayBale")
+		"barrosan_iron_forge":
+			_add_visual_identity_box(root, Vector3(1.4, 0.72, 0.55), Vector3(footprint + 0.6, 0.36, -0.55), timber, "ForgeWorkbench")
+			_add_visual_identity_box(root, Vector3(0.42, 0.78, 0.42), Vector3(footprint + 0.6, 0.39, 0.52), iron, "ForgeAnvil")
+			_add_visual_identity_cylinder(root, 0.28, 0.48, Vector3(-footprint - 0.42, 0.24, -0.50), iron, "ForgeBrazier")
+			_add_visual_identity_cylinder(root, 0.28, 0.48, Vector3(-footprint - 0.42, 0.24, 0.50), iron, "ForgeBrazier")
+			_add_visual_identity_box(root, Vector3(0.65, 0.9, 0.65), Vector3(footprint + 0.6, 0.45, 1.15), stone, "ForgeStoneStack")
+		"barrosan_watchtower":
+			for point in [Vector3(-footprint * 0.9, 0.24, -footprint * 0.9), Vector3(footprint * 0.9, 0.24, -footprint * 0.9), Vector3(-footprint * 0.9, 0.24, footprint * 0.9), Vector3(footprint * 0.9, 0.24, footprint * 0.9)]:
+				_add_visual_identity_cylinder(root, 0.22, 0.48, point, stone, "WatchtowerFoundationStone")
+			_add_visual_identity_cylinder(root, 0.08, 2.0, Vector3(footprint + 0.65, 1.0, 0), timber, "WatchtowerBannerPole")
+			_add_visual_identity_box(root, Vector3(0.08, 0.72, 0.46), Vector3(footprint + 0.65, 1.45, 0), accent, "WatchtowerBanner")
+
+
+func _visual_identity_material(key: String, color: Color, roughness: float, metallic: float = 0.0) -> StandardMaterial3D:
+	if _visual_identity_materials.has(key):
+		return _visual_identity_materials[key]
+	var mat := StandardMaterial3D.new()
+	mat.resource_name = "VisualConvergence_%s" % key
+	mat.albedo_color = color
+	mat.roughness = roughness
+	mat.metallic = metallic
+	_visual_identity_materials[key] = mat
+	return mat
+
+
+func _visual_identity_box() -> BoxMesh:
+	if is_instance_valid(_visual_identity_box_mesh):
+		return _visual_identity_box_mesh
+	_visual_identity_box_mesh = BoxMesh.new()
+	_visual_identity_box_mesh.size = Vector3.ONE
+	_visual_identity_box_mesh.resource_name = "VisualConvergence_UnitBox"
+	return _visual_identity_box_mesh
+
+
+func _visual_identity_cylinder() -> CylinderMesh:
+	if is_instance_valid(_visual_identity_cylinder_mesh):
+		return _visual_identity_cylinder_mesh
+	_visual_identity_cylinder_mesh = CylinderMesh.new()
+	_visual_identity_cylinder_mesh.top_radius = 0.5
+	_visual_identity_cylinder_mesh.bottom_radius = 0.54
+	_visual_identity_cylinder_mesh.height = 1.0
+	_visual_identity_cylinder_mesh.radial_segments = 8
+	_visual_identity_cylinder_mesh.resource_name = "VisualConvergence_UnitCylinder"
+	return _visual_identity_cylinder_mesh
+
+
+func _add_visual_identity_mesh(parent: Node3D, mesh: Mesh, position: Vector3, mat: Material, node_name: String) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = node_name
+	mi.mesh = mesh
+	mi.position = position
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
+	return mi
+
+
+func _add_visual_identity_box(parent: Node3D, size: Vector3, position: Vector3, mat: Material, node_name: String) -> void:
+	var mi := _add_visual_identity_mesh(parent, _visual_identity_box(), position, mat, node_name)
+	mi.scale = size
+
+
+func _add_visual_identity_cylinder(parent: Node3D, radius: float, height: float, position: Vector3, mat: Material, node_name: String) -> void:
+	var mi := _add_visual_identity_mesh(parent, _visual_identity_cylinder(), position, mat, node_name)
+	mi.scale = Vector3(radius * 2.0, height, radius * 2.0)
+
+
+func _add_visual_identity_rail(parent: Node3D, from: Vector3, to: Vector3, mat: Material, node_name: String) -> void:
+	var delta := to - from
+	var mi := MeshInstance3D.new()
+	mi.name = node_name
+	mi.mesh = _visual_identity_box()
+	mi.scale = Vector3(0.14, 0.14, delta.length())
+	mi.position = from.lerp(to, 0.5)
+	mi.rotation.y = atan2(delta.x, delta.z)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
 
 
 func _normalize_a02_imported_materials(model: Node3D, path: String) -> void:
