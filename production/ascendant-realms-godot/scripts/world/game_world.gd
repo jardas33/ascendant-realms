@@ -426,6 +426,10 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 		_add_visual_convergence_post(layer, point, boundary_mat)
 	_add_visual_convergence_rail(layer, boundary_points[0], boundary_points[1], boundary_mat)
 	_add_visual_convergence_rail(layer, boundary_points[2], boundary_points[3], boundary_mat)
+	var composition_script = load("res://scripts/world/hollowspan_environment_composition.gd")
+	if composition_script:
+		var composition = composition_script.new()
+		composition.build(parent, origin, map)
 
 
 func _visual_convergence_material(name: String, color: Color, roughness: float) -> StandardMaterial3D:
