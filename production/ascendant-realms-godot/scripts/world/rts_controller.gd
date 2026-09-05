@@ -76,8 +76,11 @@ const COMMAND_PATROL := "PATROL"
 const COMMAND_GUARD := "GUARD"
 var _last_cursor_intent := COMMAND_DEFAULT
 var _last_cursor_shape := Input.CURSOR_ARROW
+var _last_cursor_asset := ""
 var _last_command_feedback: Dictionary = {"accepted": false, "intent": "", "feedback_type": ""}
 var _defeated_hero_selection_notified := false
+const DIRECT_ATTACK_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascendant_direct_attack_cursor.svg")
+const ATTACK_MOVE_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascendant_attack_move_cursor.svg")
 
 func setup(p_world, p_team: int) -> void:
 	world = p_world
@@ -162,6 +165,7 @@ func _process(delta: float) -> void:
 	_update_command_cursor()
 
 func _exit_tree() -> void:
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func _update_hover_target() -> void:
@@ -192,10 +196,18 @@ func _update_command_cursor() -> void:
 
 func _apply_cursor_intent(intent: String) -> void:
 	var shape := Input.CURSOR_ARROW
+	var cursor_asset := ""
+	var cursor_texture: Texture2D = null
 	match intent:
 		COMMAND_MOVE:
 			shape = Input.CURSOR_MOVE
-		COMMAND_ATTACK, COMMAND_RALLY, COMMAND_ATTACK_MOVE, COMMAND_PATROL:
+		COMMAND_ATTACK:
+			cursor_asset = "DIRECT_ATTACK"
+			cursor_texture = DIRECT_ATTACK_CURSOR
+		COMMAND_ATTACK_MOVE:
+			cursor_asset = "ATTACK_MOVE"
+			cursor_texture = ATTACK_MOVE_CURSOR
+		COMMAND_RALLY, COMMAND_PATROL:
 			shape = Input.CURSOR_CROSS
 		COMMAND_GATHER:
 			shape = Input.CURSOR_POINTING_HAND
@@ -203,10 +215,15 @@ func _apply_cursor_intent(intent: String) -> void:
 			shape = Input.CURSOR_CAN_DROP
 		COMMAND_INVALID:
 			shape = Input.CURSOR_FORBIDDEN
-	if intent != _last_cursor_intent or shape != _last_cursor_shape:
+	if intent != _last_cursor_intent or shape != _last_cursor_shape or cursor_asset != _last_cursor_asset:
+		if cursor_texture:
+			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW, Vector2(5.0, 5.0))
+		else:
+			Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 		Input.set_default_cursor_shape(shape)
 		_last_cursor_intent = intent
 		_last_cursor_shape = shape
+		_last_cursor_asset = cursor_asset
 
 func get_command_intent_snapshot() -> Dictionary:
 	return {"intent": _last_cursor_intent, "cursor_shape": _last_cursor_shape}

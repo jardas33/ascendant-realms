@@ -1751,7 +1751,10 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 		"cinder": col = Color(1, 0.5, 0.15)
 		"void_bolt", "rift_shell": col = Color(0.7, 0.3, 0.9)
 		"thorn", "thornpod": col = Color(0.5, 0.8, 0.4)
-	_burst(pos, col, 6, 0.4)
+	# Shared impact treatment: slightly more legible at the normal RTS camera,
+	# while remaining a single short-lived, non-gameplay effect for all projectile
+	# and melee impact kinds.
+	_burst(pos, col, 8, 0.46)
 
 func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)
@@ -1787,8 +1790,8 @@ func _burst(pos: Vector3, col: Color, count: int, life: float) -> void:
 	mat.initial_velocity_min = 2.0
 	mat.initial_velocity_max = 5.0
 	mat.gravity = Vector3(0, -6, 0)
-	mat.scale_min = 0.15
-	mat.scale_max = 0.35
+	mat.scale_min = 0.18
+	mat.scale_max = 0.42
 	mat.color = col
 	p.process_material = mat
 	var mesh := SphereMesh.new()
@@ -1798,7 +1801,7 @@ func _burst(pos: Vector3, col: Color, count: int, life: float) -> void:
 	mm.albedo_color = col
 	mm.emission_enabled = true
 	mm.emission = col
-	mm.emission_energy_multiplier = 2.0
+	mm.emission_energy_multiplier = 2.8
 	mm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mesh.material = mm
 	p.draw_pass_1 = mesh
