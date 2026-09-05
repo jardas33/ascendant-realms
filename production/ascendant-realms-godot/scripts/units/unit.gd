@@ -1172,6 +1172,10 @@ func _construction_interaction_target(building, interaction: Dictionary) -> Vect
 	var best_cost := INF
 	var direct_best := candidates[0]
 	var direct_best_cost := INF
+	# Candidate scoring is one synchronous construction-target operation. No
+	# candidate loop body yields or mutates the unit group, so reuse one shallow
+	# snapshot instead of allocating the same all-units array for every slot.
+	var unit_candidates: Array = world.all_units() if world and world.has_method("all_units") else []
 	for candidate in candidates:
 		var candidate_snapshot := construction_interaction_for_point(candidate, center, Vector2(half_x, half_z), threshold)
 		if not bool(candidate_snapshot.get("valid", false)):
@@ -1191,8 +1195,8 @@ func _construction_interaction_target(building, interaction: Dictionary) -> Vect
 		# interaction range. Prefer an otherwise-unoccupied construction slot;
 		# this is local target selection and does not alter global avoidance.
 		var slot_occupied := false
-		if world and world.has_method("all_units"):
-			for peer in world.all_units():
+		if not unit_candidates.is_empty():
+			for peer in unit_candidates:
 				if peer == self or not is_instance_valid(peer) or peer.is_dead or not peer.is_worker or peer.get("_build_target") != building:
 					continue
 				var peer_target = peer.get("_move_target")
