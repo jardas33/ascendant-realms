@@ -1519,6 +1519,12 @@ func _update_m_motion_presentation(delta: float) -> void:
 		return
 	var planar_displacement := Vector2(current_position.x - _m_motion_last_position.x, current_position.z - _m_motion_last_position.z).length()
 	_m_motion_last_position = current_position
+	if _worker_interaction_is_stationary():
+		# Gathering/building already selected the authored work animation. Do not
+		# let the generic locomotion hysteresis overwrite it with Walk or Idle
+		# while the Worker is physically stationary and contributing progress.
+		_m_motion_still_time = 0.0
+		return
 	var moving_state := state == State.MOVING or state == State.ATTACK_MOVE or state == State.PATROL or state == State.FOLLOW or state == State.GATHERING or state == State.RETURNING
 	if not moving_state:
 		_m_motion_still_time = 0.0
