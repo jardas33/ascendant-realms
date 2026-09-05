@@ -15,19 +15,19 @@ const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
-const MINIMAP_SIZE := 232.0 # R3 preserves Emanuel's GOOD minimap-size verdict.
+const MINIMAP_SIZE := 220.0 # Compact navigation instrument; battlefield remains primary.
 const MINIMAP_RASTER_SIZE := 160
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
-const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 48.0
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 42.0
 const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
 const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
 const COMMAND_PANEL_WIDTH := 430.0
-const SELECTION_PANEL_WIDTH := 390.0
-const SELECTION_PANEL_HEIGHT := 198.0
+const SELECTION_PANEL_WIDTH := 360.0
+const SELECTION_PANEL_HEIGHT := 184.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
 const COMMAND_SURFACE := Color(0.075, 0.09, 0.11, 0.98)
@@ -199,8 +199,10 @@ func _fit_to_viewport() -> void:
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
-	var selection_height := minf(requested_selection_height, maxf(184.0, viewport_size.y - margin * 2.0))
-	var command_height := minf(220.0, maxf(184.0, viewport_size.y - margin * 2.0))
+	# The command deck is deliberately capped at roughly one fifth of the
+	# viewport. Dense cards scroll inside it instead of consuming the battlefield.
+	var command_height := minf(224.0, maxf(168.0, floor(viewport_size.y * 0.22)))
+	var selection_height := minf(requested_selection_height, maxf(168.0, floor(viewport_size.y * 0.22)))
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
 		_minimap_panel.offset_right = margin + MINIMAP_SIZE + 24.0
@@ -625,34 +627,24 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "") -> Button:
 	var state_text := "LOCKED · " if state == "LOCKED" else ("COOLDOWN · " if state == "COOLDOWN" else "")
 	var has_preview := not preview_definition.is_empty()
-	# Hero abilities provide their authored Q/W hotkey explicitly while ordinary
-	# order cards derive their hotkeys from the title. That keeps the ability
-	# treatment distinct without changing any command dispatch semantics.
+	# The card is intentionally a scan surface. Hero abilities provide their
+	# authored hotkey explicitly; ordinary orders derive theirs from the title.
 	var ability_card := visible_effect_prefix == "Effect" and not hotkey_override.is_empty()
-	var effect_text := visible_effect.strip_edges() if ability_card else ""
-	var has_effect := not effect_text.is_empty()
-	var command_kind := "ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, has_effect)
-	var role_card := visible_effect_prefix == "Role"
-	# The card is a scan surface. Full authored explanations stay in the
-	# anchored tooltip so the grid no longer reads like a stack of debug forms.
-	# Normal cards are scan surfaces. Full authored prose belongs in the
-	# tooltip; only build costs/requirements and authored ability effects stay
-	# visible because they are essential state, not explanations.
-	var detail_text := _command_card_summary(detail) if has_preview or ability_card else ""
+	var command_kind := "ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, false)
+	# Costs, tiers and population are actionable scan data. Long authored prose
+	# stays in the anchored tooltip so the command grid reads like an RTS deck,
+	# not a stack of debug forms.
+	var scan_detail := has_preview or ability_card or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
+	var detail_text := _command_card_summary(detail) if scan_detail else ""
 	if not disabled_reason.is_empty():
 		detail_text += "\n" + disabled_reason
-	if has_effect:
-		detail_text += "\n" + visible_effect_prefix + ": " + _command_card_summary(effect_text)
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	# Build cards need one extra visual beat for the name/cost/state scan. Keep
-	# the deck compact enough for five authored structures without changing the
-	# command surface's existing two-column layout.
-	var card_height := 88 if ability_card else (82 if has_preview else 72)
-	if has_effect:
-		card_height = 100 if role_card else (110 if ability_card else 94)
-	btn.custom_minimum_size = Vector2(198, card_height)
+	# Three columns make the deck feel like a command surface and keep the
+	# bottom HUD within the 22% height budget at both target resolutions.
+	var card_height := 72 if has_preview else (76 if ability_card else 64)
+	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = false
@@ -660,29 +652,26 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(9, 9)
-		preview.size = Vector2(64, 64)
-		preview.custom_minimum_size = Vector2(64, 64)
+		preview.position = Vector2(6, 6)
+		preview.size = Vector2(42, 42)
+		preview.custom_minimum_size = Vector2(42, 42)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		# EntityPortraitView raises its own minimum to 112px for full-size cards;
-		# defer the compact-card override until its _ready() has run so the preview
-		# cannot expand back over the cost text column.
-		preview.set_deferred("custom_minimum_size", Vector2(64, 64))
-		preview.set_deferred("size", Vector2(64, 64))
+		preview.set_deferred("custom_minimum_size", Vector2(42, 42))
+		preview.set_deferred("size", Vector2(42, 42))
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(82, 8)
-		var preview_text_height := card_height - 38 if has_effect else 66
-		text_col.size = Vector2(108, preview_text_height)
-		text_col.custom_minimum_size = Vector2(108, preview_text_height)
+		text_col.position = Vector2(54, 6)
+		var preview_text_height := card_height - 10
+		text_col.size = Vector2(72, preview_text_height)
+		text_col.custom_minimum_size = Vector2(72, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 14, FONT_COLOR)
+		var title_label := _mk_label(title, 12, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(state_text + detail_text, 12, preview_detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 10, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -692,27 +681,27 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(9, 9)
-		glyph_plate.size = Vector2(58 if ability_card else 52, 58 if ability_card else 52)
+		glyph_plate.position = Vector2(6, 6)
+		glyph_plate.size = Vector2(38, 38)
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
-		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 42.0 if ability_card else 38.0))
+		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 28.0))
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(76 if ability_card else 68, 8)
-		var text_height := (card_height - 32 if ability_card else 42) if has_effect else 42
-		text_col.size = Vector2(118, text_height)
-		text_col.custom_minimum_size = Vector2(118, text_height)
+		text_col.position = Vector2(50, 6)
+		var text_height := card_height - 10
+		text_col.size = Vector2(72, text_height)
+		text_col.custom_minimum_size = Vector2(72, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
 		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 15, title_color)
+		var title_label := _mk_label(title, 13, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail_text, 13, detail_color)
+		var detail_label := _mk_label(state_text + detail_text, 10, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -721,19 +710,19 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
 		var key_badge := _mk_command_keycap(hotkey, accent)
-		key_badge.position = Vector2(160, 8)
-		key_badge.size = Vector2(27, 24)
+		key_badge.position = Vector2(102, 6)
+		key_badge.size = Vector2(22, 20)
 		btn.add_child(key_badge)
 	var kind_label := _mk_label(command_kind, 9, Color(accent.r, accent.g, accent.b, 0.82))
-	kind_label.position = Vector2(9, card_height - 18)
-	kind_label.size = Vector2(96, 17)
+	kind_label.position = Vector2(6, card_height - 17)
+	kind_label.size = Vector2(72, 15)
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 9, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
-		status_label.position = Vector2(124 if ability_card else 122, card_height - 18)
-		status_label.size = Vector2(64, 16)
+		var status_label := _mk_label(status, 8, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		status_label.position = Vector2(78, card_height - 17)
+		status_label.size = Vector2(48, 15)
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)
@@ -742,9 +731,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# The worker deck already labels the family as BUILD. Use the lower-right
 		# slot for the actionable state so READY versus LOCKED is readable without
 		# relying on a paragraph of disabled-reason text.
-		var build_status := _mk_label(state, 9, accent if state == "READY" else COMMAND_MUTED)
-		build_status.position = Vector2(122, card_height - 18)
-		build_status.size = Vector2(64, 16)
+		var build_status := _mk_label(state, 8, accent if state == "READY" else COMMAND_MUTED)
+		build_status.position = Vector2(78, card_height - 17)
+		build_status.size = Vector2(48, 15)
 		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
@@ -767,7 +756,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	normal.border_width_left = 4 if ability_card else 3
 	normal.border_width_bottom = 1
 	normal.set_corner_radius_all(5)
-	normal.set_content_margin_all(5)
+	normal.set_content_margin_all(4)
 	var hover := normal.duplicate()
 	hover.bg_color = Color(accent.r, accent.g, accent.b, 0.17)
 	hover.border_color = accent
@@ -808,34 +797,34 @@ func _ability_glyph_stylebox(accent: Color) -> StyleBoxFlat:
 
 func _mk_command_grid() -> GridContainer:
 	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return grid
 
 
 func _add_command_section(title: String, hint: String = "") -> void:
 	var row := HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 32)
+	row.custom_minimum_size = Vector2(0, 26)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var rule := ColorRect.new()
-	rule.custom_minimum_size = Vector2(4, 22)
+	rule.custom_minimum_size = Vector2(3, 18)
 	rule.color = COMMAND_GOLD
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(rule)
 	var title_label := _mk_label(title.to_upper(), 12, COMMAND_GOLD)
-	title_label.custom_minimum_size = Vector2(88, 24)
+	title_label.custom_minimum_size = Vector2(78, 20)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title_label)
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
 	if not hint.is_empty():
-		var hint_label := _mk_label(hint, 11, Color(0.68, 0.7, 0.68))
-		hint_label.custom_minimum_size = Vector2(130, 24)
+		var hint_label := _mk_label(hint, 10, Color(0.68, 0.7, 0.68))
+		hint_label.custom_minimum_size = Vector2(120, 20)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
@@ -850,7 +839,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	# telemetry cards. The value row contract is retained so all authoritative
 	# refresh handlers remain unchanged.
 	var surface := VBoxContainer.new()
-	surface.custom_minimum_size = Vector2(width, 52)
+	surface.custom_minimum_size = Vector2(width, 46)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
@@ -862,14 +851,14 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	value_row.custom_minimum_size = Vector2(0, 30)
+	value_row.custom_minimum_size = Vector2(0, 26)
 	surface.add_child(value_row)
 	return {"surface": surface, "value_row": value_row}
 
 
 func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	var group := VBoxContainer.new()
-	group.custom_minimum_size = Vector2(width, 56)
+	group.custom_minimum_size = Vector2(width, 48)
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -894,16 +883,16 @@ func _build_top_bar() -> void:
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	panel.offset_bottom = 64.0
+	panel.offset_bottom = 56.0
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(0, 64)
+	panel.custom_minimum_size = Vector2(0, 56)
 	add_child(panel)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 12)
 	margin.add_theme_constant_override("margin_right", 112)  # keep clear of the Menu button
-	margin.add_theme_constant_override("margin_top", 3)
-	margin.add_theme_constant_override("margin_bottom", 3)
+	margin.add_theme_constant_override("margin_top", 2)
+	margin.add_theme_constant_override("margin_bottom", 2)
 	panel.add_child(margin)
 
 	var row := HBoxContainer.new()
@@ -1025,10 +1014,10 @@ func _build_top_bar() -> void:
 	var identity_label := _mk_label("%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name], 12, Color(0.88, 0.82, 0.7))
 	identity_label.name = "MatchIdentityLabel"
 	identity_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	identity_label.offset_left = -560.0
+	identity_label.offset_left = -370.0
 	identity_label.offset_right = -122.0
-	identity_label.offset_top = 51.0
-	identity_label.offset_bottom = 72.0
+	identity_label.offset_top = 3.0
+	identity_label.offset_bottom = 20.0
 	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1038,10 +1027,10 @@ func _build_top_bar() -> void:
 	var objective_label := _mk_label(objective_text, 11, Color(0.62, 0.67, 0.7))
 	objective_label.name = "MatchObjectiveLabel"
 	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-	objective_label.offset_left = 830.0
-	objective_label.offset_right = 1200.0
-	objective_label.offset_top = 75.0
-	objective_label.offset_bottom = 94.0
+	objective_label.offset_left = -370.0
+	objective_label.offset_right = -122.0
+	objective_label.offset_top = 29.0
+	objective_label.offset_bottom = 47.0
 	objective_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1552,7 +1541,7 @@ func _build_selection_panel() -> void:
 	entity_title.custom_minimum_size = Vector2(132, 20)
 	entity_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	entity_header.add_child(entity_title)
-	var entity_hint := _mk_label("IDENTITY · VITALS", 9, HUD_TEXT_MUTED)
+	var entity_hint := _mk_label("LIVE STATUS", 9, HUD_TEXT_MUTED)
 	entity_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entity_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	entity_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -1718,11 +1707,11 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(116, 116)
+		portrait.custom_minimum_size = Vector2(96, 96)
 		row.add_child(portrait)
 		portrait.configure_entity(u)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 96)
+		portrait = _mk_icon(FRAME_PORTRAIT, 88)
 		row.add_child(portrait)
 
 	# info column
@@ -1739,12 +1728,12 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_header := HBoxContainer.new()
 	identity_header.add_theme_constant_override("separation", 6)
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, 18, identity_color)
+	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, 16, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
-	info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
+	info.add_child(_mk_label("VITALS", 8, Color(0.62, 0.67, 0.65)))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -2042,11 +2031,11 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(100, 100)
+		portrait.custom_minimum_size = Vector2(76, 76)
 		identity.add_child(portrait)
 		portrait.configure_entity(b)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 76)
+		portrait = _mk_icon(FRAME_PORTRAIT, 72)
 		identity.add_child(portrait)
 	var identity_info := VBoxContainer.new()
 	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2346,7 +2335,7 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	var body_text := tooltip.strip_edges()
 	if not disabled_reason.is_empty():
 		body_text += "\nUnavailable: " + disabled_reason
-	var body := _mk_label(body_text, 12, Color(0.88, 0.87, 0.8))
+	var body := _mk_label(body_text, 11, Color(0.88, 0.87, 0.8))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	body.custom_minimum_size = Vector2(244, 0)
@@ -2394,7 +2383,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 		return
 
 	# HERO -> abilities first, then the same combat orders used by military units.
-	# Keeping this in the command deck makes the authored Q/W actions visible at
+	# Keeping this in the command deck makes the authored Q/T/E/R actions visible at
 	# the moment the player selects the hero instead of burying them below the
 	# selection portrait's fixed-height information surface.
 	if single != null and single is Unit and single.is_hero:
@@ -2438,7 +2427,7 @@ func _add_command_context(single, selection: Array) -> void:
 	var header := PanelContainer.new()
 	header.name = "CommandDeckHeader"
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.custom_minimum_size = Vector2(0, 58)
+	header.custom_minimum_size = Vector2(0, 44)
 	var header_style := StyleBoxFlat.new()
 	header_style.bg_color = Color(0.06, 0.078, 0.094, 0.98)
 	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.76)
@@ -2450,15 +2439,15 @@ func _add_command_context(single, selection: Array) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var marker := _mk_command_badge(_command_glyph(role), accent, 34.0)
-	marker.custom_minimum_size = Vector2(34, 34)
+	var marker := _mk_command_badge(_command_glyph(role), accent, 28.0)
+	marker.custom_minimum_size = Vector2(28, 28)
 	row.add_child(marker)
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 0)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(_mk_label(title, 15, FONT_COLOR))
-	info.add_child(_mk_label(subtitle, 10, Color(0.7, 0.73, 0.72)))
+	info.add_child(_mk_label(title, 14, FONT_COLOR))
+	info.add_child(_mk_label(subtitle, 9, Color(0.7, 0.73, 0.72)))
 	row.add_child(info)
 	var role_badge := _mk_command_badge(role, accent, 62.0)
 	role_badge.custom_minimum_size = Vector2(62, 22)
@@ -2470,7 +2459,7 @@ func _add_command_context(single, selection: Array) -> void:
 func _add_context_hints(hints: Array[String]) -> void:
 	var strip := PanelContainer.new()
 	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	strip.custom_minimum_size = Vector2(0, 28)
+	strip.custom_minimum_size = Vector2(0, 22)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.03, 0.04, 0.05, 0.72)
 	sb.border_color = Color(0.34, 0.4, 0.4, 0.46)

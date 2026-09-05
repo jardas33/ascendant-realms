@@ -25,7 +25,12 @@ var _pending_definition_is_building := true
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	custom_minimum_size = Vector2(PORTRAIT_MAX_SIZE, PORTRAIT_MAX_SIZE)
+	# Respect the host module's authored size. The previous unconditional 116px
+	# minimum expanded compact HUD cards after _ready() and caused the frame to
+	# crowd the face at narrow resolutions.
+	var requested_size := maxf(custom_minimum_size.x, custom_minimum_size.y)
+	var resolved_size := clampf(requested_size if requested_size > 0.0 else PORTRAIT_MIN_SIZE, PORTRAIT_MIN_SIZE, PORTRAIT_MAX_SIZE)
+	custom_minimum_size = Vector2(resolved_size, resolved_size)
 	clip_contents = true
 	_build_view()
 	if is_instance_valid(_pending_entity):
