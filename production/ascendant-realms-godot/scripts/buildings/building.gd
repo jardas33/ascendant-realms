@@ -33,6 +33,14 @@ const TASK604_A01_R1_YAW_DEGREES := 24.0
 ## scale/ground/collision flow; the hall, yard wall, gate, training props, and
 ## other authored architecture remain intact.
 const TASK606_A02_MODEL_PATH := "res://assets/environment/buildings/barrosan_war_hall_a02.glb"
+## Slice 7: the Forge and Watchtower share generic one-surface source meshes.
+## These authored resources preserve their source textures while giving the
+## Barrosan production variants a consistent roughness/material response. The
+## cache is shared by model path so instances do not duplicate materials.
+const SLICE7_IRON_FORGE_MODEL_PATH := "res://assets/environment/buildings/barrosan_iron_forge.glb"
+const SLICE7_WATCHTOWER_MODEL_PATH := "res://assets/environment/buildings/barrosan_watchtower.glb"
+const SLICE7_IRON_FORGE_MATERIAL_PATH := "res://assets/materials/barrosan/barrosan_iron_forge_surface.tres"
+const SLICE7_WATCHTOWER_MATERIAL_PATH := "res://assets/materials/barrosan/barrosan_watchtower_surface.tres"
 const BUILD_COMPLETION_CUE_SCALE := 1.045
 const BUILD_COMPLETION_CUE_OUT_DURATION := 0.12
 const BUILD_COMPLETION_CUE_RETURN_DURATION := 0.28
@@ -89,6 +97,7 @@ var _selection_indicator_extents := Vector2(2.2, 2.2)
 static var _visual_identity_materials: Dictionary = {}
 static var _visual_identity_box_mesh: BoxMesh
 static var _visual_identity_cylinder_mesh: CylinderMesh
+static var _slice7_barrosan_surface_materials: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("buildings")
@@ -146,6 +155,7 @@ func _build_model() -> void:
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.isolate_a03_house_a(m)
 		_normalize_a02_imported_materials(m, path)
+		_apply_slice7_barrosan_surface_material(m, path)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
@@ -315,6 +325,34 @@ func _normalize_a02_imported_materials(model: Node3D, path: String) -> void:
 			repaired.normal_enabled = false
 			repaired.normal_texture = null
 			mesh.set_surface_override_material(surface, repaired)
+
+
+func _apply_slice7_barrosan_surface_material(model: Node3D, path: String) -> void:
+	# Only the Barrosan variants receive this presentation binding. The same
+	# source GLBs are reused by other factions, so identity must not leak across
+	# faction definitions. Existing authored A01/A02/A03 material slots remain
+	# untouched; Slice 7 closes the generic single-material gap on the Forge and
+	# Watchtower without changing geometry, collision, or gameplay semantics.
+	if String(def.get("race", "")) != "barrosan":
+		return
+	var material_path := ""
+	if path == SLICE7_IRON_FORGE_MODEL_PATH:
+		material_path = SLICE7_IRON_FORGE_MATERIAL_PATH
+	elif path == SLICE7_WATCHTOWER_MODEL_PATH:
+		material_path = SLICE7_WATCHTOWER_MATERIAL_PATH
+	else:
+		return
+	var surface_material: Material = _slice7_barrosan_surface_materials.get(material_path)
+	if not surface_material:
+		surface_material = load(material_path) as Material
+		if not surface_material:
+			return
+		_slice7_barrosan_surface_materials[material_path] = surface_material
+	for child in model.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh or not mesh.mesh or mesh.mesh.get_surface_count() != 1:
+			continue
+		mesh.material_override = surface_material
 
 
 func _strip_a01_review_staging(model: Node3D, path: String) -> void:
