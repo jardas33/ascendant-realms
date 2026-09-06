@@ -152,6 +152,12 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
 		_strip_a02_review_staging(m, path)
+		if path == TASK606_A02_MODEL_PATH:
+			# The authored A02 foundation and wall cast a single hard-edged slab
+			# shadow at the default RTS light. Keep the geometry/materials but make
+			# this one production building presentation-only for shadowing.
+			for geometry in m.find_children("*", "GeometryInstance3D"):
+				(geometry as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.isolate_a03_house_a(m)
 		_normalize_a02_imported_materials(m, path)
@@ -196,12 +202,13 @@ func _build_visual_convergence_identity_dressing() -> void:
 	var root := Node3D.new()
 	root.name = "VisualConvergenceIdentityDressing"
 	add_child(root)
-	var apron := _visual_identity_material("ground", Color(0.22, 0.18, 0.14), 0.98)
 	var stone := _visual_identity_material("stone", Color(0.26, 0.27, 0.25), 0.94)
 	var timber := _visual_identity_material("timber", Color(0.15, 0.09, 0.055), 0.9)
 	var iron := _visual_identity_material("iron", Color(0.32, 0.24, 0.17), 0.76, 0.12)
 	var accent := _visual_identity_material("accent", Color(0.42, 0.12, 0.095), 0.92)
-	_add_visual_identity_box(root, Vector3(maxf(footprint * 2.25, 5.0), 0.04, maxf(footprint * 2.25, 5.0)), Vector3(0, 0.035, 0), apron, "FunctionApron")
+	# Do not add a broad opaque floor box here. The prior presentation layer
+	# produced repeated dark rectangles beneath every production building at RTS
+	# zoom; authored buildings already provide their own grounded contact.
 
 	match building_id:
 		"barrosan_clanhold":
