@@ -1094,7 +1094,7 @@ func _build_minimap() -> void:
 	var title := _mk_label("TACTICAL MAP", 13, Color(0.95, 0.85, 0.55))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
-	var hint := _mk_label("NAVIGATION  /  CLICK TO FOCUS", 9, HUD_TEXT_MUTED)
+	var hint := _mk_label("BLUE/RED  /  ◆ ARMY  /  ○ WORKER  /  ✦ HERO", 9, HUD_TEXT_MUTED)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(hint)
 	_minimap = Control.new()
@@ -1177,7 +1177,8 @@ func _draw_minimap() -> void:
 			continue
 		var building_def: Dictionary = b.def if b.def is Dictionary else {}
 		var is_major := bool(building_def.get("is_hq", false)) or str(building_def.get("kind", "")) == "main"
-		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE), is_major)
+		var is_enemy: bool = is_instance_valid(_commander) and b.team != _commander.team
+		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE), is_major, is_enemy)
 
 	# Live resource landmarks make the miniature useful without inventing a
 	# second simulation. Depleted nodes remain absent, matching the world.
@@ -1186,11 +1187,15 @@ func _draw_minimap() -> void:
 			continue
 		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)))
 
-	# units (small but readable diamonds)
+	# Units use role hierarchy while retaining team color as the ownership channel.
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead:
 			continue
-		_draw_minimap_unit(_world_to_map(u.global_position), GameData.TEAM_COLORS.get(u.team, Color.WHITE))
+		_draw_minimap_unit(
+			_world_to_map(u.global_position),
+			GameData.TEAM_COLORS.get(u.team, Color.WHITE),
+			bool(u.is_worker),
+			bool(u.is_hero))
 
 	# camera view marker corresponds to the current RTS camera footprint, not a
 	# fixed square that implied a false zoom level.
@@ -1209,7 +1214,7 @@ func _draw_minimap() -> void:
 		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
 		# The footprint is a quiet navigation cue, not a competing selection box.
 		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.36), 1.8, false)
-		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.0, false)
+		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, false)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
@@ -1241,27 +1246,51 @@ func _draw_minimap_frame(size: Vector2) -> void:
 	for corner in [Vector2(5, 5), Vector2(size.x - 5, 5), Vector2(size.x - 5, size.y - 5), Vector2(5, size.y - 5)]:
 		_minimap.draw_circle(corner, 1.5, Color(0.95, 0.79, 0.38, 0.95))
 
-func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false) -> void:
+func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_enemy: bool = false) -> void:
 	var radius := 7.0 if is_major else 5.0
 	_minimap.draw_circle(p, radius + 1.8, Color(0.02, 0.03, 0.03, 0.9))
-	var points := PackedVector2Array([
-		p + Vector2(0, -radius), p + Vector2(radius, 0),
-		p + Vector2(0, radius), p + Vector2(-radius, 0)])
-	_minimap.draw_colored_polygon(points, col.darkened(0.20 if is_major else 0.30))
-	_minimap.draw_polyline(PackedVector2Array([points[0], points[1], points[2], points[3], points[0]]), col.lightened(0.18), 1.4 if is_major else 0.9, true)
-	if is_major:
-		_minimap.draw_rect(Rect2(p - Vector2(2.2, 2.2), Vector2(4.4, 4.4)), col.lightened(0.30), true)
+	var points: PackedVector2Array
+	if is_enemy:
+		points = PackedVector2Array([
+			p + Vector2(0, -radius), p + Vector2(radius, radius),
+			p + Vector2(-radius, radius)])
 	else:
+		points = PackedVector2Array([
+			p + Vector2(0, -radius), p + Vector2(radius, 0),
+			p + Vector2(0, radius), p + Vector2(-radius, 0)])
+	_minimap.draw_colored_polygon(points, col.darkened(0.20 if is_major else 0.30))
+	var outline := PackedVector2Array(points)
+	outline.append(points[0])
+	_minimap.draw_polyline(outline, col.lightened(0.18), 1.4 if is_major else 0.9, true)
+	if is_major and not is_enemy:
+		_minimap.draw_rect(Rect2(p - Vector2(2.2, 2.2), Vector2(4.4, 4.4)), col.lightened(0.30), true)
+	elif not is_major:
 		_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), col.lightened(0.12), 0.8, true)
 
-func _draw_minimap_unit(p: Vector2, col: Color) -> void:
-	# Unit diamonds need to remain legible beside the larger building and
-	# resource landmarks at the authored 232px tactical-map size.
-	var r := 4.0
+func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero: bool = false) -> void:
+	# Role shapes make the minimap answer "what is there?" without changing the
+	# existing team-color ownership channel or live-unit source.
+	var r := 3.0 if is_worker else (6.0 if is_hero else 4.0)
 	_minimap.draw_circle(p, r + 1.25, Color(0.02, 0.03, 0.03, 0.86))
-	_minimap.draw_colored_polygon(PackedVector2Array([
-		p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)]), col)
-	_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), Color(1, 1, 1, 0.76), 1.0, true)
+	if is_worker:
+		_minimap.draw_circle(p, r, col)
+		_minimap.draw_arc(p, r, 0.0, TAU, 16, Color(1, 1, 1, 0.68), 0.9, true)
+	elif is_hero:
+		var hero_points := PackedVector2Array([
+			p + Vector2(0, -r), p + Vector2(r * 0.45, -r * 0.45),
+			p + Vector2(r, 0), p + Vector2(r * 0.45, r * 0.45),
+			p + Vector2(0, r), p + Vector2(-r * 0.45, r * 0.45),
+			p + Vector2(-r, 0), p + Vector2(-r * 0.45, -r * 0.45)])
+		_minimap.draw_colored_polygon(hero_points, col)
+		hero_points.append(hero_points[0])
+		_minimap.draw_polyline(hero_points, Color(1, 1, 1, 0.9), 1.15, true)
+	else:
+		var army_points := PackedVector2Array([
+			p + Vector2(0, -r), p + Vector2(r, 0),
+			p + Vector2(0, r), p + Vector2(-r, 0)])
+		_minimap.draw_colored_polygon(army_points, col)
+		army_points.append(army_points[0])
+		_minimap.draw_polyline(army_points, Color(1, 1, 1, 0.76), 1.0, true)
 
 func _draw_minimap_resource(p: Vector2, col: Color) -> void:
 	_minimap.draw_circle(p, 3.3, Color(0.03, 0.04, 0.04, 0.82))
