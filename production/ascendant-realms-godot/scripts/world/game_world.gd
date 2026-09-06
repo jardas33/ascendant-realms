@@ -411,16 +411,8 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	var layer := Node3D.new()
 	layer.name = "VisualConvergenceBarrosanBase"
 	parent.add_child(layer)
-	var boundary_mat := _visual_convergence_material("Barrosan boundary timber", Color(0.16, 0.10, 0.07), 0.88)
-
-	var boundary_points := [
-		origin + Vector3(-12.0, 0.0, -11.0), origin + Vector3(12.0, 0.0, -11.0),
-		origin + Vector3(-12.0, 0.0, 11.0), origin + Vector3(12.0, 0.0, 11.0),
-	]
-	for point in boundary_points:
-		_add_visual_convergence_post(layer, point, boundary_mat)
-	_add_visual_convergence_rail(layer, boundary_points[0], boundary_points[1], boundary_mat)
-	_add_visual_convergence_rail(layer, boundary_points[2], boundary_points[3], boundary_mat)
+	# The authored Astra pieces now provide the settlement edge. The old straight
+	# rails read as a second artificial perimeter and competed with the threshold.
 	var composition_script = load("res://scripts/world/hollowspan_environment_composition.gd")
 	if composition_script:
 		var composition = composition_script.new()

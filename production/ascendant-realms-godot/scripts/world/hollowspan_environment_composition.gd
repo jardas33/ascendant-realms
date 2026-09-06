@@ -22,26 +22,40 @@ const BARROSAN_SETTLEMENT_ASSETS := {
 	"watch_brazier": BARROSAN_SETTLEMENT_ROOT + "barrosan_watch_brazier_lod1.glb",
 }
 
+const BARROSAN_SETTLEMENT_MATERIAL_TINTS := {
+	"muster_gate": Color(0.90, 0.86, 0.78),
+	"open_gate_doors": Color(0.90, 0.86, 0.78),
+	"palisade_wall": Color(0.88, 0.82, 0.72),
+	"palisade_corner": Color(0.88, 0.82, 0.72),
+	"guard_tower": Color(0.88, 0.82, 0.72),
+	"training_pavilion": Color(0.90, 0.84, 0.74),
+	"muster_rack": Color(0.88, 0.82, 0.72),
+	"clan_standard": Color(0.92, 0.88, 0.80),
+	"covered_supply_wagon": Color(0.88, 0.84, 0.76),
+	"campaign_tent": Color(0.88, 0.84, 0.76),
+	"supply_awning": Color(0.88, 0.84, 0.76),
+	"clan_waystone": Color(0.86, 0.86, 0.82),
+}
+
 # The source assembly is authored in a Blender Z-up plane. These placements
 # are the first-wave subset translated to Godot's X/Z ground plane. The
 # half-turn is deliberately kept out of gameplay code: it points the open
 # defensive face toward Hollowspan's map interior while preserving the kit's
 # authored spacing and asymmetry.
 const BARROSAN_SETTLEMENT_PLACEMENTS := [
-	# Defensive threshold: a readable open gate with one side return and tower.
-	{"asset": "muster_gate", "position": Vector3(0.0, 0.0, 12.0), "yaw": 0.0},
-	{"asset": "open_gate_doors", "position": Vector3(0.0, 0.0, 12.0), "yaw": 0.0},
-	{"asset": "palisade_wall", "position": Vector3(-5.0, 0.0, 12.0), "yaw": 0.0},
-	{"asset": "palisade_wall", "position": Vector3(5.0, 0.0, 12.0), "yaw": 0.0},
-	{"asset": "palisade_corner", "position": Vector3(-9.0, 0.0, 12.0), "yaw": 0.0},
-	{"asset": "palisade_corner", "position": Vector3(9.0, 0.0, 12.0), "yaw": PI * 0.5},
-	{"asset": "palisade_wall", "position": Vector3(-9.0, 0.0, 7.0), "yaw": PI * 0.5},
-	{"asset": "guard_tower", "position": Vector3(10.5, 0.0, 10.0), "yaw": 0.0},
+	# Defensive threshold: gate first, tower close enough to read as its landmark,
+	# with one asymmetric return so it does not become a flat fence line.
+	{"asset": "muster_gate", "position": Vector3(0.0, 0.0, 14.0), "yaw": 0.0},
+	{"asset": "open_gate_doors", "position": Vector3(0.0, 0.0, 14.0), "yaw": 0.0},
+	{"asset": "palisade_wall", "position": Vector3(-5.0, 0.0, 14.0), "yaw": 0.0},
+	{"asset": "palisade_wall", "position": Vector3(5.0, 0.0, 14.0), "yaw": 0.0},
+	{"asset": "palisade_corner", "position": Vector3(-9.0, 0.0, 14.0), "yaw": 0.0},
+	{"asset": "palisade_wall", "position": Vector3(-9.0, 0.0, 9.0), "yaw": PI * 0.5},
+	{"asset": "guard_tower", "position": Vector3(-4.0, 0.0, 11.0), "yaw": 0.0},
 	# War Hall military district: support pieces sit beside the production building.
 	{"asset": "training_pavilion", "position": Vector3(12.0, 0.0, 0.0), "yaw": 0.0},
 	{"asset": "muster_rack", "position": Vector3(10.0, 0.0, -3.0), "yaw": 0.0},
 	{"asset": "clan_standard", "position": Vector3(14.0, 0.0, -3.5), "yaw": 0.0},
-	{"asset": "watch_brazier", "position": Vector3(8.0, 0.0, 1.0), "yaw": 0.0},
 	# Logistics zone: the wagon, tent, awning and waystone are offset from the threshold.
 	{"asset": "covered_supply_wagon", "position": Vector3(18.0, 0.0, -6.0), "yaw": -0.10},
 	{"asset": "campaign_tent", "position": Vector3(22.0, 0.0, -4.0), "yaw": -0.07},
@@ -144,7 +158,35 @@ func _build_barrosan_settlement(parent: Node3D, anchor: Vector3) -> void:
 		ModelUtils.ground_model(instance)
 		# LOD1 is the deliberate fixed RTS-scale choice for this first wave. The
 		# imported GLBs carry the authored materials and have no gameplay body.
+		_apply_settlement_material_cohesion(instance, asset_key)
 		_set_presentation_only(instance, true)
+
+
+func _apply_settlement_material_cohesion(root: Node, asset_key: String) -> void:
+	# Keep the embedded authored textures, but give the first wave a shared matte
+	# value range so canvas, timber, stone, and iron sit together at RTS scale.
+	var tint: Color = BARROSAN_SETTLEMENT_MATERIAL_TINTS.get(asset_key, Color.WHITE)
+	var mesh_nodes := root.find_children("*", "MeshInstance3D")
+	if root is MeshInstance3D:
+		mesh_nodes.push_front(root)
+	for child in mesh_nodes:
+		var mesh_instance: MeshInstance3D = child as MeshInstance3D
+		if not mesh_instance or not mesh_instance.mesh:
+			continue
+		for surface in mesh_instance.mesh.get_surface_count():
+			var source_material: Material = mesh_instance.get_active_material(surface)
+			if not source_material is StandardMaterial3D:
+				continue
+			var adjusted_material := source_material.duplicate() as StandardMaterial3D
+			var source_color := adjusted_material.albedo_color
+			adjusted_material.albedo_color = Color(
+				source_color.r * tint.r,
+				source_color.g * tint.g,
+				source_color.b * tint.b,
+				source_color.a
+			)
+			adjusted_material.roughness = maxf(adjusted_material.roughness, 0.82)
+			mesh_instance.set_surface_override_material(surface, adjusted_material)
 
 
 func _set_presentation_only(root: Node, cast_shadows: bool = false) -> void:
