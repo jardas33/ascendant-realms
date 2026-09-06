@@ -28,24 +28,25 @@ const BARROSAN_SETTLEMENT_ASSETS := {
 # defensive face toward Hollowspan's map interior while preserving the kit's
 # authored spacing and asymmetry.
 const BARROSAN_SETTLEMENT_PLACEMENTS := [
-	{"asset": "muster_gate", "position": Vector3(0.0, 0.0, -5.0), "yaw": 0.0},
-	{"asset": "open_gate_doors", "position": Vector3(0.0, 0.0, -5.0), "yaw": 0.0},
-	{"asset": "palisade_wall", "position": Vector3(-5.0, 0.0, -5.0), "yaw": 0.0},
-	{"asset": "palisade_wall", "position": Vector3(5.0, 0.0, -5.0), "yaw": 0.0},
-	{"asset": "palisade_corner", "position": Vector3(-9.0, 0.0, -5.0), "yaw": 0.0},
-	{"asset": "palisade_corner", "position": Vector3(9.0, 0.0, -5.0), "yaw": PI * 0.5},
-	{"asset": "palisade_wall", "position": Vector3(-9.0, 0.0, -1.0), "yaw": PI * 0.5},
-	{"asset": "palisade_wall", "position": Vector3(9.0, 0.0, -1.0), "yaw": PI * 0.5},
-	{"asset": "guard_tower", "position": Vector3(4.7, 0.0, -2.4), "yaw": 0.0},
-	{"asset": "training_pavilion", "position": Vector3(-4.1, 0.0, 4.0), "yaw": 0.0},
-	{"asset": "campaign_tent", "position": Vector3(4.4, 0.0, 5.5), "yaw": -0.07},
-	{"asset": "supply_awning", "position": Vector3(-4.0, 0.0, -0.5), "yaw": 0.0},
-	{"asset": "covered_supply_wagon", "position": Vector3(0.25, 0.0, 1.55), "yaw": -0.10},
-	{"asset": "clan_waystone", "position": Vector3(0.0, 0.0, 8.5), "yaw": 0.0},
-	{"asset": "muster_rack", "position": Vector3(-3.4, 0.0, 1.65), "yaw": 0.0},
-	{"asset": "clan_standard", "position": Vector3(-2.1, 0.0, -3.8), "yaw": 0.0},
-	{"asset": "watch_brazier", "position": Vector3(2.0, 0.0, -3.75), "yaw": 0.0},
-	{"asset": "watch_brazier", "position": Vector3(-1.85, 0.0, -3.7), "yaw": 0.0},
+	# Defensive threshold: a readable open gate with one side return and tower.
+	{"asset": "muster_gate", "position": Vector3(0.0, 0.0, 12.0), "yaw": 0.0},
+	{"asset": "open_gate_doors", "position": Vector3(0.0, 0.0, 12.0), "yaw": 0.0},
+	{"asset": "palisade_wall", "position": Vector3(-5.0, 0.0, 12.0), "yaw": 0.0},
+	{"asset": "palisade_wall", "position": Vector3(5.0, 0.0, 12.0), "yaw": 0.0},
+	{"asset": "palisade_corner", "position": Vector3(-9.0, 0.0, 12.0), "yaw": 0.0},
+	{"asset": "palisade_corner", "position": Vector3(9.0, 0.0, 12.0), "yaw": PI * 0.5},
+	{"asset": "palisade_wall", "position": Vector3(-9.0, 0.0, 7.0), "yaw": PI * 0.5},
+	{"asset": "guard_tower", "position": Vector3(10.5, 0.0, 10.0), "yaw": 0.0},
+	# War Hall military district: support pieces sit beside the production building.
+	{"asset": "training_pavilion", "position": Vector3(12.0, 0.0, 0.0), "yaw": 0.0},
+	{"asset": "muster_rack", "position": Vector3(10.0, 0.0, -3.0), "yaw": 0.0},
+	{"asset": "clan_standard", "position": Vector3(14.0, 0.0, -3.5), "yaw": 0.0},
+	{"asset": "watch_brazier", "position": Vector3(8.0, 0.0, 1.0), "yaw": 0.0},
+	# Logistics zone: the wagon, tent, awning and waystone are offset from the threshold.
+	{"asset": "covered_supply_wagon", "position": Vector3(18.0, 0.0, -6.0), "yaw": -0.10},
+	{"asset": "campaign_tent", "position": Vector3(22.0, 0.0, -4.0), "yaw": -0.07},
+	{"asset": "supply_awning", "position": Vector3(17.0, 0.0, -1.0), "yaw": 0.0},
+	{"asset": "clan_waystone", "position": Vector3(24.0, 0.0, -9.0), "yaw": 0.0},
 ]
 
 const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(8.0, 0.0, 8.0)

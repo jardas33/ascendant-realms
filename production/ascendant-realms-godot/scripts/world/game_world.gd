@@ -261,6 +261,15 @@ func _build_terrain() -> void:
 	tb.name = "Scenery"
 	add_child(tb)
 	tb.build(map)
+	if map.get("id", "") == "hollowspan":
+		var ring := tb.get_node_or_null("MountainRing") as MeshInstance3D
+		if ring and ring.material_override is StandardMaterial3D:
+			# Hollowspan's perimeter source is the shared rock ring, not an Astra
+			# asset. Keep its authored texture while correcting the pale value range
+			# locally for the Barrosan starting map.
+			var ring_material := (ring.material_override as StandardMaterial3D).duplicate() as StandardMaterial3D
+			ring_material.albedo_color = Color(0.48, 0.40, 0.34, 1.0)
+			ring.material_override = ring_material
 
 	# flat ground collision under the whole play field (units ride the navmesh)
 	var body := StaticBody3D.new()
@@ -316,6 +325,7 @@ func _scatter_environment() -> void:
 		b.position = bridge["pos"]
 		ModelUtils.scale_to_height(b, 8.0)
 		ModelUtils.ground_model(b)
+		_tint_hollowspan_bridge(b)
 
 	var decor := Node3D.new()
 	decor.name = "Decor"
@@ -401,22 +411,7 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	var layer := Node3D.new()
 	layer.name = "VisualConvergenceBarrosanBase"
 	parent.add_child(layer)
-	var apron_mat := _visual_convergence_material("Barrosan apron", Color(0.23, 0.19, 0.15), 0.98)
-	var road_mat := _visual_convergence_material("Barrosan worn path", Color(0.30, 0.24, 0.18), 1.0)
 	var boundary_mat := _visual_convergence_material("Barrosan boundary timber", Color(0.16, 0.10, 0.07), 0.88)
-
-	var aprons := [
-		{ "offset": Vector3(0.0, 0.0, 0.0), "size": Vector2(22.0, 18.0), "rotation": 0.0 },
-		{ "offset": Vector3(14.0, 0.0, -8.0), "size": Vector2(8.0, 7.0), "rotation": 0.14 },
-		{ "offset": Vector3(-8.0, 0.0, 14.0), "size": Vector2(8.0, 7.0), "rotation": -0.18 },
-	]
-	for spec in aprons:
-		_add_visual_convergence_apron(layer, origin + spec["offset"], spec["size"], float(spec["rotation"]), apron_mat)
-
-	var main_path_end := origin + Vector3(58.0, 0.0, 58.0)
-	_add_visual_convergence_path(layer, origin + Vector3(9.0, 0.0, 9.0), main_path_end, 5.5, road_mat)
-	_add_visual_convergence_path(layer, origin + Vector3(8.0, 0.0, -5.0), origin + Vector3(25.0, 0.0, 12.0), 3.4, road_mat)
-	_add_visual_convergence_path(layer, origin + Vector3(-5.0, 0.0, 8.0), origin + Vector3(12.0, 0.0, 25.0), 3.4, road_mat)
 
 	var boundary_points := [
 		origin + Vector3(-12.0, 0.0, -11.0), origin + Vector3(12.0, 0.0, -11.0),
@@ -465,6 +460,24 @@ func _add_visual_convergence_path(parent: Node3D, from: Vector3, to: Vector3, wi
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(mi)
+
+
+func _tint_hollowspan_bridge(root: Node) -> void:
+	# The imported bridge texture is materially pale at the Hollowspan RTS
+	# camera. Preserve its authored detail while bringing the bridge into the
+	# existing Barrosan slate/timber value range. This is presentation-only.
+	var mesh_nodes := root.find_children("*", "MeshInstance3D")
+	if root is MeshInstance3D:
+		mesh_nodes.push_front(root)
+	for child in mesh_nodes:
+		var mesh_instance: MeshInstance3D = child as MeshInstance3D
+		var source_material: Material = mesh_instance.get_active_material(0)
+		if not source_material is StandardMaterial3D:
+			continue
+		var bridge_material: StandardMaterial3D = source_material.duplicate() as StandardMaterial3D
+		bridge_material.albedo_color = Color(0.34, 0.24, 0.16, 1.0)
+		mesh_instance.set_surface_override_material(0, bridge_material)
+		mesh_instance.material_override = bridge_material
 
 
 func _add_visual_convergence_post(parent: Node3D, position: Vector3, mat: Material) -> void:
