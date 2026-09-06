@@ -18,7 +18,7 @@ var cam_pivot: Node3D
 var cam_arm: SpringArm3D
 var camera: Camera3D
 var _cam_yaw := 0.0
-const DEFAULT_ZOOM := 48.0
+const DEFAULT_ZOOM := 40.0
 const DEFAULT_CAMERA_PITCH := -55.0
 var _zoom := DEFAULT_ZOOM
 const ZOOM_MIN := 25.0
