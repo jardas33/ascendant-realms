@@ -643,13 +643,19 @@ func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 ## decorative scenery non-blocking while preventing ground-unit centers from
 ## crossing completed building footprints. It only returns waypoints; it does
 ## not mutate gameplay state, placement geometry, or the authoritative map.
-func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0) -> Array:
+func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null) -> Array:
 	var points: Array = []
 	var current := origin
 	var ignored: Array = []
 	var final_target := requested
+	# The route solver is synchronous: buildings cannot be added, removed, or
+	# change lifecycle between its bounded blocker passes. Reuse one shallow
+	# group snapshot for this operation instead of allocating the same group
+	# array once per route leg. Callers that already scanned buildings (the
+	# velocity guard below) may pass that same snapshot through.
+	var building_candidates: Array = all_buildings() if building_snapshot == null else building_snapshot
 	for _step in range(6):
-		var blocker = _first_route_blocking_building(current, final_target, clearance, ignored)
+		var blocker = _first_route_blocking_building(current, final_target, clearance, ignored, building_candidates)
 		if blocker == null:
 			break
 		# The old two-side heuristic could choose a waypoint that cleared the
@@ -733,10 +739,10 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		points.append(final_target)
 	return points
 
-func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance: float, ignored: Array):
+func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance: float, ignored: Array, building_candidates: Array):
 	var closest = null
 	var closest_distance := INF
-	for building in all_buildings():
+	for building in building_candidates:
 		if not is_instance_valid(building) or building.is_dead or not building.is_built or ignored.has(building):
 			continue
 		var radius := _building_route_radius(building, clearance)
@@ -783,7 +789,8 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	if speed < 0.01:
 		return requested_velocity
 	var step_end: Vector3 = origin + requested_velocity * maxf(delta, 0.016)
-	for building in all_buildings():
+	var building_candidates: Array = all_buildings()
+	for building in building_candidates:
 		if not is_instance_valid(building) or building.is_dead or not building.is_built:
 			continue
 		var radius := _building_route_radius(building, clearance)
@@ -796,7 +803,7 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 		if not _segment_intersects_route_circle(origin, step_end, building.global_position, radius):
 			continue
 		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(radius * 4.0, 12.0)
-		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance)
+		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance, building_candidates)
 		if not waypoints.is_empty():
 			var waypoint_direction: Vector3 = waypoints[0] - origin
 			waypoint_direction.y = 0.0
