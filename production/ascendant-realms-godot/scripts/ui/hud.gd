@@ -1143,6 +1143,7 @@ func _draw_minimap() -> void:
 		else:
 			_minimap.draw_rect(Rect2(Vector2.ZERO, size), _minimap_theme_color(str(world.map.get("theme", "highland")), false), true)
 		_draw_minimap_terrain(size)
+		_draw_minimap_visibility(size)
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
 		var bridge_p := _world_to_map(bridge_data["pos"])
@@ -1173,7 +1174,7 @@ func _draw_minimap() -> void:
 	# Buildings use a footprint, wall face, and roof notch so structures read
 	# differently from units at a glance.
 	for b in world.all_buildings():
-		if not is_instance_valid(b) or b.is_dead:
+		if not is_instance_valid(b) or b.is_dead or (world.has_method("is_player_visible") and not world.is_player_visible(b)):
 			continue
 		var building_def: Dictionary = b.def if b.def is Dictionary else {}
 		var is_major := bool(building_def.get("is_hq", false)) or str(building_def.get("kind", "")) == "main"
@@ -1183,13 +1184,13 @@ func _draw_minimap() -> void:
 	# Live resource landmarks make the miniature useful without inventing a
 	# second simulation. Depleted nodes remain absent, matching the world.
 	for resource in world.get_tree().get_nodes_in_group("resources"):
-		if not is_instance_valid(resource) or bool(resource.get("depleted")):
+		if not is_instance_valid(resource) or bool(resource.get("depleted")) or (world.has_method("is_player_visible") and not world.is_player_visible(resource)):
 			continue
 		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)))
 
 	# Units use role hierarchy while retaining team color as the ownership channel.
 	for u in world.all_units():
-		if not is_instance_valid(u) or u.is_dead:
+		if not is_instance_valid(u) or u.is_dead or (world.has_method("is_player_visible") and not world.is_player_visible(u)):
 			continue
 		_draw_minimap_unit(
 			_world_to_map(u.global_position),
@@ -1215,6 +1216,26 @@ func _draw_minimap() -> void:
 		# The footprint is a quiet navigation cue, not a competing selection box.
 		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.36), 1.8, false)
 		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, false)
+
+
+func _draw_minimap_visibility(size: Vector2) -> void:
+	if not is_instance_valid(world) or not world.has_method("visibility_grid_contract"):
+		return
+	var grid: Dictionary = world.visibility_grid_contract()
+	var columns := int(grid.get("columns", 0))
+	var rows := int(grid.get("rows", 0))
+	var states: PackedByteArray = grid.get("states", PackedByteArray())
+	if columns <= 0 or rows <= 0 or states.size() != columns * rows:
+		return
+	var cell_width := size.x / float(columns)
+	var cell_height := size.y / float(rows)
+	for row in rows:
+		for column in columns:
+			var state := int(states[row * columns + column])
+			if state == 2:
+				continue
+			var fog_color := Color(0.01, 0.015, 0.02, 0.82) if state == 0 else Color(0.02, 0.028, 0.035, 0.44)
+			_minimap.draw_rect(Rect2(column * cell_width, row * cell_height, cell_width + 0.5, cell_height + 0.5), fog_color, true)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:

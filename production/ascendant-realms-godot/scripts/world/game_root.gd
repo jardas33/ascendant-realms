@@ -35,6 +35,8 @@ func _m20_end(token: Dictionary) -> void:
 
 func _ready() -> void:
 	var ready_stage := _m20_begin("GAMEROOT_READY")
+	if OS.get_environment("ASCENDANT_PLAYER_VISIBILITY_R1") == "1":
+		Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"standard", "victory":"conquest", "mode":"skirmish", "game_speed":1.0})
 	# apply saved audio volumes
 	var s = ProfileManager.settings()
 	AudioManager.set_bus_volume("Music", float(s.get("music_vol", 0.7)))
@@ -135,6 +137,8 @@ func _ready() -> void:
 		call_deferred("_start_p1_ui_capture")
 	elif OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1k_capture")
+	elif OS.get_environment("ASCENDANT_PLAYER_VISIBILITY_R1") == "1":
+		call_deferred("_start_player_visibility_r1")
 	elif OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1j_capture")
 	elif OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE") == "1":
@@ -244,6 +248,16 @@ func _start_v0436_r1k_capture() -> void:
 	var runner = get_node_or_null("/root/V0436R1KCapture")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
+
+func _start_player_visibility_r1() -> void:
+	var runner_script := load("res://tests/player_visibility_state_architecture_r1.gd")
+	if runner_script == null:
+		push_error("Player visibility R1 matrix could not be loaded")
+		return
+	var runner: Node = runner_script.new()
+	runner.name = "PlayerVisibilityStateArchitectureR1"
+	add_child(runner)
+	runner.capture_gameplay(self)
 
 func _start_v0431_capture() -> void:
 	var runner = get_node_or_null("/root/V0431Capture")

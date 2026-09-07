@@ -9,6 +9,12 @@ const ProjectileScript := preload("res://scripts/units/projectile.gd")
 const ResourceNodeScript := preload("res://scripts/world/resource_node.gd")
 const CapturePointScript := preload("res://scripts/world/capture_point.gd")
 
+const VISIBILITY_UNEXPLORED := 0
+const VISIBILITY_EXPLORED_NOT_VISIBLE := 1
+const VISIBILITY_CURRENTLY_VISIBLE := 2
+const VISIBILITY_CELL_SIZE := 4.0
+const VISIBILITY_UPDATE_INTERVAL := 0.2
+
 signal game_over(victory: bool)
 signal hero_leveled(level: int)
 signal alert(message: String, pos: Vector3)
@@ -69,6 +75,15 @@ var _build_transaction_seq := 0
 # combat spatial helpers (rebuilt cheaply)
 var _unit_cache_timer := 0.0
 
+# Runtime-only player fog state. This is intentionally not part of saves and
+# does not replace the authoritative omniscient AI queries.
+var _visibility_states := PackedByteArray()
+var _visibility_columns := 0
+var _visibility_rows := 0
+var _visibility_timer := 0.0
+var _visibility_overlay: MeshInstance3D
+var _visibility_overlay_material: StandardMaterial3D
+
 var _theme := {}
 
 # WORLD-03 player-facing environment dressing. These counts affect only
@@ -125,6 +140,7 @@ func _ready() -> void:
 	var terrain_stage := _m20_begin("GAMEWORLD_TERRAIN", "GAMEWORLD_READY", 1)
 	_build_terrain()
 	_m20_end(terrain_stage)
+	_setup_player_visibility()
 	var navigation_stage := _m20_begin("GAMEWORLD_NAVIGATION", "GAMEWORLD_READY", 1)
 	_build_navigation()
 	_m20_end(navigation_stage)
@@ -175,6 +191,135 @@ func distance_outside_playable_bounds(position: Vector3) -> float:
 
 func playable_bounds_contract() -> Dictionary:
 	return {"minimum_x": playable_min.x, "maximum_x": playable_max.x, "minimum_z": playable_min.z, "maximum_z": playable_max.z, "safety_margin": playable_safety_margin, "recovery_tolerance": playable_recovery_tolerance, "source": "MapDefs.map.size"}
+
+func visibility_grid_contract() -> Dictionary:
+	return {"cell_size": VISIBILITY_CELL_SIZE, "columns": _visibility_columns, "rows": _visibility_rows, "minimum_x": playable_min.x, "maximum_x": playable_max.x, "minimum_z": playable_min.z, "maximum_z": playable_max.z, "states": _visibility_states.duplicate()}
+
+func _player_visibility_scope_active() -> bool:
+	return String(map.get("id", "")) == "hollowspan" and player_team == 0
+
+func _setup_player_visibility() -> void:
+	_visibility_columns = maxi(1, int(ceil((playable_max.x - playable_min.x) / VISIBILITY_CELL_SIZE)))
+	_visibility_rows = maxi(1, int(ceil((playable_max.z - playable_min.z) / VISIBILITY_CELL_SIZE)))
+	_visibility_states.resize(_visibility_columns * _visibility_rows)
+	for i in _visibility_states.size():
+		_visibility_states[i] = VISIBILITY_UNEXPLORED
+	_visibility_overlay_material = StandardMaterial3D.new()
+	_visibility_overlay_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_visibility_overlay_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_visibility_overlay_material.vertex_color_use_as_albedo = true
+	_visibility_overlay_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_visibility_overlay_material.no_depth_test = true
+	_visibility_overlay_material.render_priority = 1
+	_visibility_overlay = MeshInstance3D.new()
+	_visibility_overlay.name = "PlayerVisibilityOverlay"
+	_visibility_overlay.material_override = _visibility_overlay_material
+	_visibility_overlay.position.y = 0.12
+	add_child(_visibility_overlay)
+	_refresh_player_visibility_overlay()
+
+func _visibility_cell_index(position: Vector3) -> int:
+	var column := int(floor((position.x - playable_min.x) / VISIBILITY_CELL_SIZE))
+	var row := int(floor((position.z - playable_min.z) / VISIBILITY_CELL_SIZE))
+	if column < 0 or column >= _visibility_columns or row < 0 or row >= _visibility_rows:
+		return -1
+	return row * _visibility_columns + column
+
+func player_visibility_state_at(position: Vector3) -> int:
+	if not _player_visibility_scope_active():
+		return VISIBILITY_CURRENTLY_VISIBLE
+	var index := _visibility_cell_index(position)
+	return int(_visibility_states[index]) if index >= 0 and index < _visibility_states.size() else VISIBILITY_UNEXPLORED
+
+func is_player_visible(target) -> bool:
+	if not _player_visibility_scope_active() or not is_instance_valid(target):
+		return true
+	if target is ResourceNode:
+		return player_visibility_state_at(target.global_position) == VISIBILITY_CURRENTLY_VISIBLE
+	if "team" in target and int(target.team) == player_team:
+		return true
+	return player_visibility_state_at(target.global_position) == VISIBILITY_CURRENTLY_VISIBLE
+
+func _mark_visibility_radius(origin: Vector3, radius: float) -> void:
+	var min_column := maxi(0, int(floor((origin.x - radius - playable_min.x) / VISIBILITY_CELL_SIZE)))
+	var max_column := mini(_visibility_columns - 1, int(floor((origin.x + radius - playable_min.x) / VISIBILITY_CELL_SIZE)))
+	var min_row := maxi(0, int(floor((origin.z - radius - playable_min.z) / VISIBILITY_CELL_SIZE)))
+	var max_row := mini(_visibility_rows - 1, int(floor((origin.z + radius - playable_min.z) / VISIBILITY_CELL_SIZE)))
+	var cell_radius := radius + VISIBILITY_CELL_SIZE * 0.72
+	for row in range(min_row, max_row + 1):
+		for column in range(min_column, max_column + 1):
+			var center := Vector3(playable_min.x + (float(column) + 0.5) * VISIBILITY_CELL_SIZE, 0.0, playable_min.z + (float(row) + 0.5) * VISIBILITY_CELL_SIZE)
+			if origin.distance_squared_to(center) <= cell_radius * cell_radius:
+				_visibility_states[row * _visibility_columns + column] = VISIBILITY_CURRENTLY_VISIBLE
+
+func _update_player_visibility() -> void:
+	if not _player_visibility_scope_active():
+		for u in all_units():
+			if is_instance_valid(u) and u.has_method("set_player_visibility_visible"):
+				u.set_player_visibility_visible(true)
+		for b in all_buildings():
+			if is_instance_valid(b) and b.has_method("set_player_visibility_visible"):
+				b.set_player_visibility_visible(true)
+		for resource in get_tree().get_nodes_in_group("resources"):
+			if is_instance_valid(resource) and resource.has_method("set_player_visibility_visible"):
+				resource.set_player_visibility_visible(true)
+		if is_instance_valid(_visibility_overlay):
+			_visibility_overlay.visible = false
+		return
+	for i in _visibility_states.size():
+		if _visibility_states[i] == VISIBILITY_CURRENTLY_VISIBLE:
+			_visibility_states[i] = VISIBILITY_EXPLORED_NOT_VISIBLE
+	for u in all_units():
+		if is_instance_valid(u) and not u.is_dead and u.team == player_team and not u._is_defeated_remnant():
+			_mark_visibility_radius(u.global_position, maxf(1.0, float(u.vision)))
+	for u in all_units():
+		if is_instance_valid(u) and u.has_method("set_player_visibility_visible"):
+			u.set_player_visibility_visible(is_player_visible(u))
+	for b in all_buildings():
+		if is_instance_valid(b) and b.has_method("set_player_visibility_visible"):
+			b.set_player_visibility_visible(is_player_visible(b))
+	for resource in get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(resource) and resource.has_method("set_player_visibility_visible"):
+			resource.set_player_visibility_visible(is_player_visible(resource))
+	if is_instance_valid(_visibility_overlay):
+		_visibility_overlay.visible = true
+		_refresh_player_visibility_overlay()
+
+func _visibility_cell_color(state: int) -> Color:
+	match state:
+		VISIBILITY_UNEXPLORED:
+			return Color(0.012, 0.018, 0.024, 0.84)
+		VISIBILITY_EXPLORED_NOT_VISIBLE:
+			return Color(0.018, 0.025, 0.032, 0.46)
+		_:
+			return Color(0.0, 0.0, 0.0, 0.0)
+
+func _refresh_player_visibility_overlay() -> void:
+	if not is_instance_valid(_visibility_overlay):
+		return
+	var vertices := PackedVector3Array()
+	var colors := PackedColorArray()
+	var indices := PackedInt32Array()
+	var vertex_index := 0
+	for row in _visibility_rows:
+		for column in _visibility_columns:
+			var min_x := playable_min.x + float(column) * VISIBILITY_CELL_SIZE
+			var max_x := minf(playable_max.x, min_x + VISIBILITY_CELL_SIZE)
+			var min_z := playable_min.z + float(row) * VISIBILITY_CELL_SIZE
+			var max_z := minf(playable_max.z, min_z + VISIBILITY_CELL_SIZE)
+			var color := _visibility_cell_color(int(_visibility_states[row * _visibility_columns + column]))
+			vertices.append_array([Vector3(min_x, 0.0, min_z), Vector3(max_x, 0.0, min_z), Vector3(max_x, 0.0, max_z), Vector3(min_x, 0.0, max_z)])
+			colors.append_array([color, color, color, color])
+			indices.append_array([vertex_index, vertex_index + 1, vertex_index + 2, vertex_index, vertex_index + 2, vertex_index + 3])
+			vertex_index += 4
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_COLOR] = colors
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	_visibility_overlay.mesh = mesh
 
 func _finite_position(position: Vector3) -> bool:
 	return abs(position.x) < 1000000.0 and abs(position.y) < 1000000.0 and abs(position.z) < 1000000.0 and position.x == position.x and position.y == position.y and position.z == position.z
@@ -1149,6 +1294,8 @@ func find_enemy_in_range(unit, rng: float):
 	for u in all_units():
 		if not is_instance_valid(u) or u.is_dead or u.team == unit.team:
 			continue
+		if unit.team == player_team and not is_player_visible(u):
+			continue
 		var d = p.distance_squared_to(u.global_position)
 		if d < best_d:
 			best_d = d
@@ -1157,6 +1304,8 @@ func find_enemy_in_range(unit, rng: float):
 	if best == null and not unit.is_worker:
 		for b in all_buildings():
 			if not is_instance_valid(b) or b.is_dead or b.team == unit.team:
+				continue
+			if unit.team == player_team and not is_player_visible(b):
 				continue
 			var d = p.distance_squared_to(b.global_position)
 			if d < best_d:
@@ -1169,6 +1318,8 @@ func find_enemy_near(pos: Vector3, rng: float, team: int):
 	var best_d := rng * rng
 	for u in all_units():
 		if not is_instance_valid(u) or u.is_dead or u.team == team:
+			continue
+		if team == player_team and not is_player_visible(u):
 			continue
 		var d = pos.distance_squared_to(u.global_position)
 		if d < best_d:
@@ -1189,11 +1340,13 @@ func find_wounded_ally(unit, rng: float):
 				best = u
 	return best
 
-func find_nearest_resource(pos: Vector3, kind: String):
+func find_nearest_resource(pos: Vector3, kind: String, requesting_team: int = -1):
 	var best = null
 	var best_d := INF
 	for r in get_tree().get_nodes_in_group("resources"):
 		if not is_instance_valid(r) or r.depleted:
+			continue
+		if requesting_team == player_team and not is_player_visible(r):
 			continue
 		if kind != "" and r.resource_kind != kind:
 			continue
@@ -1202,14 +1355,16 @@ func find_nearest_resource(pos: Vector3, kind: String):
 			best_d = d
 			best = r
 	if best == null and kind != "":
-		return find_nearest_resource(pos, "")
+		return find_nearest_resource(pos, "", requesting_team)
 	return best
 
-func find_nearest_resource_exact(pos: Vector3, kind: String):
+func find_nearest_resource_exact(pos: Vector3, kind: String, requesting_team: int = -1):
 	var best = null
 	var best_d := INF
 	for r in get_tree().get_nodes_in_group("resources"):
 		if not is_instance_valid(r) or r.depleted or r.resource_kind != kind:
+			continue
+		if requesting_team == player_team and not is_player_visible(r):
 			continue
 		var d = pos.distance_squared_to(r.global_position)
 		if d < best_d:
@@ -1223,6 +1378,8 @@ func is_resource_command_valid(node, worker) -> bool:
 	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead:
 		return false
 	if worker.team < 0 or worker.team >= commanders.size() or commanders[worker.team].defeated:
+		return false
+	if worker.team == player_team and not is_player_visible(node):
 		return false
 	var half := float(map.get("size", MapDefs.MAP_SIZE))
 	return abs(node.global_position.x) <= half and abs(node.global_position.z) <= half
@@ -1346,6 +1503,8 @@ func _on_point_captured_signal(point, team: int) -> void:
 # --------------------------------------------------------------------------
 func _start_match() -> void:
 	game_running = true
+	_visibility_timer = VISIBILITY_UPDATE_INTERVAL
+	_update_player_visibility()
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
 	_battle_music = true
 	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
@@ -1397,6 +1556,10 @@ func _physics_process(delta: float) -> void:
 	if not game_running:
 		return
 	match_time += delta
+	_visibility_timer += delta
+	if _visibility_timer >= VISIBILITY_UPDATE_INTERVAL:
+		_visibility_timer = 0.0
+		_update_player_visibility()
 	_aura_timer += delta
 	_navigation_watchdog_timer += delta
 	if _navigation_watchdog_timer >= 0.25:

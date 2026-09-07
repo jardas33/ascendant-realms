@@ -21,6 +21,7 @@ const GATHER_CUE_EXPANSION := 1.18
 const GATHER_CUE_OUT_DURATION := 0.08
 const GATHER_CUE_RETURN_DURATION := 0.18
 var _gather_cue_tween: Tween
+var _player_visibility_visible := true
 
 func _m21_recorder():
 	if OS.get_environment("ASCENDANT_HP4_M21_DIAGNOSTICS") != "1":
@@ -51,6 +52,7 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 	resource_kind = kind
 	amount = amt
 	max_amount = amt
+	_player_visibility_visible = true
 	add_to_group("resources")
 	collision_layer = 8
 	collision_mask = 0
@@ -120,6 +122,10 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 	_update_depletion_visual()
 	if m21_recorder:
 		_m21_record({"index":m21_index, "resource_kind":kind, "model_path":model_path, "scale_height":scale_h, "configure_total_us":Time.get_ticks_usec() - m21_total_start, "tree_setup_us":m21_tree_end - m21_tree_start, "model_acquisition_us":m21_model_acquisition_us, "model_instantiation_us":m21_model_instantiation_us, "visual_setup_us":m21_visual_setup_us, "collision_helper_us":m21_collision_helper_us, "collision_attach_us":m21_collision_attach_us, "remaining_us":m21_remaining_us, "mesh_identities":m21_meshes, "collision_shape_count":m21_collision_shapes, "collision_body_count":m21_collision_bodies, "collision_layer":collision_layer, "collision_cache_hits":m21_collision_cache_hits, "collision_cache_misses":m21_collision_cache_misses})
+
+func set_player_visibility_visible(is_visible: bool) -> void:
+	_player_visibility_visible = is_visible
+	visible = is_visible
 
 func _presentation_scale_for_kind(kind: String) -> float:
 	match kind:

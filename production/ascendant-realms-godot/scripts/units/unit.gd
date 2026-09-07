@@ -103,6 +103,7 @@ var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
 var _hover_ring: MeshInstance3D
 var _hovered := false
+var _player_visibility_visible := true
 var _attack_range_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
 var _selection_pick_radius := 0.5
@@ -739,6 +740,10 @@ func set_hovered(active: bool) -> void:
 		# Selection remains the stronger state; hover never obscures it.
 		_hover_ring.visible = active and not is_dead and not (is_instance_valid(selection_ring) and selection_ring.visible)
 
+func set_player_visibility_visible(is_visible: bool) -> void:
+	_player_visibility_visible = is_visible
+	visible = is_visible
+
 func _build_attack_range_ring() -> void:
 	if atk_range <= 0.0:
 		return
@@ -1092,6 +1097,8 @@ func _can_attack_target(tgt) -> bool:
 	if tgt is Building and tgt.commander and tgt.commander.defeated:
 		return false
 	if int(tgt.team) == team:
+		return false
+	if world and team == world.player_team and world.has_method("is_player_visible") and not world.is_player_visible(tgt):
 		return false
 	if tgt is Building and not tgt.is_built:
 		return false
@@ -1517,6 +1524,10 @@ func _physics_process(delta: float) -> void:
 		_reset_ordinary_move_settlement()
 		velocity = Vector3.ZERO
 		return
+	if world and team == world.player_team and is_instance_valid(_target) and world.has_method("is_player_visible") and not world.is_player_visible(_target):
+		_v0436_r1j_set_target(null, "vision_lost")
+		if state == State.ATTACKING:
+			state = State.ATTACK_MOVE if _attack_move_ordered else (State.HOLD if _hold_position else State.IDLE)
 	_update_r15_combat_presentation(delta)
 	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
 	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
@@ -1889,7 +1900,7 @@ func _state_gather(delta: float) -> void:
 		return
 	if not is_instance_valid(_gather_node) or _gather_node.depleted:
 		# Retarget only the requested resource kind; never silently switch kinds.
-		var n = world.find_nearest_resource_exact(global_position, _desired_gather_kind) if world and world.has_method("find_nearest_resource_exact") else null
+		var n = world.find_nearest_resource_exact(global_position, _desired_gather_kind, team) if world and world.has_method("find_nearest_resource_exact") else null
 		if n:
 			_gather_node = n
 		else:
@@ -1970,7 +1981,7 @@ func _state_return(delta: float) -> void:
 		elif is_instance_valid(_gather_node) and not _gather_node.depleted:
 			state = State.GATHERING
 		else:
-			var next = world.find_nearest_resource_exact(global_position, _desired_gather_kind) if world and world.has_method("find_nearest_resource_exact") else null
+			var next = world.find_nearest_resource_exact(global_position, _desired_gather_kind, team) if world and world.has_method("find_nearest_resource_exact") else null
 			if next:
 				_gather_node = next
 				state = State.GATHERING

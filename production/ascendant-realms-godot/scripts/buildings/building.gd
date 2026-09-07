@@ -93,6 +93,7 @@ var _completion_cue_tween: Tween
 var _rally_marker: Node3D
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
+var _player_visibility_visible := true
 
 static var _visual_identity_materials: Dictionary = {}
 static var _visual_identity_box_mesh: BoxMesh
@@ -103,6 +104,10 @@ func _ready() -> void:
 	add_to_group("buildings")
 	collision_layer = 4
 	collision_mask = 0
+
+func set_player_visibility_visible(is_visible: bool) -> void:
+	_player_visibility_visible = is_visible
+	visible = is_visible
 
 func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: bool = false) -> void:
 	def = p_def

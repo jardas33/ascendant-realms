@@ -481,6 +481,8 @@ func _is_hostile_inspectable(target) -> bool:
 		return false
 	if ("is_dead" in target) and target.is_dead:
 		return false
+	if world and world.has_method("is_player_visible") and not world.is_player_visible(target):
+		return false
 	return not (target is Building) or target.is_built
 
 func _set_inspection_target(target) -> void:
@@ -683,6 +685,9 @@ func issue_attack_target(target) -> bool:
 	_clean_selection()
 	if not is_instance_valid(target) or not ("team" in target) or int(target.team) == player_team:
 		_record_command_feedback(false, COMMAND_ATTACK, "ATTACK", target, Vector3.ZERO)
+		return false
+	if world and world.has_method("is_player_visible") and not world.is_player_visible(target):
+		_record_command_feedback(false, COMMAND_ATTACK, "ATTACK", target, Vector3.ZERO, "target_not_visible")
 		return false
 	var units := _selected_units()
 	var recorder = _v0436_r1j_recorder()
@@ -1266,4 +1271,6 @@ func raycast_selection_at(mp: Vector2):
 	var n = col
 	while n and not (n is Unit) and not (n is Building) and not (n is ResourceNode):
 		n = n.get_parent()
+	if is_instance_valid(n) and world and world.has_method("is_player_visible") and not world.is_player_visible(n):
+		return null
 	return n
