@@ -288,11 +288,22 @@ func _update_player_visibility() -> void:
 func _visibility_cell_color(state: int) -> Color:
 	match state:
 		VISIBILITY_UNEXPLORED:
-			return Color(0.012, 0.018, 0.024, 0.84)
+			return Color(0.035, 0.050, 0.075, 0.78)
 		VISIBILITY_EXPLORED_NOT_VISIBLE:
-			return Color(0.018, 0.025, 0.032, 0.46)
+			return Color(0.060, 0.080, 0.105, 0.38)
 		_:
 			return Color(0.0, 0.0, 0.0, 0.0)
+
+func _visibility_corner_color(row: int, column: int, corner_x: int, corner_z: int) -> Color:
+	# Sample the four cells touching this mesh corner so neighboring states meet
+	# continuously instead of exposing the implementation grid as a hard seam.
+	var color := Color(0.0, 0.0, 0.0, 0.0)
+	for sample_row in range(row + corner_z - 1, row + corner_z + 1):
+		for sample_column in range(column + corner_x - 1, column + corner_x + 1):
+			var safe_row := clampi(sample_row, 0, _visibility_rows - 1)
+			var safe_column := clampi(sample_column, 0, _visibility_columns - 1)
+			color += _visibility_cell_color(int(_visibility_states[safe_row * _visibility_columns + safe_column]))
+	return color * 0.25
 
 func _refresh_player_visibility_overlay() -> void:
 	if not is_instance_valid(_visibility_overlay):
@@ -307,9 +318,12 @@ func _refresh_player_visibility_overlay() -> void:
 			var max_x := minf(playable_max.x, min_x + VISIBILITY_CELL_SIZE)
 			var min_z := playable_min.z + float(row) * VISIBILITY_CELL_SIZE
 			var max_z := minf(playable_max.z, min_z + VISIBILITY_CELL_SIZE)
-			var color := _visibility_cell_color(int(_visibility_states[row * _visibility_columns + column]))
+			var top_left := _visibility_corner_color(row, column, 0, 0)
+			var top_right := _visibility_corner_color(row, column, 1, 0)
+			var bottom_right := _visibility_corner_color(row, column, 1, 1)
+			var bottom_left := _visibility_corner_color(row, column, 0, 1)
 			vertices.append_array([Vector3(min_x, 0.0, min_z), Vector3(max_x, 0.0, min_z), Vector3(max_x, 0.0, max_z), Vector3(min_x, 0.0, max_z)])
-			colors.append_array([color, color, color, color])
+			colors.append_array([top_left, top_right, bottom_right, bottom_left])
 			indices.append_array([vertex_index, vertex_index + 1, vertex_index + 2, vertex_index, vertex_index + 2, vertex_index + 3])
 			vertex_index += 4
 	var arrays := []

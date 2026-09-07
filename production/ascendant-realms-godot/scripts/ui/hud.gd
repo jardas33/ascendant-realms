@@ -1239,7 +1239,7 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 			var state := int(states[row * columns + column])
 			if state == 2:
 				continue
-			var fog_color := Color(0.01, 0.015, 0.02, 0.82) if state == 0 else Color(0.02, 0.028, 0.035, 0.44)
+			var fog_color := Color(0.025, 0.040, 0.060, 0.72) if state == 0 else Color(0.045, 0.065, 0.085, 0.32)
 			_minimap.draw_rect(Rect2(column * cell_width, row * cell_height, cell_width + 0.5, cell_height + 0.5), fog_color, true)
 
 
