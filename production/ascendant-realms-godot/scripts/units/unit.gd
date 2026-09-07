@@ -182,6 +182,11 @@ const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
 const DEATH_VISUAL_CUE_DURATION := 0.55
 const DEATH_VISUAL_CUE_SCALE := 0.72
 const DEATH_VISUAL_CUE_DROP := 0.24
+# Motion & Animation Readability R1: authored death clips should reach their
+# terminal pose before the existing 1.6s logical cleanup boundary. This only
+# changes playback speed; the death state, cue duration, and free timing stay
+# authoritative and unchanged.
+const DEATH_ANIMATION_VISUAL_WINDOW := 1.5
 # P1 Task541: a brief presentation-only settle makes a newly spawned Unit
 # readable at the normal RTS camera without touching the Unit body, movement,
 # navigation, collision, or authoritative scale.
@@ -1801,6 +1806,11 @@ func _state_attack(delta: float) -> void:
 		_face(_target.global_position)
 		if _attack_timer <= 0.0:
 			_do_attack()
+		elif anim and not anim.is_playing() and _anim_names.has("idle"):
+			# Authored attack clips are oneshots. Keep an in-range attacker readable
+			# during the existing cooldown instead of leaving the model on an empty
+			# AnimationPlayer state until the next authoritative attack event.
+			_play("idle", true)
 
 func _combat_reach(target) -> float:
 	if target is Building:
@@ -2413,6 +2423,7 @@ func _die(from = null) -> void:
 	emit_signal("died", self)
 	if anim and _anim_names.has("death"):
 		_play("death", true)
+		_configure_death_animation_speed()
 		await get_tree().create_timer(1.6).timeout
 	else:
 		await get_tree().create_timer(0.1).timeout
@@ -2421,6 +2432,14 @@ func _die(from = null) -> void:
 	t.tween_property(self, "position:y", position.y - 2.0, 1.0)
 	await t.finished
 	queue_free()
+
+func _configure_death_animation_speed() -> void:
+	if not anim or not _anim_names.has("death"):
+		return
+	var death_name := String(_anim_names.get("death", ""))
+	var death_clip := anim.get_animation(death_name)
+	if death_clip and death_clip.length > DEATH_ANIMATION_VISUAL_WINDOW:
+		anim.speed_scale = death_clip.length / DEATH_ANIMATION_VISUAL_WINDOW
 
 func _combat_source_team(from) -> int:
 	if from == null:
