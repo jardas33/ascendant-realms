@@ -1162,6 +1162,11 @@ func _draw_minimap() -> void:
 			continue
 		var p := _world_to_map(cp.global_position)
 		var team_owner := int(cp.owner_team) if "owner_team" in cp else -1
+		var hidden_enemy_objective: bool = team_owner >= 0 and is_instance_valid(_commander) \
+			and team_owner != _commander.team and world.has_method("is_player_visible") \
+			and not world.is_player_visible(cp)
+		if hidden_enemy_objective:
+			continue
 		var col: Color = GameData.TEAM_COLORS.get(team_owner, Color(0.85, 0.85, 0.85)) if team_owner >= 0 else Color(0.85, 0.85, 0.85)
 		var r := 5.0
 		var diamond := PackedVector2Array([
