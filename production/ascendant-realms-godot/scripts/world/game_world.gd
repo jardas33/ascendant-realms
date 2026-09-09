@@ -865,6 +865,7 @@ const ROUTE_BLOCKER_MARGIN := 0.35
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null) -> Array:
 	var points: Array = []
 	var current := origin
+	var fail_closed := false
 	var ignored: Array = []
 	var final_target := requested
 	var blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
@@ -889,7 +890,8 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			var incoming_clear := origin_inside or not _segment_enters_route_rectangle(current, first, center, half_extents)
 			if not incoming_clear:
 				continue
-			if not _segment_clear_of_ignored_route_blockers(current, first, ignored, blockers, clearance):
+			var incoming_exception = blocker.get("node") if origin_inside else null
+			if not _segment_clear_of_active_route_blockers(current, first, blockers, clearance, incoming_exception):
 				continue
 			var first_direction := first - center
 			first_direction.y = 0.0
@@ -901,7 +903,8 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 					continue
 				var middle_clear := not _segment_enters_route_rectangle(first, second, center, half_extents)
 				var outgoing_clear := destination_inside or not _segment_enters_route_rectangle(second, final_target, center, half_extents)
-				if not middle_clear or not outgoing_clear or not _segment_clear_of_ignored_route_blockers(first, second, ignored, blockers, clearance) or not _segment_clear_of_ignored_route_blockers(second, final_target, ignored, blockers, clearance):
+				var outgoing_exception = blocker.get("node") if destination_inside else null
+				if not middle_clear or not outgoing_clear or not _segment_clear_of_active_route_blockers(first, second, blockers, clearance) or not _segment_clear_of_active_route_blockers(second, final_target, blockers, clearance, outgoing_exception):
 					continue
 				var cost := current.distance_to(first) + first.distance_to(second) + second.distance_to(final_target)
 				if cost < best_cost:
@@ -910,14 +913,42 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 					best_second = second
 
 		if best_cost == INF:
+			# If every corner of the selected blocker is screened by another
+			# active blocker, bridge to the next safe rectangle corner and let the
+			# bounded outer loop resolve that blocker in turn. This preserves the
+			# rectangular route architecture while preventing an unsafe forced leg.
+			var bridge_best := Vector3.ZERO
+			var bridge_cost := INF
+			for bridge_blocker in blockers:
+				if bridge_blocker.get("node") == blocker.get("node") or ignored.has(bridge_blocker.get("node")):
+					continue
+				var bridge_center: Vector3 = bridge_blocker["center"]
+				var bridge_extents: Vector2 = _route_blocker_half_extents(bridge_blocker, clearance)
+				for bridge_candidate in _route_rectangle_corners(bridge_center, bridge_extents):
+					if current.distance_to(bridge_candidate) < 0.2 or points.has(bridge_candidate):
+						continue
+					if _point_inside_route_rectangle(bridge_candidate, center, half_extents):
+						continue
+					if not _segment_clear_of_active_route_blockers(current, bridge_candidate, blockers, clearance, blocker.get("node") if origin_inside else null):
+						continue
+					var bridge_score := current.distance_to(bridge_candidate) + bridge_candidate.distance_to(final_target)
+					if bridge_score < bridge_cost:
+						bridge_cost = bridge_score
+						bridge_best = bridge_candidate
+			if bridge_cost < INF:
+				points.append(bridge_best)
+				current = bridge_best
+				continue
 			# A destination inside a blocker is an interaction request, not a
 			# valid ground position. Pick the closest safe corner and stop there.
 			for candidate in candidates:
-				if (origin_inside or not _segment_enters_route_rectangle(current, candidate, center, half_extents)) and _segment_clear_of_ignored_route_blockers(current, candidate, ignored, blockers, clearance):
+				var fallback_exception = blocker.get("node") if origin_inside else null
+				if (origin_inside or not _segment_enters_route_rectangle(current, candidate, center, half_extents)) and _segment_clear_of_active_route_blockers(current, candidate, blockers, clearance, fallback_exception):
 					if best_first == Vector3.ZERO or current.distance_to(candidate) < current.distance_to(best_first):
 						best_first = candidate
 			if best_first == Vector3.ZERO:
-				best_first = candidates[0]
+				fail_closed = true
+				break
 			best_second = best_first
 
 		points.append(best_first)
@@ -929,13 +960,17 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			final_target = current
 			break
 
+	if fail_closed:
+		# Never append the requested target after an unsatisfied blocker chain;
+		# returning the last safe point lets Unit stop without crossing geometry.
+		return points if not points.is_empty() else [origin]
 	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
 		points.append(final_target)
 	return points
 
-func _segment_clear_of_ignored_route_blockers(a: Vector3, b: Vector3, ignored: Array, blockers: Array[Dictionary], clearance: float) -> bool:
+func _segment_clear_of_active_route_blockers(a: Vector3, b: Vector3, blockers: Array[Dictionary], clearance: float, exempt_node = null) -> bool:
 	for blocker in blockers:
-		if not ignored.has(blocker.get("node")):
+		if blocker.get("node") == exempt_node:
 			continue
 		var center: Vector3 = blocker["center"]
 		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
