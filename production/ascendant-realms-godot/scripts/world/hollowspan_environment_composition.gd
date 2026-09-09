@@ -1,5 +1,5 @@
 extends Node3D
-## Hollowspan-only presentation composition for Visual Convergence R1 Slice 3.
+## Hollowspan-only presentation composition for Visual Convergence R2.
 ## This node owns authored secondary scenery placement only; it has no gameplay,
 ## collision, navigation, resource, or map-topology authority.
 
@@ -117,6 +117,28 @@ const PLACEMENTS := [
 	{"asset": "fence", "world": Vector3(-70.0, 0.0, 66.0), "yaw": 0.4},
 ]
 
+# R2 is deliberately a small, local vegetation pass around the already
+# promoted Barrosan opening. These placements sit on route shoulders and the
+# meadow transition; none occupies a building contact patch, resource
+# interaction zone, or the centre of the primary track. They are existing
+# project-authored, presentation-only meshes and remain non-blocking.
+const R2_PLACEMENTS := [
+	# Settlement transition: asymmetrical low clumps outside the working yards.
+	{"asset": "brush", "offset": Vector3(-18.0, 0.0, 10.0), "yaw": -0.28, "height": 1.35},
+	{"asset": "brush", "offset": Vector3(14.0, 0.0, 22.0), "yaw": 0.42, "height": 1.55},
+	{"asset": "cairn", "offset": Vector3(20.0, 0.0, 26.0), "yaw": -0.12, "height": 1.45},
+	# Primary route shoulders: alternating clumps keep the travel lane legible.
+	{"asset": "brush", "offset": Vector3(-16.0, 0.0, 24.0), "yaw": 0.18, "height": 1.65},
+	{"asset": "brush", "offset": Vector3(13.0, 0.0, 29.0), "yaw": -0.36, "height": 1.25},
+	{"asset": "cairn", "offset": Vector3(-6.0, 0.0, 34.0), "yaw": 0.30, "height": 1.55},
+	{"asset": "brush", "offset": Vector3(35.0, 0.0, 37.0), "yaw": 0.56, "height": 1.45},
+	# Meadow breakup: two restrained groupings widen the sense of a lived-in
+	# highland approach without blanketing the playable battlefield.
+	{"asset": "brush", "offset": Vector3(-18.0, 0.0, 42.0), "yaw": -0.48, "height": 1.55},
+	{"asset": "cairn", "offset": Vector3(32.0, 0.0, 46.0), "yaw": 0.08, "height": 1.35},
+	{"asset": "brush", "offset": Vector3(48.0, 0.0, 51.0), "yaw": -0.18, "height": 1.30},
+]
+
 func build(parent: Node3D, origin: Vector3, map_data: Dictionary) -> void:
 	if map_data.get("id", "") != "hollowspan":
 		return
@@ -128,6 +150,7 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary) -> void:
 		var position: Vector3 = spec.get("world", origin + spec.get("offset", Vector3.ZERO))
 		_place_asset(layer, String(spec["asset"]), position, float(spec.get("yaw", 0.0)))
 	_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
+	_build_barrosan_r2_dressing(layer, origin)
 
 
 func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:
@@ -171,6 +194,21 @@ func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:
 	_place_asset(ground, "cairn", origin + Vector3(8.0, 0.0, 20.0), -0.12)
 	_place_asset(ground, "cairn", origin + Vector3(-11.0, 0.0, 25.0), 0.22)
 	_add_ground_patch(ground, "RouteEdgeStoneScar", origin + Vector3(40.0, 0.016, 42.0), Vector2(1.8, 1.0), 7, edge_rock)
+
+
+func _build_barrosan_r2_dressing(parent: Node3D, origin: Vector3) -> void:
+	var dressing := Node3D.new()
+	dressing.name = "BarrosanEnvironmentR2Dressing"
+	parent.add_child(dressing)
+	for spec in R2_PLACEMENTS:
+		var position := origin + Vector3(spec["offset"])
+		_place_asset(
+			dressing,
+			String(spec["asset"]),
+			position,
+			float(spec.get("yaw", 0.0)),
+			float(spec.get("height", -1.0))
+		)
 
 
 func _slice_material(material_name: String, color: Color, texture_path: String = "") -> StandardMaterial3D:
@@ -257,7 +295,7 @@ func _add_ribbon(parent: Node3D, ribbon_name: String, points: Array[Vector3], wi
 	parent.add_child(instance)
 
 
-func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: float) -> void:
+func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: float, height_override: float = -1.0) -> void:
 	var path: String = ASSET_PATHS.get(asset_key, "")
 	if path.is_empty() or not ResourceLoader.exists(path):
 		return
@@ -271,7 +309,8 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	parent.add_child(instance)
 	instance.position = position
 	instance.rotation.y = yaw
-	ModelUtils.scale_to_height(instance, float(ASSET_SCALE.get(asset_key, 2.0)))
+	var target_height := height_override if height_override > 0.0 else float(ASSET_SCALE.get(asset_key, 2.0))
+	ModelUtils.scale_to_height(instance, target_height)
 	ModelUtils.ground_model(instance)
 	_set_presentation_only(instance)
 	_mark_navigation_blocker(instance, asset_key)
