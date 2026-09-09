@@ -14,6 +14,8 @@ const VISIBILITY_EXPLORED_NOT_VISIBLE := 1
 const VISIBILITY_CURRENTLY_VISIBLE := 2
 const VISIBILITY_CELL_SIZE := 4.0
 const VISIBILITY_UPDATE_INTERVAL := 0.2
+const RESOURCE_GATHER_INTERACTION_RADIUS := 2.2
+const RESOURCE_CORE_ROUTE_MARGIN := 0.12
 
 signal game_over(victory: bool)
 signal hero_leveled(level: int)
@@ -601,6 +603,48 @@ func _rebuild_navigation_soft_blockers() -> void:
 		})
 
 
+func _resource_core_half_extents(kind: String, visible_half: Vector2) -> Vector2:
+	# Resource meshes include decorative shoulders and imported bounds that are
+	# larger than the usable mineral mass. Keep a compact central route core so
+	# ordinary units cannot cross the deposit while Workers can still approach
+	# within the existing 2.2m gathering interaction radius.
+	var x := clampf(visible_half.x * 0.35, 0.55, 0.78)
+	var z := clampf(visible_half.y * 0.35, 0.55, 0.78)
+	if kind == "gold":
+		x = clampf(visible_half.x * 0.42, 0.55, 0.70)
+		z = clampf(visible_half.y * 0.42, 0.55, 0.70)
+	return Vector2(x, z)
+
+
+func _register_resource_navigation_blocker(node: ResourceNode) -> void:
+	if not is_instance_valid(node) or node.resource_kind not in ["gold", "stone"]:
+		return
+	var bounds := _visible_world_xz_bounds(node)
+	if bounds.is_empty():
+		return
+	var visible_half: Vector2 = bounds["half_extents"]
+	var core_half := _resource_core_half_extents(node.resource_kind, visible_half)
+	_navigation_soft_blockers.append({
+		"node": node,
+		"object_id": "resource_%s_%s" % [node.resource_kind, str(node.get_instance_id())],
+		"object_class": "RESOURCE_NODE",
+		"center": bounds["center"],
+		"half_extents": core_half,
+		"core_half_extents": core_half,
+		"visible_half_extents": visible_half,
+		"resource_kind": node.resource_kind,
+		"gather_interaction_radius": RESOURCE_GATHER_INTERACTION_RADIUS,
+		"source": "resource_core",
+	})
+	node.depleted_once.connect(_on_resource_depleted_navigation_blocker)
+
+
+func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
+	for index in range(_navigation_soft_blockers.size() - 1, -1, -1):
+		if _navigation_soft_blockers[index].get("node") == node:
+			_navigation_soft_blockers.remove_at(index)
+
+
 func _visible_world_xz_bounds(root: Node3D) -> Dictionary:
 	var min_x := INF
 	var max_x := -INF
@@ -957,6 +1001,11 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		current = best_second
 		ignored.append(blocker.get("node"))
 		if destination_inside:
+			if String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+				var approach := _resource_navigation_approach_point(blocker, center, current)
+				if _segment_clear_of_active_route_blockers(current, approach, blockers, clearance, blocker.get("node")):
+					points.append(approach)
+					current = approach
 			final_target = current
 			break
 
@@ -993,7 +1042,7 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 		blockers.append({"node": building, "center": building.global_position, "half_extents": half_extents, "object_id": String(building.get("building_id")), "source": "completed_building"})
 	for blocker in _navigation_soft_blockers:
 		var node = blocker.get("node")
-		if is_instance_valid(node):
+		if is_instance_valid(node) and (not node is ResourceNode or not node.depleted):
 			blockers.append(blocker)
 	return blockers
 
@@ -1017,6 +1066,20 @@ func _route_blocker_half_extents(blocker: Dictionary, clearance: float) -> Vecto
 	var base: Vector2 = blocker.get("half_extents", Vector2(1.0, 1.0))
 	var margin := clearance + ROUTE_BLOCKER_MARGIN
 	return Vector2(maxf(0.5, base.x + margin), maxf(0.5, base.y + margin))
+
+
+func _resource_navigation_approach_point(blocker: Dictionary, center: Vector3, from_point: Vector3) -> Vector3:
+	var direction := from_point - center
+	direction.y = 0.0
+	if direction.length_squared() < 0.01:
+		direction = Vector3.RIGHT
+	direction = direction.normalized()
+	var core: Vector2 = blocker.get("core_half_extents", blocker.get("half_extents", Vector2(0.6, 0.6)))
+	var x_ratio := maxf(absf(direction.x), 0.001)
+	var z_ratio := maxf(absf(direction.z), 0.001)
+	var boundary_radius := maxf(core.x / x_ratio, core.y / z_ratio)
+	var approach_radius := minf(RESOURCE_GATHER_INTERACTION_RADIUS - 0.05, boundary_radius + RESOURCE_CORE_ROUTE_MARGIN)
+	return center + direction * maxf(0.65, approach_radius)
 
 func _route_rectangle_corners(center: Vector3, half_extents: Vector2) -> Array[Vector3]:
 	# Unit.command_move keeps the normal 1.2m arrival tolerance for ordinary
@@ -1607,6 +1670,7 @@ func _spawn_resources() -> void:
 		add_child(node)
 		node.global_position = r["pos"]
 		node.configure(kind, amounts.get(kind, 800), models.get(kind, ""), heights.get(kind, 2.0))
+		_register_resource_navigation_blocker(node)
 	var recorder = _m20_recorder()
 	if recorder:
 		recorder.record_population("resource_nodes", map.get("resources", []).size(), 0.0, 0.0, "game_world._spawn_resources")
