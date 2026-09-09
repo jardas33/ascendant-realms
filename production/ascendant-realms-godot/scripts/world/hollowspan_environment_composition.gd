@@ -96,6 +96,9 @@ const ASSET_PATHS := {
 	"brush": ASSET_ROOT + "highland_brush_cluster.glb",
 }
 
+const SLICE_DIRT_TEXTURE := "res://assets/textures/nature/highland_dirt_path.png"
+const SLICE_ROCK_TEXTURE := "res://assets/textures/stone/highland_rock.png"
+
 const PLACEMENTS := [
 	# Band B: settlement transition from the Barrosan base into the routes.
 	{"asset": "wall", "offset": Vector3(30.0, 0.0, 8.0), "yaw": -0.18},
@@ -120,10 +123,138 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary) -> void:
 	var layer := Node3D.new()
 	layer.name = "HollowspanEnvironmentComposition"
 	parent.add_child(layer)
+	_build_barrosan_base_ground_slice(layer, origin)
 	for spec in PLACEMENTS:
 		var position: Vector3 = spec.get("world", origin + spec.get("offset", Vector3.ZERO))
 		_place_asset(layer, String(spec["asset"]), position, float(spec.get("yaw", 0.0)))
 	_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
+
+
+func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:
+	# Presentation-only ground ownership for the first Barrosan slice. These
+	# surfaces sit a few millimetres above the playable plane and have no
+	# collision, navigation, resource, or building-placement authority.
+	var ground := Node3D.new()
+	ground.name = "BarrosanBaseGroundSlice"
+	parent.add_child(ground)
+	var contact_dirt := _slice_material("BarrosanContactDirt", Color(0.58, 0.50, 0.40, 0.42), SLICE_DIRT_TEXTURE)
+	var yard_dirt := _slice_material("BarrosanWorkingYard", Color(0.62, 0.51, 0.38, 0.48), SLICE_DIRT_TEXTURE)
+	var track_dirt := _slice_material("BarrosanPrimaryTrack", Color(0.68, 0.55, 0.39, 0.62), SLICE_DIRT_TEXTURE)
+	var edge_rock := _slice_material("BarrosanEdgeRock", Color("8f9089"), SLICE_ROCK_TEXTURE)
+
+	# Formal Clanhold threshold and a compact military working yard beside it.
+	_add_ground_patch(ground, "ClanholdContactGround", origin + Vector3(0.0, 0.0, 0.0), Vector2(7.4, 6.8), 12, contact_dirt)
+	_add_ground_patch(ground, "ClanholdThresholdWear", origin + Vector3(2.5, 0.018, 5.8), Vector2(3.8, 2.5), 9, yard_dirt)
+	var work_yard := origin + Vector3(-4.0, 0.0, 8.0)
+	_add_ground_patch(ground, "WarHallWorkingYard", work_yard + Vector3(0.0, 0.018, 0.0), Vector2(5.8, 4.5), 11, yard_dirt)
+	_add_ground_patch(ground, "WarHallContactGround", work_yard + Vector3(0.0, 0.012, 0.0), Vector2(4.9, 3.9), 10, contact_dirt)
+
+	# A readable three-stage connection: settlement threshold -> working yard ->
+	# outward battlefield route. The changing widths and slight bends keep it
+	# embedded in the land rather than reading as a bright rectangular panel.
+	var settlement_track: Array[Vector3] = [
+		origin + Vector3(3.0, 0.024, 5.2),
+		origin + Vector3(0.5, 0.024, 11.5),
+		origin + Vector3(-4.0, 0.024, 16.0),
+	]
+	_add_ribbon(ground, "SecondarySettlementTrack", settlement_track, [2.9, 2.6, 2.3], track_dirt)
+	var outward_track: Array[Vector3] = [
+		origin + Vector3(-3.5, 0.027, 15.0),
+		origin + Vector3(4.0, 0.027, 24.0),
+		origin + Vector3(17.0, 0.027, 32.0),
+		origin + Vector3(34.0, 0.027, 39.0),
+		origin + Vector3(55.0, 0.027, 47.0),
+	]
+	_add_ribbon(ground, "PrimaryBattlefieldTrack", outward_track, [3.2, 3.0, 2.8, 2.5, 2.2], track_dirt)
+
+	# A few composed edge groups mark the transition without filling the lane.
+	_place_asset(ground, "cairn", origin + Vector3(8.0, 0.0, 20.0), -0.12)
+	_place_asset(ground, "cairn", origin + Vector3(-11.0, 0.0, 25.0), 0.22)
+	_add_ground_patch(ground, "RouteEdgeStoneScar", origin + Vector3(40.0, 0.016, 42.0), Vector2(1.8, 1.0), 7, edge_rock)
+
+
+func _slice_material(material_name: String, color: Color, texture_path: String = "") -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.resource_name = material_name
+	material.albedo_color = color
+	if color.a < 0.99:
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.roughness = 0.96
+	material.metallic = 0.0
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	if not texture_path.is_empty() and ResourceLoader.exists(texture_path):
+		material.albedo_texture = load(texture_path)
+	return material
+
+
+func _add_ground_patch(parent: Node3D, patch_name: String, center: Vector3, radius: Vector2, points: int, material: Material) -> void:
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for index in points:
+		var next_index := (index + 1) % points
+		var angle_a := TAU * float(index) / float(points)
+		var angle_b := TAU * float(next_index) / float(points)
+		var radius_a := 0.84 + 0.11 * sin(float(index) * 2.7 + 0.8)
+		var radius_b := 0.84 + 0.11 * sin(float(next_index) * 2.7 + 0.8)
+		var point_a := center + Vector3(cos(angle_a) * radius.x * radius_a, 0.0, sin(angle_a) * radius.y * radius_a)
+		var point_b := center + Vector3(cos(angle_b) * radius.x * radius_b, 0.0, sin(angle_b) * radius.y * radius_b)
+		var uv_a := Vector2(0.5 + (point_a.x - center.x) / (radius.x * 2.0), 0.5 + (point_a.z - center.z) / (radius.y * 2.0))
+		var uv_b := Vector2(0.5 + (point_b.x - center.x) / (radius.x * 2.0), 0.5 + (point_b.z - center.z) / (radius.y * 2.0))
+		# Reverse winding so the top face remains visible with a +Y normal.
+		surface.set_uv(Vector2(0.5, 0.5)); surface.add_vertex(center)
+		surface.set_uv(uv_b); surface.add_vertex(point_b)
+		surface.set_uv(uv_a); surface.add_vertex(point_a)
+	surface.generate_normals()
+	var mesh := surface.commit()
+	if mesh == null:
+		return
+	var instance := MeshInstance3D.new()
+	instance.name = patch_name
+	instance.mesh = mesh
+	instance.material_override = material
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(instance)
+
+
+func _add_ribbon(parent: Node3D, ribbon_name: String, points: Array[Vector3], widths: Array[float], material: Material) -> void:
+	if points.size() < 2 or widths.size() < points.size():
+		return
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var distance_along_ribbon := 0.0
+	for index in range(points.size() - 1):
+		var from: Vector3 = points[index]
+		var to: Vector3 = points[index + 1]
+		var tangent := to - from
+		tangent.y = 0.0
+		if tangent.length_squared() < 0.01:
+			continue
+		var segment_length := tangent.length()
+		tangent = tangent.normalized()
+		var normal := Vector3(-tangent.z, 0.0, tangent.x)
+		var left_from := from + normal * widths[index] * 0.5
+		var right_from := from - normal * widths[index] * 0.5
+		var left_to := to + normal * widths[index + 1] * 0.5
+		var right_to := to - normal * widths[index + 1] * 0.5
+		var v_from := distance_along_ribbon * 0.12
+		var v_to := (distance_along_ribbon + segment_length) * 0.12
+		surface.set_uv(Vector2(0.0, v_from)); surface.add_vertex(left_from)
+		surface.set_uv(Vector2(1.0, v_from)); surface.add_vertex(right_from)
+		surface.set_uv(Vector2(1.0, v_to)); surface.add_vertex(right_to)
+		surface.set_uv(Vector2(0.0, v_from)); surface.add_vertex(left_from)
+		surface.set_uv(Vector2(1.0, v_to)); surface.add_vertex(right_to)
+		surface.set_uv(Vector2(0.0, v_to)); surface.add_vertex(left_to)
+		distance_along_ribbon += segment_length
+	surface.generate_normals()
+	var mesh := surface.commit()
+	if mesh == null:
+		return
+	var instance := MeshInstance3D.new()
+	instance.name = ribbon_name
+	instance.mesh = mesh
+	instance.material_override = material
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(instance)
 
 
 func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: float) -> void:
