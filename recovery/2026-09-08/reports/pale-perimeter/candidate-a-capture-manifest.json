@@ -1,0 +1,21 @@
+{
+  "failures": [],
+  "frames": [
+    {
+      "default_zoom": 40.0,
+      "height": 1080,
+      "map": "hollowspan",
+      "pitch_degrees": -55.0,
+      "png": "D:\\CodexData\\evidence\\pale-perimeter-remediation-r3-working\\candidate-final/01_R14_HOLLOWSPAN.png",
+      "width": 1920
+    }
+  ],
+  "map": "hollowspan",
+  "pass": true,
+  "resolution": {
+    "height": 1080,
+    "width": 1920
+  },
+  "schema": "ascendant-realms-p1r14-tactical-hierarchy-v1",
+  "source_sha": "195b4b2a6443dabebfbd557ea64d4f8a29ed7a17"
+}

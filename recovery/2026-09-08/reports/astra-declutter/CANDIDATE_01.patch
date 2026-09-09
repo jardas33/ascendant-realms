@@ -1,0 +1,13 @@
+diff --git a/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd b/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
+index de238426..054d209c 100644
+--- a/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
++++ b/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
+@@ -54 +54 @@ const BARROSAN_SETTLEMENT_PLACEMENTS := [
+-	{"asset": "guard_tower", "position": Vector3(-4.0, 0.0, 11.0), "yaw": 0.0},
++	{"asset": "guard_tower", "position": Vector3(-1.0, 0.0, 8.0), "yaw": 0.0},
+@@ -62 +62 @@ const BARROSAN_SETTLEMENT_PLACEMENTS := [
+-	{"asset": "supply_awning", "position": Vector3(17.0, 0.0, -1.0), "yaw": 0.0},
++	{"asset": "supply_awning", "position": Vector3(20.0, 0.0, 2.0), "yaw": 0.0},
+@@ -66 +66 @@ const BARROSAN_SETTLEMENT_PLACEMENTS := [
+-const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(8.0, 0.0, 8.0)
++const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(12.0, 0.0, 12.0)

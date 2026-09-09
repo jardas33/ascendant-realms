@@ -1,0 +1,34 @@
+diff --git a/production/ascendant-realms-godot/scripts/ui/hud.gd b/production/ascendant-realms-godot/scripts/ui/hud.gd
+index 59710c67..b75f096d 100644
+--- a/production/ascendant-realms-godot/scripts/ui/hud.gd
++++ b/production/ascendant-realms-godot/scripts/ui/hud.gd
+@@ -1239,5 +1239,27 @@ func _draw_minimap_visibility(size: Vector2) -> void:
+ 			var state := int(states[row * columns + column])
+ 			if state == 2:
+ 				continue
+-			var fog_color := Color(0.025, 0.040, 0.060, 0.72) if state == 0 else Color(0.045, 0.065, 0.085, 0.32)
+-			_minimap.draw_rect(Rect2(column * cell_width, row * cell_height, cell_width + 0.5, cell_height + 0.5), fog_color, true)
++			var top_left := _minimap_visibility_corner_color(states, columns, rows, row, column, 0, 0)
++			var top_right := _minimap_visibility_corner_color(states, columns, rows, row, column, 1, 0)
++			var bottom_right := _minimap_visibility_corner_color(states, columns, rows, row, column, 1, 1)
++			var bottom_left := _minimap_visibility_corner_color(states, columns, rows, row, column, 0, 1)
++			_minimap.draw_polygon(PackedVector2Array([
++				Vector2(column * cell_width, row * cell_height),
++				Vector2((column + 1) * cell_width, row * cell_height),
++				Vector2((column + 1) * cell_width, (row + 1) * cell_height),
++				Vector2(column * cell_width, (row + 1) * cell_height)]),
++				PackedColorArray([top_left, top_right, bottom_right, bottom_left]))
++
++
++func _minimap_visibility_cell_color(state: int) -> Color:
++	return Color(0.025, 0.040, 0.060, 0.72) if state == 0 else Color(0.045, 0.065, 0.085, 0.32)
++
++
++func _minimap_visibility_corner_color(states: PackedByteArray, columns: int, rows: int, row: int, column: int, corner_x: int, corner_z: int) -> Color:
++	var color := Color(0.0, 0.0, 0.0, 0.0)
++	for sample_row in range(row + corner_z - 1, row + corner_z + 1):
++		for sample_column in range(column + corner_x - 1, column + corner_x + 1):
++			var safe_row := clampi(sample_row, 0, rows - 1)
++			var safe_column := clampi(sample_column, 0, columns - 1)
++			color += _minimap_visibility_cell_color(int(states[safe_row * columns + safe_column]))
++	return color * 0.25

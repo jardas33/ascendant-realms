@@ -1,0 +1,7 @@
+diff --git a/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd b/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
+--- a/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
++++ b/production/ascendant-realms-godot/scripts/world/hollowspan_environment_composition.gd
+@@ -90,3 +90,2 @@
+ 	# Band B: settlement transition from the Barrosan base into the routes.
+-	{"asset": "wall", "offset": Vector3(30.0, 0.0, 8.0), "yaw": -0.18},
+ 	{"asset": "fence", "offset": Vector3(21.0, 0.0, -8.0), "yaw": 0.2},
