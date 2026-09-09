@@ -1315,6 +1315,10 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_navigation_waypoint_index = 0
 	if _navigation_waypoints.is_empty():
 		_navigation_waypoints = [pos]
+	if agent and _navigation_waypoints.size() > 1:
+		# Explicit physicality routes must reach their corner hand-offs rather
+		# than stopping at the ordinary 1.2m move tolerance.
+		agent.target_desired_distance = 0.05
 	var route_target: Vector3 = _navigation_waypoints[0]
 	var snapshot := {"ready": true, "projected": pos, "projection_distance": 0.0, "reason": "local"}
 	if world and world.has_method("navigation_target_snapshot"):
@@ -1671,6 +1675,12 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	var ordinary_move := state == State.MOVING and _navigation_command_type == "move"
 	var attack_move_travel := attack_move and state == State.ATTACK_MOVE and _navigation_command_type == "attack_move" and _attack_move_ordered
 	if (not ordinary_move and not attack_move_travel) or not is_instance_valid(agent):
+		_reset_ordinary_move_settlement()
+		return false
+	# Route corners are intermediate navigation targets. Do not let the
+	# ordinary-move anti-stall settle logic clear the command before the final
+	# leg has been installed.
+	if _navigation_waypoints.size() > 1 and _navigation_waypoint_index < _navigation_waypoints.size() - 1:
 		_reset_ordinary_move_settlement()
 		return false
 	if attack_move_travel and is_instance_valid(_target) and _can_attack_target(_target):
@@ -2141,6 +2151,12 @@ func _move_along_path(delta: float) -> bool:
 		velocity = Vector3.ZERO
 		return false
 	_navigation_repath_cooldown = maxf(0.0, _navigation_repath_cooldown - delta)
+	if _navigation_waypoints.size() > 1 and _navigation_waypoint_index < _navigation_waypoints.size() - 1 and global_position.distance_to(_navigation_effective_target) <= ARRIVE_DIST:
+		# NavigationAgent3D can leave an explicit corner target active even after
+		# the body has reached it. Advance from the measured hand-off position so
+		# a safe physicality route cannot stall at its first corner.
+		_advance_navigation_waypoint()
+		return false
 	if agent.is_navigation_finished():
 		if global_position.distance_to(_navigation_effective_target) > ARRIVE_DIST:
 			_navigation_path_wait_frames += 1
@@ -2230,8 +2246,8 @@ func _move_along_path(delta: float) -> bool:
 	# NavigationAgent avoidance active, but do not run the separate generic
 	# building redirect again on the same leg; that duplicate redirect could
 	# pin a unit on the waypoint during an ordinary player move.
-	var route_leg_already_cleared := _navigation_waypoints.size() > 1 and _navigation_waypoint_index > 0
-	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_leg_already_cleared:
+	var route_is_active := _navigation_waypoints.size() > 1
+	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_is_active:
 		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
 	var clearance_redirected: bool = desired.distance_to(requested_velocity) > 0.05
 	if clearance_redirected and is_worker:
@@ -2288,8 +2304,8 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
-	var route_leg_already_cleared := _navigation_waypoints.size() > 1 and _navigation_waypoint_index > 0
-	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_leg_already_cleared:
+	var route_is_active := _navigation_waypoints.size() > 1
+	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_is_active:
 		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance())
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x

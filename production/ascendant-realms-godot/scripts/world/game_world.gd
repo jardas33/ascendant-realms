@@ -29,6 +29,10 @@ var navigation_map_rid := RID()
 var navigation_ready := false
 var navigation_ready_frame := -1
 var navigation_map_iteration := 0
+## Static Astra presentation pieces that participate in the same deterministic
+## route layer as completed buildings. They are cached once after composition
+## build; no collision body or per-frame blocker reconstruction is required.
+var _navigation_soft_blockers: Array[Dictionary] = []
 var terrain_mesh: MeshInstance3D
 var _projectile_container: Node3D
 var _fx_container: Node3D
@@ -576,6 +580,58 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	if composition_script:
 		var composition = composition_script.new()
 		composition.build(parent, origin, map)
+		_rebuild_navigation_soft_blockers()
+
+
+func _rebuild_navigation_soft_blockers() -> void:
+	_navigation_soft_blockers.clear()
+	for node in get_tree().get_nodes_in_group("navigation_soft_blockers"):
+		if not is_instance_valid(node) or not node is Node3D:
+			continue
+		var bounds := _visible_world_xz_bounds(node as Node3D)
+		if bounds.is_empty():
+			continue
+		_navigation_soft_blockers.append({
+			"node": node,
+			"object_id": String(node.get_meta("navigation_blocker_id", node.name)),
+			"object_class": String(node.get_meta("navigation_blocker_class", "ASTRA_LARGE")),
+			"center": bounds["center"],
+			"half_extents": bounds["half_extents"],
+			"source": "astra_presentation_cache",
+		})
+
+
+func _visible_world_xz_bounds(root: Node3D) -> Dictionary:
+	var min_x := INF
+	var max_x := -INF
+	var min_z := INF
+	var max_z := -INF
+	var found := false
+	var meshes: Array[Node] = []
+	if root is MeshInstance3D:
+		meshes.append(root)
+	meshes.append_array(root.find_children("*", "MeshInstance3D", true, false))
+	for child in meshes:
+		var mesh_instance := child as MeshInstance3D
+		if not mesh_instance or not mesh_instance.mesh or not mesh_instance.visible:
+			continue
+		var mesh_aabb := mesh_instance.mesh.get_aabb()
+		for x in [mesh_aabb.position.x, mesh_aabb.end.x]:
+			for z in [mesh_aabb.position.z, mesh_aabb.end.z]:
+				var point: Vector3 = mesh_instance.global_transform * Vector3(x, 0.0, z)
+				min_x = minf(min_x, point.x)
+				max_x = maxf(max_x, point.x)
+				min_z = minf(min_z, point.z)
+				max_z = maxf(max_z, point.z)
+				found = true
+	if not found:
+		return {}
+	return {
+		# Route geometry is planar X/Z data. Keep the waypoint on the unit ground
+		# plane even when an imported mesh's visual AABB has a raised midpoint.
+		"center": Vector3((min_x + max_x) * 0.5, 0.0, (min_z + max_z) * 0.5),
+		"half_extents": Vector2((max_x - min_x) * 0.5, (max_z - min_z) * 0.5),
+	}
 
 
 func _visual_convergence_material(name: String, color: Color, roughness: float) -> StandardMaterial3D:
@@ -798,147 +854,180 @@ func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 	nav.add_polygon(PackedInt32Array([0, 2, 3]))
 
 ## The production navmesh is intentionally a broad flat quad, so authored
-## buildings need a small deterministic route layer on top of it. This keeps
-## decorative scenery non-blocking while preventing ground-unit centers from
-## crossing completed building footprints. It only returns waypoints; it does
-## not mutate gameplay state, placement geometry, or the authoritative map.
+## buildings and explicitly designated large Astra scenery need a small
+## deterministic route layer on top of it. The route envelope is rectangular
+## and derived from the visible world bounds, so a detour cannot cut through a
+## rectangular wall, building, tower, or wagon corner. It only returns
+## waypoints; it does not mutate gameplay state, placement geometry, or the
+## authoritative map.
+const ROUTE_BLOCKER_MARGIN := 0.35
+
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null) -> Array:
 	var points: Array = []
 	var current := origin
 	var ignored: Array = []
 	var final_target := requested
-	# The route solver is synchronous: buildings cannot be added, removed, or
-	# change lifecycle between its bounded blocker passes. Reuse one shallow
-	# group snapshot for this operation instead of allocating the same group
-	# array once per route leg. Callers that already scanned buildings (the
-	# velocity guard below) may pass that same snapshot through.
-	var building_candidates: Array = all_buildings() if building_snapshot == null else building_snapshot
-	for _step in range(6):
-		var blocker = _first_route_blocking_building(current, final_target, clearance, ignored, building_candidates)
-		if blocker == null:
+	var blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
+	for _step in range(8):
+		var blocker: Dictionary = _first_route_blocking_blocker(current, final_target, clearance, ignored, blockers)
+		if blocker.is_empty():
 			break
-		# The old two-side heuristic could choose a waypoint that cleared the
-		# first leg but let the next leg cut back through the same footprint. Use
-		# deterministic perimeter candidates and require both legs to clear the
-		# blocker before it can be ignored for the next route segment.
-		# Keep a small deterministic margin beyond the live clearance envelope.
-		# With the corrected segment-circle predicate this leaves enough tangent
-		# room for units that begin close to the perimeter without selecting an
-		# incoming segment that cuts through the building.
-		var radius := _building_route_radius(blocker, clearance) + 0.2
-		var candidates: Array[Vector3] = []
-		# A unit can begin close to a building perimeter, leaving only a narrow
-		# tangent corridor between the origin and the safe route circle. Sample
-		# densely enough to find that corridor instead of falling back to an
-		# invalid straight-through candidate.
-		const ROUTE_CANDIDATE_COUNT := 64
-		for candidate_index in range(ROUTE_CANDIDATE_COUNT):
-			var angle := TAU * float(candidate_index) / float(ROUTE_CANDIDATE_COUNT)
-			candidates.append(blocker.global_position + Vector3(cos(angle), 0.0, sin(angle)) * radius)
-		var destination_inside := final_target.distance_to(blocker.global_position) < radius
-		var origin_inside_clearance := current.distance_to(blocker.global_position) < radius
-		var target_direction: Vector3 = final_target - blocker.global_position
+		var center: Vector3 = blocker["center"]
+		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		var candidates: Array[Vector3] = _route_rectangle_corners(center, half_extents)
+		var destination_inside := _point_inside_route_rectangle(final_target, center, half_extents)
+		var origin_inside := _point_inside_route_rectangle(current, center, half_extents)
+		var target_direction := final_target - center
 		target_direction.y = 0.0
 		if target_direction.length_squared() > 0.01:
 			target_direction = target_direction.normalized()
-		var legal_candidates: Array[Vector3] = []
-		for candidate in candidates:
-			# If the unit is already inside the clearance envelope, the current
-			# position is the result of an earlier close approach, not a legal
-			# incoming route. Force the next waypoint onto the non-target-facing
-			# side so the unit exits the envelope before the target leg resumes.
-			var candidate_direction: Vector3 = candidate - blocker.global_position
-			candidate_direction.y = 0.0
-			var exits_away_from_target: bool = not origin_inside_clearance or target_direction.length_squared() < 0.01 or candidate_direction.dot(target_direction) <= 0.01
-			var incoming_clearance := _segment_clearance(current, candidate, blocker.global_position)
-			var outgoing_clearance := _segment_clearance(candidate, final_target, blocker.global_position)
-			var incoming_clear := origin_inside_clearance or incoming_clearance >= radius - 0.001
-			var outgoing_clear := destination_inside or outgoing_clearance >= radius - 0.001
-			if incoming_clear and outgoing_clear and exits_away_from_target:
-				legal_candidates.append(candidate)
-		var candidate: Vector3 = candidates.front()
-		var fallback_second: Vector3 = candidate
-		if not legal_candidates.is_empty():
-			candidate = legal_candidates[0]
-			for alternative in legal_candidates:
-				if _route_cost(current, alternative, final_target) < _route_cost(current, candidate, final_target):
-					candidate = alternative
-		else:
-			# A single perimeter point cannot always satisfy both tangent legs of a
-			# circular clearance envelope. Search a bounded pair so the fallback
-			# never cuts back through the completed Building before it is ignored.
-			var best_clearance := -INF
-			for first in candidates:
-				var incoming_score := _segment_clearance(current, first, blocker.global_position)
-				if origin_inside_clearance:
-					incoming_score = INF
-				for second in candidates:
-					var middle_score := _segment_clearance(first, second, blocker.global_position)
-					var outgoing_score := _segment_clearance(second, final_target, blocker.global_position)
-					if destination_inside:
-						outgoing_score = INF
-					var score := minf(incoming_score, minf(middle_score, outgoing_score))
-					if score > best_clearance:
-						best_clearance = score
-						candidate = first
-						fallback_second = second
-		points.append(candidate)
-		if fallback_second.distance_to(candidate) > 0.01:
-			points.append(fallback_second)
-		current = candidate
-		if fallback_second.distance_to(candidate) > 0.01:
-			current = fallback_second
-		ignored.append(blocker)
-		# A destination inside a building is a semantic interaction request, not
-		# a valid ground position. Stop at its safe perimeter instead.
-		if final_target.distance_to(blocker.global_position) < radius:
-			final_target = candidate
+
+		var best_first := Vector3.ZERO
+		var best_second := Vector3.ZERO
+		var best_cost := INF
+		for first in candidates:
+			var incoming_clear := origin_inside or not _segment_enters_route_rectangle(current, first, center, half_extents)
+			if not incoming_clear:
+				continue
+			if not _segment_clear_of_ignored_route_blockers(current, first, ignored, blockers, clearance):
+				continue
+			var first_direction := first - center
+			first_direction.y = 0.0
+			var exits_away_from_target := not origin_inside or target_direction.length_squared() < 0.01 or first_direction.dot(target_direction) <= 0.01
+			if not exits_away_from_target:
+				continue
+			for second in candidates:
+				if second.distance_to(first) < 0.01:
+					continue
+				var middle_clear := not _segment_enters_route_rectangle(first, second, center, half_extents)
+				var outgoing_clear := destination_inside or not _segment_enters_route_rectangle(second, final_target, center, half_extents)
+				if not middle_clear or not outgoing_clear or not _segment_clear_of_ignored_route_blockers(first, second, ignored, blockers, clearance) or not _segment_clear_of_ignored_route_blockers(second, final_target, ignored, blockers, clearance):
+					continue
+				var cost := current.distance_to(first) + first.distance_to(second) + second.distance_to(final_target)
+				if cost < best_cost:
+					best_cost = cost
+					best_first = first
+					best_second = second
+
+		if best_cost == INF:
+			# A destination inside a blocker is an interaction request, not a
+			# valid ground position. Pick the closest safe corner and stop there.
+			for candidate in candidates:
+				if (origin_inside or not _segment_enters_route_rectangle(current, candidate, center, half_extents)) and _segment_clear_of_ignored_route_blockers(current, candidate, ignored, blockers, clearance):
+					if best_first == Vector3.ZERO or current.distance_to(candidate) < current.distance_to(best_first):
+						best_first = candidate
+			if best_first == Vector3.ZERO:
+				best_first = candidates[0]
+			best_second = best_first
+
+		points.append(best_first)
+		if best_second.distance_to(best_first) > 0.01:
+			points.append(best_second)
+		current = best_second
+		ignored.append(blocker.get("node"))
+		if destination_inside:
+			final_target = current
 			break
+
 	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
 		points.append(final_target)
 	return points
 
-func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance: float, ignored: Array, building_candidates: Array):
-	var closest = null
-	var closest_distance := INF
-	for building in building_candidates:
-		if not is_instance_valid(building) or building.is_dead or not building.is_built or ignored.has(building):
+func _segment_clear_of_ignored_route_blockers(a: Vector3, b: Vector3, ignored: Array, blockers: Array[Dictionary], clearance: float) -> bool:
+	for blocker in blockers:
+		if not ignored.has(blocker.get("node")):
 			continue
-		var radius := _building_route_radius(building, clearance)
-		if target.distance_to(building.global_position) < radius or _segment_intersects_route_circle(origin, target, building.global_position, radius):
-			var distance := origin.distance_to(building.global_position)
+		var center: Vector3 = blocker["center"]
+		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		if _segment_enters_route_rectangle(a, b, center, half_extents):
+			return false
+	return true
+
+func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
+	var blockers: Array[Dictionary] = []
+	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
+	for building in buildings:
+		if not is_instance_valid(building) or building.is_dead or not building.is_built:
+			continue
+		var half_extents := Vector2(float(building.def.get("footprint", 4.0)), float(building.def.get("footprint", 4.0)))
+		if building.has_method("get_selection_geometry"):
+			var geometry: Dictionary = building.get_selection_geometry()
+			var visual_extents: Dictionary = geometry.get("visual_extents", {})
+			half_extents.x = maxf(half_extents.x, float(visual_extents.get("x", half_extents.x)))
+			half_extents.y = maxf(half_extents.y, float(visual_extents.get("z", half_extents.y)))
+		blockers.append({"node": building, "center": building.global_position, "half_extents": half_extents, "object_id": String(building.get("building_id")), "source": "completed_building"})
+	for blocker in _navigation_soft_blockers:
+		var node = blocker.get("node")
+		if is_instance_valid(node):
+			blockers.append(blocker)
+	return blockers
+
+func _first_route_blocking_blocker(origin: Vector3, target: Vector3, clearance: float, ignored: Array, blockers: Array[Dictionary]) -> Dictionary:
+	var closest: Dictionary = {}
+	var closest_distance := INF
+	for blocker in blockers:
+		var node = blocker.get("node")
+		if not is_instance_valid(node) or ignored.has(node):
+			continue
+		var center: Vector3 = blocker.get("center", node.global_position)
+		var half_extents := _route_blocker_half_extents(blocker, clearance)
+		if _point_inside_route_rectangle(target, center, half_extents) or _segment_enters_route_rectangle(origin, target, center, half_extents):
+			var distance := origin.distance_to(center)
 			if distance < closest_distance:
-				closest = building
+				closest = blocker
 				closest_distance = distance
 	return closest
 
-func _segment_intersects_route_circle(a: Vector3, b: Vector3, center: Vector3, radius: float) -> bool:
-	return _segment_clearance(a, b, center) < radius
+func _route_blocker_half_extents(blocker: Dictionary, clearance: float) -> Vector2:
+	var base: Vector2 = blocker.get("half_extents", Vector2(1.0, 1.0))
+	var margin := clearance + ROUTE_BLOCKER_MARGIN
+	return Vector2(maxf(0.5, base.x + margin), maxf(0.5, base.y + margin))
 
-func _segment_clearance(a: Vector3, b: Vector3, center: Vector3) -> float:
-	var start := Vector2(a.x, a.z)
-	var end := Vector2(b.x, b.z)
-	var point := Vector2(center.x, center.z)
-	var delta := end - start
-	if delta.length_squared() < 0.0001:
-		return start.distance_to(point)
-	var t := clampf((point - start).dot(delta) / delta.length_squared(), 0.0, 1.0)
-	# Measure the closest point on the segment against the circle centre. The
-	# previous start-to-projection distance treated every segment whose circle
-	# lay behind its origin as an intersection, producing false detours around
-	# the player's own HQ during ordinary movement.
-	return point.distance_to(start + delta * t)
+func _route_rectangle_corners(center: Vector3, half_extents: Vector2) -> Array[Vector3]:
+	# Unit.command_move keeps the normal 1.2m arrival tolerance for ordinary
+	# movement. Put route waypoints beyond that stop distance so a unit settling
+	# at a corner cannot still overlap the visible AABB it is clearing.
+	const ROUTE_WAYPOINT_STOP_MARGIN := 1.5
+	var corner_extents := half_extents + Vector2(ROUTE_WAYPOINT_STOP_MARGIN, ROUTE_WAYPOINT_STOP_MARGIN)
+	return [
+		center + Vector3(-corner_extents.x, 0.0, -corner_extents.y),
+		center + Vector3(corner_extents.x, 0.0, -corner_extents.y),
+		center + Vector3(corner_extents.x, 0.0, corner_extents.y),
+		center + Vector3(-corner_extents.x, 0.0, corner_extents.y),
+	]
 
-func _route_cost(from: Vector3, via: Vector3, target: Vector3) -> float:
-	return from.distance_to(via) + via.distance_to(target)
+func _point_inside_route_rectangle(point: Vector3, center: Vector3, half_extents: Vector2) -> bool:
+	return point.x >= center.x - half_extents.x and point.x <= center.x + half_extents.x and point.z >= center.z - half_extents.y and point.z <= center.z + half_extents.y
 
-func _building_route_radius(building, clearance: float) -> float:
-	var base_radius := float(building.def.get("footprint", 4.0))
-	if is_instance_valid(building) and building.has_method("get_selection_geometry"):
-		var geometry: Dictionary = building.get_selection_geometry()
-		var visual_extents: Dictionary = geometry.get("visual_extents", {})
-		base_radius = maxf(base_radius, maxf(float(visual_extents.get("x", 0.0)), float(visual_extents.get("z", 0.0))))
-	return base_radius + clearance
+func _segment_enters_route_rectangle(a: Vector3, b: Vector3, center: Vector3, half_extents: Vector2) -> bool:
+	# Slab intersection against the open rectangle interior. A segment that
+	# follows the safe perimeter boundary is therefore legal, while a segment
+	# that cuts through the rectangle is rejected.
+	var min_x := center.x - half_extents.x
+	var max_x := center.x + half_extents.x
+	var min_z := center.z - half_extents.y
+	var max_z := center.z + half_extents.y
+	var delta_x := b.x - a.x
+	var delta_z := b.z - a.z
+	var t_min := 0.0
+	var t_max := 1.0
+	if absf(delta_x) < 0.0001:
+		if a.x <= min_x or a.x >= max_x:
+			return false
+	else:
+		var tx1 := (min_x - a.x) / delta_x
+		var tx2 := (max_x - a.x) / delta_x
+		t_min = maxf(t_min, minf(tx1, tx2))
+		t_max = minf(t_max, maxf(tx1, tx2))
+	if absf(delta_z) < 0.0001:
+		if a.z <= min_z or a.z >= max_z:
+			return false
+	else:
+		var tz1 := (min_z - a.z) / delta_z
+		var tz2 := (max_z - a.z) / delta_z
+		t_min = maxf(t_min, minf(tz1, tz2))
+		t_max = minf(t_max, maxf(tz1, tz2))
+	return t_min < t_max and t_max > 0.0 and t_min < 1.0
 
 ## Last-frame guard for the broad production navmesh. It only constrains a
 ## movement velocity when a completed-building clearance envelope would be
@@ -948,30 +1037,26 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	if speed < 0.01:
 		return requested_velocity
 	var step_end: Vector3 = origin + requested_velocity * maxf(delta, 0.016)
-	var building_candidates: Array = all_buildings()
-	for building in building_candidates:
-		if not is_instance_valid(building) or building.is_dead or not building.is_built:
-			continue
-		var radius := _building_route_radius(building, clearance)
-		var radial: Vector3 = origin - building.global_position
+	var blockers := _navigation_blocker_snapshots()
+	for blocker in blockers:
+		var center: Vector3 = blocker["center"]
+		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		var radial: Vector3 = origin - center
 		radial.y = 0.0
-		if radial.length() < radius:
+		if _point_inside_route_rectangle(origin, center, half_extents):
 			if radial.length_squared() < 0.01:
 				radial = Vector3.RIGHT
 			return radial.normalized() * speed
-		if not _segment_intersects_route_circle(origin, step_end, building.global_position, radius):
+		if not _segment_enters_route_rectangle(origin, step_end, center, half_extents):
 			continue
-		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(radius * 4.0, 12.0)
-		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance, building_candidates)
+		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(maxf(half_extents.x, half_extents.y) * 4.0, 12.0)
+		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance)
 		if not waypoints.is_empty():
 			var waypoint_direction: Vector3 = waypoints[0] - origin
 			waypoint_direction.y = 0.0
 			if waypoint_direction.length_squared() > 0.01:
 				return waypoint_direction.normalized() * speed
-		var tangent: Vector3 = Vector3(-radial.z, 0.0, radial.x).normalized()
-		if tangent.dot(requested_velocity) < 0.0:
-			tangent = -tangent
-		return tangent * speed
+		return requested_velocity
 	return requested_velocity
 
 func is_navigation_ready() -> bool:

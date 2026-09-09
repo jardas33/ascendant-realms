@@ -37,6 +37,16 @@ const BARROSAN_SETTLEMENT_MATERIAL_TINTS := {
 	"clan_waystone": Color(0.86, 0.86, 0.82),
 }
 
+# These authored masses remain presentation-only: GameWorld consumes their
+# cached visible bounds for soft route avoidance, while physics/collision and
+# navigation-mesh ownership stay unchanged. Small settlement dressing is not
+# registered and remains intentionally non-blocking.
+const NAVIGATION_BLOCKER_IDS := {
+	"wall": "astra_wall",
+	"guard_tower": "astra_guard_tower",
+	"covered_supply_wagon": "astra_supply_wagon",
+}
+
 # The source assembly is authored in a Blender Z-up plane. These placements
 # are the first-wave subset translated to Godot's X/Z ground plane. The
 # half-turn is deliberately kept out of gameplay code: it points the open
@@ -133,6 +143,7 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	ModelUtils.scale_to_height(instance, float(ASSET_SCALE.get(asset_key, 2.0)))
 	ModelUtils.ground_model(instance)
 	_set_presentation_only(instance)
+	_mark_navigation_blocker(instance, asset_key)
 
 
 func _build_barrosan_settlement(parent: Node3D, anchor: Vector3) -> void:
@@ -160,6 +171,15 @@ func _build_barrosan_settlement(parent: Node3D, anchor: Vector3) -> void:
 		# imported GLBs carry the authored materials and have no gameplay body.
 		_apply_settlement_material_cohesion(instance, asset_key)
 		_set_presentation_only(instance, true)
+		_mark_navigation_blocker(instance, asset_key)
+
+
+func _mark_navigation_blocker(root: Node, asset_key: String) -> void:
+	if not NAVIGATION_BLOCKER_IDS.has(asset_key):
+		return
+	root.add_to_group("navigation_soft_blockers")
+	root.set_meta("navigation_blocker_id", String(NAVIGATION_BLOCKER_IDS[asset_key]))
+	root.set_meta("navigation_blocker_class", "ASTRA_LOGISTICS" if asset_key == "covered_supply_wagon" else "ASTRA_LARGE")
 
 
 func _apply_settlement_material_cohesion(root: Node, asset_key: String) -> void:
