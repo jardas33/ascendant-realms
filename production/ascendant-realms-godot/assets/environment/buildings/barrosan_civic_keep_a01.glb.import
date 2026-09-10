@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dp42tdk81r8ai"
-path="res://.godot/imported/highland_crossing_bridge.glb-4e890f16546991edcb555e0327234fb5.scn"
+uid="uid://dlqv2ufnkmnll"
+path="res://.godot/imported/barrosan_civic_keep_a01.glb-03c14f44626ce26cd5a29833426c6cf7.scn"
 
 [deps]
 
-source_file="res://assets/environment/structures/highland_crossing_bridge.glb"
-dest_files=["res://.godot/imported/highland_crossing_bridge.glb-4e890f16546991edcb555e0327234fb5.scn"]
+source_file="res://assets/environment/buildings/barrosan_civic_keep_a01.glb"
+dest_files=["res://.godot/imported/barrosan_civic_keep_a01.glb-03c14f44626ce26cd5a29833426c6cf7.scn"]
 
 [params]
 
@@ -33,7 +33,7 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
-import_script/path="res://assets/environment/structures/highland_crossing_bridge_material_import.gd"
+import_script/path="res://assets/environment/buildings/barrosan_civic_keep_a01_material_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
