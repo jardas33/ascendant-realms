@@ -180,8 +180,8 @@ const COMBAT_HIT_FLASH_EXTENSION := 0.14
 const COMBAT_HIT_FLASH_RADIUS := 0.46
 const COMBAT_HIT_FLASH_HEIGHT := 0.92
 const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
-const COMBAT_HIT_REACTION_DURATION := 0.18
-const COMBAT_HIT_REACTION_TILT := 0.0872665
+const COMBAT_HIT_REACTION_DURATION := 0.24
+const COMBAT_HIT_REACTION_TILT := 0.1396263
 const DEATH_VISUAL_CUE_DURATION := 0.55
 const DEATH_VISUAL_CUE_SCALE := 0.72
 const DEATH_VISUAL_CUE_DROP := 0.24
@@ -988,7 +988,7 @@ func _show_combat_hit_reaction(from) -> void:
 	var tilt_sign := 1.0
 	if incoming.length_squared() > 0.01:
 		tilt_sign = -1.0 if incoming.x >= 0.0 else 1.0
-	model_root.scale = Vector3(settled_scale.x * 1.08, settled_scale.y * 0.90, settled_scale.z * 1.08)
+	model_root.scale = Vector3(settled_scale.x * 1.12, settled_scale.y * 0.88, settled_scale.z * 1.12)
 	model_root.rotation.z = settled_rotation_z + COMBAT_HIT_REACTION_TILT * tilt_sign
 	_combat_reaction_tween = create_tween()
 	_combat_reaction_tween.set_parallel(true)
