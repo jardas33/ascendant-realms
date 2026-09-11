@@ -151,6 +151,9 @@ var _health_bar_root: Node3D
 var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
 var _r15_attack_cue: MeshInstance3D
+var _weapon_arc_cue: MeshInstance3D
+var _weapon_arc_cue_time := 0.0
+var _weapon_arc_target: Node
 var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
 var _r15_damage_label: Label3D
@@ -188,6 +191,13 @@ const LETHAL_HIT_FLASH_DURATION := 0.34
 const DEATH_VISUAL_CUE_DURATION := 0.72
 const DEATH_VISUAL_CUE_SCALE := 0.64
 const DEATH_VISUAL_CUE_DROP := 0.36
+# Weapon-arc presentation R1: a short, directional cue complements the
+# authored melee clip without changing animation playback or damage timing.
+const WEAPON_ARC_CUE_DURATION := 0.28
+const WEAPON_ARC_CUE_LEAD_TIME := 0.12
+const WEAPON_ARC_CUE_SEGMENTS := 14
+const WEAPON_ARC_CUE_RADIUS := 1.18
+const WEAPON_ARC_CUE_WIDTH := 0.11
 # P1 Task541: a brief presentation-only settle makes a newly spawned Unit
 # readable at the normal RTS camera without touching the Unit body, movement,
 # navigation, collision, or authoritative scale.
@@ -916,6 +926,39 @@ func _build_r15_combat_presentation() -> void:
 	_r15_attack_cue.material_override = cue_mat
 	add_child(_r15_attack_cue)
 
+	# A generated ribbon keeps the cue asset-free and short-lived. It is built
+	# once per Unit and only shown for the authored melee attack event; it does
+	# not participate in targeting, collision, navigation, or damage.
+	_weapon_arc_cue = MeshInstance3D.new()
+	_weapon_arc_cue.name = "WeaponArcPresentationCue"
+	var arc_material := StandardMaterial3D.new()
+	arc_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	arc_material.albedo_color = Color(0.98, 0.67, 0.30, 0.84) if team == 0 else Color(0.86, 0.24, 0.16, 0.84)
+	arc_material.emission_enabled = true
+	arc_material.emission = arc_material.albedo_color
+	arc_material.emission_energy_multiplier = 0.9
+	arc_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	arc_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	arc_material.no_depth_test = true
+	var arc_mesh := ImmediateMesh.new()
+	arc_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, arc_material)
+	for i in range(WEAPON_ARC_CUE_SEGMENTS + 1):
+		var t := float(i) / float(WEAPON_ARC_CUE_SEGMENTS)
+		var angle := lerpf(-0.95, 0.95, t)
+		var radius := WEAPON_ARC_CUE_RADIUS * (0.78 + 0.22 * sin(t * PI))
+		var center_y := 0.72 + 0.14 * sin(t * PI)
+		var x := sin(angle) * radius
+		var z := -0.22 - 0.16 * cos(angle)
+		var tangent := Vector2(cos(angle) * radius, sin(angle) * 0.16).normalized()
+		var normal := Vector2(-tangent.y, tangent.x) * WEAPON_ARC_CUE_WIDTH
+		arc_mesh.surface_add_vertex(Vector3(x + normal.x, center_y, z + normal.y))
+		arc_mesh.surface_add_vertex(Vector3(x - normal.x, center_y, z - normal.y))
+	arc_mesh.surface_end()
+	_weapon_arc_cue.mesh = arc_mesh
+	_weapon_arc_cue.material_override = arc_material
+	_weapon_arc_cue.visible = false
+	add_child(_weapon_arc_cue)
+
 	_r15_hit_flash = MeshInstance3D.new()
 	_r15_hit_flash.name = "CombatHitFlash"
 	var flash_mesh := SphereMesh.new()
@@ -943,9 +986,42 @@ func _build_r15_combat_presentation() -> void:
 	_r15_damage_label.visible = false
 	add_child(_r15_damage_label)
 
+func _start_weapon_arc_cue(target_override = null) -> void:
+	var cue_target = target_override if is_instance_valid(target_override) else _target
+	if is_worker or atk_range > 0.0 or not _can_attack_target(cue_target) or not is_instance_valid(_weapon_arc_cue):
+		return
+	var direction: Vector3 = cue_target.global_position - global_position
+	direction.y = 0.0
+	if direction.length_squared() < 0.01:
+		return
+	direction = direction.normalized()
+	_weapon_arc_cue.global_position = global_position + Vector3.UP * 0.18
+	_weapon_arc_cue.global_rotation.y = atan2(-direction.x, -direction.z)
+	_weapon_arc_target = cue_target
+	_weapon_arc_cue.scale = Vector3.ONE
+	var arc_material := _weapon_arc_cue.material_override as StandardMaterial3D
+	if arc_material:
+		var reset_color := arc_material.albedo_color
+		reset_color.a = 0.76
+		arc_material.albedo_color = reset_color
+	_weapon_arc_cue_time = WEAPON_ARC_CUE_DURATION
+	_weapon_arc_cue.visible = true
+
 func _update_r15_combat_presentation(delta: float) -> void:
 	if is_instance_valid(_r15_attack_cue):
 		_r15_attack_cue.visible = not is_worker and state == State.ATTACKING and _can_attack_target(_target)
+	if is_instance_valid(_weapon_arc_cue):
+		_weapon_arc_cue_time = maxf(0.0, _weapon_arc_cue_time - delta)
+		var arc_active := _weapon_arc_cue_time > 0.0 and not is_worker and not is_dead and _can_attack_target(_weapon_arc_target)
+		_weapon_arc_cue.visible = arc_active
+		if arc_active:
+			var arc_progress := 1.0 - (_weapon_arc_cue_time / WEAPON_ARC_CUE_DURATION)
+			_weapon_arc_cue.scale = Vector3.ONE * lerpf(0.78, 1.0, arc_progress)
+			var arc_material := _weapon_arc_cue.material_override as StandardMaterial3D
+			if arc_material:
+				var fade_color := arc_material.albedo_color
+				fade_color.a = lerpf(0.76, 0.0, arc_progress)
+				arc_material.albedo_color = fade_color
 	if _r15_lethal_cue_time > 0.0:
 		_r15_lethal_cue_time = maxf(0.0, _r15_lethal_cue_time - delta)
 	if _r15_hit_flash_time > 0.0:
@@ -1894,6 +1970,12 @@ func _do_attack() -> void:
 		# A target can be queue_freed during the windup; resolving the ID at hit
 		# time lets the existing validity guard run before any stale dereference.
 		var captured_target_runtime_id: int = _target.get_instance_id()
+		get_tree().create_timer(WEAPON_ARC_CUE_LEAD_TIME).timeout.connect(func():
+			var arc_tgt = instance_from_id(captured_target_runtime_id)
+			if is_dead or not _can_attack_target(arc_tgt):
+				return
+			_start_weapon_arc_cue(arc_tgt)
+		)
 		get_tree().create_timer(0.25).timeout.connect(func():
 			var tgt = instance_from_id(captured_target_runtime_id)
 			# Revalidate the captured target before reading its transform. A target
@@ -2461,6 +2543,9 @@ func _die(from = null) -> void:
 		_r15_damage_label_time = 0.0
 	if is_instance_valid(_combat_reaction_tween): _combat_reaction_tween.kill()
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
+	_weapon_arc_cue_time = 0.0
+	_weapon_arc_target = null
+	if is_instance_valid(_weapon_arc_cue): _weapon_arc_cue.visible = false
 	if _r15_lethal_cue_time <= 0.0:
 		if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
 		if is_instance_valid(_r15_damage_label): _r15_damage_label.visible = false
