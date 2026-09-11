@@ -74,6 +74,8 @@ const COMMAND_STOP := "STOP"
 const COMMAND_HOLD := "HOLD"
 const COMMAND_PATROL := "PATROL"
 const COMMAND_GUARD := "GUARD"
+const PAIRING_SEARCH_RADIUS := 12.0
+const TARGET_RESERVATION_SOFT_CAP := 1
 var _last_cursor_intent := COMMAND_DEFAULT
 var _last_cursor_shape := Input.CURSOR_ARROW
 var _last_cursor_asset := ""
@@ -634,6 +636,93 @@ func _can_accept_attack_target(target, units: Array) -> bool:
 			return true
 	return false
 
+func _pairing_sort_key(target) -> String:
+	if target is Unit:
+		return "U:%s:%s" % [String(target.unit_id), str(target.get_instance_id())]
+	if target is Building:
+		return "B:%s:%s" % [String(target.building_id), str(target.get_instance_id())]
+	return "T:%s" % str(target.get_instance_id())
+
+func _pairing_can_attack(attacker, target) -> bool:
+	return is_instance_valid(attacker) and attacker.has_method("_can_attack_target") and attacker._can_attack_target(target)
+
+func _pairing_candidates(clicked_target, attackers: Array) -> Array:
+	var candidates: Array = [clicked_target]
+	if world == null:
+		return candidates
+	var nearby: Array = world.all_units() if clicked_target is Unit else world.all_buildings()
+	var nearby_candidates: Array = []
+	for candidate in nearby:
+		if not is_instance_valid(candidate) or candidate == clicked_target or not ("team" in candidate) or int(candidate.team) == player_team:
+			continue
+		if ("is_dead" in candidate and candidate.is_dead) or not _pairing_can_attack_any(attackers, candidate):
+			continue
+		if world.has_method("is_player_visible") and not world.is_player_visible(candidate):
+			continue
+		var candidate_distance: float = candidate.global_position.distance_to(clicked_target.global_position)
+		if candidate_distance > PAIRING_SEARCH_RADIUS + 0.001:
+			continue
+		nearby_candidates.append(candidate)
+	nearby_candidates.sort_custom(func(a, b):
+			var a_distance: float = a.global_position.distance_to(clicked_target.global_position)
+			var b_distance: float = b.global_position.distance_to(clicked_target.global_position)
+			if not is_equal_approx(a_distance, b_distance):
+				return a_distance < b_distance
+			return _pairing_sort_key(a) < _pairing_sort_key(b)
+	)
+	candidates.append_array(nearby_candidates)
+	return candidates
+
+func _pairing_can_attack_any(attackers: Array, target) -> bool:
+	for attacker in attackers:
+		if _pairing_can_attack(attacker, target):
+			return true
+	return false
+
+func _pairing_choose_target(attacker, candidates: Array, reservations: Dictionary, force_clicked_target: bool):
+	var eligible: Array = []
+	for candidate in candidates:
+		if _pairing_can_attack(attacker, candidate):
+			eligible.append(candidate)
+	if eligible.is_empty():
+		return null
+	if force_clicked_target:
+		return eligible[0]
+	var available: Array = []
+	for candidate in eligible:
+		if int(reservations.get(candidate.get_instance_id(), 0)) < TARGET_RESERVATION_SOFT_CAP:
+			available.append(candidate)
+	var pool: Array = available if not available.is_empty() else eligible
+	var chosen = pool[0]
+	var chosen_count := int(reservations.get(chosen.get_instance_id(), 0))
+	var chosen_distance: float = attacker.global_position.distance_to(chosen.global_position)
+	for candidate in pool.slice(1):
+		var candidate_count := int(reservations.get(candidate.get_instance_id(), 0))
+		var candidate_distance: float = attacker.global_position.distance_to(candidate.global_position)
+		if candidate_count < chosen_count or (candidate_count == chosen_count and candidate_distance < chosen_distance) or (candidate_count == chosen_count and is_equal_approx(candidate_distance, chosen_distance) and _pairing_sort_key(candidate) < _pairing_sort_key(chosen)):
+			chosen = candidate
+			chosen_count = candidate_count
+			chosen_distance = candidate_distance
+	return chosen
+
+func _pairing_assign_targets(clicked_target, attackers: Array) -> Dictionary:
+	var candidates: Array = _pairing_candidates(clicked_target, attackers)
+	var reservations: Dictionary = {}
+	for candidate in candidates:
+		reservations[candidate.get_instance_id()] = 0
+	var assignments: Dictionary = {}
+	var clicked_target_assigned := false
+	for attacker in attackers:
+		var force_clicked_target := not clicked_target_assigned and _pairing_can_attack(attacker, clicked_target)
+		var chosen = _pairing_choose_target(attacker, candidates, reservations, force_clicked_target)
+		if chosen == null:
+			continue
+		assignments[attacker.get_instance_id()] = chosen
+		reservations[chosen.get_instance_id()] = int(reservations.get(chosen.get_instance_id(), 0)) + 1
+		if chosen == clicked_target:
+			clicked_target_assigned = true
+	return assignments
+
 func _issue_context_command(queue: bool) -> void:
 	_clean_selection()
 	if selected.is_empty():
@@ -693,9 +782,10 @@ func issue_attack_target(target) -> bool:
 	var recorder = _v0436_r1j_recorder()
 	var order_id: String = recorder.record_public_order("attack_target", units, target, Vector3.ZERO) if recorder else ""
 	var issued := false
+	var assignments := _pairing_assign_targets(target, units)
 	for u in units:
-		if u.has_method("command_attack"):
-			u.command_attack(target, order_id)
+		if u.has_method("command_attack") and assignments.has(u.get_instance_id()):
+			u.command_attack(assignments[u.get_instance_id()], order_id)
 			issued = u.state == Unit.State.ATTACKING or issued
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK, "ATTACK", target.global_position, target)
