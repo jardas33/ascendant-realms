@@ -155,6 +155,7 @@ var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
 var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
+var _combat_reaction_tween: Tween
 var _production_arrival_tween: Tween
 var _attack_settled := false
 var _attack_target_anchor := Vector3.ZERO
@@ -179,6 +180,8 @@ const COMBAT_HIT_FLASH_EXTENSION := 0.14
 const COMBAT_HIT_FLASH_RADIUS := 0.46
 const COMBAT_HIT_FLASH_HEIGHT := 0.92
 const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
+const COMBAT_HIT_REACTION_DURATION := 0.18
+const COMBAT_HIT_REACTION_TILT := 0.0872665
 const DEATH_VISUAL_CUE_DURATION := 0.55
 const DEATH_VISUAL_CUE_SCALE := 0.72
 const DEATH_VISUAL_CUE_DROP := 0.24
@@ -966,6 +969,32 @@ func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	_r15_damage_label.modulate = Color(1.0, 0.34, 0.24, 1.0) if killing_blow else Color(1.0, 0.82, 0.34, 1.0)
 	_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70)
 	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
+
+func _show_combat_hit_reaction(from) -> void:
+	# A compact target flinch makes the already-authoritative impact legible at
+	# RTS scale. It only animates the child presentation root; the Unit body,
+	# navigation, collision, timing, and combat outcome remain untouched.
+	if is_dead or not is_instance_valid(model_root):
+		return
+	if is_instance_valid(_combat_reaction_tween):
+		_combat_reaction_tween.kill()
+	var settled_scale := model_root.scale
+	var settled_rotation_z := model_root.rotation.z
+	var source_unit = from if from is Unit and is_instance_valid(from) else from.get("source_unit", null) if from is Dictionary and is_instance_valid(from.get("source_unit", null)) else null
+	var incoming := Vector3.ZERO
+	if is_instance_valid(source_unit):
+		incoming = global_position - source_unit.global_position
+		incoming.y = 0.0
+	var tilt_sign := 1.0
+	if incoming.length_squared() > 0.01:
+		tilt_sign = -1.0 if incoming.x >= 0.0 else 1.0
+	model_root.scale = Vector3(settled_scale.x * 1.08, settled_scale.y * 0.90, settled_scale.z * 1.08)
+	model_root.rotation.z = settled_rotation_z + COMBAT_HIT_REACTION_TILT * tilt_sign
+	_combat_reaction_tween = create_tween()
+	_combat_reaction_tween.set_parallel(true)
+	_combat_reaction_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_combat_reaction_tween.tween_property(model_root, "scale", settled_scale, COMBAT_HIT_REACTION_DURATION)
+	_combat_reaction_tween.tween_property(model_root, "rotation:z", settled_rotation_z, COMBAT_HIT_REACTION_DURATION)
 
 func refresh_upgrade_bonuses() -> void:
 	if commander:
@@ -2341,6 +2370,7 @@ func take_damage(amount: float, from = null) -> void:
 	_last_damage_source_id = _combat_source_id(from)
 	_last_damage_kind = _combat_source_kind(from)
 	_last_damage_type = _combat_source_type(from)
+	_show_combat_hit_reaction(from)
 	# Accessibility: the existing combat impact cue is a short, player-visible
 	# flash. Read the preference only at the authored impact event (not per frame)
 	# so the setting controls this presentation without touching damage semantics.
@@ -2404,6 +2434,7 @@ func _die(from = null) -> void:
 	_pending_gather_node = null
 	_r15_hit_flash_time = 0.0
 	_r15_damage_label_time = 0.0
+	if is_instance_valid(_combat_reaction_tween): _combat_reaction_tween.kill()
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
 	if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
 	if is_instance_valid(_r15_damage_label): _r15_damage_label.visible = false
