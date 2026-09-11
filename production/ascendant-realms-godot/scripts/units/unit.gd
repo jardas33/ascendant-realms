@@ -155,6 +155,7 @@ var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
 var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
+var _r15_lethal_cue_time := 0.0
 var _combat_reaction_tween: Tween
 var _production_arrival_tween: Tween
 var _attack_settled := false
@@ -182,9 +183,11 @@ const COMBAT_HIT_FLASH_HEIGHT := 0.92
 const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
 const COMBAT_HIT_REACTION_DURATION := 0.24
 const COMBAT_HIT_REACTION_TILT := 0.1396263
-const DEATH_VISUAL_CUE_DURATION := 0.55
-const DEATH_VISUAL_CUE_SCALE := 0.72
-const DEATH_VISUAL_CUE_DROP := 0.24
+const LETHAL_HIT_CUE_DURATION := 0.46
+const LETHAL_HIT_FLASH_DURATION := 0.34
+const DEATH_VISUAL_CUE_DURATION := 0.72
+const DEATH_VISUAL_CUE_SCALE := 0.64
+const DEATH_VISUAL_CUE_DROP := 0.36
 # P1 Task541: a brief presentation-only settle makes a newly spawned Unit
 # readable at the normal RTS camera without touching the Unit body, movement,
 # navigation, collision, or authoritative scale.
@@ -943,20 +946,34 @@ func _build_r15_combat_presentation() -> void:
 func _update_r15_combat_presentation(delta: float) -> void:
 	if is_instance_valid(_r15_attack_cue):
 		_r15_attack_cue.visible = not is_worker and state == State.ATTACKING and _can_attack_target(_target)
+	if _r15_lethal_cue_time > 0.0:
+		_r15_lethal_cue_time = maxf(0.0, _r15_lethal_cue_time - delta)
 	if _r15_hit_flash_time > 0.0:
 		_r15_hit_flash_time = maxf(0.0, _r15_hit_flash_time - delta)
 	if is_instance_valid(_r15_hit_flash):
-		_r15_hit_flash.visible = _r15_hit_flash_time > 0.0 and not is_dead
+		var lethal_cue_live := is_dead and _r15_lethal_cue_time > 0.0
+		_r15_hit_flash.visible = _r15_hit_flash_time > 0.0 and (not is_dead or lethal_cue_live)
 		if _r15_hit_flash.visible:
 			# A short scale pulse makes the existing hit confirmation survive the
 			# normal RTS zoom without particles or per-frame allocations.
 			var flash_progress := clampf(_r15_hit_flash_time / (0.16 + COMBAT_HIT_FLASH_EXTENSION), 0.0, 1.0)
 			var flash_scale := 0.92 + sin((1.0 - flash_progress) * PI) * 0.28
+			if lethal_cue_live:
+				# The killing blow gets a larger, red-hot pulse using the existing
+				# generated mesh. No new VFX or gameplay state is introduced.
+				flash_scale = 1.08 + sin((1.0 - flash_progress) * PI) * 0.34
+				var flash_material := _r15_hit_flash.material_override as StandardMaterial3D
+				if flash_material:
+					flash_material.albedo_color = Color(1.0, 0.44, 0.30, 1.0)
+			else:
+				var normal_flash_material := _r15_hit_flash.material_override as StandardMaterial3D
+				if normal_flash_material:
+					normal_flash_material.albedo_color = Color(1.0, 0.78, 0.36, 0.92)
 			_r15_hit_flash.scale = Vector3.ONE * flash_scale
 	if _r15_damage_label_time > 0.0:
 		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
 	if is_instance_valid(_r15_damage_label):
-		_r15_damage_label.visible = _r15_damage_label_time > 0.0 and not is_dead
+		_r15_damage_label.visible = _r15_damage_label_time > 0.0 and (not is_dead or _r15_lethal_cue_time > 0.0)
 		if _r15_damage_label.visible:
 			var progress := 1.0 - (_r15_damage_label_time / COMBAT_DAMAGE_LABEL_DURATION)
 			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + progress * 0.80
@@ -2379,6 +2396,13 @@ func take_damage(amount: float, from = null) -> void:
 	else:
 		_r15_hit_flash_time = 0.0
 	_show_r15_damage_feedback(applied, hp <= 0.0)
+	if hp <= 0.0:
+		# Keep the killing contact readable after the authoritative DEAD
+		# transition. The flash remains accessibility-gated; the red damage
+		# label and death silhouette carry the cue when reduce_flash is enabled.
+		_r15_lethal_cue_time = LETHAL_HIT_CUE_DURATION
+		if not bool(ProfileManager.settings().get("reduce_flash", false)):
+			_r15_hit_flash_time = LETHAL_HIT_FLASH_DURATION
 	if world:
 		world.on_unit_damaged(self, from)
 		if world.has_method("record_combat_damage"):
@@ -2432,12 +2456,14 @@ func _die(from = null) -> void:
 	# advertising or retaining a ResourceNode target while its death cue plays.
 	_gather_node = null
 	_pending_gather_node = null
-	_r15_hit_flash_time = 0.0
-	_r15_damage_label_time = 0.0
+	if _r15_lethal_cue_time <= 0.0:
+		_r15_hit_flash_time = 0.0
+		_r15_damage_label_time = 0.0
 	if is_instance_valid(_combat_reaction_tween): _combat_reaction_tween.kill()
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
-	if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
-	if is_instance_valid(_r15_damage_label): _r15_damage_label.visible = false
+	if _r15_lethal_cue_time <= 0.0:
+		if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
+		if is_instance_valid(_r15_damage_label): _r15_damage_label.visible = false
 	set_selected(false)
 	collision_layer = 0
 	_play_sfx("death", -12.0)
