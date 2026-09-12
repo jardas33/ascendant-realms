@@ -42,6 +42,9 @@ var _navigation_soft_blockers: Array[Dictionary] = []
 var _world_blocker_root: Node3D
 var _world_blocker_records: Dictionary = {}
 var _world_route_blockers: Array[Dictionary] = []
+var _route_cache_generation := 0
+var _route_result_cache: Dictionary = {}
+var _active_route_segment_cache: Dictionary = {}
 var _environment_world_blocker_counts := {"vegetation": 0, "rocks": 0}
 var terrain_mesh: MeshInstance3D
 var _projectile_container: Node3D
@@ -614,6 +617,7 @@ func _rebuild_navigation_soft_blockers() -> void:
 			"source": "astra_presentation_cache",
 		})
 		_register_environment_world_blocker(node, "presentation", "presentation")
+	_invalidate_route_result_cache()
 
 
 func _world_blocker_key(owner: Node, blocker_id: String) -> String:
@@ -668,17 +672,20 @@ func _register_navigation_obstacle(owner: Node3D, blocker_id: String, center: Ve
 		"half_extents": safe_half,
 		"source": source,
 	})
+	_invalidate_route_result_cache()
 
 
 func _unregister_world_blocker(owner: Node) -> void:
 	if not is_instance_valid(owner):
 		return
+	var changed := false
 	var remove_keys: Array[String] = []
 	for key in _world_blocker_records.keys():
 		var record: Dictionary = _world_blocker_records[key]
 		if record.get("owner") != owner:
 			continue
 		remove_keys.append(String(key))
+		changed = true
 		for field in ["body", "obstacle", "physics_node"]:
 			var node = record.get(field)
 			if is_instance_valid(node):
@@ -688,6 +695,9 @@ func _unregister_world_blocker(owner: Node) -> void:
 	for index in range(_world_route_blockers.size() - 1, -1, -1):
 		if _world_route_blockers[index].get("owner") == owner:
 			_world_route_blockers.remove_at(index)
+			changed = true
+	if changed:
+		_invalidate_route_result_cache()
 	if owner is Building:
 		for collision_object in owner.find_children("*", "CollisionObject3D", true, false):
 			collision_object.set_deferred("collision_layer", 0)
@@ -779,6 +789,7 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 		"gather_interaction_radius": RESOURCE_GATHER_INTERACTION_RADIUS,
 		"source": "resource_core",
 	})
+	_invalidate_route_result_cache()
 	var core_shape := CollisionShape3D.new()
 	core_shape.name = "ResourceCoreBlocker"
 	var core_box := BoxShape3D.new()
@@ -791,9 +802,13 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 
 
 func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
+	var changed := false
 	for index in range(_navigation_soft_blockers.size() - 1, -1, -1):
 		if _navigation_soft_blockers[index].get("node") == node:
 			_navigation_soft_blockers.remove_at(index)
+			changed = true
+	if changed:
+		_invalidate_route_result_cache()
 	_unregister_world_blocker(node)
 
 
@@ -1059,16 +1074,89 @@ func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 ## waypoints; it does not mutate gameplay state, placement geometry, or the
 ## authoritative map.
 const ROUTE_BLOCKER_MARGIN := 0.35
+const ROUTE_CACHE_BUCKET_SIZE := 0.5
+const ROUTE_CACHE_MAX_ENTRIES := 512
+const ROUTE_CACHE_MAX_AGE_FRAMES := 30
+const ROUTE_CACHE_FAILED_MAX_AGE_FRAMES := 1
+const ROUTE_SOLVER_BUDGET_USEC := 14000
 
-func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null) -> Array:
+func _invalidate_route_result_cache() -> void:
+	_route_cache_generation += 1
+	_route_result_cache.clear()
+
+func _route_result_cache_key(origin: Vector3, requested: Vector3, clearance: float, building_snapshot, movement_reason: String, target_blocker = null) -> String:
+	# Explicit building snapshots can represent a caller-owned view that is not
+	# covered by the world's topology generation, so leave those requests uncached.
+	if building_snapshot != null or not origin.is_finite() or not requested.is_finite():
+		return ""
+	var origin_x := roundi(origin.x / ROUTE_CACHE_BUCKET_SIZE)
+	var origin_z := roundi(origin.z / ROUTE_CACHE_BUCKET_SIZE)
+	var target_x := roundi(requested.x / ROUTE_CACHE_BUCKET_SIZE)
+	var target_z := roundi(requested.z / ROUTE_CACHE_BUCKET_SIZE)
+	var origin_y := roundi(origin.y * 2.0)
+	var target_y := roundi(requested.y * 2.0)
+	var clearance_bucket := roundi(clearance * 100.0)
+	var target_blocker_key := str(target_blocker.get_instance_id()) if is_instance_valid(target_blocker) else ""
+	return "%d|%d,%d,%d|%d,%d,%d|%d|%s|%s" % [_route_cache_generation, origin_x, origin_z, origin_y, target_x, target_z, target_y, clearance_bucket, movement_reason if movement_reason != "" else "OTHER", target_blocker_key]
+
+func _route_result_cache_lookup(cache_key: String, origin: Vector3, requested: Vector3) -> Array:
+	if cache_key == "" or not _route_result_cache.has(cache_key):
+		return []
+	var entry: Dictionary = _route_result_cache[cache_key]
+	var frame := Engine.get_process_frames()
+	var max_age := ROUTE_CACHE_FAILED_MAX_AGE_FRAMES if bool(entry.get("failed", false)) else ROUTE_CACHE_MAX_AGE_FRAMES
+	if frame - int(entry.get("frame", -999999)) > max_age:
+		_route_result_cache.erase(cache_key)
+		return []
+	var cached_origin: Vector3 = entry.get("origin", Vector3.INF)
+	var cached_target: Vector3 = entry.get("requested", Vector3.INF)
+	if cached_origin.distance_to(origin) > ROUTE_CACHE_BUCKET_SIZE * 0.5 or cached_target.distance_to(requested) > ROUTE_CACHE_BUCKET_SIZE * 0.5:
+		_route_result_cache.erase(cache_key)
+		return []
+	var points: Array = entry.get("points", [])
+	return points.duplicate()
+
+func _route_result_cache_store(cache_key: String, origin: Vector3, requested: Vector3, points: Array, failed: bool = false) -> void:
+	if cache_key == "" or points.is_empty():
+		return
+	if _route_result_cache.size() >= ROUTE_CACHE_MAX_ENTRIES:
+		var oldest_key := ""
+		var oldest_frame := Engine.get_process_frames() + 1
+		for key in _route_result_cache.keys():
+			var entry: Dictionary = _route_result_cache[key]
+			var entry_frame := int(entry.get("frame", -999999))
+			if entry_frame < oldest_frame:
+				oldest_frame = entry_frame
+				oldest_key = String(key)
+		if oldest_key != "":
+			_route_result_cache.erase(oldest_key)
+	_route_result_cache[cache_key] = {
+		"origin": origin,
+		"requested": requested,
+		"points": points.duplicate(),
+		"frame": Engine.get_process_frames(),
+		"failed": failed,
+	}
+
+func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
+	var solver_started_usec := Time.get_ticks_usec()
+	var route_cache_key := _route_result_cache_key(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
+	var cached_points := _route_result_cache_lookup(route_cache_key, origin, requested)
+	if not cached_points.is_empty():
+		return cached_points
 	var points: Array = []
 	var current := origin
 	var fail_closed := false
+	var solver_bailed := false
 	var ignored: Array = []
 	var final_target := requested
+	_active_route_segment_cache.clear()
 	var blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
 	for _step in range(8):
-		var blocker: Dictionary = _first_route_blocking_blocker(current, final_target, clearance, ignored, blockers)
+		if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
+			solver_bailed = true
+			break
+		var blocker: Dictionary = _first_route_blocking_blocker(current, final_target, clearance, ignored, blockers, target_blocker)
 		if blocker.is_empty():
 			break
 		var center: Vector3 = blocker["center"]
@@ -1085,6 +1173,9 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		var best_second := Vector3.ZERO
 		var best_cost := INF
 		for first in candidates:
+			if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
+				solver_bailed = true
+				break
 			var incoming_clear := origin_inside or not _segment_enters_route_rectangle(current, first, center, half_extents)
 			if not incoming_clear:
 				continue
@@ -1097,6 +1188,9 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			if not exits_away_from_target:
 				continue
 			for second in candidates:
+				if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
+					solver_bailed = true
+					break
 				if second.distance_to(first) < 0.01:
 					continue
 				var middle_clear := not _segment_enters_route_rectangle(first, second, center, half_extents)
@@ -1109,7 +1203,13 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 					best_cost = cost
 					best_first = first
 					best_second = second
+			if solver_bailed:
+				break
+		if solver_bailed:
+			break
 
+		if solver_bailed:
+			break
 		if best_cost == INF:
 			# If every corner of the selected blocker is screened by another
 			# active blocker, bridge to the next safe rectangle corner and let the
@@ -1118,11 +1218,17 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			var bridge_best := Vector3.ZERO
 			var bridge_cost := INF
 			for bridge_blocker in blockers:
+				if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
+					solver_bailed = true
+					break
 				if bridge_blocker.get("node") == blocker.get("node") or ignored.has(bridge_blocker.get("node")):
 					continue
 				var bridge_center: Vector3 = bridge_blocker["center"]
 				var bridge_extents: Vector2 = _route_blocker_half_extents(bridge_blocker, clearance)
 				for bridge_candidate in _route_rectangle_corners(bridge_center, bridge_extents):
+					if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
+						solver_bailed = true
+						break
 					if current.distance_to(bridge_candidate) < 0.2 or points.has(bridge_candidate):
 						continue
 					if _point_inside_route_rectangle(bridge_candidate, center, half_extents):
@@ -1133,6 +1239,10 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 					if bridge_score < bridge_cost:
 						bridge_cost = bridge_score
 						bridge_best = bridge_candidate
+				if solver_bailed:
+					break
+			if solver_bailed:
+				break
 			if bridge_cost < INF:
 				points.append(bridge_best)
 				current = bridge_best
@@ -1163,22 +1273,46 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			final_target = current
 			break
 
+	if solver_bailed:
+		# The broad NavigationAgent remains the deterministic fallback when the
+		# authored detour search exceeds its CPU budget. Do not keep a partial
+		# route that could be mistaken for a complete clearance solution.
+		# This is a valid bounded NavigationAgent fallback, not a permanently
+		# failed route. Reuse it for nearby requests until topology or age makes
+		# a fresh authored detour search worthwhile.
+		_route_result_cache_store(route_cache_key, origin, requested, [requested])
+		return [requested]
+
 	if fail_closed:
 		# Never append the requested target after an unsatisfied blocker chain;
 		# returning the last safe point lets Unit stop without crossing geometry.
+		var fail_result: Array = points if not points.is_empty() else [origin]
+		_route_result_cache_store(route_cache_key, origin, requested, fail_result, true)
 		return points if not points.is_empty() else [origin]
 	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
 		points.append(final_target)
+	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
 
 func _segment_clear_of_active_route_blockers(a: Vector3, b: Vector3, blockers: Array[Dictionary], clearance: float, exempt_node = null) -> bool:
+	var cache_key := "%s|%s|%d|%s" % [a, b, roundi(clearance * 100.0), str(exempt_node.get_instance_id()) if is_instance_valid(exempt_node) else ""]
+	if _active_route_segment_cache.has(cache_key):
+		return bool(_active_route_segment_cache[cache_key])
 	for blocker in blockers:
 		if blocker.get("node") == exempt_node:
 			continue
 		var center: Vector3 = blocker["center"]
 		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		# Broad-phase cull: an exact segment/rectangle test is only necessary
+		# when the segment's axis-aligned bounds overlap the expanded blocker.
+		# This is conservative and therefore preserves the no-pass-through
+		# contract while avoiding a full blocker scan for distant geometry.
+		if maxf(a.x, b.x) < center.x - half_extents.x or minf(a.x, b.x) > center.x + half_extents.x or maxf(a.z, b.z) < center.z - half_extents.y or minf(a.z, b.z) > center.z + half_extents.y:
+			continue
 		if _segment_enters_route_rectangle(a, b, center, half_extents):
+			_active_route_segment_cache[cache_key] = false
 			return false
+	_active_route_segment_cache[cache_key] = true
 	return true
 
 func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
@@ -1210,7 +1344,7 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 			blockers.append(blocker)
 	return blockers
 
-func _first_route_blocking_blocker(origin: Vector3, target: Vector3, clearance: float, ignored: Array, blockers: Array[Dictionary]) -> Dictionary:
+func _first_route_blocking_blocker(origin: Vector3, target: Vector3, clearance: float, ignored: Array, blockers: Array[Dictionary], target_blocker = null) -> Dictionary:
 	var closest: Dictionary = {}
 	var closest_distance := INF
 	for blocker in blockers:
@@ -1219,7 +1353,10 @@ func _first_route_blocking_blocker(origin: Vector3, target: Vector3, clearance: 
 			continue
 		var center: Vector3 = blocker.get("center", node.global_position)
 		var half_extents := _route_blocker_half_extents(blocker, clearance)
-		if _point_inside_route_rectangle(target, center, half_extents) or _segment_enters_route_rectangle(origin, target, center, half_extents):
+		var target_is_interaction_point: bool = (blocker.get("owner") == target_blocker or node == target_blocker) \
+			and not _point_inside_route_rectangle(target, center, blocker.get("half_extents", half_extents))
+		var segment_hits_actual_footprint := _segment_enters_route_rectangle(origin, target, center, blocker.get("half_extents", half_extents))
+		if (not target_is_interaction_point and _point_inside_route_rectangle(target, center, half_extents)) or segment_hits_actual_footprint or (not target_is_interaction_point and _segment_enters_route_rectangle(origin, target, center, half_extents)):
 			var distance := origin.distance_to(center)
 			if distance < closest_distance:
 				closest = blocker
@@ -1294,7 +1431,7 @@ func _segment_enters_route_rectangle(a: Vector3, b: Vector3, center: Vector3, ha
 ## Last-frame guard for the broad production navmesh. It only constrains a
 ## movement velocity when a completed-building clearance envelope would be
 ## entered; it does not change targets, combat range, or authoritative state.
-func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocity: Vector3, delta: float, clearance: float = 1.0) -> Vector3:
+func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocity: Vector3, delta: float, clearance: float = 1.0, movement_reason: String = "OTHER") -> Vector3:
 	var speed := requested_velocity.length()
 	if speed < 0.01:
 		return requested_velocity
@@ -1312,7 +1449,7 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 		if not _segment_enters_route_rectangle(origin, step_end, center, half_extents):
 			continue
 		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(maxf(half_extents.x, half_extents.y) * 4.0, 12.0)
-		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance)
+		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance, null, movement_reason)
 		if not waypoints.is_empty():
 			var waypoint_direction: Vector3 = waypoints[0] - origin
 			waypoint_direction.y = 0.0

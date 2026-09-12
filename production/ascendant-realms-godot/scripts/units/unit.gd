@@ -95,6 +95,13 @@ var _last_deposit_sequence := 0
 # build
 var _build_target = null
 var _repair_target := false
+var _construction_target_cache_building = null
+var _construction_target_cache_position := Vector3(INF, INF, INF)
+var _construction_target_cache_result := Vector3(INF, INF, INF)
+var _construction_target_cache_generation := -1
+var _construction_target_cache_frame := -1
+const CONSTRUCTION_TARGET_CACHE_MAX_AGE_FRAMES := 6
+const CONSTRUCTION_TARGET_CACHE_MAX_ORIGIN_DELTA := 1.0
 
 # nodes
 var agent: NavigationAgent3D
@@ -1324,6 +1331,7 @@ func command_build(building) -> void:
 	_gather_node = null
 	_build_target = building
 	_repair_target = false
+	_clear_construction_target_cache()
 	state = State.BUILDING
 
 func command_repair(building) -> void:
@@ -1341,6 +1349,7 @@ func command_repair(building) -> void:
 	_pending_gather_node = null
 	_build_target = building
 	_repair_target = true
+	_clear_construction_target_cache()
 	state = State.BUILDING
 
 static func construction_interaction_for_point(point: Vector3, building_center: Vector3, extents: Vector2, threshold: float) -> Dictionary:
@@ -1377,6 +1386,17 @@ func get_construction_interaction_snapshot(building = null) -> Dictionary:
 	return snapshot
 
 func _construction_interaction_target(building, interaction: Dictionary) -> Vector3:
+	var physics_frame := Engine.get_physics_frames()
+	var route_generation := int(world.get("_route_cache_generation")) if world else -1
+	var cache_is_current: bool = _construction_target_cache_building == building \
+		and _construction_target_cache_frame >= 0 \
+		and physics_frame - _construction_target_cache_frame <= CONSTRUCTION_TARGET_CACHE_MAX_AGE_FRAMES \
+		and _construction_target_cache_generation == route_generation \
+		and _finite_position(_construction_target_cache_result) \
+		and global_position.distance_to(_construction_target_cache_position) <= CONSTRUCTION_TARGET_CACHE_MAX_ORIGIN_DELTA
+	var navigation_needs_recompute := _navigation_invalid_consecutive > 0 or _navigation_retry_elapsed > 0.0
+	if cache_is_current and not navigation_needs_recompute:
+		return _construction_target_cache_result
 	var threshold := maxf(0.1, float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2)))
 	var route_clearance := maxf(0.1, _building_route_clearance())
 	var edge_offset := route_clearance
@@ -1403,18 +1423,10 @@ func _construction_interaction_target(building, interaction: Dictionary) -> Vect
 	# candidate loop body yields or mutates the unit group, so reuse one shallow
 	# snapshot instead of allocating the same all-units array for every slot.
 	var unit_candidates: Array = world.all_units() if world and world.has_method("all_units") else []
+	var pending_candidates: Array = []
 	for candidate in candidates:
 		var candidate_snapshot := construction_interaction_for_point(candidate, center, Vector2(half_x, half_z), threshold)
 		if not bool(candidate_snapshot.get("valid", false)):
-			continue
-		var route: Array = world.navigation_waypoints_for_unit(global_position, candidate, _building_route_clearance()) if world and world.has_method("navigation_waypoints_for_unit") else [candidate]
-		if route.is_empty():
-			continue
-		var final_point: Vector3 = route.back()
-		if final_point.distance_to(candidate) > 0.2:
-			continue
-		var final_snapshot := construction_interaction_for_point(final_point, center, Vector2(half_x, half_z), threshold)
-		if not bool(final_snapshot.get("valid", false)):
 			continue
 		# Multiple Workers can legitimately share one construction site, but
 		# sending every final approach to the same perimeter point lets
@@ -1431,13 +1443,65 @@ func _construction_interaction_target(building, interaction: Dictionary) -> Vect
 					slot_occupied = true
 					break
 		var cost := global_position.distance_to(candidate) + (1000.0 if slot_occupied else 0.0)
+		pending_candidates.append({"candidate": candidate, "cost": cost})
+	# Rank the safe direct candidates without invoking the combinatorial route
+	# solver. NavigationAgent3D remains the movement authority for construction;
+	# the exact blocker test below only selects a perimeter point that does not
+	# cut through an active blocker. A solver call remains available to ordinary
+	# movement and to explicit non-construction requests.
+	for entry in pending_candidates:
+		var candidate: Vector3 = entry.get("candidate", Vector3.INF)
+		var cost := float(entry.get("cost", INF))
 		if cost < best_cost:
 			best = candidate
 			best_cost = cost
-		if route.size() == 1 and cost < direct_best_cost:
+		if _construction_direct_approach_is_clear(building, candidate) and cost < direct_best_cost:
 			direct_best = candidate
 			direct_best_cost = cost
-	return direct_best if direct_best_cost < INF else best
+	var selected := direct_best if direct_best_cost < INF else best
+	if _finite_position(selected):
+		_construction_target_cache_building = building
+		_construction_target_cache_position = global_position
+		_construction_target_cache_result = selected
+		_construction_target_cache_generation = route_generation
+		_construction_target_cache_frame = physics_frame
+	return selected
+
+func _construction_direct_approach_is_clear(building, candidate: Vector3) -> bool:
+	if not world or not world.has_method("_navigation_blocker_snapshots") or not world.has_method("_segment_enters_route_rectangle"):
+		return false
+	var blockers: Array = world._navigation_blocker_snapshots()
+	var clearance := _building_route_clearance()
+	for blocker in blockers:
+		var center: Vector3 = blocker.get("center", Vector3.ZERO)
+		var half_extents: Vector2 = blocker.get("half_extents", Vector2.ONE)
+		var is_target_building: bool = blocker.get("owner") == building or blocker.get("node") == building
+		if not is_target_building and world.has_method("_route_blocker_half_extents"):
+			half_extents = world._route_blocker_half_extents(blocker, clearance)
+		if world._segment_enters_route_rectangle(global_position, candidate, center, half_extents):
+			return false
+	return true
+
+func _clear_construction_target_cache() -> void:
+	_construction_target_cache_building = null
+	_construction_target_cache_position = Vector3(INF, INF, INF)
+	_construction_target_cache_result = Vector3(INF, INF, INF)
+	_construction_target_cache_generation = -1
+	_construction_target_cache_frame = -1
+
+func _route_request_reason(command_type: String) -> String:
+	if is_worker:
+		if command_type == "gather":
+			return "WORKER_GATHER"
+		if command_type == "return":
+			return "WORKER_RETURN"
+		if command_type == "build":
+			return "WORKER_BUILD_ACTIVE" if state == State.BUILDING else "WORKER_BUILD_APPROACH"
+	if command_type == "attack_move":
+		return "ATTACK_MOVE"
+	if world and team != int(world.player_team):
+		return "AI_COMBAT" if command_type == "attack" else "AI_MOVE"
+	return "MILITARY_MOVE" if not is_worker else "PLAYER_MOVE"
 
 func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
@@ -1460,11 +1524,25 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 			desired_distance = maxf(0.05, interaction_threshold - _building_route_clearance())
 		agent.target_desired_distance = desired_distance
 	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= 0.1 and _navigation_last_command == _navigation_command_type
-	if same_request and not _navigation_target_pending and not _navigation_waypoints.is_empty():
+	var path_needs_refresh: bool = _navigation_invalid_consecutive > 0 or _navigation_retry_elapsed > 0.0 or _navigation_terminal_failure_recorded
+	if same_request and not path_needs_refresh and not _navigation_waypoints.is_empty():
+		# A pending navigation-map sync is not a reason to rerun the authored
+		# route solver. Reuse the same path and let the broad NavigationAgent
+		# become active once its map snapshot is ready.
+		if _navigation_target_pending and world and world.has_method("navigation_target_snapshot"):
+			var pending_snapshot: Dictionary = world.navigation_target_snapshot(_navigation_waypoints[0])
+			if bool(pending_snapshot.get("ready", false)):
+				_navigation_target_pending = false
+				_navigation_effective_target = pending_snapshot.get("projected", _navigation_waypoints[0])
+				_navigation_last_target = _navigation_effective_target
+				_navigation_last_target_ready = true
+				if agent:
+					agent.target_position = _navigation_effective_target
 		return
 	_navigation_last_requested = pos
 	_navigation_last_command = _navigation_command_type
-	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance()) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
+	var target_blocker = _build_target if command_type == "build" and is_instance_valid(_build_target) else null
+	_navigation_waypoints = [pos] if target_blocker != null else (world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance(), null, _route_request_reason(command_type), target_blocker) if world and world.has_method("navigation_waypoints_for_unit") else [pos])
 	_navigation_waypoint_index = 0
 	if _navigation_waypoints.is_empty():
 		_navigation_waypoints = [pos]
@@ -2407,7 +2485,7 @@ func _move_along_path(delta: float) -> bool:
 	# pin a unit on the waypoint during an ordinary player move.
 	var route_is_active := _navigation_waypoints.size() > 1
 	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_is_active:
-		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
+		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance(), _route_request_reason(_navigation_command_type))
 	var clearance_redirected: bool = desired.distance_to(requested_velocity) > 0.05
 	if clearance_redirected and is_worker:
 		velocity.x = desired.x
@@ -2465,7 +2543,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 		return
 	var route_is_active := _navigation_waypoints.size() > 1
 	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_is_active:
-		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance())
+		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance(), _route_request_reason(_navigation_command_type))
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z
