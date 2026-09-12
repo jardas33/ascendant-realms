@@ -220,6 +220,13 @@ const P1R13_MILITARY_VISUAL_EMPHASIS := 1.52
 const P1R13_HERO_VISUAL_EMPHASIS := 1.68
 const P1R13_VISUAL_HEIGHT_MAX := 3.8
 
+# Visual Convergence R3: expand only the two named production heroes to the
+# existing presentation ceiling after the authoritative pick shape is built.
+# The mesh/health anchor gains presence at RTS scale; unit definitions, body
+# shape, selection radii, navigation, combat, and save data stay authoritative.
+const R3_HERO_SILHOUETTE_TARGET_HEIGHT := 3.8
+const R3_HERO_SILHOUETTE_IDS := ["barrosan_hero_thane", "vorthak_hero_binder"]
+
 # P1-R20 imported-model readability: a small per-instance material lift keeps
 # authored character identity intact while separating silhouettes from noisy
 # ground. TeamPip is an explicit debug/review-only ownership cue; no gameplay
@@ -334,6 +341,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_build_attack_range_ring()
 	_build_health_bar()
 	_build_r15_combat_presentation()
+	_apply_r3_hero_silhouette_expansion()
 	refresh_upgrade_bonuses()
 
 func play_production_arrival_cue() -> void:
@@ -619,6 +627,23 @@ func _visual_target_height() -> float:
 	elif role == "siege" or bool(def.get("is_siege", false)):
 		emphasis = 1.08
 	return clampf(configured * emphasis, 1.35, P1R13_VISUAL_HEIGHT_MAX)
+
+func _apply_r3_hero_silhouette_expansion() -> void:
+	if not is_hero or not R3_HERO_SILHOUETTE_IDS.has(unit_id) or not is_instance_valid(model_root):
+		return
+	var visual_model := model_root.get_child(0) as Node3D if model_root.get_child_count() > 0 else null
+	if not is_instance_valid(visual_model):
+		return
+	var current_height := ModelUtils.measure_height(visual_model)
+	if current_height <= 0.001 or current_height >= R3_HERO_SILHOUETTE_TARGET_HEIGHT:
+		return
+	model_root.scale *= R3_HERO_SILHOUETTE_TARGET_HEIGHT / current_height
+	var final_height := ModelUtils.measure_height(visual_model)
+	# Re-anchor presentation-only elements that sit above the authored mesh.
+	if is_instance_valid(_team_marker):
+		_team_marker.position.y = final_height + 0.22
+	if is_instance_valid(_health_bar_root):
+		_health_bar_root.position.y = final_height + 0.45
 
 func _anim_lib_path() -> String:
 	var path: String = def.get("model", "")
