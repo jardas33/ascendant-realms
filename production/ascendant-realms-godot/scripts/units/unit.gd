@@ -3,6 +3,8 @@ extends CharacterBody3D
 ## The universal combat/worker unit. Data-driven from a unit def dictionary.
 ## Handles movement (NavigationAgent3D), combat, gathering, states, selection.
 
+const WorldBlockerContract := preload("res://scripts/world/world_blocker_contract.gd")
+
 signal died(unit)
 
 enum State { IDLE, MOVING, ATTACK_MOVE, ATTACKING, GATHERING, RETURNING, BUILDING, HOLD, PATROL, FOLLOW, DEAD }
@@ -206,10 +208,9 @@ const PRODUCTION_ARRIVAL_MODEL_START_SCALE := 1.10
 const PRODUCTION_ARRIVAL_SHADOW_START := 0.58
 
 func _building_route_clearance() -> float:
-	# Workers do not use physics collisions against buildings (their body mask is
-	# zero), so a larger worker-only envelope incorrectly classifies nearby
-	# construction points as blocked. Keep the measured geometry clearance for
-	# every ground unit; route safety remains centralized in GameWorld.
+	# Workers and combat units share the same measured geometry clearance. Their
+	# world mask is now enforced centrally by WorldBlockerContract, while route
+	# safety remains centralized in GameWorld.
 	return BUILDING_ROUTE_CLEARANCE
 
 # P1-R13 presentation targets. These affect only the visible model envelope;
@@ -300,8 +301,12 @@ func _v0436_r1j_set_target(value, reason: String) -> void:
 
 func _ready() -> void:
 	add_to_group("units")
-	collision_layer = 2       # units layer
-	collision_mask = 0        # we resolve avoidance via nav; no physics collisions
+	collision_layer = WorldBlockerContract.UNIT_LAYER
+	# Navigation avoidance remains the preferred path solution, while this mask
+	# provides the final no-penetration failsafe for buildings, resources, and
+	# explicitly registered substantial world geometry. It excludes UNIT_LAYER so
+	# friendly units do not acquire new hard-body shoving behavior.
+	collision_mask = WorldBlockerContract.UNIT_WORLD_COLLISION_MASK
 	floor_max_angle = deg_to_rad(60)
 
 func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
@@ -366,8 +371,9 @@ func play_production_arrival_cue() -> void:
 	if is_instance_valid(_p1r22_contact_shadow):
 		_production_arrival_tween.tween_property(_p1r22_contact_shadow, "scale", settled_shadow_scale, PRODUCTION_ARRIVAL_CUE_DURATION)
 
-## A capsule shape purely so mouse raycasts can pick this unit for selection.
-## The body's collision_mask stays 0, so this never causes physical collisions.
+## A capsule sized from the existing visible unit envelope. It serves selection
+## and the shared world-blocking physics contract; UNIT_LAYER is intentionally
+## absent from the mask so unit-vs-unit hard collision remains unchanged.
 func _add_pick_shape() -> void:
 	var visual_height := ModelUtils.measure_height(model_root) if is_instance_valid(model_root) else 0.0
 	var h: float = maxf(1.2, maxf(float(def.get("height", 1.8)), visual_height))

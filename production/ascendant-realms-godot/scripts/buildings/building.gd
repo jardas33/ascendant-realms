@@ -492,8 +492,8 @@ func _build_construction_status_visual() -> void:
 	add_child(_construction_status_fill)
 
 func _add_selection_pick_shape() -> void:
-	## Selection-only envelope for visible-footprint coverage. Its zero mask
-	## keeps it out of physical interactions and navigation.
+	## Shared world-blocking envelope for visible-footprint coverage. Units own
+	## the opposing mask; navigation detours are registered by GameWorld.
 	var extents := _measure_selection_visual_extents()
 	var height := maxf(1.0, footprint * 1.4)
 	var shape := CollisionShape3D.new()

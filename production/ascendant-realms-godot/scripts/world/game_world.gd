@@ -8,6 +8,7 @@ const Building := preload("res://scripts/buildings/building.gd")
 const ProjectileScript := preload("res://scripts/units/projectile.gd")
 const ResourceNodeScript := preload("res://scripts/world/resource_node.gd")
 const CapturePointScript := preload("res://scripts/world/capture_point.gd")
+const WorldBlockerContract := preload("res://scripts/world/world_blocker_contract.gd")
 
 const VISIBILITY_UNEXPLORED := 0
 const VISIBILITY_EXPLORED_NOT_VISIBLE := 1
@@ -35,6 +36,13 @@ var navigation_map_iteration := 0
 ## route layer as completed buildings. They are cached once after composition
 ## build; no collision body or per-frame blocker reconstruction is required.
 var _navigation_soft_blockers: Array[Dictionary] = []
+## Runtime world blockers are deliberately owned here so buildings, resources,
+## substantial environment props, and bridge supports share one collision and
+## avoidance contract without changing their gameplay scripts or art assets.
+var _world_blocker_root: Node3D
+var _world_blocker_records: Dictionary = {}
+var _world_route_blockers: Array[Dictionary] = []
+var _environment_world_blocker_counts := {"vegetation": 0, "rocks": 0}
 var terrain_mesh: MeshInstance3D
 var _projectile_container: Node3D
 var _fx_container: Node3D
@@ -140,6 +148,9 @@ func _ready() -> void:
 	_fx_container = Node3D.new()
 	_fx_container.name = "FX"
 	add_child(_fx_container)
+	_world_blocker_root = Node3D.new()
+	_world_blocker_root.name = "WorldBlockers"
+	add_child(_world_blocker_root)
 	var environment_stage := _m20_begin("GAMEWORLD_ENVIRONMENT", "GAMEWORLD_READY", 1)
 	_setup_environment()
 	_m20_end(environment_stage)
@@ -491,6 +502,7 @@ func _scatter_environment() -> void:
 		ModelUtils.scale_to_height(b, 8.0)
 		ModelUtils.ground_model(b)
 		_tint_hollowspan_bridge(b)
+		_register_bridge_structural_blockers(b)
 
 	var decor := Node3D.new()
 	decor.name = "Decor"
@@ -601,6 +613,135 @@ func _rebuild_navigation_soft_blockers() -> void:
 			"half_extents": bounds["half_extents"],
 			"source": "astra_presentation_cache",
 		})
+		_register_environment_world_blocker(node, "presentation", "presentation")
+
+
+func _world_blocker_key(owner: Node, blocker_id: String) -> String:
+	return "%s:%s" % [str(owner.get_instance_id()), blocker_id]
+
+
+func _register_navigation_obstacle(owner: Node3D, blocker_id: String, center: Vector3, half_extents: Vector2, height: float, object_class: String, source: String, collision_layer: int, create_physics_body: bool = false, physics_node: Node = null) -> void:
+	if not is_instance_valid(owner) or not is_instance_valid(_world_blocker_root):
+		return
+	var key := _world_blocker_key(owner, blocker_id)
+	if _world_blocker_records.has(key):
+		return
+	var safe_half := Vector2(maxf(0.5, half_extents.x), maxf(0.5, half_extents.y))
+	var safe_height := maxf(1.0, height)
+	var blocker_body: StaticBody3D = null
+	if create_physics_body:
+		blocker_body = StaticBody3D.new()
+		blocker_body.name = "WorldBlocker_%s" % blocker_id
+		blocker_body.collision_layer = collision_layer
+		blocker_body.collision_mask = WorldBlockerContract.UNIT_LAYER
+		blocker_body.position = Vector3(center.x, safe_height * 0.5, center.z)
+		var shape := CollisionShape3D.new()
+		var box := BoxShape3D.new()
+		box.size = Vector3(safe_half.x * 2.0, safe_height, safe_half.y * 2.0)
+		shape.shape = box
+		blocker_body.add_child(shape)
+		_world_blocker_root.add_child(blocker_body)
+	var obstacle := NavigationObstacle3D.new()
+	obstacle.name = "NavigationObstacle_%s" % blocker_id
+	obstacle.avoidance_enabled = true
+	obstacle.radius = maxf(0.5, maxf(safe_half.x, safe_half.y))
+	obstacle.height = safe_height
+	obstacle.position = Vector3(center.x, 0.0, center.z)
+	_world_blocker_root.add_child(obstacle)
+	_world_blocker_records[key] = {
+		"owner": owner,
+		"body": blocker_body,
+		"obstacle": obstacle,
+		"physics_node": physics_node,
+		"object_class": object_class,
+		"center": Vector3(center.x, 0.0, center.z),
+		"half_extents": safe_half,
+		"source": source,
+	}
+	var route_node: Node = blocker_body if blocker_body else owner
+	_world_route_blockers.append({
+		"node": route_node,
+		"owner": owner,
+		"object_id": "%s_%s" % [object_class.to_lower(), blocker_id],
+		"object_class": object_class,
+		"center": Vector3(center.x, 0.0, center.z),
+		"half_extents": safe_half,
+		"source": source,
+	})
+
+
+func _unregister_world_blocker(owner: Node) -> void:
+	if not is_instance_valid(owner):
+		return
+	var remove_keys: Array[String] = []
+	for key in _world_blocker_records.keys():
+		var record: Dictionary = _world_blocker_records[key]
+		if record.get("owner") != owner:
+			continue
+		remove_keys.append(String(key))
+		for field in ["body", "obstacle", "physics_node"]:
+			var node = record.get(field)
+			if is_instance_valid(node):
+				node.queue_free()
+	for key in remove_keys:
+		_world_blocker_records.erase(key)
+	for index in range(_world_route_blockers.size() - 1, -1, -1):
+		if _world_route_blockers[index].get("owner") == owner:
+			_world_route_blockers.remove_at(index)
+	if owner is Building:
+		for collision_object in owner.find_children("*", "CollisionObject3D", true, false):
+			collision_object.set_deferred("collision_layer", 0)
+			collision_object.set_deferred("collision_mask", 0)
+
+
+func _building_world_blocker_half_extents(building: Building) -> Vector2:
+	var half_extents := Vector2(float(building.def.get("footprint", 4.0)), float(building.def.get("footprint", 4.0)))
+	if building.has_method("get_selection_geometry"):
+		var geometry: Dictionary = building.get_selection_geometry()
+		var visual_extents: Dictionary = geometry.get("visual_extents", {})
+		half_extents.x = maxf(half_extents.x, float(visual_extents.get("x", half_extents.x)))
+		half_extents.y = maxf(half_extents.y, float(visual_extents.get("z", half_extents.y)))
+	return half_extents
+
+
+func _register_building_world_blocker(building: Building) -> void:
+	if not is_instance_valid(building) or building.is_dead:
+		return
+	_register_navigation_obstacle(building, "building_core", building.global_position, _building_world_blocker_half_extents(building), maxf(2.0, building.footprint * 1.4), "BUILDING" if building.is_built else "CONSTRUCTION_SITE", "building_world_blocker", WorldBlockerContract.BUILDING_BLOCKER_LAYER)
+
+
+func _is_substantial_environment_asset(path: String) -> bool:
+	return "/environment/vegetation/" in path or "/environment/rocks/" in path or "/environment/structures/" in path
+
+
+func _register_environment_world_blocker(node: Node3D, blocker_id: String, asset_class: String = "") -> void:
+	if not is_instance_valid(node) or not is_inside_playable_bounds(node.global_position, 1.0):
+		return
+	if asset_class == "vegetation" and int(_environment_world_blocker_counts["vegetation"]) >= 3:
+		return
+	if asset_class == "rocks" and int(_environment_world_blocker_counts["rocks"]) >= 4:
+		return
+	var bounds := _visible_world_xz_bounds(node)
+	if bounds.is_empty():
+		return
+	var half_extents: Vector2 = bounds["half_extents"]
+	# Keep malformed or aggregate imported scenery out of the blocker contract;
+	# only substantial individual props and authored structural pieces qualify.
+	if half_extents.x > 14.0 or half_extents.y > 14.0:
+		return
+	_register_navigation_obstacle(node, blocker_id, bounds["center"], half_extents, 3.0, "ENVIRONMENT_PROP", "environment_world_blocker", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
+	if asset_class == "vegetation" or asset_class == "rocks":
+		_environment_world_blocker_counts[asset_class] = int(_environment_world_blocker_counts[asset_class]) + 1
+
+
+func _register_bridge_structural_blockers(bridge: Node3D) -> void:
+	if not is_instance_valid(bridge):
+		return
+	# The bridge deck stays open. Two narrow side strips model the substantial
+	# rails/supports that units must not pass through while crossing Hollowspan.
+	for side in [-1, 1]:
+		var center := bridge.global_position + Vector3(5.35 * float(side), 0.0, 0.0)
+		_register_navigation_obstacle(bridge, "bridge_structure_%s" % ("west" if side < 0 else "east"), center, Vector2(1.0, 13.0), 3.6, "BRIDGE_STRUCTURE", "hollowspan_bridge_structure", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
 
 
 func _resource_core_half_extents(kind: String, visible_half: Vector2) -> Vector2:
@@ -617,18 +758,20 @@ func _resource_core_half_extents(kind: String, visible_half: Vector2) -> Vector2
 
 
 func _register_resource_navigation_blocker(node: ResourceNode) -> void:
-	if not is_instance_valid(node) or node.resource_kind not in ["gold", "stone"]:
+	if not is_instance_valid(node) or node.depleted:
 		return
 	var bounds := _visible_world_xz_bounds(node)
-	if bounds.is_empty():
-		return
-	var visible_half: Vector2 = bounds["half_extents"]
+	var center := node.global_position
+	var visible_half := Vector2(node.footprint, node.footprint)
+	if not bounds.is_empty():
+		center = bounds["center"]
+		visible_half = bounds["half_extents"]
 	var core_half := _resource_core_half_extents(node.resource_kind, visible_half)
 	_navigation_soft_blockers.append({
 		"node": node,
 		"object_id": "resource_%s_%s" % [node.resource_kind, str(node.get_instance_id())],
 		"object_class": "RESOURCE_NODE",
-		"center": bounds["center"],
+		"center": center,
 		"half_extents": core_half,
 		"core_half_extents": core_half,
 		"visible_half_extents": visible_half,
@@ -636,6 +779,14 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 		"gather_interaction_radius": RESOURCE_GATHER_INTERACTION_RADIUS,
 		"source": "resource_core",
 	})
+	var core_shape := CollisionShape3D.new()
+	core_shape.name = "ResourceCoreBlocker"
+	var core_box := BoxShape3D.new()
+	core_box.size = Vector3(core_half.x * 2.0, 2.0, core_half.y * 2.0)
+	core_shape.shape = core_box
+	core_shape.position = Vector3(center.x - node.global_position.x, 1.0, center.z - node.global_position.z)
+	node.add_child(core_shape)
+	_register_navigation_obstacle(node, "resource_core", center, core_half, 2.0, "RESOURCE_NODE", "resource_core", WorldBlockerContract.RESOURCE_BLOCKER_LAYER, false, core_shape)
 	node.depleted_once.connect(_on_resource_depleted_navigation_blocker)
 
 
@@ -643,6 +794,7 @@ func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
 	for index in range(_navigation_soft_blockers.size() - 1, -1, -1):
 		if _navigation_soft_blockers[index].get("node") == node:
 			_navigation_soft_blockers.remove_at(index)
+	_unregister_world_blocker(node)
 
 
 func _visible_world_xz_bounds(root: Node3D) -> Dictionary:
@@ -830,6 +982,8 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
 	_prep_decor(inst)
+	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
+		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 
 func _prep_decor(n: Node) -> void:
 	if n is CollisionObject3D:
@@ -1030,8 +1184,13 @@ func _segment_clear_of_active_route_blockers(a: Vector3, b: Vector3, blockers: A
 func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
 	var blockers: Array[Dictionary] = []
 	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
+	var registered_buildings: Array = []
+	for world_blocker in _world_route_blockers:
+		var owner = world_blocker.get("owner")
+		if owner is Building and is_instance_valid(owner):
+			registered_buildings.append(owner)
 	for building in buildings:
-		if not is_instance_valid(building) or building.is_dead or not building.is_built:
+		if not is_instance_valid(building) or building.is_dead or registered_buildings.has(building):
 			continue
 		var half_extents := Vector2(float(building.def.get("footprint", 4.0)), float(building.def.get("footprint", 4.0)))
 		if building.has_method("get_selection_geometry"):
@@ -1040,6 +1199,11 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 			half_extents.x = maxf(half_extents.x, float(visual_extents.get("x", half_extents.x)))
 			half_extents.y = maxf(half_extents.y, float(visual_extents.get("z", half_extents.y)))
 		blockers.append({"node": building, "center": building.global_position, "half_extents": half_extents, "object_id": String(building.get("building_id")), "source": "completed_building"})
+	for blocker in _world_route_blockers:
+		var route_node = blocker.get("node")
+		var owner = blocker.get("owner")
+		if is_instance_valid(route_node) and is_instance_valid(owner) and (not owner is ResourceNode or not owner.depleted):
+			blockers.append(blocker)
 	for blocker in _navigation_soft_blockers:
 		var node = blocker.get("node")
 		if is_instance_valid(node) and (not node is ResourceNode or not node.depleted):
@@ -1319,6 +1483,7 @@ func _create_building(bdef: Dictionary, team: int, pos: Vector3, prebuilt: bool)
 	add_child(b)
 	b.global_position = pos
 	b.configure(d, team, commanders[team] if team < commanders.size() else null, self, prebuilt)
+	_register_building_world_blocker(b)
 	b.died.connect(_on_building_died)
 	if team < commanders.size():
 		commanders[team].buildings.append(b)
@@ -1962,6 +2127,7 @@ func _on_unit_died(unit) -> void:
 			cmd.hero_ref = null
 
 func _on_building_died(building) -> void:
+	_unregister_world_blocker(building)
 	if building.team < commanders.size():
 		commanders[building.team].buildings.erase(building)
 		commanders[building.team].recompute_pop()
@@ -1992,6 +2158,7 @@ func get_v0431_construction_audit() -> Dictionary:
 		"completed_count": construction_events.size()}
 
 func on_building_destroyed(building) -> void:
+	_unregister_world_blocker(building)
 	if building.get_meta("v0436_destruction_recorded", false):
 		return
 	building.set_meta("v0436_destruction_recorded", true)
