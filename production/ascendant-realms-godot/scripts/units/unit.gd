@@ -109,6 +109,8 @@ var model_root: Node3D
 var _team_marker: MeshInstance3D
 var _p1r22_contact_shadow: MeshInstance3D
 var anim: AnimationPlayer
+var _r3b_work_tool_attachment: BoneAttachment3D
+var _r3b_cargo_attachment: BoneAttachment3D
 var selection_ring: MeshInstance3D
 var _hover_ring: MeshInstance3D
 var _hovered := false
@@ -213,6 +215,12 @@ const WEAPON_ARC_CUE_WIDTH := 0.11
 const PRODUCTION_ARRIVAL_CUE_DURATION := 0.48
 const PRODUCTION_ARRIVAL_MODEL_START_SCALE := 1.10
 const PRODUCTION_ARRIVAL_SHADOW_START := 0.58
+
+# R3B action-presentation prototype. These are visible-only cues attached to
+# the existing Worker skeleton; they do not participate in collision, damage,
+# navigation, economy, or stable identity.
+const R3B_WORK_TOOL_PATH := "res://assets/characters/visual_convergence/barrosan_worker_tool.glb"
+const R3B_CARGO_PATH := "res://assets/characters/visual_convergence/barrosan_worker_cargo_bundle.glb"
 
 func _building_route_clearance() -> float:
 	# Workers and combat units share the same measured geometry clearance. Their
@@ -490,6 +498,7 @@ func _build_model() -> void:
 		ModelUtils.setup_character_for_movement(m, _visual_height)
 		_apply_p1r20_model_materials(m)
 		_build_slice4_role_accessories(m)
+		_build_r3b_worker_presentation(m)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
@@ -576,6 +585,53 @@ func _build_slice4_role_accessories(model: Node3D) -> void:
 		accessory.scale = Vector3.ONE * float(spec.get("scale", 1.0))
 		for mesh in accessory.find_children("*", "GeometryInstance3D", true, false):
 			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+func _build_r3b_worker_presentation(model: Node3D) -> void:
+	if not is_worker:
+		return
+	var skeleton := model.find_child("GeneralSkeleton", true, false) as Skeleton3D
+	if not skeleton:
+		for candidate in model.find_children("*", "Skeleton3D", true, false):
+			if candidate is Skeleton3D:
+				skeleton = candidate
+				break
+	if not skeleton:
+		return
+	_r3b_work_tool_attachment = _r3b_attach_visual(skeleton, "RightHand", R3B_WORK_TOOL_PATH, "R3B_WorkTool", Vector3(0.003, -0.134, -0.0005), Vector3(-90.0, -90.0, 0.0), 0.64)
+	_r3b_cargo_attachment = _r3b_attach_visual(skeleton, "Spine", R3B_CARGO_PATH, "R3B_CargoBundle", Vector3(0.0, 0.08, 0.30), Vector3(0.0, 0.0, 0.0), 0.92)
+	if is_instance_valid(_r3b_work_tool_attachment):
+		_r3b_work_tool_attachment.visible = false
+	if is_instance_valid(_r3b_cargo_attachment):
+		_r3b_cargo_attachment.visible = false
+
+func _r3b_attach_visual(skeleton: Skeleton3D, bone_name: String, scene_path: String, attachment_name: String, local_position: Vector3, local_rotation: Vector3, local_scale: float) -> BoneAttachment3D:
+	if skeleton.find_bone(bone_name) < 0 or not ResourceLoader.exists(scene_path):
+		return null
+	var scene := load(scene_path) as PackedScene
+	if not scene:
+		return null
+	var attachment := BoneAttachment3D.new()
+	attachment.name = attachment_name
+	attachment.bone_name = bone_name
+	skeleton.add_child(attachment)
+	var visual := scene.instantiate() as Node3D
+	if not visual:
+		attachment.queue_free()
+		return null
+	attachment.add_child(visual)
+	visual.position = local_position
+	visual.rotation_degrees = local_rotation
+	visual.scale = Vector3.ONE * local_scale
+	return attachment
+
+func _update_r3b_worker_presentation() -> void:
+	if not is_worker:
+		return
+	var actively_gathering := state == State.GATHERING and is_instance_valid(_gather_node) and global_position.distance_to(_gather_node.global_position) <= 2.2
+	if is_instance_valid(_r3b_work_tool_attachment):
+		_r3b_work_tool_attachment.visible = actively_gathering
+	if is_instance_valid(_r3b_cargo_attachment):
+		_r3b_cargo_attachment.visible = _carry > 0
 
 func _apply_m_initial_facing() -> void:
 	if not model_root or is_dead:
@@ -1859,6 +1915,7 @@ func _physics_process(delta: float) -> void:
 		State.FOLLOW:
 			_state_follow(delta)
 	_update_m_motion_presentation(delta)
+	_update_r3b_worker_presentation()
 
 func _update_m_motion_presentation(delta: float) -> void:
 	var current_position := global_position
