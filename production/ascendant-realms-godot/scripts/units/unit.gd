@@ -289,6 +289,11 @@ const SLICE4_ACCESSORIES := {
 		{"path": "res://assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb", "prefix": "OutriderMantle", "bone": "UpperChest", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
 		{"path": "res://assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb", "prefix": "OutriderHelm", "bone": "Head", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
 	],
+	"vorthak_veil_warlock": [
+		{"path": "res://assets/characters/visual_convergence/vorthak_veil_warlock_r1_accessories.glb", "prefix": "VeilCrown", "bone": "Head", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
+		{"path": "res://assets/characters/visual_convergence/vorthak_veil_warlock_r1_accessories.glb", "prefix": "VeilFocus", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.78},
+		{"path": "res://assets/characters/visual_convergence/vorthak_veil_warlock_r1_accessories.glb", "prefix": "VeilMantle", "bone": "UpperChest", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
+	],
 }
 
 func _v0436_r1j_recorder():
