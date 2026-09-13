@@ -1147,6 +1147,7 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 	var points: Array = []
 	var current := origin
 	var fail_closed := false
+	var origin_started_inside_blocker := false
 	var solver_bailed := false
 	var ignored: Array = []
 	var final_target := requested
@@ -1164,6 +1165,8 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		var candidates: Array[Vector3] = _route_rectangle_corners(center, half_extents)
 		var destination_inside := _point_inside_route_rectangle(final_target, center, half_extents)
 		var origin_inside := _point_inside_route_rectangle(current, center, half_extents)
+		if origin_inside:
+			origin_started_inside_blocker = true
 		var target_direction := final_target - center
 		target_direction.y = 0.0
 		if target_direction.length_squared() > 0.01:
@@ -1284,6 +1287,17 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		return [requested]
 
 	if fail_closed:
+		var worker_owned_route := movement_reason == "PLAYER_MOVE" or movement_reason.begins_with("WORKER_")
+		if worker_owned_route and origin_started_inside_blocker and origin.distance_to(requested) > maxf(1.2, clearance):
+			# A Worker can legitimately receive a plain move while still inside
+			# its own starting-base envelope. If every authored escape corner is
+			# screened by adjacent base blockers, preserving [origin] makes the
+			# NavigationAgent report immediate arrival and clears the public move.
+			# Keep the semantic destination instead; the existing per-frame
+			# blocker constraint remains active for this direct fallback and keeps
+			# the body from entering a real blocker.
+			_route_result_cache_store(route_cache_key, origin, requested, [requested])
+			return [requested]
 		# Never append the requested target after an unsatisfied blocker chain;
 		# returning the last safe point lets Unit stop without crossing geometry.
 		var fail_result: Array = points if not points.is_empty() else [origin]
