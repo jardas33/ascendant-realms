@@ -284,6 +284,11 @@ const SLICE4_ACCESSORIES := {
 		{"path": "res://assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb", "prefix": "Bow", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.72},
 		{"path": "res://assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb", "prefix": "Quiver", "bone": "Spine", "position": Vector3(0.0, 0.04, 0.22), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 0.68},
 	],
+	"barrosan_outrider": [
+		{"path": "res://assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb", "prefix": "OutriderAxe", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.82},
+		{"path": "res://assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb", "prefix": "OutriderMantle", "bone": "UpperChest", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
+		{"path": "res://assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb", "prefix": "OutriderHelm", "bone": "Head", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 1.0},
+	],
 }
 
 func _v0436_r1j_recorder():
