@@ -872,6 +872,7 @@ func freeze_as_defeated_remnant() -> void:
 	_v0436_r1j_set_target(null, "commander_defeated")
 	_gather_node = null
 	_pending_gather_node = null
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	_follow_target = null
@@ -1181,6 +1182,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_pending_gather_node = null
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	_follow_target = null
@@ -1206,6 +1208,7 @@ func command_stop() -> void:
 	_v0436_r1j_set_target(null, "command_cancellation")
 	_gather_node = null
 	_pending_gather_node = null
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	_follow_target = null
@@ -1241,6 +1244,7 @@ func command_attack(tgt, r1j_order_id: String = "") -> void:
 	var before_target = _target
 	_hold_position = false
 	_gather_node = null
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	_attack_move_ordered = false
@@ -1307,6 +1311,7 @@ func command_gather(node) -> void:
 	_reset_ordinary_move_settlement()
 	_hold_position = false
 	_v0436_r1j_set_target(null, "command_cancellation")
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	_attack_move_ordered = false
@@ -1339,8 +1344,10 @@ func command_build(building) -> void:
 	_hold_position = false
 	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
+	_release_build_collision_exception()
 	_build_target = building
 	_repair_target = false
+	_add_build_collision_exceptions(building)
 	_clear_construction_target_cache()
 	state = State.BUILDING
 
@@ -1357,6 +1364,7 @@ func command_repair(building) -> void:
 	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_pending_gather_node = null
+	_release_build_collision_exception()
 	_build_target = building
 	_repair_target = true
 	_clear_construction_target_cache()
@@ -1518,10 +1526,11 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	if command_type != "":
 		_navigation_command_type = command_type
 	if agent:
-		# Attack waypoints are deliberately placed just inside the authored
-		# combat reach. The normal movement arrival tolerance would stop short
-		# of that waypoint and leave melee units permanently out of range.
-		var desired_distance := 0.05 if command_type == "attack" else ARRIVE_DIST
+		# Attack and Worker interaction waypoints are deliberately placed just
+		# inside the authored reach. The normal movement arrival tolerance would
+		# stop short of those waypoints and leave the unit permanently out of
+		# range.
+		var desired_distance := 0.05 if command_type == "attack" or command_type == "gather" else ARRIVE_DIST
 		if command_type == "build" and is_instance_valid(_build_target):
 			# Construction navigation targets are already offset to the safe side
 			# of the building perimeter. Reusing the generic 1.2m arrival distance
@@ -1551,8 +1560,12 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 		return
 	_navigation_last_requested = pos
 	_navigation_last_command = _navigation_command_type
-	var target_blocker = _build_target if command_type == "build" and is_instance_valid(_build_target) else null
-	_navigation_waypoints = [pos] if target_blocker != null else (world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance(), null, _route_request_reason(command_type), target_blocker) if world and world.has_method("navigation_waypoints_for_unit") else [pos])
+	var target_blocker = null
+	if command_type == "build" and is_instance_valid(_build_target):
+		target_blocker = _build_target
+	elif command_type == "gather" and is_instance_valid(_gather_node):
+		target_blocker = _gather_node
+	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance(), null, _route_request_reason(command_type), target_blocker) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
 	_navigation_waypoint_index = 0
 	if _navigation_waypoints.is_empty():
 		_navigation_waypoints = [pos]
@@ -2165,7 +2178,8 @@ func _state_gather(delta: float) -> void:
 			return
 	var d := global_position.distance_to(_gather_node.global_position)
 	if d > 2.2:
-		_move_target = _gather_node.global_position
+		if _move_target.distance_to(_gather_node.global_position) > 2.2:
+			_move_target = _gather_interaction_target(_gather_node)
 		_set_agent_target(_move_target, "gather")
 		_move_along_path(delta)
 	else:
@@ -2192,6 +2206,17 @@ func _state_gather(delta: float) -> void:
 				state = State.RETURNING
 			elif got == 0:
 				state = State.RETURNING if _carry > 0 else State.IDLE
+
+func _gather_interaction_target(node) -> Vector3:
+	var direction: Vector3 = global_position - node.global_position
+	direction.y = 0.0
+	if direction.length_squared() < 0.01:
+		direction = Vector3.RIGHT
+	# The resource core is substantially smaller than the visible deposit. This
+	# point remains outside the core while staying inside the existing 2.2m
+	# gather interaction radius, so navigation can route to a legal boundary
+	# point instead of asking avoidance to enter the resource centre.
+	return node.global_position + direction.normalized() * 2.1
 
 func _state_return(delta: float) -> void:
 	if world and not world.game_running:
@@ -2289,16 +2314,19 @@ func _state_build(delta: float) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
 	if not is_instance_valid(_build_target) or _build_target.is_dead:
+		_release_build_collision_exception()
 		_build_target = null
 		_repair_target = false
 		state = State.IDLE
 		return
 	if _repair_target and (not _build_target.is_built or _build_target.hp >= _build_target.max_hp):
+		_release_build_collision_exception()
 		_build_target = null
 		_repair_target = false
 		state = State.IDLE
 		return
 	if not _repair_target and _build_target.is_built:
+		_release_build_collision_exception()
 		_build_target = null
 		state = State.IDLE
 		return
@@ -2368,6 +2396,70 @@ func _worker_interaction_transition_is_pending() -> bool:
 	# Until _state_return installs the new return target, a callback carrying the
 	# old interaction velocity must not move the Worker in the old direction.
 	return is_worker and state == State.RETURNING and (_navigation_command_type == "gather" or _navigation_command_type == "build")
+
+func _release_build_collision_exception() -> void:
+	if not is_instance_valid(_build_target):
+		return
+	if _build_target is CollisionObject3D:
+		remove_collision_exception_with(_build_target)
+	for collision_object in _build_target.find_children("*", "CollisionObject3D", true, false):
+		if is_instance_valid(collision_object):
+			remove_collision_exception_with(collision_object)
+
+func _add_build_collision_exceptions(building) -> void:
+	if not is_instance_valid(building):
+		return
+	if building is CollisionObject3D:
+		add_collision_exception_with(building)
+	for collision_object in building.find_children("*", "CollisionObject3D", true, false):
+		if is_instance_valid(collision_object):
+			add_collision_exception_with(collision_object)
+
+func _worker_build_target_velocity(avoidance_velocity: Vector3) -> Vector3:
+	# NavigationAgent avoidance treats every NavigationObstacle3D as equally
+	# solid, including the construction site the Worker is explicitly supposed to
+	# approach. On the final authored route leg, allow progress toward that site's
+	# legal interaction point only when the short physical step is clear of every
+	# unrelated blocker. This preserves ordinary blocker behavior and stops being
+	# eligible as soon as construction enters the interaction phase.
+	if not is_worker or state != State.BUILDING or _navigation_command_type != "build":
+		return avoidance_velocity
+	if not is_instance_valid(_build_target) or _build_target.is_built or _repair_target:
+		return avoidance_velocity
+	if _navigation_waypoints.size() < 2 or _navigation_waypoint_index < _navigation_waypoints.size() - 1:
+		return avoidance_velocity
+	var to_target := _navigation_effective_target - global_position
+	to_target.y = 0.0
+	if to_target.length_squared() < 0.0025:
+		return avoidance_velocity
+	var direction := to_target.normalized()
+	var speed := move_speed
+	if _slow > 0.0:
+		speed *= 0.5
+	if _rooted > 0.0:
+		speed = 0.0
+	if speed <= 0.01:
+		return avoidance_velocity
+	var progress := avoidance_velocity.dot(direction)
+	if progress >= speed * 0.35:
+		return avoidance_velocity
+	var interaction := get_construction_interaction_snapshot(_build_target)
+	var extents_data: Dictionary = interaction.get("footprint_extents", {})
+	var extents := Vector2(float(extents_data.get("x", _build_target.def.get("footprint", 4.0))), float(extents_data.get("z", _build_target.def.get("footprint", 4.0))))
+	var threshold := float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2))
+	var target_check := construction_interaction_for_point(_navigation_effective_target, _build_target.global_position, extents, threshold)
+	if not bool(target_check.get("valid", false)):
+		return avoidance_velocity
+	var step_end := global_position + direction * speed * get_physics_process_delta_time()
+	if world and world.has_method("_navigation_blocker_snapshots") and world.has_method("_route_blocker_half_extents") and world.has_method("_segment_enters_route_rectangle"):
+		for blocker in world._navigation_blocker_snapshots():
+			if blocker.get("owner") == _build_target or blocker.get("node") == _build_target:
+				continue
+			var center: Vector3 = blocker.get("center", Vector3.ZERO)
+			var blocker_extents: Vector2 = world._route_blocker_half_extents(blocker, _building_route_clearance())
+			if world._point_inside_route_rectangle(global_position, center, blocker_extents) or world._segment_enters_route_rectangle(global_position, step_end, center, blocker_extents):
+				return avoidance_velocity
+	return direction * speed
 
 # --- healer support unit --------------------------------------------------
 func _healer_tick(delta: float) -> void:
@@ -2552,6 +2644,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
 	var route_is_active := _navigation_waypoints.size() > 1
+	safe_vel = _worker_build_target_velocity(safe_vel)
 	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_is_active:
 		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance(), _route_request_reason(_navigation_command_type))
 	_navigation_invalid_consecutive = 0
@@ -2651,6 +2744,7 @@ func _die(from = null) -> void:
 	# Retire construction ownership immediately. DEAD units no longer tick the
 	# BUILDING state, so leaving this reference live would retain a stale site
 	# target until the deferred death cleanup frees the unit.
+	_release_build_collision_exception()
 	_build_target = null
 	_repair_target = false
 	# Gathering has the same deferred-free boundary: a dead Worker must not keep

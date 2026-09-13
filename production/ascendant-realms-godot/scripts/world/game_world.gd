@@ -1078,7 +1078,7 @@ const ROUTE_CACHE_BUCKET_SIZE := 0.5
 const ROUTE_CACHE_MAX_ENTRIES := 512
 const ROUTE_CACHE_MAX_AGE_FRAMES := 30
 const ROUTE_CACHE_FAILED_MAX_AGE_FRAMES := 1
-const ROUTE_SOLVER_BUDGET_USEC := 14000
+const ROUTE_SOLVER_BUDGET_USEC := 50000
 
 func _invalidate_route_result_cache() -> void:
 	_route_cache_generation += 1
@@ -1333,6 +1333,7 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 	var blockers: Array[Dictionary] = []
 	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
 	var registered_buildings: Array = []
+	var registered_soft_owners: Array = []
 	for world_blocker in _world_route_blockers:
 		var owner = world_blocker.get("owner")
 		if owner is Building and is_instance_valid(owner):
@@ -1352,10 +1353,23 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 		var owner = blocker.get("owner")
 		if is_instance_valid(route_node) and is_instance_valid(owner) and (not owner is ResourceNode or not owner.depleted):
 			blockers.append(blocker)
+			registered_soft_owners.append({
+				"owner": owner,
+				"center": blocker.get("center", Vector3.INF),
+				"half_extents": blocker.get("half_extents", Vector2.INF),
+			})
 	for blocker in _navigation_soft_blockers:
 		var node = blocker.get("node")
 		if is_instance_valid(node) and (not node is ResourceNode or not node.depleted):
-			blockers.append(blocker)
+			var duplicate := false
+			var center: Vector3 = blocker.get("center", Vector3.INF)
+			var half_extents: Vector2 = blocker.get("half_extents", Vector2.INF)
+			for registered in registered_soft_owners:
+				if registered.get("owner") == node and center.distance_to(registered.get("center", Vector3.INF)) <= 0.01 and half_extents.distance_to(registered.get("half_extents", Vector2.INF)) <= 0.01:
+					duplicate = true
+					break
+			if not duplicate:
+				blockers.append(blocker)
 	return blockers
 
 func _first_route_blocking_blocker(origin: Vector3, target: Vector3, clearance: float, ignored: Array, blockers: Array[Dictionary], target_blocker = null) -> Dictionary:
