@@ -1078,7 +1078,8 @@ const ROUTE_CACHE_BUCKET_SIZE := 0.5
 const ROUTE_CACHE_MAX_ENTRIES := 512
 const ROUTE_CACHE_MAX_AGE_FRAMES := 30
 const ROUTE_CACHE_FAILED_MAX_AGE_FRAMES := 1
-const ROUTE_SOLVER_BUDGET_USEC := 50000
+const ROUTE_SOLVER_BUDGET_USEC := 14000
+const ROUTE_WAYPOINT_STOP_MARGIN := 1.5
 
 func _invalidate_route_result_cache() -> void:
 	_route_cache_generation += 1
@@ -1138,6 +1139,29 @@ func _route_result_cache_store(cache_key: String, origin: Vector3, requested: Ve
 		"failed": failed,
 	}
 
+func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clearance: float, blockers: Array[Dictionary], target_blocker = null) -> Dictionary:
+	var max_expanded_extent := 0.0
+	for blocker in blockers:
+		var expanded: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		max_expanded_extent = maxf(max_expanded_extent, maxf(expanded.x, expanded.y))
+	var margin := maxf(clearance + ROUTE_BLOCKER_MARGIN + ROUTE_WAYPOINT_STOP_MARGIN, max_expanded_extent + ROUTE_WAYPOINT_STOP_MARGIN)
+	var region_min := Vector3(minf(origin.x, requested.x) - margin, 0.0, minf(origin.z, requested.z) - margin)
+	var region_max := Vector3(maxf(origin.x, requested.x) + margin, 0.0, maxf(origin.z, requested.z) + margin)
+	var filtered: Array[Dictionary] = []
+	var excluded: Array[Dictionary] = []
+	for blocker in blockers:
+		var node = blocker.get("node")
+		var owner = blocker.get("owner")
+		var target_match: bool = is_instance_valid(target_blocker) and (owner == target_blocker or node == target_blocker)
+		var center: Vector3 = blocker.get("center", Vector3.INF)
+		var expanded: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		var intersects_region := not (center.x + expanded.x < region_min.x or center.x - expanded.x > region_max.x or center.z + expanded.y < region_min.z or center.z - expanded.y > region_max.z)
+		if target_match or intersects_region:
+			filtered.append(blocker)
+		else:
+			excluded.append(blocker)
+	return {"blockers": filtered, "excluded": excluded, "region_min": region_min, "region_max": region_max, "margin": margin}
+
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
 	var solver_started_usec := Time.get_ticks_usec()
 	var route_cache_key := _route_result_cache_key(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
@@ -1152,7 +1176,9 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 	var ignored: Array = []
 	var final_target := requested
 	_active_route_segment_cache.clear()
-	var blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
+	var all_blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
+	var broadphase := _route_search_blocker_broadphase(origin, requested, clearance, all_blockers, target_blocker)
+	var blockers: Array[Dictionary] = broadphase["blockers"]
 	for _step in range(8):
 		if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
 			solver_bailed = true
@@ -1414,7 +1440,6 @@ func _route_rectangle_corners(center: Vector3, half_extents: Vector2) -> Array[V
 	# Unit.command_move keeps the normal 1.2m arrival tolerance for ordinary
 	# movement. Put route waypoints beyond that stop distance so a unit settling
 	# at a corner cannot still overlap the visible AABB it is clearing.
-	const ROUTE_WAYPOINT_STOP_MARGIN := 1.5
 	var corner_extents := half_extents + Vector2(ROUTE_WAYPOINT_STOP_MARGIN, ROUTE_WAYPOINT_STOP_MARGIN)
 	return [
 		center + Vector3(-corner_extents.x, 0.0, -corner_extents.y),

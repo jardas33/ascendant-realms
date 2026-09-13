@@ -1327,6 +1327,7 @@ func command_gather(node) -> void:
 		return
 	_pending_gather_node = null
 	_gather_node = node
+	_move_target = _gather_interaction_target(node)
 	if _carry >= CARRY_MAX:
 		state = State.RETURNING
 		return
@@ -2173,6 +2174,7 @@ func _state_gather(delta: float) -> void:
 		var n = world.find_nearest_resource_exact(global_position, _desired_gather_kind, team) if world and world.has_method("find_nearest_resource_exact") else null
 		if n:
 			_gather_node = n
+			_move_target = _gather_interaction_target(n)
 		else:
 			state = State.RETURNING if _carry > 0 else State.IDLE
 			return
@@ -2180,7 +2182,20 @@ func _state_gather(delta: float) -> void:
 	if d > 2.2:
 		if _move_target.distance_to(_gather_node.global_position) > 2.2:
 			_move_target = _gather_interaction_target(_gather_node)
-		_set_agent_target(_move_target, "gather")
+		# Keep the active gather route alive between physics ticks. A transient
+		# invalid/stalled result is already handled by _move_along_path() with a
+		# bounded repath cooldown; asking the solver again every tick defeats that
+		# recovery and repeatedly invalidates the world's route cache. Refresh only
+		# for a new request, a changed interaction target, an exhausted route, or
+		# an eligible recovery retry after the cooldown has elapsed.
+		var gather_route_needs_refresh := _navigation_last_command != "gather" \
+			or _navigation_waypoints.is_empty() \
+			or _navigation_last_requested.distance_to(_move_target) > 0.1 \
+			or _navigation_terminal_failure_recorded \
+			or (_navigation_invalid_consecutive > 0 and _navigation_repath_cooldown <= 0.0) \
+			or (_navigation_waypoint_index >= _navigation_waypoints.size() - 1 and _navigation_waypoints.size() > 1 and global_position.distance_to(_navigation_effective_target) > ARRIVE_DIST)
+		if gather_route_needs_refresh:
+			_set_agent_target(_move_target, "gather")
 		_move_along_path(delta)
 	else:
 		_hold_worker_interaction(_gather_node.global_position)
