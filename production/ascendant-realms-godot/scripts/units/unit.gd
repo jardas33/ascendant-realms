@@ -2171,7 +2171,6 @@ func _do_attack() -> void:
 		_play_sfx("arrow" if dmg_type == "pierce" else "spell", -8.0)
 	else:
 		# melee: apply after small delay
-		_play_sfx("sword", -8.0)
 		# Capture a stable runtime identity instead of the Node reference itself.
 		# A target can be queue_freed during the windup; resolving the ID at hit
 		# time lets the existing validity guard run before any stale dereference.
@@ -2198,6 +2197,8 @@ func _do_attack() -> void:
 				if r1j_recorder:
 					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
 				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
+				if dealt > 0.0:
+					_play_sfx("sword", -8.0)
 				_on_dealt_damage(dealt, tgt)
 				if r1j_recorder:
 					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
