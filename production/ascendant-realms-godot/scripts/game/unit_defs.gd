@@ -230,7 +230,7 @@ static func get_all() -> Dictionary:
 	},
 	"grimtusk_bowcrusha": {
 		"race": "grimtusk", "name": "Bow-Crusha", "role": "ranged", "tier": 1,
-		"model": _char("barrosan_crag_archer"), "height": 1.9,
+		"model": _char("grimtusk_bowcrusha_r704c"), "height": 1.9,
 		"hp": 90, "dmg": 16, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "arrow",
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "grimtusk_warcamp",
