@@ -317,6 +317,18 @@
       "classification": "audio"
     },
     {
+      "path": "assets/audio/sfx/combat/combat_projectile_impact.wav",
+      "category": "audio",
+      "size": 17324,
+      "sha256": "3b700fe40a92976ef546196f36abb8e20890f3e2f13c962f83e09fa73f38d180",
+      "importStatus": "present-or-not-required",
+      "godotResourceType": "AudioStreamWAV",
+      "referencedByCount": null,
+      "runtimeLoaded": null,
+      "raceOrFaction": null,
+      "classification": "audio"
+    },
+    {
       "path": "assets/audio/sfx/combat/combat_spell_cast.mp3",
       "category": "audio",
       "size": 15090,

@@ -924,6 +924,26 @@
       "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
       "updated_at": "2026-07-29T02:03:21.403332"
     },
+    "assets/audio/sfx/combat/combat_projectile_impact.wav": {
+      "tool": "tools/audio/generate_projectile_impact.py",
+      "primary_prompt": "Original dry, compact physical projectile contact thock with a short broadband transient and noise-shaped body; no samples or pitched ring",
+      "raw_input": {
+        "method": "deterministic procedural DSP using Python standard library",
+        "script_path": "tools/audio/generate_projectile_impact.py",
+        "script_sha256": "edfcea36b433ebb7cd4e107105fcaa03831a348857c54989bca9dce11f1107b0",
+        "seed": 7301001,
+        "sample_rate_hz": 48000,
+        "channels": 1,
+        "bit_depth": 16,
+        "duration_seconds": 0.18,
+        "target_peak": 0.72,
+        "external_samples": "NONE",
+        "paid_assets": "NONE",
+        "third_party_audio": "NONE",
+        "project_owned": true,
+        "source_master_sha256": "3b700fe40a92976ef546196f36abb8e20890f3e2f13c962f83e09fa73f38d180"
+      }
+    },
     "assets/audio/sfx/ui/ui_unit_ready.mp3": {
       "tool": "mcp__game-audio__generate_audio_batch",
       "primary_prompt": "Short affirmative fantasy horn note for unit trained ready",

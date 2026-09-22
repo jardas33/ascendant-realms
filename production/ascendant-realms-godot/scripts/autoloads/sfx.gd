@@ -13,6 +13,7 @@ var lib := {
 	"levelup": B + "pickup/pickup_hero_level_up.mp3",
 	"sword": B + "combat/combat_sword_hit.mp3",
 	"arrow": B + "combat/combat_arrow_shot.mp3",
+	"projectile_impact": B + "combat/combat_projectile_impact.wav",
 	"spell": B + "combat/combat_spell_cast.mp3",
 	"death": B + "combat/combat_unit_death.mp3",
 }

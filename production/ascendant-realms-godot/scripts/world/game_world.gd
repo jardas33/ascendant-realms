@@ -1814,7 +1814,12 @@ func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: in
 		var final = GameData.compute_damage(dmg, dtype, ac, ar)
 		var source_unit = projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null
 		var source_payload = {"source_unit": source_unit, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dtype, ac), "calculated_damage_before_clamp":dmg * GameData.damage_multiplier(dtype, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":final, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
+		var hp_before := float(target.hp) if "hp" in target else -1.0
 		target.take_damage(final, source_payload)
+		# Physical pierce projectiles request one impact cue only after the target's
+		# authoritative HP actually falls. Keep arcane/siege and launch routing intact.
+		if kind in ["arrow", "bolt", "thorn"] and dtype == "pierce" and hp_before >= 0.0 and is_instance_valid(target) and float(target.hp) < hp_before:
+			Sfx.play("projectile_impact", -8.0)
 	if splash > 0.0:
 		var splash_source = {"source_unit": projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg * 0.5, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
 		apply_splash(pos, splash, dmg * 0.5, dtype, team, target, splash_source, kind)
