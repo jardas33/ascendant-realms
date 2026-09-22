@@ -254,7 +254,7 @@ static func get_all() -> Dictionary:
 	},
 	"grimtusk_ogre": {
 		"race": "grimtusk", "name": "Grimtusk Ogre", "role": "antiarmor", "tier": 3,
-		"model": _char("barrosan_anvil_breaker"), "height": 2.5,
+		"model": _char("grimtusk_ogre_r709b"), "height": 2.5,
 		"hp": 245, "dmg": 30, "dmg_type": "blunt", "armor_class": "heavy", "armor": 5,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 110, "stone": 40, "gold": 40}, "build_time": 26, "pop": 3, "produced_by": "grimtusk_warcamp",
