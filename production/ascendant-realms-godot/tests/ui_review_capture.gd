@@ -62,7 +62,7 @@ func _run() -> void:
 		instance.rts._select_army()
 		for index in 5:
 			await process_frame
-	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "war_hall"] and instance.get("rts") != null:
+	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "war_hall", "construction"] and instance.get("rts") != null:
 		var building = null
 		if OS.get_environment("ASCENDANT_UI_SELECT") == "building":
 			for candidate in instance.world.commanders[0].buildings:
@@ -70,13 +70,17 @@ func _run() -> void:
 					building = candidate
 					break
 		else:
-			var definition: Dictionary = root.get_node("GameData").get_building("barrosan_war_hall").duplicate()
-			definition["id"] = "barrosan_war_hall"
-			building = instance.world._create_building(definition, 0, Vector3(8, 0, 8), true)
+			var building_id := "barrosan_watchtower" if OS.get_environment("ASCENDANT_UI_SELECT") == "construction" else "barrosan_war_hall"
+			var definition: Dictionary = root.get_node("GameData").get_building(building_id).duplicate()
+			definition["id"] = building_id
+			building = instance.world._create_building(definition, 0, Vector3(8, 0, 8), building_id != "barrosan_watchtower")
 		if is_instance_valid(building):
 			instance.rts._clear_selection()
 			instance.rts._add_to_selection(building)
 			instance.rts.selection_changed.emit(instance.rts.selected)
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "construction":
+				building.build_progress = 0.5
+				await create_timer(0.25).timeout
 		for index in 5:
 			await process_frame
 	await RenderingServer.frame_post_draw
@@ -146,6 +150,12 @@ func _run() -> void:
 				var deck_scroll := hud._cmd_panel.get_child(0) as ScrollContainer
 				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
 					validation_errors.append("war_hall_overflow_not_scrollable")
+			if selected_kind == "construction":
+				var site = hud._cmd_panel.find_child("ConstructionProgress", true, false)
+				if not is_instance_valid(site) or site.get_combined_minimum_size().y < 100.0:
+					validation_errors.append("construction_site_surface_missing")
+				elif absf(site.progress - 0.5) > 0.02:
+					validation_errors.append("construction_progress_did_not_refresh")
 			var expected_words: Array[String] = []
 			if selected_kind == "hero":
 				expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]

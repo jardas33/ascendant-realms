@@ -17,6 +17,7 @@ const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
+const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
 const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
 const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
@@ -877,7 +878,7 @@ func _add_command_section(title: String, hint: String = "") -> void:
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(rule)
 	var title_label := _mk_label(title.to_upper(), 13, COMMAND_GOLD)
-	title_label.custom_minimum_size = Vector2(98, 20)
+	title_label.custom_minimum_size = Vector2(132, 20)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title_label)
 	var spacer := Control.new()
@@ -2620,7 +2621,7 @@ func _add_command_context(single, selection: Array) -> void:
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
 		role = "BUILDING"
-		subtitle = "Production and research"
+		subtitle = "Production and research" if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
 		title = "%d UNITS SELECTED" % selection.size()
@@ -2795,29 +2796,66 @@ func _invoke_military_command(action: String) -> void:
 				rts._cmd_patrol_prompt()
 
 
+func _construction_phase(value: float) -> String:
+	if value < 0.25:
+		return "Laying foundations"
+	if value < 0.70:
+		return "Raising the frame"
+	return "Finishing the site"
+
+
 func _build_building_card(b) -> void:
-	_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	if not b.is_built:
-		_add_command_section("Construction", "Under construction.")
-		var progress_label := _mk_label("Build progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
-		_cmd_body.add_child(progress_label)
-		var progress_bar := _mk_bar(Color(0.85, 0.7, 0.3))
-		progress_bar.value = clampf(b.build_progress, 0.0, 1.0)
-		_cmd_body.add_child(progress_bar)
+		_add_context_hints(["BUILD SITE", "AWAIT COMPLETION"])
+		_add_command_section("Construction", "SITE IN PROGRESS")
+		var site = HUD_CONSTRUCTION_SCRIPT.new()
+		site.name = "ConstructionProgress"
+		site.custom_minimum_size = Vector2(0, 112)
+		site.set_progress(float(b.build_progress))
+		_cmd_body.add_child(site)
+		var site_name := _mk_label(String(b.def.get("name", "Building")), 18, FONT_COLOR)
+		site_name.position = Vector2(112, 14)
+		site_name.size = Vector2(190, 27)
+		site_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(site_name)
+		var stage_label := _mk_label(_construction_phase(float(b.build_progress)), 13, Color(0.75, 0.89, 0.82))
+		stage_label.position = Vector2(112, 44)
+		stage_label.size = Vector2(240, 21)
+		stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(stage_label)
+		var rail_caption := _mk_label("SITE PROGRESS", 10, COMMAND_MINT)
+		rail_caption.position = Vector2(112, 70)
+		rail_caption.size = Vector2(140, 17)
+		rail_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(rail_caption)
+		var progress_label := _mk_label("%d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 22, FONT_COLOR)
+		progress_label.anchor_left = 1.0
+		progress_label.anchor_right = 1.0
+		progress_label.offset_left = -82.0
+		progress_label.offset_right = -12.0
+		progress_label.offset_top = 17.0
+		progress_label.offset_bottom = 46.0
+		progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		progress_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(progress_label)
 		var cap_b = b
 		var cap_label := progress_label
-		var cap_bar := progress_bar
+		var cap_site = site
+		var cap_stage := stage_label
 		var t := Timer.new()
 		t.wait_time = 0.2
 		t.autostart = true
-		_cmd_body.add_child(t)
+		site.add_child(t)
 		t.timeout.connect(func():
-			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_bar):
+			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_site):
 				var pct := roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0)
-				cap_label.text = "Build progress: %d%%" % pct
-				cap_bar.value = clampf(cap_b.build_progress, 0.0, 1.0)
+				cap_label.text = "%d%%" % pct
+				cap_site.set_progress(float(cap_b.build_progress))
+				if is_instance_valid(cap_stage):
+					cap_stage.text = _construction_phase(float(cap_b.build_progress))
 		)
 		return
+	_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var def: Dictionary = b.def
 	var produces: Array = def.get("produces", [])
 	var research: Array = def.get("research", [])
