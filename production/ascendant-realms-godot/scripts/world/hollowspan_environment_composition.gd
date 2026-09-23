@@ -316,17 +316,16 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 		# opening view is not dominated by a block taller than nearby buildings.
 		instance.scale.y *= 0.52
 	ModelUtils.ground_model(instance)
-	if asset_key == "wall":
-		_finish_dry_stone_wall(instance)
+	if asset_key in ["wall", "cairn"]:
+		_finish_stonework(instance)
 	_set_presentation_only(instance)
 	_mark_navigation_blocker(instance, asset_key)
 
 
-func _finish_dry_stone_wall(root: Node3D) -> void:
-	# The source GLB contains plain light slabs with no albedo map. Under the
-	# highland sky they read as a white placeholder at the player's first base.
-	# Preserve its footprint and blocker identity; give every stone a matte,
-	# detailed surface from the existing local stone atlas instead.
+func _finish_stonework(root: Node3D) -> void:
+	# The wall and cairn GLBs share a plain pale slate material with no albedo
+	# map. Give the stone a common matte finish from the existing local atlas;
+	# the authored geometry, placement and navigation footprint stay intact.
 	var stone_atlas := load(SLICE_ROCK_TEXTURE) as Texture2D
 	for child in root.find_children("*", "MeshInstance3D"):
 		var mesh_instance := child as MeshInstance3D
