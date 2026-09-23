@@ -42,6 +42,8 @@ var _preview_container: SubViewportContainer
 var _preview_pivot: Node3D
 var _preview_model: Node3D
 var _preview_cam: Camera3D
+var _preview_anim: AnimationPlayer
+var _preview_title: Label
 
 func _ready() -> void:
 	for a in ProfileManager.ATTRIBUTES:
@@ -111,8 +113,9 @@ func _build() -> void:
 	_name_edit = LineEdit.new()
 	_name_edit.placeholder_text = "Enter a hero name..."
 	_name_edit.custom_minimum_size = Vector2(400, 40)
+	_name_edit.add_theme_font_override("font", ThemeDB.fallback_font)
 	_name_edit.add_theme_color_override("font_color", Color.WHITE)
-	_name_edit.add_theme_font_size_override("font_size", 18)
+	_name_edit.add_theme_font_size_override("font_size", 20)
 	main.add_child(_name_edit)
 
 	# Race — GridContainer so 10 races wrap neatly
@@ -126,29 +129,40 @@ func _build() -> void:
 		var rd: Dictionary = GameData.RACES[rid]
 		var rb := Button.new()
 		rb.toggle_mode = true
-		rb.custom_minimum_size = Vector2(200, 48)
+		rb.custom_minimum_size = Vector2(230, 48)
 		rb.focus_mode = Control.FOCUS_NONE
 		rb.clip_text = false
 		rb.text = rd.get("name", rid)
+		rb.add_theme_font_override("font", ThemeDB.fallback_font)
 		rb.add_theme_color_override("font_color", Color(0.95, 0.9, 0.75))
 		rb.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
-		rb.add_theme_font_size_override("font_size", 16)
+		rb.add_theme_color_override("font_pressed_color", Color(1.0, 0.91, 0.69))
+		rb.add_theme_font_size_override("font_size", 18)
+		var selected_style := StyleBoxFlat.new()
+		selected_style.bg_color = Color(0.27, 0.21, 0.11, 0.96)
+		selected_style.border_color = Color(0.98, 0.78, 0.42)
+		selected_style.set_border_width_all(2)
+		selected_style.set_corner_radius_all(4)
+		rb.add_theme_stylebox_override("pressed", selected_style)
 		rb.pressed.connect(_on_race.bind(rid))
 		_race_buttons[rid] = rb
 		race_grid.add_child(rb)
 	_race_desc = Label.new()
 	_race_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_race_desc.custom_minimum_size = Vector2(500, 0)
+	_race_desc.add_theme_font_override("font", ThemeDB.fallback_font)
 	_race_desc.add_theme_color_override("font_color", Color(0.88, 0.88, 0.82))
 	_race_desc.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	_race_desc.add_theme_constant_override("outline_size", 3)
-	_race_desc.add_theme_font_size_override("font_size", 16)
+	_race_desc.add_theme_font_size_override("font_size", 19)
 	main.add_child(_race_desc)
 
 	# Archetype
 	main.add_child(_section_label("Archetype"))
 	_arch_option = OptionButton.new()
 	_arch_option.custom_minimum_size = Vector2(280, 40)
+	_arch_option.add_theme_font_override("font", ThemeDB.fallback_font)
+	_arch_option.add_theme_font_size_override("font_size", 19)
 	for i in ARCHETYPES.size():
 		_arch_option.add_item(ARCHETYPES[i], i)
 	_arch_option.item_selected.connect(func(idx): _archetype = ARCHETYPES[idx]; Sfx.play("select"))
@@ -195,12 +209,16 @@ func _build() -> void:
 	main.add_child(sw_row)
 	_str_option = OptionButton.new()
 	_str_option.custom_minimum_size = Vector2(220, 40)
+	_str_option.add_theme_font_override("font", ThemeDB.fallback_font)
+	_str_option.add_theme_font_size_override("font_size", 19)
 	for i in STRENGTHS.size():
 		_str_option.add_item("Strength: " + STRENGTHS[i], i)
 	_str_option.item_selected.connect(func(idx): _strength = STRENGTHS[idx]; Sfx.play("select"))
 	sw_row.add_child(_str_option)
 	_weak_option = OptionButton.new()
 	_weak_option.custom_minimum_size = Vector2(220, 40)
+	_weak_option.add_theme_font_override("font", ThemeDB.fallback_font)
+	_weak_option.add_theme_font_size_override("font_size", 19)
 	for i in WEAKNESSES.size():
 		_weak_option.add_item("Weakness: " + WEAKNESSES[i], i)
 	_weak_option.item_selected.connect(func(idx): _weakness = WEAKNESSES[idx]; Sfx.play("select"))
@@ -253,7 +271,7 @@ func _build() -> void:
 
 	# Right: Hero preview panel
 	var preview_panel := PanelContainer.new()
-	preview_panel.custom_minimum_size = Vector2(320, 0)
+	preview_panel.custom_minimum_size = Vector2(440, 0)
 	preview_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	columns.add_child(preview_panel)
 
@@ -261,25 +279,25 @@ func _build() -> void:
 	preview_v.add_theme_constant_override("separation", 8)
 	preview_panel.add_child(preview_v)
 
-	var preview_title := Label.new()
-	preview_title.text = "Hero Preview"
-	preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	preview_title.add_theme_font_override("font", _title_font(20))
-	preview_title.add_theme_font_size_override("font_size", 20)
-	preview_title.add_theme_color_override("font_color", Color(0.9, 0.78, 0.5))
-	preview_title.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
-	preview_title.add_theme_constant_override("outline_size", 3)
-	preview_v.add_child(preview_title)
+	_preview_title = Label.new()
+	_preview_title.text = "HERO PREVIEW"
+	_preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_preview_title.add_theme_font_override("font", _title_font(20))
+	_preview_title.add_theme_font_size_override("font_size", 20)
+	_preview_title.add_theme_color_override("font_color", Color(0.9, 0.78, 0.5))
+	_preview_title.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
+	_preview_title.add_theme_constant_override("outline_size", 3)
+	preview_v.add_child(_preview_title)
 
 	_preview_container = SubViewportContainer.new()
 	_preview_container.stretch = true
-	_preview_container.custom_minimum_size = Vector2(300, 380)
+	_preview_container.custom_minimum_size = Vector2(400, 620)
 	_preview_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_preview_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	preview_v.add_child(_preview_container)
 
 	_preview_viewport = SubViewport.new()
-	_preview_viewport.size = Vector2i(300, 380)
+	_preview_viewport.size = Vector2i(400, 620)
 	_preview_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_preview_viewport.transparent_bg = true
 	_preview_container.add_child(_preview_viewport)
@@ -290,10 +308,10 @@ func _build() -> void:
 
 	# Camera — position in front of model, default -Z forward looks at origin
 	_preview_cam = Camera3D.new()
-	_preview_cam.position = Vector3(0.0, 1.1, 2.8)
-	# Tilt slightly downward (~4 deg) so model center (y≈0.9) is in frame
-	_preview_cam.rotation_degrees = Vector3(-4.0, 0.0, 0.0)
+	_preview_cam.position = Vector3(0.0, 1.15, 2.6)
+	_preview_cam.fov = 60.0
 	_preview_viewport.add_child(_preview_cam)
+	_preview_cam.look_at(Vector3(0.0, 0.96, 0.0))
 
 	# Environment — ambient + sky color so model is readable
 	var env_node := WorldEnvironment.new()
@@ -302,21 +320,21 @@ func _build() -> void:
 	env.background_color = Color(0.07, 0.08, 0.12)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.55, 0.58, 0.75)
-	env.ambient_light_energy = 0.6
+	env.ambient_light_energy = 0.76
 	env_node.environment = env
 	_preview_viewport.add_child(env_node)
 
 	# Key directional light
 	var key_light := DirectionalLight3D.new()
 	key_light.light_color = Color(1.0, 0.95, 0.85)
-	key_light.light_energy = 1.2
+	key_light.light_energy = 1.35
 	key_light.rotation_degrees = Vector3(-40.0, 30.0, 0.0)
 	_preview_viewport.add_child(key_light)
 
 	# Fill/back light for depth
 	var fill_light := DirectionalLight3D.new()
 	fill_light.light_color = Color(0.6, 0.7, 1.0)
-	fill_light.light_energy = 0.4
+	fill_light.light_energy = 0.72
 	fill_light.rotation_degrees = Vector3(-20.0, 200.0, 0.0)
 	_preview_viewport.add_child(fill_light)
 
@@ -339,6 +357,8 @@ func _build() -> void:
 	back.clip_text = false
 	back.custom_minimum_size = Vector2(200, 50)
 	back.focus_mode = Control.FOCUS_NONE
+	back.add_theme_font_override("font", ThemeDB.fallback_font)
+	back.add_theme_font_size_override("font_size", 20)
 	back.add_theme_color_override("font_color", Color.WHITE)
 	back.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 	back.pressed.connect(func(): Sfx.play("select"); Match.clear_pending_hero_origin(); get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn"))
@@ -348,6 +368,8 @@ func _build() -> void:
 	forge.clip_text = false
 	forge.custom_minimum_size = Vector2(260, 50)
 	forge.focus_mode = Control.FOCUS_NONE
+	forge.add_theme_font_override("font", ThemeDB.fallback_font)
+	forge.add_theme_font_size_override("font_size", 20)
 	forge.add_theme_color_override("font_color", Color(0.98, 0.92, 0.6))
 	forge.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 	forge.pressed.connect(_on_forge)
@@ -375,6 +397,8 @@ func _refresh_race() -> void:
 		_race_buttons[rid].button_pressed = (rid == _race_id)
 	var rd: Dictionary = GameData.RACES.get(_race_id, {})
 	_race_desc.text = "%s\n\n%s" % [rd.get("blurb", ""), "Mechanic: " + str(rd.get("mechanic", ""))]
+	if is_instance_valid(_preview_title):
+		_preview_title.text = str(rd.get("name", "Hero Preview")).to_upper()
 
 func _appear_step(dir: int) -> void:
 	Sfx.play("select")
@@ -408,6 +432,7 @@ func _load_hero_model() -> void:
 	if is_instance_valid(_preview_model):
 		_preview_model.queue_free()
 		_preview_model = null
+	_preview_anim = null
 
 	var rd: Dictionary = GameData.RACES.get(_race_id, {})
 	var hero_id: String = str(rd.get("hero", ""))
@@ -430,16 +455,37 @@ func _load_hero_model() -> void:
 	# Normalize: scale to ~1.8m then ground at y=0
 	ModelUtils.scale_to_height(model, 1.8)
 	ModelUtils.ground_model(model, 0.0)
+	_play_preview_idle(model, hero_id)
+	_preview_cam.position.z = 3.1 if _race_id == "lioraen" else 2.6
+	_preview_cam.look_at(Vector3(0.0, 0.96, 0.0))
 
 	# Apply variant rotation and tint
 	_apply_variant_visuals()
+
+func _play_preview_idle(model: Node3D, hero_id: String) -> void:
+	_preview_anim = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if not _preview_anim:
+		var lib_path := "res://assets/characters/%s/%s_animations.tres" % [hero_id, hero_id]
+		if ResourceLoader.exists(lib_path):
+			var library := load(lib_path) as AnimationLibrary
+			if library:
+				_preview_anim = AnimationPlayer.new()
+				model.add_child(_preview_anim)
+				_preview_anim.add_animation_library("", library)
+	if not _preview_anim:
+		return
+	ModelUtils.set_animation_loops(_preview_anim)
+	for clip in _preview_anim.get_animation_list():
+		if "idle" in clip.to_lower():
+			_preview_anim.play(clip)
+			return
 
 func _apply_variant_visuals() -> void:
 	if not is_instance_valid(_preview_pivot):
 		return
 	# Apply starting rotation offset per variant
 	var idx := clampi(_appearance, 0, VARIANT_Y_ROT.size() - 1)
-	_preview_pivot.rotation.y = VARIANT_Y_ROT[idx]
+	_preview_pivot.rotation.y = PI + VARIANT_Y_ROT[idx]
 	# Apply tint to the SubViewportContainer
 	if is_instance_valid(_preview_container):
 		var tint: Color = VARIANT_TINTS[idx] if idx < VARIANT_TINTS.size() else Color.WHITE
