@@ -27,7 +27,8 @@ const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
 const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
 const COMMAND_PANEL_WIDTH := 430.0
 const SELECTION_PANEL_WIDTH := 360.0
-const SELECTION_PANEL_HEIGHT := 184.0
+const SELECTION_PANEL_HEIGHT := 260.0
+const INTERACTION_PANEL_SCALE := 1.2
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
 const COMMAND_SURFACE := Color(0.075, 0.09, 0.11, 0.98)
@@ -199,36 +200,48 @@ func _fit_to_viewport() -> void:
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
-	# The command deck is deliberately capped at roughly one fifth of the
-	# viewport. Dense cards scroll inside it instead of consuming the battlefield.
-	var command_height := minf(224.0, maxf(168.0, floor(viewport_size.y * 0.22)))
-	var selection_height := minf(requested_selection_height, maxf(168.0, floor(viewport_size.y * 0.22)))
+	# Give the selected entity and two-column command deck enough room to be read
+	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
+	# Four simple orders need a shorter deck than a hero or builder. Size to the
+	# actual context while retaining a ceiling for denser production surfaces.
+	var command_height := minf(390.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + 24.0))
+	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
+		var map_size := _minimap_panel.get_combined_minimum_size()
+		_minimap_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
 		_minimap_panel.offset_left = margin
-		_minimap_panel.offset_right = margin + MINIMAP_SIZE + 24.0
-		_minimap_panel.offset_top = -margin - MINIMAP_PANEL_HEIGHT
-		_minimap_panel.offset_bottom = -margin
+		_minimap_panel.offset_right = margin + map_size.x
+		_minimap_panel.offset_top = -margin - map_size.y * INTERACTION_PANEL_SCALE
+		_minimap_panel.offset_bottom = _minimap_panel.offset_top + map_size.y
+	var command_visual_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 	if is_instance_valid(_sel_panel):
 		# Treat the selected entity and command deck as one interaction system:
-		# keep a deliberate 12px seam between their shared bottom baseline at
-		# every supported desktop width. This removes the disconnected floating
-		# card feeling without stealing the tactical-map or battlefield region.
-		var command_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH
-		var interaction_gap := 12.0
-		var selection_right := command_left - interaction_gap
-		var selection_left := selection_right - SELECTION_PANEL_WIDTH
+		# preserve a visible seam after scaling the panels within the native
+		# 1920x1080 logical viewport. This leaves project-wide sizing unchanged.
+		selection_height = maxf(selection_height, _sel_panel.get_combined_minimum_size().y)
+		_sel_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		var selection_left := command_visual_left - 16.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 		_sel_panel.offset_left = selection_left - viewport_size.x * 0.5
-		_sel_panel.offset_right = selection_right - viewport_size.x * 0.5
-		_sel_panel.offset_top = -margin - selection_height
-		_sel_panel.offset_bottom = -margin
+		_sel_panel.offset_right = _sel_panel.offset_left + SELECTION_PANEL_WIDTH
+		_sel_panel.offset_top = -margin - selection_height * INTERACTION_PANEL_SCALE
+		_sel_panel.offset_bottom = _sel_panel.offset_top + selection_height
 	if is_instance_valid(_cmd_panel):
-		_cmd_panel.offset_left = -COMMAND_PANEL_WIDTH
-		_cmd_panel.offset_right = -margin
-		_cmd_panel.offset_top = -margin - command_height
-		_cmd_panel.offset_bottom = -margin
+		_cmd_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		_cmd_panel.offset_left = command_visual_left - viewport_size.x
+		_cmd_panel.offset_right = _cmd_panel.offset_left + COMMAND_PANEL_WIDTH
+		_cmd_panel.offset_top = -margin - command_height * INTERACTION_PANEL_SCALE
+		_cmd_panel.offset_bottom = _cmd_panel.offset_top + command_height
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -104.0
 		_menu_button.offset_right = -margin
+
+
+func _fit_command_panel_next_frame() -> void:
+	# Selection rebuilds queue_free the previous cards. Measure once the old
+	# controls have left the tree so short order decks do not inherit their size.
+	await get_tree().process_frame
+	if is_inside_tree():
+		_fit_to_viewport()
 
 
 func _build_resource_tooltip() -> void:
@@ -625,7 +638,6 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 
 
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "") -> Button:
-	var state_text := "LOCKED · " if state == "LOCKED" else ("COOLDOWN · " if state == "COOLDOWN" else "")
 	var has_preview := not preview_definition.is_empty()
 	# The card is intentionally a scan surface. Hero abilities provide their
 	# authored hotkey explicitly; ordinary orders derive theirs from the title.
@@ -636,14 +648,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	# not a stack of debug forms.
 	var scan_detail := has_preview or ability_card or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
 	var detail_text := _command_card_summary(detail) if scan_detail else ""
-	if not disabled_reason.is_empty():
-		detail_text += "\n" + disabled_reason
+	# The status footer carries readiness; the full reason stays in the tooltip.
 	var accent := _command_accent(title, state)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn := _mk_button("", 11)
-	# Three columns make the deck feel like a command surface and keep the
-	# bottom HUD within the 22% height budget at both target resolutions.
-	var card_height := 72 if has_preview else (76 if ability_card else 64)
+	var card_height := 78 if has_preview else (74 if ability_card else 68)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -663,15 +672,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(54, 6)
 		var preview_text_height := card_height - 10
-		text_col.size = Vector2(72, preview_text_height)
-		text_col.custom_minimum_size = Vector2(72, preview_text_height)
+		text_col.size = Vector2(120, preview_text_height)
+		text_col.custom_minimum_size = Vector2(120, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_label := _mk_label(title, 12, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(state_text + detail_text, 10, preview_detail_color)
+		var detail_label := _mk_label(detail_text, 11, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -690,8 +699,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(50, 6)
 		var text_height := card_height - 10
-		text_col.size = Vector2(72, text_height)
-		text_col.custom_minimum_size = Vector2(72, text_height)
+		text_col.size = Vector2(112, text_height)
+		text_col.custom_minimum_size = Vector2(112, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
@@ -701,7 +710,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(state_text + detail_text, 10, detail_color)
+		var detail_label := _mk_label(detail_text, 11, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -710,19 +719,27 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	if not hotkey.is_empty():
 		var key_badge := _mk_command_keycap(hotkey, accent)
-		key_badge.position = Vector2(102, 6)
-		key_badge.size = Vector2(22, 20)
+		key_badge.anchor_left = 1.0
+		key_badge.anchor_right = 1.0
+		key_badge.offset_left = -31.0
+		key_badge.offset_right = -8.0
+		key_badge.offset_top = 6.0
+		key_badge.offset_bottom = 26.0
 		btn.add_child(key_badge)
-	var kind_label := _mk_label(command_kind, 9, Color(accent.r, accent.g, accent.b, 0.82))
+	var kind_label := _mk_label(command_kind, 10, Color(accent.r, accent.g, accent.b, 0.82))
 	kind_label.position = Vector2(6, card_height - 17)
 	kind_label.size = Vector2(72, 15)
 	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 8, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
-		status_label.position = Vector2(78, card_height - 17)
-		status_label.size = Vector2(48, 15)
+		var status_label := _mk_label(status, 10, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		status_label.anchor_left = 1.0
+		status_label.anchor_right = 1.0
+		status_label.offset_left = -68.0
+		status_label.offset_right = -8.0
+		status_label.offset_top = card_height - 17
+		status_label.offset_bottom = card_height - 2
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)
@@ -731,9 +748,13 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# The worker deck already labels the family as BUILD. Use the lower-right
 		# slot for the actionable state so READY versus LOCKED is readable without
 		# relying on a paragraph of disabled-reason text.
-		var build_status := _mk_label(state, 8, accent if state == "READY" else COMMAND_MUTED)
-		build_status.position = Vector2(78, card_height - 17)
-		build_status.size = Vector2(48, 15)
+		var build_status := _mk_label(state, 10, accent if state == "READY" else COMMAND_MUTED)
+		build_status.anchor_left = 1.0
+		build_status.anchor_right = 1.0
+		build_status.offset_left = -68.0
+		build_status.offset_right = -8.0
+		build_status.offset_top = card_height - 17
+		build_status.offset_bottom = card_height - 2
 		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
@@ -797,7 +818,7 @@ func _ability_glyph_stylebox(accent: Color) -> StyleBoxFlat:
 
 func _mk_command_grid() -> GridContainer:
 	var grid := GridContainer.new()
-	grid.columns = 3
+	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1011,8 +1032,11 @@ func _build_top_bar() -> void:
 	var mode_name := str(identity.get("mode", "skirmish")).capitalize()
 	var map_id := str(identity.get("map", "hollowspan"))
 	var map_name := str(MapDefs.get_map(map_id).get("name", map_id)).strip_edges()
-	var identity_label := _mk_label("%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name], 12, Color(0.88, 0.82, 0.7))
+	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
+	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
+	var identity_label := _mk_label(short_identity, 12, Color(0.88, 0.82, 0.7))
 	identity_label.name = "MatchIdentityLabel"
+	identity_label.tooltip_text = full_identity
 	identity_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	identity_label.offset_left = -370.0
 	identity_label.offset_right = -122.0
@@ -1020,20 +1044,21 @@ func _build_top_bar() -> void:
 	identity_label.offset_bottom = 20.0
 	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	identity_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
-	var objective_text := "CONQUEST  •  ELIMINATE THE ENEMY'S REBUILD CAPABILITY" if victory_kind == "conquest" else victory_kind.capitalize()
-	var objective_label := _mk_label(objective_text, 11, Color(0.62, 0.67, 0.7))
+	var objective_text := "CONQUEST  •  END ENEMY REBUILD" if victory_kind == "conquest" else victory_kind.capitalize()
+	var objective_label := _mk_label(objective_text, 12, Color(0.78, 0.72, 0.61))
 	objective_label.name = "MatchObjectiveLabel"
-	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	objective_label.tooltip_text = "Eliminate the enemy's rebuild capability." if victory_kind == "conquest" else objective_text
+	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	objective_label.offset_left = -370.0
 	objective_label.offset_right = -122.0
 	objective_label.offset_top = 29.0
 	objective_label.offset_bottom = 47.0
 	objective_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	objective_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(objective_label)
 
 
@@ -2429,12 +2454,14 @@ func _rebuild_command_card(single, selection: Array) -> void:
 	if single != null and single is Unit and single.is_worker:
 		_build_worker_card()
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		_fit_command_panel_next_frame()
 		return
 
 	# BUILDING -> production / research
 	if single != null and single is Building:
 		_build_building_card(single)
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		_fit_command_panel_next_frame()
 		return
 
 	# HERO -> abilities first, then the same combat orders used by military units.
@@ -2444,6 +2471,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 	if single != null and single is Unit and single.is_hero:
 		_build_hero_command_card(single)
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		_fit_command_panel_next_frame()
 		return
 
 	var has_military := false
@@ -2454,6 +2482,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 	if has_military:
 		_build_military_card()
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
+		_fit_command_panel_next_frame()
 		return
 
 	_cmd_panel.visible = false
@@ -2589,7 +2618,7 @@ func _build_hero_command_card(u) -> void:
 			var ready: bool = remaining <= 0.05 and mana_ready
 			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
-			var detail := "%d mana  ·  %.0fs cooldown\n%s" % [mana_cost, cooldown, String(ab.get("desc", ""))]
+			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
 			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label)
 			btn.disabled = not ready
 			var cap_u = u
@@ -2600,7 +2629,7 @@ func _build_hero_command_card(u) -> void:
 			var status_label: Label = btn.get_meta("command_status_label")
 			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})
 
-	_add_command_section("Orders", "Shared combat commands.")
+	_add_command_section("Orders", "Movement and stance")
 	var order_grid := _mk_command_grid()
 	_cmd_body.add_child(order_grid)
 	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
@@ -2611,7 +2640,7 @@ func _build_hero_command_card(u) -> void:
 
 func _build_military_card() -> void:
 	_add_context_hints(["RMB  MOVE / ATTACK", "J  ATTACK-MOVE", "K  STOP"])
-	_add_command_section("Commands", "Orders for selected combat units.")
+	_add_command_section("Commands", "Movement and stance")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
 	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
