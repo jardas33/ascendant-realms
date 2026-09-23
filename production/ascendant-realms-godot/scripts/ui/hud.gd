@@ -18,6 +18,7 @@ const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
+const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 220.0 # Compact navigation instrument; battlefield remains primary.
@@ -241,7 +242,7 @@ func _fit_to_viewport() -> void:
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
 	# actual context while retaining a ceiling for denser production surfaces.
-	var command_height := minf(390.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + 24.0))
+	var command_height := minf(430.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + 24.0))
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
@@ -463,6 +464,14 @@ func _mk_icon(path: String, px: float) -> TextureRect:
 	t.custom_minimum_size = Vector2(px, px)
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return t
+
+
+func _mk_metric_glyph(kind: String, tint: Color, px: float) -> Control:
+	var glyph: Control = HUD_METRIC_GLYPH_SCRIPT.new()
+	glyph.configure(kind, tint)
+	glyph.custom_minimum_size = Vector2(px, px)
+	glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return glyph
 
 
 func _cost_string(cost: Dictionary) -> String:
@@ -697,7 +706,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.accent = accent
 	btn.is_ability = ability_card
 	btn.is_build = has_preview
-	var card_height := 74 if has_preview else (74 if ability_card else 60)
+	var card_height := 56 if has_preview else (74 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -717,15 +726,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(54, 6)
 		var preview_text_height := card_height - 10
-		text_col.size = Vector2(120, preview_text_height)
-		text_col.custom_minimum_size = Vector2(120, preview_text_height)
+		text_col.size = Vector2(260, preview_text_height)
+		text_col.custom_minimum_size = Vector2(260, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 14, FONT_COLOR)
+		var title_label := _mk_label(title, 16, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(detail_text, 12, preview_detail_color)
+		var detail_label := _mk_label(detail_text, 14, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -788,7 +797,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# The worker deck already labels the family as BUILD. Use the lower-right
 		# slot for the actionable state so READY versus LOCKED is readable without
 		# relying on a paragraph of disabled-reason text.
-		var build_status := _mk_label(state, 11, accent if state == "READY" else COMMAND_MUTED)
+		var build_status := _mk_label(state, 12, accent if state == "READY" else COMMAND_MUTED)
 		build_status.anchor_left = 1.0
 		build_status.anchor_right = 1.0
 		build_status.offset_left = -68.0
@@ -958,7 +967,7 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 98.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_icon(RES_ICONS["food"], 21))
+	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 21))
 	_pop_label = _mk_label("0/0", 28)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -970,9 +979,10 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 96.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
+	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 21))
 	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
-	_opponent_count_label.custom_minimum_size = Vector2(100, 0)
+	_opponent_count_label.custom_minimum_size = Vector2(74, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	opponent_cell.add_child(_opponent_count_label)
 	force_metrics.add_child(opponent_metric["surface"])
@@ -982,7 +992,7 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 108.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_icon(RES_ICONS["food"], 21))
+	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 21))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -993,7 +1003,7 @@ func _build_top_bar() -> void:
 	# separate so "Idle 3" can never be mistaken for an idle army count.
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 104.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_icon(RES_ICONS["stone"], 21))
+	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 21))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -2664,6 +2674,7 @@ func _add_context_hints(hints: Array[String]) -> void:
 func _build_worker_card() -> void:
 	_add_command_section("Build", "Choose a structure.")
 	var grid := _mk_command_grid()
+	grid.columns = 1
 	_cmd_body.add_child(grid)
 	for bid in GameData.buildings_for_race(_commander.race):
 		var bdef := GameData.get_building(bid)

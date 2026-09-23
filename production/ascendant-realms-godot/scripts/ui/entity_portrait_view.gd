@@ -17,6 +17,7 @@ var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
 var _pivot: Node3D
 var _camera: Camera3D
+var _compact_building_fill: OmniLight3D
 var _artwork: TextureRect
 var _active_portrait_path := ""
 var _pending_entity = null
@@ -103,6 +104,16 @@ func _build_view() -> void:
 	fill.light_energy = 0.42
 	fill.rotation_degrees = Vector3(-20.0, 145.0, 0.0)
 	_viewport.add_child(fill)
+	# Small building previews need a front-facing bounce light. Their dark
+	# authored timber otherwise disappears at command-card thumbnail size.
+	_compact_building_fill = OmniLight3D.new()
+	_compact_building_fill.name = "CompactBuildingFill"
+	_compact_building_fill.position = Vector3(-1.5, 2.6, 2.7)
+	_compact_building_fill.light_color = Color(1.0, 0.88, 0.73)
+	_compact_building_fill.light_energy = 1.4
+	_compact_building_fill.omni_range = 7.0
+	_compact_building_fill.visible = false
+	_viewport.add_child(_compact_building_fill)
 
 	_pivot = Node3D.new()
 	_pivot.name = "PortraitModel"
@@ -197,6 +208,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
 	var compact_card := custom_minimum_size.x < 80.0
+	_compact_building_fill.visible = compact_card and is_building
 	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else (2.65 if not is_building else 3.2))
 	_camera.position = Vector3(0.0, target_height * 0.58, distance)
 	_camera.fov = 56.0 if compact_card else 62.0
