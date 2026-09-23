@@ -550,11 +550,17 @@ func _command_kind(title: String, visible_effect_prefix: String, has_preview: bo
 	return "ORDER"
 
 
-func _command_accent(title: String, state: String) -> Color:
+func _command_accent(title: String, state: String, kind: String = "ORDER") -> Color:
+	var family := COMMAND_GOLD
+	match kind:
+		"ABILITY": family = Color(0.98, 0.75, 0.37)
+		"BUILD": family = COMMAND_MINT
+		"TRAIN": family = Color(0.89, 0.67, 0.43)
+		"RESEARCH": family = COMMAND_SKY
+	if kind != "ORDER":
+		return family.lerp(COMMAND_MUTED, 0.74) if state in ["LOCKED", "COMPLETED"] else family
 	if state == "LOCKED":
 		return COMMAND_MUTED
-	if state == "COOLDOWN":
-		return Color(0.52, 0.7, 0.9)
 	var haystack := title.to_lower()
 	if haystack.contains("attack"):
 		return COMMAND_FLAME
@@ -586,13 +592,17 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 func _mk_command_keycap(text: String, accent: Color) -> PanelContainer:
 	var cap := PanelContainer.new()
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cap.custom_minimum_size = Vector2(30, 25)
+	cap.custom_minimum_size = Vector2(29, 23)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.035, 0.045, 0.06, 0.30)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.54)
+	sb.bg_color = Color(0.11, 0.12, 0.12, 0.91)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.67)
+	sb.border_width_top = 1
+	sb.border_width_left = 1
 	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(0)
-	sb.set_content_margin_all(3)
+	sb.set_corner_radius_all(1)
+	sb.set_content_margin_all(2)
+	sb.shadow_color = Color(0, 0, 0, 0.53)
+	sb.shadow_size = 2
 	cap.add_theme_stylebox_override("panel", sb)
 	var label := _mk_label(text, 14, Color(1.0, 0.96, 0.82))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -687,25 +697,25 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "") -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "") -> Button:
 	var has_preview := not preview_definition.is_empty()
 	# The card is intentionally a scan surface. Hero abilities provide their
 	# authored hotkey explicitly; ordinary orders derive theirs from the title.
 	var ability_card := visible_effect_prefix == "Effect" and not hotkey_override.is_empty()
-	var command_kind := "ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, false)
+	var command_kind := command_kind_override if not command_kind_override.is_empty() else ("ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, false))
 	# Costs, tiers and population are actionable scan data. Long authored prose
 	# stays in the anchored tooltip so the command grid reads like an RTS deck,
 	# not a stack of debug forms.
-	var scan_detail := has_preview or ability_card or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
+	var scan_detail := has_preview or ability_card or command_kind in ["TRAIN", "RESEARCH"] or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
 	var detail_text := _command_card_summary(detail) if scan_detail else ""
 	# The status footer carries readiness; the full reason stays in the tooltip.
-	var accent := _command_accent(title, state)
+	var accent := _command_accent(title, state, command_kind)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
 	var btn = HUD_ACTION_SCRIPT.new()
 	btn.text = ""
 	btn.accent = accent
-	btn.is_ability = ability_card
-	btn.is_build = has_preview
+	btn.command_kind = command_kind
+	btn.command_state = state
 	var card_height := 56 if has_preview else (74 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -753,20 +763,21 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		var text_col := VBoxContainer.new()
 		text_col.position = Vector2(50, 6)
 		var text_height := card_height - 10
-		text_col.size = Vector2(112, text_height)
-		text_col.custom_minimum_size = Vector2(112, text_height)
+		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
+		text_col.size = Vector2(text_width, text_height)
+		text_col.custom_minimum_size = Vector2(text_width, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
-		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
+		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
+		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
 		var title_label := _mk_label(title, 16, title_color)
-		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
+		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var detail_label := _mk_label(detail_text, 12, detail_color)
-		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
+		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		text_col.add_child(detail_label)
@@ -874,7 +885,7 @@ func _add_command_section(title: String, hint: String = "") -> void:
 	row.add_child(spacer)
 	if not hint.is_empty():
 		var hint_label := _mk_label(hint, 11, Color(0.75, 0.77, 0.74))
-		hint_label.custom_minimum_size = Vector2(106, 20)
+		hint_label.custom_minimum_size = Vector2(150, 20)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
@@ -2001,6 +2012,7 @@ func _refresh_single_live() -> void:
 			var unavailable_overlay: Label = w["overlay"]
 			if is_instance_valid(unavailable_button):
 				unavailable_button.disabled = true
+				unavailable_button.set_command_state("LOCKED")
 			if is_instance_valid(unavailable_overlay):
 				unavailable_overlay.text = unavailable_reason
 		return
@@ -2054,10 +2066,12 @@ func _refresh_single_live() -> void:
 		var overlay: Label = w["overlay"]
 		if cd > 0.05:
 			btn.disabled = true
+			btn.set_command_state("COOLDOWN")
 			if is_instance_valid(overlay):
 				overlay.text = "CD %d" % int(ceil(cd))
 		else:
 			btn.disabled = not mana_ok
+			btn.set_command_state("READY" if mana_ok else "LOCKED")
 			if is_instance_valid(overlay):
 				overlay.text = "READY" if mana_ok else "MANA"
 
@@ -2710,6 +2724,7 @@ func _build_hero_command_card(u) -> void:
 	if not u.abilities.is_empty():
 		_add_command_section("Abilities", "Cast when ready.")
 		var ability_grid := _mk_command_grid()
+		ability_grid.columns = 1
 		_cmd_body.add_child(ability_grid)
 		var abilities: Dictionary = SkillDefs.get_abilities()
 		for id in u.abilities:
@@ -2810,8 +2825,9 @@ func _build_building_card(b) -> void:
 
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "Queue a unit.")
+		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Queue a unit.")
 		var train_grid := _mk_command_grid()
+		train_grid.columns = 1
 		_cmd_body.add_child(train_grid)
 		for uid in produces:
 			var udef := GameData.get_unit(uid)
@@ -2835,9 +2851,9 @@ func _build_building_card(b) -> void:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
-			var train_detail := "Tier %d | Population: %d | Cost: %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
+			var train_detail := "Age %d · %d pop · %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
 			var train_state := "TRAINING" if queued_for_training else ("LOCKED" if not reason.is_empty() else "READY")
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role")
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -2856,6 +2872,7 @@ func _build_building_card(b) -> void:
 	if not tech_ids.is_empty():
 		_add_command_section("Research", "Advance technology.")
 		var research_grid := _mk_command_grid()
+		research_grid.columns = 1
 		_cmd_body.add_child(research_grid)
 		for tid in tech_ids:
 			var tdef := GameData.get_tech(tid)
@@ -2885,7 +2902,7 @@ func _build_building_card(b) -> void:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")))
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH")
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)

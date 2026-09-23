@@ -62,6 +62,23 @@ func _run() -> void:
 		instance.rts._select_army()
 		for index in 5:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "war_hall"] and instance.get("rts") != null:
+		var building = null
+		if OS.get_environment("ASCENDANT_UI_SELECT") == "building":
+			for candidate in instance.world.commanders[0].buildings:
+				if is_instance_valid(candidate) and not candidate.is_dead and bool(candidate.def.get("is_hq", false)):
+					building = candidate
+					break
+		else:
+			var definition: Dictionary = root.get_node("GameData").get_building("barrosan_war_hall").duplicate()
+			definition["id"] = "barrosan_war_hall"
+			building = instance.world._create_building(definition, 0, Vector3(8, 0, 8), true)
+		if is_instance_valid(building):
+			instance.rts._clear_selection()
+			instance.rts._add_to_selection(building)
+			instance.rts.selection_changed.emit(instance.rts.selected)
+		for index in 5:
+			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
@@ -106,12 +123,14 @@ func _run() -> void:
 			var selected_kind := OS.get_environment("ASCENDANT_UI_SELECT")
 			var expected_cards := 5 if selected_kind in ["hero", "worker"] else (4 if selected_kind == "military" else 0)
 			var actual_cards := 0
+			var card_kinds: Array[String] = []
 			var card_copy := ""
 			for button in hud._cmd_panel.find_children("*", "Button", true, false):
 				if not button.has_meta("command_kind"):
 					continue
 				actual_cards += 1
-				if not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
+				card_kinds.append(str(button.get_meta("command_kind")))
+				if selected_kind != "war_hall" and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
 					validation_errors.append("card_outside_deck:" + str(actual_cards))
 				if button.pressed.get_connections().is_empty():
 					validation_errors.append("card_missing_command:" + str(actual_cards))
@@ -119,6 +138,14 @@ func _run() -> void:
 					card_copy += label.text + " "
 			if expected_cards > 0 and actual_cards != expected_cards:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
+			if selected_kind == "building" and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
+				validation_errors.append("building_action_families_missing:" + str(card_kinds))
+			if selected_kind == "war_hall" and not card_kinds.has("TRAIN"):
+				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
+			if selected_kind == "war_hall":
+				var deck_scroll := hud._cmd_panel.get_child(0) as ScrollContainer
+				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
+					validation_errors.append("war_hall_overflow_not_scrollable")
 			var expected_words: Array[String] = []
 			if selected_kind == "hero":
 				expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
@@ -151,7 +178,7 @@ func _run() -> void:
 			if not button.has_meta("command_kind"):
 				continue
 			for label in button.find_children("*", "Label", true, false):
-				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft"]:
+				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Advance to Age of Iron", "Clan Levy"]:
 					card_by_title[label.text] = button
 		if selected_kind in ["hero", "military"]:
 			for title in ["Attack Move", "Stop", "Hold", "Patrol"]:
@@ -180,6 +207,16 @@ func _run() -> void:
 			if instance.rts._build_id.is_empty():
 				validation_errors.append("build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
+		if selected_kind == "building" and card_by_title.has("Advance to Age of Iron"):
+			card_by_title["Advance to Age of Iron"].pressed.emit()
+			var selected_building = instance.rts.selected[0]
+			if selected_building.queue.is_empty() or str(selected_building.queue[0].get("id", "")) != "advance_tier_2":
+				validation_errors.append("research_button_did_not_queue_tech")
+		if selected_kind == "war_hall" and card_by_title.has("Clan Levy"):
+			card_by_title["Clan Levy"].pressed.emit()
+			var selected_hall = instance.rts.selected[0]
+			if selected_hall.queue.is_empty() or str(selected_hall.queue[0].get("id", "")) != "barrosan_clan_levy":
+				validation_errors.append("train_button_did_not_queue_unit")
 		var map_click := InputEventMouseButton.new()
 		map_click.button_index = MOUSE_BUTTON_LEFT
 		map_click.pressed = true
