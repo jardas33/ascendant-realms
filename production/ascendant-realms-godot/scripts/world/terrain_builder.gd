@@ -11,6 +11,7 @@ const GROUND_TEX := {
 	"meadow": "res://assets/textures/nature/highland_meadow_grass.png",
 	"dirt": "res://assets/textures/nature/highland_dirt_path.png",
 	"rock": "res://assets/textures/stone/highland_rock.png",
+	"snow": "res://assets/textures/nature/frostmere_windswept_snow_r1.png",
 }
 const WATER_SHADER := "res://assets/shaders/toon_water.gdshader"
 const GROUND_SHADER := "res://assets/shaders/ground_blend.gdshader"
@@ -192,9 +193,9 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 			# stone/dirt inputs survive the full battlefield view.
 			return {"ground_base": Color(0.31, 0.32, 0.35), "road_base": Color(0.46, 0.37, 0.29), "road_edge_color": Color(0.16, 0.17, 0.19), "surface_detail": 0.52, "surface_macro": 0.34, "road_detail": 0.54, "road_edge_strength": 0.23, "surface_saturation": 0.64}
 		"snow":
-			# Snow stays cool and bright, but not uniformly white.  The blue-grey
-			# shadow range keeps the ground readable beneath the production light.
-			return {"ground_base": Color(0.34, 0.40, 0.49), "road_base": Color(0.43, 0.39, 0.34), "road_edge_color": Color(0.19, 0.23, 0.29), "surface_detail": 0.48, "surface_macro": 0.32, "road_detail": 0.44, "road_edge_strength": 0.22, "surface_saturation": 0.70, "snow_shadow_color": Color(0.58, 0.66, 0.77), "snow_highlight_color": Color(0.88, 0.93, 1.0), "snow_underlay_strength": 0.30, "snow_variation_strength": 0.82}
+			# The authored snow texture supplies drift structure; the cool road
+			# and earth values retain tactical hierarchy under the winter light.
+			return {"ground_base": Color(0.34, 0.40, 0.49), "road_base": Color(0.40, 0.39, 0.38), "road_edge_color": Color(0.18, 0.23, 0.29), "surface_detail": 0.42, "surface_macro": 0.28, "road_detail": 0.38, "road_edge_strength": 0.26, "surface_saturation": 0.66, "snow_shadow_color": Color(0.58, 0.66, 0.77), "snow_highlight_color": Color(0.88, 0.93, 1.0), "snow_underlay_strength": 0.08, "snow_variation_strength": 0.82}
 		_:
 			# WORLD-03 highland grade: broader value variation and a clearer
 			# road verge, while keeping the grass palette restrained for units.

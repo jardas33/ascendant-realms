@@ -10,10 +10,12 @@ uniform sampler2D tex_grass : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_meadow : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_dirt : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_rock : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D tex_snow : source_color, filter_linear_mipmap, repeat_enable;
 
 uniform float tile_grass = 0.14;
 uniform float tile_dirt = 0.10;
 uniform float tile_rock = 0.09;
+uniform float tile_snow = 0.016;
 
 // R19 tactical readability grade.  These controls deliberately change only
 // the material presentation of the existing flat ground mesh; the playable
@@ -133,14 +135,22 @@ void fragment() {
 	// former near-white blanket erased most macro/value separation at the normal
 	// RTS camera distance; this grade layers existing ground response underneath
 	// a theme-compatible snow range instead of painting fake geography.
-	float snow_macro = fbm(wxz * 0.022 + 12.0);
-	float snow_micro = fbm(wxz * 0.085 + 41.0);
-	float snow_mask = snow_amt * (0.72 + 0.28 * snow_macro);
-	float snow_value = smoothstep(0.20, 0.82, snow_macro);
-	vec3 snow_surface = mix(snow_shadow_color, snow_highlight_color, snow_value);
-	snow_surface *= mix(0.92, 1.04, snow_micro) * mix(1.0, 0.94, snow_variation_strength * (1.0 - snow_value));
-	snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
-	ground = mix(ground, snow_surface, clamp(snow_mask, 0.0, 1.0));
+	if (snow_amt > 0.001) {
+		float snow_macro = fbm(wxz * 0.022 + 12.0);
+		float snow_micro = fbm(wxz * 0.085 + 41.0);
+		float snow_mask = snow_amt * (0.72 + 0.28 * snow_macro);
+		float snow_value = smoothstep(0.20, 0.82, snow_macro);
+		vec3 snow_surface = mix(snow_shadow_color, snow_highlight_color, snow_value);
+		snow_surface *= mix(0.92, 1.04, snow_micro) * mix(1.0, 0.94, snow_variation_strength * (1.0 - snow_value));
+		// Mirrored UVs keep the generated albedo continuous at tile boundaries;
+		// broad procedural grade masks the mirrored repeat at gameplay scale.
+		vec2 snow_uv = 1.0 - abs(fract(wxz * tile_snow) * 2.0 - 1.0);
+		vec2 snow_uv_detail = 1.0 - abs(fract(wxz * tile_snow * 1.37 + vec2(0.31, 0.57)) * 2.0 - 1.0);
+		vec3 snow_albedo = mix(texture(tex_snow, snow_uv).rgb, texture(tex_snow, snow_uv_detail).rgb, 0.36);
+		snow_surface = mix(snow_surface, snow_albedo, 0.87);
+		snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
+		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
+	}
 
 	ALBEDO = ground;
 	ROUGHNESS = mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0));

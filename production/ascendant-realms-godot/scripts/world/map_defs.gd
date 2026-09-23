@@ -240,7 +240,7 @@ static func theme(name: String) -> Dictionary:
 			"water": {"enabled": true, "lava": true, "deep": Color(0.5, 0.12, 0.03), "shallow": Color(1.0, 0.5, 0.12), "foam": Color(1.0, 0.85, 0.4)},
 		},
 		"snow": {
-			"ground_tint": Color(0.9, 0.95, 1.05), "dirt_bias": -0.05, "rock_bias": 0.1, "snow": 0.62,
+			"ground_tint": Color(0.9, 0.95, 1.05), "dirt_bias": -0.05, "rock_bias": 0.1, "snow": 0.86,
 			"rock_tint": Color(0.7, 0.74, 0.8),
 			"fog_color": Color(0.79, 0.85, 0.93), "fog_density": 0.00145,
 			"sun_color": Color(0.9, 0.94, 1.0), "sun_energy": 1.02, "ambient_energy": 0.58,
