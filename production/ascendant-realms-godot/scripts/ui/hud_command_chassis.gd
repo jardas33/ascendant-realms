@@ -62,9 +62,37 @@ func _draw() -> void:
 	draw_colored_polygon(outer, Color(0.16, 0.18, 0.18, 0.99))
 	draw_polyline(_closed(outer), Color(0.67, 0.55, 0.38, 0.77), 1.5, true)
 	var inset := _profile(5.0)
-	draw_colored_polygon(inset, Color(0.025, 0.037, 0.043, 0.985))
+	draw_colored_polygon(inset, Color(0.055, 0.063, 0.060, 0.96))
 	draw_polyline(_closed(inset), Color(0.035, 0.056, 0.063, 0.84), 1.2, true)
 	var bottom := maxf(selection_rect.end.y, command_rect.end.y) + 5.0
+	# Faceted value changes make the two wings feel like one worked material,
+	# while preserving a dark, stable reading field behind live labels and bars.
+	var selected_facet := PackedVector2Array([
+		Vector2(selection_rect.position.x + 3.0, selection_rect.position.y + 9.0),
+		Vector2(command_rect.position.x - 39.0, selection_rect.position.y + 9.0),
+		Vector2(command_rect.position.x - 14.0, command_rect.position.y + 32.0),
+		Vector2(command_rect.position.x - 14.0, bottom - 9.0),
+		Vector2(selection_rect.position.x + 3.0, bottom - 9.0)])
+	draw_polygon(selected_facet, PackedColorArray([
+		Color(0.37, 0.24, 0.10, 0.40),
+		Color(0.37, 0.24, 0.10, 0.25),
+		Color(0.20, 0.16, 0.10, 0.14),
+		Color(0.07, 0.09, 0.09, 0.02),
+		Color(0.07, 0.09, 0.09, 0.02)]))
+	var command_facet := PackedVector2Array([
+		Vector2(command_rect.position.x + 10.0, command_rect.position.y + 5.0),
+		Vector2(command_rect.end.x - 20.0, command_rect.position.y + 5.0),
+		Vector2(command_rect.end.x - 7.0, command_rect.position.y + 25.0),
+		Vector2(command_rect.end.x - 7.0, bottom - 10.0),
+		Vector2(command_rect.position.x + 10.0, bottom - 10.0)])
+	draw_polygon(command_facet, PackedColorArray([
+		Color(0.18, 0.26, 0.25, 0.52),
+		Color(0.18, 0.26, 0.25, 0.43),
+		Color(0.12, 0.18, 0.19, 0.22),
+		Color(0.06, 0.11, 0.12, 0.02),
+		Color(0.06, 0.11, 0.12, 0.02)]))
+	var header_y := command_rect.position.y + 31.0
+	draw_line(Vector2(command_rect.position.x + 20.0, header_y), Vector2(command_rect.end.x - 24.0, header_y), Color(0.64, 0.71, 0.65, 0.10), 1.0, true)
 	# A single broad iron facet seats the portrait into the chassis. It reads as
 	# a forged material change, rather than an extra rectangular portrait panel.
 	if has_portrait:
