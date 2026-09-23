@@ -221,9 +221,9 @@ func _fit_to_viewport() -> void:
 		_top_panel.size = Vector2(390, 78)
 	if is_instance_valid(_force_panel):
 		_force_panel.position = Vector2(440, 8)
-		_force_panel.size = Vector2(443, 78)
+		_force_panel.size = Vector2(500, 78)
 	if is_instance_valid(_age_panel):
-		_age_panel.position = Vector2(maxf(940.0, viewport_size.x * 0.53 - 76.0), 8)
+		_age_panel.position = Vector2(maxf(980.0, viewport_size.x * 0.53 - 76.0), 8)
 		_age_panel.size = Vector2(152, 78)
 	if is_instance_valid(_objective_panel):
 		_objective_panel.offset_left = -326.0
@@ -893,7 +893,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 13, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	var title_label := _mk_label(title.to_upper(), 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -912,7 +912,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_title_label(title, 13, accent.lightened(0.14))
+	var heading := _mk_title_label(title, 15, accent.lightened(0.14))
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -959,13 +959,13 @@ func _build_top_bar() -> void:
 
 	_force_panel = _mk_hud_panel("force", COMMAND_SKY)
 	_force_panel.name = "ForceInstrument"
-	_force_panel.custom_minimum_size = Vector2(443, 78)
+	_force_panel.custom_minimum_size = Vector2(500, 78)
 	add_child(_force_panel)
 
-	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 410.0)
+	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 480.0)
 	var force_metrics: HBoxContainer = force["metrics"]
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 98.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 110.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
 	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 21))
 	_pop_label = _mk_label("0/0", 28)
@@ -977,7 +977,7 @@ func _build_top_bar() -> void:
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 96.0, "Living opposing commanders")
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 110.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
 	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 21))
 	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
@@ -990,7 +990,7 @@ func _build_top_bar() -> void:
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 108.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 122.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
 	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 21))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
@@ -1001,7 +1001,7 @@ func _build_top_bar() -> void:
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 104.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 122.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
 	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 21))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
@@ -3065,10 +3065,12 @@ func _push_alert(message: String, col: Color) -> void:
 		var oldest := _alert_box.get_child(0)
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
-	var l := _mk_label(message, 15, col)
+	var l := _mk_label(message, 17, col)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(340, 24)
+	l.custom_minimum_size = Vector2(340, 28)
+	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
+	l.add_theme_constant_override("outline_size", 5)
 	_alert_box.add_child(l)
 	var tw := l.create_tween()
 	tw.tween_interval(3.2)

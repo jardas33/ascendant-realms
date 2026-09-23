@@ -39,20 +39,22 @@ func _draw() -> void:
 	if embedded:
 		return
 	if plate_kind in ["economy", "force", "objective"]:
-		var cut := 13.0 if plate_kind != "objective" else 8.0
+		var cut := 16.0 if plate_kind != "objective" else 8.0
 		var points := PackedVector2Array([
 			Vector2(0, 0), Vector2(size.x - cut, 0),
-			Vector2(size.x, cut), Vector2(size.x, size.y - 7),
-			Vector2(size.x - 9, size.y), Vector2(0, size.y)])
-		var top_opacity := 0.87 if plate_kind != "objective" else 0.72
-		var foot_opacity := 0.51 if plate_kind != "objective" else 0.34
+			Vector2(size.x, cut), Vector2(size.x, size.y - 10),
+			Vector2(size.x - 11, size.y), Vector2(12, size.y),
+			Vector2(0, size.y - 12)])
+		var top_opacity := 0.82 if plate_kind != "objective" else 0.72
+		var foot_opacity := 0.35 if plate_kind != "objective" else 0.34
 		draw_polygon(points, PackedColorArray([
 			Color(0.019, 0.030, 0.036, top_opacity),
 			Color(0.019, 0.030, 0.036, top_opacity),
 			Color(0.019, 0.030, 0.036, top_opacity * 0.83),
 			Color(0.019, 0.030, 0.036, foot_opacity),
 			Color(0.019, 0.030, 0.036, foot_opacity),
-			Color(0.019, 0.030, 0.036, foot_opacity)]))
+			Color(0.019, 0.030, 0.036, foot_opacity),
+			Color(0.019, 0.030, 0.036, foot_opacity * 0.70)]))
 		draw_line(Vector2(8, 1), Vector2(size.x - cut - 8, 1), Color(accent.r, accent.g, accent.b, 0.43 if plate_kind != "objective" else 0.26), 1.2, true)
 		draw_line(Vector2(1, 13), Vector2(1, size.y - 13), Color(accent.r, accent.g, accent.b, 0.24), 1.0, true)
 		return
