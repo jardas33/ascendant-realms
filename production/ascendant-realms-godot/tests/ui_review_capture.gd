@@ -23,6 +23,13 @@ func _run() -> void:
 	var frames := maxi(5, int(OS.get_environment("ASCENDANT_UI_FRAMES")))
 	for index in frames:
 		await process_frame
+	# A capture is not a pass when a HUD dependency fails to compile and the
+	# world quietly continues without the interface under review.
+	if not is_instance_valid(instance.get("hud")) or not is_instance_valid(instance.hud._cmd_panel):
+		push_error("UI_CAPTURE_HUD_MISSING_OR_INCOMPLETE")
+		instance.queue_free()
+		quit(3)
+		return
 	if OS.get_environment("ASCENDANT_UI_SELECT") == "hero" and instance.get("rts") != null:
 		instance.rts._cycle_hero()
 		for index in 5:
@@ -40,6 +47,10 @@ func _run() -> void:
 			instance.rts.selection_changed.emit(instance.rts.selected)
 		for index in 5:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SELECT") == "group" and instance.get("rts") != null:
+		instance.rts._select_army()
+		for index in 5:
+			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
@@ -48,6 +59,9 @@ func _run() -> void:
 		for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 			if is_instance_valid(panel):
 				print("UI_PANEL ", panel.name, " visible=", panel.visible, " rect=", panel.get_global_rect(), " scale=", panel.scale, " offsets=", [panel.offset_left, panel.offset_top, panel.offset_right, panel.offset_bottom], " min=", panel.get_combined_minimum_size())
+		for instrument in [hud._top_panel, hud._force_panel, hud._age_panel, hud._objective_panel, hud._menu_button, hud._faction_crest, hud._selection_portrait]:
+			if is_instance_valid(instrument):
+				print("UI_INSTRUMENT ", instrument.name, " rect=", instrument.get_global_rect())
 		var objective = hud.find_child("MatchObjectiveLabel", true, false)
 		if is_instance_valid(objective):
 			print("UI_OBJECTIVE ", objective.text, " rect=", objective.get_global_rect())
@@ -61,6 +75,17 @@ func _run() -> void:
 			for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 				if is_instance_valid(panel) and panel.visible and not safe_rect.encloses(panel.get_global_rect()):
 					validation_errors.append("panel_outside_viewport:" + panel.name)
+			for instrument in [hud._top_panel, hud._force_panel, hud._age_panel, hud._objective_panel, hud._menu_button, hud._faction_crest, hud._selection_portrait]:
+				if is_instance_valid(instrument) and instrument.visible and not safe_rect.encloses(instrument.get_global_rect()):
+					validation_errors.append("instrument_outside_viewport:" + instrument.name)
+			if hud._top_panel.get_global_rect().intersects(hud._force_panel.get_global_rect()):
+				validation_errors.append("top_economy_force_overlap")
+			if hud._force_panel.get_global_rect().intersects(hud._age_panel.get_global_rect()):
+				validation_errors.append("top_force_age_overlap")
+			if hud._age_panel.get_global_rect().intersects(hud._objective_panel.get_global_rect()):
+				validation_errors.append("top_age_objective_overlap")
+			if hud._objective_panel.get_global_rect().intersects(hud._menu_button.get_global_rect()):
+				validation_errors.append("top_objective_menu_overlap")
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
 			if hud._sel_panel.get_global_rect().intersects(hud._cmd_panel.get_global_rect()):

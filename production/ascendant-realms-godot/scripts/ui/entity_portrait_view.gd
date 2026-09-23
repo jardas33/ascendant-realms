@@ -7,7 +7,7 @@ class_name EntityPortraitView
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
 const PORTRAIT_MIN_SIZE := 46.0
-const PORTRAIT_MAX_SIZE := 116.0
+const PORTRAIT_MAX_SIZE := 180.0
 const PORTRAIT_FRAME_INSET := 5.0
 const PORTRAIT_ARTWORK_INSET := 8.0
 const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
@@ -116,6 +116,9 @@ func _build_view() -> void:
 	frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	frame.texture_filter = PORTRAIT_TEXTURE_FILTER
+	# Tiny build choices need the model silhouette more than a second ornate
+	# square. Keep the full portrait frame for the large selected-unit view.
+	frame.modulate.a = 0.22 if custom_minimum_size.x < 80.0 else 1.0
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
