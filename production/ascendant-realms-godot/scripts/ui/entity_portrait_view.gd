@@ -154,7 +154,7 @@ func _apply_entity(entity) -> void:
 	_pending_entity = null
 	_pending_definition = {}
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
-	_apply_definition(definition, entity.get_class() == "Building", String(entity.unit_id) if entity is Unit else "")
+	_apply_definition(definition, entity is Building, String(entity.unit_id) if entity is Unit else "")
 
 
 func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
@@ -180,6 +180,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	var path := str(definition.get("model", ""))
 	var target_height: float = 2.45 if is_building else 1.95
 	var model: Node3D = null
+	var model_radius := 0.0
 	if not path.is_empty() and ResourceLoader.exists(path):
 		var packed = load(path)
 		if packed:
@@ -192,6 +193,8 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		ModelUtils.ground_model(model)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(model)
+		if is_building:
+			model_radius = ModelUtils.measure_radius(model)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
 		var mesh := MeshInstance3D.new()
@@ -208,11 +211,20 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
 	var compact_card := custom_minimum_size.x < 80.0
-	_compact_building_fill.visible = compact_card and is_building
-	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else (2.65 if not is_building else 3.2))
-	_camera.position = Vector3(0.0, target_height * 0.58, distance)
-	_camera.fov = 56.0 if compact_card else 62.0
-	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	_compact_building_fill.visible = is_building
+	_compact_building_fill.light_energy = 1.4 if compact_card else 1.0
+	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
+	if is_building and not compact_card:
+		# Wide structures need a three-quarter architectural view; character
+		# framing used to crop the building down to one wall texture.
+		distance = maxf(3.3, model_radius * 2.25 + 0.45)
+		_camera.position = Vector3(distance * 0.48, target_height * 1.48, distance)
+		_camera.fov = 58.0
+		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	else:
+		_camera.position = Vector3(0.0, target_height * 0.58, distance)
+		_camera.fov = 56.0 if compact_card else 62.0
+		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	_pivot.rotation_degrees.y = -18.0
 
 

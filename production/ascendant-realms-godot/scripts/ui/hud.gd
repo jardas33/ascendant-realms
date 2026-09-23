@@ -238,7 +238,7 @@ func _fit_to_viewport() -> void:
 		if _tracked_single is Unit:
 			requested_selection_height = 230.0 if _tracked_single.is_hero else 210.0
 		elif _tracked_single is Building:
-			requested_selection_height = 260.0
+			requested_selection_height = 196.0 if not _tracked_single.is_built else 176.0
 	# Give the selected entity and two-column command deck enough room to be read
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
@@ -2209,6 +2209,10 @@ func _refresh_multi_live() -> void:
 func _build_single_building(b, read_only: bool = false) -> void:
 	_tracked_single = b
 	_single_read_only = read_only
+	# The building dossier is a compact partner to the action deck. Giving it a
+	# hero-sized height leaves a large blank slab over the battlefield.
+	if is_instance_valid(_sel_panel):
+		_sel_panel.custom_minimum_size.y = 196.0 if not b.is_built else 176.0
 	if not read_only and b.has_signal("construction_completed"):
 		b.construction_completed.connect(_on_tracked_building_construction_completed)
 		_watched_construction_building = b
@@ -2220,17 +2224,17 @@ func _build_single_building(b, read_only: bool = false) -> void:
 
 	var identity := HBoxContainer.new()
 	identity.add_theme_constant_override("separation", 8)
-	identity.custom_minimum_size = Vector2(0, 76)
+	identity.custom_minimum_size = Vector2(0, 100)
 	identity.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(identity)
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(76, 76)
+		portrait.custom_minimum_size = Vector2(100, 100)
 		identity.add_child(portrait)
 		portrait.configure_entity(b)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 72)
+		portrait = _mk_icon(FRAME_PORTRAIT, 96)
 		identity.add_child(portrait)
 	var identity_info := VBoxContainer.new()
 	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2388,6 +2392,13 @@ func _refresh_queue() -> void:
 	var b = _watched_building
 	if not is_instance_valid(b):
 		return
+	# Queue slots need a taller dossier than the idle building. Resize only on a
+	# state transition so frequent production ticks do not relayout the HUD.
+	if is_instance_valid(_sel_panel):
+		var queue_height := 220.0 if not b.queue.is_empty() else 176.0
+		if not is_equal_approx(_sel_panel.custom_minimum_size.y, queue_height):
+			_sel_panel.custom_minimum_size.y = queue_height
+			call_deferred("_fit_to_viewport")
 	if b.queue.is_empty():
 		_production_status_label.text = "Idle"
 		return

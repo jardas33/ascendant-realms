@@ -62,9 +62,9 @@ func _run() -> void:
 		instance.rts._select_army()
 		for index in 5:
 			await process_frame
-	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "war_hall", "construction"] and instance.get("rts") != null:
+	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "building_queued", "war_hall", "war_hall_queued", "construction"] and instance.get("rts") != null:
 		var building = null
-		if OS.get_environment("ASCENDANT_UI_SELECT") == "building":
+		if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "building_queued"]:
 			for candidate in instance.world.commanders[0].buildings:
 				if is_instance_valid(candidate) and not candidate.is_dead and bool(candidate.def.get("is_hq", false)):
 					building = candidate
@@ -78,6 +78,10 @@ func _run() -> void:
 			instance.rts._clear_selection()
 			instance.rts._add_to_selection(building)
 			instance.rts.selection_changed.emit(instance.rts.selected)
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "building_queued":
+				building.queue_unit("barrosan_worker")
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "war_hall_queued":
+				building.queue_unit("barrosan_clan_levy")
 			if OS.get_environment("ASCENDANT_UI_SELECT") == "construction":
 				building.build_progress = 0.5
 				await create_timer(0.25).timeout
@@ -134,7 +138,7 @@ func _run() -> void:
 					continue
 				actual_cards += 1
 				card_kinds.append(str(button.get_meta("command_kind")))
-				if selected_kind != "war_hall" and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
+				if selected_kind not in ["war_hall", "war_hall_queued"] and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
 					validation_errors.append("card_outside_deck:" + str(actual_cards))
 				if button.pressed.get_connections().is_empty():
 					validation_errors.append("card_missing_command:" + str(actual_cards))
@@ -142,11 +146,17 @@ func _run() -> void:
 					card_copy += label.text + " "
 			if expected_cards > 0 and actual_cards != expected_cards:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
-			if selected_kind == "building" and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
+			if selected_kind in ["building", "building_queued"] and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
 				validation_errors.append("building_action_families_missing:" + str(card_kinds))
-			if selected_kind == "war_hall" and not card_kinds.has("TRAIN"):
+			if selected_kind in ["building_queued", "war_hall_queued"]:
+				var queue = hud._queue_container
+				if not is_instance_valid(queue) or queue.get_child_count() == 0:
+					validation_errors.append("selected_building_queue_missing")
+				elif not hud._sel_panel.get_global_rect().encloses(queue.get_global_rect()):
+					validation_errors.append("selected_building_queue_clipped")
+			if selected_kind in ["war_hall", "war_hall_queued"] and not card_kinds.has("TRAIN"):
 				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
-			if selected_kind == "war_hall":
+			if selected_kind in ["war_hall", "war_hall_queued"]:
 				var deck_scroll := hud._cmd_panel.get_child(0) as ScrollContainer
 				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
 					validation_errors.append("war_hall_overflow_not_scrollable")
@@ -227,6 +237,16 @@ func _run() -> void:
 			var selected_hall = instance.rts.selected[0]
 			if selected_hall.queue.is_empty() or str(selected_hall.queue[0].get("id", "")) != "barrosan_clan_levy":
 				validation_errors.append("train_button_did_not_queue_unit")
+		if selected_kind == "building_queued" and is_instance_valid(instance.hud._queue_container):
+			var queue_slot = instance.hud._queue_container.get_child(0) if instance.hud._queue_container.get_child_count() > 0 else null
+			if is_instance_valid(queue_slot):
+				queue_slot.pressed.emit()
+				for index in 3:
+					await process_frame
+				if not instance.rts.selected[0].queue.is_empty():
+					validation_errors.append("queue_slot_did_not_cancel")
+				if instance.hud._sel_panel.custom_minimum_size.y > 180.0:
+					validation_errors.append("selection_panel_did_not_contract_after_queue")
 		var map_click := InputEventMouseButton.new()
 		map_click.button_index = MOUSE_BUTTON_LEFT
 		map_click.pressed = true
