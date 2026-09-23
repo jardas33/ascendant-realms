@@ -5,6 +5,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const PRESENTATION_THEME := "res://assets/ui/theme.tres"
+const BRIEFING_PLATE_SCRIPT := preload("res://scripts/ui/skirmish_briefing_plate.gd")
 
 const DIFFICULTIES := ["easy", "normal", "hard", "brutal"]
 const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
@@ -25,6 +26,10 @@ var _game_speed := 1.0
 var _speed_label: Label
 var _map_id := "__random__"
 var _map_infos := []
+var _brief_map_title: Label
+var _brief_map_desc: Label
+var _brief_matchup: Label
+var _brief_terms: Label
 
 func _race_ids() -> Array:
 	return GameData.RACES.keys()
@@ -57,7 +62,7 @@ func _build() -> void:
 	add_child(bg)
 	var scrim := ColorRect.new()
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scrim.color = Color(0.02, 0.03, 0.05, 0.75)
+	scrim.color = Color(0.02, 0.03, 0.05, 0.69)
 	add_child(scrim)
 
 	var title := Label.new()
@@ -75,8 +80,8 @@ func _build() -> void:
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scroll.offset_top = 84.0
 	scroll.offset_bottom = -80.0
-	scroll.offset_left = 60.0
-	scroll.offset_right = -60.0
+	scroll.offset_left = 72.0
+	scroll.offset_right = -840.0
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
 
@@ -99,10 +104,11 @@ func _build() -> void:
 	v.add_child(_player_opt)
 	_identity_note = Label.new()
 	_identity_note.add_theme_font_override("font", _body_font())
-	_identity_note.add_theme_color_override("font_color", Color(0.8, 0.8, 0.72))
-	_identity_note.add_theme_font_size_override("font_size", 16)
+	_identity_note.add_theme_color_override("font_color", Color(0.88, 0.84, 0.70))
+	_identity_note.add_theme_font_size_override("font_size", 17)
 	_identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_identity_note.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_identity_note.custom_minimum_size = Vector2(0, 26)
 	v.add_child(_identity_note)
 	_update_identity_note()
 
@@ -144,7 +150,8 @@ func _build() -> void:
 	map_opt.select(0)
 	map_opt.item_selected.connect(func(idx):
 		Sfx.play("select")
-		_map_id = "__random__" if idx == 0 else str(_map_infos[idx - 1]["id"]))
+		_map_id = "__random__" if idx == 0 else str(_map_infos[idx - 1]["id"])
+		_refresh_briefing())
 	v.add_child(map_opt)
 
 	# Victory
@@ -166,6 +173,8 @@ func _build() -> void:
 	slider.value_changed.connect(func(val): _game_speed = val; _update_speed())
 	v.add_child(slider)
 	_update_speed()
+	_build_briefing()
+	_refresh_briefing()
 
 	# Footer
 	var footer := HBoxContainer.new()
@@ -189,11 +198,13 @@ func _set_opponents(n: int) -> void:
 		if b is Button:
 			b.button_pressed = (b.get_meta("count", 0) == n)
 	_rebuild_opponents()
+	_refresh_briefing()
 
 func _on_player_race_selected(idx: int, race_ids: Array) -> void:
 	if idx >= 0 and idx < race_ids.size():
 		_player_race = str(race_ids[idx])
 	_update_identity_note()
+	_refresh_briefing()
 	Sfx.play("select")
 
 func _update_identity_note() -> void:
@@ -202,11 +213,12 @@ func _update_identity_note() -> void:
 	var profile := ProfileManager.hero()
 	var faction_name: String = str(GameData.RACES.get(_player_race, {}).get("name", _player_race))
 	if profile.is_empty():
-		_identity_note.text = "Profile hero: none. Skirmish faction: %s." % faction_name
+		_identity_note.text = "NO PROFILE HERO  ·  FIGHTING FOR %s" % faction_name.to_upper()
 		return
 	var profile_race := str(profile.get("race", "unknown"))
 	var profile_race_name: String = str(GameData.RACES.get(profile_race, {}).get("name", profile_race))
-	_identity_note.text = "Profile hero: %s — %s. Skirmish faction: %s. Persistent hero progression will be applied to this battle." % [str(profile.get("name", "Unnamed hero")), profile_race_name, faction_name]
+	_identity_note.text = "%s · %s  /  FIGHTING FOR %s" % [str(profile.get("name", "Hero")).to_upper(), profile_race_name.to_upper(), faction_name.to_upper()]
+	_identity_note.tooltip_text = "Your profile hero's progression is available in this skirmish."
 
 func _rebuild_opponents() -> void:
 	for c in _opp_container.get_children():
@@ -240,14 +252,14 @@ func _rebuild_opponents() -> void:
 			race_opt.add_item(GameData.RACES[rid].get("name", rid), j)
 		var def_idx: int = opp_race_ids.find(defaults[i]) if i < defaults.size() else -1
 		race_opt.select(max(0, def_idx))
-		race_opt.item_selected.connect(func(_idx): Sfx.play("select"))
+		race_opt.item_selected.connect(func(_idx): Sfx.play("select"); _refresh_briefing())
 		row.add_child(race_opt)
 		var diff_opt := OptionButton.new()
 		diff_opt.custom_minimum_size = Vector2(160, 40)
 		for j in DIFF_LABELS.size():
 			diff_opt.add_item(DIFF_LABELS[j], j)
 		diff_opt.select(1)
-		diff_opt.item_selected.connect(func(_idx): Sfx.play("select"))
+		diff_opt.item_selected.connect(func(_idx): Sfx.play("select"); _refresh_briefing())
 		row.add_child(diff_opt)
 		_opp_container.add_child(row)
 		_opp_rows.append({"race": race_opt, "diff": diff_opt})
@@ -261,6 +273,79 @@ func _pick_map() -> String:
 
 func _update_speed() -> void:
 	_speed_label.text = "%.1fx" % _game_speed
+	_refresh_briefing()
+
+func _brief_label(text: String, size: int, color: Color, display_font: bool = false) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_override("font", _title_font() if display_font else _body_font())
+	label.add_theme_font_size_override("font_size", size)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.86))
+	label.add_theme_constant_override("outline_size", 3)
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
+
+func _build_briefing() -> void:
+	var panel: PanelContainer = BRIEFING_PLATE_SCRIPT.new()
+	panel.name = "BattleBriefing"
+	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	panel.offset_left = -790.0
+	panel.offset_right = -80.0
+	panel.offset_top = 150.0
+	panel.offset_bottom = 525.0
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color.TRANSPARENT
+	style.content_margin_left = 28
+	style.content_margin_right = 25
+	style.content_margin_top = 24
+	style.content_margin_bottom = 24
+	panel.add_theme_stylebox_override("panel", style)
+	add_child(panel)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	panel.add_child(column)
+	column.add_child(_brief_label("WAR COUNCIL  /  BATTLE DOSSIER", 17, Color(0.91, 0.74, 0.43), true))
+	_brief_map_title = _brief_label("UNMAPPED FRONTIER", 32, Color(0.98, 0.91, 0.69), true)
+	column.add_child(_brief_map_title)
+	_brief_map_desc = _brief_label("", 19, Color(0.83, 0.86, 0.84))
+	column.add_child(_brief_map_desc)
+	var rule := ColorRect.new()
+	rule.custom_minimum_size = Vector2(0, 1)
+	rule.color = Color(0.74, 0.60, 0.35, 0.52)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(rule)
+	column.add_child(_brief_label("FORCES AND TERMS", 16, Color(0.91, 0.74, 0.43), true))
+	_brief_matchup = _brief_label("", 22, Color(0.97, 0.94, 0.84))
+	column.add_child(_brief_matchup)
+	_brief_terms = _brief_label("", 17, Color(0.74, 0.82, 0.80))
+	column.add_child(_brief_terms)
+
+func _refresh_briefing() -> void:
+	if not is_instance_valid(_brief_map_title):
+		return
+	var map_name := "UNMAPPED FRONTIER"
+	var map_desc := "The realm will choose one of %d battlefields when you march." % _map_infos.size()
+	for info in _map_infos:
+		if str(info.get("id", "")) == _map_id:
+			map_name = str(info.get("name", "Battlefield")).to_upper()
+			map_desc = str(info.get("desc", ""))
+			break
+	_brief_map_title.text = map_name
+	_brief_map_desc.text = map_desc
+	var player_name := str(GameData.RACES.get(_player_race, {}).get("name", _player_race))
+	var opponent_names: Array[String] = []
+	var race_ids := _race_ids()
+	for row in _opp_rows:
+		var selected_id: int = row["race"].get_selected_id()
+		if selected_id >= 0 and selected_id < race_ids.size():
+			var race_id := str(race_ids[selected_id])
+			opponent_names.append(str(GameData.RACES.get(race_id, {}).get("name", race_id)))
+	_brief_matchup.text = "%s  VS  %s" % [player_name.to_upper(), " + ".join(opponent_names).to_upper()]
+	_brief_terms.text = "%s VICTORY   ·   %s SUPPLIES   ·   %.1f× SPEED" % [_victory.to_upper(), _res_kind.to_upper(), _game_speed]
 
 func _on_begin() -> void:
 	Sfx.play("select")
@@ -310,7 +395,8 @@ func _choice_row(labels: Array, keys: Array, setter: Callable, current: String) 
 			Sfx.play("select")
 			setter.call(keys[i])
 			for other in buttons:
-				other.button_pressed = (other == b))
+				other.button_pressed = (other == b)
+			_refresh_briefing())
 		row.add_child(b)
 	return row
 
