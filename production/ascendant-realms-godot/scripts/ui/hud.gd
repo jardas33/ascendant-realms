@@ -25,7 +25,6 @@ const MINIMAP_RASTER_SIZE := 160
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 42.0
-const MINIMAP_GRID_DIVISIONS := 4
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
@@ -84,6 +83,10 @@ var _menu_button: Button = null
 var _minimap: Control = null
 var _minimap_background: ImageTexture = null
 var _minimap_background_key := ""
+var _minimap_fog: ImageTexture = null
+var _minimap_fog_states := PackedByteArray()
+var _minimap_fog_columns := 0
+var _minimap_fog_rows := 0
 var _minimap_panel: PanelContainer = null
 var _faction_crest: TextureRect = null
 
@@ -1120,8 +1123,7 @@ func _build_minimap() -> void:
 	var panel := _mk_hud_panel("minimap", Color(0.83, 0.65, 0.35))
 	_minimap_panel = panel
 	_minimap_panel.name = "MinimapPanel"
-	# The map is a navigation instrument; its title carries the interaction hint
-	# and marker shapes carry the legend, avoiding a tiny debug-like footer.
+	# Give the surveyed place the emphasis; the map itself carries the markers.
 	var box := MINIMAP_SIZE + 24.0
 	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -1138,10 +1140,11 @@ func _build_minimap() -> void:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(column)
-	var title := _mk_label("TACTICAL MAP", 13, Color(0.95, 0.85, 0.55))
+	var map_name := str(world.map.get("name", "Battlefield")) if is_instance_valid(world) else "Battlefield"
+	var title := _mk_label(map_name.to_upper(), 12, Color(0.95, 0.85, 0.55))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
-	var hint := _mk_label("BLUE/RED  /  ◆ ARMY  /  ○ WORKER  /  ✦ HERO", 9, HUD_TEXT_MUTED)
+	var hint := _mk_label("FIELD OVERVIEW    ·    CLICK TO PAN", 9, HUD_TEXT_MUTED)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(hint)
 	_minimap = Control.new()
@@ -1279,15 +1282,29 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 	var states: PackedByteArray = grid.get("states", PackedByteArray())
 	if columns <= 0 or rows <= 0 or states.size() != columns * rows:
 		return
-	var cell_width := size.x / float(columns)
-	var cell_height := size.y / float(rows)
-	for row in rows:
-		for column in columns:
-			var state := int(states[row * columns + column])
-			if state == 2:
-				continue
-			var fog_color := Color(0.025, 0.040, 0.060, 0.72) if state == 0 else Color(0.045, 0.065, 0.085, 0.32)
-			_minimap.draw_rect(Rect2(column * cell_width, row * cell_height, cell_width + 0.5, cell_height + 0.5), fog_color, true)
+	# One raster removes the dark seams made by overlapping translucent cells.
+	# It still samples the authoritative visibility grid, with no extra scouting.
+	if _minimap_fog == null or columns != _minimap_fog_columns or rows != _minimap_fog_rows or states != _minimap_fog_states:
+		var fog_image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
+		for y in MINIMAP_RASTER_SIZE:
+			var row := mini(rows - 1, int(float(y) / float(MINIMAP_RASTER_SIZE) * float(rows)))
+			for x in MINIMAP_RASTER_SIZE:
+				var column := mini(columns - 1, int(float(x) / float(MINIMAP_RASTER_SIZE) * float(columns)))
+				var state := int(states[row * columns + column])
+				var fog_color := Color.TRANSPARENT
+				if state == 0:
+					fog_color = Color(0.023, 0.034, 0.043, 0.66)
+				elif state == 1:
+					fog_color = Color(0.038, 0.056, 0.067, 0.32)
+				fog_image.set_pixel(x, y, fog_color)
+		if _minimap_fog == null:
+			_minimap_fog = ImageTexture.create_from_image(fog_image)
+		else:
+			_minimap_fog.update(fog_image)
+		_minimap_fog_states = states
+		_minimap_fog_columns = columns
+		_minimap_fog_rows = rows
+	_minimap.draw_texture_rect(_minimap_fog, Rect2(Vector2.ZERO, size), false)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
@@ -1295,8 +1312,6 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	# from the same map/world that renders the battlefield; live markers are
 	# layered separately below. Avoid synthetic camouflage blobs or a decorative
 	# board-game overlay that has no spatial correspondence to the world.
-	var edge := Color(0.86, 0.78, 0.58, 0.68)
-	_minimap.draw_rect(Rect2(Vector2(6, 6), size - Vector2(12, 12)), edge, false, 2.0)
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
 	if bool(water.get("enabled", false)):
@@ -1314,22 +1329,15 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	_draw_minimap_roads(size)
 
 func _draw_minimap_frame(size: Vector2) -> void:
-	var cut := 17.0
-	var edge := PackedVector2Array([
-		Vector2(cut, 1), Vector2(size.x - cut, 1), Vector2(size.x - 1, cut),
-		Vector2(size.x - 1, size.y - cut), Vector2(size.x - cut, size.y - 1),
-		Vector2(cut, size.y - 1), Vector2(1, size.y - cut), Vector2(1, cut), Vector2(cut, 1)])
-	var dark := Color(0.025, 0.035, 0.039, 1.0)
-	for corner in [
-		PackedVector2Array([Vector2.ZERO, Vector2(cut, 0), Vector2(0, cut)]),
-		PackedVector2Array([Vector2(size.x, 0), Vector2(size.x - cut, 0), Vector2(size.x, cut)]),
-		PackedVector2Array([Vector2(size.x, size.y), Vector2(size.x - cut, size.y), Vector2(size.x, size.y - cut)]),
-		PackedVector2Array([Vector2(0, size.y), Vector2(cut, size.y), Vector2(0, size.y - cut)])]:
-		_minimap.draw_colored_polygon(corner, dark)
-	_minimap.draw_polyline(edge, Color(0.88, 0.69, 0.37, 0.96), 2.4, true)
-	_minimap.draw_polyline(PackedVector2Array([Vector2(cut + 5, 5), Vector2(size.x - cut - 5, 5)]), Color(1.0, 0.89, 0.56, 0.44), 1.0, true)
-	for marker in [Vector2(size.x * 0.5, 2), Vector2(size.x - 2, size.y * 0.5), Vector2(size.x * 0.5, size.y - 2), Vector2(2, size.y * 0.5)]:
-		_minimap.draw_colored_polygon(PackedVector2Array([marker + Vector2(0, -4), marker + Vector2(4, 0), marker + Vector2(0, 4), marker + Vector2(-4, 0)]), Color(0.96, 0.79, 0.45))
+	# The forged housing is the frame. A quiet compass mark gives orientation
+	# without putting another bright rectangle over the terrain.
+	var compass := Vector2(size.x - 19.0, 18.0)
+	_minimap.draw_circle(compass, 12.0, Color(0.018, 0.028, 0.033, 0.74))
+	_minimap.draw_arc(compass, 10.0, 0.0, TAU, 24, Color(0.88, 0.72, 0.43, 0.54), 1.0, true)
+	_minimap.draw_colored_polygon(PackedVector2Array([
+		compass + Vector2(0.0, -8.0), compass + Vector2(3.3, 4.0),
+		compass, compass + Vector2(-3.3, 4.0)]), Color(0.97, 0.82, 0.52, 0.86))
+	_minimap.draw_circle(compass, 1.3, Color(0.04, 0.06, 0.07))
 
 func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_enemy: bool = false) -> void:
 	var radius := 7.0 if is_major else 5.0
@@ -1410,7 +1418,7 @@ func _minimap_theme_color(theme_name: String, accent: bool) -> Color:
 		"volcanic": return Color(0.42, 0.25, 0.18, 1.0) if not accent else Color(0.58, 0.32, 0.18, 1.0)
 		"snow": return Color(0.37, 0.45, 0.48, 1.0) if not accent else Color(0.60, 0.68, 0.70, 1.0)
 		"desert", "badlands": return Color(0.40, 0.29, 0.18, 1.0) if not accent else Color(0.58, 0.42, 0.24, 1.0)
-		_: return Color(0.22, 0.30, 0.20, 1.0) if not accent else Color(0.30, 0.38, 0.24, 1.0)
+		_: return Color(0.31, 0.39, 0.27, 1.0) if not accent else Color(0.39, 0.47, 0.31, 1.0)
 
 
 func _minimap_world_landform_specs() -> Array:
@@ -1478,11 +1486,13 @@ func _ensure_minimap_background() -> void:
 				if has_meadow_image:
 					var meadow_sample: Color = meadow_image.get_pixel(posmod(tx, meadow_image.get_width()), posmod(tz, meadow_image.get_height()))
 					ground_sample = ground_sample.lerp(meadow_sample, 0.36)
-				col = col.lerp(ground_sample, 0.42)
-				# Keep authored texture variation readable at minimap scale while
-				# avoiding any newly invented landform shapes.
 				var texture_luma := (ground_sample.r + ground_sample.g + ground_sample.b) / 3.0
-				col = col.lightened(clampf((texture_luma - 0.42) * 0.16, -0.05, 0.08))
+				# The world shader grades this texture per biome. Keep its hue only
+				# for the highlands; on snow, ash and desert it supplies detail, not
+				# an unrelated green cast over the battlefield's actual palette.
+				if theme_name == "highland":
+					col = col.lerp(ground_sample, 0.38)
+				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -2715,7 +2725,7 @@ func _build_hero_command_card(u) -> void:
 			var status_label: Label = btn.get_meta("command_status_label")
 			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})
 
-	_add_command_section("Orders", "Movement and stance")
+	_add_command_section("Orders", "Move · attack")
 	var order_grid := _mk_command_grid()
 	_cmd_body.add_child(order_grid)
 	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
@@ -2725,7 +2735,7 @@ func _build_hero_command_card(u) -> void:
 
 
 func _build_military_card() -> void:
-	_add_command_section("Commands", "Movement and stance")
+	_add_command_section("Commands", "Move · attack")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
 	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")

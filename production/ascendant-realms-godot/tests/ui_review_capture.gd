@@ -10,6 +10,17 @@ func _run() -> void:
 		if parts.size() == 2:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
+	var map_id := OS.get_environment("ASCENDANT_UI_MAP")
+	if not map_id.is_empty():
+		root.get_node("Match").set_config({
+			"player_race": "barrosan",
+			"opponents": [{"race": "vorthak", "difficulty": "easy"}],
+			"map": map_id,
+			"start_resources": "standard",
+			"victory": "conquest",
+			"mode": "skirmish",
+			"game_speed": 1.0,
+		})
 	var target := OS.get_environment("ASCENDANT_UI_SCENE")
 	if target.is_empty():
 		target = "res://scenes/game_world.tscn"
@@ -169,6 +180,15 @@ func _run() -> void:
 			if instance.rts._build_id.is_empty():
 				validation_errors.append("build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
+		var map_click := InputEventMouseButton.new()
+		map_click.button_index = MOUSE_BUTTON_LEFT
+		map_click.pressed = true
+		map_click.position = instance.hud._minimap.size * Vector2(0.35, 0.65)
+		instance.hud._on_minimap_input(map_click)
+		var expected_focus := Vector2(-42.0, 42.0)
+		var actual_focus := Vector2(instance.rts.cam_pivot.global_position.x, instance.rts.cam_pivot.global_position.z)
+		if actual_focus.distance_to(expected_focus) > 2.0:
+			validation_errors.append("minimap_click_did_not_focus_camera")
 		print("UI_FUNCTIONAL ", "PASS" if validation_errors.is_empty() else "FAIL", " ", validation_errors)
 	instance.queue_free()
 	for index in 2:
