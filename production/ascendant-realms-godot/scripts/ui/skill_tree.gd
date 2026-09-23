@@ -4,10 +4,10 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(174.0, 86.0)
-const FOCUSED_SPACING := Vector2(220.0, 86.0)
+const SPACING := Vector2(196.0, 105.0)
+const FOCUSED_SPACING := Vector2(246.0, 106.0)
 const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(160.0, 72.0)
+const NODE_SIZE := Vector2(184.0, 92.0)
 const GRAPH_ZOOM := 0.82
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
@@ -92,6 +92,7 @@ var _canvas: ConstellationCanvas
 var _viewport: Control
 var _points_label: Label
 var _points_subtitle: Label
+var _hero_subtitle: Label
 var _detail_title: Label
 var _detail_type: Label
 var _detail_glyph: Glyph
@@ -108,7 +109,7 @@ var _glyph_texture_cache := {}
 var _nodes: Array = []
 var _selected_id := ""
 var _hovered_id := ""
-var _branch_filter := ""
+var _branch_filter := "active"
 var _zoom := GRAPH_ZOOM
 var _pan := Vector2.ZERO
 var _dragging := false
@@ -145,7 +146,8 @@ func _build() -> void:
 	title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header_row.add_child(title_col)
 	title_col.add_child(_label("HERO CONSTELLATION", 30, GOLD_BRIGHT))
-	title_col.add_child(_label("Barrosan Warrior  •  Shape the legend you carry into battle", 15, MUTED))
+	_hero_subtitle = _label("Shape the legend you carry into battle", 17, MUTED)
+	title_col.add_child(_hero_subtitle)
 	var point_card := PanelContainer.new()
 	point_card.custom_minimum_size = Vector2(270.0, 70.0)
 	point_card.add_theme_stylebox_override("panel", _panel_style(Color("#211b2b"), GOLD, 12, 1))
@@ -164,7 +166,7 @@ func _build() -> void:
 	detail_bg.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	detail_bg.offset_left = 24.0
 	detail_bg.offset_top = 128.0
-	detail_bg.offset_right = 330.0
+	detail_bg.offset_right = 374.0
 	detail_bg.offset_bottom = -116.0
 	detail_bg.add_theme_stylebox_override("panel", _panel_style(PANEL, Color("#34445d"), 14, 1))
 	add_child(detail_bg)
@@ -186,6 +188,7 @@ func _build() -> void:
 	_detail_glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	detail_header.add_child(_detail_glyph)
 	var detail_title_col := VBoxContainer.new()
+	detail_title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail_title_col.add_theme_constant_override("separation", 4)
 	detail_header.add_child(detail_title_col)
 	_detail_title = _label("Choose a skill", 23, PAPER)
@@ -218,7 +221,7 @@ func _build() -> void:
 
 	_viewport = Control.new()
 	_viewport.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_viewport.offset_left = 346.0
+	_viewport.offset_left = 390.0
 	_viewport.offset_top = 124.0
 	_viewport.offset_right = -24.0
 	_viewport.offset_bottom = -116.0
@@ -240,11 +243,11 @@ func _build() -> void:
 		_selected_id = "act_1"
 
 	var legend := PanelContainer.new()
-	legend.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	legend.offset_left = 430.0
-	legend.offset_right = 850.0
-	legend.offset_top = -116.0
-	legend.offset_bottom = -24.0
+	legend.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	legend.offset_left = -690.0
+	legend.offset_right = -300.0
+	legend.offset_top = 11.0
+	legend.offset_bottom = 107.0
 	_legend_panel = legend
 	legend.add_theme_stylebox_override("panel", _panel_style(Color("#101729"), Color("#283850"), 12, 1))
 	add_child(legend)
@@ -257,13 +260,12 @@ func _build() -> void:
 	var legend_box := VBoxContainer.new()
 	legend_box.add_theme_constant_override("separation", 7)
 	legend_margin.add_child(legend_box)
-	legend_box.add_child(_label("READ THE CONSTELLATION", 11, MUTED))
-	legend_box.add_child(_label("PATH FOCUS", 10, Color("#73839b")))
+	legend_box.add_child(_label("PATH FOCUS", 14, GOLD))
 	_path_filter = OptionButton.new()
-	_path_filter.custom_minimum_size = Vector2(390.0, 30.0)
+	_path_filter.custom_minimum_size = Vector2(360.0, 32.0)
 	_path_filter.focus_mode = Control.FOCUS_NONE
 	_path_filter.add_theme_font_override("font", _title_font())
-	_path_filter.add_theme_font_size_override("font_size", 11)
+	_path_filter.add_theme_font_size_override("font_size", 15)
 	_path_filter.add_theme_color_override("font_color", PAPER)
 	_path_filter.add_theme_stylebox_override("normal", _panel_style(Color("#182238"), Color("#52657e"), 7, 1))
 	_path_filter.add_theme_stylebox_override("hover", _panel_style(Color("#26334d"), GOLD, 7, 1))
@@ -271,19 +273,19 @@ func _build() -> void:
 	_path_filter.add_item("ALL PATHS")
 	for branch in BRANCH_COLORS.keys():
 		_path_filter.add_item(str(branch).to_upper())
+	_path_filter.select(BRANCH_COLORS.keys().find(_branch_filter) + 1)
 	_path_filter.item_selected.connect(_on_path_filter_selected)
 	legend_box.add_child(_path_filter)
 	var legend_row := HBoxContainer.new()
 	legend_row.add_theme_constant_override("separation", 12)
 	legend_box.add_child(legend_row)
-	legend_row.add_child(_legend_item("UNLOCKED", MINT))
-	legend_row.add_child(_legend_item("PURCHASABLE", GOLD_BRIGHT))
-	legend_row.add_child(_legend_item("BLOCKED", LOCKED))
-	legend_row.add_child(_legend_item("ACTIVE", ACTIVE))
+	legend_row.add_child(_legend_item("OWNED", MINT))
+	legend_row.add_child(_legend_item("READY", GOLD_BRIGHT))
+	legend_row.add_child(_legend_item("LOCKED", LOCKED))
 
 	var footer := HBoxContainer.new()
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	footer.offset_left = 346.0
+	footer.offset_left = 390.0
 	footer.offset_right = -24.0
 	footer.offset_top = -92.0
 	footer.offset_bottom = -24.0
@@ -322,16 +324,16 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 14, PAPER)
+	var name_label := _label(str(n.get("name", "")), 19, PAPER)
 	name_label.position = Vector2(60.0, 6.0)
-	name_label.size = Vector2(94.0, 42.0)
+	name_label.size = Vector2(118.0, 55.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 11, MUTED)
-	cost_label.position = Vector2(60.0, 54.0)
-	cost_label.size = Vector2(94.0, 16.0)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 14, MUTED)
+	cost_label.position = Vector2(60.0, 71.0)
+	cost_label.size = Vector2(118.0, 18.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(cost_label)
 	b.pressed.connect(_on_node_pressed.bind(n))
@@ -425,11 +427,7 @@ func _update_canvas_size() -> void:
 func _fit_default_zoom() -> void:
 	if not is_instance_valid(_viewport) or _viewport.size.x <= 0.0:
 		return
-	if is_instance_valid(_legend_panel):
-		var guide_left := 430.0 if size.x < 1500.0 else 600.0
-		_legend_panel.offset_left = guide_left
-		_legend_panel.offset_right = guide_left + 420.0
-	var target := GRAPH_ZOOM
+	var target := 1.08 if _branch_filter != "" else GRAPH_ZOOM
 	if _branch_filter == "":
 		target = minf(target, maxf(0.62, (_viewport.size.x - 36.0) / maxf(1.0, _canvas.size.x)))
 	_zoom = clampf(target, 0.52, 1.16)
@@ -474,7 +472,7 @@ func _draw_background() -> void:
 		draw_line(Vector2(x, 0), Vector2(x + 160.0, size.y), Color(0.18, 0.25, 0.38, 0.08), 1.0)
 	for i in range(6):
 		var y := 120.0 + float(i) * maxf(1.0, (size.y - 170.0) / 5.0)
-		draw_line(Vector2(346.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
+		draw_line(Vector2(390.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
 	for p in [Vector2(size.x * 0.48, 130), Vector2(size.x * 0.82, 760), Vector2(size.x * 0.2, 860)]:
 		draw_circle(p, 120.0, Color(0.14, 0.2, 0.34, 0.12))
 		draw_arc(p, 120.0, 0.0, TAU, 40, Color(GOLD, 0.08), 1.0, true)
@@ -578,6 +576,8 @@ func _refresh_nodes() -> void:
 		return
 	var h := ProfileManager.hero()
 	var sp := int(h.get("skill_points", 0))
+	var race := GameData.get_race(str(h.get("race", "")))
+	_hero_subtitle.text = "%s  /  %s  ·  SHAPE THE LEGEND YOU CARRY INTO BATTLE" % [str(race.get("name", h.get("race", "Hero"))).to_upper(), str(h.get("archetype", "Warrior")).to_upper()]
 	_points_label.text = "SKILL POINTS  %d" % sp
 	for n in _nodes:
 		var id := str(n.get("id", ""))
@@ -632,6 +632,8 @@ func _on_path_filter_selected(index: int) -> void:
 				break
 	_update_canvas_size()
 	_refresh_nodes()
+	_pan = Vector2.ZERO
+	_fit_default_zoom()
 
 func _skill_glyph_texture(n: Dictionary) -> Texture2D:
 	var id := str(n.get("id", ""))
@@ -701,7 +703,7 @@ func _legend_item(text: String, color: Color) -> Label:
 func _label(text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_override("font", _title_font())
+	label.add_theme_font_override("font", _title_font() if font_size > 22 else ThemeDB.fallback_font)
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
 	return label
@@ -711,8 +713,8 @@ func _tool_button(text: String, cb: Callable) -> Button:
 	b.text = text
 	b.custom_minimum_size = Vector2(132.0, 48.0)
 	b.focus_mode = Control.FOCUS_NONE
-	b.add_theme_font_override("font", _title_font())
-	b.add_theme_font_size_override("font_size", 13)
+	b.add_theme_font_override("font", ThemeDB.fallback_font)
+	b.add_theme_font_size_override("font_size", 17)
 	b.add_theme_color_override("font_color", PAPER)
 	b.add_theme_stylebox_override("normal", _panel_style(Color("#182238"), Color("#52657e"), 9, 1))
 	b.add_theme_stylebox_override("hover", _panel_style(Color("#26334d"), GOLD, 9, 1))
