@@ -180,6 +180,21 @@ func _run() -> void:
 					var portrait := aperture.get_parent() as Control
 					if not is_instance_valid(portrait) or not portrait.get_global_rect().encloses(aperture.get_global_rect()) or aperture.size.x >= portrait.size.x - 12.0:
 						validation_errors.append("building_portrait_aperture_not_inset")
+			if selected_kind in ["hero", "military"]:
+				var field_orders := {"Attack Move": "attack", "Stop": "stop", "Hold": "hold", "Patrol": "patrol"}
+				var pictured_orders := 0
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					for label in button.find_children("*", "Label", true, false):
+						if field_orders.has(label.text):
+							var emblem = button.find_child("CommandEmblem", true, false) as Control
+							if is_instance_valid(emblem) and emblem.get("icon_kind") == field_orders[label.text]:
+								pictured_orders += 1
+				if pictured_orders != 4:
+					validation_errors.append("field_order_art_missing:%d_expected_4" % pictured_orders)
+			if selected_kind == "hero":
+				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
+				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally":
+					validation_errors.append("rally_art_missing")
 			if selected_kind in ["building_queued", "war_hall_queued"]:
 				var queue = hud._queue_container
 				if not is_instance_valid(queue) or queue.get_child_count() == 0:

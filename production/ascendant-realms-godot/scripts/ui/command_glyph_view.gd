@@ -1,11 +1,19 @@
 extends Control
-## Action emblems used by the command deck. Art-directed unit and age actions
-## use authored paintings; small universal orders retain vector fallbacks.
+## Action emblems used by the command deck. The field orders share one painted
+## atlas so they remain visually distinct at their small gameplay size.
 
 const EMBLEMS := {
 	"barrosan_worker": "res://assets/ui/command_emblems/astra_r1/recruit_highland_worker.png",
 	"advance_tier_2": "res://assets/ui/command_emblems/astra_r1/age_of_iron.png",
 	"advance_tier_3": "res://assets/ui/command_emblems/astra_r1/age_of_lume.png",
+	"rally": "res://assets/ui/command_emblems/astra_r1/rallying_cry.png",
+}
+const FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/astra_r1/field_orders_atlas.png"
+const FIELD_ORDER_QUADRANTS := {
+	"attack": Vector2i(0, 0),
+	"stop": Vector2i(1, 0),
+	"hold": Vector2i(0, 1),
+	"patrol": Vector2i(1, 1),
 }
 
 static var _emblem_cache: Dictionary = {}
@@ -22,6 +30,14 @@ func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if FIELD_ORDER_QUADRANTS.has(icon_kind):
+		var atlas: Texture2D = _load_emblem(FIELD_ORDERS_ATLAS)
+		if atlas:
+			var half := atlas.get_size() * 0.5
+			var quadrant: Vector2i = FIELD_ORDER_QUADRANTS[icon_kind]
+			var source := Rect2(Vector2(quadrant) * half + Vector2.ONE, half - Vector2(2, 2))
+			draw_texture_rect_region(atlas, Rect2(Vector2.ZERO, size), source)
+			return
 	if EMBLEMS.has(icon_kind):
 		var emblem: Texture2D = _load_emblem(EMBLEMS[icon_kind])
 		if emblem:

@@ -754,10 +754,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	else:
 		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
+		var field_order_art := command_kind == "ORDER" and _command_icon_kind(title, command_kind) in ["attack", "stop", "hold", "patrol"]
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(6, 6 if not painted_emblem else 4)
-		glyph_plate.size = Vector2(52, 52) if painted_emblem else Vector2(38, 38)
+		glyph_plate.position = Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
+		glyph_plate.size = Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38))
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
 		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
@@ -770,16 +771,16 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(unit_art)
 			unit_art.configure_definition(unit_art_definition, false)
 		else:
-			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem else 28.0)
-			glyph.name = "CommandEmblem" if painted_emblem else "CommandGlyph"
+			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem or field_order_art else 28.0)
+			glyph.name = "CommandEmblem" if painted_emblem or field_order_art else "CommandGlyph"
 			if painted_emblem and state in ["LOCKED", "COMPLETED"]:
 				glyph.modulate = Color(0.72, 0.77, 0.80, 0.76)
-			if painted_emblem:
+			if painted_emblem or field_order_art:
 				glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(65, 6) if painted_emblem else Vector2(50, 6)
+		text_col.position = Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6))
 		var text_height := card_height - 10
 		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
 		text_col.size = Vector2(text_width, text_height)
@@ -2771,7 +2772,8 @@ func _build_hero_command_card(u) -> void:
 			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
 			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
-			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label)
+			var ability_emblem := "rally" if cap_id == "rally" else ""
+			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
 			btn.disabled = not ready
 			var cap_u = u
 			btn.pressed.connect(func():
