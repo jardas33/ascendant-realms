@@ -16,6 +16,7 @@ const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
 const LIORAEN_UNIT_PORTRAITS := {
 	"Seedkeeper": "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png",
 	"Grove Warden": "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png",
+	"Thornrunner": "res://assets/ui/portraits/lioraen/astra_r1/thornrunner.png",
 }
 static var _portrait_texture_cache: Dictionary = {}
 

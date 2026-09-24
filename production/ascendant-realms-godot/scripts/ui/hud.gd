@@ -2011,6 +2011,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		portrait = _mk_icon(FRAME_PORTRAIT, 150)
 		portrait_stack.add_child(portrait)
 	var role_word := "WORKER" if u.is_worker else "WARRIOR"
+	if String(u.unit_id) == "lioraen_thorn_ranger":
+		role_word = "RANGER"
 	if u.is_hero:
 		var hero_race := String(u.def.get("race", ""))
 		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else "HERO")

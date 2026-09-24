@@ -189,6 +189,19 @@ func _run() -> void:
 							warden_caption = true
 					if not warden_caption:
 						validation_errors.append("lioraen_hero_caption_missing")
+			if selected_kind == "military" and player_race == "lioraen" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "lioraen_thorn_ranger":
+				var thornrunner_portrait := ""
+				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						thornrunner_portrait = String(portrait_view.get_active_portrait_path())
+				if thornrunner_portrait != "res://assets/ui/portraits/lioraen/astra_r1/thornrunner.png":
+					validation_errors.append("lioraen_thornrunner_portrait_missing:" + thornrunner_portrait)
+				var ranger_caption := false
+				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+					if portrait_label.text == "RANGER":
+						ranger_caption = true
+				if not ranger_caption:
+					validation_errors.append("lioraen_thornrunner_caption_missing")
 			if selected_kind in ["building", "construction"]:
 				var selected_building_art := ""
 				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
