@@ -11,10 +11,10 @@ func _run() -> void:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
 	var map_id := OS.get_environment("ASCENDANT_UI_MAP")
+	var player_race := OS.get_environment("ASCENDANT_UI_PLAYER_RACE")
+	if player_race.is_empty():
+		player_race = "barrosan"
 	if not map_id.is_empty():
-		var player_race := OS.get_environment("ASCENDANT_UI_PLAYER_RACE")
-		if player_race.is_empty():
-			player_race = "barrosan"
 		root.get_node("Match").set_config({
 			"player_race": player_race,
 			"opponents": [{"race": "vorthak", "difficulty": "easy"}],
@@ -253,13 +253,13 @@ func _run() -> void:
 					for label in button.find_children("*", "Label", true, false):
 						if field_orders.has(label.text):
 							var emblem = button.find_child("CommandEmblem", true, false) as Control
-							if is_instance_valid(emblem) and emblem.get("icon_kind") == field_orders[label.text]:
+							if is_instance_valid(emblem) and emblem.get("icon_kind") == field_orders[label.text] and emblem.get("visual_faction") == player_race:
 								pictured_orders += 1
 				if pictured_orders != 4:
 					validation_errors.append("field_order_art_missing:%d_expected_4" % pictured_orders)
 			if selected_kind == "hero":
 				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
-				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally":
+				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally" or rally_art.get("visual_faction") != player_race:
 					validation_errors.append("rally_art_missing")
 			if selected_kind in ["building_queued", "war_hall_queued"]:
 				var queue = hud._queue_container

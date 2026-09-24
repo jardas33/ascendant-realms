@@ -9,6 +9,8 @@ const EMBLEMS := {
 	"rally": "res://assets/ui/command_emblems/astra_r1/rallying_cry.png",
 }
 const FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/astra_r1/field_orders_atlas.png"
+const LIORAEN_FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/lioraen_r1/field_orders_atlas.png"
+const LIORAEN_RALLY_EMBLEM := "res://assets/ui/command_emblems/lioraen_r1/rallying_cry.png"
 const FIELD_ORDER_QUADRANTS := {
 	"attack": Vector2i(0, 0),
 	"stop": Vector2i(1, 0),
@@ -20,10 +22,12 @@ static var _emblem_cache: Dictionary = {}
 
 var icon_kind := "command"
 var accent := Color.WHITE
+var visual_faction := "barrosan"
 
-func configure(kind: String, tint: Color) -> void:
+func configure(kind: String, tint: Color, faction: String = "barrosan") -> void:
 	icon_kind = kind
 	accent = tint
+	visual_faction = faction
 	queue_redraw()
 
 func _ready() -> void:
@@ -31,7 +35,8 @@ func _ready() -> void:
 
 func _draw() -> void:
 	if FIELD_ORDER_QUADRANTS.has(icon_kind):
-		var atlas: Texture2D = _load_emblem(FIELD_ORDERS_ATLAS)
+		var atlas_path := LIORAEN_FIELD_ORDERS_ATLAS if visual_faction == "lioraen" else FIELD_ORDERS_ATLAS
+		var atlas: Texture2D = _load_emblem(atlas_path)
 		if atlas:
 			var half := atlas.get_size() * 0.5
 			var quadrant: Vector2i = FIELD_ORDER_QUADRANTS[icon_kind]
@@ -39,7 +44,8 @@ func _draw() -> void:
 			draw_texture_rect_region(atlas, Rect2(Vector2.ZERO, size), source)
 			return
 	if EMBLEMS.has(icon_kind):
-		var emblem: Texture2D = _load_emblem(EMBLEMS[icon_kind])
+		var emblem_path: String = LIORAEN_RALLY_EMBLEM if icon_kind == "rally" and visual_faction == "lioraen" else EMBLEMS[icon_kind]
+		var emblem: Texture2D = _load_emblem(emblem_path)
 		if emblem:
 			draw_texture_rect(emblem, Rect2(Vector2.ZERO, size), false)
 			return

@@ -660,7 +660,8 @@ func _mk_command_icon(kind: String, accent: Color, size_px: float) -> Control:
 	icon.custom_minimum_size = Vector2(size_px, size_px)
 	icon.size = Vector2(size_px, size_px)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.configure(kind, accent)
+	var visual_faction := str(_commander.race) if is_instance_valid(_commander) else "barrosan"
+	icon.configure(kind, accent, visual_faction)
 	return icon
 
 
