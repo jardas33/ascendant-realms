@@ -2683,11 +2683,11 @@ func _build_command_panel() -> void:
 	_command_tooltip.name = "CommandTooltip"
 	_command_tooltip.visible = false
 	_command_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_command_tooltip.custom_minimum_size = Vector2(380, 0)
+	_command_tooltip.custom_minimum_size = Vector2(420, 0)
 	var tooltip_style := StyleBoxFlat.new()
 	tooltip_style.bg_color = Color.TRANSPARENT
-	tooltip_style.content_margin_left = 15.0
-	tooltip_style.content_margin_right = 15.0
+	tooltip_style.content_margin_left = 20.0
+	tooltip_style.content_margin_right = 20.0
 	tooltip_style.content_margin_top = 13.0
 	tooltip_style.content_margin_bottom = 12.0
 	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
@@ -2735,10 +2735,10 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 		body_text = body_text.substr(first_line.length()).strip_edges()
 	if not disabled_reason.is_empty():
 		body_text += "\nUnavailable: " + disabled_reason
-	var body := _mk_label(body_text, 16, Color(0.91, 0.90, 0.84))
+	var body := _mk_label(body_text, 17, Color(0.91, 0.90, 0.84))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	body.custom_minimum_size = Vector2(348, 0)
+	body.custom_minimum_size = Vector2(376, 0)
 	body.add_theme_constant_override("line_spacing", 3)
 	stack.add_child(body)
 	_command_tooltip.add_child(stack)
