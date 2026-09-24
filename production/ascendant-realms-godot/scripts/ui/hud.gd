@@ -232,7 +232,7 @@ func _fit_to_viewport() -> void:
 		_age_panel.position = Vector2(maxf(1216.0, viewport_size.x * 0.53 - 76.0), 8)
 		_age_panel.size = Vector2(152, 78)
 	if is_instance_valid(_objective_panel):
-		_objective_panel.offset_left = -424.0
+		_objective_panel.offset_left = -466.0
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
 		_objective_panel.offset_bottom = 100.0
@@ -1153,24 +1153,39 @@ func _build_top_bar() -> void:
 	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
-	_objective_panel.custom_minimum_size = Vector2(318, 92)
+	_objective_panel.set("objective_has_crest", player_race == "barrosan")
+	_objective_panel.custom_minimum_size = Vector2(360, 92)
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	var objective_inset := StyleBoxFlat.new()
 	objective_inset.bg_color = Color.TRANSPARENT
-	objective_inset.content_margin_left = 13.0
+	objective_inset.content_margin_left = 11.0
 	objective_inset.content_margin_right = 12.0
-	objective_inset.content_margin_top = 10.0
+	objective_inset.content_margin_top = 9.0
 	objective_inset.content_margin_bottom = 6.0
 	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
 	add_child(_objective_panel)
+	var mission_row := HBoxContainer.new()
+	mission_row.add_theme_constant_override("separation", 9)
+	mission_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_objective_panel.add_child(mission_row)
+	if player_race == "barrosan":
+		var campaign_crest := TextureRect.new()
+		campaign_crest.name = "MatchFactionCrest"
+		campaign_crest.texture = preload("res://assets/ui/barrosan_command_crest_i2.png")
+		campaign_crest.custom_minimum_size = Vector2(61, 69)
+		campaign_crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		campaign_crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		campaign_crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mission_row.add_child(campaign_crest)
 	var mission_stack := VBoxContainer.new()
-	mission_stack.add_theme_constant_override("separation", 2)
-	_objective_panel.add_child(mission_stack)
-	var battlefield_label := _mk_label(map_name.to_upper(), 13, COMMAND_GOLD)
+	mission_stack.add_theme_constant_override("separation", 3)
+	mission_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mission_row.add_child(mission_stack)
+	var battlefield_label := _mk_label(map_name.to_upper(), 15, COMMAND_GOLD)
 	battlefield_label.name = "MatchBattlefieldLabel"
 	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mission_stack.add_child(battlefield_label)
-	var identity_label := _mk_title_label(short_identity, 20, Color(0.97, 0.92, 0.80))
+	var identity_label := _mk_title_label(short_identity, 21, Color(0.97, 0.92, 0.80))
 	identity_label.name = "MatchIdentityLabel"
 	identity_label.tooltip_text = full_identity
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -3204,7 +3219,7 @@ func _show_command_feedback(message: String, col: Color) -> void:
 func _build_alert_feed() -> void:
 	_alert_box = VBoxContainer.new()
 	_alert_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_alert_box.offset_left = -424
+	_alert_box.offset_left = -466
 	_alert_box.offset_right = -106
 	_alert_box.offset_top = 108
 	_alert_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -3237,7 +3252,7 @@ func _push_alert(message: String, col: Color) -> void:
 		oldest.queue_free()
 	var dispatch: PanelContainer = HUD_ALERT_DISPATCH_SCRIPT.new()
 	dispatch.accent = col
-	dispatch.custom_minimum_size = Vector2(318, 60)
+	dispatch.custom_minimum_size = Vector2(360, 60)
 	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var padding := StyleBoxFlat.new()
 	padding.bg_color = Color.TRANSPARENT
@@ -3246,11 +3261,11 @@ func _push_alert(message: String, col: Color) -> void:
 	padding.content_margin_top = 8.0
 	padding.content_margin_bottom = 9.0
 	dispatch.add_theme_stylebox_override("panel", padding)
-	var l := _mk_label(message, 16, col)
+	var l := _mk_label(message, 18, col)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	l.custom_minimum_size = Vector2(280, 42)
+	l.custom_minimum_size = Vector2(318, 42)
 	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
 	l.add_theme_constant_override("outline_size", 2)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE

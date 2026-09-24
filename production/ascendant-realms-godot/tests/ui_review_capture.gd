@@ -12,8 +12,11 @@ func _run() -> void:
 			DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
 	var map_id := OS.get_environment("ASCENDANT_UI_MAP")
 	if not map_id.is_empty():
+		var player_race := OS.get_environment("ASCENDANT_UI_PLAYER_RACE")
+		if player_race.is_empty():
+			player_race = "barrosan"
 		root.get_node("Match").set_config({
-			"player_race": "barrosan",
+			"player_race": player_race,
 			"opponents": [{"race": "vorthak", "difficulty": "easy"}],
 			"map": map_id,
 			"start_resources": "standard",
