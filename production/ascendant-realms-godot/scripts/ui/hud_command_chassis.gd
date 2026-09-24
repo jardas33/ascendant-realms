@@ -3,6 +3,9 @@ extends Control
 ## Its shape is driven by the actual laid-out controls so selection changes and
 ## compact/full-HD windows keep the same physical join.
 
+const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
+static var _forged_trim: Texture2D = null
+
 var selection_rect := Rect2()
 var command_rect := Rect2()
 var portrait_rect := Rect2()
@@ -54,6 +57,8 @@ func _closed(points: PackedVector2Array) -> PackedVector2Array:
 func _draw() -> void:
 	if not visible or selection_rect.size.x < 80.0 or command_rect.size.x < 80.0:
 		return
+	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
+		_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
 	var outer := _profile(0.0)
 	var shadow := PackedVector2Array()
 	for point in outer:
@@ -115,6 +120,19 @@ func _draw() -> void:
 	var ridge_y := portrait_rect.position.y - 8.0 if has_portrait else selection_rect.position.y - 11.0
 	draw_line(Vector2(ridge_start, ridge_y + 2.0), Vector2(ridge_end, ridge_y + 2.0), Color(0.91, 0.73, 0.43, 0.73), 2.0, true)
 	draw_line(Vector2(command_rect.position.x + 28.0, command_rect.position.y - 7.0), Vector2(command_rect.end.x - 29.0, command_rect.position.y - 7.0), Color(0.81, 0.62, 0.35, 0.49), 1.4, true)
+	if _forged_trim:
+		var trim_size := _forged_trim.get_size()
+		var trim_height := trim_size.y * 0.10
+		# The exposed rails carry worked metal while the reading fields stay dark.
+		draw_texture_rect_region(_forged_trim,
+			Rect2(command_rect.position.x + 20.0, command_rect.position.y - 10.0, command_rect.size.x - 42.0, 13.0),
+			Rect2(0.0, 0.0, trim_size.x, trim_height))
+		draw_texture_rect_region(_forged_trim,
+			Rect2(selection_rect.position.x + 18.0, bottom - 13.0, command_rect.position.x - selection_rect.position.x - 18.0, 13.0),
+			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
+		draw_texture_rect_region(_forged_trim,
+			Rect2(command_rect.position.x, bottom - 13.0, command_rect.size.x - 19.0, 13.0),
+			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
 	# The transition is a single hammered joint, not a fourth badge floating in
 	# the world. Its warm edge marks where unit identity hands off to commands.
 	var joint := Vector2(command_rect.position.x - 13.0, selection_rect.position.y - 24.0)
