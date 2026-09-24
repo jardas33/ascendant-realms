@@ -137,12 +137,13 @@ func _draw() -> void:
 				draw_texture_rect_region(_forged_trim,
 					Rect2(bridge_left, selection_rect.position.y - 11.0, bridge_right - bridge_left, 12.0),
 					Rect2(trim_size.x * 0.10, 0.0, trim_size.x * 0.34, trim_height))
+		# Use one uninterrupted lower rail. Two independently stretched copies
+		# created a visible butt joint and repeated the center boss at each wing.
 		draw_texture_rect_region(_forged_trim,
-			Rect2(selection_rect.position.x + 18.0, bottom - 13.0, command_rect.position.x - selection_rect.position.x - 18.0, 13.0),
-			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
-		draw_texture_rect_region(_forged_trim,
-			Rect2(command_rect.position.x, bottom - 13.0, command_rect.size.x - 19.0, 13.0),
-			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
+			Rect2(selection_rect.position.x + 18.0, bottom - 13.0,
+				command_rect.end.x - selection_rect.position.x - 37.0, 13.0),
+			Rect2(corner_width, trim_size.y - trim_height,
+				trim_size.x - corner_width * 2.0, trim_height))
 		# Keep the ornamental weight at the exposed outside perimeter. The long
 		# verticals remain thin so they frame commands rather than crowd them.
 		draw_texture_rect_region(_forged_trim,
