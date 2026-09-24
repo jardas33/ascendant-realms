@@ -91,7 +91,7 @@ func _run() -> void:
 		for index in 5:
 			await process_frame
 	if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1" and instance.get("hud") != null:
-		var command_scroll := instance.hud._cmd_panel.get_child(0) as ScrollContainer
+		var command_scroll := instance.hud._cmd_scroll as ScrollContainer
 		if command_scroll:
 			command_scroll.scroll_vertical = int(command_scroll.get_v_scroll_bar().max_value)
 			for index in 3:
@@ -122,6 +122,13 @@ func _run() -> void:
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
 		var hud = instance.hud
+		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1" and OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1":
+			var fixed_header := hud._cmd_fixed.get_child(0) as Control if is_instance_valid(hud._cmd_fixed) and hud._cmd_fixed.get_child_count() > 0 else null
+			var command_scroll := hud._cmd_scroll as ScrollContainer
+			if not is_instance_valid(fixed_header) or not is_instance_valid(command_scroll):
+				validation_errors.append("command_fixed_header_missing")
+			elif not hud._cmd_panel.get_global_rect().encloses(fixed_header.get_global_rect()) or fixed_header.get_global_rect().end.y > command_scroll.get_global_rect().position.y:
+				validation_errors.append("command_header_scrolled_or_overlapping")
 		print("UI_COMMAND_CONTENT_SIZE ", hud._cmd_body.get_combined_minimum_size())
 		for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 			if is_instance_valid(panel):
@@ -300,9 +307,13 @@ func _run() -> void:
 						unit_portraits += 1
 				if unit_portraits != 6:
 					validation_errors.append("war_hall_unit_portraits:%d_expected_6" % unit_portraits)
-				var deck_scroll := hud._cmd_panel.get_child(0) as ScrollContainer
+				var deck_scroll := hud._cmd_scroll as ScrollContainer
 				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
 					validation_errors.append("war_hall_overflow_not_scrollable")
+				if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1":
+					var train_heading := hud._cmd_fixed.get_node_or_null("PinnedCommandSection") as Control
+					if not is_instance_valid(train_heading) or not is_instance_valid(deck_scroll) or train_heading.get_global_rect().end.y > deck_scroll.get_global_rect().position.y or deck_scroll.scroll_vertical <= 0:
+						validation_errors.append("war_hall_train_heading_not_pinned")
 			if selected_kind == "construction":
 				var site = hud._cmd_panel.find_child("ConstructionProgress", true, false)
 				if not is_instance_valid(site) or site.get_combined_minimum_size().y < 100.0:

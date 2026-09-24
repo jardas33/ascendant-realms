@@ -124,6 +124,8 @@ var _sel_body: Control = null
 var _sel_header_spacer: Control = null
 var _selection_portrait: PanelContainer = null
 var _cmd_panel: PanelContainer = null
+var _cmd_fixed: VBoxContainer = null
+var _cmd_scroll: ScrollContainer = null
 var _cmd_body: Control = null
 var _command_chassis: Control = null
 var _command_tooltip: PanelContainer = null
@@ -269,7 +271,8 @@ func _fit_to_viewport() -> void:
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
 	# actual context while retaining a ceiling for denser production surfaces.
-	var command_height := minf(430.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + 24.0))
+	var fixed_height := _cmd_fixed.get_combined_minimum_size().y if is_instance_valid(_cmd_fixed) else 0.0
+	var command_height := minf(430.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0))
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
@@ -928,8 +931,10 @@ func _add_field_order_grid() -> GridContainer:
 	return grid
 
 
-func _add_command_section(title: String, hint: String = "") -> void:
+func _add_command_section(title: String, hint: String = "", pinned: bool = false) -> void:
 	var row := HBoxContainer.new()
+	if pinned:
+		row.name = "PinnedCommandSection"
 	row.custom_minimum_size = Vector2(0, 30)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 8)
@@ -952,7 +957,10 @@ func _add_command_section(title: String, hint: String = "") -> void:
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
-	_cmd_body.add_child(row)
+	if pinned:
+		_cmd_fixed.add_child(row)
+	else:
+		_cmd_body.add_child(row)
 
 
 # ---------------------------------------------------------------------------
@@ -2666,12 +2674,26 @@ func _build_command_panel() -> void:
 	_cmd_panel.offset_bottom = -12
 	add_child(_cmd_panel)
 
+	var deck_layout := VBoxContainer.new()
+	deck_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	deck_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	deck_layout.add_theme_constant_override("separation", 6)
+	_cmd_panel.add_child(deck_layout)
+
+	_cmd_fixed = VBoxContainer.new()
+	_cmd_fixed.name = "CommandFixedHeader"
+	_cmd_fixed.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_cmd_fixed.add_theme_constant_override("separation", 6)
+	deck_layout.add_child(_cmd_fixed)
+
 	var scroll := ScrollContainer.new()
+	scroll.name = "CommandScroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_cmd_panel.add_child(scroll)
+	deck_layout.add_child(scroll)
 	scroll.gui_input.connect(_consume_hud_wheel)
+	_cmd_scroll = scroll
 
 	_cmd_body = VBoxContainer.new()
 	_cmd_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2762,6 +2784,7 @@ func _hide_command_tooltip() -> void:
 
 func _rebuild_command_card(single, selection: Array) -> void:
 	_hide_command_tooltip()
+	_clear_children(_cmd_fixed)
 	_clear_children(_cmd_body)
 	if is_instance_valid(_inspection_target):
 		_cmd_panel.visible = false
@@ -2870,7 +2893,7 @@ func _add_command_context(single, selection: Array) -> void:
 	role_badge.custom_minimum_size = Vector2(59, 22)
 	row.add_child(role_badge)
 	header.add_child(row)
-	_cmd_body.add_child(header)
+	_cmd_fixed.add_child(header)
 
 
 func _add_context_hints(hints: Array[String]) -> void:
@@ -2895,7 +2918,7 @@ func _add_context_hints(hints: Array[String]) -> void:
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(label)
 	strip.add_child(row)
-	_cmd_body.add_child(strip)
+	_cmd_fixed.add_child(strip)
 
 
 func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dictionary:
@@ -3079,7 +3102,7 @@ func _build_building_card(b) -> void:
 
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Queue a unit.")
+		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Queue a unit.", produces.size() > 4 and research.is_empty() and not is_hq)
 		var train_grid := _mk_command_grid()
 		train_grid.columns = 1
 		_cmd_body.add_child(train_grid)
