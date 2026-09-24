@@ -2,10 +2,14 @@ extends PanelContainer
 ## A small hanging instrument for one live resource or force value. The dark
 ## field fades into the world instead of joining a full-width top HUD slab.
 
+const BEZEL_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
+static var _bezel_texture: Texture2D = null
+
 var accent := Color(0.88, 0.68, 0.35)
 
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	resized.connect(queue_redraw)
 	queue_redraw()
 
@@ -15,6 +19,12 @@ func _draw() -> void:
 		return
 	var w := size.x
 	var h := size.y
+	if _bezel_texture == null and ResourceLoader.exists(BEZEL_PATH):
+		_bezel_texture = load(BEZEL_PATH) as Texture2D
+	if _bezel_texture:
+		draw_texture_rect(_bezel_texture, Rect2(Vector2.ZERO, size), false)
+		draw_line(Vector2(12, 7), Vector2(w - 12, 7), Color(accent.r, accent.g, accent.b, 0.30), 1.0, true)
+		return
 	var metal := Color(0.025, 0.033, 0.036)
 	var silhouette := PackedVector2Array([
 		Vector2(7, 0), Vector2(w - 13, 0), Vector2(w, 12),

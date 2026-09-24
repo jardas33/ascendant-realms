@@ -1033,7 +1033,7 @@ func _build_top_bar() -> void:
 		"gold": Color(0.98, 0.86, 0.42),
 	}
 	var economy_metrics := HBoxContainer.new()
-	economy_metrics.add_theme_constant_override("separation", 7)
+	economy_metrics.add_theme_constant_override("separation", 3)
 	economy_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	economy_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for k in RES_ORDER:
@@ -1056,7 +1056,7 @@ func _build_top_bar() -> void:
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
-	force_metrics.add_theme_constant_override("separation", 6)
+	force_metrics.add_theme_constant_override("separation", 3)
 	force_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	force_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Population remains a force metric rather than another resource number.
