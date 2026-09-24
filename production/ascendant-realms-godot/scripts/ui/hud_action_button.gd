@@ -65,21 +65,30 @@ func _draw() -> void:
 		draw_line(Vector2(1, 7), Vector2(1, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else 0.34), 2.5, true)
 		return
 	if command_kind in ["BUILD", "TRAIN", "RESEARCH"]:
-		# Production rows belong to one deck. Only their family spine, exposed
-		# metal lips and live hover state compete with the painted action art.
+		# Give the authored structure and technology art a lit recess instead of
+		# letting it disappear against the dark command deck. Cost and readiness
+		# remain on the same live controls, with disabled state still legible.
 		var row_shape := PackedVector2Array([
 			Vector2(0, 8), Vector2(8, 0), Vector2(w - 12, 0),
 			Vector2(w, 12), Vector2(w, h - 7), Vector2(w - 7, h),
 			Vector2(6, h), Vector2(0, h - 6)])
-		var tint := Color(0.058, 0.078, 0.073, 0.93)
+		var tint := Color(0.070, 0.092, 0.086, 0.95)
 		if command_kind == "RESEARCH":
-			tint = Color(0.051, 0.070, 0.080, 0.94)
+			tint = Color(0.062, 0.083, 0.096, 0.95)
 		elif command_kind == "TRAIN":
-			tint = Color(0.074, 0.071, 0.063, 0.94)
+			tint = Color(0.087, 0.082, 0.073, 0.95)
 		if not enabled:
-			tint = tint.darkened(0.22)
-			tint.a = 0.77
+			tint = tint.darkened(0.16)
+			tint.a = 0.83
 		draw_colored_polygon(row_shape, tint)
+		var art_edge := 79.0 if command_kind == "BUILD" else 61.0
+		var bay_light := Color(metal.r, metal.g, metal.b, 0.24 if enabled else 0.12)
+		draw_polygon(PackedVector2Array([
+			Vector2(5, 7), Vector2(art_edge, 4),
+			Vector2(art_edge, h - 7), Vector2(5, h - 7)]), PackedColorArray([
+			bay_light, Color(metal.r, metal.g, metal.b, 0.12 if enabled else 0.05),
+			Color(0.016, 0.026, 0.029, 0.08), Color(metal.r, metal.g, metal.b, 0.08 if enabled else 0.03)]))
+		draw_line(Vector2(art_edge, 8), Vector2(art_edge, h - 9), Color(metal.r, metal.g, metal.b, 0.29 if enabled else 0.12), 1.0, true)
 		draw_polygon(PackedVector2Array([
 			Vector2(6, 1), Vector2(w - 13, 1), Vector2(w - 7, 7), Vector2(5, 7)]), PackedColorArray([
 			Color(metal.r, metal.g, metal.b, 0.23),
@@ -91,10 +100,11 @@ func _draw() -> void:
 			Color(metal.r, metal.g, metal.b, 0.72 if lit else (0.50 if enabled else 0.20)))
 		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.31 if enabled else 0.12), 1.2, true)
 		draw_line(Vector2(w - 12, 1), Vector2(w - 1, 12), Color(metal.r, metal.g, metal.b, 0.35 if enabled else 0.12), 1.0, true)
+		var row_outline := PackedVector2Array(row_shape)
+		row_outline.append(row_shape[0])
+		draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.30 if enabled else 0.15), 1.0, true)
 		if lit or active:
-			var lit_outline := PackedVector2Array(row_shape)
-			lit_outline.append(row_shape[0])
-			draw_polyline(lit_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
+			draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
 		return
 	# A faceted silhouette and raised rail turn flat rows into tactile controls.
 	var cut := 9.0 if command_kind == "ABILITY" else 6.0
