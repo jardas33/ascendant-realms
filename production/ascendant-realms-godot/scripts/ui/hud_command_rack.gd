@@ -2,6 +2,9 @@ extends PanelContainer
 ## The four field orders share one forged bed. Individual buttons keep their
 ## own hit areas, states and shortcuts without four competing outline boxes.
 
+const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
+static var _forged_trim: Texture2D = null
+
 var accent := Color(0.81, 0.62, 0.35)
 
 
@@ -13,6 +16,8 @@ func _ready() -> void:
 func _draw() -> void:
 	if size.x < 80.0 or size.y < 60.0:
 		return
+	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
+		_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
 	var w := size.x
 	var h := size.y
 	var edge := PackedVector2Array([
@@ -38,6 +43,25 @@ func _draw() -> void:
 		Color(0.035, 0.043, 0.043, 0.98), Color(0.035, 0.043, 0.043, 0.98)]))
 	draw_line(Vector2(16, 3), Vector2(w - 20, 3), Color(accent.r, accent.g, accent.b, 0.43), 1.2, true)
 	draw_line(Vector2(15, h - 3), Vector2(w - 16, h - 3), Color(0.01, 0.015, 0.017, 0.86), 2.0, true)
+	if _forged_trim:
+		var tex := _forged_trim.get_size()
+		var rail_w := tex.x * 0.026
+		var corner_w := tex.x * 0.078
+		var corner_h := tex.y * 0.17
+		var rail_h := tex.y * 0.10
+		# Small forged rails make one physical command well. They stop at the
+		# chamfers, leaving the four button faces and shortcut labels clear.
+		for segment in [
+			[Rect2(14.0, 0.0, w - 30.0, 7.0), Rect2(tex.x * 0.10, 0.0, tex.x * 0.80, rail_h)],
+			[Rect2(13.0, h - 7.0, w - 26.0, 7.0), Rect2(tex.x * 0.10, tex.y - rail_h, tex.x * 0.32, rail_h)],
+			[Rect2(0.0, 14.0, 6.0, h - 28.0), Rect2(0.0, corner_h, rail_w, tex.y - corner_h * 2.0)],
+			[Rect2(w - 6.0, 16.0, 6.0, h - 30.0), Rect2(tex.x - rail_w, corner_h, rail_w, tex.y - corner_h * 2.0)],
+			[Rect2(0.0, 0.0, 17.0, 17.0), Rect2(0.0, 0.0, corner_w, corner_h)],
+			[Rect2(w - 18.0, 0.0, 18.0, 18.0), Rect2(tex.x - corner_w, 0.0, corner_w, corner_h)],
+			[Rect2(0.0, h - 17.0, 17.0, 17.0), Rect2(0.0, tex.y - corner_h, corner_w, corner_h)],
+			[Rect2(w - 17.0, h - 17.0, 17.0, 17.0), Rect2(tex.x - corner_w, tex.y - corner_h, corner_w, corner_h)],
+		]:
+			draw_texture_rect_region(_forged_trim, segment[0], segment[1])
 	# Cross-cut grooves visually connect the four controls as a single machine.
 	draw_line(Vector2(w * 0.5, 10), Vector2(w * 0.5, h - 10), Color(0.41, 0.43, 0.38, 0.25), 1.4, true)
 	draw_line(Vector2(10, h * 0.5), Vector2(w - 10, h * 0.5), Color(0.42, 0.43, 0.37, 0.22), 1.2, true)

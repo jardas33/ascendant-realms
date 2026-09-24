@@ -48,7 +48,7 @@ func _draw() -> void:
 			Vector2(0, 5), Vector2(5, 0), Vector2(w - 9, 0),
 			Vector2(w, 9), Vector2(w, h - 5), Vector2(w - 5, h),
 			Vector2(5, h), Vector2(0, h - 5)])
-		var order_base := Color(0.07, 0.081, 0.080, 0.80) if enabled else Color(0.048, 0.053, 0.052, 0.64)
+		var order_base := Color(0.078, 0.086, 0.084, 0.87) if enabled else Color(0.048, 0.053, 0.052, 0.64)
 		draw_colored_polygon(order_shape, order_base)
 		draw_polygon(PackedVector2Array([
 			Vector2(1, 5), Vector2(54, 1), Vector2(54, h - 1), Vector2(1, h - 5)]), PackedColorArray([
@@ -57,6 +57,10 @@ func _draw() -> void:
 			Color(metal.r, metal.g, metal.b, 0.025),
 			Color(metal.r, metal.g, metal.b, 0.08)]))
 		draw_line(Vector2(55, 5), Vector2(55, h - 5), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
+		var slot_rim := PackedVector2Array(order_shape)
+		slot_rim.append(order_shape[0])
+		draw_polyline(slot_rim, Color(metal.r, metal.g, metal.b, 0.32 if enabled else 0.13), 1.0, true)
+		draw_line(Vector2(7, 1), Vector2(w - 13, 1), Color(metal.r, metal.g, metal.b, 0.27 if enabled else 0.10), 1.0, true)
 		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
 		if lit or active:
 			var lit_outline := PackedVector2Array(order_shape)
