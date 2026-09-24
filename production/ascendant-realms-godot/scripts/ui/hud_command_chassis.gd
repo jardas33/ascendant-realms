@@ -123,6 +123,9 @@ func _draw() -> void:
 	if _forged_trim:
 		var trim_size := _forged_trim.get_size()
 		var trim_height := trim_size.y * 0.10
+		var rail_width := trim_size.x * 0.026
+		var corner_width := trim_size.x * 0.078
+		var corner_height := trim_size.y * 0.17
 		# The exposed rails carry worked metal while the reading fields stay dark.
 		draw_texture_rect_region(_forged_trim,
 			Rect2(command_rect.position.x + 20.0, command_rect.position.y - 10.0, command_rect.size.x - 42.0, 13.0),
@@ -133,6 +136,20 @@ func _draw() -> void:
 		draw_texture_rect_region(_forged_trim,
 			Rect2(command_rect.position.x, bottom - 13.0, command_rect.size.x - 19.0, 13.0),
 			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
+		# Keep the ornamental weight at the exposed outside perimeter. The long
+		# verticals remain thin so they frame commands rather than crowd them.
+		draw_texture_rect_region(_forged_trim,
+			Rect2(command_rect.end.x - 7.0, command_rect.position.y + 23.0, 12.0, bottom - command_rect.position.y - 46.0),
+			Rect2(trim_size.x - rail_width, corner_height, rail_width, trim_size.y - corner_height * 2.0))
+		draw_texture_rect_region(_forged_trim,
+			Rect2(command_rect.position.x - 13.0, command_rect.position.y + 34.0, 10.0, bottom - command_rect.position.y - 58.0),
+			Rect2(0.0, corner_height, rail_width, trim_size.y - corner_height * 2.0))
+		for corner in [
+			[Rect2(command_rect.end.x - 31.0, command_rect.position.y - 11.0, 36.0, 33.0), Rect2(trim_size.x - corner_width, 0.0, corner_width, corner_height)],
+			[Rect2(command_rect.end.x - 37.0, bottom - 33.0, 42.0, 37.0), Rect2(trim_size.x - corner_width, trim_size.y - corner_height, corner_width, corner_height)],
+			[Rect2(selection_rect.position.x - 8.0, bottom - 32.0, 37.0, 36.0), Rect2(0.0, trim_size.y - corner_height, corner_width, corner_height)],
+		]:
+			draw_texture_rect_region(_forged_trim, corner[0], corner[1])
 	# The transition is a single hammered joint, not a fourth badge floating in
 	# the world. Its warm edge marks where unit identity hands off to commands.
 	var joint := Vector2(command_rect.position.x - 13.0, selection_rect.position.y - 24.0)
