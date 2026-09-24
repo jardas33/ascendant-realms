@@ -13,6 +13,10 @@ const PORTRAIT_ARTWORK_INSET := 8.0
 const PORTRAIT_MODEL_INSET := 10.0
 const PORTRAIT_COMPACT_MODEL_INSET := 4.0
 const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
+const LIORAEN_UNIT_PORTRAITS := {
+	"Seedkeeper": "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png",
+	"Grove Warden": "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png",
+}
 static var _portrait_texture_cache: Dictionary = {}
 
 var _viewport_container: SubViewportContainer
@@ -255,6 +259,10 @@ func _portrait_path_for_definition(definition: Dictionary, is_building: bool, un
 	var portrait_path := String(definition.get("portrait", ""))
 	if portrait_path.is_empty() and not unit_id.is_empty():
 		portrait_path = String(GameData.get_unit(unit_id).get("portrait", ""))
+	if portrait_path.is_empty() and String(definition.get("race", "")) == "lioraen":
+		# Keep this visual treatment in the HUD lane. The same definition reaches
+		# selected-unit portraits and compact training cards without data edits.
+		portrait_path = String(LIORAEN_UNIT_PORTRAITS.get(String(definition.get("name", "")), ""))
 	return portrait_path
 
 

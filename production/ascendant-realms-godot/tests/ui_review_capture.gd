@@ -174,6 +174,21 @@ func _run() -> void:
 			if hud._minimap_panel.get_global_rect().intersects(hud._sel_panel.get_global_rect()):
 				validation_errors.append("minimap_selection_overlap")
 			var selected_kind := OS.get_environment("ASCENDANT_UI_SELECT")
+			if selected_kind in ["worker", "hero"] and String(instance.world.commanders[0].race) == "lioraen":
+				var active_unit_portrait := ""
+				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						active_unit_portrait = String(portrait_view.get_active_portrait_path())
+				var expected_portrait := "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png" if selected_kind == "worker" else "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png"
+				if active_unit_portrait != expected_portrait:
+					validation_errors.append("lioraen_%s_portrait_missing:%s" % [selected_kind, active_unit_portrait])
+				if selected_kind == "hero":
+					var warden_caption := false
+					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+						if portrait_label.text == "WARDEN":
+							warden_caption = true
+					if not warden_caption:
+						validation_errors.append("lioraen_hero_caption_missing")
 			var expected_cards: int = 5 if selected_kind == "hero" else (int(root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race).size()) if selected_kind == "worker" else (4 if selected_kind == "military" else 0))
 			var actual_cards := 0
 			var card_kinds: Array[String] = []

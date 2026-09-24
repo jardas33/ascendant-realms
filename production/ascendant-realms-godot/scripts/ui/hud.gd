@@ -2009,7 +2009,10 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	else:
 		portrait = _mk_icon(FRAME_PORTRAIT, 150)
 		portrait_stack.add_child(portrait)
-	var role_word := "THANE" if u.is_hero else ("WORKER" if u.is_worker else "WARRIOR")
+	var role_word := "WORKER" if u.is_worker else "WARRIOR"
+	if u.is_hero:
+		var hero_race := String(u.def.get("race", ""))
+		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else "HERO")
 	var portrait_footer := _mk_title_label(role_word, 10, Color(0.96, 0.83, 0.58))
 	portrait_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_footer)
