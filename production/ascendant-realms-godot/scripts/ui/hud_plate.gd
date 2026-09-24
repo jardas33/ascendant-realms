@@ -42,6 +42,8 @@ func _draw() -> void:
 	# These containers still own layout/input, but no longer paint three boxes.
 	if embedded:
 		return
+	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
+		_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
 	if plate_kind == "objective":
 		# The campaign marker carries a contained heraldic seal and worked metal
 		# rails. Its text remains live and map-agnostic inside the shaped plaque.
@@ -71,6 +73,25 @@ func _draw() -> void:
 		for boss in [Vector2(16, 4), Vector2(w - 28, 4)]:
 			draw_circle(boss, 2.6, Color(0.67, 0.48, 0.27, 0.94))
 			draw_circle(boss, 1.0, Color(0.10, 0.08, 0.06, 0.94))
+		if _forged_trim:
+			var tex := _forged_trim.get_size()
+			var rail_w := tex.x * 0.026
+			var corner_w := tex.x * 0.078
+			var corner_h := tex.y * 0.17
+			var rail_h := tex.y * 0.10
+			# Narrow brass edges seat the live campaign copy in the same material
+			# as the other HUD instruments without boxing in its crest and text.
+			for segment in [
+				[Rect2(18.0, 0.0, w - 44.0, 7.0), Rect2(tex.x * 0.10, 0.0, tex.x * 0.80, rail_h)],
+				[Rect2(18.0, h - 7.0, w - 34.0, 7.0), Rect2(tex.x * 0.10, tex.y - rail_h, tex.x * 0.80, rail_h)],
+				[Rect2(0.0, 17.0, 6.0, h - 34.0), Rect2(0.0, corner_h, rail_w, tex.y - corner_h * 2.0)],
+				[Rect2(w - 6.0, 24.0, 6.0, h - 39.0), Rect2(tex.x - rail_w, corner_h, rail_w, tex.y - corner_h * 2.0)],
+				[Rect2(0.0, 0.0, 19.0, 19.0), Rect2(0.0, 0.0, corner_w, corner_h)],
+				[Rect2(w - 25.0, 0.0, 25.0, 25.0), Rect2(tex.x - corner_w, 0.0, corner_w, corner_h)],
+				[Rect2(0.0, h - 19.0, 19.0, 19.0), Rect2(0.0, tex.y - corner_h, corner_w, corner_h)],
+				[Rect2(w - 19.0, h - 19.0, 19.0, 19.0), Rect2(tex.x - corner_w, tex.y - corner_h, corner_w, corner_h)],
+			]:
+				draw_texture_rect_region(_forged_trim, segment[0], segment[1])
 		return
 	if plate_kind in ["economy", "force"]:
 		# A pinned metal eyebrow holds the title; the data hangs in a fading
@@ -153,8 +174,6 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([center + Vector2(0, -3), center + Vector2(3, 0), center + Vector2(0, 3), center + Vector2(-3, 0)]), accent.lightened(0.24))
 			draw_circle(center, 0.8, Color(0.08, 0.07, 0.06))
 	if plate_kind == "minimap":
-		if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
-			_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
 		if _forged_trim:
 			var trim_size := _forged_trim.get_size()
 			var rail_w := trim_size.x * 0.026
@@ -181,8 +200,23 @@ func _draw() -> void:
 		draw_line(medallion + Vector2(8, 0), medallion + Vector2(24, 0), Color(accent.r, accent.g, accent.b, 0.72), 1.2, true)
 		draw_colored_polygon(PackedVector2Array([medallion + Vector2(0, -5), medallion + Vector2(6, 0), medallion + Vector2(0, 5), medallion + Vector2(-6, 0)]), accent)
 	if plate_kind == "age":
-		var crest := Vector2(size.x * 0.5, 11)
-		draw_arc(crest, 10.0, PI, TAU, 16, Color(accent.r, accent.g, accent.b, 0.75), 1.2, true)
+		if _forged_trim:
+			var tex := _forged_trim.get_size()
+			var rail_w := tex.x * 0.026
+			var corner_w := tex.x * 0.078
+			var corner_h := tex.y * 0.17
+			var rail_h := tex.y * 0.10
+			for segment in [
+				[Rect2(23.0, 0.0, size.x - 46.0, 8.0), Rect2(tex.x * 0.08, 0.0, tex.x * 0.84, rail_h)],
+				[Rect2(23.0, size.y - 8.0, size.x - 46.0, 8.0), Rect2(tex.x * 0.08, tex.y - rail_h, tex.x * 0.84, rail_h)],
+				[Rect2(0.0, 23.0, 7.0, size.y - 46.0), Rect2(0.0, corner_h, rail_w, tex.y - corner_h * 2.0)],
+				[Rect2(size.x - 7.0, 23.0, 7.0, size.y - 46.0), Rect2(tex.x - rail_w, corner_h, rail_w, tex.y - corner_h * 2.0)],
+				[Rect2(0.0, 0.0, 24.0, 24.0), Rect2(0.0, 0.0, corner_w, corner_h)],
+				[Rect2(size.x - 24.0, 0.0, 24.0, 24.0), Rect2(tex.x - corner_w, 0.0, corner_w, corner_h)],
+				[Rect2(0.0, size.y - 24.0, 24.0, 24.0), Rect2(0.0, tex.y - corner_h, corner_w, corner_h)],
+				[Rect2(size.x - 24.0, size.y - 24.0, 24.0, 24.0), Rect2(tex.x - corner_w, tex.y - corner_h, corner_w, corner_h)],
+			]:
+				draw_texture_rect_region(_forged_trim, segment[0], segment[1])
 	if plate_kind == "portrait":
 		var crown := PackedVector2Array([
 			Vector2(size.x * 0.5 - 28, 1), Vector2(size.x * 0.5, -24),

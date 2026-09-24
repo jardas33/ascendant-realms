@@ -250,8 +250,8 @@ func _fit_to_viewport() -> void:
 		_force_panel.position = Vector2(560, 8)
 		_force_panel.size = Vector2(640, 70)
 	if is_instance_valid(_age_panel):
-		_age_panel.position = Vector2(maxf(1216.0, viewport_size.x * 0.53 - 76.0), 8)
-		_age_panel.size = Vector2(152, 78)
+		_age_panel.position = Vector2(maxf(1204.0, viewport_size.x * 0.53 - 88.0), 8)
+		_age_panel.size = Vector2(176, 78)
 	if is_instance_valid(_objective_panel):
 		_objective_panel.offset_left = -466.0
 		_objective_panel.offset_right = -106.0
@@ -1114,7 +1114,14 @@ func _build_top_bar() -> void:
 
 	_age_panel = _mk_hud_panel("age", COMMAND_GOLD)
 	_age_panel.name = "AgeMedallion"
-	_age_panel.custom_minimum_size = Vector2(145, 78)
+	_age_panel.custom_minimum_size = Vector2(176, 78)
+	var age_inset := StyleBoxFlat.new()
+	age_inset.bg_color = Color.TRANSPARENT
+	age_inset.content_margin_left = 25.0
+	age_inset.content_margin_right = 10.0
+	age_inset.content_margin_top = 10.0
+	age_inset.content_margin_bottom = 8.0
+	_age_panel.add_theme_stylebox_override("panel", age_inset)
 	add_child(_age_panel)
 	# Progression is a separate medallion rather than another telemetry column.
 	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 132.0)
