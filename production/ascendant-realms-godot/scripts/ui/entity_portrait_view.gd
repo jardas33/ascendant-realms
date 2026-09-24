@@ -76,10 +76,11 @@ func _build_view() -> void:
 	# and show the full source image; the frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_artwork.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_artwork.offset_left = PORTRAIT_ARTWORK_INSET
-	_artwork.offset_top = PORTRAIT_ARTWORK_INSET
-	_artwork.offset_right = -PORTRAIT_ARTWORK_INSET
-	_artwork.offset_bottom = -PORTRAIT_ARTWORK_INSET
+	var artwork_inset := 4.0 if custom_minimum_size.x < 80.0 else PORTRAIT_ARTWORK_INSET
+	_artwork.offset_left = artwork_inset
+	_artwork.offset_top = artwork_inset
+	_artwork.offset_right = -artwork_inset
+	_artwork.offset_bottom = -artwork_inset
 	_artwork.texture_filter = PORTRAIT_TEXTURE_FILTER
 	_artwork.clip_contents = true
 	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -247,7 +248,10 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 
 func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
 	if is_building:
-		return ""
+		# Construction art is presentation-only. Large selected-building portraits
+		# still render the live authored model, while compact build choices may
+		# show a recognizable illustration of that exact structure.
+		return String(definition.get("command_art", "")) if custom_minimum_size.x < 80.0 else ""
 	var portrait_path := String(definition.get("portrait", ""))
 	if portrait_path.is_empty() and not unit_id.is_empty():
 		portrait_path = String(GameData.get_unit(unit_id).get("portrait", ""))

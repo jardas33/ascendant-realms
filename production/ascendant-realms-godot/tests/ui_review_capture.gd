@@ -174,7 +174,7 @@ func _run() -> void:
 			if hud._minimap_panel.get_global_rect().intersects(hud._sel_panel.get_global_rect()):
 				validation_errors.append("minimap_selection_overlap")
 			var selected_kind := OS.get_environment("ASCENDANT_UI_SELECT")
-			var expected_cards := 5 if selected_kind in ["hero", "worker"] else (4 if selected_kind == "military" else 0)
+			var expected_cards: int = 5 if selected_kind == "hero" else (int(root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race).size()) if selected_kind == "worker" else (4 if selected_kind == "military" else 0))
 			var actual_cards := 0
 			var card_kinds: Array[String] = []
 			var card_copy := ""
@@ -257,7 +257,9 @@ func _run() -> void:
 			if selected_kind == "hero":
 				expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
 			elif selected_kind == "worker":
-				expected_words = ["Clanhold", "Clan Croft", "War Hall", "Iron Forge", "Watchtower", "timber", "stone", "LOCKED", "READY"]
+				expected_words = ["timber", "stone", "LOCKED", "READY"]
+				for building_id in root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race):
+					expected_words.append(str(root.get_node("GameData").get_building(building_id).get("name", building_id)))
 			elif selected_kind == "military":
 				expected_words = ["Attack Move", "Stop", "Hold", "Patrol"]
 			for word in expected_words:
@@ -321,9 +323,28 @@ func _run() -> void:
 			if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
 				validation_errors.append("rallying_cry_button_did_not_cast")
 		if selected_kind == "worker" and card_by_title.has("Clan Croft"):
-			card_by_title["Clan Croft"].pressed.emit()
+			if String(instance.world.commanders[0].race) == "barrosan":
+				var art_count := 0
+				for preview in instance.hud._cmd_panel.find_children("BuildingPreview", "Control", true, false):
+					if preview.has_method("get_active_portrait_path") and not String(preview.get_active_portrait_path()).is_empty():
+						art_count += 1
+				if art_count != 5:
+					validation_errors.append("barrosan_build_art_missing:%d" % art_count)
+			if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+				var build_center: Vector2 = card_by_title["Clan Croft"].get_global_rect().get_center()
+				Input.warp_mouse(root.get_viewport().get_screen_transform() * build_center)
+				for down in [true, false]:
+					var build_click := InputEventMouseButton.new()
+					build_click.button_index = MOUSE_BUTTON_LEFT
+					build_click.pressed = down
+					build_click.position = build_center
+					build_click.global_position = build_center
+					root.get_viewport().push_input(build_click, true)
+					await process_frame
+			else:
+				card_by_title["Clan Croft"].pressed.emit()
 			if instance.rts._build_id.is_empty():
-				validation_errors.append("build_button_did_not_activate")
+				validation_errors.append("build_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
 		if selected_kind == "building" and card_by_title.has("Advance to Age of Iron"):
 			card_by_title["Advance to Age of Iron"].pressed.emit()

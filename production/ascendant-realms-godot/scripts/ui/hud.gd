@@ -64,6 +64,13 @@ const RES_ICONS := {
 	"gold": "res://assets/ui/icon_gold.png",
 }
 const RES_ORDER := ["food", "timber", "stone", "gold"]
+const BARROSAN_BUILD_ART := {
+	"barrosan_clanhold": "res://assets/ui/construction_art/astra_r1/clanhold.png",
+	"barrosan_clan_croft": "res://assets/ui/construction_art/astra_r1/clan_croft.png",
+	"barrosan_war_hall": "res://assets/ui/construction_art/astra_r1/war_hall.png",
+	"barrosan_iron_forge": "res://assets/ui/construction_art/astra_r1/iron_forge.png",
+	"barrosan_watchtower": "res://assets/ui/construction_art/astra_r1/watchtower.png",
+}
 const TIER_NAMES := {1: "Age I", 2: "Age II", 3: "Age III"}
 
 # --- refs ---
@@ -722,7 +729,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.accent = accent
 	btn.command_kind = command_kind
 	btn.command_state = state
-	var card_height := 56 if has_preview else (74 if ability_card else 60)
+	var card_height := 96 if has_preview else (74 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -731,26 +738,29 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(6, 6)
-		preview.size = Vector2(42, 42)
-		preview.custom_minimum_size = Vector2(42, 42)
+		preview.position = Vector2(8, 10)
+		preview.size = Vector2(68, 68)
+		preview.custom_minimum_size = Vector2(68, 68)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		preview.set_deferred("custom_minimum_size", Vector2(42, 42))
-		preview.set_deferred("size", Vector2(42, 42))
+		preview.set_deferred("custom_minimum_size", Vector2(68, 68))
+		preview.set_deferred("size", Vector2(68, 68))
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(54, 6)
-		var preview_text_height := card_height - 10
-		text_col.size = Vector2(260, preview_text_height)
-		text_col.custom_minimum_size = Vector2(260, preview_text_height)
-		text_col.add_theme_constant_override("separation", 1)
+		text_col.anchor_right = 1.0
+		text_col.offset_left = 81.0
+		text_col.offset_top = 10.0
+		text_col.offset_right = -7.0
+		text_col.offset_bottom = -21.0
+		text_col.add_theme_constant_override("separation", 2)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_label := _mk_label(title, 18, FONT_COLOR)
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(detail_text, 14, preview_detail_color)
+		var detail_label := _mk_label(detail_text.replace(", ", "\n"), 14, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -829,17 +839,14 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(status_label)
 		btn.set_meta("command_status_label", status_label)
 	else:
-		# The worker deck already labels the family as BUILD. Use the lower-right
-		# slot for the actionable state so READY versus LOCKED is readable without
-		# relying on a paragraph of disabled-reason text.
+		# The art and readiness share a column; long two-resource costs keep the
+		# entire right side without colliding with READY or LOCKED.
 		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
-		build_status.anchor_left = 1.0
-		build_status.anchor_right = 1.0
-		build_status.offset_left = -83.0
-		build_status.offset_right = -8.0
-		build_status.offset_top = card_height - 19
+		build_status.offset_left = 7.0
+		build_status.offset_right = 77.0
+		build_status.offset_top = card_height - 18
 		build_status.offset_bottom = card_height - 2
-		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
 		btn.set_meta("command_status_label", build_status)
@@ -2817,7 +2824,7 @@ func _add_context_hints(hints: Array[String]) -> void:
 func _build_worker_card() -> void:
 	_add_command_section("Build", "Choose a structure.")
 	var grid := _mk_command_grid()
-	grid.columns = 1
+	grid.columns = 2
 	_cmd_body.add_child(grid)
 	for bid in GameData.buildings_for_race(_commander.race):
 		var bdef := GameData.get_building(bid)
@@ -2828,19 +2835,17 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = _commander.missing_resource_summary(cost)
-		# The Build section already establishes this as a cost line. Keeping the
-		# canonical resource name/amount but dropping the redundant "Cost:" prefix
-		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
-		# without changing resource definitions or the command-card geometry.
+		# The gallery shows the full structure, name, cost and readiness at once.
 		var build_detail := _cost_string(cost).trim_prefix("  (").trim_suffix(")")
-		# Keep the scan line to the actionable cost only. Population benefit and
-		# the full authored explanation remain available in the anchored tooltip;
-		# this prevents the narrow two-column cards from truncating secondary text.
+		# Keep the scan line actionable; secondary effects remain in the tooltip.
 		var tooltip_detail := str(bdef.get("desc", ""))
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
 			tooltip_detail += "\nProvides: +%d population" % grants_pop
-		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", bdef, tooltip_detail, "Purpose")
+		var preview_definition := bdef.duplicate()
+		if BARROSAN_BUILD_ART.has(bid):
+			preview_definition["command_art"] = BARROSAN_BUILD_ART[bid]
+		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, tooltip_detail, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
