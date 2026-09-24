@@ -287,7 +287,7 @@ func _run() -> void:
 			if not button.has_meta("command_kind"):
 				continue
 			for label in button.find_children("*", "Label", true, false):
-				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Advance to Age of Iron", "Clan Levy"]:
+				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Advance to Age of Iron", "Clan Levy"]:
 					card_by_title[label.text] = button
 		if selected_kind in ["hero", "military"]:
 			for title in ["Attack Move", "Stop", "Hold", "Patrol"]:
@@ -322,16 +322,22 @@ func _run() -> void:
 			card_by_title["Rallying Cry"].pressed.emit()
 			if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
 				validation_errors.append("rallying_cry_button_did_not_cast")
-		if selected_kind == "worker" and card_by_title.has("Clan Croft"):
-			if String(instance.world.commanders[0].race) == "barrosan":
-				var art_count := 0
+		if selected_kind == "worker":
+			var worker_race := String(instance.world.commanders[0].race)
+			var expected_art_count := 5 if worker_race == "barrosan" else (6 if worker_race == "lioraen" else 0)
+			if expected_art_count > 0:
+				var art_paths := {}
 				for preview in instance.hud._cmd_panel.find_children("BuildingPreview", "Control", true, false):
-					if preview.has_method("get_active_portrait_path") and not String(preview.get_active_portrait_path()).is_empty():
-						art_count += 1
-				if art_count != 5:
-					validation_errors.append("barrosan_build_art_missing:%d" % art_count)
+					if preview.has_method("get_active_portrait_path"):
+						var art_path := String(preview.get_active_portrait_path())
+						if not art_path.is_empty():
+							art_paths[art_path] = true
+				if art_paths.size() != expected_art_count:
+					validation_errors.append("worker_build_art_missing:%s:%d_expected_%d" % [worker_race, art_paths.size(), expected_art_count])
+		var build_target := "Clan Croft" if card_by_title.has("Clan Croft") else ("Lifewell" if card_by_title.has("Lifewell") else "")
+		if selected_kind == "worker" and not build_target.is_empty():
 			if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
-				var build_center: Vector2 = card_by_title["Clan Croft"].get_global_rect().get_center()
+				var build_center: Vector2 = card_by_title[build_target].get_global_rect().get_center()
 				Input.warp_mouse(root.get_viewport().get_screen_transform() * build_center)
 				for down in [true, false]:
 					var build_click := InputEventMouseButton.new()
@@ -342,8 +348,9 @@ func _run() -> void:
 					root.get_viewport().push_input(build_click, true)
 					await process_frame
 			else:
-				card_by_title["Clan Croft"].pressed.emit()
-			if instance.rts._build_id.is_empty():
+				card_by_title[build_target].pressed.emit()
+			var expected_build_id := "barrosan_clan_croft" if build_target == "Clan Croft" else "lioraen_lifewell"
+			if instance.rts._build_id != expected_build_id:
 				validation_errors.append("build_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
 		if selected_kind == "building" and card_by_title.has("Advance to Age of Iron"):

@@ -71,6 +71,14 @@ const BARROSAN_BUILD_ART := {
 	"barrosan_iron_forge": "res://assets/ui/construction_art/astra_r1/iron_forge.png",
 	"barrosan_watchtower": "res://assets/ui/construction_art/astra_r1/watchtower.png",
 }
+const LIORAEN_BUILD_ART := {
+	"lioraen_groveheart": "res://assets/ui/construction_art/lioraen_r1/groveheart.png",
+	"lioraen_lifewell": "res://assets/ui/construction_art/lioraen_r1/lifewell.png",
+	"lioraen_thornhall": "res://assets/ui/construction_art/lioraen_r1/thornhall.png",
+	"lioraen_lifewell_forge": "res://assets/ui/construction_art/lioraen_r1/grove_forge.png",
+	"lioraen_spirit_glade": "res://assets/ui/construction_art/lioraen_r1/spirit_glade.png",
+	"lioraen_bloom_spire": "res://assets/ui/construction_art/lioraen_r1/bloom_spire.png",
+}
 const TIER_NAMES := {1: "Age I", 2: "Age II", 3: "Age III"}
 
 # --- refs ---
@@ -2845,6 +2853,8 @@ func _build_worker_card() -> void:
 		var preview_definition := bdef.duplicate()
 		if BARROSAN_BUILD_ART.has(bid):
 			preview_definition["command_art"] = BARROSAN_BUILD_ART[bid]
+		elif LIORAEN_BUILD_ART.has(bid):
+			preview_definition["command_art"] = LIORAEN_BUILD_ART[bid]
 		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, tooltip_detail, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
