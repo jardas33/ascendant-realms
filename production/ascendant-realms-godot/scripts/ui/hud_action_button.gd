@@ -59,9 +59,14 @@ func _draw() -> void:
 		draw_line(Vector2(55, 5), Vector2(55, h - 5), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
 		var slot_rim := PackedVector2Array(order_shape)
 		slot_rim.append(order_shape[0])
-		draw_polyline(slot_rim, Color(metal.r, metal.g, metal.b, 0.32 if enabled else 0.13), 1.0, true)
-		draw_line(Vector2(7, 1), Vector2(w - 13, 1), Color(metal.r, metal.g, metal.b, 0.27 if enabled else 0.10), 1.0, true)
-		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
+		draw_polyline(slot_rim, Color(metal.r, metal.g, metal.b, 0.48 if enabled else 0.16), 1.0, true)
+		# Two inset cuts keep each order readable as an engraved socket without
+		# competing with the shared rack's heavier outside perimeter.
+		draw_line(Vector2(8, 3), Vector2(w - 13, 3), Color(metal.r, metal.g, metal.b, 0.39 if enabled else 0.11), 1.0, true)
+		draw_line(Vector2(9, h - 3), Vector2(w - 9, h - 3), Color(metal.r, metal.g, metal.b, 0.26 if enabled else 0.09), 1.0, true)
+		draw_line(Vector2(w - 3, 12), Vector2(w - 3, h - 9), Color(metal.r, metal.g, metal.b, 0.23 if enabled else 0.08), 1.0, true)
+		draw_line(Vector2(1, 5), Vector2(6, 0), Color(metal.r, metal.g, metal.b, 0.72 if enabled else 0.17), 1.4, true)
+		draw_line(Vector2(w - 10, 0), Vector2(w - 1, 9), Color(metal.r, metal.g, metal.b, 0.54 if enabled else 0.14), 1.2, true)
 		if lit or active:
 			var lit_outline := PackedVector2Array(order_shape)
 			lit_outline.append(order_shape[0])
@@ -102,11 +107,14 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([
 			Vector2(0, 8), Vector2(4, 4), Vector2(4, h - 5), Vector2(0, h - 8)]),
 			Color(metal.r, metal.g, metal.b, 0.72 if lit else (0.50 if enabled else 0.20)))
-		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.31 if enabled else 0.12), 1.2, true)
-		draw_line(Vector2(w - 12, 1), Vector2(w - 1, 12), Color(metal.r, metal.g, metal.b, 0.35 if enabled else 0.12), 1.0, true)
+		draw_line(Vector2(9, h - 3), Vector2(w - 9, h - 3), Color(metal.r, metal.g, metal.b, 0.37 if enabled else 0.12), 1.0, true)
 		var row_outline := PackedVector2Array(row_shape)
 		row_outline.append(row_shape[0])
-		draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.30 if enabled else 0.15), 1.0, true)
+		draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.43 if enabled else 0.16), 1.0, true)
+		draw_line(Vector2(10, 3), Vector2(w - 16, 3), Color(metal.r, metal.g, metal.b, 0.46 if enabled else 0.13), 1.0, true)
+		draw_line(Vector2(w - 3, 14), Vector2(w - 3, h - 10), Color(metal.r, metal.g, metal.b, 0.23 if enabled else 0.08), 1.0, true)
+		draw_line(Vector2(1, 8), Vector2(8, 1), Color(metal.r, metal.g, metal.b, 0.69 if enabled else 0.15), 1.4, true)
+		draw_line(Vector2(w - 13, 1), Vector2(w - 1, 13), Color(metal.r, metal.g, metal.b, 0.49 if enabled else 0.12), 1.2, true)
 		if lit or active:
 			draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
 		return
