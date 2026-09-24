@@ -87,6 +87,12 @@ func _run() -> void:
 				await create_timer(0.25).timeout
 		for index in 5:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1" and instance.get("hud") != null:
+		var command_scroll := instance.hud._cmd_panel.get_child(0) as ScrollContainer
+		if command_scroll:
+			command_scroll.scroll_vertical = int(command_scroll.get_v_scroll_bar().max_value)
+			for index in 3:
+				await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
@@ -148,6 +154,27 @@ func _run() -> void:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
 			if selected_kind in ["building", "building_queued"] and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
 				validation_errors.append("building_action_families_missing:" + str(card_kinds))
+			if selected_kind == "building":
+				var expected_emblems := {
+					"Highland Worker": "barrosan_worker",
+					"Advance to Age of Iron": "advance_tier_2",
+					"Advance to Age of Lume": "advance_tier_3",
+				}
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if not button.has_meta("command_kind"):
+						continue
+					for label in button.find_children("*", "Label", true, false):
+						if expected_emblems.has(label.text):
+							var emblem = button.find_child("CommandEmblem", true, false) as Control
+							if not is_instance_valid(emblem) or emblem.get("icon_kind") != expected_emblems[label.text]:
+								validation_errors.append("building_command_emblem_missing:" + label.text)
+				var aperture = hud._sel_panel.find_child("PortraitViewport", true, false) as Control
+				if not is_instance_valid(aperture) or not aperture.clip_contents:
+					validation_errors.append("building_portrait_aperture_missing")
+				else:
+					var portrait := aperture.get_parent() as Control
+					if not is_instance_valid(portrait) or not portrait.get_global_rect().encloses(aperture.get_global_rect()) or aperture.size.x >= portrait.size.x - 12.0:
+						validation_errors.append("building_portrait_aperture_not_inset")
 			if selected_kind in ["building_queued", "war_hall_queued"]:
 				var queue = hud._queue_container
 				if not is_instance_valid(queue) or queue.get_child_count() == 0:
@@ -157,6 +184,12 @@ func _run() -> void:
 			if selected_kind in ["war_hall", "war_hall_queued"] and not card_kinds.has("TRAIN"):
 				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
 			if selected_kind in ["war_hall", "war_hall_queued"]:
+				var unit_portraits := 0
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if button.has_meta("command_kind") and button.get_meta("command_kind") == "TRAIN" and is_instance_valid(button.find_child("UnitCommandPortrait", true, false)):
+						unit_portraits += 1
+				if unit_portraits != 6:
+					validation_errors.append("war_hall_unit_portraits:%d_expected_6" % unit_portraits)
 				var deck_scroll := hud._cmd_panel.get_child(0) as ScrollContainer
 				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
 					validation_errors.append("war_hall_overflow_not_scrollable")

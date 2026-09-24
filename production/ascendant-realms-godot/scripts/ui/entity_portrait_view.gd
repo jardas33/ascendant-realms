@@ -10,6 +10,8 @@ const PORTRAIT_MIN_SIZE := 46.0
 const PORTRAIT_MAX_SIZE := 180.0
 const PORTRAIT_FRAME_INSET := 5.0
 const PORTRAIT_ARTWORK_INSET := 8.0
+const PORTRAIT_MODEL_INSET := 10.0
+const PORTRAIT_COMPACT_MODEL_INSET := 4.0
 const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
 static var _portrait_texture_cache: Dictionary = {}
 
@@ -50,12 +52,20 @@ func _build_view() -> void:
 	_viewport_container.name = "PortraitViewport"
 	_viewport_container.stretch = true
 	_viewport_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# The frame is decorative, so the live model needs its own clipped aperture.
+	# Without this inset, wide roofs render over the lower frame ornament.
+	var model_inset := PORTRAIT_COMPACT_MODEL_INSET if custom_minimum_size.x < 80.0 else PORTRAIT_MODEL_INSET
+	_viewport_container.offset_left = model_inset
+	_viewport_container.offset_top = model_inset
+	_viewport_container.offset_right = -model_inset
+	_viewport_container.offset_bottom = -model_inset
+	_viewport_container.clip_contents = true
 	_viewport_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_viewport_container)
 
 	_viewport = SubViewport.new()
 	_viewport.size = VIEW_SIZE
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if custom_minimum_size.x < 80.0 else SubViewport.UPDATE_ALWAYS
 	_viewport.transparent_bg = true
 	_viewport_container.add_child(_viewport)
 
@@ -160,6 +170,8 @@ func _apply_entity(entity) -> void:
 func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
 	if not is_instance_valid(_pivot):
 		return
+	if custom_minimum_size.x < 80.0:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	_active_portrait_path = ""
 	if is_instance_valid(_artwork):
 		var portrait_path := _portrait_path_for_definition(definition, is_building, unit_id)
@@ -193,7 +205,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		ModelUtils.ground_model(model)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(model)
-		if is_building:
+		if is_building or bool(definition.get("is_siege", false)):
 			model_radius = ModelUtils.measure_radius(model)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
@@ -211,16 +223,21 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
 	var compact_card := custom_minimum_size.x < 80.0
-	_compact_building_fill.visible = is_building
-	_compact_building_fill.light_energy = 1.4 if compact_card else 1.0
+	_compact_building_fill.visible = is_building or (compact_card and _active_portrait_path.is_empty())
+	_compact_building_fill.light_energy = (2.4 if not is_building else 1.4) if compact_card else 1.0
 	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
 	if is_building and not compact_card:
 		# Wide structures need a three-quarter architectural view; character
 		# framing used to crop the building down to one wall texture.
-		distance = maxf(3.3, model_radius * 2.25 + 0.45)
+		distance = maxf(3.55, model_radius * 2.55 + 0.5)
 		_camera.position = Vector3(distance * 0.48, target_height * 1.48, distance)
 		_camera.fov = 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	elif compact_card and bool(definition.get("is_siege", false)):
+		distance = maxf(3.1, model_radius * 2.4 + 0.45)
+		_camera.position = Vector3(distance * 0.3, target_height * 0.8, distance)
+		_camera.fov = 58.0
+		_camera.look_at(Vector3(0.0, target_height * 0.38, 0.0), Vector3.UP)
 	else:
 		_camera.position = Vector3(0.0, target_height * 0.58, distance)
 		_camera.fov = 56.0 if compact_card else 62.0

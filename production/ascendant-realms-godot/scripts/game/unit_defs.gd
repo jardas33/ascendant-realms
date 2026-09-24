@@ -39,6 +39,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_crag_archer": {
 		"race": "barrosan", "name": "Crag Archer", "role": "ranged", "tier": 1,
+		"portrait": "res://assets/ui/portraits/barrosan/astra_r1/crag_archer.png",
 		"model": _char("barrosan_crag_archer"), "height": 1.8,
 		"hp": 90, "dmg": 16, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "arrow",
@@ -47,6 +48,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_outrider": {
 		"race": "barrosan", "name": "Highland Outrider", "role": "flanker", "tier": 2,
+		"portrait": "res://assets/ui/portraits/barrosan/astra_r1/highland_outrider.png",
 		"model": _char("barrosan_outrider"), "height": 1.8,
 		"hp": 120, "dmg": 15, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 5.4, "vision": 26.0,
@@ -55,6 +57,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_anvil_breaker": {
 		"race": "barrosan", "name": "Anvil Breaker", "role": "antiarmor", "tier": 3,
+		"portrait": "res://assets/ui/portraits/barrosan/astra_r1/anvil_breaker.png",
 		"model": _char("barrosan_anvil_breaker"), "height": 1.95,
 		"hp": 240, "dmg": 30, "dmg_type": "blunt", "armor_class": "heavy", "armor": 5,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
@@ -63,6 +66,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_ballista": {
 		"race": "barrosan", "name": "Clan Ballista", "role": "siege", "tier": 3, "is_siege": true,
+		"portrait": "res://assets/ui/portraits/barrosan/astra_r1/clan_ballista.png",
 		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.2,
 		"hp": 160, "dmg": 55, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
 		"range": 22.0, "attack_cd": 2.6, "speed": 2.4, "vision": 26.0, "projectile": "bolt",

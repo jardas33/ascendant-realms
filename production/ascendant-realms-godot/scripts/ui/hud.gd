@@ -698,7 +698,7 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "") -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "", emblem_id: String = "", unit_art_definition: Dictionary = {}) -> Button:
 	var has_preview := not preview_definition.is_empty()
 	# The card is intentionally a scan surface. Hero abilities provide their
 	# authored hotkey explicitly; ordinary orders derive theirs from the title.
@@ -753,16 +753,33 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
 	else:
+		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(6, 6)
-		glyph_plate.size = Vector2(38, 38)
+		glyph_plate.position = Vector2(6, 6 if not painted_emblem else 4)
+		glyph_plate.size = Vector2(52, 52) if painted_emblem else Vector2(38, 38)
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
-		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 28.0))
+		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+			var unit_art: Control = load(ENTITY_PORTRAIT_SCRIPT).new()
+			unit_art.name = "UnitCommandPortrait"
+			unit_art.custom_minimum_size = Vector2(44, 44)
+			unit_art.size = Vector2(44, 44)
+			if state in ["LOCKED", "COMPLETED"]:
+				unit_art.modulate = Color(0.72, 0.77, 0.80, 0.76)
+			glyph_plate.add_child(unit_art)
+			unit_art.configure_definition(unit_art_definition, false)
+		else:
+			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem else 28.0)
+			glyph.name = "CommandEmblem" if painted_emblem else "CommandGlyph"
+			if painted_emblem and state in ["LOCKED", "COMPLETED"]:
+				glyph.modulate = Color(0.72, 0.77, 0.80, 0.76)
+			if painted_emblem:
+				glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(50, 6)
+		text_col.position = Vector2(65, 6) if painted_emblem else Vector2(50, 6)
 		var text_height := card_height - 10
 		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
 		text_col.size = Vector2(text_width, text_height)
@@ -821,6 +838,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(build_status)
 		btn.set_meta("command_status_label", build_status)
 	btn.set_meta("command_kind", command_kind)
+	btn.set_meta("emblem_id", emblem_id)
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
 		tooltip_text += "\nHotkey: " + hotkey
@@ -2902,7 +2920,9 @@ func _build_building_card(b) -> void:
 				reason = _commander.missing_resource_summary(cost)
 			var train_detail := "Age %d · %d pop · %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
 			var train_state := "TRAINING" if queued_for_training else ("LOCKED" if not reason.is_empty() else "READY")
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN")
+			var unit_emblem := String(uid) if String(uid) == "barrosan_worker" else ""
+			var unit_card_art := {} if not unit_emblem.is_empty() else udef
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -2951,7 +2971,8 @@ func _build_building_card(b) -> void:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH")
+			var tech_emblem := String(tid) if String(tid) in ["advance_tier_2", "advance_tier_3"] else ""
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)

@@ -1,6 +1,14 @@
 extends Control
-## Small procedural action glyphs used by the command deck. These are local
-## vector affordances, not gameplay icons or external art assets.
+## Action emblems used by the command deck. Art-directed unit and age actions
+## use authored paintings; small universal orders retain vector fallbacks.
+
+const EMBLEMS := {
+	"barrosan_worker": "res://assets/ui/command_emblems/astra_r1/recruit_highland_worker.png",
+	"advance_tier_2": "res://assets/ui/command_emblems/astra_r1/age_of_iron.png",
+	"advance_tier_3": "res://assets/ui/command_emblems/astra_r1/age_of_lume.png",
+}
+
+static var _emblem_cache: Dictionary = {}
 
 var icon_kind := "command"
 var accent := Color.WHITE
@@ -14,6 +22,11 @@ func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if EMBLEMS.has(icon_kind):
+		var emblem: Texture2D = _load_emblem(EMBLEMS[icon_kind])
+		if emblem:
+			draw_texture_rect(emblem, Rect2(Vector2.ZERO, size), false)
+			return
 	var center := size * 0.5
 	var dark := Color(0.02, 0.025, 0.035, 0.9)
 	var line_width := maxf(2.0, size.x * 0.075)
@@ -60,3 +73,12 @@ func _draw() -> void:
 	# A subtle center shadow improves contrast against pale battlefield terrain.
 	if dark.a > 0.0:
 		draw_circle(center, size.x * 0.07, dark)
+
+
+func _load_emblem(path: String) -> Texture2D:
+	if _emblem_cache.has(path):
+		return _emblem_cache[path]
+	var texture := load(path) as Texture2D
+	if texture:
+		_emblem_cache[path] = texture
+	return texture

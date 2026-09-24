@@ -70,22 +70,5 @@ func _draw() -> void:
 	draw_line(Vector2(cut + 2, 1), Vector2(w - 16, 1), Color(metal.r, metal.g, metal.b, 0.58 if lit else (0.27 if enabled else 0.10)), 1.0, true)
 	draw_line(Vector2(10, h - 2), Vector2(w - 10, h - 2), Color(metal.r, metal.g, metal.b, 0.38 if lit else 0.18), 1.0, true)
 	draw_line(Vector2(w - 13, 1), Vector2(w - 1, 13), Color(metal.r, metal.g, metal.b, 0.56 if lit else 0.28), 1.0, true)
-	# Family marks sit in the otherwise empty lower-right field.
-	match command_kind:
-		"ABILITY":
-			draw_arc(Vector2(w - 30, h - 24), 12, PI * 0.08, PI * 0.92, 12, Color(metal.r, metal.g, metal.b, 0.36 if enabled else 0.16), 1.1, true)
-		"BUILD":
-			for i in 3:
-				var x := w - 42 + i * 6
-				draw_line(Vector2(x, 9), Vector2(x + 5, 9), Color(metal.r, metal.g, metal.b, 0.3 if enabled else 0.12), 1.0, true)
-		"TRAIN":
-			for i in 3:
-				var x := w - 32 + i * 6
-				draw_line(Vector2(x, h - 28), Vector2(x + 4, h - 32), Color(metal.r, metal.g, metal.b, 0.3 if enabled else 0.12), 1.0, true)
-		"RESEARCH":
-			draw_circle(Vector2(w - 19, h - 27), 2.0, Color(metal.r, metal.g, metal.b, 0.55 if enabled else 0.20))
-			draw_arc(Vector2(w - 19, h - 27), 7, -PI * 0.8, PI * 0.5, 10, Color(metal.r, metal.g, metal.b, 0.32 if enabled else 0.12), 1.0, true)
-		_:
-			draw_line(Vector2(w - 28, h - 26), Vector2(w - 17, h - 26), Color(metal.r, metal.g, metal.b, 0.24 if enabled else 0.1), 1.0, true)
 	if active:
 		draw_line(Vector2(12, h - 2), Vector2(w * 0.52, h - 2), Color(metal.r, metal.g, metal.b, 0.82), 2.0, true)
