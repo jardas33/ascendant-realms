@@ -743,7 +743,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.custom_minimum_size = Vector2(260, preview_text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 16, FONT_COLOR)
+		var title_label := _mk_label(title, 18, FONT_COLOR)
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
@@ -791,12 +791,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
 		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 18 if command_kind in ["ABILITY", "ORDER"] else 16, title_color)
+		var title_label := _mk_label(title, 18, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(detail_text, 14 if command_kind == "ABILITY" else 12, detail_color)
+		var detail_label := _mk_label(detail_text, 14, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -814,12 +814,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(key_badge)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 11, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
-		status_label.offset_left = -68.0
+		status_label.offset_left = -83.0
 		status_label.offset_right = -8.0
-		status_label.offset_top = card_height - 17
+		status_label.offset_top = card_height - 19
 		status_label.offset_bottom = card_height - 2
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -829,12 +829,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		# The worker deck already labels the family as BUILD. Use the lower-right
 		# slot for the actionable state so READY versus LOCKED is readable without
 		# relying on a paragraph of disabled-reason text.
-		var build_status := _mk_label(state, 12, accent if state == "READY" else COMMAND_MUTED)
+		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
 		build_status.anchor_left = 1.0
 		build_status.anchor_right = 1.0
-		build_status.offset_left = -68.0
+		build_status.offset_left = -83.0
 		build_status.offset_right = -8.0
-		build_status.offset_top = card_height - 17
+		build_status.offset_top = card_height - 19
 		build_status.offset_bottom = card_height - 2
 		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
