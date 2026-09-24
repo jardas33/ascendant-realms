@@ -2,6 +2,9 @@ extends PanelContainer
 ## A shaped piece of the battle HUD, drawn as layered iron and bronze rather
 ## than a rectangular Control theme. Children remain ordinary accessible UI.
 
+const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
+static var _forged_trim: Texture2D = null
+
 
 var plate_kind := "selection"
 var accent := Color(0.77, 0.58, 0.30)
@@ -150,6 +153,29 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([center + Vector2(0, -3), center + Vector2(3, 0), center + Vector2(0, 3), center + Vector2(-3, 0)]), accent.lightened(0.24))
 			draw_circle(center, 0.8, Color(0.08, 0.07, 0.06))
 	if plate_kind == "minimap":
+		if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
+			_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
+		if _forged_trim:
+			var trim_size := _forged_trim.get_size()
+			var rail_w := trim_size.x * 0.026
+			var corner_w := trim_size.x * 0.078
+			var corner_h := trim_size.y * 0.17
+			var top_h := trim_size.y * 0.10
+			var mid := size.x * 0.5
+			# Work the map's existing chamfered silhouette; the metal sits only on
+			# its exposed rim and never crosses the title or geographic viewport.
+			for segment in [
+				[Rect2(cuts.x + 3.0, 0.0, mid - cuts.x - 13.0, 9.0), Rect2(trim_size.x * 0.11, 0.0, trim_size.x * 0.32, top_h)],
+				[Rect2(mid + 10.0, 0.0, mid - cuts.y - 13.0, 9.0), Rect2(trim_size.x * 0.57, 0.0, trim_size.x * 0.32, top_h)],
+				[Rect2(18.0, size.y - 10.0, size.x - 36.0, 10.0), Rect2(trim_size.x * 0.09, trim_size.y - top_h, trim_size.x * 0.82, top_h)],
+				[Rect2(0.0, cuts.x + 3.0, 8.0, size.y - cuts.x - cuts.w - 8.0), Rect2(0.0, corner_h, rail_w, trim_size.y - corner_h * 2.0)],
+				[Rect2(size.x - 8.0, cuts.y + 3.0, 8.0, size.y - cuts.y - cuts.z - 8.0), Rect2(trim_size.x - rail_w, corner_h, rail_w, trim_size.y - corner_h * 2.0)],
+				[Rect2(0.0, 0.0, 31.0, 30.0), Rect2(0.0, 0.0, corner_w, corner_h)],
+				[Rect2(size.x - 39.0, 0.0, 39.0, 39.0), Rect2(trim_size.x - corner_w, 0.0, corner_w, corner_h)],
+				[Rect2(0.0, size.y - 26.0, 26.0, 26.0), Rect2(0.0, trim_size.y - corner_h, corner_w, corner_h)],
+				[Rect2(size.x - 26.0, size.y - 26.0, 26.0, 26.0), Rect2(trim_size.x - corner_w, trim_size.y - corner_h, corner_w, corner_h)],
+			]:
+				draw_texture_rect_region(_forged_trim, segment[0], segment[1])
 		var medallion := Vector2(size.x * 0.5, 5)
 		draw_line(medallion + Vector2(-24, 0), medallion + Vector2(-8, 0), Color(accent.r, accent.g, accent.b, 0.72), 1.2, true)
 		draw_line(medallion + Vector2(8, 0), medallion + Vector2(24, 0), Color(accent.r, accent.g, accent.b, 0.72), 1.2, true)

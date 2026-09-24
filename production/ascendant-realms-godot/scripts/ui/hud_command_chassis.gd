@@ -130,6 +130,13 @@ func _draw() -> void:
 		draw_texture_rect_region(_forged_trim,
 			Rect2(command_rect.position.x + 20.0, command_rect.position.y - 10.0, command_rect.size.x - 42.0, 13.0),
 			Rect2(0.0, 0.0, trim_size.x, trim_height))
+		if has_portrait:
+			var bridge_left := portrait_rect.end.x + 6.0
+			var bridge_right := command_rect.position.x - 38.0
+			if bridge_right > bridge_left:
+				draw_texture_rect_region(_forged_trim,
+					Rect2(bridge_left, selection_rect.position.y - 11.0, bridge_right - bridge_left, 12.0),
+					Rect2(trim_size.x * 0.10, 0.0, trim_size.x * 0.34, trim_height))
 		draw_texture_rect_region(_forged_trim,
 			Rect2(selection_rect.position.x + 18.0, bottom - 13.0, command_rect.position.x - selection_rect.position.x - 18.0, 13.0),
 			Rect2(0.0, trim_size.y - trim_height, trim_size.x, trim_height))
@@ -144,12 +151,20 @@ func _draw() -> void:
 		draw_texture_rect_region(_forged_trim,
 			Rect2(command_rect.position.x - 13.0, command_rect.position.y + 34.0, 10.0, bottom - command_rect.position.y - 58.0),
 			Rect2(0.0, corner_height, rail_width, trim_size.y - corner_height * 2.0))
+		if has_portrait:
+			draw_texture_rect_region(_forged_trim,
+				Rect2(selection_rect.position.x - 8.0, portrait_rect.position.y + 11.0, 10.0, bottom - portrait_rect.position.y - 38.0),
+				Rect2(0.0, corner_height, rail_width, trim_size.y - corner_height * 2.0))
 		for corner in [
 			[Rect2(command_rect.end.x - 31.0, command_rect.position.y - 11.0, 36.0, 33.0), Rect2(trim_size.x - corner_width, 0.0, corner_width, corner_height)],
 			[Rect2(command_rect.end.x - 37.0, bottom - 33.0, 42.0, 37.0), Rect2(trim_size.x - corner_width, trim_size.y - corner_height, corner_width, corner_height)],
 			[Rect2(selection_rect.position.x - 8.0, bottom - 32.0, 37.0, 36.0), Rect2(0.0, trim_size.y - corner_height, corner_width, corner_height)],
 		]:
 			draw_texture_rect_region(_forged_trim, corner[0], corner[1])
+		if has_portrait:
+			draw_texture_rect_region(_forged_trim,
+				Rect2(selection_rect.position.x - 8.0, portrait_rect.position.y - 8.0, 36.0, 32.0),
+				Rect2(0.0, 0.0, corner_width, corner_height))
 	# The transition is a single hammered joint, not a fourth badge floating in
 	# the world. Its warm edge marks where unit identity hands off to commands.
 	var joint := Vector2(command_rect.position.x - 13.0, selection_rect.position.y - 24.0)

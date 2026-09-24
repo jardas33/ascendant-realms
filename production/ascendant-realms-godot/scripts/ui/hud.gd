@@ -3333,7 +3333,7 @@ func _push_alert(message: String, col: Color) -> void:
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
 	var dispatch: PanelContainer = HUD_ALERT_DISPATCH_SCRIPT.new()
-	dispatch.accent = col
+	dispatch.accent = COMMAND_GOLD
 	dispatch.custom_minimum_size = Vector2(360, 60)
 	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var padding := StyleBoxFlat.new()
