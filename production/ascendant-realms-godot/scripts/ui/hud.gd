@@ -224,12 +224,12 @@ func _fit_to_viewport() -> void:
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
 		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(410, 70)
+		_top_panel.size = Vector2(540, 70)
 	if is_instance_valid(_force_panel):
-		_force_panel.position = Vector2(440, 8)
-		_force_panel.size = Vector2(520, 70)
+		_force_panel.position = Vector2(560, 8)
+		_force_panel.size = Vector2(640, 70)
 	if is_instance_valid(_age_panel):
-		_age_panel.position = Vector2(maxf(980.0, viewport_size.x * 0.53 - 76.0), 8)
+		_age_panel.position = Vector2(maxf(1216.0, viewport_size.x * 0.53 - 76.0), 8)
 		_age_panel.size = Vector2(152, 78)
 	if is_instance_valid(_objective_panel):
 		_objective_panel.offset_left = -424.0
@@ -944,7 +944,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 16 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	var title_label := _mk_label(title.to_upper(), 18 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
 	if instrument:
 		title_label.name = "TopMetricTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1007,7 +1007,7 @@ func _build_top_bar() -> void:
 	rack_inset.bg_color = Color.TRANSPARENT
 	rack_inset.set_content_margin_all(0)
 	panel.add_theme_stylebox_override("panel", rack_inset)
-	panel.custom_minimum_size = Vector2(410, 70)
+	panel.custom_minimum_size = Vector2(540, 70)
 	add_child(panel)
 
 	var resource_accents := {
@@ -1021,7 +1021,7 @@ func _build_top_bar() -> void:
 	economy_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	economy_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 94.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
 		cell.add_child(_mk_icon(RES_ICONS[k], 25))
 		var l := _mk_label("0", 30, FONT_COLOR)
@@ -1036,7 +1036,7 @@ func _build_top_bar() -> void:
 	_force_panel.name = "ForceInstrument"
 	_force_panel.embedded = true
 	_force_panel.add_theme_stylebox_override("panel", rack_inset)
-	_force_panel.custom_minimum_size = Vector2(520, 70)
+	_force_panel.custom_minimum_size = Vector2(640, 70)
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
@@ -1044,7 +1044,7 @@ func _build_top_bar() -> void:
 	force_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	force_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 125.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
 	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 21))
 	_pop_label = _mk_label("0/0", 28)
@@ -1056,7 +1056,7 @@ func _build_top_bar() -> void:
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 110.0, "Living opposing commanders")
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
 	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 21))
 	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
@@ -1069,7 +1069,7 @@ func _build_top_bar() -> void:
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 142.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
 	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 21))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
@@ -1080,7 +1080,7 @@ func _build_top_bar() -> void:
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 125.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
 	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 21))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))

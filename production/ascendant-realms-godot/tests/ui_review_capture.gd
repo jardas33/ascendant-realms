@@ -106,15 +106,9 @@ func _run() -> void:
 		for command_button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
 			for command_label in command_button.find_children("*", "Label", true, false):
 				if command_label.text == wanted_title:
-					var hover_point: Vector2 = command_button.get_global_rect().get_center()
-					Input.warp_mouse(root.get_viewport().get_screen_transform() * Vector2(120, 120))
-					await process_frame
-					var motion := InputEventMouseMotion.new()
-					motion.position = hover_point
-					motion.global_position = hover_point
-					motion.relative = hover_point - Vector2(120, 120)
-					root.get_viewport().push_input(motion, true)
-					Input.warp_mouse(root.get_viewport().get_screen_transform() * hover_point)
+					# Desktop focus varies between capture runs. Exercise the same
+					# connected hover signal deterministically for geometry review.
+					command_button.mouse_entered.emit()
 					tooltip_target_found = true
 					break
 			if tooltip_target_found:
@@ -354,6 +348,7 @@ func _run() -> void:
 		map_click.position = instance.hud._minimap.size * Vector2(0.35, 0.65)
 		if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
 			var map_position: Vector2 = instance.hud._minimap.get_global_transform() * map_click.position
+			Input.warp_mouse(root.get_viewport().get_screen_transform() * map_position)
 			for down in [true, false]:
 				var pointer := InputEventMouseButton.new()
 				pointer.button_index = MOUSE_BUTTON_LEFT
