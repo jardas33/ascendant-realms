@@ -133,6 +133,15 @@ func _run() -> void:
 				validation_errors.append("top_age_objective_overlap")
 			if hud._objective_panel.get_global_rect().intersects(hud._menu_button.get_global_rect()):
 				validation_errors.append("top_objective_menu_overlap")
+			for instrument in [hud._top_panel, hud._force_panel]:
+				var metric_titles: Array[Node] = instrument.find_children("TopMetricTitle", "Label", true, false)
+				if metric_titles.size() != 4:
+					validation_errors.append("top_metric_title_count:%d_expected_4" % metric_titles.size())
+				for metric_title in metric_titles:
+					var title_label := metric_title as Label
+					var measured_width: float = title_label.get_theme_font("font").get_string_size(title_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_label.get_theme_font_size("font_size")).x
+					if measured_width > title_label.size.x + 1.0:
+						validation_errors.append("top_metric_title_clipped:" + title_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
 			if hud._sel_panel.get_global_rect().intersects(hud._cmd_panel.get_global_rect()):
@@ -258,9 +267,20 @@ func _run() -> void:
 				if not card_by_title.has(title):
 					validation_errors.append("missing_command_button:" + title)
 			if validation_errors.is_empty():
-				card_by_title["Attack Move"].pressed.emit()
+				if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+					var attack_center: Vector2 = card_by_title["Attack Move"].get_global_rect().get_center()
+					for down in [true, false]:
+						var click := InputEventMouseButton.new()
+						click.button_index = MOUSE_BUTTON_LEFT
+						click.pressed = down
+						click.position = attack_center
+						click.global_position = attack_center
+						root.get_viewport().push_input(click, true)
+						await process_frame
+				else:
+					card_by_title["Attack Move"].pressed.emit()
 				if not instance.rts._attack_move_mode:
-					validation_errors.append("attack_move_button_did_not_activate")
+					validation_errors.append("attack_move_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "attack_move_button_did_not_activate")
 				card_by_title["Stop"].pressed.emit()
 				if instance.rts._attack_move_mode:
 					validation_errors.append("stop_button_did_not_cancel_attack_move")

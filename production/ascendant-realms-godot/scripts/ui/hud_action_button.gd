@@ -41,6 +41,61 @@ func _draw() -> void:
 		outline.append(menu_shape[0])
 		draw_polyline(outline, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.43), 1.2, true)
 		return
+	if command_kind == "ORDER":
+		# The order rack supplies the perimeter. These controls read as engraved
+		# slots with a distinct active edge, not four stacked mini panels.
+		var order_shape := PackedVector2Array([
+			Vector2(0, 5), Vector2(5, 0), Vector2(w - 9, 0),
+			Vector2(w, 9), Vector2(w, h - 5), Vector2(w - 5, h),
+			Vector2(5, h), Vector2(0, h - 5)])
+		var order_base := Color(0.07, 0.081, 0.080, 0.80) if enabled else Color(0.048, 0.053, 0.052, 0.64)
+		draw_colored_polygon(order_shape, order_base)
+		draw_polygon(PackedVector2Array([
+			Vector2(1, 5), Vector2(54, 1), Vector2(54, h - 1), Vector2(1, h - 5)]), PackedColorArray([
+			Color(metal.r, metal.g, metal.b, 0.13),
+			Color(metal.r, metal.g, metal.b, 0.06),
+			Color(metal.r, metal.g, metal.b, 0.025),
+			Color(metal.r, metal.g, metal.b, 0.08)]))
+		draw_line(Vector2(55, 5), Vector2(55, h - 5), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
+		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
+		if lit or active:
+			var lit_outline := PackedVector2Array(order_shape)
+			lit_outline.append(order_shape[0])
+			draw_polyline(lit_outline, Color(metal.r, metal.g, metal.b, 0.65 if lit else 0.50), 1.2, true)
+		draw_line(Vector2(1, 7), Vector2(1, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else 0.34), 2.5, true)
+		return
+	if command_kind in ["BUILD", "TRAIN", "RESEARCH"]:
+		# Production rows belong to one deck. Only their family spine, exposed
+		# metal lips and live hover state compete with the painted action art.
+		var row_shape := PackedVector2Array([
+			Vector2(0, 8), Vector2(8, 0), Vector2(w - 12, 0),
+			Vector2(w, 12), Vector2(w, h - 7), Vector2(w - 7, h),
+			Vector2(6, h), Vector2(0, h - 6)])
+		var tint := Color(0.058, 0.078, 0.073, 0.93)
+		if command_kind == "RESEARCH":
+			tint = Color(0.051, 0.070, 0.080, 0.94)
+		elif command_kind == "TRAIN":
+			tint = Color(0.074, 0.071, 0.063, 0.94)
+		if not enabled:
+			tint = tint.darkened(0.22)
+			tint.a = 0.77
+		draw_colored_polygon(row_shape, tint)
+		draw_polygon(PackedVector2Array([
+			Vector2(6, 1), Vector2(w - 13, 1), Vector2(w - 7, 7), Vector2(5, 7)]), PackedColorArray([
+			Color(metal.r, metal.g, metal.b, 0.23),
+			Color(metal.r, metal.g, metal.b, 0.17),
+			Color(metal.r, metal.g, metal.b, 0.04),
+			Color(metal.r, metal.g, metal.b, 0.07)]))
+		draw_colored_polygon(PackedVector2Array([
+			Vector2(0, 8), Vector2(4, 4), Vector2(4, h - 5), Vector2(0, h - 8)]),
+			Color(metal.r, metal.g, metal.b, 0.72 if lit else (0.50 if enabled else 0.20)))
+		draw_line(Vector2(8, h - 1), Vector2(w - 8, h - 1), Color(metal.r, metal.g, metal.b, 0.31 if enabled else 0.12), 1.2, true)
+		draw_line(Vector2(w - 12, 1), Vector2(w - 1, 12), Color(metal.r, metal.g, metal.b, 0.35 if enabled else 0.12), 1.0, true)
+		if lit or active:
+			var lit_outline := PackedVector2Array(row_shape)
+			lit_outline.append(row_shape[0])
+			draw_polyline(lit_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
+		return
 	# A faceted silhouette and raised rail turn flat rows into tactile controls.
 	var cut := 9.0 if command_kind == "ABILITY" else 6.0
 	var silhouette := PackedVector2Array([

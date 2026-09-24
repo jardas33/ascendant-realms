@@ -15,6 +15,8 @@ const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
+const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
+const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
@@ -219,10 +221,10 @@ func _fit_to_viewport() -> void:
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
 		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(390, 78)
+		_top_panel.size = Vector2(410, 70)
 	if is_instance_valid(_force_panel):
 		_force_panel.position = Vector2(440, 8)
-		_force_panel.size = Vector2(500, 78)
+		_force_panel.size = Vector2(520, 70)
 	if is_instance_valid(_age_panel):
 		_age_panel.position = Vector2(maxf(980.0, viewport_size.x * 0.53 - 76.0), 8)
 		_age_panel.size = Vector2(152, 78)
@@ -789,12 +791,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
 		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 16, title_color)
+		var title_label := _mk_label(title, 18 if command_kind in ["ABILITY", "ORDER"] else 16, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(detail_text, 12, detail_color)
+		var detail_label := _mk_label(detail_text, 14 if command_kind == "ABILITY" else 12, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -885,9 +887,25 @@ func _mk_command_grid() -> GridContainer:
 	return grid
 
 
+func _add_field_order_grid() -> GridContainer:
+	var rack: PanelContainer = HUD_COMMAND_RACK_SCRIPT.new()
+	rack.name = "FieldOrderRack"
+	rack.mouse_filter = Control.MOUSE_FILTER_PASS
+	var inset := StyleBoxFlat.new()
+	inset.bg_color = Color.TRANSPARENT
+	inset.set_content_margin_all(4)
+	rack.add_theme_stylebox_override("panel", inset)
+	_cmd_body.add_child(rack)
+	var grid := _mk_command_grid()
+	grid.add_theme_constant_override("h_separation", 3)
+	grid.add_theme_constant_override("v_separation", 3)
+	rack.add_child(grid)
+	return grid
+
+
 func _add_command_section(title: String, hint: String = "") -> void:
 	var row := HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 26)
+	row.custom_minimum_size = Vector2(0, 30)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -896,16 +914,16 @@ func _add_command_section(title: String, hint: String = "") -> void:
 	rule.color = Color(COMMAND_GOLD.r, COMMAND_GOLD.g, COMMAND_GOLD.b, 0.55)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(rule)
-	var title_label := _mk_label(title.to_upper(), 13, COMMAND_GOLD)
-	title_label.custom_minimum_size = Vector2(132, 20)
+	var title_label := _mk_label(title.to_upper(), 16, COMMAND_GOLD)
+	title_label.custom_minimum_size = Vector2(132, 24)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title_label)
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
 	if not hint.is_empty():
-		var hint_label := _mk_label(hint, 11, Color(0.75, 0.77, 0.74))
-		hint_label.custom_minimum_size = Vector2(150, 20)
+		var hint_label := _mk_label(hint, 13, Color(0.75, 0.77, 0.74))
+		hint_label.custom_minimum_size = Vector2(150, 24)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
@@ -915,16 +933,17 @@ func _add_command_section(title: String, hint: String = "") -> void:
 # ---------------------------------------------------------------------------
 # 1. TOP BAR
 # ---------------------------------------------------------------------------
-func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String) -> Dictionary:
-	# Metrics live inside a family ribbon rather than reading as independent
-	# telemetry cards. The value row contract is retained so all authoritative
-	# refresh handlers remain unchanged.
+func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String, instrument: bool = true) -> Dictionary:
+	# The value row contract is retained so authoritative refresh handlers do
+	# not change as the individual visual instruments replace the group slabs.
 	var surface := VBoxContainer.new()
-	surface.custom_minimum_size = Vector2(width, 46)
+	surface.custom_minimum_size = Vector2(width - 10.0 if instrument else width, 46)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	var title_label := _mk_label(title.to_upper(), 16 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	if instrument:
+		title_label.name = "TopMetricTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -932,9 +951,24 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	value_row.custom_minimum_size = Vector2(0, 26)
+	value_row.custom_minimum_size = Vector2(0, 32 if instrument else 26)
 	surface.add_child(value_row)
-	return {"surface": surface, "value_row": value_row}
+	if not instrument:
+		return {"surface": surface, "value_row": value_row}
+	var plate: PanelContainer = HUD_TOP_METRIC_SCRIPT.new()
+	plate.accent = accent
+	plate.custom_minimum_size = Vector2(width, 68)
+	plate.tooltip_text = tooltip
+	plate.mouse_filter = Control.MOUSE_FILTER_STOP
+	var inset := StyleBoxFlat.new()
+	inset.bg_color = Color.TRANSPARENT
+	inset.content_margin_left = 5.0
+	inset.content_margin_right = 4.0
+	inset.content_margin_top = 8.0
+	inset.content_margin_bottom = 3.0
+	plate.add_theme_stylebox_override("panel", inset)
+	plate.add_child(surface)
+	return {"surface": plate, "value_row": value_row}
 
 
 func _top_group(title: String, accent: Color, width: float) -> Dictionary:
@@ -960,12 +994,17 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 
 
 func _build_top_bar() -> void:
-	# Four separately forged instruments leave the sky and battlefield open.
+	# The top readings are independent instruments rather than one black ribbon.
 	# Their spacing is resolved against the actual viewport in _fit_to_viewport.
 	var panel := _mk_hud_panel("economy", COMMAND_GOLD)
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
-	panel.custom_minimum_size = Vector2(388, 78)
+	panel.embedded = true
+	var rack_inset := StyleBoxFlat.new()
+	rack_inset.bg_color = Color.TRANSPARENT
+	rack_inset.set_content_margin_all(0)
+	panel.add_theme_stylebox_override("panel", rack_inset)
+	panel.custom_minimum_size = Vector2(410, 70)
 	add_child(panel)
 
 	var resource_accents := {
@@ -974,29 +1013,35 @@ func _build_top_bar() -> void:
 		"stone": Color(0.63, 0.72, 0.78),
 		"gold": Color(0.98, 0.86, 0.42),
 	}
-	var economy := _top_group("ECONOMY", COMMAND_GOLD, 370.0)
-	var economy_metrics: HBoxContainer = economy["metrics"]
+	var economy_metrics := HBoxContainer.new()
+	economy_metrics.add_theme_constant_override("separation", 7)
+	economy_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
+	economy_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 88.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 94.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
 		cell.add_child(_mk_icon(RES_ICONS[k], 25))
 		var l := _mk_label("0", 30, FONT_COLOR)
-		l.custom_minimum_size = Vector2(64, 0)
+		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
 		cell.add_child(l)
 		economy_metrics.add_child(metric["surface"])
-	panel.add_child(economy["group"])
+	panel.add_child(economy_metrics)
 
 	_force_panel = _mk_hud_panel("force", COMMAND_SKY)
 	_force_panel.name = "ForceInstrument"
-	_force_panel.custom_minimum_size = Vector2(500, 78)
+	_force_panel.embedded = true
+	_force_panel.add_theme_stylebox_override("panel", rack_inset)
+	_force_panel.custom_minimum_size = Vector2(520, 70)
 	add_child(_force_panel)
 
-	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 480.0)
-	var force_metrics: HBoxContainer = force["metrics"]
+	var force_metrics := HBoxContainer.new()
+	force_metrics.add_theme_constant_override("separation", 6)
+	force_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
+	force_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 110.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 125.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
 	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 21))
 	_pop_label = _mk_label("0/0", 28)
@@ -1021,7 +1066,7 @@ func _build_top_bar() -> void:
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 122.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 142.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
 	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 21))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
@@ -1032,7 +1077,7 @@ func _build_top_bar() -> void:
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 122.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 125.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
 	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 21))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
@@ -1040,7 +1085,7 @@ func _build_top_bar() -> void:
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
 	force_metrics.add_child(army_metric["surface"])
-	_force_panel.add_child(force["group"])
+	_force_panel.add_child(force_metrics)
 
 	_age_panel = _mk_hud_panel("age", COMMAND_GOLD)
 	_age_panel.name = "AgeMedallion"
@@ -1049,7 +1094,7 @@ func _build_top_bar() -> void:
 	# Progression is a separate medallion rather than another telemetry column.
 	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 132.0)
 	var progression_metrics: HBoxContainer = progression["metrics"]
-	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age")
+	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age", false)
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
 	_tier_label = _mk_label("Age I", 29, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(122, 0)
@@ -2661,28 +2706,38 @@ func _add_command_context(single, selection: Array) -> void:
 	var header := PanelContainer.new()
 	header.name = "CommandDeckHeader"
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.custom_minimum_size = Vector2(0, 43)
+	header.custom_minimum_size = Vector2(0, 51)
 	var header_style := StyleBoxFlat.new()
 	header_style.bg_color = Color(0.035, 0.05, 0.055, 0.31)
 	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.40)
 	header_style.border_width_bottom = 1
 	header_style.content_margin_left = 2
 	header_style.content_margin_right = 3
-	header_style.content_margin_top = 3
-	header_style.content_margin_bottom = 4
+	header_style.content_margin_top = 5
+	header_style.content_margin_bottom = 5
 	header.add_theme_stylebox_override("panel", header_style)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var marker := _mk_command_badge(_command_glyph(role), accent, 25.0)
-	marker.custom_minimum_size = Vector2(25, 25)
-	row.add_child(marker)
+	if is_instance_valid(_commander) and str(_commander.race) == "barrosan" and ResourceLoader.exists(BARROSAN_COMMAND_CREST):
+		var crest := TextureRect.new()
+		crest.name = "CommandFactionCrest"
+		crest.texture = load(BARROSAN_COMMAND_CREST)
+		crest.custom_minimum_size = Vector2(34, 34)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(crest)
+	else:
+		var marker := _mk_command_badge(_command_glyph(role), accent, 25.0)
+		marker.custom_minimum_size = Vector2(25, 25)
+		row.add_child(marker)
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 0)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(_mk_title_label(title, 17, FONT_COLOR))
-	info.add_child(_mk_label(subtitle, 11, Color(0.76, 0.79, 0.77)))
+	info.add_child(_mk_title_label(title, 20, FONT_COLOR))
+	info.add_child(_mk_label(subtitle, 13, Color(0.76, 0.79, 0.77)))
 	row.add_child(info)
 	var role_badge := _mk_command_badge(role, accent, 59.0)
 	role_badge.custom_minimum_size = Vector2(59, 22)
@@ -2784,8 +2839,7 @@ func _build_hero_command_card(u) -> void:
 			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})
 
 	_add_command_section("Orders", "Move · attack")
-	var order_grid := _mk_command_grid()
-	_cmd_body.add_child(order_grid)
+	var order_grid := _add_field_order_grid()
 	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
 	_add_military_command_button(order_grid, "Stop", "Stop current orders.", "Stop: clear the selected hero's current orders.", "stop")
 	_add_military_command_button(order_grid, "Hold", "Hold this position.", "Hold: keep the selected hero here while retaining current combat behavior.", "hold")
@@ -2794,8 +2848,7 @@ func _build_hero_command_card(u) -> void:
 
 func _build_military_card() -> void:
 	_add_command_section("Commands", "Move · attack")
-	var grid := _mk_command_grid()
-	_cmd_body.add_child(grid)
+	var grid := _add_field_order_grid()
 	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
 	_add_military_command_button(grid, "Stop", "Stop current orders.", "Stop: clear the selected units' current orders.", "stop")
 	_add_military_command_button(grid, "Hold", "Hold this position.", "Hold: keep the selected units here while retaining their current combat behavior.", "hold")
