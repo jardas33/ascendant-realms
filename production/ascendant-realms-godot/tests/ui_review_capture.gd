@@ -189,6 +189,23 @@ func _run() -> void:
 							warden_caption = true
 					if not warden_caption:
 						validation_errors.append("lioraen_hero_caption_missing")
+			if selected_kind in ["building", "construction"]:
+				var selected_building_art := ""
+				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						selected_building_art = String(portrait_view.get_active_portrait_path())
+				if selected_kind == "building":
+					var building_race := String(instance.world.commanders[0].race)
+					var expected_building_art := "res://assets/ui/construction_art/astra_r1/clanhold.png" if building_race == "barrosan" else ("res://assets/ui/construction_art/lioraen_r1/groveheart.png" if building_race == "lioraen" else "")
+					if not expected_building_art.is_empty() and selected_building_art != expected_building_art:
+						validation_errors.append("selected_building_art_missing:" + selected_building_art)
+					if not selected_building_art.is_empty():
+						var artwork := hud._sel_panel.find_child("PortraitArtwork", true, false) as Control
+						var portrait_frame := artwork.get_parent() as Control if is_instance_valid(artwork) else null
+						if not is_instance_valid(portrait_frame) or not portrait_frame.get_global_rect().encloses(artwork.get_global_rect()):
+							validation_errors.append("selected_building_art_outside_frame")
+				elif not selected_building_art.is_empty():
+					validation_errors.append("construction_site_art_replaced_live_stage")
 			var expected_cards: int = 5 if selected_kind == "hero" else (int(root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race).size()) if selected_kind == "worker" else (4 if selected_kind == "military" else 0))
 			var actual_cards := 0
 			var card_kinds: Array[String] = []

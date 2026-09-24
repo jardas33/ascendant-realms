@@ -1999,7 +1999,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 9, COMMAND_GOLD)
 	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_overline)
-	# Actual authored model preview, isolated from the live gameplay node.
+	# Authored UI portrait with an isolated 3D model fallback.
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
@@ -2350,7 +2350,12 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
 		portrait.custom_minimum_size = Vector2(100, 100)
 		identity.add_child(portrait)
-		portrait.configure_entity(b)
+		# Finished structures use the same authored identity as the construction
+		# gallery; unfinished sites keep their live stage preview.
+		if b.is_built:
+			portrait.configure_definition(_building_portrait_definition(b.def, String(b.building_id)))
+		else:
+			portrait.configure_entity(b)
 	else:
 		portrait = _mk_icon(FRAME_PORTRAIT, 96)
 		identity.add_child(portrait)
@@ -2832,6 +2837,15 @@ func _add_context_hints(hints: Array[String]) -> void:
 	_cmd_body.add_child(strip)
 
 
+func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dictionary:
+	var visual_definition := bdef.duplicate()
+	if BARROSAN_BUILD_ART.has(building_id):
+		visual_definition["command_art"] = BARROSAN_BUILD_ART[building_id]
+	elif LIORAEN_BUILD_ART.has(building_id):
+		visual_definition["command_art"] = LIORAEN_BUILD_ART[building_id]
+	return visual_definition
+
+
 func _build_worker_card() -> void:
 	_add_command_section("Build", "Choose a structure.")
 	var grid := _mk_command_grid()
@@ -2853,11 +2867,7 @@ func _build_worker_card() -> void:
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
 			tooltip_detail += "\nProvides: +%d population" % grants_pop
-		var preview_definition := bdef.duplicate()
-		if BARROSAN_BUILD_ART.has(bid):
-			preview_definition["command_art"] = BARROSAN_BUILD_ART[bid]
-		elif LIORAEN_BUILD_ART.has(bid):
-			preview_definition["command_art"] = LIORAEN_BUILD_ART[bid]
+		var preview_definition := _building_portrait_definition(bdef, String(bid))
 		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, tooltip_detail, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)

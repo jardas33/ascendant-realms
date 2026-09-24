@@ -1,8 +1,8 @@
 extends Control
 class_name EntityPortraitView
-## Small visual-only 3D preview used by the selected-entity card.
-## It duplicates the entity's authored model into an isolated SubViewport;
-## no gameplay node, selection state, collision, or simulation object is used.
+## Visual-only portrait for selected entities and command cards. It shows
+## authored UI artwork when supplied, otherwise duplicates the entity's model
+## into an isolated SubViewport without gameplay state or collision.
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
@@ -252,10 +252,9 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 
 func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
 	if is_building:
-		# Construction art is presentation-only. Large selected-building portraits
-		# still render the live authored model, while compact build choices may
-		# show a recognizable illustration of that exact structure.
-		return String(definition.get("command_art", "")) if custom_minimum_size.x < 80.0 else ""
+		# Worker build choices and finished selections may supply identity art.
+		# Unfinished selected sites omit it to show the live construction stage.
+		return String(definition.get("command_art", ""))
 	var portrait_path := String(definition.get("portrait", ""))
 	if portrait_path.is_empty() and not unit_id.is_empty():
 		portrait_path = String(GameData.get_unit(unit_id).get("portrait", ""))
