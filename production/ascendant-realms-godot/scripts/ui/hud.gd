@@ -25,11 +25,12 @@ const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
 const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
-const MINIMAP_SIZE := 220.0 # Compact navigation instrument; battlefield remains primary.
+const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
+const MINIMAP_BACKGROUND_RASTER_SIZE := 224
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
-const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 42.0
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 44.0
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
@@ -1238,10 +1239,10 @@ func _build_minimap() -> void:
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(column)
 	var map_name := str(world.map.get("name", "Battlefield")) if is_instance_valid(world) else "Battlefield"
-	var title := _mk_label(map_name.to_upper(), 12, Color(0.95, 0.85, 0.55))
+	var title := _mk_label(map_name.to_upper(), 14, Color(0.95, 0.85, 0.55))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
-	var hint := _mk_label("FIELD OVERVIEW    ·    CLICK TO PAN", 9, HUD_TEXT_MUTED)
+	var hint := _mk_label("FIELD OVERVIEW    ·    CLICK TO PAN", 11, HUD_TEXT_MUTED)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(hint)
 	_minimap = Control.new()
@@ -1315,7 +1316,7 @@ func _draw_minimap() -> void:
 		if hidden_enemy_objective:
 			continue
 		var col: Color = GameData.TEAM_COLORS.get(team_owner, Color(0.85, 0.85, 0.85)) if team_owner >= 0 else Color(0.85, 0.85, 0.85)
-		var r := 5.0
+		var r := 6.0
 		var diamond := PackedVector2Array([
 			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)])
 		_minimap.draw_colored_polygon(diamond, col.darkened(0.18))
@@ -1365,9 +1366,17 @@ func _draw_minimap() -> void:
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
 		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
-		# The footprint is a quiet navigation cue, not a competing selection box.
+		# The true footprint retains its quiet outline, while short corner sights
+		# make the currently framed region visible over dark explored terrain.
 		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.36), 1.8, false)
 		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, false)
+		for corner_index in 4:
+			var corner: Vector2 = corners[corner_index]
+			var toward_next: Vector2 = (corners[(corner_index + 1) % 4] - corner).normalized() * 11.0
+			var toward_previous: Vector2 = (corners[(corner_index + 3) % 4] - corner).normalized() * 11.0
+			for direction in [toward_next, toward_previous]:
+				_minimap.draw_line(corner, corner + direction, Color(0.02, 0.03, 0.03, 0.88), 3.0, true)
+				_minimap.draw_line(corner, corner + direction, Color(0.98, 0.91, 0.59, 0.90), 1.6, true)
 
 
 func _draw_minimap_visibility(size: Vector2) -> void:
@@ -1437,7 +1446,7 @@ func _draw_minimap_frame(size: Vector2) -> void:
 	_minimap.draw_circle(compass, 1.3, Color(0.04, 0.06, 0.07))
 
 func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_enemy: bool = false) -> void:
-	var radius := 7.0 if is_major else 5.0
+	var radius := 8.0 if is_major else 5.7
 	_minimap.draw_circle(p, radius + 1.8, Color(0.02, 0.03, 0.03, 0.9))
 	var points: PackedVector2Array
 	if is_enemy:
@@ -1460,7 +1469,7 @@ func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_e
 func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero: bool = false) -> void:
 	# Role shapes make the minimap answer "what is there?" without changing the
 	# existing team-color ownership channel or live-unit source.
-	var r := 3.0 if is_worker else (6.0 if is_hero else 4.0)
+	var r := 3.6 if is_worker else (7.2 if is_hero else 4.8)
 	_minimap.draw_circle(p, r + 1.25, Color(0.02, 0.03, 0.03, 0.86))
 	if is_worker:
 		_minimap.draw_circle(p, r, col)
@@ -1483,8 +1492,8 @@ func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero
 		_minimap.draw_polyline(army_points, Color(1, 1, 1, 0.76), 1.0, true)
 
 func _draw_minimap_resource(p: Vector2, col: Color) -> void:
-	_minimap.draw_circle(p, 3.3, Color(0.03, 0.04, 0.04, 0.82))
-	_minimap.draw_circle(p, 2.05, col)
+	_minimap.draw_circle(p, 3.8, Color(0.03, 0.04, 0.04, 0.82))
+	_minimap.draw_circle(p, 2.5, col)
 	_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
 
 
@@ -1547,7 +1556,7 @@ func _ensure_minimap_background() -> void:
 	var cache_key := map_id + ":" + theme_name + ":" + str(shelf_count)
 	if cache_key == _minimap_background_key and is_instance_valid(_minimap_background):
 		return
-	var image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
+	var image := Image.create(MINIMAP_BACKGROUND_RASTER_SIZE, MINIMAP_BACKGROUND_RASTER_SIZE, false, Image.FORMAT_RGBA8)
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
 	var base := _minimap_theme_color(theme_name, false)
@@ -1564,15 +1573,15 @@ func _ensure_minimap_background() -> void:
 	var has_meadow_image: bool = is_instance_valid(meadow_texture)
 	var ground_image: Image = ground_texture.get_image() if has_ground_image else Image.new()
 	var meadow_image: Image = meadow_texture.get_image() if has_meadow_image else Image.new()
-	for y in range(MINIMAP_RASTER_SIZE):
-		for x in range(MINIMAP_RASTER_SIZE):
+	for y in range(MINIMAP_BACKGROUND_RASTER_SIZE):
+		for x in range(MINIMAP_BACKGROUND_RASTER_SIZE):
 			var wp := Vector3(
-				(float(x) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
+				(float(x) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
 				0.0,
-				(float(y) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
+				(float(y) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
 			# A restrained north-to-south grade gives the miniature depth without
 			# inventing random blobs that the player cannot find in the world.
-			var latitude := float(y) / float(MINIMAP_RASTER_SIZE - 1)
+			var latitude := float(y) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1)
 			var col := base.lerp(base.lightened(0.10), 1.0 - absf(latitude - 0.5) * 1.45)
 			# Reuse the same authored ground materials as TerrainBuilder. This is a
 			# one-time cache build, not a live texture load or a second world render.

@@ -324,11 +324,22 @@ func _run() -> void:
 		map_click.button_index = MOUSE_BUTTON_LEFT
 		map_click.pressed = true
 		map_click.position = instance.hud._minimap.size * Vector2(0.35, 0.65)
-		instance.hud._on_minimap_input(map_click)
+		if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+			var map_position: Vector2 = instance.hud._minimap.get_global_transform() * map_click.position
+			for down in [true, false]:
+				var pointer := InputEventMouseButton.new()
+				pointer.button_index = MOUSE_BUTTON_LEFT
+				pointer.pressed = down
+				pointer.position = map_position
+				pointer.global_position = map_position
+				root.get_viewport().push_input(pointer, true)
+				await process_frame
+		else:
+			instance.hud._on_minimap_input(map_click)
 		var expected_focus := Vector2(-42.0, 42.0)
 		var actual_focus := Vector2(instance.rts.cam_pivot.global_position.x, instance.rts.cam_pivot.global_position.z)
 		if actual_focus.distance_to(expected_focus) > 2.0:
-			validation_errors.append("minimap_click_did_not_focus_camera")
+			validation_errors.append("minimap_pointer_did_not_focus_camera" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "minimap_click_did_not_focus_camera")
 		if OS.get_environment("ASCENDANT_UI_ALERT_LIFECYCLE_CHECK") == "1":
 			var dispatches: VBoxContainer = instance.hud._alert_box
 			if dispatches.get_child_count() == 0:
