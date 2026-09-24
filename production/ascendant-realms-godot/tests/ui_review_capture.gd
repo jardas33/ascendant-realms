@@ -329,6 +329,13 @@ func _run() -> void:
 		var actual_focus := Vector2(instance.rts.cam_pivot.global_position.x, instance.rts.cam_pivot.global_position.z)
 		if actual_focus.distance_to(expected_focus) > 2.0:
 			validation_errors.append("minimap_click_did_not_focus_camera")
+		if OS.get_environment("ASCENDANT_UI_ALERT_LIFECYCLE_CHECK") == "1":
+			var dispatches: VBoxContainer = instance.hud._alert_box
+			if dispatches.get_child_count() == 0:
+				validation_errors.append("opening_alert_missing")
+			await create_timer(4.2).timeout
+			if dispatches.get_child_count() != 0:
+				validation_errors.append("opening_alert_did_not_clear")
 		print("UI_FUNCTIONAL ", "PASS" if validation_errors.is_empty() else "FAIL", " ", validation_errors)
 	instance.queue_free()
 	for index in 2:

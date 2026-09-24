@@ -17,6 +17,7 @@ const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
 const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
 const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
+const HUD_ALERT_DISPATCH_SCRIPT := preload("res://scripts/ui/hud_alert_dispatch.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
@@ -3186,9 +3187,9 @@ func _show_command_feedback(message: String, col: Color) -> void:
 func _build_alert_feed() -> void:
 	_alert_box = VBoxContainer.new()
 	_alert_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_alert_box.offset_left = -360
-	_alert_box.offset_right = -14
-	_alert_box.offset_top = 94
+	_alert_box.offset_left = -424
+	_alert_box.offset_right = -106
+	_alert_box.offset_top = 108
 	_alert_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_alert_box.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_alert_box.add_theme_constant_override("separation", 4)
@@ -3217,19 +3218,33 @@ func _push_alert(message: String, col: Color) -> void:
 		var oldest := _alert_box.get_child(0)
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
-	var l := _mk_label(message, 17, col)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var dispatch: PanelContainer = HUD_ALERT_DISPATCH_SCRIPT.new()
+	dispatch.accent = col
+	dispatch.custom_minimum_size = Vector2(318, 60)
+	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var padding := StyleBoxFlat.new()
+	padding.bg_color = Color.TRANSPARENT
+	padding.content_margin_left = 20.0
+	padding.content_margin_right = 11.0
+	padding.content_margin_top = 8.0
+	padding.content_margin_bottom = 9.0
+	dispatch.add_theme_stylebox_override("panel", padding)
+	var l := _mk_label(message, 16, col)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(340, 28)
+	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	l.custom_minimum_size = Vector2(280, 42)
 	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
-	l.add_theme_constant_override("outline_size", 5)
-	_alert_box.add_child(l)
-	var tw := l.create_tween()
+	l.add_theme_constant_override("outline_size", 2)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dispatch.add_child(l)
+	_alert_box.add_child(dispatch)
+	var tw := dispatch.create_tween()
 	tw.tween_interval(3.2)
-	tw.tween_property(l, "modulate:a", 0.0, 0.8)
+	tw.tween_property(dispatch, "modulate:a", 0.0, 0.8)
 	tw.tween_callback(func():
-		if is_instance_valid(l):
-			l.queue_free())
+		if is_instance_valid(dispatch):
+			dispatch.queue_free())
 
 
 # ---------------------------------------------------------------------------
