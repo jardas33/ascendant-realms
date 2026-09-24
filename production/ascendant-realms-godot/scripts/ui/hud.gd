@@ -18,6 +18,7 @@ const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
 const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
 const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
 const HUD_ALERT_DISPATCH_SCRIPT := preload("res://scripts/ui/hud_alert_dispatch.gd")
+const HUD_COMMAND_TOOLTIP_SCRIPT := preload("res://scripts/ui/hud_command_tooltip.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
@@ -2580,17 +2581,17 @@ func _build_command_panel() -> void:
 	scroll.add_child(_cmd_body)
 	_cmd_panel.visible = false
 
-	_command_tooltip = PanelContainer.new()
+	_command_tooltip = HUD_COMMAND_TOOLTIP_SCRIPT.new()
 	_command_tooltip.name = "CommandTooltip"
 	_command_tooltip.visible = false
 	_command_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_command_tooltip.custom_minimum_size = Vector2(270, 0)
-	var tooltip_style := _hud_stylebox()
-	tooltip_style.bg_color = Color(0.035, 0.045, 0.06, 0.985)
-	tooltip_style.border_color = Color(0.88, 0.72, 0.36, 0.98)
-	tooltip_style.set_border_width_all(2)
-	tooltip_style.set_corner_radius_all(7)
-	tooltip_style.set_content_margin_all(10)
+	_command_tooltip.custom_minimum_size = Vector2(380, 0)
+	var tooltip_style := StyleBoxFlat.new()
+	tooltip_style.bg_color = Color.TRANSPARENT
+	tooltip_style.content_margin_left = 15.0
+	tooltip_style.content_margin_right = 15.0
+	tooltip_style.content_margin_top = 13.0
+	tooltip_style.content_margin_bottom = 12.0
 	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
 	add_child(_command_tooltip)
 
@@ -2607,20 +2608,23 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel):
 		return
 	_clear_children(_command_tooltip)
+	_command_tooltip.set("accent", accent)
+	_command_tooltip.queue_redraw()
 	var stack := VBoxContainer.new()
-	stack.add_theme_constant_override("separation", 5)
+	stack.add_theme_constant_override("separation", 8)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 7)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tooltip_title := _mk_label(title, 13, FONT_COLOR)
-	tooltip_title.custom_minimum_size = Vector2(124, 20)
+	var tooltip_title := _mk_title_label(title, 20, FONT_COLOR)
+	tooltip_title.custom_minimum_size = Vector2(144, 28)
 	tooltip_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(tooltip_title)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(spacer)
-	header.add_child(_mk_command_badge(kind, accent, 64.0))
+	var kind_label := _mk_label(kind, 14, accent)
+	kind_label.custom_minimum_size = Vector2(78, 25)
+	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	kind_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(kind_label)
 	if not hotkey.is_empty():
 		header.add_child(_mk_command_keycap(hotkey, accent))
 	stack.add_child(header)
@@ -2628,12 +2632,16 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	rule.modulate = Color(accent.r, accent.g, accent.b, 0.72)
 	stack.add_child(rule)
 	var body_text := tooltip.strip_edges()
+	var first_line := body_text.get_slice("\n", 0).strip_edges()
+	if first_line.to_lower() == title.to_lower():
+		body_text = body_text.substr(first_line.length()).strip_edges()
 	if not disabled_reason.is_empty():
 		body_text += "\nUnavailable: " + disabled_reason
-	var body := _mk_label(body_text, 11, Color(0.88, 0.87, 0.8))
+	var body := _mk_label(body_text, 16, Color(0.91, 0.90, 0.84))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	body.custom_minimum_size = Vector2(244, 0)
+	body.custom_minimum_size = Vector2(348, 0)
+	body.add_theme_constant_override("line_spacing", 3)
 	stack.add_child(body)
 	_command_tooltip.add_child(stack)
 	_command_tooltip.reset_size()

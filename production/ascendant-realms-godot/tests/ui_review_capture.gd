@@ -98,6 +98,29 @@ func _run() -> void:
 		for sample in 12:
 			instance.world._refresh_player_visibility_overlay()
 		print("UI_FOG_REBUILD_MS ", float(Time.get_ticks_usec() - fog_start) / 12000.0)
+	var tooltip_target_found := false
+	if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
+		var wanted_title := OS.get_environment("ASCENDANT_UI_TOOLTIP_TITLE")
+		if wanted_title.is_empty():
+			wanted_title = "Rallying Cry"
+		for command_button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
+			for command_label in command_button.find_children("*", "Label", true, false):
+				if command_label.text == wanted_title:
+					var hover_point: Vector2 = command_button.get_global_rect().get_center()
+					Input.warp_mouse(root.get_viewport().get_screen_transform() * Vector2(120, 120))
+					await process_frame
+					var motion := InputEventMouseMotion.new()
+					motion.position = hover_point
+					motion.global_position = hover_point
+					motion.relative = hover_point - Vector2(120, 120)
+					root.get_viewport().push_input(motion, true)
+					Input.warp_mouse(root.get_viewport().get_screen_transform() * hover_point)
+					tooltip_target_found = true
+					break
+			if tooltip_target_found:
+				break
+		for index in 2:
+			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
@@ -119,6 +142,11 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
+				if not tooltip_target_found or not instance.hud._command_tooltip.visible:
+					validation_errors.append("command_tooltip_hover_missing")
+				elif not safe_rect.encloses(instance.hud._command_tooltip.get_global_rect()):
+					validation_errors.append("command_tooltip_outside_viewport")
 			for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 				if is_instance_valid(panel) and panel.visible and not safe_rect.encloses(panel.get_global_rect()):
 					validation_errors.append("panel_outside_viewport:" + panel.name)
