@@ -25,6 +25,11 @@ const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_prog
 const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
 const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
+const LIORAEN_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+const COMMAND_CRESTS := {
+	"barrosan": BARROSAN_COMMAND_CREST,
+	"lioraen": LIORAEN_COMMAND_CREST,
+}
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
@@ -1167,9 +1172,11 @@ func _build_top_bar() -> void:
 	var map_name := str(MapDefs.get_map(map_id).get("name", map_id)).strip_edges()
 	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
 	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
+	var objective_crest_path := String(COMMAND_CRESTS.get(player_race, ""))
+	var objective_has_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
-	_objective_panel.set("objective_has_crest", player_race == "barrosan")
+	_objective_panel.set("objective_has_crest", objective_has_crest)
 	_objective_panel.custom_minimum_size = Vector2(360, 92)
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	var objective_inset := StyleBoxFlat.new()
@@ -1184,10 +1191,10 @@ func _build_top_bar() -> void:
 	mission_row.add_theme_constant_override("separation", 9)
 	mission_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_objective_panel.add_child(mission_row)
-	if player_race == "barrosan":
+	if objective_has_crest:
 		var campaign_crest := TextureRect.new()
 		campaign_crest.name = "MatchFactionCrest"
-		campaign_crest.texture = preload("res://assets/ui/barrosan_command_crest_i2.png")
+		campaign_crest.texture = load(objective_crest_path)
 		campaign_crest.custom_minimum_size = Vector2(61, 69)
 		campaign_crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		campaign_crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -2788,10 +2795,11 @@ func _add_command_context(single, selection: Array) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if is_instance_valid(_commander) and str(_commander.race) == "barrosan" and ResourceLoader.exists(BARROSAN_COMMAND_CREST):
+	var command_crest_path := String(COMMAND_CRESTS.get(str(_commander.race), "")) if is_instance_valid(_commander) else ""
+	if not command_crest_path.is_empty() and ResourceLoader.exists(command_crest_path):
 		var crest := TextureRect.new()
 		crest.name = "CommandFactionCrest"
-		crest.texture = load(BARROSAN_COMMAND_CREST)
+		crest.texture = load(command_crest_path)
 		crest.custom_minimum_size = Vector2(34, 34)
 		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

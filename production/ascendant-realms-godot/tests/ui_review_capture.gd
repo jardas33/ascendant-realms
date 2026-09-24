@@ -169,6 +169,17 @@ func _run() -> void:
 						validation_errors.append("top_metric_title_clipped:" + title_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
+			if player_race in ["barrosan", "lioraen"]:
+				var expected_crest_path := "res://assets/ui/barrosan_command_crest_i2.png" if player_race == "barrosan" else "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+				var match_crest := hud.find_child("MatchFactionCrest", true, false) as TextureRect
+				if not is_instance_valid(match_crest) or not is_instance_valid(match_crest.texture) or match_crest.texture.resource_path != expected_crest_path:
+					validation_errors.append("match_faction_crest_missing:" + player_race)
+				elif not hud._objective_panel.get_global_rect().encloses(match_crest.get_global_rect()):
+					validation_errors.append("match_faction_crest_outside_plaque")
+				if OS.get_environment("ASCENDANT_UI_SELECT") in ["hero", "worker", "military"]:
+					var command_crest := hud._cmd_panel.find_child("CommandFactionCrest", true, false) as TextureRect
+					if not is_instance_valid(command_crest) or not is_instance_valid(command_crest.texture) or command_crest.texture.resource_path != expected_crest_path:
+						validation_errors.append("command_faction_crest_missing:" + player_race)
 			if hud._sel_panel.get_global_rect().intersects(hud._cmd_panel.get_global_rect()):
 				validation_errors.append("selection_command_overlap")
 			if hud._minimap_panel.get_global_rect().intersects(hud._sel_panel.get_global_rect()):
