@@ -1619,7 +1619,7 @@ func _ensure_minimap_background() -> void:
 		if start is Vector3:
 			paths.append([start, Vector3.ZERO])
 	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
-	var road_color := Color(0.52, 0.40, 0.25) if theme_name == "highland" else base.lightened(0.19)
+	var road_color := Color(0.60, 0.45, 0.27) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
 	var snow_texture: Texture2D = load(MINIMAP_SNOW_TEXTURE) as Texture2D if theme_name == "snow" else null
@@ -1647,13 +1647,15 @@ func _ensure_minimap_background() -> void:
 				var ground_sample: Color = ground_image.get_pixel(tx, tz)
 				if has_meadow_image:
 					var meadow_sample: Color = meadow_image.get_pixel(posmod(tx, meadow_image.get_width()), posmod(tz, meadow_image.get_height()))
-					ground_sample = ground_sample.lerp(meadow_sample, 0.36)
+					ground_sample = ground_sample.lerp(meadow_sample, 0.52 if theme_name == "highland" else 0.36)
 				var texture_luma := (ground_sample.r + ground_sample.g + ground_sample.b) / 3.0
 				# The world shader grades this texture per biome. Keep its hue only
 				# for the highlands; on snow, ash and desert it supplies detail, not
 				# an unrelated green cast over the battlefield's actual palette.
 				if theme_name == "highland":
-					col = col.lerp(ground_sample, 0.48)
+					# The world reads as a living meadow at battle zoom. Keep that
+					# authored color in its survey rather than flattening it to olive.
+					col = col.lerp(ground_sample, 0.58)
 				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
 			if has_snow_image:
 				var snow_sample := snow_image.get_pixel(
@@ -1663,9 +1665,12 @@ func _ensure_minimap_background() -> void:
 			var nearest_path := 1000.0
 			for path in paths:
 				nearest_path = minf(nearest_path, _minimap_segment_distance(wp, path[0], path[1]))
+			if theme_name == "highland" and nearest_path < 15.0:
+				var road_shoulder := 1.0 - smoothstep(10.5, 15.0, nearest_path)
+				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.26)
 			if nearest_path < 12.5:
 				var road_weight := 1.0 - smoothstep(7.0, 12.5, nearest_path)
-				col = col.lerp(road_color, road_weight * 0.70)
+				col = col.lerp(road_color, road_weight * (0.82 if theme_name == "highland" else 0.70))
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1716,9 +1721,9 @@ func _paint_minimap_decor(image: Image, theme_name: String) -> void:
 		var center := Vector2(
 			(position_3d.x + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1),
 			(position_3d.z + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1))
-		var radius := 3.6 if is_tree else 2.3
+		var radius := (4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3
 		var mark_color: Color = forest_color if is_tree else stone_color
-		var strength := 0.62 if is_tree else 0.43
+		var strength := (0.69 if theme_name == "highland" else 0.62) if is_tree else 0.43
 		for py in range(maxi(0, int(floor(center.y - radius - 1.0))), mini(image.get_height(), int(ceil(center.y + radius + 1.0)))):
 			for px in range(maxi(0, int(floor(center.x - radius - 1.0))), mini(image.get_width(), int(ceil(center.x + radius + 1.0)))):
 				var distance := Vector2(float(px), float(py)).distance_to(center)
