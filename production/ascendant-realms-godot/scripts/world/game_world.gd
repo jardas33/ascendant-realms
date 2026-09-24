@@ -14,6 +14,7 @@ const VISIBILITY_UNEXPLORED := 0
 const VISIBILITY_EXPLORED_NOT_VISIBLE := 1
 const VISIBILITY_CURRENTLY_VISIBLE := 2
 const VISIBILITY_CELL_SIZE := 4.0
+const VISIBILITY_VISUAL_CELL_STRIDE := 2
 const VISIBILITY_UPDATE_INTERVAL := 0.2
 const RESOURCE_GATHER_INTERACTION_RADIUS := 2.2
 const RESOURCE_CORE_ROUTE_MARGIN := 0.12
@@ -100,6 +101,10 @@ var _visibility_rows := 0
 var _visibility_timer := 0.0
 var _visibility_overlay: MeshInstance3D
 var _visibility_overlay_material: StandardMaterial3D
+var _visibility_overlay_image: Image
+var _visibility_overlay_texture: ImageTexture
+var _visibility_visual_columns := 0
+var _visibility_visual_rows := 0
 
 var _theme := {}
 
@@ -227,14 +232,22 @@ func _setup_player_visibility() -> void:
 	_visibility_overlay_material = StandardMaterial3D.new()
 	_visibility_overlay_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_visibility_overlay_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_visibility_overlay_material.vertex_color_use_as_albedo = true
 	_visibility_overlay_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_visibility_overlay_material.no_depth_test = true
 	_visibility_overlay_material.render_priority = 1
+	_visibility_overlay_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+	_visibility_visual_columns = maxi(1, int(ceil(float(_visibility_columns) / float(VISIBILITY_VISUAL_CELL_STRIDE))))
+	_visibility_visual_rows = maxi(1, int(ceil(float(_visibility_rows) / float(VISIBILITY_VISUAL_CELL_STRIDE))))
+	_visibility_overlay_image = Image.create(_visibility_visual_columns, _visibility_visual_rows, false, Image.FORMAT_RGBA8)
+	_visibility_overlay_texture = ImageTexture.create_from_image(_visibility_overlay_image)
+	_visibility_overlay_material.albedo_texture = _visibility_overlay_texture
 	_visibility_overlay = MeshInstance3D.new()
 	_visibility_overlay.name = "PlayerVisibilityOverlay"
 	_visibility_overlay.material_override = _visibility_overlay_material
-	_visibility_overlay.position.y = 0.12
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(playable_max.x - playable_min.x, playable_max.z - playable_min.z)
+	_visibility_overlay.mesh = plane
+	_visibility_overlay.position = Vector3((playable_min.x + playable_max.x) * 0.5, 0.12, (playable_min.z + playable_max.z) * 0.5)
 	add_child(_visibility_overlay)
 	_refresh_player_visibility_overlay()
 
@@ -308,52 +321,27 @@ func _update_player_visibility() -> void:
 func _visibility_cell_color(state: int) -> Color:
 	match state:
 		VISIBILITY_UNEXPLORED:
-			return Color(0.035, 0.050, 0.075, 0.78)
+			return Color(0.025, 0.035, 0.045, 0.70)
 		VISIBILITY_EXPLORED_NOT_VISIBLE:
-			return Color(0.060, 0.080, 0.105, 0.38)
+			return Color(0.050, 0.065, 0.075, 0.34)
 		_:
 			return Color(0.0, 0.0, 0.0, 0.0)
 
-func _visibility_corner_color(row: int, column: int, corner_x: int, corner_z: int) -> Color:
-	# Sample the four cells touching this mesh corner so neighboring states meet
-	# continuously instead of exposing the implementation grid as a hard seam.
-	var color := Color(0.0, 0.0, 0.0, 0.0)
-	for sample_row in range(row + corner_z - 1, row + corner_z + 1):
-		for sample_column in range(column + corner_x - 1, column + corner_x + 1):
-			var safe_row := clampi(sample_row, 0, _visibility_rows - 1)
-			var safe_column := clampi(sample_column, 0, _visibility_columns - 1)
-			color += _visibility_cell_color(int(_visibility_states[safe_row * _visibility_columns + safe_column]))
-	return color * 0.25
-
 func _refresh_player_visibility_overlay() -> void:
-	if not is_instance_valid(_visibility_overlay):
+	if not is_instance_valid(_visibility_overlay) or _visibility_overlay_texture == null:
 		return
-	var vertices := PackedVector3Array()
-	var colors := PackedColorArray()
-	var indices := PackedInt32Array()
-	var vertex_index := 0
-	for row in _visibility_rows:
-		for column in _visibility_columns:
-			var min_x := playable_min.x + float(column) * VISIBILITY_CELL_SIZE
-			var max_x := minf(playable_max.x, min_x + VISIBILITY_CELL_SIZE)
-			var min_z := playable_min.z + float(row) * VISIBILITY_CELL_SIZE
-			var max_z := minf(playable_max.z, min_z + VISIBILITY_CELL_SIZE)
-			var top_left := _visibility_corner_color(row, column, 0, 0)
-			var top_right := _visibility_corner_color(row, column, 1, 0)
-			var bottom_right := _visibility_corner_color(row, column, 1, 1)
-			var bottom_left := _visibility_corner_color(row, column, 0, 1)
-			vertices.append_array([Vector3(min_x, 0.0, min_z), Vector3(max_x, 0.0, min_z), Vector3(max_x, 0.0, max_z), Vector3(min_x, 0.0, max_z)])
-			colors.append_array([top_left, top_right, bottom_right, bottom_left])
-			indices.append_array([vertex_index, vertex_index + 1, vertex_index + 2, vertex_index, vertex_index + 2, vertex_index + 3])
-			vertex_index += 4
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_COLOR] = colors
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	_visibility_overlay.mesh = mesh
+	# Four gameplay cells become one filtered visual texel. The game keeps its
+	# exact four-meter visibility state, while the GPU softens the shroud edge.
+	for visual_row in _visibility_visual_rows:
+		for visual_column in _visibility_visual_columns:
+			var color := Color(0.0, 0.0, 0.0, 0.0)
+			for local_row in VISIBILITY_VISUAL_CELL_STRIDE:
+				for local_column in VISIBILITY_VISUAL_CELL_STRIDE:
+					var row := mini(_visibility_rows - 1, visual_row * VISIBILITY_VISUAL_CELL_STRIDE + local_row)
+					var column := mini(_visibility_columns - 1, visual_column * VISIBILITY_VISUAL_CELL_STRIDE + local_column)
+					color += _visibility_cell_color(int(_visibility_states[row * _visibility_columns + column]))
+			_visibility_overlay_image.set_pixel(visual_column, visual_row, color * 0.25)
+	_visibility_overlay_texture.update(_visibility_overlay_image)
 
 func _finite_position(position: Vector3) -> bool:
 	return abs(position.x) < 1000000.0 and abs(position.y) < 1000000.0 and abs(position.z) < 1000000.0 and position.x == position.x and position.y == position.y and position.z == position.z

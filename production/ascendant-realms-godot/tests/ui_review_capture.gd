@@ -93,6 +93,11 @@ func _run() -> void:
 			command_scroll.scroll_vertical = int(command_scroll.get_v_scroll_bar().max_value)
 			for index in 3:
 				await process_frame
+	if OS.get_environment("ASCENDANT_UI_MEASURE_FOG") == "1" and instance.get("world") != null:
+		var fog_start := Time.get_ticks_usec()
+		for sample in 12:
+			instance.world._refresh_player_visibility_overlay()
+		print("UI_FOG_REBUILD_MS ", float(Time.get_ticks_usec() - fog_start) / 12000.0)
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
