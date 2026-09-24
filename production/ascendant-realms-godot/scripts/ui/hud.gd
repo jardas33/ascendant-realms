@@ -229,10 +229,10 @@ func _fit_to_viewport() -> void:
 		_age_panel.position = Vector2(maxf(980.0, viewport_size.x * 0.53 - 76.0), 8)
 		_age_panel.size = Vector2(152, 78)
 	if is_instance_valid(_objective_panel):
-		_objective_panel.offset_left = -326.0
+		_objective_panel.offset_left = -424.0
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
-		_objective_panel.offset_bottom = 86.0
+		_objective_panel.offset_bottom = 100.0
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
@@ -1150,14 +1150,24 @@ func _build_top_bar() -> void:
 	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
-	_objective_panel.custom_minimum_size = Vector2(220, 78)
+	_objective_panel.custom_minimum_size = Vector2(318, 92)
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	var objective_inset := StyleBoxFlat.new()
+	objective_inset.bg_color = Color.TRANSPARENT
+	objective_inset.content_margin_left = 13.0
+	objective_inset.content_margin_right = 12.0
+	objective_inset.content_margin_top = 10.0
+	objective_inset.content_margin_bottom = 6.0
+	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
 	add_child(_objective_panel)
 	var mission_stack := VBoxContainer.new()
-	mission_stack.add_theme_constant_override("separation", 1)
+	mission_stack.add_theme_constant_override("separation", 2)
 	_objective_panel.add_child(mission_stack)
-	mission_stack.add_child(_mk_title_label("THE CAMPAIGN", 12, COMMAND_GOLD))
-	var identity_label := _mk_label(short_identity, 16, Color(0.94, 0.89, 0.77))
+	var battlefield_label := _mk_label(map_name.to_upper(), 13, COMMAND_GOLD)
+	battlefield_label.name = "MatchBattlefieldLabel"
+	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	mission_stack.add_child(battlefield_label)
+	var identity_label := _mk_title_label(short_identity, 20, Color(0.97, 0.92, 0.80))
 	identity_label.name = "MatchIdentityLabel"
 	identity_label.tooltip_text = full_identity
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -1165,7 +1175,7 @@ func _build_top_bar() -> void:
 	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
 	var objective_text := "CONQUEST · End enemy rebuild" if victory_kind == "conquest" else victory_kind.capitalize()
-	var objective_label := _mk_label(objective_text, 13, Color(0.84, 0.78, 0.65))
+	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
 	objective_label.name = "MatchObjectiveLabel"
 	objective_label.tooltip_text = "Eliminate the enemy's rebuild capability." if victory_kind == "conquest" else objective_text
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS

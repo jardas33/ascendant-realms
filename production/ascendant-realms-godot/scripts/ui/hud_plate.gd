@@ -38,12 +38,30 @@ func _draw() -> void:
 	# These containers still own layout/input, but no longer paint three boxes.
 	if embedded:
 		return
-	if plate_kind in ["economy", "force", "objective"]:
+	if plate_kind == "objective":
+		# The match marker is a narrow campaign pennant, not another metric bar.
+		var w := size.x
+		var h := size.y
+		var pennant := PackedVector2Array([
+			Vector2(0, 0), Vector2(w - 20, 0), Vector2(w, 20),
+			Vector2(w, h - 14), Vector2(w - 14, h), Vector2(17, h),
+			Vector2(0, h - 17)])
+		draw_polygon(pennant, PackedColorArray([
+			Color(0.025, 0.035, 0.039, 0.97), Color(0.025, 0.035, 0.039, 0.97),
+			Color(0.025, 0.035, 0.039, 0.87), Color(0.025, 0.035, 0.039, 0.50),
+			Color(0.025, 0.035, 0.039, 0.37), Color(0.025, 0.035, 0.039, 0.55),
+			Color(0.025, 0.035, 0.039, 0.81)]))
+		draw_line(Vector2(7, 2), Vector2(w - 25, 2), Color(accent.r, accent.g, accent.b, 0.72), 1.5, true)
+		draw_line(Vector2(2, 17), Vector2(2, h - 22), Color(accent.r, accent.g, accent.b, 0.70), 2.0, true)
+		draw_line(Vector2(12, h - 5), Vector2(w - 22, h - 5), Color(accent.r, accent.g, accent.b, 0.24), 1.0, true)
+		draw_line(Vector2(w - 20, 1), Vector2(w - 1, 20), Color(accent.r, accent.g, accent.b, 0.45), 1.0, true)
+		draw_circle(Vector2(w - 27, 7), 2.0, accent.lightened(0.24))
+		return
+	if plate_kind in ["economy", "force"]:
 		# A pinned metal eyebrow holds the title; the data hangs in a fading
 		# shadow. A closed outline around this whole region made four black boxes
 		# across the skyline, even though the control itself has no theme fill.
-		var objective := plate_kind == "objective"
-		var cut := 12.0 if objective else 22.0
+		var cut := 22.0
 		var ink := Color(0.020, 0.031, 0.038)
 		var upper := PackedVector2Array([
 			Vector2(0, 0), Vector2(size.x - cut, 0),
@@ -73,7 +91,7 @@ func _draw() -> void:
 			Color(0.10, 0.11, 0.11, 0.70),
 			Color(0.08, 0.10, 0.11, 0.24),
 			Color(0.08, 0.10, 0.11, 0.24)]))
-		draw_line(Vector2(8, 1), Vector2(size.x - cut - 8, 1), Color(accent.r, accent.g, accent.b, 0.58 if not objective else 0.37), 1.2, true)
+		draw_line(Vector2(8, 1), Vector2(size.x - cut - 8, 1), Color(accent.r, accent.g, accent.b, 0.58), 1.2, true)
 		draw_line(Vector2(1, 14), Vector2(1, size.y - 18), Color(accent.r, accent.g, accent.b, 0.40), 1.2, true)
 		draw_circle(Vector2(size.x - cut - 5, 7), 2.2, Color(accent.r, accent.g, accent.b, 0.75))
 		return
