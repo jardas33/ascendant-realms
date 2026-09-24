@@ -1053,7 +1053,7 @@ func _build_top_bar() -> void:
 	for k in RES_ORDER:
 		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_icon(RES_ICONS[k], 25))
+		cell.add_child(_mk_icon(RES_ICONS[k], 31))
 		var l := _mk_label("0", 30, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1076,7 +1076,7 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 21))
+	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 29))
 	_pop_label = _mk_label("0/0", 28)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1088,7 +1088,7 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 21))
+	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 29))
 	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(74, 0)
@@ -1101,7 +1101,7 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 21))
+	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 29))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1112,7 +1112,7 @@ func _build_top_bar() -> void:
 	# separate so "Idle 3" can never be mistaken for an idle army count.
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 21))
+	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 29))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

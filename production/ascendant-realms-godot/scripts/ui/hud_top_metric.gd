@@ -23,7 +23,6 @@ func _draw() -> void:
 		_bezel_texture = load(BEZEL_PATH) as Texture2D
 	if _bezel_texture:
 		draw_texture_rect(_bezel_texture, Rect2(Vector2.ZERO, size), false)
-		draw_line(Vector2(12, 7), Vector2(w - 12, 7), Color(accent.r, accent.g, accent.b, 0.30), 1.0, true)
 		return
 	var metal := Color(0.025, 0.033, 0.036)
 	var silhouette := PackedVector2Array([
