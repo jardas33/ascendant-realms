@@ -1303,6 +1303,9 @@ func _build_minimap() -> void:
 	_minimap = Control.new()
 	_minimap.custom_minimum_size = Vector2(MINIMAP_SIZE, MINIMAP_SIZE)
 	_minimap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Camera-footprint sights can extend past the surveyed area near map edges.
+	# Keep every map stroke inside the frame's opening.
+	_minimap.clip_contents = true
 	_minimap.mouse_filter = Control.MOUSE_FILTER_STOP
 	_minimap.draw.connect(_draw_minimap)
 	_minimap.gui_input.connect(_on_minimap_input)
