@@ -36,6 +36,7 @@ const MINIMAP_RASTER_SIZE := 160
 const MINIMAP_BACKGROUND_RASTER_SIZE := 224
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
+const MINIMAP_SNOW_TEXTURE := "res://assets/textures/nature/frostmere_windswept_snow_r1.png"
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 44.0
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
@@ -1438,9 +1439,9 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 				var state := int(states[row * columns + column])
 				var fog_color := Color.TRANSPARENT
 				if state == 0:
-					fog_color = Color(0.023, 0.034, 0.043, 0.66)
+					fog_color = Color(0.023, 0.034, 0.043, 0.54)
 				elif state == 1:
-					fog_color = Color(0.038, 0.056, 0.067, 0.32)
+					fog_color = Color(0.038, 0.056, 0.067, 0.20)
 				fog_image.set_pixel(x, y, fog_color)
 		if _minimap_fog == null:
 			_minimap_fog = ImageTexture.create_from_image(fog_image)
@@ -1471,7 +1472,7 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 		else:
 			var shore_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
 			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), MINIMAP_WATER_SHORE, 1.25, true)
-	_draw_minimap_roads(size)
+	# Roads are baked into the background at the terrain shader's actual width.
 
 func _draw_minimap_frame(size: Vector2) -> void:
 	# The forged housing is the frame. A quiet compass mark gives orientation
@@ -1536,20 +1537,6 @@ func _draw_minimap_resource(p: Vector2, col: Color) -> void:
 	_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
 
 
-func _draw_minimap_roads(_size: Vector2) -> void:
-	if not is_instance_valid(world):
-		return
-	# The ground shader burns these same start-to-centre segments into the
-	# authored battlefield material. Mirror that source geometry as subdued
-	# navigation tracks instead of consuming presentation-only overview roads.
-	var route_color := Color(0.25, 0.19, 0.12, 0.24)
-	for start in world.map.get("start_positions", []):
-		if start is Vector3:
-			_minimap.draw_line(_world_to_map(start), _world_to_map(Vector3.ZERO), route_color, 1.25, true)
-	# This is the corresponding authored contested-middle link in
-	# TerrainBuilder._make_ground_material(). Keep it subordinate to terrain.
-	_minimap.draw_line(_world_to_map(Vector3(-30.0, 0.0, -20.0)), _world_to_map(Vector3(30.0, 0.0, 20.0)), Color(0.28, 0.23, 0.15, 0.18), 0.8, true)
-
 func _minimap_resource_color(kind: String) -> Color:
 	match kind:
 		"food": return Color(0.86, 0.70, 0.28, 1.0)
@@ -1606,12 +1593,24 @@ func _ensure_minimap_background() -> void:
 	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
 	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
 	var landforms: Array = _minimap_world_landform_specs()
+	# TerrainBuilder draws these exact start-to-centre paths and middle link.
+	# Rasterizing their width makes the miniature read like the battlefield,
+	# rather than an unrelated schematic with hairline routes.
+	var paths: Array = []
+	for start in world.map.get("start_positions", []):
+		if start is Vector3:
+			paths.append([start, Vector3.ZERO])
+	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
+	var road_color := Color(0.52, 0.40, 0.25) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
+	var snow_texture: Texture2D = load(MINIMAP_SNOW_TEXTURE) as Texture2D if theme_name == "snow" else null
 	var has_ground_image: bool = is_instance_valid(ground_texture)
 	var has_meadow_image: bool = is_instance_valid(meadow_texture)
+	var has_snow_image: bool = is_instance_valid(snow_texture)
 	var ground_image: Image = ground_texture.get_image() if has_ground_image else Image.new()
 	var meadow_image: Image = meadow_texture.get_image() if has_meadow_image else Image.new()
+	var snow_image: Image = snow_texture.get_image() if has_snow_image else Image.new()
 	for y in range(MINIMAP_BACKGROUND_RASTER_SIZE):
 		for x in range(MINIMAP_BACKGROUND_RASTER_SIZE):
 			var wp := Vector3(
@@ -1636,8 +1635,19 @@ func _ensure_minimap_background() -> void:
 				# for the highlands; on snow, ash and desert it supplies detail, not
 				# an unrelated green cast over the battlefield's actual palette.
 				if theme_name == "highland":
-					col = col.lerp(ground_sample, 0.38)
+					col = col.lerp(ground_sample, 0.48)
 				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
+			if has_snow_image:
+				var snow_sample := snow_image.get_pixel(
+					posmod(int(floor(wp.x * 0.92)), snow_image.get_width()),
+					posmod(int(floor(wp.z * 0.92)), snow_image.get_height()))
+				col = col.lerp(snow_sample, 0.52)
+			var nearest_path := 1000.0
+			for path in paths:
+				nearest_path = minf(nearest_path, _minimap_segment_distance(wp, path[0], path[1]))
+			if nearest_path < 12.5:
+				var road_weight := 1.0 - smoothstep(7.0, 12.5, nearest_path)
+				col = col.lerp(road_color, road_weight * 0.70)
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1647,7 +1657,7 @@ func _ensure_minimap_background() -> void:
 					# Tint the authored water toward the surrounding material so the
 					# crossing reads as a world feature rather than a UI stripe.
 					var water_tint := deep.lerp(shallow, 0.12 + clampf(absf(wp.x) / MAP_HALF, 0.0, 1.0) * 0.10)
-					col = water_tint.lerp(base, 0.16)
+					col = water_tint.lerp(base, 0.06)
 				elif distance < 5.0:
 					col = shallow.lerp(base, distance / 5.0).lerp(base, 0.08)
 			for landform in landforms:
@@ -1662,8 +1672,41 @@ func _ensure_minimap_background() -> void:
 				elif landform_distance < 1.0:
 					col = Color(0.40, 0.42, 0.35, 1.0)
 			image.set_pixel(x, y, col)
+	_paint_minimap_decor(image, theme_name)
 	_minimap_background = ImageTexture.create_from_image(image)
 	_minimap_background_key = cache_key
+
+func _paint_minimap_decor(image: Image, theme_name: String) -> void:
+	# Scattered scenery already has stable, authored world positions. Its small
+	# canopy/stone impressions give the survey geographic texture without
+	# introducing invented forests or leaking live tactical entities.
+	var decor: Node = world.get_node_or_null("Decor")
+	if not is_instance_valid(decor):
+		return
+	var forest_color := Color(0.18, 0.34, 0.21) if theme_name == "highland" else _minimap_theme_color(theme_name, false).darkened(0.22)
+	var stone_color := Color(0.55, 0.54, 0.44) if theme_name == "highland" else _minimap_theme_color(theme_name, true)
+	for node in decor.get_children():
+		if not node is Node3D:
+			continue
+		var scene_path: String = node.scene_file_path
+		var is_tree := "/vegetation/" in scene_path
+		if not is_tree and not "/rocks/" in scene_path:
+			continue
+		var position_3d: Vector3 = node.global_position
+		if absf(position_3d.x) > MAP_HALF or absf(position_3d.z) > MAP_HALF:
+			continue
+		var center := Vector2(
+			(position_3d.x + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1),
+			(position_3d.z + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1))
+		var radius := 3.6 if is_tree else 2.3
+		var mark_color: Color = forest_color if is_tree else stone_color
+		var strength := 0.62 if is_tree else 0.43
+		for py in range(maxi(0, int(floor(center.y - radius - 1.0))), mini(image.get_height(), int(ceil(center.y + radius + 1.0)))):
+			for px in range(maxi(0, int(floor(center.x - radius - 1.0))), mini(image.get_width(), int(ceil(center.x + radius + 1.0)))):
+				var distance := Vector2(float(px), float(py)).distance_to(center)
+				var coverage := 1.0 - smoothstep(radius - 1.4, radius + 0.5, distance)
+				if coverage > 0.0:
+					image.set_pixel(px, py, image.get_pixel(px, py).lerp(mark_color, coverage * strength))
 
 func _minimap_segment_distance(point: Vector3, a: Vector3, b: Vector3) -> float:
 	var ab := Vector2(b.x - a.x, b.z - a.z)
