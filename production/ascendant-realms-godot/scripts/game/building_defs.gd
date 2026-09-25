@@ -33,7 +33,7 @@ static func get_all() -> Dictionary:
 		"desc": "Trains the clan's soldiers, archers, elites and siege.",
 	},
 	"barrosan_iron_forge": {
-		"race": "barrosan", "name": "Iron Forge", "kind": "economy", "model": _b("barrosan_iron_forge"),
+		"race": "barrosan", "name": "Iron Forge", "kind": "economy", "model": "res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb",
 		"hp": 700, "armor_class": "medium", "armor": 3, "footprint": 4.0,
 		"cost": {"timber": 100, "stone": 80}, "build_time": 28, "grants_pop": 0, "is_research": true,
 		"produces": [], "research": ["tech_weapons", "tech_armor"],

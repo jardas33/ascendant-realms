@@ -150,6 +150,7 @@ const PRELOAD_PATHS: PackedStringArray = [
 	"res://assets/environment/buildings/barrosan_clan_croft.glb",
 	"res://assets/environment/buildings/barrosan_clanhold.glb",
 	"res://assets/environment/buildings/barrosan_iron_forge.glb",
+	"res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb",
 	"res://assets/environment/buildings/barrosan_war_hall.glb",
 	"res://assets/environment/buildings/barrosan_watchtower.glb",
 	"res://assets/environment/buildings/frostborn_mead_hall.glb",

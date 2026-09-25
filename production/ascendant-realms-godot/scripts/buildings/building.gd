@@ -33,6 +33,7 @@ const TASK604_A01_R1_YAW_DEGREES := 24.0
 ## scale/ground/collision flow; the hall, yard wall, gate, training props, and
 ## other authored architecture remain intact.
 const TASK606_A02_MODEL_PATH := "res://assets/environment/buildings/barrosan_war_hall_a02.glb"
+const BARROSAN_IRON_FORGE_B01_MODEL_PATH := "res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb"
 ## Slice 7: the Forge and Watchtower share generic one-surface source meshes.
 ## These authored resources preserve their source textures while giving the
 ## Barrosan production variants a consistent roughness/material response. The
@@ -203,6 +204,8 @@ func _build_visual_convergence_identity_dressing() -> void:
 	if not world or world.map.get("id", "") != "hollowspan":
 		return
 	if String(def.get("race", "")) != "barrosan":
+		return
+	if building_id == "barrosan_iron_forge" and String(def.get("model", "")) == BARROSAN_IRON_FORGE_B01_MODEL_PATH:
 		return
 	var root := Node3D.new()
 	root.name = "VisualConvergenceIdentityDressing"

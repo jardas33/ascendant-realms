@@ -1,0 +1,99 @@
+{
+  "asset_id": "BARROSAN_IRON_FORGE_ORIGINAL_B01_R2",
+  "status": "RUNTIME_PASS_AND_STRICT_VISUAL_GATE_PASS",
+  "parent_asset_id": "BARROSAN_IRON_FORGE_ORIGINAL_B01_R1",
+  "parent_blend_sha256": "BC649B21CA34A03320445C38420C6B314D0C23D61F0F8DF2FDE0D237033FAF41",
+  "parent_glb_sha256": "86A603092DCEDD56200A628E621E0FC8A9377EA204C1B22FAEBB36DDD1B57CD9",
+  "geometry_authorship": "Preserved R1 authored meshes, yaw-rotated 180 degrees around the ground-footprint bounds center to expose the designed furnace/work bay at canonical runtime yaw 0.",
+  "gameplay_or_footprint_changes": false,
+  "transform": {
+    "authoring_axis": "Z-up",
+    "yaw_degrees": 180,
+    "pivot": [
+      0.28,
+      0.4543,
+      0.0
+    ]
+  },
+  "source_blend": {
+    "path": "art-source/blender/barrosan_iron_forge_b01_r2/barrosan_iron_forge_b01_r2.blend",
+    "sha256": "21EFCBE6DA1083CD5C3E5A56E1DCF228144557CB54F8B2D527B367B996D88387"
+  },
+  "glb": {
+    "path": "art-source/blender/barrosan_iron_forge_b01_r2/barrosan_iron_forge_b01_r2.glb",
+    "sha256": "A0508375A91192CA360BEAF65705873126D69078A567BFBA1EDE22339AE6DC88",
+    "bytes": 2265552
+  },
+  "geometry": {
+    "mesh_count": 9,
+    "triangle_count": 4596,
+    "materials": [
+      "B01_Blackened_Iron",
+      "B01_Contained_Forge_Ember",
+      "B01_Deep_Coal",
+      "B01_Sooted_Refractory",
+      "BARROSAN_AGED_TIMBER",
+      "BARROSAN_DARK_SLATE",
+      "BARROSAN_GRANITE",
+      "BARROSAN_LIMEWASH"
+    ],
+    "embedded_images": [
+      {
+        "name": "barrosan-granite-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 5
+      },
+      {
+        "name": "barrosan-dark-slate-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 11
+      },
+      {
+        "name": "barrosan-limewash-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 37
+      },
+      {
+        "name": "barrosan-aged-timber-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 47
+      }
+    ],
+    "before_bounds_min": [
+      -3.11,
+      -2.2414,
+      0.0
+    ],
+    "after_bounds_min": [
+      -3.11,
+      -2.2414,
+      0.0
+    ],
+    "before_bounds_max": [
+      3.67,
+      3.15,
+      4.46
+    ],
+    "after_bounds_max": [
+      3.67,
+      3.15,
+      4.46
+    ],
+    "size_m": [
+      6.78,
+      5.3914,
+      4.46
+    ]
+  },
+  "evidence": [
+    "b01_r2_authoring_zoom40.png",
+    "b01_r2_authoring_zoom25.png"
+  ],
+  "validation": {
+    "valid_glb_v2": true,
+    "all_images_embedded": true,
+    "external_image_uris": 0,
+    "runtime_fit": "PASS_HEADED_R2",
+    "strict_visual_gate": "PASS_DIRECTOR_INDEPENDENT_CLASSIFICATION"
+  }
+}

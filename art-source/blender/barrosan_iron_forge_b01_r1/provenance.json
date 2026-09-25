@@ -1,0 +1,96 @@
+{
+  "asset_id": "BARROSAN_IRON_FORGE_ORIGINAL_B01_R1",
+  "status": "RUNTIME_PASS_VISUAL_GATE_NOT_MET",
+  "geometry_authorship": "Original procedural mesh design authored in Blender Python for this candidate.",
+  "material_provenance": {
+    "reused_project_owned_source": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_a02.glb",
+    "source_sha256": "758449403841F72078AD33CE8F392FD6C89AEAAC999A8E6CBC5CF4868943E336",
+    "reused_materials": [
+      "BARROSAN_AGED_TIMBER",
+      "BARROSAN_DARK_SLATE",
+      "BARROSAN_GRANITE",
+      "BARROSAN_LIMEWASH"
+    ],
+    "custom_materials": [
+      "B01_Blackened_Iron",
+      "B01_Sooted_Refractory",
+      "B01_Contained_Forge_Ember",
+      "B01_Deep_Coal"
+    ],
+    "external_textures": false
+  },
+  "source_blend": {
+    "path": "art-source/blender/barrosan_iron_forge_b01_r1/barrosan_iron_forge_b01_r1.blend",
+    "sha256": "BC649B21CA34A03320445C38420C6B314D0C23D61F0F8DF2FDE0D237033FAF41"
+  },
+  "glb": {
+    "path": "art-source/blender/barrosan_iron_forge_b01_r1/barrosan_iron_forge_b01_r1.glb",
+    "sha256": "86A603092DCEDD56200A628E621E0FC8A9377EA204C1B22FAEBB36DDD1B57CD9",
+    "bytes": 2265064
+  },
+  "geometry": {
+    "mesh_count": 9,
+    "triangle_count": 4596,
+    "material_count": 8,
+    "materials": [
+      "B01_Blackened_Iron",
+      "B01_Contained_Forge_Ember",
+      "B01_Deep_Coal",
+      "B01_Sooted_Refractory",
+      "BARROSAN_AGED_TIMBER",
+      "BARROSAN_DARK_SLATE",
+      "BARROSAN_GRANITE",
+      "BARROSAN_LIMEWASH"
+    ],
+    "embedded_images": [
+      {
+        "name": "barrosan-granite-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 5
+      },
+      {
+        "name": "barrosan-dark-slate-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 11
+      },
+      {
+        "name": "barrosan-limewash-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 37
+      },
+      {
+        "name": "barrosan-aged-timber-albedo",
+        "mimeType": "image/jpeg",
+        "bufferView": 47
+      }
+    ],
+    "bounding_box_m": {
+      "min": [
+        -3.11,
+        -2.2414,
+        0.0
+      ],
+      "max": [
+        3.67,
+        3.15,
+        4.46
+      ],
+      "size": [
+        6.78,
+        5.3914,
+        4.46
+      ]
+    }
+  },
+  "evidence": [
+    "b01_zoom40_authoring_preview.png",
+    "b01_zoom25_authoring_preview.png"
+  ],
+  "validation": {
+    "valid_glb_v2": true,
+    "all_images_embedded": true,
+    "external_image_uris": 0,
+    "phase_b_runtime_fit": "PASS",
+    "strict_visual_gate": "FAIL"
+  }
+}
