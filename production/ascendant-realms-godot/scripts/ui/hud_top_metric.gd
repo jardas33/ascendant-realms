@@ -22,7 +22,26 @@ func _draw() -> void:
 	if _bezel_texture == null and ResourceLoader.exists(BEZEL_PATH):
 		_bezel_texture = load(BEZEL_PATH) as Texture2D
 	if _bezel_texture:
-		draw_texture_rect(_bezel_texture, Rect2(Vector2.ZERO, size), false)
+		# A full-frame shrink crushes the source's metalwork horizontally and
+		# makes the rails shimmer. Keep the authored corner proportions and let
+		# the long field/rails absorb the change in instrument width.
+		var source := _bezel_texture.get_size()
+		var source_corner := Vector2(source.x * 0.071, source.y * 0.185)
+		var corner := Vector2(13.0, 13.0)
+		var middle_source := source - source_corner * 2.0
+		var middle := size - corner * 2.0
+		for segment in [
+			[Rect2(corner, middle), Rect2(source_corner, middle_source)],
+			[Rect2(corner.x, 0, middle.x, corner.y), Rect2(source_corner.x, 0, middle_source.x, source_corner.y)],
+			[Rect2(corner.x, h - corner.y, middle.x, corner.y), Rect2(source_corner.x, source.y - source_corner.y, middle_source.x, source_corner.y)],
+			[Rect2(0, corner.y, corner.x, middle.y), Rect2(0, source_corner.y, source_corner.x, middle_source.y)],
+			[Rect2(w - corner.x, corner.y, corner.x, middle.y), Rect2(source.x - source_corner.x, source_corner.y, source_corner.x, middle_source.y)],
+			[Rect2(Vector2.ZERO, corner), Rect2(Vector2.ZERO, source_corner)],
+			[Rect2(Vector2(w - corner.x, 0), corner), Rect2(Vector2(source.x - source_corner.x, 0), source_corner)],
+			[Rect2(Vector2(0, h - corner.y), corner), Rect2(Vector2(0, source.y - source_corner.y), source_corner)],
+			[Rect2(size - corner, corner), Rect2(source - source_corner, source_corner)],
+		]:
+			draw_texture_rect_region(_bezel_texture, segment[0], segment[1])
 		return
 	var metal := Color(0.025, 0.033, 0.036)
 	var silhouette := PackedVector2Array([
