@@ -23,8 +23,8 @@ const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
 const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
-const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
 const RESOURCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/resource_objects_atlas_r1.png")
+const FORCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/force_objects_atlas_r2.png")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
 const LIORAEN_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/lioraen.png"
 const COMMAND_CRESTS := {
@@ -500,18 +500,11 @@ func _mk_icon(path: String, px: float) -> TextureRect:
 	return t
 
 
-func _mk_resource_object_icon(kind: String, px: float) -> TextureRect:
-	# One authored atlas keeps the four resource silhouettes and lighting in the
-	# same visual family while leaving the existing resource data untouched.
+func _mk_atlas_object_icon(texture: Texture2D, region: Rect2, px: float) -> TextureRect:
 	var atlas := AtlasTexture.new()
-	atlas.atlas = RESOURCE_OBJECT_ATLAS
-	# Crop transparent atlas gutters in the texture region, keeping each object
-	# large enough to resolve at the live HUD's normal display scale.
-	match kind:
-		"food": atlas.region = Rect2(90, 45, 484, 532)
-		"timber": atlas.region = Rect2(651, 82, 584, 511)
-		"stone": atlas.region = Rect2(55, 691, 556, 515)
-		"gold": atlas.region = Rect2(670, 721, 554, 464)
+	atlas.atlas = texture
+	atlas.region = region
+	atlas.filter_clip = true
 	var icon := TextureRect.new()
 	icon.texture = atlas
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -521,12 +514,26 @@ func _mk_resource_object_icon(kind: String, px: float) -> TextureRect:
 	return icon
 
 
-func _mk_metric_glyph(kind: String, tint: Color, px: float) -> Control:
-	var glyph: Control = HUD_METRIC_GLYPH_SCRIPT.new()
-	glyph.configure(kind, tint)
-	glyph.custom_minimum_size = Vector2(px, px)
-	glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return glyph
+func _mk_resource_object_icon(kind: String, px: float) -> TextureRect:
+	# One authored atlas keeps the four resource silhouettes and lighting in the
+	# same visual family while leaving the existing resource data untouched.
+	# Crop transparent atlas gutters in the texture region, keeping each object
+	# large enough to resolve at the live HUD's normal display scale.
+	var region := Rect2(90, 45, 484, 532)
+	match kind:
+		"timber": region = Rect2(651, 82, 584, 511)
+		"stone": region = Rect2(55, 691, 556, 515)
+		"gold": region = Rect2(670, 721, 554, 464)
+	return _mk_atlas_object_icon(RESOURCE_OBJECT_ATLAS, region, px)
+
+
+func _mk_force_object_icon(kind: String, px: float) -> TextureRect:
+	var region := Rect2(0, 0, 627, 627)
+	match kind:
+		"opponent": region = Rect2(627, 0, 627, 627)
+		"worker": region = Rect2(0, 627, 627, 627)
+		"army": region = Rect2(627, 627, 627, 627)
+	return _mk_atlas_object_icon(FORCE_OBJECT_ATLAS, region, px)
 
 
 func _cost_string(cost: Dictionary) -> String:
@@ -1103,7 +1110,7 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_metric_glyph("population", COMMAND_GOLD, 29))
+	pop_cell.add_child(_mk_force_object_icon("population", 42))
 	_pop_label = _mk_label("0/0", 28)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1115,7 +1122,7 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_metric_glyph("opponent", COMMAND_FLAME, 29))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 42))
 	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(74, 0)
@@ -1128,7 +1135,7 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_metric_glyph("worker", COMMAND_MINT, 29))
+	worker_cell.add_child(_mk_force_object_icon("worker", 42))
 	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1139,7 +1146,7 @@ func _build_top_bar() -> void:
 	# separate so "Idle 3" can never be mistaken for an idle army count.
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_metric_glyph("army", COMMAND_SKY, 29))
+	army_cell.add_child(_mk_force_object_icon("army", 42))
 	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

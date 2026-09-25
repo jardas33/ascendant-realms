@@ -7,3 +7,5 @@ The art follows the user's aspirational HUD reference while keeping the battlefi
 The joined selection/command chassis also samples only the bezel's narrow top and bottom metal bands for its exposed rails. Its live contents remain on the existing dark reading surface and keep their responsive layout and input behavior.
 
 `resource_objects_atlas_r1.png` supplies transparent, painterly objects for the four economy readings: apple, cut logs, quarried stone, and gold coins in reading order. The HUD samples each quadrant through an `AtlasTexture` with transparent gutters cropped in the region; the original resource icon files remain available to other screens. Numeric values and resource identifiers remain live and unchanged.
+
+`force_objects_atlas_r2.png` continues that object language for population, opponents, idle workers, and idle army: three people, a red enemy shield, an anvil and hammer, and crossed swords. The four illustrations are sampled as separate transparent cells with clipping at atlas boundaries. The old vector status glyph script is retained in source, while this local candidate uses the clearer illustrated marks in the live top ribbon.
