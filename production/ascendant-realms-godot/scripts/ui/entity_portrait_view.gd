@@ -81,7 +81,10 @@ func _build_view() -> void:
 	# and show the full source image; the frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_artwork.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var artwork_inset := 4.0 if custom_minimum_size.x < 80.0 else PORTRAIT_ARTWORK_INSET
+	# Small train/build choices need the complete authored silhouette to fill
+	# their aperture. A second inset inside the clipped thumbnail made detailed
+	# structures read as dark specks once the HUD scaled to a compact window.
+	var artwork_inset := 0.0 if custom_minimum_size.x < 80.0 else PORTRAIT_ARTWORK_INSET
 	_artwork.offset_left = artwork_inset
 	_artwork.offset_top = artwork_inset
 	_artwork.offset_right = -artwork_inset

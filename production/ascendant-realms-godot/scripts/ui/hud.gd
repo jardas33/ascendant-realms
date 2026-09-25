@@ -2034,19 +2034,6 @@ func _mk_bar(col: Color) -> ProgressBar:
 func _build_single_unit(u, read_only: bool = false) -> void:
 	_tracked_single = u
 	_single_read_only = read_only
-	if u.is_worker and ResourceLoader.exists(BARROSAN_COMMAND_CREST):
-		var watermark := TextureRect.new()
-		watermark.texture = load(BARROSAN_COMMAND_CREST)
-		watermark.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		watermark.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		watermark.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-		watermark.offset_left = -132
-		watermark.offset_right = -12
-		watermark.offset_top = -124
-		watermark.offset_bottom = -4
-		watermark.modulate.a = 0.11
-		watermark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_sel_body.add_child(watermark)
 	var row := HBoxContainer.new()
 	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	row.add_theme_constant_override("separation", 13)
