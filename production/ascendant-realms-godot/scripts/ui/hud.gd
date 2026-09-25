@@ -266,7 +266,9 @@ func _fit_to_viewport() -> void:
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
 	if is_instance_valid(_tracked_single):
 		if _tracked_single is Unit:
-			requested_selection_height = 230.0 if _tracked_single.is_hero else 210.0
+			# Two-line combat readouts need clear breathing room above the live
+			# activity line; workers keep their more compact economy dossier.
+			requested_selection_height = 244.0 if _tracked_single.is_hero else (210.0 if _tracked_single.is_worker else 224.0)
 		elif _tracked_single is Building:
 			requested_selection_height = 196.0 if not _tracked_single.is_built else 176.0
 	# Give the selected entity and two-column command deck enough room to be read
@@ -719,23 +721,32 @@ func _command_icon_stylebox(accent: Color, ability_card: bool) -> StyleBoxFlat:
 
 func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: String, accent: Color) -> void:
 	var chip := PanelContainer.new()
-	chip.custom_minimum_size = Vector2(64, 34)
+	chip.custom_minimum_size = Vector2(62, 42)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.055, 0.07, 0.082, 0.38)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.27)
-	sb.border_width_right = 1
+	sb.bg_color = Color(0.055, 0.07, 0.082, 0.28)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.40)
+	sb.border_width_right = 0 if kind == "range" else 1
 	sb.set_corner_radius_all(0)
-	sb.set_content_margin_all(4)
+	sb.content_margin_left = 2
+	sb.content_margin_right = 2
+	sb.content_margin_top = 1
+	sb.content_margin_bottom = 1
 	chip.add_theme_stylebox_override("panel", sb)
-	var label := _mk_label("%s  %s" % [caption, value], 10, FONT_COLOR)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.tooltip_text = "%s: %s" % [caption, value]
-	chip.add_child(label)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", -3)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title_label := _mk_label(caption, 10, accent.lerp(Color(0.86, 0.87, 0.83), 0.40))
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stack.add_child(title_label)
+	var value_label := _mk_label(value, 18, FONT_COLOR)
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	value_label.tooltip_text = "%s: %s" % [caption, value]
+	stack.add_child(value_label)
+	chip.add_child(stack)
 	row.add_child(chip)
-	_single_stat_cards.append({"kind": kind, "label": label, "caption": caption})
+	_single_stat_cards.append({"kind": kind, "label": value_label, "caption": caption})
 
 
 func _apply_ability_button_style(button: Button, accent: Color) -> void:
@@ -2248,7 +2259,7 @@ func _refresh_single_live() -> void:
 				"dmg": stat_value = _compact_combat_stat(u.cur_dmg())
 				"armor": stat_value = _compact_combat_stat(u.cur_armor())
 				"range": stat_value = "%.1f" % u.cur_range()
-			stat_label.text = "%s  %s" % [stat["caption"], stat_value]
+			stat_label.text = stat_value
 			stat_label.tooltip_text = "%s: %s" % [stat["caption"], stat_value]
 	if is_instance_valid(_single_stat_label):
 		if _single_read_only:
