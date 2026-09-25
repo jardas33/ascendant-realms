@@ -283,11 +283,13 @@ func _fit_to_viewport() -> void:
 		_minimap_panel.offset_bottom = _minimap_panel.offset_top + map_size.y
 	var command_visual_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 	if is_instance_valid(_sel_panel):
-		# The portrait/selection and command controls remain independent, but their
-		# two-pixel joint reads as one stepped command console at the bottom edge.
+		# Reserve a narrow forged join between the live dossier and command deck.
+		# The chassis rail occupies the left edge of the command deck; placing the
+		# dossier directly against it covered the rightmost status and stat glyphs
+		# at compact resolutions. The chassis still bridges the visual gap.
 		selection_height = maxf(selection_height, _sel_panel.get_combined_minimum_size().y)
 		_sel_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
-		var selection_left := command_visual_left - 2.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
+		var selection_left := command_visual_left - 18.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 		_sel_panel.offset_left = selection_left - viewport_size.x * 0.5
 		_sel_panel.offset_right = _sel_panel.offset_left + SELECTION_PANEL_WIDTH
 		_sel_panel.offset_top = -margin - selection_height * INTERACTION_PANEL_SCALE
