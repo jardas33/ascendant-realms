@@ -2059,7 +2059,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	portrait_stack.add_theme_constant_override("separation", 3)
 	portrait_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_plinth.add_child(portrait_stack)
-	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 9, COMMAND_GOLD)
+	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 11, COMMAND_GOLD)
 	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_overline)
 	# Authored UI portrait with an isolated 3D model fallback.
@@ -2078,7 +2078,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	if u.is_hero:
 		var hero_race := String(u.def.get("race", ""))
 		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else "HERO")
-	var portrait_footer := _mk_title_label(role_word, 10, Color(0.96, 0.83, 0.58))
+	var portrait_footer := _mk_title_label(role_word, 12, Color(0.96, 0.83, 0.58))
 	portrait_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_footer)
 	call_deferred("_fit_to_viewport")
@@ -2097,7 +2097,10 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_header := HBoxContainer.new()
 	identity_header.add_theme_constant_override("separation", 6)
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, 16, identity_color)
+	# Give short hero and unit names presence without sacrificing the full names
+	# of workers and longer troops in the compact selected-entity column.
+	var identity_font_size := 16 if uname.length() > 13 or read_only else 18
+	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
@@ -2111,14 +2114,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	info.add_child(_single_hp_text)
 
 	if not read_only and u.is_hero and u.max_mana > 0.0:
-		var mana_header := HBoxContainer.new()
-		mana_header.add_theme_constant_override("separation", 6)
-		mana_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		mana_header.add_child(_mk_label("MANA", 9, COMMAND_SKY))
-		_single_mana_text = _mk_label("", 11, Color(0.78, 0.86, 1.0))
-		_single_mana_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		mana_header.add_child(_single_mana_text)
-		info.add_child(mana_header)
+		_single_mana_text = _mk_label("", 13, Color(0.78, 0.86, 1.0))
+		info.add_child(_single_mana_text)
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		info.add_child(_single_mana_bar)
 
@@ -2207,7 +2204,7 @@ func _refresh_single_live() -> void:
 	if is_instance_valid(_single_mana_bar) and "max_mana" in u and u.max_mana > 0.0:
 		_single_mana_bar.value = clamp(u.mana / u.max_mana, 0.0, 1.0)
 	if is_instance_valid(_single_mana_text) and "max_mana" in u:
-		_single_mana_text.text = "%d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
+		_single_mana_text.text = "MANA %d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
 	if u is Unit and not _single_stat_cards.is_empty() and u.has_method("cur_dmg"):
 		for stat in _single_stat_cards:
 			var stat_label: Label = stat["label"]
