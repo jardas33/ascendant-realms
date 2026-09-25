@@ -15,8 +15,8 @@ from mathutils import Vector
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "tools/character_art/sources/barrosan_clan_levy_base.glb"
 OUTPUT = ROOT / "production/ascendant-realms-godot/assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb"
-SOURCE = ROOT / "tools/character_art/sources/barrosan_clan_levy_astra_r1.blend"
-EVIDENCE = Path(r"D:\CodexData\evidence\astra-character-quality-r1")
+SOURCE = ROOT / "tools/character_art/sources/barrosan_clan_levy_astra_r2.blend"
+EVIDENCE = Path(r"D:\CodexData\evidence\astra-character-quality-r2")
 EVIDENCE.mkdir(parents=True, exist_ok=True)
 
 bpy.ops.object.select_all(action="SELECT")
@@ -60,9 +60,10 @@ def material(name, color, metallic=0.0, roughness=0.72):
     return mat
 
 
-indigo = material("Levy | dyed indigo wool", (0.008, 0.022, 0.050), roughness=0.96)
-bronze = material("Levy | worn brass embroidery", (0.34, 0.185, 0.045), 0.42, 0.59)
-blue_paint = material("Levy | clan blue shield paint", (0.025, 0.085, 0.19), 0.06, 0.69)
+indigo = material("Levy | dyed indigo wool", (0.012, 0.032, 0.071), roughness=0.94)
+bronze = material("Levy | aged bronze fittings", (0.26, 0.151, 0.050), 0.38, 0.71)
+blue_paint = material("Levy | Sunblade painted timber", (1, 1, 1), 0.02, 0.85)
+oak = material("Levy | shield edge oak", (0.075, 0.043, 0.025), 0, 0.87)
 
 # An authored woven albedo keeps the cloth from reading as a flat primitive.
 # Variation is deliberately low frequency and quiet at RTS scale.
@@ -82,18 +83,9 @@ texture.colorspace_settings.name = "sRGB"
 texture_node = indigo.node_tree.nodes.new("ShaderNodeTexImage")
 texture_node.image = texture
 indigo.node_tree.links.new(texture_node.outputs["Color"], indigo.node_tree.nodes.get("Principled BSDF").inputs["Base Color"])
-paint_texture = bpy.data.images.new("ClanLevy_weathered_shield_paint", width=512, height=512, alpha=True)
-random.seed(3391)
-paint_pixels = []
-for row in range(512):
-    for col in range(512):
-        scratch = 0.80 if (row % 97 in (0, 1) and col % 13 < 4) else 1.0
-        mottled = 1.0 + 0.11 * math.sin(row * 0.023 + col * 0.015) + (random.random() - 0.5) * 0.09
-        value = mottled * scratch
-        paint_pixels.extend((0.055 * value, 0.16 * value, 0.31 * value, 1.0))
-paint_texture.pixels[:] = paint_pixels
+paint_texture = bpy.data.images.load(str(ROOT / "tools/character_art/textures/clan_levy_sunblade_shield.png"))
+paint_texture.name = "ClanLevy_handpainted_sunblade_shield"
 paint_texture.pack()
-paint_texture.colorspace_settings.name = "sRGB"
 paint_node = blue_paint.node_tree.nodes.new("ShaderNodeTexImage")
 paint_node.image = paint_texture
 blue_paint.node_tree.links.new(paint_node.outputs["Color"], blue_paint.node_tree.nodes.get("Principled BSDF").inputs["Base Color"])
@@ -132,27 +124,30 @@ def skinned_mesh(name, verts, faces, materials, face_materials, vertex_weights, 
 
 
 def cloak_panel(side):
-    # Two separate tails maintain a readable V-shaped split through walk and
-    # attack cycles.  Ring weights shift from UpperChest to Hips.
+    # Tapered, split wool panels have an asymmetric hem and small folds.  The
+    # upper edge follows the chest while the lower edge follows the pelvis.
     rows = [
-        (1.37, 0.23, 0.10, {"UpperChest": 1.0}),
-        (1.27, 0.27, 0.14, {"UpperChest": 0.76, "Chest": 0.24}),
-        (1.11, 0.30, 0.20, {"Chest": 0.78, "Spine": 0.22}),
-        (0.90, 0.36, 0.25, {"Spine": 0.45, "Hips": 0.55}),
-        (0.67, 0.43, 0.32, {"Hips": 1.0}),
-        (0.52, 0.47, 0.37, {"Hips": 1.0}),
-        (0.495, 0.47, 0.37, {"Hips": 1.0}),
+        (1.38, 0.18, 0.10, {"UpperChest": 1.0}),
+        (1.30, 0.21, 0.13, {"UpperChest": 0.8, "Chest": 0.2}),
+        (1.19, 0.25, 0.18, {"Chest": 0.8, "Spine": 0.2}),
+        (1.07, 0.28, 0.23, {"Chest": 0.4, "Spine": 0.6}),
+        (0.93, 0.32, 0.29, {"Spine": 0.65, "Hips": 0.35}),
+        (0.78, 0.36, 0.35, {"Spine": 0.25, "Hips": 0.75}),
+        (0.63, 0.40, 0.40, {"Hips": 1.0}),
+        (0.49, 0.43, 0.45, {"Hips": 1.0}),
+        (0.477, 0.43, 0.45, {"Hips": 1.0}),
     ]
-    count = 7
+    count = 13
     verts, weights, faces, mat_ids, uvs = [], [], [], [], []
     for row_index, (z, half_width, y, bone_weights) in enumerate(rows):
         for column in range(count):
             t = column / (count - 1)
             # Outside edge fans out while inside edge opens toward the hem.
-            inner = 0.015 + (1.0 - z / 1.37) * 0.11
+            inner = 0.012 + max(0, 1.0 - z / 1.38) * 0.13
             x = side * (inner + (half_width - inner) * t)
-            fold = 0.014 * (1 if column % 2 else -1) * min(row_index, 4)
-            verts.append((x, y + fold, z - (0.015 if column in (0, count - 1) else 0)))
+            fold = 0.018 * math.sin(t * math.pi * 6 + row_index * 0.32) * min(row_index / 5, 1)
+            hem = 0.025 * math.sin(t * math.pi) + 0.012 * t * side if row_index >= len(rows) - 2 else 0
+            verts.append((x, y + fold, z - hem))
             weights.append(bone_weights)
             uvs.append((t * 0.5 + (0.0 if side < 0 else 0.5), row_index / (len(rows) - 1)))
     for row in range(len(rows) - 1):
@@ -163,33 +158,6 @@ def cloak_panel(side):
     return skinned_mesh(
         "ClanLevy_IndigoSplitCloak_%s" % ("Left" if side < 0 else "Right"),
         verts, faces, [indigo, bronze], mat_ids, weights, 0.012, uvs,
-    )
-
-
-def tabard_panel():
-    rows = [
-        (0.94, 0.245, 0.115, {"Hips": 1.0}),
-        (0.78, 0.278, 0.125, {"Hips": 1.0}),
-        (0.60, 0.298, 0.138, {"Hips": 1.0}),
-        (0.575, 0.298, 0.138, {"Hips": 1.0}),
-    ]
-    verts, faces, mat_ids, weights, uvs = [], [], [], [], []
-    for row, (z, y, width, bone_weights) in enumerate(rows):
-        for col in range(7):
-            t = col / 6
-            x = -width + 2 * width * t
-            hem_point = 0.025 * (1.0 - abs(2 * t - 1)) if row >= 2 else 0.0
-            verts.append((x, -y - (0.012 if col == 3 else 0), z - hem_point))
-            weights.append(bone_weights)
-            uvs.append((t, row / (len(rows) - 1)))
-    for row in range(len(rows) - 1):
-        for col in range(6):
-            a = row * 7 + col
-            faces.append((a, a + 1, a + 8, a + 7))
-            mat_ids.append(1 if row == len(rows) - 2 or col == 5 else 0)
-    return skinned_mesh(
-        "ClanLevy_ClanTabard", verts, faces, [indigo, bronze],
-        mat_ids, weights, 0.009, uvs,
     )
 
 
@@ -207,48 +175,38 @@ def shoulder_clasp(side):
 
 
 def clan_shield():
-    # A full-size defensive silhouette carries the clan blue toward the camera
-    # when the small body is only a few pixels tall.  All shield vertices follow
-    # the existing left forearm; its combat/selection dimensions stay unchanged.
-    cx, cy, cz = 0.75, -0.20, 1.11
-    outline = [(-0.29, 0.42), (0.29, 0.42), (0.35, 0.13),
-               (0.28, -0.25), (0.0, -0.56), (-0.28, -0.25), (-0.35, 0.13)]
-    verts = []
-    for depth, scale in [(0.00, 1.0), (-0.018, 0.88)]:
+    # The forearm carries a real three-layer curved shield: carved oak back,
+    # narrow bronze binding, and a bowed painted face with UV-aligned heraldry.
+    cx, cy, cz = 0.71, -0.22, 1.12
+    outline = [(-0.265, 0.36), (0.265, 0.36), (0.310, 0.105),
+               (0.245, -0.245), (0.0, -0.485), (-0.245, -0.245), (-0.310, 0.105)]
+    verts, uvs = [], []
+    for depth, scale in [(-0.012, 1.0), (-0.035, 0.87), (0.045, 1.0)]:
         for x, z in outline:
             verts.append((cx + x * scale, cy + depth, cz + z * scale))
-    verts.append((cx, cy - 0.035, cz - 0.02))
+            uvs.append((0.5 + x * scale / 0.70, 0.5 + (z * scale + 0.06) / 0.96))
+    verts.extend(((cx, cy - 0.078, cz - 0.04), (cx, cy + 0.054, cz - 0.04)))
+    uvs.extend(((0.5, 0.52), (0.5, 0.52)))
     faces, materials = [], []
     for i in range(len(outline)):
         following = (i + 1) % len(outline)
         faces.append((i, following, 7 + following, 7 + i))
         materials.append(1)
-        faces.append((7 + i, 7 + following, 14))
+        faces.append((7 + i, 7 + following, 21))
         materials.append(0)
-    shield = skinned_mesh("ClanLevy_HeaterShield", verts, faces,
-                          [blue_paint, bronze], materials,
-                          [{"LeftLowerArm": 1.0}] * len(verts), 0.025,
-                          [((x + 0.35) / 0.70, (z + 0.56) / 0.98) for x, _, z in [(v[0]-cx, v[1]-cy, v[2]-cz) for v in verts]])
-    # A compact relief chevron, large enough to remain legible in the in-game
-    # close view, without relying on an emissive decal or HUD icon.
-    emblem = [
-        (cx - 0.16, cy - 0.051, cz + 0.19),
-        (cx, cy - 0.062, cz + 0.08),
-        (cx + 0.16, cy - 0.051, cz + 0.19),
-        (cx + 0.16, cy - 0.051, cz + 0.08),
-        (cx, cy - 0.065, cz - 0.04),
-        (cx - 0.16, cy - 0.051, cz + 0.08),
-    ]
-    skinned_mesh("ClanLevy_ShieldRelief", emblem,
-                 [(0, 1, 4, 5), (1, 2, 3, 4)], [bronze], [0, 0],
-                 [{"LeftLowerArm": 1.0}] * len(emblem), 0.01)
+        faces.append((i, 14 + i, 14 + following, following))
+        materials.append(2)
+        faces.append((14 + following, 14 + i, 22))
+        materials.append(2)
+    shield = skinned_mesh("ClanLevy_CurvedSunbladeShield", verts, faces,
+                          [blue_paint, bronze, oak], materials,
+                          [{"LeftLowerArm": 1.0}] * len(verts), 0, uvs)
     return shield
 
 
 for direction in (-1, 1):
     cloak_panel(direction)
     shoulder_clasp(direction)
-tabard_panel()
 clan_shield()
 
 # The saved editable source keeps every authored surface and the imported rig.
