@@ -24,6 +24,7 @@ const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
 const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
 const HUD_METRIC_GLYPH_SCRIPT := preload("res://scripts/ui/hud_metric_glyph.gd")
+const RESOURCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/resource_objects_atlas_r1.png")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
 const LIORAEN_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/lioraen.png"
 const COMMAND_CRESTS := {
@@ -497,6 +498,27 @@ func _mk_icon(path: String, px: float) -> TextureRect:
 	t.custom_minimum_size = Vector2(px, px)
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return t
+
+
+func _mk_resource_object_icon(kind: String, px: float) -> TextureRect:
+	# One authored atlas keeps the four resource silhouettes and lighting in the
+	# same visual family while leaving the existing resource data untouched.
+	var atlas := AtlasTexture.new()
+	atlas.atlas = RESOURCE_OBJECT_ATLAS
+	# Crop transparent atlas gutters in the texture region, keeping each object
+	# large enough to resolve at the live HUD's normal display scale.
+	match kind:
+		"food": atlas.region = Rect2(90, 45, 484, 532)
+		"timber": atlas.region = Rect2(651, 82, 584, 511)
+		"stone": atlas.region = Rect2(55, 691, 556, 515)
+		"gold": atlas.region = Rect2(670, 721, 554, 464)
+	var icon := TextureRect.new()
+	icon.texture = atlas
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = Vector2(px, px)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
 
 
 func _mk_metric_glyph(kind: String, tint: Color, px: float) -> Control:
@@ -1058,7 +1080,7 @@ func _build_top_bar() -> void:
 	for k in RES_ORDER:
 		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_icon(RES_ICONS[k], 31))
+		cell.add_child(_mk_resource_object_icon(k, 36))
 		var l := _mk_label("0", 30, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
