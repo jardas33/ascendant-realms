@@ -40,7 +40,7 @@ static func get_all() -> Dictionary:
 		"desc": "Smiths weapon and armor upgrades for your whole army.",
 	},
 	"barrosan_watchtower": {
-		"race": "barrosan", "name": "Watchtower", "kind": "tower", "model": _b("barrosan_watchtower"),
+		"race": "barrosan", "name": "Watchtower", "kind": "tower", "model": "res://assets/environment/visual_convergence/barrosan_settlement/barrosan_guard_tower_lod1.glb",
 		"hp": 800, "armor_class": "fortified", "armor": 6, "footprint": 3.2,
 		"cost": {"timber": 40, "stone": 100}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 22, "tower_range": 20.0, "tower_cd": 1.1, "tower_type": "pierce", "projectile": "bolt",
