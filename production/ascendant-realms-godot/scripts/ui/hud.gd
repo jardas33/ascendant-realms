@@ -2407,13 +2407,15 @@ func _build_single_building(b, read_only: bool = false) -> void:
 
 	var identity := HBoxContainer.new()
 	identity.add_theme_constant_override("separation", 8)
-	identity.custom_minimum_size = Vector2(0, 100)
+	# The selected structure is the visual anchor of its dossier. At 100 px the
+	# authored roof and facade collapsed into a small seal beside empty space.
+	identity.custom_minimum_size = Vector2(0, 128)
 	identity.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(identity)
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(100, 100)
+		portrait.custom_minimum_size = Vector2(128, 128)
 		identity.add_child(portrait)
 		# Finished structures use the same authored identity as the construction
 		# gallery; unfinished sites keep their live stage preview.
@@ -2422,7 +2424,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		else:
 			portrait.configure_entity(b)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 96)
+		portrait = _mk_icon(FRAME_PORTRAIT, 128)
 		identity.add_child(portrait)
 	var identity_info := VBoxContainer.new()
 	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
