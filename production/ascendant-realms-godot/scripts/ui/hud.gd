@@ -248,15 +248,15 @@ func _fit_to_viewport() -> void:
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
 		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(540, 70)
+		_top_panel.size = Vector2(512, 70)
 	if is_instance_valid(_force_panel):
-		_force_panel.position = Vector2(560, 8)
-		_force_panel.size = Vector2(640, 70)
+		_force_panel.position = Vector2(524, 8)
+		_force_panel.size = Vector2(612, 70)
 	if is_instance_valid(_age_panel):
-		_age_panel.position = Vector2(maxf(1204.0, viewport_size.x * 0.53 - 88.0), 8)
+		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
 		_age_panel.size = Vector2(176, 78)
 	if is_instance_valid(_objective_panel):
-		_objective_panel.offset_left = -466.0
+		_objective_panel.offset_left = -530.0
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
 		_objective_panel.offset_bottom = 100.0
@@ -980,6 +980,8 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	var title_label := _mk_label(title.to_upper(), 18 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
 	if instrument:
 		title_label.name = "TopMetricTitle"
+		# The compact forged corners need equal air on both sides of each name.
+		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -1040,7 +1042,7 @@ func _build_top_bar() -> void:
 	rack_inset.bg_color = Color.TRANSPARENT
 	rack_inset.set_content_margin_all(0)
 	panel.add_theme_stylebox_override("panel", rack_inset)
-	panel.custom_minimum_size = Vector2(540, 70)
+	panel.custom_minimum_size = Vector2(512, 70)
 	add_child(panel)
 
 	var resource_accents := {
@@ -1069,7 +1071,7 @@ func _build_top_bar() -> void:
 	_force_panel.name = "ForceInstrument"
 	_force_panel.embedded = true
 	_force_panel.add_theme_stylebox_override("panel", rack_inset)
-	_force_panel.custom_minimum_size = Vector2(640, 70)
+	_force_panel.custom_minimum_size = Vector2(612, 70)
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
