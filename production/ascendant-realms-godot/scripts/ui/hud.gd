@@ -147,6 +147,7 @@ var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
 var _production_status_label: Label = null
+var _production_progress_bar: ProgressBar = null
 var _watched_building = null           # building whose production we listen to
 var _production_card_queue_key := ""
 var _watched_construction_building = null # selected building whose construction can complete
@@ -1921,6 +1922,7 @@ func _reset_selection_widgets() -> void:
 	_multi_bars.clear()
 	_queue_container = null
 	_production_status_label = null
+	_production_progress_bar = null
 	_production_card_queue_key = ""
 	if is_instance_valid(_watched_building) and _watched_building.production_updated.is_connected(_on_production_updated):
 		_watched_building.production_updated.disconnect(_on_production_updated)
@@ -2489,6 +2491,12 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		queue_row.add_child(_production_status_label)
 		queue_row.add_child(_queue_container)
 		identity_info.add_child(queue_row)
+		# One full-width production rail makes active work legible at RTS scale;
+		# the tiny per-slot bars remain useful for distinguishing queued orders.
+		_production_progress_bar = _mk_bar(Color(0.9, 0.66, 0.28))
+		_production_progress_bar.custom_minimum_size = Vector2(0, 9)
+		_production_progress_bar.visible = false
+		col.add_child(_production_progress_bar)
 		# watch production updates
 		if b.production_updated.is_connected(_on_production_updated):
 			b.production_updated.disconnect(_on_production_updated)
@@ -2588,6 +2596,8 @@ func _refresh_queue() -> void:
 			call_deferred("_fit_to_viewport")
 	if b.queue.is_empty():
 		_production_status_label.text = "Idle"
+		if is_instance_valid(_production_progress_bar):
+			_production_progress_bar.visible = false
 		return
 	var active = b.queue[0]
 	var active_kind: String = active.get("kind", "unit")
@@ -2601,6 +2611,9 @@ func _refresh_queue() -> void:
 	var active_total: float = float(active.get("total", 1.0))
 	var active_left: float = float(active.get("time_left", 0.0))
 	var active_prog := clampf(1.0 - active_left / maxf(0.01, active_total), 0.0, 1.0)
+	if is_instance_valid(_production_progress_bar):
+		_production_progress_bar.value = active_prog
+		_production_progress_bar.visible = true
 	var active_verb := "Training" if active_kind == "unit" else "Researching"
 	_production_status_label.text = "%s: %s %d%%" % [active_verb, active_display, roundi(active_prog * 100.0)]
 	var idx := 0
