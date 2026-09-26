@@ -4,11 +4,12 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(196.0, 105.0)
+const SPACING := Vector2(220.0, 105.0)
 const FOCUSED_SPACING := Vector2(246.0, 106.0)
 const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(184.0, 92.0)
+const NODE_SIZE := Vector2(200.0, 92.0)
 const GRAPH_ZOOM := 0.74
+const FOCUSED_ZOOM := 0.92
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
 const INK := Color("#0b1020")
@@ -217,7 +218,7 @@ func _build() -> void:
 	_detail_action = _label("", 13, GOLD_BRIGHT)
 	_detail_action.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_box.add_child(_detail_action)
-	_status_label = _label("158 authored stars  •  Follow the links to plan ahead", 11, MUTED)
+	_status_label = _label("", 13, MUTED)
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_box.add_child(_status_label)
 
@@ -297,6 +298,10 @@ func _build() -> void:
 	var footer_spacer := Control.new()
 	footer_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	footer.add_child(footer_spacer)
+	var navigation_hint := _label("DRAG TO EXPLORE  ·  SCROLL TO ZOOM", 13, MUTED)
+	navigation_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	navigation_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	footer.add_child(navigation_hint)
 	footer.add_child(_tool_button("− ZOOM", func(): _set_zoom(_zoom - 0.08)))
 	footer.add_child(_tool_button("+ ZOOM", func(): _set_zoom(_zoom + 0.08)))
 	footer.add_child(_tool_button("RECENTER", _recenter_view))
@@ -326,16 +331,23 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 19, PAPER)
+	var name_label := _label(str(n.get("name", "")), 21, PAPER)
 	name_label.position = Vector2(60.0, 6.0)
-	name_label.size = Vector2(118.0, 55.0)
+	name_label.size = Vector2(134.0, 55.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Keep long single-word names intact at both supported resolutions.
+	var name_size := 21
+	var title_font := name_label.get_theme_font("font")
+	for word in name_label.text.split(" "):
+		while name_size > 17 and title_font.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > name_label.size.x - 4.0:
+			name_size -= 1
+	name_label.add_theme_font_size_override("font_size", name_size)
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 14, MUTED)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 15, MUTED)
 	cost_label.position = Vector2(60.0, 71.0)
-	cost_label.size = Vector2(118.0, 18.0)
+	cost_label.size = Vector2(134.0, 18.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(cost_label)
 	b.pressed.connect(_on_node_pressed.bind(n))
@@ -429,7 +441,9 @@ func _update_canvas_size() -> void:
 func _fit_default_zoom() -> void:
 	if not is_instance_valid(_viewport) or _viewport.size.x <= 0.0:
 		return
-	var target := 1.08 if _branch_filter != "" else GRAPH_ZOOM
+	# Focused paths are taller than the view. Open on complete, readable stars
+	# and let players drag down for the rest instead of cutting a card at the rail.
+	var target := FOCUSED_ZOOM if _branch_filter != "" else GRAPH_ZOOM
 	if _branch_filter == "":
 		target = minf(target, maxf(0.62, (_viewport.size.x - 36.0) / maxf(1.0, _canvas.size.x)))
 	_zoom = clampf(target, 0.52, 1.16)
@@ -500,6 +514,18 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			continue
 		var branch := str(n.get("branch", ""))
 		var anchor := _node_pos(n)
+		var state := _node_state(n)
+		if state == "UNLOCKED" or state == "PURCHASABLE":
+			var star_color := MINT if state == "UNLOCKED" else GOLD_BRIGHT
+			# A restrained crown stays clear of nearby links and keeps the status
+			# legible when all paths are shown together.
+			var crest := anchor + Vector2(NODE_SIZE.x * 0.5, -5.0)
+			canvas.draw_line(crest + Vector2(-36.0, 0.0), crest + Vector2(-9.0, 0.0), Color(star_color, 0.5), 1.3, true)
+			canvas.draw_line(crest + Vector2(9.0, 0.0), crest + Vector2(36.0, 0.0), Color(star_color, 0.5), 1.3, true)
+			canvas.draw_colored_polygon(PackedVector2Array([
+				crest + Vector2(0.0, -6.0), crest + Vector2(6.0, 0.0),
+				crest + Vector2(0.0, 6.0), crest + Vector2(-6.0, 0.0)
+			]), Color(star_color, 0.78))
 		if not branch_seen.has(branch):
 			branch_seen[branch] = anchor.x
 			canvas.draw_string(_title_font(), Vector2(anchor.x, 25.0), branch.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, Color(_branch_color(branch), 0.82))
@@ -514,10 +540,26 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			var to := anchor + Vector2(NODE_SIZE.x * 0.5, 0.0)
 			var complete := _is_unlocked(id) and _is_unlocked(req)
 			var available := _prereqs_met(n) and not _is_unlocked(id)
-			var col := MINT if complete else GOLD if available else Color(0.35, 0.42, 0.54, 0.52)
-			canvas.draw_line(from, to, Color(col, 0.16), 8.0, true)
-			canvas.draw_line(from, to, Color(col, 0.8), 2.2 if complete else 1.5, true)
-			canvas.draw_circle(to, 3.0, col)
+			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
+			var path := _constellation_link(from, to)
+			var strength := 0.88 if complete or available else 0.32
+			canvas.draw_polyline(path, Color(col, strength * 0.12), 9.0 if complete or available else 5.0, true)
+			canvas.draw_polyline(path, Color(col, strength * 0.46), 3.6 if complete or available else 2.0, true)
+			canvas.draw_polyline(path, Color(PAPER, strength * 0.52), 1.0, true)
+			canvas.draw_circle(to, 5.0 if complete or available else 3.0, Color(col, strength * 0.33))
+			canvas.draw_circle(to, 2.2, Color(col, strength))
+
+func _constellation_link(from: Vector2, to: Vector2) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var delta := to - from
+	var bend := minf(26.0, absf(delta.y) * 0.22)
+	var first := from + Vector2(delta.x * 0.27, bend)
+	var second := to - Vector2(delta.x * 0.27, bend)
+	for step in range(17):
+		var t := float(step) / 16.0
+		var inverse := 1.0 - t
+		points.append(from * pow(inverse, 3.0) + first * 3.0 * pow(inverse, 2.0) * t + second * 3.0 * inverse * t * t + to * pow(t, 3.0))
+	return points
 
 func _find_node(id: String) -> Dictionary:
 	for n in _nodes:
@@ -579,9 +621,10 @@ func _node_style(n: Dictionary, selected: bool, hovered: bool) -> StyleBoxFlat:
 		border = PAPER
 	if selected:
 		border = GOLD_BRIGHT
-	var box := _panel_style(bg, border, 11, 2 if selected else 1)
-	box.shadow_color = Color(0, 0, 0, 0.28)
-	box.shadow_size = 5 if selected or hovered else 2
+	var box := _panel_style(bg, border, 9, 2 if selected or state == "PURCHASABLE" else 1)
+	box.border_width_top = 3 if state == "UNLOCKED" or state == "PURCHASABLE" else 1
+	box.shadow_color = Color(border, 0.28) if selected or hovered else Color(0, 0, 0, 0.3)
+	box.shadow_size = 7 if selected or hovered else 3
 	return box
 
 func _refresh_nodes() -> void:
@@ -610,11 +653,15 @@ func _refresh_nodes() -> void:
 		glyph.locked = state == "PREREQUISITE_BLOCKED"
 		glyph.accent = _branch_color(str(n.get("branch", "")))
 		glyph.queue_redraw()
-	var edge_count := 0
+	var visible_count := 0
+	var owned_count := 0
 	for n in _nodes:
-		edge_count += (n.get("req", []) as Array).size()
-	var focus_text := "ALL PATHS" if _branch_filter == "" else _branch_filter.to_upper()
-	_status_label.text = "%d authored stars  •  %d prerequisite links  •  %s  •  FOCUS: %s" % [_nodes.size(), edge_count, _hero_race().to_upper(), focus_text]
+		if _is_visible_node(n):
+			visible_count += 1
+			if _is_unlocked(str(n.get("id", ""))):
+				owned_count += 1
+	var focus_text := "ALL PATHS" if _branch_filter == "" else _branch_filter.to_upper() + " PATH"
+	_status_label.text = "%s  ·  %d / %d UNLOCKED" % [focus_text, owned_count, visible_count]
 	_canvas.queue_redraw()
 	if _selected_id != "":
 		var selected := _find_node(_selected_id)

@@ -22,20 +22,24 @@ func _draw() -> void:
 	if _bezel_texture == null and ResourceLoader.exists(BEZEL_PATH):
 		_bezel_texture = load(BEZEL_PATH) as Texture2D
 	if _bezel_texture:
-		# A full-frame shrink crushes the source's metalwork horizontally and
-		# makes the rails shimmer. Keep the authored corner proportions and let
-		# the long field/rails absorb the change in instrument width.
+		# The source is a wide plaque with large center and side jewels. Squeezing
+		# those jewels into each narrow metric created broken-looking corners and
+		# noisy rails. Sample a quiet forged span for the stretchable regions while
+		# retaining the authored corner metalwork at its original proportions.
 		var source := _bezel_texture.get_size()
 		var source_corner := Vector2(source.x * 0.071, source.y * 0.185)
 		var corner := Vector2(13.0, 13.0)
-		var middle_source := source - source_corner * 2.0
 		var middle := size - corner * 2.0
+		var quiet_x := source.x * 0.17
+		var quiet_width := source.x * 0.20
+		var quiet_top := source.y * 0.235
+		var quiet_height := source.y * 0.125
 		for segment in [
-			[Rect2(corner, middle), Rect2(source_corner, middle_source)],
-			[Rect2(corner.x, 0, middle.x, corner.y), Rect2(source_corner.x, 0, middle_source.x, source_corner.y)],
-			[Rect2(corner.x, h - corner.y, middle.x, corner.y), Rect2(source_corner.x, source.y - source_corner.y, middle_source.x, source_corner.y)],
-			[Rect2(0, corner.y, corner.x, middle.y), Rect2(0, source_corner.y, source_corner.x, middle_source.y)],
-			[Rect2(w - corner.x, corner.y, corner.x, middle.y), Rect2(source.x - source_corner.x, source_corner.y, source_corner.x, middle_source.y)],
+			[Rect2(corner, middle), Rect2(quiet_x, source_corner.y, quiet_width, source.y - source_corner.y * 2.0)],
+			[Rect2(corner.x, 0, middle.x, corner.y), Rect2(quiet_x, 0, quiet_width, source_corner.y)],
+			[Rect2(corner.x, h - corner.y, middle.x, corner.y), Rect2(quiet_x, source.y - source_corner.y, quiet_width, source_corner.y)],
+			[Rect2(0, corner.y, corner.x, middle.y), Rect2(0, quiet_top, source_corner.x, quiet_height)],
+			[Rect2(w - corner.x, corner.y, corner.x, middle.y), Rect2(source.x - source_corner.x, quiet_top, source_corner.x, quiet_height)],
 			[Rect2(Vector2.ZERO, corner), Rect2(Vector2.ZERO, source_corner)],
 			[Rect2(Vector2(w - corner.x, 0), corner), Rect2(Vector2(source.x - source_corner.x, 0), source_corner)],
 			[Rect2(Vector2(0, h - corner.y), corner), Rect2(Vector2(0, source.y - source_corner.y), source_corner)],

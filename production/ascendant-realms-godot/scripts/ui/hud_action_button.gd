@@ -90,7 +90,7 @@ func _draw() -> void:
 			tint = tint.darkened(0.16)
 			tint.a = 0.83
 		draw_colored_polygon(row_shape, tint)
-		var art_edge := 79.0 if command_kind == "BUILD" else 61.0
+		var art_edge := 94.0 if command_kind == "BUILD" else 61.0
 		var bay_light := Color(metal.r, metal.g, metal.b, 0.24 if enabled else 0.12)
 		draw_polygon(PackedVector2Array([
 			Vector2(5, 7), Vector2(art_edge, 4),

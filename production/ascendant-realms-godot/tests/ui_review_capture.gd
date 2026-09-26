@@ -101,6 +101,22 @@ func _run() -> void:
 		for sample in 12:
 			instance.world._refresh_player_visibility_overlay()
 		print("UI_FOG_REBUILD_MS ", float(Time.get_ticks_usec() - fog_start) / 12000.0)
+	var metric_stress_mode := OS.get_environment("ASCENDANT_UI_METRIC_STRESS")
+	if metric_stress_mode in ["1", "large"]:
+		# Exercise the late-match digit widths without changing economy state.
+		# Keep the HUD poll from restoring opening values during a slower capture.
+		instance.hud._slow_accum = -999.0
+		var stress_amount := 123456 if metric_stress_mode == "large" else 9999
+		var stress_resources := {}
+		for resource_kind in ["food", "timber", "stone", "gold"]:
+			stress_resources[resource_kind] = stress_amount
+		instance.hud._on_resources_changed(stress_resources)
+		instance.hud._on_pop_changed(125, 125)
+		instance.hud._set_top_metric_text(instance.hud._opponent_count_label, "12", 27)
+		instance.hud._on_idle_worker_count(128)
+		instance.hud._on_idle_military_count(128)
+		for index in 2:
+			await process_frame
 	var tooltip_target_found := false
 	if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
 		var wanted_title := OS.get_environment("ASCENDANT_UI_TOOLTIP_TITLE")
@@ -146,6 +162,30 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			if metric_stress_mode in ["1", "large"]:
+				var stress_amount := 123456 if metric_stress_mode == "large" else 9999
+				for resource_kind in ["food", "timber", "stone", "gold"]:
+					var resource_label := hud._res_labels[resource_kind] as Label
+					var expected_display := "123K" if metric_stress_mode == "large" else "9999"
+					if resource_label.text != expected_display:
+						validation_errors.append("metric_stress_value_was_refreshed:" + resource_kind)
+					var metric_surface := resource_label.get_parent().get_parent() as Control
+					if not metric_surface.tooltip_text.contains(str(stress_amount)):
+						validation_errors.append("metric_stress_exact_tooltip_missing:" + resource_kind)
+				if hud._pop_label.text != "125/125":
+					validation_errors.append("metric_stress_population_was_refreshed")
+			# Read the imported texture size, not the source PNG size. A 1024px
+			# import cap previously cropped the lower resource and force objects even
+			# though their atlas regions were valid in the 1254px source art.
+			for metric_panel in [hud._top_panel, hud._force_panel]:
+				for icon in metric_panel.find_children("*", "TextureRect", true, false):
+					var atlas_texture := icon.texture as AtlasTexture
+					if atlas_texture == null or atlas_texture.atlas == null:
+						continue
+					var atlas_size := atlas_texture.atlas.get_size()
+					var region_end := atlas_texture.region.end
+					if region_end.x > atlas_size.x + 0.5 or region_end.y > atlas_size.y + 0.5:
+						validation_errors.append("metric_icon_atlas_clipped:" + icon.name)
 			if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
 				if not tooltip_target_found or not instance.hud._command_tooltip.visible:
 					validation_errors.append("command_tooltip_hover_missing")
@@ -174,6 +214,18 @@ func _run() -> void:
 					var measured_width: float = title_label.get_theme_font("font").get_string_size(title_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_label.get_theme_font_size("font_size")).x
 					if measured_width > title_label.size.x + 1.0:
 						validation_errors.append("top_metric_title_clipped:" + title_label.text)
+				for metric_plate in instrument.get_child(0).get_children():
+					var plate_rect := (metric_plate as Control).get_global_rect()
+					for content in metric_plate.find_children("*", "Control", true, false):
+						if content is Label or content is TextureRect:
+							var metric_control := content as Control
+							if not plate_rect.encloses(metric_control.get_global_rect()):
+								validation_errors.append("top_metric_content_outside_plate:" + metric_plate.name)
+							if content is Label:
+								var metric_label := content as Label
+								var label_width: float = metric_label.get_theme_font("font").get_string_size(metric_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, metric_label.get_theme_font_size("font_size")).x
+								if label_width > metric_label.size.x + 1.0:
+									validation_errors.append("top_metric_value_clipped:" + metric_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
 			if player_race in ["barrosan", "lioraen"]:
@@ -292,12 +344,21 @@ func _run() -> void:
 				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
 				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally" or rally_art.get("visual_faction") != player_race:
 					validation_errors.append("rally_art_missing")
+				else:
+					var ability_button := rally_art.get_parent().get_parent() as Button
+					var ability_labels := ability_button.find_children("*", "Label", true, false)
+					var ability_title := ability_labels[0] as Label if not ability_labels.is_empty() else null
+					if not ability_button.get_global_rect().encloses(rally_art.get_global_rect()) or not is_instance_valid(ability_title) or rally_art.get_global_rect().end.x >= ability_title.get_global_rect().position.x:
+						validation_errors.append("rally_art_overlaps_card_copy")
 			if selected_kind in ["building_queued", "war_hall_queued"]:
 				var queue = hud._queue_container
 				if not is_instance_valid(queue) or queue.get_child_count() == 0:
 					validation_errors.append("selected_building_queue_missing")
 				elif not hud._sel_panel.get_global_rect().encloses(queue.get_global_rect()):
 					validation_errors.append("selected_building_queue_clipped")
+				var queue_progress = hud._production_progress_bar
+				if not is_instance_valid(queue_progress) or not queue_progress.visible or queue_progress.size.y < 15.0 or not hud._sel_panel.get_global_rect().encloses(queue_progress.get_global_rect()):
+					validation_errors.append("selected_building_progress_rail_unreadable_or_clipped")
 			if selected_kind in ["war_hall", "war_hall_queued"] and not card_kinds.has("TRAIN"):
 				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
 			if selected_kind in ["war_hall", "war_hall_queued"]:
@@ -386,9 +447,42 @@ func _run() -> void:
 		if selected_kind == "hero" and card_by_title.has("Rallying Cry"):
 			var hero = instance.rts.selected[0]
 			var mana_before: float = float(hero.mana)
-			card_by_title["Rallying Cry"].pressed.emit()
-			if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
-				validation_errors.append("rallying_cry_button_did_not_cast")
+			# Order actions can rebuild the command deck. Resolve the live card
+			# again before delivering a pointer event to its current on-screen rect.
+			var live_ability_button: Button = null
+			for button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
+				if not button.has_meta("command_kind"):
+					continue
+				for label in button.find_children("*", "Label", true, false):
+					if label.text == "Rallying Cry":
+						live_ability_button = button
+						break
+				if live_ability_button != null:
+					break
+			if live_ability_button == null:
+				validation_errors.append("rallying_cry_card_missing_after_orders")
+			else:
+				if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+					var ability_center: Vector2 = live_ability_button.get_global_rect().get_center()
+					Input.warp_mouse(root.get_viewport().get_screen_transform() * ability_center)
+					await process_frame
+					var ability_motion := InputEventMouseMotion.new()
+					ability_motion.position = ability_center
+					ability_motion.global_position = ability_center
+					root.get_viewport().push_input(ability_motion, true)
+					await process_frame
+					for down in [true, false]:
+						var ability_click := InputEventMouseButton.new()
+						ability_click.button_index = MOUSE_BUTTON_LEFT
+						ability_click.pressed = down
+						ability_click.position = ability_center
+						ability_click.global_position = ability_center
+						root.get_viewport().push_input(ability_click, true)
+						await process_frame
+				else:
+					live_ability_button.pressed.emit()
+				if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
+					validation_errors.append("rallying_cry_button_did_not_cast_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "rallying_cry_button_did_not_cast")
 		if selected_kind == "worker":
 			var worker_race := String(instance.world.commanders[0].race)
 			var expected_art_count := 5 if worker_race == "barrosan" else (6 if worker_race == "lioraen" else 0)

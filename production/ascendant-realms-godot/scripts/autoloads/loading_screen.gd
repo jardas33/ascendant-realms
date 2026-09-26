@@ -158,7 +158,7 @@ const PRELOAD_PATHS: PackedStringArray = [
 	"res://assets/environment/buildings/hollow_necropolis.glb",
 	"res://assets/environment/buildings/karak_hold.glb",
 	"res://assets/environment/buildings/lioraen_bloom_spire.glb",
-	"res://assets/environment/buildings/lioraen_groveheart.glb",
+	"res://assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb",
 	"res://assets/environment/buildings/lioraen_lifewell.glb",
 	"res://assets/environment/buildings/lioraen_spirit_glade.glb",
 	"res://assets/environment/buildings/lioraen_thornhall.glb",

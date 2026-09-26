@@ -34,7 +34,7 @@ const COMMAND_CRESTS := {
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
-const MINIMAP_BACKGROUND_RASTER_SIZE := 224
+const MINIMAP_BACKGROUND_RASTER_SIZE := 320
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_SNOW_TEXTURE := "res://assets/textures/nature/frostmere_windswept_snow_r1.png"
@@ -249,10 +249,10 @@ func _fit_to_viewport() -> void:
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
 		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(512, 92)
+		_top_panel.size = Vector2(512, 104)
 	if is_instance_valid(_force_panel):
 		_force_panel.position = Vector2(524, 8)
-		_force_panel.size = Vector2(612, 92)
+		_force_panel.size = Vector2(612, 104)
 	if is_instance_valid(_age_panel):
 		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
 		_age_panel.size = Vector2(176, 78)
@@ -739,7 +739,7 @@ func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: St
 	var stack := VBoxContainer.new()
 	stack.add_theme_constant_override("separation", -3)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var title_label := _mk_label(caption, 10, accent.lerp(Color(0.86, 0.87, 0.83), 0.40))
+	var title_label := _mk_label(caption, 12, accent.lerp(Color(0.88, 0.89, 0.85), 0.48))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title_label)
 	var value_label := _mk_label(value, 18, FONT_COLOR)
@@ -786,13 +786,13 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var detail_text := _command_card_summary(detail) if scan_detail else ""
 	# The status footer carries readiness; the full reason stays in the tooltip.
 	var accent := _command_accent(title, state, command_kind)
-	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
+	var hotkey := hotkey_override if not hotkey_override.is_empty() else (_command_hotkey(title) if command_kind == "ORDER" else "")
 	var btn = HUD_ACTION_SCRIPT.new()
 	btn.text = ""
 	btn.accent = accent
 	btn.command_kind = command_kind
 	btn.command_state = state
-	var card_height := 96 if has_preview else (74 if ability_card else 60)
+	var card_height := 96 if has_preview else (86 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -801,24 +801,24 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(8, 10)
-		preview.size = Vector2(68, 68)
-		preview.custom_minimum_size = Vector2(68, 68)
+		preview.position = Vector2(4, 4)
+		preview.size = Vector2(84, 84)
+		preview.custom_minimum_size = Vector2(84, 84)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		preview.set_deferred("custom_minimum_size", Vector2(68, 68))
-		preview.set_deferred("size", Vector2(68, 68))
+		preview.set_deferred("custom_minimum_size", Vector2(84, 84))
+		preview.set_deferred("size", Vector2(84, 84))
 		var text_col := VBoxContainer.new()
 		text_col.name = "BuildingCardCopy"
 		text_col.anchor_right = 1.0
-		text_col.offset_left = 81.0
-		text_col.offset_top = 10.0
+		text_col.offset_left = 95.0
+		text_col.offset_top = 7.0
 		text_col.offset_right = -7.0
 		text_col.offset_bottom = -21.0
 		text_col.add_theme_constant_override("separation", 2)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 18, FONT_COLOR)
+		var title_label := _mk_label(title, 17, FONT_COLOR)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -833,11 +833,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	else:
 		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
+		var featured_ability := command_kind == "ABILITY"
 		var field_order_art := command_kind == "ORDER" and _command_icon_kind(title, command_kind) in ["attack", "stop", "hold", "patrol"]
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
-		glyph_plate.size = Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38))
+		glyph_plate.position = Vector2(4, 4) if featured_ability else Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
+		glyph_plate.size = Vector2(68, 68) if featured_ability else (Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38)))
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
 		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
@@ -850,7 +851,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(unit_art)
 			unit_art.configure_definition(unit_art_definition, false)
 		else:
-			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem or field_order_art else 28.0)
+			var glyph_size := 60.0 if featured_ability else (44.0 if painted_emblem or field_order_art else 28.0)
+			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, glyph_size)
 			glyph.name = "CommandEmblem" if painted_emblem or field_order_art else "CommandGlyph"
 			if painted_emblem and state in ["LOCKED", "COMPLETED"]:
 				glyph.modulate = Color(0.72, 0.77, 0.80, 0.76)
@@ -859,21 +861,21 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6))
+		text_col.position = Vector2(82, 8) if featured_ability else (Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6)))
 		var text_height := card_height - 10
 		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
 		text_col.size = Vector2(text_width, text_height)
 		text_col.custom_minimum_size = Vector2(text_width, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
-		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 18, title_color)
+		var title_color := Color(0.79, 0.81, 0.79, 0.94) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
+		var detail_color := Color(0.67, 0.71, 0.70, 0.94) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
+		var title_label := _mk_label(title, 20 if featured_ability else 18, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(detail_text, 14, detail_color)
+		var detail_label := _mk_label(detail_text, 15 if featured_ability else 14, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -891,7 +893,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(key_badge)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
 		status_label.offset_left = -83.0
@@ -903,14 +905,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(status_label)
 		btn.set_meta("command_status_label", status_label)
 	else:
-		# The art and readiness share a column; long two-resource costs keep the
-		# entire right side without colliding with READY or LOCKED.
+		# Keep readiness below the cost in the copy column so the structure art
+		# can fill its bay without hiding the card's current state.
 		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
-		build_status.offset_left = 7.0
-		build_status.offset_right = 77.0
+		build_status.anchor_right = 1.0
+		build_status.offset_left = 95.0
+		build_status.offset_right = -8.0
 		build_status.offset_top = card_height - 18
 		build_status.offset_bottom = card_height - 2
-		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
 		btn.set_meta("command_status_label", build_status)
@@ -1040,7 +1043,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	plate.accent = accent
 	# A common height keeps both ribbons' lower rails level after the resource
 	# numerals and force numerals resolve to slightly different font metrics.
-	plate.custom_minimum_size = Vector2(width, 92)
+	plate.custom_minimum_size = Vector2(width, 104)
 	plate.tooltip_text = tooltip
 	plate.mouse_filter = Control.MOUSE_FILTER_STOP
 	var inset := StyleBoxFlat.new()
@@ -1087,7 +1090,7 @@ func _build_top_bar() -> void:
 	rack_inset.bg_color = Color.TRANSPARENT
 	rack_inset.set_content_margin_all(0)
 	panel.add_theme_stylebox_override("panel", rack_inset)
-	panel.custom_minimum_size = Vector2(512, 92)
+	panel.custom_minimum_size = Vector2(512, 104)
 	add_child(panel)
 
 	var resource_accents := {
@@ -1103,7 +1106,7 @@ func _build_top_bar() -> void:
 	for k in RES_ORDER:
 		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_resource_object_icon(k, 34))
+		cell.add_child(_mk_resource_object_icon(k, 48))
 		var l := _mk_label("0", 28, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1116,7 +1119,7 @@ func _build_top_bar() -> void:
 	_force_panel.name = "ForceInstrument"
 	_force_panel.embedded = true
 	_force_panel.add_theme_stylebox_override("panel", rack_inset)
-	_force_panel.custom_minimum_size = Vector2(612, 92)
+	_force_panel.custom_minimum_size = Vector2(612, 104)
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
@@ -1126,7 +1129,7 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_force_object_icon("population", 34))
+	pop_cell.add_child(_mk_force_object_icon("population", 48))
 	_pop_label = _mk_label("0/0", 27)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1138,7 +1141,7 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_force_object_icon("opponent", 34))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 48))
 	_opponent_count_label = _mk_label("0", 27, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(64, 0)
@@ -1151,7 +1154,7 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_force_object_icon("worker", 34))
+	worker_cell.add_child(_mk_force_object_icon("worker", 48))
 	_idle_worker_label = _mk_label("0", 27, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1162,7 +1165,7 @@ func _build_top_bar() -> void:
 	# separate so "Idle 3" can never be mistaken for an idle army count.
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_force_object_icon("army", 34))
+	army_cell.add_child(_mk_force_object_icon("army", 48))
 	_idle_military_label = _mk_label("0", 27, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1290,15 +1293,51 @@ func _build_top_bar() -> void:
 	mission_stack.add_child(objective_label)
 
 
+func _format_top_resource_amount(amount: int) -> String:
+	# Keep ordinary build-order values exact. Very large stocks use a compact
+	# reading while the hover surface retains the exact amount.
+	if amount < 10000:
+		return str(amount)
+	if amount < 100000:
+		return "%.1fK" % (floori(amount / 100.0) / 10.0)
+	if amount < 1000000:
+		return "%dK" % floori(amount / 1000.0)
+	if amount < 100000000:
+		return "%.1fM" % (floori(amount / 100000.0) / 10.0)
+	return "%dM" % floori(amount / 1000000.0)
+
+
+func _set_top_metric_text(label: Label, value: String, base_size: int) -> void:
+	# A compact resource instrument must remain truthful once a late-match
+	# value grows beyond the three digits visible in the opening capture.
+	if label.text == value:
+		return
+	var font := label.get_theme_font("font")
+	var available_width := label.custom_minimum_size.x - 2.0
+	var chosen_size := base_size
+	while chosen_size > 16 and font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, chosen_size).x > available_width:
+		chosen_size -= 1
+	if label.get_theme_font_size("font_size") != chosen_size:
+		label.add_theme_font_size_override("font_size", chosen_size)
+	label.text = value
+
+
 func _on_resources_changed(res: Dictionary) -> void:
 	for k in RES_ORDER:
 		if _res_labels.has(k) and is_instance_valid(_res_labels[k]):
-			_res_labels[k].text = str(int(res.get(k, 0)))
+			var amount := int(res.get(k, 0))
+			var label := _res_labels[k] as Label
+			_set_top_metric_text(label, _format_top_resource_amount(amount), 28)
+			var metric_surface := label.get_parent().get_parent() as Control
+			var exact_readout := "%s: %d" % [k.capitalize(), amount]
+			if metric_surface.tooltip_text != exact_readout:
+				metric_surface.tooltip_text = exact_readout
+				(metric_surface.get_parent() as Control).tooltip_text = exact_readout
 
 
 func _on_pop_changed(used: int, cap: int) -> void:
 	if is_instance_valid(_pop_label):
-		_pop_label.text = "%d/%d" % [used, cap]
+		_set_top_metric_text(_pop_label, "%d/%d" % [used, cap], 27)
 		_pop_label.add_theme_color_override("font_color",
 			Color(0.95, 0.5, 0.45) if used >= cap and cap > 0 else FONT_COLOR)
 
@@ -1316,7 +1355,7 @@ func _refresh_opponent_count() -> void:
 		var cmd = world.commanders[i]
 		if is_instance_valid(cmd) and not cmd.defeated:
 			count += 1
-	_opponent_count_label.text = str(count)
+	_set_top_metric_text(_opponent_count_label, str(count), 27)
 
 
 # ---------------------------------------------------------------------------
@@ -1516,7 +1555,7 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 				if state == 0:
 					fog_color = Color(0.023, 0.034, 0.043, 0.54)
 				elif state == 1:
-					fog_color = Color(0.038, 0.056, 0.067, 0.20)
+					fog_color = Color(0.038, 0.056, 0.067, 0.13)
 				fog_image.set_pixel(x, y, fog_color)
 		if _minimap_fog == null:
 			_minimap_fog = ImageTexture.create_from_image(fog_image)
@@ -1676,7 +1715,7 @@ func _ensure_minimap_background() -> void:
 		if start is Vector3:
 			paths.append([start, Vector3.ZERO])
 	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
-	var road_color := Color(0.60, 0.45, 0.27) if theme_name == "highland" else base.lightened(0.19)
+	var road_color := Color(0.70, 0.53, 0.33) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
 	var snow_texture: Texture2D = load(MINIMAP_SNOW_TEXTURE) as Texture2D if theme_name == "snow" else null
@@ -1712,7 +1751,7 @@ func _ensure_minimap_background() -> void:
 				if theme_name == "highland":
 					# The world reads as a living meadow at battle zoom. Keep that
 					# authored color in its survey rather than flattening it to olive.
-					col = col.lerp(ground_sample, 0.58)
+					col = col.lerp(ground_sample, 0.46)
 				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
 			if has_snow_image:
 				var snow_sample := snow_image.get_pixel(
@@ -1724,10 +1763,13 @@ func _ensure_minimap_background() -> void:
 				nearest_path = minf(nearest_path, _minimap_segment_distance(wp, path[0], path[1]))
 			if theme_name == "highland" and nearest_path < 15.0:
 				var road_shoulder := 1.0 - smoothstep(10.5, 15.0, nearest_path)
-				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.26)
+				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.34)
 			if nearest_path < 12.5:
 				var road_weight := 1.0 - smoothstep(7.0, 12.5, nearest_path)
-				col = col.lerp(road_color, road_weight * (0.82 if theme_name == "highland" else 0.70))
+				col = col.lerp(road_color, road_weight * (0.90 if theme_name == "highland" else 0.70))
+				if theme_name == "highland":
+					var road_crown := 1.0 - smoothstep(3.5, 7.0, nearest_path)
+					col = col.lerp(Color(0.83, 0.67, 0.44), road_crown * 0.35)
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1747,10 +1789,9 @@ func _ensure_minimap_background() -> void:
 				var dx := local.x / radius.x
 				var dz := local.y / radius.y
 				var landform_distance := dx * dx + dz * dz
-				if landform_distance < 0.78:
-					col = Color(0.26, 0.29, 0.25, 1.0)
-				elif landform_distance < 1.0:
-					col = Color(0.40, 0.42, 0.35, 1.0)
+				if landform_distance < 1.0:
+					var shelf_weight := 1.0 - smoothstep(0.70, 1.0, landform_distance)
+					col = col.lerp(Color(0.28, 0.31, 0.26, 1.0), shelf_weight * 0.85)
 			image.set_pixel(x, y, col)
 	_paint_minimap_decor(image, theme_name)
 	_minimap_background = ImageTexture.create_from_image(image)
@@ -1778,7 +1819,8 @@ func _paint_minimap_decor(image: Image, theme_name: String) -> void:
 		var center := Vector2(
 			(position_3d.x + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1),
 			(position_3d.z + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1))
-		var radius := (4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3
+		var decor_scale := float(MINIMAP_BACKGROUND_RASTER_SIZE) / 224.0
+		var radius := ((4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3) * decor_scale
 		var mark_color: Color = forest_color if is_tree else stone_color
 		var strength := (0.69 if theme_name == "highland" else 0.62) if is_tree else 0.43
 		for py in range(maxi(0, int(floor(center.y - radius - 1.0))), mini(image.get_height(), int(ceil(center.y + radius + 1.0)))):
@@ -1873,7 +1915,7 @@ func _count_meaningfully_idle_military() -> int:
 func _on_idle_worker_count(count: int) -> void:
 	if not is_instance_valid(_idle_worker_label):
 		return
-	_idle_worker_label.text = str(count)
+	_set_top_metric_text(_idle_worker_label, str(count), 27)
 	_idle_worker_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
@@ -1881,7 +1923,7 @@ func _on_idle_worker_count(count: int) -> void:
 func _on_idle_military_count(count: int) -> void:
 	if not is_instance_valid(_idle_military_label):
 		return
-	_idle_military_label.text = str(count)
+	_set_top_metric_text(_idle_military_label, str(count), 27)
 	_idle_military_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
@@ -2104,7 +2146,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	row.add_child(portrait_space)
 	if is_instance_valid(_sel_header_spacer):
 		_sel_header_spacer.visible = true
-	var portrait_plinth := _mk_hud_panel("portrait", COMMAND_FLAME if read_only else (COMMAND_SKY if u.is_hero else COMMAND_GOLD))
+	var role_accent := Color(1.0, 0.55, 0.45) if read_only else (COMMAND_SKY if u.is_hero else (COMMAND_MINT if u.is_worker else COMMAND_FLAME))
+	var portrait_plinth := _mk_hud_panel("portrait", role_accent)
 	portrait_plinth.set("embedded", true)
 	portrait_plinth.custom_minimum_size = Vector2(175, 232)
 	portrait_plinth.size = Vector2(175, 232)
@@ -2115,7 +2158,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	portrait_stack.add_theme_constant_override("separation", 3)
 	portrait_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_plinth.add_child(portrait_stack)
-	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 11, COMMAND_GOLD)
+	var portrait_role := "ASCENDANT" if u.is_hero else ("WORKFORCE" if u.is_worker else "WAR HOST")
+	var portrait_overline := _mk_title_label(portrait_role, 11, role_accent.lightened(0.14))
 	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_overline)
 	# Authored UI portrait with an isolated 3D model fallback.
@@ -2149,7 +2193,6 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var uname: String = u.def.get("name", "Unit")
 	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
 	var role_label := "HERO" if u.is_hero else ("WORKER" if u.is_worker else "MILITARY")
-	var role_accent := Color(1.0, 0.55, 0.45) if read_only else (COMMAND_SKY if u.is_hero else (COMMAND_MINT if u.is_worker else COMMAND_FLAME))
 	var identity_header := HBoxContainer.new()
 	identity_header.add_theme_constant_override("separation", 6)
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2161,7 +2204,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
-	info.add_child(_mk_label("VITALS", 8, Color(0.62, 0.67, 0.65)))
+	info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -2491,7 +2534,9 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var building_name := _mk_label(identity_text, 18, identity_color)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
-	building_header.add_child(_mk_command_badge("BUILDING", Color(0.93, 0.72, 0.32) if not read_only else Color(1.0, 0.55, 0.45), 70.0))
+	var building_badge_text := "BUILDING" if b.is_built else "BUILD SITE"
+	var building_badge_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.93, 0.72, 0.32)
+	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, 70.0 if b.is_built else 85.0))
 	identity_info.add_child(building_header)
 	identity_info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -2539,7 +2584,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		queue_row.add_theme_constant_override("separation", 4)
 		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		queue_row.add_child(_mk_label("Queue", 11, Color(0.8, 0.78, 0.7)))
-		_production_status_label = _mk_label("Idle", 11, Color(0.95, 0.82, 0.42))
+		_production_status_label = _mk_label("Idle", 12, Color(0.95, 0.82, 0.42))
 		_production_status_label.custom_minimum_size = Vector2(108, 20)
 		_production_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		queue_row.add_child(_production_status_label)
@@ -2548,7 +2593,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		# One full-width production rail makes active work legible at RTS scale;
 		# the tiny per-slot bars remain useful for distinguishing queued orders.
 		_production_progress_bar = _mk_bar(Color(0.9, 0.66, 0.28))
-		_production_progress_bar.custom_minimum_size = Vector2(0, 9)
+		_production_progress_bar.custom_minimum_size = Vector2(0, 16)
 		_production_progress_bar.visible = false
 		col.add_child(_production_progress_bar)
 		# watch production updates
@@ -2907,7 +2952,7 @@ func _add_command_context(single, selection: Array) -> void:
 		accent = COMMAND_SKY if single.is_hero else (COMMAND_MINT if single.is_worker else COMMAND_FLAME)
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
-		role = "BUILDING"
+		role = "BUILDING" if single.is_built else "BUILD SITE"
 		subtitle = "Production and research" if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
@@ -3044,6 +3089,10 @@ func _build_worker_card() -> void:
 			if is_instance_valid(copy):
 				copy.anchor_right = 0.57
 				copy.offset_right = -6.0
+			var featured_status := featured_card.get_meta("command_status_label") as Control
+			if is_instance_valid(featured_status):
+				featured_status.anchor_right = 0.57
+				featured_status.offset_right = -6.0
 			var divider := ColorRect.new()
 			divider.color = Color(0.72, 0.56, 0.27, 0.55)
 			divider.anchor_left = 0.57
