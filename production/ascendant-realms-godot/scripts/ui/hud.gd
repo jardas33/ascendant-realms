@@ -739,7 +739,7 @@ func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: St
 	var stack := VBoxContainer.new()
 	stack.add_theme_constant_override("separation", -3)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var title_label := _mk_label(caption, 10, accent.lerp(Color(0.86, 0.87, 0.83), 0.40))
+	var title_label := _mk_label(caption, 12, accent.lerp(Color(0.88, 0.89, 0.85), 0.48))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title_label)
 	var value_label := _mk_label(value, 18, FONT_COLOR)
@@ -2158,7 +2158,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
-	info.add_child(_mk_label("VITALS", 8, Color(0.62, 0.67, 0.65)))
+	info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
