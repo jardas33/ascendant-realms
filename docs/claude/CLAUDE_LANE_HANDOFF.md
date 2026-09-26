@@ -58,6 +58,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Construction: building materials swap to assets/shaders/construction_rise.gdshader while under construction; a per-instance cut_y work line rises with progress (no more whole-part reveals showing slab tops), inside faces read as timber decking, a faint warm work line; originals restored on completion; shader prewarmed at match start |
 | (latest) | Theme buttons use forged-bronze 9-patch skins (assets/ui/buttons, regenerate with tools/ui/make_forged_buttons.py); pause menu sits on the hero_sheet_plate with readable key rows. Base tracks/yards/lane use ground_wear_soft.gdshader (noisy soft edges) |
 | (latest) | Ambient weather (scripts/world/ambient_weather.gd): GPU particles in a box that follows the camera's ground focus; per theme pollen, autumn leaves, snow, blown sand, embers and ash |
+| (latest) | Fog of war: drifting domain-warped cloud texture in the shroud and noise-feathered, slowly moving borders (grid stays authoritative) |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 
