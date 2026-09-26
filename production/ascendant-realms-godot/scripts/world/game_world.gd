@@ -378,6 +378,32 @@ func _setup_environment() -> void:
 	env.fog_light_color = _theme.get("fog_color", Color(0.72, 0.78, 0.85))
 	env.fog_density = float(_theme.get("fog_density", 0.00045))
 	env.fog_sky_affect = 0.12
+	env.fog_aerial_perspective = float(_theme.get("fog_aerial_perspective", 0.0))
+	env.fog_sun_scatter = float(_theme.get("fog_sun_scatter", 0.0))
+	if _theme.has("ambient_color"):
+		env.ambient_light_color = _theme["ambient_color"]
+		env.ambient_light_sky_contribution = float(_theme.get("ambient_sky_contribution", 1.0))
+	if bool(_theme.get("ssao", false)):
+		# Contact shadows seat props, units and building footings on the ground.
+		env.ssao_enabled = true
+		env.ssao_radius = 1.4
+		env.ssao_intensity = 1.8
+		env.ssao_power = 1.6
+		env.ssao_detail = 0.5
+		env.ssao_light_affect = 0.15
+	if bool(_theme.get("glow", false)):
+		# Only genuinely bright pixels bloom: sunlit highlights, lit windows, fire.
+		env.glow_enabled = true
+		env.glow_intensity = 0.55
+		env.glow_strength = 0.9
+		env.glow_bloom = 0.0
+		env.glow_hdr_threshold = 1.15
+		env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
+	if _theme.has("grade_contrast"):
+		env.adjustment_enabled = true
+		env.adjustment_contrast = float(_theme["grade_contrast"])
+		env.adjustment_saturation = float(_theme.get("grade_saturation", 1.0))
+		env.adjustment_brightness = float(_theme.get("grade_brightness", 1.0))
 	var we := WorldEnvironment.new()
 	we.name = "WorldEnvironment"
 	we.environment = env
@@ -385,7 +411,7 @@ func _setup_environment() -> void:
 
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
-	sun.rotation_degrees = Vector3(-52, 40, 0)
+	sun.rotation_degrees = Vector3(float(_theme.get("sun_pitch", -52.0)), float(_theme.get("sun_yaw", 40.0)), 0)
 	sun.light_energy = float(_theme.get("sun_energy", 1.0))
 	sun.light_color = _theme.get("sun_color", Color(0.96, 0.94, 0.88))
 	sun.shadow_enabled = true

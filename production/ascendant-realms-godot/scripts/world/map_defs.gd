@@ -192,8 +192,15 @@ static func theme(name: String) -> Dictionary:
 		"highland": {
 			"ground_tint": Color(1.0, 1.0, 1.0), "dirt_bias": 0.0, "rock_bias": 0.0, "snow": 0.0,
 			"rock_tint": Color(0.72, 0.72, 0.70),
-			"fog_color": Color(0.68, 0.72, 0.76), "fog_density": 0.00045,
-			"sun_color": Color(0.96, 0.94, 0.88), "sun_energy": 1.0, "ambient_energy": 0.42,
+			# Golden-hour highland grade: warm low sun against a cool sky fill, a
+			# warm aerial haze for depth, and contact shadows to ground the kit.
+			"fog_color": Color(0.80, 0.76, 0.68), "fog_density": 0.0011,
+			"fog_aerial_perspective": 0.45, "fog_sun_scatter": 0.18,
+			"sun_color": Color(1.0, 0.89, 0.74), "sun_energy": 1.4, "ambient_energy": 0.46,
+			"sun_pitch": -38.0, "sun_yaw": 34.0,
+			"ambient_color": Color(0.46, 0.54, 0.66), "ambient_sky_contribution": 0.55,
+			"ssao": true, "glow": true,
+			"grade_contrast": 1.08, "grade_saturation": 0.98, "grade_brightness": 1.0,
 			"decor_density": 1.0,
 			"water": {"enabled": true, "deep": Color(0.05, 0.22, 0.34), "shallow": Color(0.16, 0.48, 0.58), "foam": Color(0.86, 0.95, 1.0)},
 		},
