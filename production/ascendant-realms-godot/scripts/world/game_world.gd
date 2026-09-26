@@ -1045,22 +1045,22 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
-	_prep_decor(inst, DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE))
+	_prep_decor(inst, DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE), h if is_tree else 0.0)
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 
-func _prep_decor(n: Node, tint: Color = Color.WHITE) -> void:
+func _prep_decor(n: Node, tint: Color = Color.WHITE, tree_height: float = 0.0) -> void:
 	if n is CollisionObject3D:
 		n.set_deferred("collision_layer", 0)
 		n.set_deferred("collision_mask", 0)
 	if n is GeometryInstance3D:
 		n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if n is MeshInstance3D:
-		_apply_p1r14_decor_material_tone(n, tint)
+		_apply_p1r14_decor_material_tone(n, tint, tree_height)
 	for c in n.get_children():
-		_prep_decor(c, tint)
+		_prep_decor(c, tint, tree_height)
 
-func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.WHITE) -> void:
+func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.WHITE, tree_height: float = 0.0) -> void:
 	# The Tripo vegetation and rock exports declare metallic 1.0 with a packed
 	# roughness/metal map and emission on. Foliage then mirrors the sky and reads
 	# pale teal. Decor is never metal, so each shared source material gets one
@@ -1070,7 +1070,7 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.
 			if mesh.get_surface_override_material(surface) != null:
 				continue
 			var source := mesh.mesh.surface_get_material(surface)
-			var fixed := _dielectric_decor_material(source, tint)
+			var fixed := _foliage_wind_material(source, tint, tree_height) if tree_height > 0.0 else _dielectric_decor_material(source, tint)
 			if fixed != source:
 				mesh.set_surface_override_material(surface, fixed)
 	# R14 is presentation-only: mute secondary decoration while preserving its
@@ -1087,6 +1087,32 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.
 			surface_copy.albedo_color = surface_copy.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16)
 			surface_copy.roughness = maxf(surface_copy.roughness, 0.82)
 			mesh.set_surface_override_material(surface, surface_copy)
+
+const FOLIAGE_WIND_SHADER := preload("res://assets/shaders/foliage_wind.gdshader")
+
+## Trees get a wind-and-canopy shader built from their imported material. One
+## cached material per (source, tint, height band) so trees keep sharing.
+func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -> Material:
+	if not source is StandardMaterial3D:
+		return _dielectric_decor_material(source, tint)
+	var standard := source as StandardMaterial3D
+	if standard.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+		return _dielectric_decor_material(source, tint)
+	var band := snappedf(tree_height, 1.0)
+	var key := [standard, tint, band]
+	if _decor_material_cache.has(key):
+		return _decor_material_cache[key]
+	var m := ShaderMaterial.new()
+	m.shader = FOLIAGE_WIND_SHADER
+	m.set_shader_parameter("albedo_tex", standard.albedo_texture)
+	m.set_shader_parameter("has_texture", standard.albedo_texture != null)
+	# Same muted grade the R14 pass gives other decor.
+	m.set_shader_parameter("albedo_color", (standard.albedo_color * tint).lerp(Color(0.60, 0.64, 0.56), 0.16))
+	m.set_shader_parameter("uv_scale", standard.uv1_scale)
+	m.set_shader_parameter("roughness_value", maxf(standard.roughness, 0.82))
+	m.set_shader_parameter("tree_height", band)
+	_decor_material_cache[key] = m
+	return m
 
 func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> Material:
 	if not source is StandardMaterial3D:
