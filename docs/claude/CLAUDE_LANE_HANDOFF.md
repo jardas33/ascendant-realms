@@ -29,6 +29,9 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | f6ebb52f | Hamlet behind the Barrosan start: houses, crofts, `ChimneySmoke`, door lanterns, woodpiles, fences |
 | 530a47ec | Fog overlay overhangs the map edge |
 | 3d9bd467 | `CombatVfx` (cached sparks, flash, dust, death clouds), new arrow and bolt visuals, softer legacy hit cues |
+| 5c952f1d | Skill tree key-art backdrop, campaign inked march routes, War Chest title block and bronze button |
+| 3d5e3aa9 | Vorthak holdfast on Vorthak starts (ground-shader scorch zone, charred basalt walls, ash-glass shards, violet `BrazierFire`); perimeter and foothill trees kept 30 m clear of starts |
+| 7fd0cf95 | Lioraen grove on Lioraen starts (bloom zone, moonstones, lume blooms, `GroveMotes`) |
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
