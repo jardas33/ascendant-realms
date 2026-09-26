@@ -581,8 +581,11 @@ func _finish_stonework(root: Node3D) -> void:
 			if not source is StandardMaterial3D:
 				continue
 			var finish := source.duplicate() as StandardMaterial3D
-			finish.albedo_color = Color(0.38, 0.36, 0.31)
-			finish.albedo_texture = stone_atlas
+			# The regenerated Blender wall and cairn carry their own stone texture;
+			# the dark atlas finish on top of it turned them nearly black.
+			if finish.albedo_texture == null:
+				finish.albedo_color = Color(0.38, 0.36, 0.31)
+				finish.albedo_texture = stone_atlas
 			finish.roughness = 1.0
 			finish.metallic = 0.0
 			mesh_instance.set_surface_override_material(surface, finish)
