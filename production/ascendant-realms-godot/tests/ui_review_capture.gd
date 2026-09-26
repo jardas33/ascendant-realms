@@ -356,6 +356,9 @@ func _run() -> void:
 					validation_errors.append("selected_building_queue_missing")
 				elif not hud._sel_panel.get_global_rect().encloses(queue.get_global_rect()):
 					validation_errors.append("selected_building_queue_clipped")
+				var queue_progress = hud._production_progress_bar
+				if not is_instance_valid(queue_progress) or not queue_progress.visible or queue_progress.size.y < 15.0 or not hud._sel_panel.get_global_rect().encloses(queue_progress.get_global_rect()):
+					validation_errors.append("selected_building_progress_rail_unreadable_or_clipped")
 			if selected_kind in ["war_hall", "war_hall_queued"] and not card_kinds.has("TRAIN"):
 				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
 			if selected_kind in ["war_hall", "war_hall_queued"]:

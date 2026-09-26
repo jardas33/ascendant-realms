@@ -868,8 +868,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.custom_minimum_size = Vector2(text_width, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
-		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
+		var title_color := Color(0.79, 0.81, 0.79, 0.94) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
+		var detail_color := Color(0.67, 0.71, 0.70, 0.94) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
 		var title_label := _mk_label(title, 20 if featured_ability else 18, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
@@ -893,7 +893,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(key_badge)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
 		status_label.offset_left = -83.0
@@ -2577,7 +2577,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		queue_row.add_theme_constant_override("separation", 4)
 		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		queue_row.add_child(_mk_label("Queue", 11, Color(0.8, 0.78, 0.7)))
-		_production_status_label = _mk_label("Idle", 11, Color(0.95, 0.82, 0.42))
+		_production_status_label = _mk_label("Idle", 12, Color(0.95, 0.82, 0.42))
 		_production_status_label.custom_minimum_size = Vector2(108, 20)
 		_production_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		queue_row.add_child(_production_status_label)
@@ -2586,7 +2586,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		# One full-width production rail makes active work legible at RTS scale;
 		# the tiny per-slot bars remain useful for distinguishing queued orders.
 		_production_progress_bar = _mk_bar(Color(0.9, 0.66, 0.28))
-		_production_progress_bar.custom_minimum_size = Vector2(0, 9)
+		_production_progress_bar.custom_minimum_size = Vector2(0, 16)
 		_production_progress_bar.visible = false
 		col.add_child(_production_progress_bar)
 		# watch production updates
