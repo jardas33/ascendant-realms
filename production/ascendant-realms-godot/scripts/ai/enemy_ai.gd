@@ -105,6 +105,8 @@ func _think() -> void:
 		_think_easy()
 		return
 	_assign_idle_workers()
+	_rebalance_gatherers()
+	_finish_abandoned_construction()
 	_manage_economy()
 	_manage_tech()
 	_manage_production()
@@ -539,6 +541,74 @@ func _assign_idle_workers() -> void:
 			var node = world.find_nearest_resource(u.global_position, kind)
 			if node:
 				u.command_gather(node)
+
+# Workers only took new jobs when idle, and a gathering worker never goes
+# idle, so the first food/gold assignment stuck forever: timber and stone ran
+# dry, houses could not be built, population capped and no army was raised.
+# Each think, move at most one gatherer from the best-stocked resource to one
+# that is running short and has nobody on it.
+const REBALANCE_SHORT := 150
+const REBALANCE_SURPLUS := 300
+
+func _rebalance_gatherers() -> void:
+	var crews := {"food": [], "timber": [], "stone": [], "gold": []}
+	for u in commander.units:
+		if not is_instance_valid(u) or u.is_dead or not u.is_worker:
+			continue
+		if u.state != u.State.GATHERING and u.state != u.State.RETURNING:
+			continue
+		var kind := String(u.get("_desired_gather_kind"))
+		if crews.has(kind):
+			crews[kind].append(u)
+	var r = commander.resources
+	var short := ""
+	var short_v := REBALANCE_SHORT
+	for k in crews:
+		var v := int(r.get(k, 0))
+		if crews[k].is_empty() and v < short_v:
+			short = k
+			short_v = v
+	if short == "":
+		return
+	var donor := ""
+	var donor_v := REBALANCE_SURPLUS
+	for k in crews:
+		var v := int(r.get(k, 0))
+		if crews[k].size() >= 1 and v > donor_v and k != short:
+			donor = k
+			donor_v = v
+	if donor == "":
+		return
+	for u in crews[donor]:
+		var node = world.find_nearest_resource(u.global_position, short)
+		if node:
+			u.command_gather(node)
+			return
+
+# A worker pulled off a construction site (or killed) left the site unbuilt
+# for the rest of the match. Send the nearest free worker back to finish it.
+func _finish_abandoned_construction() -> void:
+	for b in commander.buildings:
+		if not is_instance_valid(b) or b.is_dead or b.is_built:
+			continue
+		var staffed := false
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.BUILDING and u.get("_build_target") == b:
+				staffed = true
+				break
+		if staffed:
+			continue
+		var best = null
+		var best_d := INF
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING:
+				var d: float = u.global_position.distance_squared_to(b.global_position)
+				if d < best_d:
+					best_d = d
+					best = u
+		if best:
+			best.command_build(b)
+		return
 
 func _needed_resource() -> String:
 	# pick the lowest stockpile among the ones we consume

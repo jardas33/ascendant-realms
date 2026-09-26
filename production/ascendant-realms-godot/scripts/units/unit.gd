@@ -79,6 +79,8 @@ var _death_recorded := false
 
 # gather
 var _gather_node = null
+var _gather_stall_time := 0.0
+const GATHER_STALL_REACH := 3.2
 var _pending_gather_node = null
 var _desired_gather_kind := ""
 var _carry := 0
@@ -1616,7 +1618,11 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 			var interaction_threshold := float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2))
 			desired_distance = maxf(0.05, interaction_threshold - _building_route_clearance())
 		agent.target_desired_distance = desired_distance
-	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= 0.1 and _navigation_last_command == _navigation_command_type
+	# Chasing a moving target changed the requested point every tick, so each
+	# chasing unit re-ran the full route solver every physics frame. For attack
+	# chases, keep the current route until the target point drifts past 1 m.
+	var same_tolerance := 1.0 if _navigation_command_type == "attack" else 0.1
+	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= same_tolerance and _navigation_last_command == _navigation_command_type
 	var path_needs_refresh: bool = _navigation_invalid_consecutive > 0 or _navigation_retry_elapsed > 0.0 or _navigation_terminal_failure_recorded
 	if same_request and not path_needs_refresh and not _navigation_waypoints.is_empty():
 		# A pending navigation-map sync is not a reason to rerun the authored
@@ -2258,7 +2264,14 @@ func _state_gather(delta: float) -> void:
 			state = State.RETURNING if _carry > 0 else State.IDLE
 			return
 	var d := global_position.distance_to(_gather_node.global_position)
-	if d > 2.2:
+	# A worker that has come to rest just outside the 2.2 m reach (crowded or
+	# blocked approach) used to stand there forever with nothing gathered.
+	# Allow a slightly longer reach once it has been stalled for a second.
+	if d > 2.2 and d <= GATHER_STALL_REACH and velocity.length() < 0.05:
+		_gather_stall_time += delta
+	else:
+		_gather_stall_time = 0.0
+	if d > 2.2 and _gather_stall_time < 1.0:
 		if _move_target.distance_to(_gather_node.global_position) > 2.2:
 			_move_target = _gather_interaction_target(_gather_node)
 		# Keep the active gather route alive between physics ticks. A transient
