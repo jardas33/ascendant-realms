@@ -290,9 +290,10 @@ func _build() -> void:
 
 	# Camera — position in front of model, default -Z forward looks at origin
 	_preview_cam = Camera3D.new()
-	_preview_cam.position = Vector3(0.0, 1.1, 2.8)
+	_preview_cam.position = Vector3(0.0, 0.92, 4.2)
+	_preview_cam.fov = 36.0
 	# Tilt slightly downward (~4 deg) so model center (y≈0.9) is in frame
-	_preview_cam.rotation_degrees = Vector3(-4.0, 0.0, 0.0)
+	_preview_cam.rotation_degrees = Vector3(-2.0, 0.0, 0.0)
 	_preview_viewport.add_child(_preview_cam)
 
 	# Environment — ambient + sky color so model is readable
@@ -430,16 +431,40 @@ func _load_hero_model() -> void:
 	# Normalize: scale to ~1.8m then ground at y=0
 	ModelUtils.scale_to_height(model, 1.8)
 	ModelUtils.ground_model(model, 0.0)
+	# Centre the figure on the turntable axis so it spins in place in the frame.
+	var bounds := ModelUtils._get_combined_aabb(model)
+	model.position.x -= bounds.get_center().x - _preview_pivot.global_position.x
+	model.position.z -= bounds.get_center().z - _preview_pivot.global_position.z
 
+	_play_preview_idle(model, hero_id)
 	# Apply variant rotation and tint
 	_apply_variant_visuals()
+
+func _play_preview_idle(model: Node3D, model_id: String) -> void:
+	# Heroes ship their clips either inside the GLB or as a retargeted library
+	# beside it. Play the idle so the preview stands like the unit in battle
+	# instead of holding the bind T-pose.
+	var player := model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if player == null:
+		var lib_path := "res://assets/characters/%s/%s_animations.tres" % [model_id, model_id]
+		if not ResourceLoader.exists(lib_path):
+			return
+		player = AnimationPlayer.new()
+		model.add_child(player)
+		player.add_animation_library("", load(lib_path))
+	ModelUtils.set_animation_loops(player)
+	for clip in player.get_animation_list():
+		if "idle" in clip.to_lower():
+			player.play(clip)
+			return
 
 func _apply_variant_visuals() -> void:
 	if not is_instance_valid(_preview_pivot):
 		return
 	# Apply starting rotation offset per variant
 	var idx := clampi(_appearance, 0, VARIANT_Y_ROT.size() - 1)
-	_preview_pivot.rotation.y = VARIANT_Y_ROT[idx]
+	# Character GLBs face -Z; turn them toward the preview camera first.
+	_preview_pivot.rotation.y = VARIANT_Y_ROT[idx] + PI
 	# Apply tint to the SubViewportContainer
 	if is_instance_valid(_preview_container):
 		var tint: Color = VARIANT_TINTS[idx] if idx < VARIANT_TINTS.size() else Color.WHITE
@@ -448,7 +473,7 @@ func _apply_variant_visuals() -> void:
 func _process(delta: float) -> void:
 	# Rotate preview pivot slowly
 	if is_instance_valid(_preview_pivot):
-		_preview_pivot.rotation.y += 0.5 * delta
+		_preview_pivot.rotation.y += 0.25 * delta
 
 func _on_forge() -> void:
 	var hname := _name_edit.text.strip_edges()
