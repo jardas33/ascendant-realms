@@ -20,6 +20,9 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
 def mat(name, col, rough=0.9):
+    # Colours below are authored in sRGB; Principled BSDF expects linear, and
+    # feeding sRGB values straight in washed every material out.
+    col = tuple(c ** 2.2 for c in col)
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]
@@ -28,11 +31,11 @@ def mat(name, col, rough=0.9):
     return m
 
 
-SOIL = mat("TilledSoil", (0.17, 0.11, 0.06))
-GRAIN = mat("RipeGrain", (0.64, 0.45, 0.15), 0.8)
-GRAIN_DARK = mat("GrainShade", (0.50, 0.34, 0.11), 0.85)
-TWINE = mat("Twine", (0.36, 0.24, 0.12))
-SACK = mat("Sackcloth", (0.62, 0.52, 0.38), 0.95)
+SOIL = mat("TilledSoil", (0.36, 0.25, 0.16))
+GRAIN = mat("RipeGrain", (0.80, 0.62, 0.28), 0.8)
+GRAIN_DARK = mat("GrainShade", (0.66, 0.48, 0.20), 0.85)
+TWINE = mat("Twine", (0.45, 0.30, 0.16))
+SACK = mat("Sackcloth", (0.72, 0.62, 0.46), 0.95)
 
 
 def link(obj):
