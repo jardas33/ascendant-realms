@@ -71,6 +71,11 @@ const BARROSAN_SETTLEMENT_PLACEMENTS := [
 	{"asset": "campaign_tent", "position": Vector3(22.0, 0.0, -4.0), "yaw": -0.07},
 	{"asset": "supply_awning", "position": Vector3(17.0, 0.0, -1.0), "yaw": 0.0},
 	{"asset": "clan_waystone", "position": Vector3(24.0, 0.0, -9.0), "yaw": 0.0},
+	# Firelight: braziers flank the muster gate and mark the Clanhold threshold,
+	# giving the base warm focal points against the golden-hour grade.
+	{"asset": "watch_brazier", "position": Vector3(-3.2, 0.0, 12.6), "yaw": 0.0},
+	{"asset": "watch_brazier", "position": Vector3(3.2, 0.0, 12.6), "yaw": 0.0},
+	{"asset": "watch_brazier", "position": Vector3(2.6, 0.0, 1.2), "yaw": 0.0},
 ]
 
 const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(8.0, 0.0, 8.0)
@@ -340,6 +345,11 @@ func _build_barrosan_settlement(parent: Node3D, anchor: Vector3) -> void:
 		# LOD1 is the deliberate fixed RTS-scale choice for this first wave. The
 		# imported GLBs carry the authored materials and have no gameplay body.
 		_apply_settlement_material_cohesion(instance, asset_key)
+		if asset_key == "watch_brazier":
+			var fire := BrazierFire.new()
+			fire.name = "BrazierFire"
+			fire.position = Vector3(0.0, 1.36, 0.0)
+			instance.add_child(fire)
 		_set_presentation_only(instance, true)
 		_mark_navigation_blocker(instance, asset_key)
 
