@@ -2,7 +2,8 @@ extends Control
 ## Inventory — equipment slots, item bag, equip/unequip, and stat comparison.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const DEFAULT_BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const BARROSAN_BG := "res://assets/ui/inventory/war_chest_vault_backdrop_r2.png"
 const EMPTY_CHEST_ART := "res://assets/ui/inventory/astra_empty_war_chest_r1.png"
 const EMPTY_RELIC_ART := "res://assets/ui/inventory/astra_empty_relic_cradle_r1.png"
 const RELIC_ART := {
@@ -28,6 +29,7 @@ var _items_box: VBoxContainer
 var _detail_box: VBoxContainer
 var _grant_button: Button
 var _item_group: ButtonGroup
+var _barrosan_vault_active := false
 
 func _ready() -> void:
 	_build()
@@ -38,16 +40,18 @@ func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
 
 func _build() -> void:
+	_barrosan_vault_active = str(ProfileManager.hero().get("race", "")) == "barrosan" and ResourceLoader.exists(BARROSAN_BG)
 	var bg := TextureRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	if ResourceLoader.exists(BG):
-		bg.texture = load(BG)
+	var bg_path := BARROSAN_BG if _barrosan_vault_active else DEFAULT_BG
+	if ResourceLoader.exists(bg_path):
+		bg.texture = load(bg_path)
 	add_child(bg)
 	var scrim := ColorRect.new()
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scrim.color = Color(0.02, 0.03, 0.05, 0.67)
+	scrim.color = Color(0.02, 0.03, 0.05, 0.26 if _barrosan_vault_active else 0.67)
 	add_child(scrim)
 
 	var title := Label.new()
@@ -126,6 +130,9 @@ func _build() -> void:
 
 func _column(header: String, assign: Callable) -> Control:
 	var panel: PanelContainer = MENU_PLATE_SCRIPT.new()
+	if _barrosan_vault_active:
+		var panel_alpha := 0.76 if header == "Equipped" else (0.70 if header == "Details" else 0.64)
+		panel.set("surface_alpha", panel_alpha)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color.TRANSPARENT

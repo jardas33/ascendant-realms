@@ -1,5 +1,11 @@
 # War Chest empty-state art
 
+## `war_chest_vault_backdrop_r2.png`
+
+This wide backdrop was generated with the built-in Codex `image_gen` tool for Barrosan War Chest profiles. It shows a stone-and-oak highland armory with quiet central reading space, forge warmth at the edges, and mountain-and-hammer banners matched to `barrosan_command_crest_i2.png`. The first generated version carried tree heraldry and was rejected. Non-Barrosan profiles retain the existing realm background until their own faction-specific menu setting is authored. The live columns, item art, and text remain separate from the backdrop.
+
+> Use case: stylized-concept. Asset type: full-screen background art for the War Chest inventory menu. Create a cinematic wide Barrosan highland armory with ancient dark stone arches, oak beams, bronze knotwork, restrained weapons and armor, warm amber practical lamps and cool window light. Preserve calm low-contrast reading space across the central three columns. No people, text, UI panels, borders, or watermark. On the hanging cloth, use subtle mountain-and-hammer heraldry in deep oxblood and aged gold matching the existing Barrosan crest, not trees or leaves.
+
 Both PNGs were generated with the built-in Codex `image_gen` tool and copied into this directory. They use transparent backgrounds. Keep the whole object inside the alpha gutter when revising either image; the inventory layout scales each image without cropping it.
 
 ## `astra_empty_war_chest_r1.png`
