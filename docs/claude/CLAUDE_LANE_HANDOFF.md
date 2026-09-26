@@ -38,6 +38,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | 0a707e10 | Route solver: steering detours reused 12 frames, 5 ms per-frame solver budget (battle stalls at 4x from 150-260 ms to mostly under 100 ms) |
 | 56231283 | Worker refitted to 6k triangles |
 | (latest) | Unit packed-metal cap at 0.3 |
+| 7d0618a2 | Team-coloured combat rings (player blue, hostile red), friendly bars stay green until low, thicker bars; smaller hit glow |
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
