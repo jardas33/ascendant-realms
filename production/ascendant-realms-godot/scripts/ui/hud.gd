@@ -34,7 +34,7 @@ const COMMAND_CRESTS := {
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
-const MINIMAP_BACKGROUND_RASTER_SIZE := 224
+const MINIMAP_BACKGROUND_RASTER_SIZE := 320
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_SNOW_TEXTURE := "res://assets/textures/nature/frostmere_windswept_snow_r1.png"
@@ -1509,7 +1509,7 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 				if state == 0:
 					fog_color = Color(0.023, 0.034, 0.043, 0.54)
 				elif state == 1:
-					fog_color = Color(0.038, 0.056, 0.067, 0.20)
+					fog_color = Color(0.038, 0.056, 0.067, 0.13)
 				fog_image.set_pixel(x, y, fog_color)
 		if _minimap_fog == null:
 			_minimap_fog = ImageTexture.create_from_image(fog_image)
@@ -1669,7 +1669,7 @@ func _ensure_minimap_background() -> void:
 		if start is Vector3:
 			paths.append([start, Vector3.ZERO])
 	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
-	var road_color := Color(0.60, 0.45, 0.27) if theme_name == "highland" else base.lightened(0.19)
+	var road_color := Color(0.70, 0.53, 0.33) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
 	var snow_texture: Texture2D = load(MINIMAP_SNOW_TEXTURE) as Texture2D if theme_name == "snow" else null
@@ -1705,7 +1705,7 @@ func _ensure_minimap_background() -> void:
 				if theme_name == "highland":
 					# The world reads as a living meadow at battle zoom. Keep that
 					# authored color in its survey rather than flattening it to olive.
-					col = col.lerp(ground_sample, 0.58)
+					col = col.lerp(ground_sample, 0.46)
 				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
 			if has_snow_image:
 				var snow_sample := snow_image.get_pixel(
@@ -1717,10 +1717,13 @@ func _ensure_minimap_background() -> void:
 				nearest_path = minf(nearest_path, _minimap_segment_distance(wp, path[0], path[1]))
 			if theme_name == "highland" and nearest_path < 15.0:
 				var road_shoulder := 1.0 - smoothstep(10.5, 15.0, nearest_path)
-				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.26)
+				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.34)
 			if nearest_path < 12.5:
 				var road_weight := 1.0 - smoothstep(7.0, 12.5, nearest_path)
-				col = col.lerp(road_color, road_weight * (0.82 if theme_name == "highland" else 0.70))
+				col = col.lerp(road_color, road_weight * (0.90 if theme_name == "highland" else 0.70))
+				if theme_name == "highland":
+					var road_crown := 1.0 - smoothstep(3.5, 7.0, nearest_path)
+					col = col.lerp(Color(0.83, 0.67, 0.44), road_crown * 0.35)
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1740,10 +1743,9 @@ func _ensure_minimap_background() -> void:
 				var dx := local.x / radius.x
 				var dz := local.y / radius.y
 				var landform_distance := dx * dx + dz * dz
-				if landform_distance < 0.78:
-					col = Color(0.26, 0.29, 0.25, 1.0)
-				elif landform_distance < 1.0:
-					col = Color(0.40, 0.42, 0.35, 1.0)
+				if landform_distance < 1.0:
+					var shelf_weight := 1.0 - smoothstep(0.70, 1.0, landform_distance)
+					col = col.lerp(Color(0.28, 0.31, 0.26, 1.0), shelf_weight * 0.85)
 			image.set_pixel(x, y, col)
 	_paint_minimap_decor(image, theme_name)
 	_minimap_background = ImageTexture.create_from_image(image)
@@ -1771,7 +1773,8 @@ func _paint_minimap_decor(image: Image, theme_name: String) -> void:
 		var center := Vector2(
 			(position_3d.x + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1),
 			(position_3d.z + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1))
-		var radius := (4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3
+		var decor_scale := float(MINIMAP_BACKGROUND_RASTER_SIZE) / 224.0
+		var radius := ((4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3) * decor_scale
 		var mark_color: Color = forest_color if is_tree else stone_color
 		var strength := (0.69 if theme_name == "highland" else 0.62) if is_tree else 0.43
 		for py in range(maxi(0, int(floor(center.y - radius - 1.0))), mini(image.get_height(), int(ceil(center.y + radius + 1.0)))):
