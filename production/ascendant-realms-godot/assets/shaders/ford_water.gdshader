@@ -56,13 +56,19 @@ void fragment() {
 	mat2 rot = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
 	vec2 flow = rot * vec2(wpos.x * 0.16 - TIME * flow_speed, wpos.z * 0.42);
 	float ripple = fbm(flow) * 0.6 + fbm(flow * 2.3 + 11.0) * 0.4;
-	vec3 col = mix(shallow_tint, deep_tint, depth * 0.85);
+	vec3 col = mix(shallow_tint, deep_tint, smoothstep(0.0, 1.0, depth));
+	// Current streaks: noise stretched along the flow, drifting downstream.
+	float streak = fbm(vec2(wpos.x * 0.06 - TIME * flow_speed * 0.9, wpos.z * 0.85 + 3.0));
+	streak = smoothstep(0.55, 0.78, streak) * (0.4 + 0.6 * depth);
+	col = mix(col, shallow_tint * 1.35, streak * 0.35);
 	// Foam where the current breaks along the banks and around shallow riffles.
 	float foam = smoothstep(0.72, 0.9, ripple) * (0.35 + 0.65 * smoothstep(0.45, 0.8, edge));
-	col = mix(col, foam_tint, foam * 0.55);
+	float bank_line = smoothstep(0.56, 0.62, edge) * (1.0 - smoothstep(0.64, 0.7, edge)) * smoothstep(0.5, 0.68, fbm(flow * 4.1 + 5.0));
+	col = mix(col, foam_tint, clamp(foam * 0.45 + bank_line * 0.35, 0.0, 1.0));
 	ALBEDO = col;
-	ALPHA = body * mix(0.78, 0.96, depth);
-	ROUGHNESS = 0.12;
+	// Shallow margins let the wet riverbed show through; the channel is deep.
+	ALPHA = body * mix(0.64, 0.95, depth) + bank_line * 0.15 * body;
+	ROUGHNESS = 0.06;
 	SPECULAR = 0.6;
 	// Ripple normal from the flow noise.
 	float e = 0.4;

@@ -54,6 +54,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | World03 field shelves use the ground material (no more flat green carpets) |
 | (latest) | Occluded units: unit meshes carry a material_overlay (assets/shaders/unit_xray.gdshader) that draws a team-coloured silhouette only where scenery stands 2.5 m+ in front (depth-texture compare), so units under tree canopies or behind buildings stay readable; other units never trigger it |
 | (latest) | Trees use assets/shaders/foliage_wind.gdshader (built from the imported material, cached per source/tint/height): travelling wind gusts, crown flutter, shaded-understory-to-sunlit-crown gradient, leaf backlight |
+| (latest) | Ford water: downstream current streaks, broken foam line at the banks, clearer shallows over the wet bed, glossier surface |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 
