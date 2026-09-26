@@ -730,13 +730,45 @@ func _set_construction_visual(p: float) -> void:
 		for mesh in _construction_stage_meshes:
 			if is_instance_valid(mesh):
 				mesh.visible = stage < 0.9
-	for mi in _mesh_instances:
-		if not is_instance_valid(mi):
-			continue
-		if building_now:
-			if not (mi.material_override is StandardMaterial3D) or mi.get_meta("scaffold", false) == false:
-				pass
-				mi.transparency = clamp(1.0 - p, 0.0, 0.6) if building_now else 0.0
+	_apply_construction_rise(clampf(p, 0.0, 1.0), building_now)
+
+# Unfinished buildings used to fade the whole model to 60% transparency.
+# With hundreds of parts that sorted into a flat, see-through slab (the
+# War Hall read as a translucent stone box). Now the structure rises: a
+# multi-part model reveals its parts bottom-up as work progresses, and a
+# single-mesh model grows upward from its foundation, both fully opaque and
+# inside the timber scaffold.
+var _rise_levels: Array = []
+const _rest_model_scale_y := 1.0
+
+func _apply_construction_rise(p: float, building_now: bool) -> void:
+	if not is_instance_valid(model_root):
+		return
+	if _mesh_instances.size() >= 6:
+		if _rise_levels.is_empty():
+			var lo := INF
+			var hi := -INF
+			var bottoms: Array = []
+			for mi in _mesh_instances:
+				var y := INF
+				if is_instance_valid(mi) and mi.mesh:
+					var box: AABB = mi.global_transform * mi.get_aabb()
+					y = box.position.y
+					lo = minf(lo, box.position.y)
+					hi = maxf(hi, box.end.y)
+				bottoms.append(y)
+			for y in bottoms:
+				_rise_levels.append(clampf((y - lo) / maxf(0.01, hi - lo), 0.0, 1.0) if y != INF else 0.0)
+		for i in _mesh_instances.size():
+			var mi = _mesh_instances[i]
+			if is_instance_valid(mi):
+				mi.transparency = 0.0
+				mi.visible = not building_now or float(_rise_levels[i]) <= p * 1.08
+	else:
+		for mi in _mesh_instances:
+			if is_instance_valid(mi):
+				mi.transparency = 0.0
+		model_root.scale.y = _rest_model_scale_y * (lerpf(0.18, 1.0, p) if building_now else 1.0)
 
 func _build_damage_status_visual() -> void:
 	# Keep completed-building damage readable from the battlefield without a
