@@ -28,6 +28,8 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 	add_child(root)
 	if model_path == "composed:ruin_chapel":
 		_build_ruin_chapel(root)
+	elif model_path == "composed:highland_watch":
+		_build_highland_watch(root)
 	elif model_path != "" and ResourceLoader.exists(model_path):
 		var load_start := Time.get_ticks_usec()
 		var m = load(model_path).instantiate()
@@ -83,6 +85,38 @@ func _build_ruin_chapel(root: Node3D) -> void:
 	glow.shadow_enabled = false
 	glow.position = Vector3(0, 1.8, 0)
 	root.add_child(glow)
+	footprint = 3.0
+
+const _OUTCROP := "res://assets/environment/rocks/highland_rock_cluster.glb"
+const _BRAZIER := "res://assets/environment/visual_convergence/barrosan_settlement/barrosan_watch_brazier_lod1.glb"
+
+func _build_highland_watch(root: Node3D) -> void:
+	# A rocky lookout: an outcrop with standing stones and a lit signal
+	# brazier. Only the outcrop collides.
+	var rock: Node3D = load(_OUTCROP).instantiate()
+	root.add_child(rock)
+	ModelUtils.scale_to_height(rock, 2.6)
+	ModelUtils.ground_model(rock)
+	ModelUtils.add_per_part_convex_collision(rock, 16)
+	for i in 3:
+		var a := TAU * float(i) / 3.0 + 0.9
+		var stone: Node3D = load(_PILLAR).instantiate()
+		root.add_child(stone)
+		stone.position = Vector3(cos(a), 0.0, sin(a)) * 4.6
+		ModelUtils.scale_to_height(stone, [3.8, 2.6, 4.4][i])
+		ModelUtils.ground_model(stone)
+		stone.rotation.y = a
+		for body in stone.find_children("*", "CollisionObject3D", true, false):
+			body.queue_free()
+	var brazier: Node3D = load(_BRAZIER).instantiate()
+	root.add_child(brazier)
+	brazier.position = Vector3(2.4, 0.0, 1.6)
+	ModelUtils.ground_model(brazier)
+	var fire := BrazierFire.new()
+	fire.position = Vector3(0.0, 1.36, 0.0)
+	brazier.add_child(fire)
+	for body in brazier.find_children("*", "CollisionObject3D", true, false):
+		body.queue_free()
 	footprint = 3.0
 
 func _build_ring() -> void:

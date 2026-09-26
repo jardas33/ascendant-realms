@@ -11,6 +11,8 @@ const LUME := "res://assets/environment/structures/lume_spire_ruin.glb"
 # The chapel is composed in CapturePoint (a ring of ruined pillars around an
 # altar); it used to reuse the Lume Spire model, so two sites looked identical.
 const RUIN := "composed:ruin_chapel"
+# Vision sites were the gold-mine model, which read as a resource node.
+const WATCH := "composed:highland_watch"
 const GOLD_MINE := "res://assets/environment/rocks/gold_mine_lumevein.glb"
 const BRIDGE := "res://assets/environment/structures/highland_crossing_bridge.glb"
 
@@ -178,12 +180,12 @@ static func _captures(style: String) -> Array:
 			return [lume]
 		"quad":
 			return [lume,
-				{"name": "North Watch", "benefit": "vision", "pos": Vector3(0, 0, -48), "model": GOLD_MINE},
+				{"name": "North Watch", "benefit": "vision", "pos": Vector3(0, 0, -48), "model": WATCH},
 				{"name": "South Chapel", "benefit": "heal", "pos": Vector3(0, 0, 48), "model": RUIN},
 				{"name": "West Vein", "benefit": "income", "pos": Vector3(-52, 0, 4), "model": GOLD_MINE}]
 		_:  # triple
 			return [lume,
-				{"name": "Highland Watch", "benefit": "vision", "pos": Vector3(-42, 0, 40), "model": GOLD_MINE},
+				{"name": "Highland Watch", "benefit": "vision", "pos": Vector3(-42, 0, 40), "model": WATCH},
 				{"name": "Ruin Chapel", "benefit": "heal", "pos": Vector3(42, 0, -40), "model": RUIN}]
 
 # ---------------------------------------------------------------------------
