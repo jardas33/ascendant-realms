@@ -162,6 +162,123 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary, start_race: St
 	if barrosan_start:
 		_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
 		_build_barrosan_r2_dressing(layer, origin)
+		_build_barrosan_hamlet(layer, origin)
+
+
+# Lived-in hamlet behind the Barrosan start: cottages with hearth smoke and
+# door lanterns, woodpiles, a well-worn lane and garden walls. Placed in the
+# start's own frame (toward = map centre) on the side away from the fight and
+# clear of the resource cluster; houses register as world blockers so units
+# path around them. Presentation only: no ownership, selection or economy.
+const HAMLET_HOUSES := [
+	# [asset, back, side, yaw offset, height]
+	["res://assets/environment/buildings/barrosan_houses_a03.glb", 20.0, -8.0, 0.35, 7.4],
+	["res://assets/environment/buildings/barrosan_clan_croft.glb", 18.0, 12.5, -0.5, 6.2],
+	["res://assets/environment/buildings/barrosan_clan_croft.glb", 28.0, 3.5, 2.9, 5.8],
+]
+const HAMLET_DRESSING := [
+	# [asset key, back, side, yaw]
+	["logs", 18.5, -1.5, 0.9],
+	["logs", 27.0, 13.5, 2.1],
+	["fence", 29.0, -13.5, 1.25],
+	["fence", 17.0, 17.0, -0.35],
+	["wall", 36.0, -6.0, 0.15],
+	["brush", 30.5, -1.0, 0.0],
+	["brush", 22.5, 19.0, 0.5],
+	["cairn", 15.0, 8.0, 0.0],
+]
+
+
+func _build_barrosan_hamlet(parent: Node3D, origin: Vector3) -> void:
+	var toward := (Vector3.ZERO - origin)
+	toward.y = 0.0
+	if toward.length_squared() < 0.01:
+		return
+	toward = toward.normalized()
+	var side := Vector3(-toward.z, 0.0, toward.x)
+	var facing := atan2(toward.x, toward.z)
+	var hamlet := Node3D.new()
+	hamlet.name = "BarrosanHamlet"
+	parent.add_child(hamlet)
+	var lane_mat := _slice_material("BarrosanHamletLane", Color(0.62, 0.50, 0.36, 0.55), SLICE_DIRT_TEXTURE)
+	var lane: Array[Vector3] = [
+		origin - toward * 9.0 + Vector3(0, 0.02, 0),
+		origin - toward * 18.0 + side * 3.0 + Vector3(0, 0.02, 0),
+		origin - toward * 26.0 + side * 1.5 + Vector3(0, 0.02, 0),
+		origin - toward * 32.0 - side * 2.0 + Vector3(0, 0.02, 0),
+	]
+	var widths: Array[float] = [2.6, 3.2, 3.0, 2.2]
+	_add_ribbon(hamlet, "HamletLane", lane, widths, lane_mat)
+	for i in HAMLET_HOUSES.size():
+		var spec: Array = HAMLET_HOUSES[i]
+		var pos: Vector3 = origin - toward * float(spec[1]) + side * float(spec[2])
+		var house := _place_hamlet_house(hamlet, String(spec[0]), pos, facing + float(spec[3]), float(spec[4]), i)
+		if house:
+			_dress_hamlet_house(house, pos, toward, i)
+	for spec in HAMLET_DRESSING:
+		var pos: Vector3 = origin - toward * float(spec[1]) + side * float(spec[2])
+		_place_asset(hamlet, String(spec[0]), pos, facing + float(spec[3]))
+		if String(spec[0]) == "wall":
+			# Garden walls are field boundaries here, lower than the route walls.
+			var last := hamlet.get_child(hamlet.get_child_count() - 1) as Node3D
+			if last:
+				ModelUtils.scale_to_height(last, 1.3)
+				ModelUtils.ground_model(last)
+
+
+func _place_hamlet_house(parent: Node3D, path: String, position: Vector3, yaw: float, height: float, index: int) -> Node3D:
+	if not ResourceLoader.exists(path):
+		return null
+	var packed := load(path)
+	if not packed is PackedScene:
+		return null
+	var house: Node3D = packed.instantiate()
+	parent.add_child(house)
+	# The A03 source carries review-only ground planes; keep just the houses.
+	for mesh in house.find_children("*", "MeshInstance3D", true, false):
+		var lower := String(mesh.name).to_lower()
+		if lower == "grass" or lower == "lanedirt":
+			mesh.get_parent().remove_child(mesh)
+			mesh.free()
+	ModelUtils.scale_to_height(house, height)
+	house.position = position
+	house.rotation.y = yaw
+	ModelUtils.ground_model(house)
+	_set_presentation_only(house, true)
+	house.add_to_group("navigation_soft_blockers")
+	house.set_meta("navigation_blocker_id", "hamlet_house_%d" % index)
+	house.set_meta("navigation_blocker_class", "ASTRA_LARGE")
+	return house
+
+
+func _dress_hamlet_house(house: Node3D, position: Vector3, toward: Vector3, index: int) -> void:
+	var bounds := AABB()
+	var first := true
+	for child in house.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if not mi.mesh:
+			continue
+		var box: AABB = mi.global_transform * mi.mesh.get_aabb()
+		bounds = box if first else bounds.merge(box)
+		first = false
+	if first:
+		return
+	# Hearth smoke from the roof ridge, offset toward the back of the house.
+	var smoke := ChimneySmoke.new()
+	smoke.name = "HearthSmoke%d" % index
+	var top := bounds.get_center()
+	top.y = bounds.end.y - 0.4
+	house.get_parent().add_child(smoke)
+	smoke.global_position = top - toward * bounds.size.length() * 0.12
+	# A door lantern on the side facing the lane and the base.
+	var lantern := BrazierFire.new()
+	lantern.name = "DoorLantern%d" % index
+	lantern.light_range = 5.5
+	lantern.light_energy = 1.6
+	lantern.flame_scale = 0.45
+	house.get_parent().add_child(lantern)
+	var front := bounds.get_center() + toward * (maxf(bounds.size.x, bounds.size.z) * 0.5 + 0.6)
+	lantern.global_position = Vector3(front.x, 1.9, front.z)
 
 
 func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:
