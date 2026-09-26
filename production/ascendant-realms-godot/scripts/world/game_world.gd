@@ -2236,10 +2236,11 @@ func _spawn_resources() -> void:
 		"timber": "res://assets/props/containers/resource_timber_pile.glb",
 		"stone": "res://assets/props/misc/resource_stone_quarry_chunk.glb",
 		"gold": "res://assets/environment/rocks/gold_mine_lumevein.glb",
-		"food": "res://assets/props/containers/resource_timber_pile.glb",
+		# Food had reused the timber pile; it is now a grain patch with sheaves.
+		"food": "res://assets/props/misc/resource_harvest_grain.glb",
 	}
 	var amounts := {"timber": 800, "stone": 700, "gold": 900, "food": 600}
-	var heights := {"timber": 2.0, "stone": 2.2, "gold": 3.0, "food": 2.0}
+	var heights := {"timber": 2.0, "stone": 2.2, "gold": 3.0, "food": 1.5}
 	for r in map.get("resources", []):
 		var kind: String = r["kind"]
 		var node = ResourceNodeScript.new()
