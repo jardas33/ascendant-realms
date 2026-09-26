@@ -663,6 +663,12 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			mat.albedo_color = mat.albedo_color.lerp(Color(1.08, 1.08, 1.08), lift)
 			mat.albedo_color = mat.albedo_color.lerp(team_tint, tint_strength)
 			mat.roughness = maxf(mat.roughness, P1R20_ROUGHNESS_FLOOR)
+			# The generated character exports pack metalness into the roughness map
+			# with metallic 1.0, so cloth and skin mirrored the sky and read grey-teal
+			# (the Ash Thrall averages 0.79 metal). Cap the factor so worn armour
+			# keeps a sheen while cloth, leather and skin read as their painted colour.
+			if mat is StandardMaterial3D and (mat as StandardMaterial3D).metallic_texture != null:
+				mat.metallic = minf(mat.metallic, 0.3)
 			mi.set_surface_override_material(surface, mat)
 
 func _build_p1r22_contact_shadow() -> void:
