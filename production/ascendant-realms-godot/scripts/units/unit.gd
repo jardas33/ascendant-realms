@@ -1638,6 +1638,10 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 				if agent:
 					agent.target_position = _navigation_effective_target
 		return
+	if world and world.has_method("route_budget_available") and not world.route_budget_available() and not _navigation_waypoints.is_empty() and _navigation_command_type in ["attack", "attack_move", "gather"]:
+		# The frame's route budget is spent: keep following the current route
+		# and re-plan on a later tick (the request is left unrecorded).
+		return
 	_navigation_last_requested = pos
 	_navigation_last_command = _navigation_command_type
 	var target_blocker = null

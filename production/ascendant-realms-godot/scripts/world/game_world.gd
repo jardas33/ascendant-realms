@@ -1212,6 +1212,30 @@ func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clear
 	return {"blockers": filtered, "excluded": excluded, "region_min": region_min, "region_max": region_max, "margin": margin}
 
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
+	var __started := Time.get_ticks_usec()
+	var __result := _solve_navigation_waypoints(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
+	_note_route_solver_time(Time.get_ticks_usec() - __started)
+	return __result
+
+# Frame budget for the authored route solver. In a big battle dozens of units
+# asked for routes in the same frame (1-14 ms each), stalling frames by
+# 150-250 ms at 4x. Callers ask route_budget_available() first and defer
+# optional re-planning to a later frame once this frame has spent its budget.
+const ROUTE_FRAME_BUDGET_USEC := 5000
+var _route_budget_frame := -1
+var _route_budget_used := 0
+
+func _note_route_solver_time(usec: int) -> void:
+	var frame := Engine.get_physics_frames()
+	if frame != _route_budget_frame:
+		_route_budget_frame = frame
+		_route_budget_used = 0
+	_route_budget_used += usec
+
+func route_budget_available() -> bool:
+	return Engine.get_physics_frames() != _route_budget_frame or _route_budget_used < ROUTE_FRAME_BUDGET_USEC
+
+func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
 	var solver_started_usec := Time.get_ticks_usec()
 	var route_cache_key := _route_result_cache_key(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
 	var cached_points := _route_result_cache_lookup(route_cache_key, origin, requested)
@@ -1549,6 +1573,9 @@ func _segment_enters_route_rectangle(a: Vector3, b: Vector3, center: Vector3, ha
 ## Last-frame guard for the broad production navmesh. It only constrains a
 ## movement velocity when a completed-building clearance envelope would be
 ## entered; it does not change targets, combat range, or authoritative state.
+const STEERING_DETOUR_FRAMES := 12
+var _steering_detour_cache := {}
+
 func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocity: Vector3, delta: float, clearance: float = 1.0, movement_reason: String = "OTHER") -> Vector3:
 	var speed := requested_velocity.length()
 	if speed < 0.01:
@@ -1574,7 +1601,23 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 		if not _segment_enters_route_rectangle(origin, step_end, center, half_extents):
 			continue
 		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(maxf(half_extents.x, half_extents.y) * 4.0, 12.0)
-		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance, null, movement_reason)
+		# Units brushing past a building hit this every tick, and each hit ran the
+		# full route solver (1-14 ms) for a result only used as a steering
+		# direction. Reuse a detour for a few frames within a 2 m / 4 m bucket.
+		var detour_key := "%d,%d|%d,%d|%d|%s" % [roundi(origin.x / 2.0), roundi(origin.z / 2.0), roundi(travel_target.x / 4.0), roundi(travel_target.z / 4.0), roundi(clearance * 10.0), str(blocker.get("node", ""))]
+		var frame := Engine.get_physics_frames()
+		var waypoints: Array
+		var cached_detour = _steering_detour_cache.get(detour_key)
+		if cached_detour != null and frame - int(cached_detour[0]) <= STEERING_DETOUR_FRAMES:
+			waypoints = cached_detour[1]
+		elif not route_budget_available():
+			# Out of solver time this frame: slide on the straight line and retry.
+			return requested_velocity
+		else:
+			waypoints = navigation_waypoints_for_unit(origin, travel_target, clearance, null, movement_reason)
+			if _steering_detour_cache.size() > 256:
+				_steering_detour_cache.clear()
+			_steering_detour_cache[detour_key] = [frame, waypoints]
 		if not waypoints.is_empty():
 			var waypoint_direction: Vector3 = waypoints[0] - origin
 			waypoint_direction.y = 0.0
