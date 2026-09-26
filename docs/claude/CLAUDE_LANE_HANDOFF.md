@@ -45,6 +45,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | bc957d53 | Victory/defeat result ledger |
 | e983b0a9 | Edge scroll only when focused and cursor inside |
 | c0fbcf27 | Placement ghost mirrors Building model prep, keeps textures |
+| 3d43e08b | Walkable river ford (ford_water shader + ground-shader riverbed) under bridges on the 6 bridge maps; decor/shelves kept off it |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 
