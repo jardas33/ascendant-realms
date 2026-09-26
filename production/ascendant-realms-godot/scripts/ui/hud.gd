@@ -810,6 +810,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		preview.set_deferred("custom_minimum_size", Vector2(68, 68))
 		preview.set_deferred("size", Vector2(68, 68))
 		var text_col := VBoxContainer.new()
+		text_col.name = "BuildingCardCopy"
 		text_col.anchor_right = 1.0
 		text_col.offset_left = 81.0
 		text_col.offset_top = 10.0
@@ -2987,9 +2988,8 @@ func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dic
 
 func _build_worker_card() -> void:
 	_add_command_section("Build", "Choose a structure.")
-	var grid := _mk_command_grid()
-	grid.columns = 2
-	_cmd_body.add_child(grid)
+	var build_buttons: Array[Button] = []
+	var build_definitions: Array[Dictionary] = []
 	for bid in GameData.buildings_for_race(_commander.race):
 		var bdef := GameData.get_building(bid)
 		if bdef.is_empty():
@@ -3013,7 +3013,58 @@ func _build_worker_card() -> void:
 		btn.pressed.connect(func():
 			if is_instance_valid(rts) and rts.has_method("enter_build_mode"):
 				rts.enter_build_mode(cap_id))
-		grid.add_child(btn)
+		build_buttons.append(btn)
+		build_definitions.append(bdef)
+	var gallery := VBoxContainer.new()
+	gallery.name = "BuildGallery"
+	gallery.add_theme_constant_override("separation", 3)
+	gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_cmd_body.add_child(gallery)
+	for index in range(0, build_buttons.size(), 2):
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 5)
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		gallery.add_child(row)
+		if index + 1 < build_buttons.size():
+			row.add_child(build_buttons[index])
+			row.add_child(build_buttons[index + 1])
+		else:
+			# A single final structure spans the gallery instead of leaving a
+			# conspicuous empty slot in the construction deck.
+			var featured_card := build_buttons[index]
+			row.add_child(featured_card)
+			var copy := featured_card.get_node_or_null("BuildingCardCopy") as Control
+			if is_instance_valid(copy):
+				copy.anchor_right = 0.57
+				copy.offset_right = -6.0
+			var divider := ColorRect.new()
+			divider.color = Color(0.72, 0.56, 0.27, 0.55)
+			divider.anchor_left = 0.57
+			divider.anchor_right = 0.57
+			divider.offset_right = 1.0
+			divider.offset_top = 13.0
+			divider.anchor_bottom = 1.0
+			divider.offset_bottom = -13.0
+			divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			featured_card.add_child(divider)
+			var role := VBoxContainer.new()
+			role.anchor_left = 0.59
+			role.anchor_right = 1.0
+			role.anchor_bottom = 1.0
+			role.offset_top = 12.0
+			role.offset_right = -11.0
+			role.offset_bottom = -8.0
+			role.add_theme_constant_override("separation", 2)
+			role.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var role_heading := _mk_label(String(build_definitions[index].get("kind", "structure")).to_upper(), 11, Color(0.89, 0.70, 0.35))
+			role.add_child(role_heading)
+			var first_sentence := String(build_definitions[index].get("desc", "")).get_slice(".", 0).strip_edges()
+			var role_description := _mk_label(first_sentence + "." if not first_sentence.is_empty() else "", 13, Color(0.86, 0.84, 0.76))
+			role_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			role_description.max_lines_visible = 3
+			role_description.size_flags_vertical = Control.SIZE_EXPAND_FILL
+			role.add_child(role_description)
+			featured_card.add_child(role)
 
 
 func _build_hero_command_card(u) -> void:
