@@ -737,40 +737,78 @@ func _set_construction_visual(p: float) -> void:
 # Unfinished buildings used to fade the whole model to 60% transparency.
 # With hundreds of parts that sorted into a flat, see-through slab (the
 # War Hall read as a translucent stone box). Now the structure rises: a
-# multi-part model reveals its parts bottom-up as work progresses, and a
-# single-mesh model grows upward from its foundation, both fully opaque and
-# inside the timber scaffold.
+# rises behind a clipped work line, fully opaque and inside the timber
+# scaffold.
 var _rise_levels: Array = []
-const _rest_model_scale_y := 1.0
 
 func _apply_construction_rise(p: float, building_now: bool) -> void:
+	# The structure is clipped at a rising work line (construction_rise shader)
+	# instead of revealing whole parts, so no flat slab tops or hollow boxes
+	# show while it goes up. Original materials come back on completion.
 	if not is_instance_valid(model_root):
 		return
-	if _mesh_instances.size() >= 6:
-		if _rise_levels.is_empty():
-			var lo := INF
-			var hi := -INF
-			var bottoms: Array = []
-			for mi in _mesh_instances:
-				var y := INF
-				if is_instance_valid(mi) and mi.mesh:
-					var box: AABB = mi.global_transform * mi.get_aabb()
-					y = box.position.y
-					lo = minf(lo, box.position.y)
-					hi = maxf(hi, box.end.y)
-				bottoms.append(y)
-			for y in bottoms:
-				_rise_levels.append(clampf((y - lo) / maxf(0.01, hi - lo), 0.0, 1.0) if y != INF else 0.0)
-		for i in _mesh_instances.size():
-			var mi = _mesh_instances[i]
-			if is_instance_valid(mi):
-				mi.transparency = 0.0
-				mi.visible = not building_now or float(_rise_levels[i]) <= p * 1.08
-	else:
+	if not building_now:
+		_restore_construction_materials()
+		return
+	if _rise_levels.is_empty():
+		var lo := INF
+		var hi := -INF
 		for mi in _mesh_instances:
-			if is_instance_valid(mi):
-				mi.transparency = 0.0
-		model_root.scale.y = _rest_model_scale_y * (lerpf(0.18, 1.0, p) if building_now else 1.0)
+			if is_instance_valid(mi) and mi.mesh:
+				var box: AABB = mi.global_transform * mi.get_aabb()
+				lo = minf(lo, box.position.y)
+				hi = maxf(hi, box.end.y)
+		if lo == INF:
+			return
+		_rise_levels = [lo, hi]
+		_swap_in_construction_materials()
+	var cut: float = lerpf(float(_rise_levels[0]) + 0.05, float(_rise_levels[1]) + 0.05, clampf(p, 0.0, 1.0))
+	for mi in _mesh_instances:
+		if is_instance_valid(mi):
+			mi.transparency = 0.0
+			mi.set_instance_shader_parameter("cut_y", cut)
+
+static var _construction_material_cache := {}
+var _construction_saved_overrides: Array = []
+
+func _swap_in_construction_materials() -> void:
+	_construction_saved_overrides.clear()
+	for mi in _mesh_instances:
+		if not is_instance_valid(mi) or not mi.mesh:
+			continue
+		var saved: Array = []
+		for surface in mi.mesh.get_surface_count():
+			saved.append(mi.get_surface_override_material(surface))
+			var source: Material = mi.get_active_material(surface)
+			if source is StandardMaterial3D:
+				mi.set_surface_override_material(surface, _construction_material_for(source as StandardMaterial3D))
+		_construction_saved_overrides.append([mi, saved])
+
+func _restore_construction_materials() -> void:
+	if _construction_saved_overrides.is_empty():
+		return
+	for entry in _construction_saved_overrides:
+		var mi: MeshInstance3D = entry[0]
+		if not is_instance_valid(mi):
+			continue
+		var saved: Array = entry[1]
+		for surface in saved.size():
+			mi.set_surface_override_material(surface, saved[surface])
+	_construction_saved_overrides.clear()
+
+static func _construction_material_for(source: StandardMaterial3D) -> Material:
+	if _construction_material_cache.has(source):
+		return _construction_material_cache[source]
+	var m := ShaderMaterial.new()
+	m.shader = load("res://assets/shaders/construction_rise.gdshader")
+	m.set_shader_parameter("albedo_tex", source.albedo_texture)
+	m.set_shader_parameter("has_texture", source.albedo_texture != null)
+	m.set_shader_parameter("albedo_color", source.albedo_color)
+	m.set_shader_parameter("uv_scale", source.uv1_scale)
+	m.set_shader_parameter("uv_offset", source.uv1_offset)
+	m.set_shader_parameter("roughness_value", maxf(source.roughness, 0.8))
+	_construction_material_cache[source] = m
+	return m
 
 func _build_damage_status_visual() -> void:
 	# Keep completed-building damage readable from the battlefield without a

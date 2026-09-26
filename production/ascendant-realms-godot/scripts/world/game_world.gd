@@ -2305,6 +2305,15 @@ func _prewarm_combat_presentation() -> void:
 		for body in model.find_children("*", "CollisionObject3D", true, false):
 			body.queue_free()
 		get_tree().create_timer(0.6).timeout.connect(model.queue_free)
+	# The construction work-line shader compiles here too, not on first placement.
+	var site := MeshInstance3D.new()
+	site.mesh = BoxMesh.new()
+	var site_mat := ShaderMaterial.new()
+	site_mat.shader = load("res://assets/shaders/construction_rise.gdshader")
+	site.material_override = site_mat
+	_fx_container.add_child(site)
+	site.global_position = spot
+	get_tree().create_timer(0.6).timeout.connect(site.queue_free)
 	CombatVfx.hit(_fx_container, spot, Color(1.0, 0.72, 0.42), false)
 	CombatVfx.hit(_fx_container, spot, Color(1, 0.5, 0.15), true)
 	CombatVfx.death(_fx_container, spot)
