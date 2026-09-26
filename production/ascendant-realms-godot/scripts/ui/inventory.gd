@@ -255,7 +255,7 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	card.name = "EquippedRelic_%s" % slot
 	card.focus_mode = Control.FOCUS_NONE
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.custom_minimum_size = Vector2(0, 84)
+	card.custom_minimum_size = Vector2(0, 108)
 	card.tooltip_text = "%s equipped in %s" % [str(item.get("name", "?")), _pretty(slot)]
 	for state in ["normal", "hover", "pressed"]:
 		var style := StyleBoxFlat.new()
@@ -274,7 +274,7 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	content.add_theme_constant_override("separation", 12)
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(content)
-	var relic_art := _item_art(item, 74, "EquippedRelicArt")
+	var relic_art := _item_art(item, 94, "EquippedRelicArt")
 	if relic_art != null:
 		content.add_child(relic_art)
 	var stack := VBoxContainer.new()
@@ -331,7 +331,7 @@ func _item_card(item: Dictionary) -> Button:
 	card.toggle_mode = true
 	card.button_group = _item_group
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.custom_minimum_size = Vector2(0, 76)
+	card.custom_minimum_size = Vector2(0, 112)
 	for state in ["normal", "hover", "pressed", "hover_pressed"]:
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#1b2430") if state == "normal" else Color("#2b3240") if state == "hover" else Color("#302a20")
@@ -349,7 +349,7 @@ func _item_card(item: Dictionary) -> Button:
 	content.add_theme_constant_override("separation", 11)
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(content)
-	var relic_art := _item_art(item, 70, "CarriedRelicArt")
+	var relic_art := _item_art(item, 98, "CarriedRelicArt")
 	if relic_art != null:
 		content.add_child(relic_art)
 	var labels := VBoxContainer.new()
@@ -362,7 +362,7 @@ func _item_card(item: Dictionary) -> Button:
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.max_lines_visible = 2
 	name_label.add_theme_font_override("font", _title_font())
-	name_label.add_theme_font_size_override("font_size", 20)
+	name_label.add_theme_font_size_override("font_size", 22)
 	name_label.add_theme_color_override("font_color", accent.lightened(0.18))
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	labels.add_child(name_label)
