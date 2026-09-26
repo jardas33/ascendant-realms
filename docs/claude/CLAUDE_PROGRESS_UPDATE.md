@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-26, 21:40 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-26, 21:50 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -67,6 +67,8 @@ Last updated: 2026-09-26, 21:40 UTC. Claude updates this file after every pass.
   - cairns and heather
   - Vorthak and Lioraen dressing
   - a grain harvest (the food resource, which used to reuse the timber pile)
+  - a stacked log pile with ringed end grain, a chopping stump and an axe (the timber resource, which used to be a flat orange block)
+  - a rock outcrop split by glowing gold veins, with an ore pile and a pickaxe (the gold resource)
 - **Capture sites:**
   - Each has its own landmark: a ruined pillar-circle chapel, and a rocky lookout with a signal brazier. Before, they reused the Lume Spire and gold-mine models.
   - A rune circle marks the real capture area. While a team is capturing, an arc fills around it in that team's colour.

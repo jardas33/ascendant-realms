@@ -2233,14 +2233,15 @@ func commander_for_team(team: int):
 func _spawn_resources() -> void:
 	var stage := _m20_begin("GAMEWORLD_RESOURCE_NODES", "GAMEWORLD_RESOURCES", 2)
 	var models := {
-		"timber": "res://assets/props/containers/resource_timber_pile.glb",
+		# Blender-authored sites (tools/blender/generateTimberAndGoldNodes.py).
+		"timber": "res://assets/props/misc/resource_timber_stack.glb",
 		"stone": "res://assets/props/misc/resource_stone_quarry_chunk.glb",
-		"gold": "res://assets/environment/rocks/gold_mine_lumevein.glb",
+		"gold": "res://assets/props/misc/resource_gold_vein.glb",
 		# Food had reused the timber pile; it is now a grain patch with sheaves.
 		"food": "res://assets/props/misc/resource_harvest_grain.glb",
 	}
 	var amounts := {"timber": 800, "stone": 700, "gold": 900, "food": 600}
-	var heights := {"timber": 2.0, "stone": 2.2, "gold": 3.0, "food": 1.5}
+	var heights := {"timber": 1.6, "stone": 2.2, "gold": 2.6, "food": 1.5}
 	for r in map.get("resources", []):
 		var kind: String = r["kind"]
 		var node = ResourceNodeScript.new()
