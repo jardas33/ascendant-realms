@@ -1553,7 +1553,9 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 				var state := int(states[row * columns + column])
 				var fog_color := Color.TRANSPARENT
 				if state == 0:
-					fog_color = Color(0.023, 0.034, 0.043, 0.54)
+					# Lighter than before: the minimap is a real picture of the map now,
+					# so unexplored land stays readable as terrain under the shroud.
+					fog_color = Color(0.023, 0.034, 0.043, 0.44)
 				elif state == 1:
 					fog_color = Color(0.038, 0.056, 0.067, 0.13)
 				fog_image.set_pixel(x, y, fog_color)
