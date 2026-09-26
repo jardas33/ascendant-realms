@@ -1983,6 +1983,13 @@ var _units_snapshot_frame := -1
 var _buildings_snapshot: Array = []
 var _buildings_snapshot_frame := -1
 
+## Units and buildings call this as they join or leave the tree, so a unit
+## spawned (or freed) mid-frame is seen by queries later in the same frame.
+func invalidate_entity_snapshots() -> void:
+	_units_snapshot_frame = -1
+	_buildings_snapshot_frame = -1
+	_blocker_snapshot_frame = -1
+
 func all_units() -> Array:
 	var frame := Engine.get_physics_frames()
 	if frame != _units_snapshot_frame:

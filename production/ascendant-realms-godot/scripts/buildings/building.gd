@@ -103,6 +103,7 @@ static var _slice7_barrosan_surface_materials: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("buildings")
+	tree_exiting.connect(func(): if is_instance_valid(world) and world.has_method("invalidate_entity_snapshots"): world.invalidate_entity_snapshots())
 	collision_layer = 4
 	collision_mask = 0
 
@@ -116,6 +117,8 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	team = p_team
 	commander = p_commander
 	world = p_world
+	if world and world.has_method("invalidate_entity_snapshots"):
+		world.invalidate_entity_snapshots()
 	max_hp = float(p_def.get("hp", 1000))
 	armor_class = p_def.get("armor_class", "fortified")
 	base_armor = float(p_def.get("armor", 0))

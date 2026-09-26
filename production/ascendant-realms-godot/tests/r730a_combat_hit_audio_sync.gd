@@ -181,8 +181,11 @@ func _run_success() -> void:
 	var damage_time := -1.0
 	var previous_hp := hp_before
 	var started := Time.get_ticks_msec() / 1000.0
-	var started_frame := Engine.get_process_frames()
-	while Engine.get_process_frames() - started_frame < OBSERVATION_FRAMES:
+	# Window in physics ticks (4 s of simulation), not rendered frames: once
+	# frames got cheaper the unit covered less ground per rendered frame and a
+	# render-frame window ended before the attacker reached its target.
+	var started_frame := Engine.get_physics_frames()
+	while Engine.get_physics_frames() - started_frame < OBSERVATION_FRAMES:
 		await process_frame
 		var elapsed := Time.get_ticks_msec() / 1000.0 - started
 		_sample_sword_audio(elapsed)
@@ -240,8 +243,11 @@ func _run_nonlanded() -> void:
 	attacker.set_physics_process(true)
 	_phase("NORMAL_ATTACK_COMMAND_ISSUED_THEN_TARGET_INVALIDATED", {"attacker_id":ATTACKER_ID, "target_id":TARGET_ID, "command_time":command_time})
 	var started := Time.get_ticks_msec() / 1000.0
-	var started_frame := Engine.get_process_frames()
-	while Engine.get_process_frames() - started_frame < OBSERVATION_FRAMES:
+	# Window in physics ticks (4 s of simulation), not rendered frames: once
+	# frames got cheaper the unit covered less ground per rendered frame and a
+	# render-frame window ended before the attacker reached its target.
+	var started_frame := Engine.get_physics_frames()
+	while Engine.get_physics_frames() - started_frame < OBSERVATION_FRAMES:
 		await process_frame
 		var elapsed := Time.get_ticks_msec() / 1000.0 - started
 		_sample_sword_audio(elapsed)

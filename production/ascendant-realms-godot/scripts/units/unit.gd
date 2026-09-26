@@ -328,6 +328,7 @@ func _v0436_r1j_set_target(value, reason: String) -> void:
 
 func _ready() -> void:
 	add_to_group("units")
+	tree_exiting.connect(func(): if is_instance_valid(world) and world.has_method("invalidate_entity_snapshots"): world.invalidate_entity_snapshots())
 	collision_layer = WorldBlockerContract.UNIT_LAYER
 	# Navigation avoidance remains the preferred path solution, while this mask
 	# provides the final no-penetration failsafe for buildings, resources, and
@@ -342,6 +343,8 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	team = p_team
 	commander = p_commander
 	world = p_world
+	if world and world.has_method("invalidate_entity_snapshots"):
+		world.invalidate_entity_snapshots()
 	is_hero = p_def.get("is_hero", false)
 	is_worker = p_def.get("role", "") == "worker"
 	is_siege = p_def.get("is_siege", false)
