@@ -2716,27 +2716,11 @@ func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)
 
 func spawn_ring_fx(pos: Vector3, col: Color, radius: float) -> void:
-	var ring := MeshInstance3D.new()
-	var torus := TorusMesh.new()
-	torus.inner_radius = radius * 0.7
-	torus.outer_radius = radius
-	ring.mesh = torus
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = col
-	mat.emission_enabled = true
-	mat.emission = col
-	mat.emission_energy_multiplier = 3.0
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	ring.material_override = mat
-	_fx_container.add_child(ring)
-	ring.global_position = pos + Vector3.UP * 0.3
-	ring.scale = Vector3(0.2, 0.2, 0.2)
-	var t := create_tween()
-	t.set_parallel(true)
-	t.tween_property(ring, "scale", Vector3.ONE, 0.5)
-	t.tween_property(mat, "albedo_color:a", 0.0, 0.6)
-	t.chain().tween_callback(ring.queue_free)
+	# Ability areas: a soft expanding shockwave on the ground (CombatVfx).
+	CombatVfx.shockwave(_fx_container, pos, col, radius)
+
+func spawn_order_marker(pos: Vector3, col: Color, radius: float, attack: bool) -> void:
+	CombatVfx.order_marker(_fx_container, pos, col, radius, attack)
 
 func _burst(pos: Vector3, col: Color, count: int, life: float) -> void:
 	var p := GPUParticles3D.new()

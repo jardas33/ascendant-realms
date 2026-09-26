@@ -166,3 +166,95 @@ static func _radial_texture(size: int) -> Texture2D:
 			var a := clampf(1.0 - p.length(), 0.0, 1.0)
 			img.set_pixel(x, y, Color(1, 1, 1, a * a))
 	return ImageTexture.create_from_image(img)
+
+
+# --------------------------------------------------------------------------
+# Ground markers: order confirmations and ability shockwaves.
+# --------------------------------------------------------------------------
+static var _ring_tex: Texture2D
+static var _chevron_tex: Texture2D
+static var _marker_quad: QuadMesh
+
+static func _ground_quad_material(tex: Texture2D, col: Color) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_texture = tex
+	m.albedo_color = col
+	m.no_depth_test = false
+	m.disable_receive_shadows = true
+	return m
+
+static func _ensure_markers() -> void:
+	if _ring_tex != null:
+		return
+	_marker_quad = QuadMesh.new()
+	_marker_quad.size = Vector2(2.0, 2.0)
+	_marker_quad.orientation = PlaneMesh.FACE_Y
+	var n := 96
+	var ring := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var chev := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	for y in n:
+		for x in n:
+			var p := Vector2((x + 0.5) / n - 0.5, (y + 0.5) / n - 0.5) * 2.0
+			var r := p.length()
+			# Soft ring with a bright core and a faint inner fill.
+			var band := exp(-pow((r - 0.82) / 0.07, 2.0)) + 0.12 * clampf(1.0 - r, 0.0, 1.0)
+			ring.set_pixel(x, y, Color(1, 1, 1, clampf(band, 0.0, 1.0)))
+			# Four inward chevrons on the diagonals.
+			var a := fposmod(atan2(p.y, p.x) + PI * 0.25, PI * 0.5) - PI * 0.25
+			var along := r * cos(a)
+			var across := absf(r * sin(a))
+			var v := 0.0
+			if along > 0.45 and along < 0.95:
+				var edge := absf(across - (along - 0.45) * 0.7)
+				v = clampf(1.0 - edge / 0.07, 0.0, 1.0)
+			chev.set_pixel(x, y, Color(1, 1, 1, v))
+	_ring_tex = ImageTexture.create_from_image(ring)
+	_chevron_tex = ImageTexture.create_from_image(chev)
+
+## Order confirmation: a soft ring that collapses onto the spot, with inward
+## chevrons for attack orders, plus a brief glow. Presentation only.
+static func order_marker(parent: Node3D, pos: Vector3, col: Color, radius: float, attack: bool) -> void:
+	_ensure_markers()
+	var root := Node3D.new()
+	parent.add_child(root)
+	root.global_position = pos + Vector3(0, 0.1, 0)
+	var ring := MeshInstance3D.new()
+	ring.mesh = _marker_quad
+	var ring_mat := _ground_quad_material(_ring_tex, Color(col.r * 1.6, col.g * 1.6, col.b * 1.6, 1.0))
+	ring.material_override = ring_mat
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	root.add_child(ring)
+	ring.scale = Vector3.ONE * radius * 1.7
+	var t := root.create_tween().set_parallel(true)
+	t.tween_property(ring, "scale", Vector3.ONE * radius * 0.55, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	t.tween_property(ring_mat, "albedo_color:a", 0.0, 0.42).set_delay(0.12)
+	if attack:
+		var chev := MeshInstance3D.new()
+		chev.mesh = _marker_quad
+		var chev_mat := _ground_quad_material(_chevron_tex, Color(col.r * 1.8, col.g * 1.8, col.b * 1.8, 1.0))
+		chev.material_override = chev_mat
+		chev.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(chev)
+		chev.scale = Vector3.ONE * radius * 1.9
+		t.tween_property(chev, "scale", Vector3.ONE * radius * 0.9, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		t.tween_property(chev_mat, "albedo_color:a", 0.0, 0.45).set_delay(0.15)
+	t.chain().tween_callback(root.queue_free)
+
+## Ability shockwave: the same soft ring expanding outward and fading.
+static func shockwave(parent: Node3D, pos: Vector3, col: Color, radius: float) -> void:
+	_ensure_markers()
+	var ring := MeshInstance3D.new()
+	ring.mesh = _marker_quad
+	var mat := _ground_quad_material(_ring_tex, Color(col.r * 1.4, col.g * 1.4, col.b * 1.4, 1.0))
+	ring.material_override = mat
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(ring)
+	ring.global_position = pos + Vector3(0, 0.12, 0)
+	ring.scale = Vector3.ONE * radius * 0.2
+	var t := ring.create_tween().set_parallel(true)
+	t.tween_property(ring, "scale", Vector3.ONE * radius * 1.12, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(mat, "albedo_color:a", 0.0, 0.6).set_delay(0.1)
+	t.chain().tween_callback(ring.queue_free)

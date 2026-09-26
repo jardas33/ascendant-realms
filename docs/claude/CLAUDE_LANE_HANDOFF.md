@@ -47,6 +47,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | c0fbcf27 | Placement ghost mirrors Building model prep, keeps textures |
 | 3d43e08b | Walkable river ford (ford_water shader + ground-shader riverbed) under bridges on the 6 bridge maps; decor/shelves kept off it |
 | 0b8155a9 | Construction rises (multi-part bottom-up reveal, single-mesh upward growth) instead of a 60% transparency fade |
+| (latest) | Order markers: soft ring collapses onto the target with inward chevrons for attack/attack-move (CombatVfx.order_marker); ability rings are soft expanding shockwaves (CombatVfx.shockwave) |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 

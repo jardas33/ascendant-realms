@@ -884,7 +884,11 @@ func _emit_command_feedback(intent: String, feedback_type: String, position: Vec
 			color = Color(0.35, 0.9, 0.45)
 		COMMAND_ATTACK_MOVE:
 			color = Color(0.95, 0.45, 0.25)
-	world.spawn_ring_fx(position, color, 1.2 if intent != COMMAND_RALLY else 1.5)
+	# A collapsing ring (with inward chevrons for attacks) confirms the order.
+	if world.has_method("spawn_order_marker"):
+		world.spawn_order_marker(position, color, 1.2 if intent != COMMAND_RALLY else 1.5, intent == COMMAND_ATTACK or intent == COMMAND_ATTACK_MOVE)
+	else:
+		world.spawn_ring_fx(position, color, 1.2 if intent != COMMAND_RALLY else 1.5)
 
 func _cmd_stop() -> void:
 	issue_stop()
