@@ -992,7 +992,7 @@ func _build_health_bar() -> void:
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
 	var back_mesh := BoxMesh.new()
-	back_mesh.size = Vector3(1.4, 0.15, 0.035)
+	back_mesh.size = Vector3(1.5, 0.2, 0.035)
 	_health_bar_back.mesh = back_mesh
 	var back_mat := StandardMaterial3D.new()
 	back_mat.albedo_color = Color(0.03, 0.04, 0.04, 0.9)
@@ -1002,7 +1002,7 @@ func _build_health_bar() -> void:
 	_health_bar_fill = MeshInstance3D.new()
 	_health_bar_fill.name = "HealthBarFill"
 	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(1.3, 0.10, 0.045)
+	fill_mesh.size = Vector3(1.4, 0.14, 0.045)
 	_health_bar_fill.mesh = fill_mesh
 	var fill_mat := StandardMaterial3D.new()
 	fill_mat.albedo_color = _p1r24_health_bar_color(1.0)
@@ -1026,11 +1026,14 @@ func _update_health_bar() -> void:
 	if not is_instance_valid(_health_bar_root) or is_dead:
 		return
 	var ratio := clamp(get_hp_ratio(), 0.0, 1.0)
-	var show_bar: bool = ratio <= P1R24_LOW_HEALTH_RATIO or (is_instance_valid(selection_ring) and selection_ring.visible)
+	# Bars also appear for a few seconds after any hit, so every unit in a
+	# fight shows how it is doing, not just the badly hurt or selected ones.
+	var recently_hit: bool = ratio < 0.999 and Time.get_ticks_msec() - _last_damaged_msec < 5000
+	var show_bar: bool = ratio <= P1R24_LOW_HEALTH_RATIO or recently_hit or (is_instance_valid(selection_ring) and selection_ring.visible)
 	_health_bar_root.visible = show_bar
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)
-		_health_bar_fill.position.x = -0.65 * (1.0 - ratio)
+		_health_bar_fill.position.x = -0.7 * (1.0 - ratio)
 		var fill_mat := _health_bar_fill.material_override as StandardMaterial3D
 		if is_instance_valid(fill_mat):
 			fill_mat.albedo_color = _p1r24_health_bar_color(ratio)
@@ -2799,7 +2802,10 @@ func _face(target_pos: Vector3) -> void:
 # --------------------------------------------------------------------------
 # Damage / death / heal
 # --------------------------------------------------------------------------
+var _last_damaged_msec := -100000
+
 func take_damage(amount: float, from = null) -> void:
+	_last_damaged_msec = Time.get_ticks_msec()
 	if is_dead or (world and not world.game_running):
 		return
 	var source_team := _combat_source_team(from)
