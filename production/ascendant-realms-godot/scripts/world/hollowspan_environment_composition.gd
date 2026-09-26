@@ -91,6 +91,8 @@ const ASSET_SCALE := {
 	"brush": 2.0,
 	"charred_wall": 2.3,
 	"ash_glass": 3.2,
+	"moonstone": 4.8,
+	"lume_bloom": 1.1,
 }
 
 const ASSET_PATHS := {
@@ -103,6 +105,8 @@ const ASSET_PATHS := {
 	"brush": ASSET_ROOT + "highland_brush_cluster.glb",
 	"charred_wall": ASSET_ROOT + "vorthak_charred_wall.glb",
 	"ash_glass": ASSET_ROOT + "vorthak_ash_glass_shards.glb",
+	"moonstone": ASSET_ROOT + "lioraen_moonstone.glb",
+	"lume_bloom": ASSET_ROOT + "lioraen_lume_bloom.glb",
 }
 
 const SLICE_DIRT_TEXTURE := "res://assets/textures/nature/highland_dirt_path.png"
@@ -163,6 +167,8 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary, start_race: St
 	for spec in PLACEMENTS:
 		var position: Vector3 = spec.get("world", origin + spec.get("offset", Vector3.ZERO))
 		_place_asset(layer, String(spec["asset"]), position, float(spec.get("yaw", 0.0)))
+	if start_race == "lioraen":
+		build_lioraen_grove(layer, origin)
 	if barrosan_start:
 		_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
 		_build_barrosan_r2_dressing(layer, origin)
@@ -283,6 +289,51 @@ func _dress_hamlet_house(house: Node3D, position: Vector3, toward: Vector3, inde
 	house.get_parent().add_child(lantern)
 	var front := bounds.get_center() + toward * (maxf(bounds.size.x, bounds.size.z) * 0.5 + 0.6)
 	lantern.global_position = Vector3(front.x, 1.9, front.z)
+
+
+# Lioraen grove dressing for any Lioraen start: a ring of mossy moonstones
+# with faint glyph light around the Groveheart, lume-bloom clumps along the
+# edges, drifting pollen motes and a flowering meadow painted by the ground
+# shader (bloom zone). Living nature, restrained glow. Presentation only.
+const LIORAEN_STONES := [[-13.0, 0.0], [-9.0, -10.0], [-9.0, 10.0], [2.0, -14.0], [2.0, 14.0], [12.0, -8.0], [12.0, 8.0]]
+const LIORAEN_BLOOMS := [
+	[-11.0, -4.5], [-11.5, 5.0], [-4.0, -13.0], [-3.5, 13.5], [7.0, -12.5], [7.5, 12.0], [15.0, 0.0],
+	[-16.0, -8.0], [-16.5, 9.0], [5.0, -17.0], [5.5, 17.5], [17.0, -12.0], [17.5, 12.5], [-6.0, -18.0],
+]
+
+
+func build_lioraen_grove(parent: Node3D, origin: Vector3) -> void:
+	var toward := Vector3.ZERO - origin
+	toward.y = 0.0
+	if toward.length_squared() < 0.01:
+		return
+	toward = toward.normalized()
+	var side := Vector3(-toward.z, 0.0, toward.x)
+	var grove := Node3D.new()
+	grove.name = "LioraenGrove"
+	parent.add_child(grove)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5150
+	for spec in LIORAEN_STONES:
+		var pos: Vector3 = origin - toward * float(spec[0]) + side * float(spec[1])
+		# Stones lean gently toward the Groveheart like a waking circle.
+		_place_asset(grove, "moonstone", pos, atan2(origin.x - pos.x, origin.z - pos.z) + rng.randf_range(-0.2, 0.2))
+	for spec in LIORAEN_BLOOMS:
+		var pos: Vector3 = origin - toward * float(spec[0]) + side * float(spec[1])
+		_place_asset(grove, "lume_bloom", pos, rng.randf() * TAU, rng.randf_range(1.6, 2.3))
+	var motes := GroveMotes.new()
+	motes.name = "GroveMotes"
+	motes.radius = 17.0
+	grove.add_child(motes)
+	motes.global_position = origin + Vector3(0, 1.2, 0)
+	var glow := OmniLight3D.new()
+	glow.name = "GroveheartGlow"
+	glow.light_color = Color(0.70, 1.0, 0.62)
+	glow.light_energy = 1.4
+	glow.omni_range = 14.0
+	glow.shadow_enabled = false
+	grove.add_child(glow)
+	glow.global_position = origin + Vector3(0, 4.0, 0)
 
 
 # Vorthak holdfast dressing for an enemy start: a scorched ash yard, broken

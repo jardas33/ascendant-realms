@@ -197,7 +197,17 @@ void fragment() {
 	for (int i = 0; i < scorch_count; i++) {
 		float d = length(wxz - scorch_zones[i].xy) / max(scorch_zones[i].z, 0.1);
 		float edge = d + (fbm(wxz * 0.09 + float(i) * 13.0) - 0.5) * 0.55;
-		float burn = (1.0 - smoothstep(0.55, 1.0, edge)) * scorch_zones[i].w;
+		float zone = (1.0 - smoothstep(0.55, 1.0, edge));
+		if (scorch_zones[i].w < 0.0) {
+			// Bloom meadow: deeper, saturated green with pale gold-green blossoms.
+			float bloom = zone * -scorch_zones[i].w;
+			vec3 lush = ground * vec3(0.78, 1.12, 0.62);
+			float petals = smoothstep(0.78, 0.9, fbm(wxz * 1.7 + float(i) * 7.0));
+			lush = mix(lush, vec3(0.86, 0.92, 0.58), petals * 0.55);
+			ground = mix(ground, lush, clamp(bloom, 0.0, 1.0));
+			continue;
+		}
+		float burn = zone * scorch_zones[i].w;
 		float ash_luma = dot(ground, vec3(0.299, 0.587, 0.114));
 		vec3 ash = mix(vec3(0.055, 0.05, 0.055), vec3(0.13, 0.115, 0.12), fbm(wxz * 0.35 + 3.0)) * (0.8 + 0.5 * ash_luma);
 		// A few ember-warm cinders in the heart of the burn.

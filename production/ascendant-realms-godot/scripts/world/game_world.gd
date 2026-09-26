@@ -608,6 +608,8 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 		for i in range(1, starts.size()):
 			if i - 1 < opponents.size() and str(opponents[i - 1].get("race", "")) == "vorthak":
 				composition.build_vorthak_holdfast(parent, starts[i])
+			elif i - 1 < opponents.size() and str(opponents[i - 1].get("race", "")) == "lioraen":
+				composition.build_lioraen_grove(parent, starts[i])
 		_rebuild_navigation_soft_blockers()
 
 

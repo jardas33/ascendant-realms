@@ -182,9 +182,17 @@ func _make_ground_material(map: Dictionary) -> Material:
 	# Scorched ash yards under Vorthak opponent starts (start i+1 is opponent i).
 	var scorch: Array = []
 	var opponents: Array = Match.get_config().get("opponents", [])
-	for i in range(1, starts.size()):
-		if scorch.size() < 4 and i - 1 < opponents.size() and str(opponents[i - 1].get("race", "")) == "vorthak":
+	# Bloom meadows under Lioraen starts use a negative strength.
+	var races: Array = [str(Match.get_config().get("player_race", ""))]
+	for opponent in opponents:
+		races.append(str(opponent.get("race", "")))
+	for i in range(0, starts.size()):
+		if scorch.size() >= 4 or i >= races.size():
+			break
+		if races[i] == "vorthak":
 			scorch.append(Vector4(starts[i].x, starts[i].z, 22.0, 0.92))
+		elif races[i] == "lioraen":
+			scorch.append(Vector4(starts[i].x, starts[i].z, 24.0, -0.85))
 	var scorch_count := scorch.size()
 	while scorch.size() < 4:
 		scorch.append(Vector4(9999, 9999, 0.1, 0.0))
