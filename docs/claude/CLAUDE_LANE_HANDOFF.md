@@ -39,6 +39,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | 56231283 | Worker refitted to 6k triangles |
 | (latest) | Unit packed-metal cap at 0.3 |
 | 7d0618a2 | Team-coloured combat rings (player blue, hostile red), friendly bars stay green until low, thicker bars; smaller hit glow |
+| b8b671a8 | All themes get the battlefield grade (haze thinned 45%); every map builds faction start dressing via build_faction_start |
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
