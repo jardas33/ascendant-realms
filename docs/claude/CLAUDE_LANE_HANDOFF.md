@@ -35,6 +35,9 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | f9e20a09 | No mid-match stalls: building hulls cached and prewarmed at load; unit, building, VFX and projectile pipelines prewarmed behind the ground at match start (worst frame over a 10-minute 4x run: 300 ms, now 33 ms) |
 | 213e008c | Enemy AI economy deadlock fixed (gatherer rebalancing, stalled-gatherer reach, abandoned construction); AI now builds an army and attacks on Normal+ |
 | 5bbd2ed4 | Unit/building/blocker snapshots per physics frame, blocker distance reject, chase re-plan throttle: 20v20 physics 19 ms to 9 ms |
+| 0a707e10 | Route solver: steering detours reused 12 frames, 5 ms per-frame solver budget (battle stalls at 4x from 150-260 ms to mostly under 100 ms) |
+| 56231283 | Worker refitted to 6k triangles |
+| (latest) | Unit packed-metal cap at 0.3 |
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
