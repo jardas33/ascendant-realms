@@ -786,7 +786,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var detail_text := _command_card_summary(detail) if scan_detail else ""
 	# The status footer carries readiness; the full reason stays in the tooltip.
 	var accent := _command_accent(title, state, command_kind)
-	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
+	var hotkey := hotkey_override if not hotkey_override.is_empty() else (_command_hotkey(title) if command_kind == "ORDER" else "")
 	var btn = HUD_ACTION_SCRIPT.new()
 	btn.text = ""
 	btn.accent = accent
@@ -801,24 +801,24 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(8, 10)
-		preview.size = Vector2(68, 68)
-		preview.custom_minimum_size = Vector2(68, 68)
+		preview.position = Vector2(4, 4)
+		preview.size = Vector2(84, 84)
+		preview.custom_minimum_size = Vector2(84, 84)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		preview.set_deferred("custom_minimum_size", Vector2(68, 68))
-		preview.set_deferred("size", Vector2(68, 68))
+		preview.set_deferred("custom_minimum_size", Vector2(84, 84))
+		preview.set_deferred("size", Vector2(84, 84))
 		var text_col := VBoxContainer.new()
 		text_col.name = "BuildingCardCopy"
 		text_col.anchor_right = 1.0
-		text_col.offset_left = 81.0
-		text_col.offset_top = 10.0
+		text_col.offset_left = 95.0
+		text_col.offset_top = 7.0
 		text_col.offset_right = -7.0
 		text_col.offset_bottom = -21.0
 		text_col.add_theme_constant_override("separation", 2)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 18, FONT_COLOR)
+		var title_label := _mk_label(title, 17, FONT_COLOR)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -903,14 +903,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(status_label)
 		btn.set_meta("command_status_label", status_label)
 	else:
-		# The art and readiness share a column; long two-resource costs keep the
-		# entire right side without colliding with READY or LOCKED.
+		# Keep readiness below the cost in the copy column so the structure art
+		# can fill its bay without hiding the card's current state.
 		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
-		build_status.offset_left = 7.0
-		build_status.offset_right = 77.0
+		build_status.anchor_right = 1.0
+		build_status.offset_left = 95.0
+		build_status.offset_right = -8.0
 		build_status.offset_top = card_height - 18
 		build_status.offset_bottom = card_height - 2
-		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
 		btn.set_meta("command_status_label", build_status)
@@ -3043,6 +3044,10 @@ func _build_worker_card() -> void:
 			if is_instance_valid(copy):
 				copy.anchor_right = 0.57
 				copy.offset_right = -6.0
+			var featured_status := featured_card.get_meta("command_status_label") as Control
+			if is_instance_valid(featured_status):
+				featured_status.anchor_right = 0.57
+				featured_status.offset_right = -6.0
 			var divider := ColorRect.new()
 			divider.color = Color(0.72, 0.56, 0.27, 0.55)
 			divider.anchor_left = 0.57

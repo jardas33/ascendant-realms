@@ -8,6 +8,7 @@ const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
 const PORTRAIT_MIN_SIZE := 46.0
 const PORTRAIT_MAX_SIZE := 180.0
+const PORTRAIT_COMPACT_THRESHOLD := 96.0
 const PORTRAIT_FRAME_INSET := 5.0
 const PORTRAIT_ARTWORK_INSET := 8.0
 const PORTRAIT_MODEL_INSET := 10.0
@@ -59,7 +60,7 @@ func _build_view() -> void:
 	_viewport_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# The frame is decorative, so the live model needs its own clipped aperture.
 	# Without this inset, wide roofs render over the lower frame ornament.
-	var model_inset := PORTRAIT_COMPACT_MODEL_INSET if custom_minimum_size.x < 80.0 else PORTRAIT_MODEL_INSET
+	var model_inset := PORTRAIT_COMPACT_MODEL_INSET if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else PORTRAIT_MODEL_INSET
 	_viewport_container.offset_left = model_inset
 	_viewport_container.offset_top = model_inset
 	_viewport_container.offset_right = -model_inset
@@ -70,7 +71,7 @@ func _build_view() -> void:
 
 	_viewport = SubViewport.new()
 	_viewport.size = VIEW_SIZE
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if custom_minimum_size.x < 80.0 else SubViewport.UPDATE_ALWAYS
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else SubViewport.UPDATE_ALWAYS
 	_viewport.transparent_bg = true
 	_viewport_container.add_child(_viewport)
 
@@ -84,7 +85,7 @@ func _build_view() -> void:
 	# Small train/build choices need the complete authored silhouette to fill
 	# their aperture. A second inset inside the clipped thumbnail made detailed
 	# structures read as dark specks once the HUD scaled to a compact window.
-	var artwork_inset := 0.0 if custom_minimum_size.x < 80.0 else PORTRAIT_ARTWORK_INSET
+	var artwork_inset := 0.0 if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else PORTRAIT_ARTWORK_INSET
 	_artwork.offset_left = artwork_inset
 	_artwork.offset_top = artwork_inset
 	_artwork.offset_right = -artwork_inset
@@ -148,7 +149,7 @@ func _build_view() -> void:
 	frame.texture_filter = PORTRAIT_TEXTURE_FILTER
 	# Tiny build choices need the model silhouette more than a second ornate
 	# square. Keep the full portrait frame for the large selected-unit view.
-	frame.modulate.a = 0.22 if custom_minimum_size.x < 80.0 else 1.0
+	frame.modulate.a = 0.22 if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else 1.0
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
@@ -179,7 +180,7 @@ func _apply_entity(entity) -> void:
 func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
 	if not is_instance_valid(_pivot):
 		return
-	if custom_minimum_size.x < 80.0:
+	if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD:
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	_active_portrait_path = ""
 	if is_instance_valid(_artwork):
@@ -231,7 +232,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	# Group cards are intentionally compact.  Keep the authored model readable
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
-	var compact_card := custom_minimum_size.x < 80.0
+	var compact_card := custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD
 	_compact_building_fill.visible = is_building or (compact_card and _active_portrait_path.is_empty())
 	_compact_building_fill.light_energy = (2.4 if not is_building else 1.4) if compact_card else 1.0
 	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
