@@ -981,7 +981,7 @@ func _build_health_bar() -> void:
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
 	var back_mesh := BoxMesh.new()
-	back_mesh.size = Vector3(1.4, 0.11, 0.035)
+	back_mesh.size = Vector3(1.4, 0.15, 0.035)
 	_health_bar_back.mesh = back_mesh
 	var back_mat := StandardMaterial3D.new()
 	back_mat.albedo_color = Color(0.03, 0.04, 0.04, 0.9)
@@ -991,7 +991,7 @@ func _build_health_bar() -> void:
 	_health_bar_fill = MeshInstance3D.new()
 	_health_bar_fill.name = "HealthBarFill"
 	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(1.3, 0.07, 0.045)
+	fill_mesh.size = Vector3(1.3, 0.10, 0.045)
 	_health_bar_fill.mesh = fill_mesh
 	var fill_mat := StandardMaterial3D.new()
 	fill_mat.albedo_color = _p1r24_health_bar_color(1.0)
@@ -1007,9 +1007,9 @@ func _p1r24_health_bar_color(ratio: float) -> Color:
 		return Color(1.0, 0.32, 0.12)
 	if ratio <= P1R24_LOW_HEALTH_RATIO:
 		return Color(1.0, 0.72, 0.18)
-	if ratio < 0.999:
-		return Color(1.0, 0.82, 0.25)
-	return Color(0.25, 0.8, 0.35)
+	# A scratched unit stays green: yellow read as "hostile-ish" next to the
+	# red enemy bars in a mixed melee. Colour now only warns when it matters.
+	return Color(0.30, 0.82, 0.38)
 
 func _update_health_bar() -> void:
 	if not is_instance_valid(_health_bar_root) or is_dead:
@@ -1043,9 +1043,13 @@ func _build_r15_combat_presentation() -> void:
 	_r15_attack_cue.position.y = 0.12
 	_r15_attack_cue.visible = false
 	var cue_mat := StandardMaterial3D.new()
-	cue_mat.albedo_color = Color(0.96, 0.34, 0.22, 0.88)
+	# Both armies showed the same red-orange ring while fighting, so a melee
+	# read as one blob. The player's fighters get a steel-blue ring, hostiles keep
+	# the red one.
+	var friendly := world != null and team == int(world.get("player_team"))
+	cue_mat.albedo_color = Color(0.36, 0.66, 1.0, 0.85) if friendly else Color(0.96, 0.34, 0.22, 0.88)
 	cue_mat.emission_enabled = true
-	cue_mat.emission = Color(0.96, 0.20, 0.12)
+	cue_mat.emission = Color(0.20, 0.45, 0.95) if friendly else Color(0.96, 0.20, 0.12)
 	cue_mat.emission_energy_multiplier = 1.15
 	cue_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_r15_attack_cue.material_override = cue_mat
