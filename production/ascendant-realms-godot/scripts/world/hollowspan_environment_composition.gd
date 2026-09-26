@@ -77,7 +77,7 @@ const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(8.0, 0.0, 8.0)
 const BARROSAN_SETTLEMENT_ASSEMBLY_YAW := PI
 
 const ASSET_SCALE := {
-	"wall": 4.2,
+	"wall": 1.9,
 	"fence": 3.6,
 	"cairn": 2.1,
 	"logs": 2.4,
