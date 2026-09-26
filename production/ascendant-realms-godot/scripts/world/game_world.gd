@@ -240,8 +240,11 @@ func _setup_player_visibility() -> void:
 	_visibility_overlay_material.set_shader_parameter("visibility_states", _visibility_texture)
 	_visibility_overlay_material.render_priority = 1
 	var grid_size := Vector2(float(_visibility_columns) * VISIBILITY_CELL_SIZE, float(_visibility_rows) * VISIBILITY_CELL_SIZE)
+	_visibility_overlay_material.set_shader_parameter("grid_origin", Vector2(playable_min.x, playable_min.z))
+	_visibility_overlay_material.set_shader_parameter("grid_size", grid_size)
 	var plane := PlaneMesh.new()
-	plane.size = grid_size
+	# Overhang past the playable grid so the shroud blends into the scenery.
+	plane.size = grid_size + Vector2(240.0, 240.0)
 	_visibility_overlay = MeshInstance3D.new()
 	_visibility_overlay.name = "PlayerVisibilityOverlay"
 	_visibility_overlay.mesh = plane
