@@ -176,6 +176,8 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("road_detail", grade.road_detail)
 	sm.set_shader_parameter("road_edge_strength", grade.road_edge_strength)
 	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
+	sm.set_shader_parameter("field_strength", float(grade.get("field_strength", 0.0)))
+	sm.set_shader_parameter("relief_strength", float(grade.get("relief_strength", 0.0)))
 	sm.set_shader_parameter("snow_shadow_color", grade.get("snow_shadow_color", Color(0.62, 0.69, 0.80)))
 	sm.set_shader_parameter("snow_highlight_color", grade.get("snow_highlight_color", Color(0.90, 0.95, 1.0)))
 	sm.set_shader_parameter("snow_underlay_strength", float(grade.get("snow_underlay_strength", 0.24)))
@@ -198,7 +200,7 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		_:
 			# WORLD-03 highland grade: broader value variation and a clearer
 			# road verge, while keeping the grass palette restrained for units.
-			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.76}
+			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.82, "field_strength": 0.5, "relief_strength": 1.0}
 
 
 # ---------------------------------------------------------------------------
