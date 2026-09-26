@@ -75,7 +75,7 @@ const BARROSAN_SETTLEMENT_PLACEMENTS := [
 	# giving the base warm focal points against the golden-hour grade.
 	{"asset": "watch_brazier", "position": Vector3(-3.2, 0.0, 12.6), "yaw": 0.0},
 	{"asset": "watch_brazier", "position": Vector3(3.2, 0.0, 12.6), "yaw": 0.0},
-	{"asset": "watch_brazier", "position": Vector3(2.6, 0.0, 1.2), "yaw": 0.0},
+	{"asset": "watch_brazier", "position": Vector3(5.2, 0.0, 2.8), "yaw": 0.0},
 ]
 
 const BARROSAN_SETTLEMENT_ANCHOR_OFFSET := Vector3(8.0, 0.0, 8.0)
