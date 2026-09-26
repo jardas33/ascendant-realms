@@ -1047,7 +1047,10 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	parent.add_child(inst)
 	inst.position = pos
 	var is_tree: bool = "vegetation" in path
-	var h: float = rng.randf_range(6.5, 10.5) if is_tree else rng.randf_range(1.6, 3.6)
+	# Oaks spread about as wide as they are tall; at 6.5-10.5 m a single
+	# canopy covered a whole squad. Slightly smaller trees keep the woodland
+	# read while leaving fights visible.
+	var h: float = (rng.randf_range(5.0, 7.5) if "oak" in path else rng.randf_range(6.0, 9.0)) if is_tree else rng.randf_range(1.6, 3.6)
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
