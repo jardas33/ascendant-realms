@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-26, 21:50 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-26, 22:05 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -11,6 +11,7 @@ Last updated: 2026-09-26, 21:50 UTC. Claude updates this file after every pass.
   - About 140 commits.
 - **Status:** not pushed and not merged. Emanuel pushes it with:
   `cd D:\ClaudeWork\ar-lane; git push https://github.com/jardas33/ascendant-realms.git claude/perf-placeholders-r1`
+- **Codex work included:** the branch merges Codex's newest committed work: the UI convergence branch (ad35fe9f: War Chest armory, HUD icon atlases, skill constellation, top metrics, production/research legibility, hero ability art, living Groveheart HQ) and the Clan Levy character branch (f5283cd9). All tests pass on the combined build.
 - **Handoff notes:** the commit-by-commit notes for Codex are in `docs/claude/CLAUDE_LANE_HANDOFF.md`.
 - **Constraints kept throughout:**
   - Everything lives on disk D.
