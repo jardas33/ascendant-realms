@@ -90,6 +90,8 @@ func setup(p_world, p_team: int) -> void:
 	_apply_settings()
 	_build_camera()
 	_build_select_box()
+	if world.has_signal("camera_shake"):
+		world.camera_shake.connect(add_camera_shake)
 	# center on player base
 	if world.commanders.size() > player_team:
 		var hqpos := _player_hq_pos()
@@ -264,6 +266,34 @@ func _update_camera(delta: float) -> void:
 	cam_pivot.rotation.y = _cam_yaw
 	# smooth zoom
 	cam_arm.spring_length = lerp(cam_arm.spring_length, _zoom, 0.2)
+	_apply_camera_shake(delta)
+
+var _shake := 0.0
+var _shake_time := 0.0
+
+## Short, decaying screen shake for heavy impacts (hero slams). Honours the
+## reduce_shake setting and only nudges the lens offset, never the camera rig.
+func add_camera_shake(strength: float, at: Vector3 = Vector3.INF) -> void:
+	if _reduce_shake or not is_instance_valid(camera):
+		return
+	if at != Vector3.INF and is_instance_valid(cam_pivot):
+		# Fade with distance from what the player is looking at.
+		strength *= clampf(1.0 - cam_pivot.global_position.distance_to(Vector3(at.x, 0.0, at.z)) / 60.0, 0.0, 1.0)
+	_shake = maxf(_shake, strength)
+
+func _apply_camera_shake(delta: float) -> void:
+	if not is_instance_valid(camera):
+		return
+	if _shake <= 0.001:
+		if camera.h_offset != 0.0 or camera.v_offset != 0.0:
+			camera.h_offset = 0.0
+			camera.v_offset = 0.0
+		return
+	_shake_time += delta
+	var amp := _shake * _shake
+	camera.h_offset = sin(_shake_time * 53.0) * 0.6 * amp + sin(_shake_time * 31.0) * 0.3 * amp
+	camera.v_offset = sin(_shake_time * 47.0 + 1.3) * 0.5 * amp
+	_shake = maxf(0.0, _shake - delta * 2.2)
 
 func focus_on(pos: Vector3) -> void:
 	cam_pivot.global_position = _clamp_camera_focus(pos)

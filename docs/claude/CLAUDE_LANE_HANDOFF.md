@@ -60,6 +60,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Ambient weather (scripts/world/ambient_weather.gd): GPU particles in a box that follows the camera's ground focus; per theme pollen, autumn leaves, snow, blown sand, embers and ash |
 | (latest) | Fog of war: drifting domain-warped cloud texture in the shroud and noise-feathered, slowly moving borders (grid stays authoritative) |
 | (latest) | Every building flies a waving team banner (building._build_team_banner, assets/shaders/team_banner.gdshader: team colour, gilt border and lozenge, swallowtail hem); the Clanhold red box banners were removed. Ground and grass share drifting cloud shadows |
+| (latest) | Hero abilities: CombatVfx.motes on allies touched by Rally/Heal (capped at 14), CombatVfx.slam dust and clods for Slam; game_world.camera_shake signal drives a short lens-offset shake in rts_controller (distance-faded, honours reduce_shake); both prewarmed |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 

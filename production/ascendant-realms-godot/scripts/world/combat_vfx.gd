@@ -258,3 +258,49 @@ static func shockwave(parent: Node3D, pos: Vector3, col: Color, radius: float) -
 	t.tween_property(ring, "scale", Vector3.ONE * radius * 1.12, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	t.tween_property(mat, "albedo_color:a", 0.0, 0.6).set_delay(0.1)
 	t.chain().tween_callback(ring.queue_free)
+
+
+## Rising glow motes around a unit (heals, rallies, empowerment).
+static var _mote_process: ParticleProcessMaterial
+static var _mote_mesh: QuadMesh
+static var _mote_mats := {}
+
+static func motes(parent: Node3D, pos: Vector3, col: Color, size_scale: float = 1.0) -> void:
+	_ensure()
+	if _mote_process == null:
+		_mote_process = ParticleProcessMaterial.new()
+		_mote_process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
+		_mote_process.emission_ring_axis = Vector3.UP
+		_mote_process.emission_ring_radius = 0.55
+		_mote_process.emission_ring_inner_radius = 0.2
+		_mote_process.emission_ring_height = 0.2
+		_mote_process.direction = Vector3(0, 1, 0)
+		_mote_process.spread = 12.0
+		_mote_process.initial_velocity_min = 1.2
+		_mote_process.initial_velocity_max = 2.4
+		_mote_process.gravity = Vector3(0, 0.6, 0)
+		_mote_process.damping_min = 0.8
+		_mote_process.damping_max = 1.4
+		var fade := Gradient.new()
+		fade.set_color(0, Color(1, 1, 1, 0))
+		fade.set_color(1, Color(1, 1, 1, 0))
+		fade.add_point(0.2, Color(1, 1, 1, 1))
+		var ramp := GradientTexture1D.new()
+		ramp.gradient = fade
+		_mote_process.color_ramp = ramp
+		_mote_mesh = QuadMesh.new()
+		_mote_mesh.size = Vector2(0.24, 0.24)
+	var key := col.to_html(false)
+	if not _mote_mats.has(key):
+		_mote_mats[key] = _additive(col, BaseMaterial3D.BILLBOARD_PARTICLES, 2.4)
+	var p := _emitter(parent, pos + Vector3(0, 0.2, 0), _mote_process, _mote_mesh, _mote_mats[key], 14, 1.1)
+	p.explosiveness = 0.35
+	p.scale = Vector3.ONE * size_scale
+
+## Heavy ground impact: a wide dust ring and thrown clods.
+static func slam(parent: Node3D, pos: Vector3, radius: float) -> void:
+	_ensure()
+	var dust := _emitter(parent, Vector3(pos.x, 0.25, pos.z), _dust_process, _dust_mesh, _dust_mat, 26, 1.6)
+	dust.scale = Vector3.ONE * clampf(radius * 0.32, 1.4, 3.2)
+	dust.visibility_aabb = AABB(Vector3(-12, -1, -12), Vector3(24, 8, 24))
+	_emitter(parent, Vector3(pos.x, 0.3, pos.z), _clod_process, _clod_mesh, null, 18, 1.0).scale = Vector3.ONE * 1.5

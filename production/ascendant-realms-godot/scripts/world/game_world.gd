@@ -22,6 +22,8 @@ const RESOURCE_CORE_ROUTE_MARGIN := 0.12
 signal game_over(victory: bool)
 signal hero_leveled(level: int)
 signal alert(message: String, pos: Vector3)
+## Presentation cue for heavy impacts; the RTS camera turns it into a short shake.
+signal camera_shake(strength: float, at: Vector3)
 
 var map := {}
 var commanders := []            # Commander instances indexed by team
@@ -2321,6 +2323,8 @@ func _prewarm_combat_presentation() -> void:
 	CombatVfx.hit(_fx_container, spot, Color(1.0, 0.72, 0.42), false)
 	CombatVfx.hit(_fx_container, spot, Color(1, 0.5, 0.15), true)
 	CombatVfx.death(_fx_container, spot)
+	CombatVfx.motes(_fx_container, spot, Color(1.0, 0.82, 0.38))
+	CombatVfx.slam(_fx_container, spot, 6.0)
 	for kind in ["arrow", "cinder", "void_bolt", "thorn"]:
 		var p = ProjectileScript.new()
 		p.kind = kind
@@ -2740,6 +2744,7 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 					if u.global_position.distance_to(hero.global_position) <= ab.get("range", 14.0):
 						u.apply_slow(-1.0)  # no-op clear
 			spawn_ring_fx(hero.global_position, Color(1, 0.9, 0.4), ab.get("range", 14.0))
+			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(1.0, 0.82, 0.38))
 		"slam":
 			var dmg = ab.get("dmg", 60) * (1.5 if level >= 2 else 1.0)
 			var rng = ab.get("range", 8.0) * (1.4 if level >= 2 else 1.0)
@@ -2749,6 +2754,8 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 						u.take_damage(GameData.compute_damage(dmg, "blunt", u.armor_class, u.cur_armor()), hero)
 						u.apply_stun(1.5)
 			spawn_ring_fx(hero.global_position, Color(0.9, 0.6, 0.2), rng)
+			CombatVfx.slam(_fx_container, hero.global_position, rng)
+			emit_signal("camera_shake", 0.9, hero.global_position)
 		"charge":
 			var dir = (target_pos - hero.global_position)
 			dir.y = 0
@@ -2774,6 +2781,7 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 		"heal":
 			heal_allies_near(hero.global_position, ab.get("range", 14.0), ab.get("heal", 120) + hero.heal_power, hero.team)
 			spawn_ring_fx(hero.global_position, Color(0.4, 1.0, 0.6), ab.get("range", 14.0))
+			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(0.45, 1.0, 0.6))
 		"root":
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
@@ -2788,6 +2796,8 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 				var t := create_tween()
 				t.tween_property(hero.model_root, "scale", hero.model_root.scale * 1.4, 0.4)
 			spawn_ring_fx(hero.global_position, Color(1, 0.5, 0.9), 6.0)
+			CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.55, 0.95), 2.0)
+			emit_signal("camera_shake", 0.5, hero.global_position)
 			get_tree().create_timer(12.0).timeout.connect(func():
 				if is_instance_valid(hero) and not hero.is_dead:
 					hero.max_hp /= 1.5
@@ -2840,6 +2850,17 @@ func spawn_death_fx(pos: Vector3) -> void:
 
 func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)
+
+func _ability_motes_on_allies(hero, radius: float, col: Color) -> void:
+	# Rising motes on each ally the ability touched, capped so a big army
+	# never spawns dozens of emitters in one frame.
+	var shown := 0
+	for u in commander_for_team(hero.team).units:
+		if shown >= 14:
+			break
+		if is_instance_valid(u) and not u.is_dead and u.global_position.distance_to(hero.global_position) <= radius:
+			CombatVfx.motes(_fx_container, u.global_position, col, 1.0)
+			shown += 1
 
 func spawn_ring_fx(pos: Vector3, col: Color, radius: float) -> void:
 	# Ability areas: a soft expanding shockwave on the ground (CombatVfx).
