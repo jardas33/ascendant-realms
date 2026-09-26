@@ -32,6 +32,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | 5c952f1d | Skill tree key-art backdrop, campaign inked march routes, War Chest title block and bronze button |
 | 3d5e3aa9 | Vorthak holdfast on Vorthak starts (ground-shader scorch zone, charred basalt walls, ash-glass shards, violet `BrazierFire`); perimeter and foothill trees kept 30 m clear of starts |
 | 7fd0cf95 | Lioraen grove on Lioraen starts (bloom zone, moonstones, lume blooms, `GroveMotes`) |
+| f9e20a09 | No mid-match stalls: building hulls cached and prewarmed at load; unit, building, VFX and projectile pipelines prewarmed behind the ground at match start (worst frame over a 10-minute 4x run: 300 ms, now 33 ms) |
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
