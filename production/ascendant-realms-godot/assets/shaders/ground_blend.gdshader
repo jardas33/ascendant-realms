@@ -54,6 +54,11 @@ uniform vec3 field_moss : source_color = vec3(0.18, 0.25, 0.14);
 uniform float field_strength = 0.0;
 uniform float relief_strength = 0.0;
 uniform float relief_scale = 0.018;
+// Faction ground: scorched ash yards around Vorthak holdfasts. xy = centre,
+// z = radius, w = strength. Blended in the ground itself so the edge is a
+// noisy burn fade, not a pasted decal.
+uniform vec4 scorch_zones[4];
+uniform int scorch_count = 0;
 
 varying vec3 world_pos;
 
@@ -189,6 +194,16 @@ void fragment() {
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
 	}
 
+	for (int i = 0; i < scorch_count; i++) {
+		float d = length(wxz - scorch_zones[i].xy) / max(scorch_zones[i].z, 0.1);
+		float edge = d + (fbm(wxz * 0.09 + float(i) * 13.0) - 0.5) * 0.55;
+		float burn = (1.0 - smoothstep(0.55, 1.0, edge)) * scorch_zones[i].w;
+		float ash_luma = dot(ground, vec3(0.299, 0.587, 0.114));
+		vec3 ash = mix(vec3(0.055, 0.05, 0.055), vec3(0.13, 0.115, 0.12), fbm(wxz * 0.35 + 3.0)) * (0.8 + 0.5 * ash_luma);
+		// A few ember-warm cinders in the heart of the burn.
+		ash += vec3(0.20, 0.06, 0.02) * smoothstep(0.82, 0.95, fbm(wxz * 0.6 + 9.0)) * (1.0 - smoothstep(0.2, 0.6, d));
+		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
+	}
 	ALBEDO = ground;
 	if (relief_strength > 0.0) {
 		// Rolling-ground relief from a low-frequency height field, fading out on

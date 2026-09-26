@@ -179,6 +179,17 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
 	sm.set_shader_parameter("field_strength", float(grade.get("field_strength", 0.0)))
 	sm.set_shader_parameter("relief_strength", float(grade.get("relief_strength", 0.0)))
+	# Scorched ash yards under Vorthak opponent starts (start i+1 is opponent i).
+	var scorch: Array = []
+	var opponents: Array = Match.get_config().get("opponents", [])
+	for i in range(1, starts.size()):
+		if scorch.size() < 4 and i - 1 < opponents.size() and str(opponents[i - 1].get("race", "")) == "vorthak":
+			scorch.append(Vector4(starts[i].x, starts[i].z, 22.0, 0.92))
+	var scorch_count := scorch.size()
+	while scorch.size() < 4:
+		scorch.append(Vector4(9999, 9999, 0.1, 0.0))
+	sm.set_shader_parameter("scorch_zones", scorch)
+	sm.set_shader_parameter("scorch_count", scorch_count)
 	sm.set_shader_parameter("snow_shadow_color", grade.get("snow_shadow_color", Color(0.62, 0.69, 0.80)))
 	sm.set_shader_parameter("snow_highlight_color", grade.get("snow_highlight_color", Color(0.90, 0.95, 1.0)))
 	sm.set_shader_parameter("snow_underlay_strength", float(grade.get("snow_underlay_strength", 0.24)))

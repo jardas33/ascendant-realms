@@ -536,7 +536,11 @@ func _scatter_environment() -> void:
 		var ang := rng.randf() * TAU
 		var rad := half * rng.randf_range(0.70, 0.97)
 		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
-		_place_decor(decor, (trees if rng.randf() < 0.62 else rocks), pos, rng)
+		var pick := rng.randf()
+		# Corner starts sit inside this belt; keep their yards clear of trees.
+		if _near_any_start(pos, starts, 30.0):
+			continue
+		_place_decor(decor, (trees if pick < 0.62 else rocks), pos, rng)
 	var recorder = _m20_recorder()
 	if recorder:
 		recorder.record_population("perimeter_decor", perimeter_count, float(Time.get_ticks_usec() - perimeter_start) / 1000.0, 0.0, "game_world._scatter_environment")
@@ -554,7 +558,10 @@ func _scatter_environment() -> void:
 			continue
 		var rad := half * rng.randf_range(1.03, 1.37)
 		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
-		_place_decor(decor, (trees if rng.randf() < 0.72 else rocks), pos, rng)
+		var pick := rng.randf()
+		if _near_any_start(pos, starts, 30.0):
+			continue
+		_place_decor(decor, (trees if pick < 0.72 else rocks), pos, rng)
 	if recorder:
 		recorder.record_population("foothill_decor", foothill_count, float(Time.get_ticks_usec() - foothill_start) / 1000.0, 0.0, "game_world._scatter_environment")
 
@@ -596,6 +603,11 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	if composition_script:
 		var composition = composition_script.new()
 		composition.build(parent, origin, map, String(Match.get_config().get("player_race", "barrosan")))
+		# Opponent starts get their own faction dressing where a kit exists.
+		var opponents: Array = Match.get_config().get("opponents", [])
+		for i in range(1, starts.size()):
+			if i - 1 < opponents.size() and str(opponents[i - 1].get("race", "")) == "vorthak":
+				composition.build_vorthak_holdfast(parent, starts[i])
 		_rebuild_navigation_soft_blockers()
 
 
@@ -969,6 +981,12 @@ func _scatter_world03_landmarks(parent: Node3D, trees: Array, rocks: Array, star
 		if _too_close_to_key(pos, starts):
 			continue
 		_place_decor(parent, (trees if rng.randf() < 0.58 else rocks), pos, rng)
+
+func _near_any_start(pos: Vector3, starts: Array, radius: float) -> bool:
+	for s in starts:
+		if pos.distance_to(s) < radius:
+			return true
+	return false
 
 func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 	for s in starts:

@@ -15,6 +15,7 @@ from mathutils import Vector, noise
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 TEXTURE, OUT = argv[0], argv[1]
+VARIANT = argv[2] if len(argv) > 2 else "highland"
 random.seed(7)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -43,15 +44,24 @@ def make_material(name, tint, rough=0.9):
 
 
 # glTF exports a multiplied texture as texture * baseColorFactor.
-stone_mats = [
-    make_material("Highland Granite Cool", (0.62, 0.64, 0.66)),
-    make_material("Highland Granite Warm", (0.70, 0.64, 0.56)),
-    make_material("Highland Granite Lichen", (0.56, 0.62, 0.50)),
-]
+if VARIANT == "vorthak":
+    # Charred basalt masonry for the Vorthak holdfasts: soot-black stone with
+    # a rust-scorched course and a violet-grey ash bloom.
+    stone_mats = [
+        make_material("Vorthak Charred Basalt", (0.20, 0.19, 0.21), 0.95),
+        make_material("Vorthak Scorched Basalt", (0.30, 0.20, 0.16), 0.95),
+        make_material("Vorthak Ash Bloom", (0.30, 0.28, 0.33), 0.95),
+    ]
+else:
+    stone_mats = [
+        make_material("Highland Granite Cool", (0.62, 0.64, 0.66)),
+        make_material("Highland Granite Warm", (0.70, 0.64, 0.56)),
+        make_material("Highland Granite Lichen", (0.56, 0.62, 0.50)),
+    ]
 turf_mat = bpy.data.materials.new("Highland Turf")
 turf_mat.use_nodes = True
 turf_bsdf = turf_mat.node_tree.nodes["Principled BSDF"]
-turf_bsdf.inputs["Base Color"].default_value = (0.16, 0.22, 0.08, 1.0)
+turf_bsdf.inputs["Base Color"].default_value = (0.05, 0.045, 0.045, 1.0) if VARIANT == "vorthak" else (0.16, 0.22, 0.08, 1.0)
 turf_bsdf.inputs["Roughness"].default_value = 1.0
 
 

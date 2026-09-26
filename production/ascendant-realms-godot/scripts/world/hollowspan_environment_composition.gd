@@ -89,6 +89,8 @@ const ASSET_SCALE := {
 	"marker": 2.7,
 	"shelter": 3.0,
 	"brush": 2.0,
+	"charred_wall": 2.3,
+	"ash_glass": 3.2,
 }
 
 const ASSET_PATHS := {
@@ -99,6 +101,8 @@ const ASSET_PATHS := {
 	"marker": ASSET_ROOT + "barrosan_boundary_marker.glb",
 	"shelter": ASSET_ROOT + "rough_supply_shelter.glb",
 	"brush": ASSET_ROOT + "highland_brush_cluster.glb",
+	"charred_wall": ASSET_ROOT + "vorthak_charred_wall.glb",
+	"ash_glass": ASSET_ROOT + "vorthak_ash_glass_shards.glb",
 }
 
 const SLICE_DIRT_TEXTURE := "res://assets/textures/nature/highland_dirt_path.png"
@@ -279,6 +283,56 @@ func _dress_hamlet_house(house: Node3D, position: Vector3, toward: Vector3, inde
 	house.get_parent().add_child(lantern)
 	var front := bounds.get_center() + toward * (maxf(bounds.size.x, bounds.size.z) * 0.5 + 0.6)
 	lantern.global_position = Vector3(front.x, 1.9, front.z)
+
+
+# Vorthak holdfast dressing for an enemy start: a scorched ash yard, broken
+# rings of charred basalt masonry, ash-glass outcrops and rift-fire braziers,
+# per the art direction (charred masonry, blackened iron, ritual forms; no
+# generic spikes). Placed in the start's own frame, presentation only.
+const VORTHAK_WALLS := [
+	# [back, side, yaw]  (back < 0 is toward the map centre)
+	[-14.0, -7.0, 0.35], [-15.0, 8.0, -0.35], [-6.0, -15.0, 1.3], [-5.0, 15.5, -1.25],
+	[9.0, -14.5, 1.9], [10.0, 13.5, -1.9], [17.0, -2.0, 0.05],
+]
+const VORTHAK_GLASS := [[-10.5, -12.5, 0.4], [4.0, 18.0, 1.7], [15.0, 9.0, 2.6], [-2.0, -19.0, 0.9], [20.0, -10.0, 3.3]]
+const VORTHAK_BRAZIERS := [[-11.0, -3.5], [-11.0, 3.5], [6.0, -9.0], [6.0, 9.0]]
+
+
+func build_vorthak_holdfast(parent: Node3D, origin: Vector3) -> void:
+	var toward := Vector3.ZERO - origin
+	toward.y = 0.0
+	if toward.length_squared() < 0.01:
+		return
+	toward = toward.normalized()
+	var side := Vector3(-toward.z, 0.0, toward.x)
+	var facing := atan2(toward.x, toward.z)
+	var hold := Node3D.new()
+	hold.name = "VorthakHoldfast"
+	parent.add_child(hold)
+	var frame := func(back: float, across: float) -> Vector3:
+		return origin - toward * back + side * across
+	# The scorched ash yard itself is painted by the ground shader (scorch_zones).
+	for spec in VORTHAK_WALLS:
+		_place_asset(hold, "charred_wall", frame.call(float(spec[0]), float(spec[1])), facing + float(spec[2]))
+	for spec in VORTHAK_GLASS:
+		_place_asset(hold, "ash_glass", frame.call(float(spec[0]), float(spec[1])), float(spec[2]))
+	var brazier_path: String = BARROSAN_SETTLEMENT_ASSETS["watch_brazier"]
+	for spec in VORTHAK_BRAZIERS:
+		var packed := load(brazier_path)
+		if not packed is PackedScene:
+			continue
+		var brazier: Node3D = packed.instantiate()
+		hold.add_child(brazier)
+		brazier.position = frame.call(float(spec[0]), float(spec[1]))
+		ModelUtils.ground_model(brazier)
+		_apply_settlement_material_cohesion(brazier, "clan_waystone")
+		_set_presentation_only(brazier, true)
+		var fire := BrazierFire.new()
+		fire.violet = true
+		fire.fire_color = Color(0.62, 0.30, 1.0)
+		fire.light_energy = 2.6
+		fire.position = Vector3(0.0, 1.36, 0.0)
+		brazier.add_child(fire)
 
 
 func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:

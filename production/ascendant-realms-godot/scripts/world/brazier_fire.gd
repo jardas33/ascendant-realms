@@ -6,6 +6,9 @@ class_name BrazierFire
 @export var light_range := 7.5
 @export var light_energy := 2.2
 @export var flame_scale := 1.0
+## Light colour; the flame keeps its warm ramp unless violet is requested.
+@export var fire_color := Color(1.0, 0.62, 0.30)
+@export var violet := false
 
 var _light: OmniLight3D
 var _time := 0.0
@@ -19,14 +22,17 @@ func _ready() -> void:
 	_seed = randf() * 100.0
 	_light = OmniLight3D.new()
 	_light.name = "FireLight"
-	_light.light_color = Color(1.0, 0.62, 0.30)
+	_light.light_color = fire_color
 	_light.light_energy = light_energy
 	_light.omni_range = light_range
 	_light.omni_attenuation = 1.4
 	_light.shadow_enabled = false
 	_light.position = Vector3(0.0, 0.45 * flame_scale, 0.0)
 	add_child(_light)
-	add_child(_make_flame())
+	var flame := _make_flame()
+	if violet:
+		flame.process_material = _violet_process()
+	add_child(flame)
 
 
 func _process(delta: float) -> void:
@@ -97,3 +103,19 @@ static func _flame_texture() -> Texture2D:
 			var a := clampf(1.0 - p.length(), 0.0, 1.0)
 			img.set_pixel(x, y, Color(1, 1, 1, a * a))
 	return ImageTexture.create_from_image(img)
+
+
+static var _violet: ParticleProcessMaterial
+
+static func _violet_process() -> ParticleProcessMaterial:
+	# Rift-fire for Vorthak braziers: the same flame motion with a violet ramp.
+	if _violet == null:
+		_violet = _flame_process.duplicate() as ParticleProcessMaterial
+		var ramp := Gradient.new()
+		ramp.set_color(0, Color(0.85, 0.62, 1.0, 0.6))
+		ramp.set_color(1, Color(0.30, 0.05, 0.55, 0.0))
+		ramp.add_point(0.4, Color(0.62, 0.22, 0.95, 0.45))
+		var tex := GradientTexture1D.new()
+		tex.gradient = ramp
+		_violet.color_ramp = tex
+	return _violet
