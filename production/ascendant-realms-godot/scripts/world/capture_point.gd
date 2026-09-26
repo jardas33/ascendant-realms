@@ -41,39 +41,34 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 	_build_beam()
 
 func _build_ring() -> void:
+	# Rune circle over the real 7.5 m capture radius with a progress arc that
+	# fills as a team captures (capture_zone shader). Presentation only.
 	ring = MeshInstance3D.new()
-	var torus := TorusMesh.new()
-	# Keep the strategic read close to the site. The capture radius remains 7.5m
-	# below; this is presentation-only and avoids a giant gameplay-looking halo.
-	torus.inner_radius = 3.4
-	torus.outer_radius = 3.9
-	ring.mesh = torus
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.8, 0.8, 0.8, 0.38)
-	mat.emission_enabled = true
-	mat.emission = Color(0.8, 0.8, 0.8)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var quad := QuadMesh.new()
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.size = Vector2(15.4, 15.4)
+	ring.mesh = quad
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://assets/shaders/capture_zone.gdshader")
 	ring.material_override = mat
-	ring.position.y = 0.15
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	ring.position.y = 0.12
 	add_child(ring)
 
 func _build_beam() -> void:
 	beam = MeshInstance3D.new()
 	var cyl := CylinderMesh.new()
-	cyl.top_radius = 0.24
-	cyl.bottom_radius = 0.5
-	cyl.height = 12.0
+	cyl.top_radius = 0.9
+	cyl.bottom_radius = 0.6
+	cyl.height = 16.0
+	cyl.cap_top = false
+	cyl.cap_bottom = false
 	beam.mesh = cyl
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(1.0, 0.85, 0.4, 0.16)
-	mat.emission_enabled = true
-	mat.emission = Color(1.0, 0.85, 0.4)
-	mat.emission_energy_multiplier = 2.0
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://assets/shaders/capture_beam.gdshader")
 	beam.material_override = mat
-	beam.position.y = 6.0
+	beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	beam.position.y = 8.0
 	add_child(beam)
 
 func _physics_process(delta: float) -> void:
@@ -113,6 +108,8 @@ func _physics_process(delta: float) -> void:
 			_set_owner(lead_team)
 	elif owner_team == -1:
 		_progress = max(0.0, _progress - delta * 0.15)
+		if _contesting_team >= 0:
+			_tint(GameData.TEAM_COLORS.get(_contesting_team, Color.WHITE), _progress)
 
 	# benefit income
 	if owner_team >= 0:
@@ -150,13 +147,18 @@ func _set_owner(team: int) -> void:
 		world.on_point_captured(self, team)
 
 func _tint(c: Color, strength: float) -> void:
-	if ring and ring.material_override:
-		var m := ring.material_override as StandardMaterial3D
-		m.albedo_color = c
-		m.emission = c
-		m.emission_energy_multiplier = 1.0 + strength * 2.0
-	if beam and beam.material_override:
-		(beam.material_override as StandardMaterial3D).emission = c.lerp(Color(1,0.85,0.4), 0.5)
+	var owned := owner_team >= 0 and strength >= 1.0
+	if ring and ring.material_override is ShaderMaterial:
+		var m := ring.material_override as ShaderMaterial
+		m.set_shader_parameter("contest_color", c)
+		m.set_shader_parameter("progress", clampf(strength, 0.0, 1.0))
+		if owned:
+			m.set_shader_parameter("owner_color", c)
+		m.set_shader_parameter("owned", 1.0 if owned else 0.0)
+	if beam and beam.material_override is ShaderMaterial:
+		var b := beam.material_override as ShaderMaterial
+		b.set_shader_parameter("beam_color", c.lerp(Color(1, 0.85, 0.4), 0.35) if owned else Color(1, 0.85, 0.4))
+		b.set_shader_parameter("strength", 0.9 if owned else 0.6)
 
 func get_capture_snapshot() -> Dictionary:
 	return {"point_name": point_name, "owner_team": owner_team, "progress": _progress, "contesting_team": _contesting_team, "global_position": global_position}

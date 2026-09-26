@@ -2317,6 +2317,12 @@ func _prewarm_combat_presentation() -> void:
 	var site_mat := ShaderMaterial.new()
 	site_mat.shader = load("res://assets/shaders/construction_rise.gdshader")
 	site.material_override = site_mat
+	var ring := MeshInstance3D.new()
+	ring.mesh = QuadMesh.new()
+	ring.material_override = CombatVfx.selection_ring_material(player_commander.color)
+	_fx_container.add_child(ring)
+	ring.global_position = spot
+	get_tree().create_timer(0.6).timeout.connect(ring.queue_free)
 	_fx_container.add_child(site)
 	site.global_position = spot
 	get_tree().create_timer(0.6).timeout.connect(site.queue_free)
