@@ -94,7 +94,7 @@ func build(map: Dictionary, theme_name: String) -> void:
 					# Clumped: dense meadow swathes, bare-ish patches between.
 					var c := clumps.get_noise_2dv(p) * 0.5 + 0.5
 					var m := meadows.get_noise_2dv(p) * 0.5 + 0.5
-					var chance := density * smoothstep(0.30, 0.62, c * 0.55 + m * 0.45)
+					var chance := density * smoothstep(0.40, 0.56, c * 0.55 + m * 0.45)
 					var road := 1e9
 					for r in roads:
 						road = minf(road, _segment_distance(p, r[0], r[1]))

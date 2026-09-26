@@ -16,6 +16,41 @@ uniform sampler2D clear_mask : filter_linear, repeat_disable;
 uniform vec2 mask_origin = vec2(-140.0, -140.0);
 uniform vec2 mask_size = vec2(280.0, 280.0);
 
+// Integer hash of a lattice point. The old fract(p * 123.34) hash lost
+// precision on the GPU, so neighbouring cells disagreed about their shared
+// corners and the noise showed hard square seams across the ground.
+float hash21(vec2 p) {
+	uvec2 q = uvec2(ivec2(floor(p)) + ivec2(65536));
+	uint h = (q.x * 1597334677u) ^ (q.y * 3812015801u);
+	h = (h ^ (h >> 16u)) * 2246822519u;
+	h ^= h >> 13u;
+	h *= 3266489917u;
+	h ^= h >> 16u;
+	return float(h) * (1.0 / 4294967295.0);
+}
+
+float vnoise(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	f = f * f * (3.0 - 2.0 * f);
+	float a = hash21(i);
+	float b = hash21(i + vec2(1.0, 0.0));
+	float c = hash21(i + vec2(0.0, 1.0));
+	float d = hash21(i + vec2(1.0, 1.0));
+	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+
+float fbm(vec2 p) {
+	float v = 0.0;
+	float amp = 0.5;
+	for (int i = 0; i < 4; i++) {
+		v += amp * vnoise(p);
+		p *= 2.03;
+		amp *= 0.5;
+	}
+	return v;
+}
+
 varying float v_height;
 varying float v_head;
 varying vec4 v_custom;
@@ -24,6 +59,11 @@ void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
 	float clear = texture(clear_mask, (origin.xz - mask_origin) / mask_size).r;
 	float grow = 1.0 - smoothstep(0.15, 0.6, clear);
+	// Same bare-dirt and rock fields the ground shader paints (unbiased), so
+	// grass thins out over clearings instead of sprinkling across them.
+	float dirt_m = smoothstep(0.66, 0.82, fbm(origin.xz * 0.017 + 60.0));
+	float rock_m = smoothstep(0.62, 0.80, fbm(origin.xz * 0.02 + 21.0));
+	grow *= (1.0 - 0.9 * smoothstep(0.2, 0.7, dirt_m)) * (1.0 - smoothstep(0.15, 0.55, rock_m));
 	VERTEX *= grow;
 	float h = UV.y;
 	// Travelling gusts plus a quick flutter; the tip moves, the root stays.
