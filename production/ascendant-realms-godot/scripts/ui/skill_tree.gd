@@ -514,6 +514,18 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			continue
 		var branch := str(n.get("branch", ""))
 		var anchor := _node_pos(n)
+		var state := _node_state(n)
+		if state == "UNLOCKED" or state == "PURCHASABLE":
+			var star_color := MINT if state == "UNLOCKED" else GOLD_BRIGHT
+			# A restrained crown stays clear of nearby links and keeps the status
+			# legible when all paths are shown together.
+			var crest := anchor + Vector2(NODE_SIZE.x * 0.5, -5.0)
+			canvas.draw_line(crest + Vector2(-36.0, 0.0), crest + Vector2(-9.0, 0.0), Color(star_color, 0.5), 1.3, true)
+			canvas.draw_line(crest + Vector2(9.0, 0.0), crest + Vector2(36.0, 0.0), Color(star_color, 0.5), 1.3, true)
+			canvas.draw_colored_polygon(PackedVector2Array([
+				crest + Vector2(0.0, -6.0), crest + Vector2(6.0, 0.0),
+				crest + Vector2(0.0, 6.0), crest + Vector2(-6.0, 0.0)
+			]), Color(star_color, 0.78))
 		if not branch_seen.has(branch):
 			branch_seen[branch] = anchor.x
 			canvas.draw_string(_title_font(), Vector2(anchor.x, 25.0), branch.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, Color(_branch_color(branch), 0.82))
@@ -528,10 +540,26 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			var to := anchor + Vector2(NODE_SIZE.x * 0.5, 0.0)
 			var complete := _is_unlocked(id) and _is_unlocked(req)
 			var available := _prereqs_met(n) and not _is_unlocked(id)
-			var col := MINT if complete else GOLD if available else Color(0.35, 0.42, 0.54, 0.52)
-			canvas.draw_line(from, to, Color(col, 0.16), 8.0, true)
-			canvas.draw_line(from, to, Color(col, 0.8), 2.2 if complete else 1.5, true)
-			canvas.draw_circle(to, 3.0, col)
+			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
+			var path := _constellation_link(from, to)
+			var strength := 0.88 if complete or available else 0.32
+			canvas.draw_polyline(path, Color(col, strength * 0.12), 9.0 if complete or available else 5.0, true)
+			canvas.draw_polyline(path, Color(col, strength * 0.46), 3.6 if complete or available else 2.0, true)
+			canvas.draw_polyline(path, Color(PAPER, strength * 0.52), 1.0, true)
+			canvas.draw_circle(to, 5.0 if complete or available else 3.0, Color(col, strength * 0.33))
+			canvas.draw_circle(to, 2.2, Color(col, strength))
+
+func _constellation_link(from: Vector2, to: Vector2) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var delta := to - from
+	var bend := minf(26.0, absf(delta.y) * 0.22)
+	var first := from + Vector2(delta.x * 0.27, bend)
+	var second := to - Vector2(delta.x * 0.27, bend)
+	for step in range(17):
+		var t := float(step) / 16.0
+		var inverse := 1.0 - t
+		points.append(from * pow(inverse, 3.0) + first * 3.0 * pow(inverse, 2.0) * t + second * 3.0 * inverse * t * t + to * pow(t, 3.0))
+	return points
 
 func _find_node(id: String) -> Dictionary:
 	for n in _nodes:
@@ -593,9 +621,10 @@ func _node_style(n: Dictionary, selected: bool, hovered: bool) -> StyleBoxFlat:
 		border = PAPER
 	if selected:
 		border = GOLD_BRIGHT
-	var box := _panel_style(bg, border, 11, 2 if selected else 1)
-	box.shadow_color = Color(0, 0, 0, 0.28)
-	box.shadow_size = 5 if selected or hovered else 2
+	var box := _panel_style(bg, border, 9, 2 if selected or state == "PURCHASABLE" else 1)
+	box.border_width_top = 3 if state == "UNLOCKED" or state == "PURCHASABLE" else 1
+	box.shadow_color = Color(border, 0.28) if selected or hovered else Color(0, 0, 0, 0.3)
+	box.shadow_size = 7 if selected or hovered else 3
 	return box
 
 func _refresh_nodes() -> void:
