@@ -144,18 +144,24 @@ const R2_PLACEMENTS := [
 	{"asset": "brush", "offset": Vector3(48.0, 0.0, 51.0), "yaw": -0.18, "height": 1.30},
 ]
 
-func build(parent: Node3D, origin: Vector3, map_data: Dictionary) -> void:
+func build(parent: Node3D, origin: Vector3, map_data: Dictionary, start_race: String = "barrosan") -> void:
 	if map_data.get("id", "") != "hollowspan":
 		return
 	var layer := Node3D.new()
 	layer.name = "HollowspanEnvironmentComposition"
 	parent.add_child(layer)
-	_build_barrosan_base_ground_slice(layer, origin)
+	# The settlement kit, worn yards and route dressing are Barrosan architecture.
+	# Another race starting here keeps only the neutral highland scenery, so a
+	# Lioraen Groveheart is never ringed by a Barrosan palisade and gate.
+	var barrosan_start := start_race == "barrosan"
+	if barrosan_start:
+		_build_barrosan_base_ground_slice(layer, origin)
 	for spec in PLACEMENTS:
 		var position: Vector3 = spec.get("world", origin + spec.get("offset", Vector3.ZERO))
 		_place_asset(layer, String(spec["asset"]), position, float(spec.get("yaw", 0.0)))
-	_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
-	_build_barrosan_r2_dressing(layer, origin)
+	if barrosan_start:
+		_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
+		_build_barrosan_r2_dressing(layer, origin)
 
 
 func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:

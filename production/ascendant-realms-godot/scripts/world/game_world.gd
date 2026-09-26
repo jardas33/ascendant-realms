@@ -585,7 +585,7 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	var composition_script = load("res://scripts/world/hollowspan_environment_composition.gd")
 	if composition_script:
 		var composition = composition_script.new()
-		composition.build(parent, origin, map)
+		composition.build(parent, origin, map, String(Match.get_config().get("player_race", "barrosan")))
 		_rebuild_navigation_soft_blockers()
 
 
