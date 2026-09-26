@@ -1,6 +1,6 @@
 # Claude lane handoff: performance, world art, lighting, worker
 
-Branch `claude/perf-placeholders-r1`, based on local `codex/current-godot-baseline-next` at `ebef47ae`.
+Branch `claude/perf-placeholders-r1`, based on local `codex/current-godot-baseline-next` at `ebef47ae`. It also merges Codex's ornate HUD branch at b6bcbe25.
 Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was touched. It's not merged or promoted.
 
 ## What changed
@@ -16,6 +16,21 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | dd73e450 | Textured cairns and heather/gorse brush. | `small_stone_cairn.glb`, `highland_brush_cluster.glb` |
 | e557cc8f | Decor materials are made dielectric and cached. The Tripo exports were metallic 1.0, which made the oaks look pale teal. There is also a foliage tint per tree. | `game_world.gd` |
 | 64b5545b | The Barrosan worker body is rebuilt on the same armature. Bones, the six actions and the import retarget are unchanged. | `assets/characters/barrosan_highlander_worker/*.glb` |
+
+## Second pass (after the handoff above)
+
+| Commit | Change |
+| --- | --- |
+| d282cd84 | Skirmish setup rebuilt: faction banner cards and dossier, tactical map preview (`scripts/ui/map_preview.gd`), colour-keyed opponents |
+| dcb4aae2 | Forge-hero preview plays the idle clip, faces the camera and is framed |
+| b615d148 | Barrosan worker replaced by a generated, sculpted model (free FLUX + Hunyuan3D, rigged by `tools/charpipe/fit_character.py`) |
+| 49881376 | Ground shader: anti-tiling, painterly colour fields, shading-only rolling relief (highland only) |
+| 0642f988 | **Merge of `codex/astra-ui-battle-hud-visual-r1` (b6bcbe25)**. Kept the GPU fog, took Codex hero-preview code, kept the skirmish rebuild |
+| f6ebb52f | Hamlet behind the Barrosan start: houses, crofts, `ChimneySmoke`, door lanterns, woodpiles, fences |
+| 530a47ec | Fog overlay overhangs the map edge |
+| 3d9bd467 | `CombatVfx` (cached sparks, flash, dust, death clouds), new arrow and bolt visuals, softer legacy hit cues |
+
+The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
 ## Regenerating assets (Blender 4.5, headless)
 
