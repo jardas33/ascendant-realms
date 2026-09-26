@@ -104,6 +104,12 @@ var _visibility_image: Image
 var _visibility_texture: ImageTexture
 
 var _theme := {}
+var _decor_material_cache := {}
+# The Tripo foliage bakes are pale sage; deepen them toward highland greens.
+const DECOR_FOLIAGE_TINTS := {
+	"broadleaf_oak.glb": Color(0.58, 0.74, 0.46),
+	"highland_pine.glb": Color(0.78, 0.90, 0.68),
+}
 
 # WORLD-03 player-facing environment dressing. These counts affect only
 # non-colliding scenery; gameplay positions, resources, navigation, and map
@@ -985,22 +991,34 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
-	_prep_decor(inst)
+	_prep_decor(inst, DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE))
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 
-func _prep_decor(n: Node) -> void:
+func _prep_decor(n: Node, tint: Color = Color.WHITE) -> void:
 	if n is CollisionObject3D:
 		n.set_deferred("collision_layer", 0)
 		n.set_deferred("collision_mask", 0)
 	if n is GeometryInstance3D:
 		n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if n is MeshInstance3D:
-		_apply_p1r14_decor_material_tone(n)
+		_apply_p1r14_decor_material_tone(n, tint)
 	for c in n.get_children():
-		_prep_decor(c)
+		_prep_decor(c, tint)
 
-func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D) -> void:
+func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.WHITE) -> void:
+	# The Tripo vegetation and rock exports declare metallic 1.0 with a packed
+	# roughness/metal map and emission on. Foliage then mirrors the sky and reads
+	# pale teal. Decor is never metal, so each shared source material gets one
+	# cached dielectric copy (instances keep sharing it for batching).
+	if mesh.mesh != null and mesh.material_override == null:
+		for surface in mesh.mesh.get_surface_count():
+			if mesh.get_surface_override_material(surface) != null:
+				continue
+			var source := mesh.mesh.surface_get_material(surface)
+			var fixed := _dielectric_decor_material(source, tint)
+			if fixed != source:
+				mesh.set_surface_override_material(surface, fixed)
 	# R14 is presentation-only: mute secondary decoration while preserving its
 	# meshes, positions, collisions and navigation exclusion.
 	if mesh.material_override is StandardMaterial3D:
@@ -1015,6 +1033,24 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D) -> void:
 			surface_copy.albedo_color = surface_copy.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16)
 			surface_copy.roughness = maxf(surface_copy.roughness, 0.82)
 			mesh.set_surface_override_material(surface, surface_copy)
+
+func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> Material:
+	if not source is StandardMaterial3D:
+		return source
+	var standard := source as StandardMaterial3D
+	if standard.metallic <= 0.05 and standard.metallic_texture == null and not standard.emission_enabled and tint == Color.WHITE:
+		return source
+	var key := [standard, tint]
+	if _decor_material_cache.has(key):
+		return _decor_material_cache[key]
+	var copy := standard.duplicate() as StandardMaterial3D
+	copy.metallic = 0.0
+	copy.metallic_texture = null
+	copy.metallic_specular = 0.35
+	copy.emission_enabled = false
+	copy.albedo_color *= tint
+	_decor_material_cache[key] = copy
+	return copy
 
 func _build_navigation() -> void:
 	var stage := _m20_begin("GAMEWORLD_NAVMESH", "GAMEWORLD_NAVIGATION", 2)
