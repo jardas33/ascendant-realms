@@ -24,15 +24,12 @@ func setup() -> void:
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 
-	_panel = PanelContainer.new()
+	# The forged vellum plate shared with the hero screens and the result
+	# ledger, so the pause screen belongs to the same kit as the battle HUD.
+	_panel = load("res://scripts/ui/hero_sheet_plate.gd").new()
 	add_child(_panel)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.045, 0.055, 0.08, 0.985)
-	sb.set_border_width_all(2)
-	sb.border_color = Color(0.68, 0.54, 0.3, 0.98)
-	sb.set_corner_radius_all(14)
-	sb.shadow_color = Color(0, 0, 0, 0.62)
-	sb.shadow_size = 18
+	sb.bg_color = Color.TRANSPARENT
 	_panel.add_theme_stylebox_override("panel", sb)
 	_panel.anchor_left = 0.5
 	_panel.anchor_right = 0.5
@@ -45,10 +42,10 @@ func setup() -> void:
 
 	var margin := MarginContainer.new()
 	_panel.add_child(margin)
-	margin.add_theme_constant_override("margin_left", 34)
-	margin.add_theme_constant_override("margin_top", 26)
-	margin.add_theme_constant_override("margin_right", 34)
-	margin.add_theme_constant_override("margin_bottom", 26)
+	margin.add_theme_constant_override("margin_left", 46)
+	margin.add_theme_constant_override("margin_top", 30)
+	margin.add_theme_constant_override("margin_right", 46)
+	margin.add_theme_constant_override("margin_bottom", 32)
 	var vb := VBoxContainer.new()
 	margin.add_child(vb)
 	vb.add_theme_constant_override("separation", 12)
@@ -59,15 +56,17 @@ func setup() -> void:
 	var font := load("res://assets/fonts/cinzel.ttf")
 	if font:
 		title.add_theme_font_override("font", font)
-	title.add_theme_font_size_override("font_size", 38)
-	title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52))
+	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_color_override("font_color", Color(0.98, 0.84, 0.46))
+	title.add_theme_color_override("font_outline_color", Color(0.05, 0.03, 0.01, 0.9))
+	title.add_theme_constant_override("outline_size", 4)
 	vb.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.text = "The battle is paused"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 16)
-	subtitle.add_theme_color_override("font_color", Color(0.68, 0.7, 0.76))
+	subtitle.add_theme_color_override("font_color", Color(0.78, 0.72, 0.60))
 	vb.add_child(subtitle)
 
 	_resume_button = _make_btn("Resume", func(): emit_signal("resume_requested"))
@@ -78,9 +77,9 @@ func setup() -> void:
 	vb.add_child(_make_section_header("CONTROLS"))
 	var controls_panel := PanelContainer.new()
 	var controls_style := StyleBoxFlat.new()
-	controls_style.bg_color = Color(0.075, 0.085, 0.12, 0.94)
+	controls_style.bg_color = Color(0.03, 0.035, 0.045, 0.72)
 	controls_style.set_border_width_all(1)
-	controls_style.border_color = Color(0.31, 0.3, 0.28, 0.9)
+	controls_style.border_color = Color(0.55, 0.44, 0.26, 0.55)
 	controls_style.set_corner_radius_all(8)
 	controls_panel.add_theme_stylebox_override("panel", controls_style)
 	controls_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -158,7 +157,7 @@ func _add_key_row(parent: VBoxContainer, key: String, description: String, font:
 	var key_label := Label.new()
 	key_label.text = key
 	key_label.custom_minimum_size = Vector2(104, 0)
-	key_label.add_theme_font_size_override("font_size", 13)
+	key_label.add_theme_font_size_override("font_size", 14)
 	key_label.add_theme_color_override("font_color", Color(0.98, 0.87, 0.56))
 	key_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	if font:
@@ -167,11 +166,11 @@ func _add_key_row(parent: VBoxContainer, key: String, description: String, font:
 	var action_label := Label.new()
 	action_label.text = description
 	action_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	action_label.add_theme_font_size_override("font_size", 14)
-	action_label.add_theme_color_override("font_color", Color(0.88, 0.89, 0.9))
+	# Descriptions use the plain body face; small Cinzel capitals were hard to read.
+	action_label.add_theme_font_size_override("font_size", 15)
+	action_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.80))
+	action_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	if font:
-		action_label.add_theme_font_override("font", font)
 	row.add_child(action_label)
 
 var _music_step := 3
