@@ -1,0 +1,11 @@
+# War Chest empty-state art
+
+Both PNGs were generated with the built-in Codex `image_gen` tool and copied into this directory. They use transparent backgrounds. Keep the whole object inside the alpha gutter when revising either image; the inventory layout scales each image without cropping it.
+
+## `astra_empty_war_chest_r1.png`
+
+> Use case: stylized-concept. Asset type: production fantasy RTS inventory empty-state illustration, shown at roughly 190 to 260 screen pixels inside a dark charcoal and gold War Chest menu. Create one open but unmistakably EMPTY highland war chest in a three-quarter isometric view. Aged smoked oak planks, forged black iron bands, restrained old-bronze knotwork and corner hardware, deep desaturated blue velvet lining. The lid is open enough to make the empty interior obvious. Premium hand-painted game-object finish with realistic material texture, strong clean silhouette, controlled warm upper-left key light and faint cool edge light. Compose the entire chest centered on a square canvas with at least 12% genuinely transparent alpha gutter on every side; no part of the object, glow, or shadow may be cut off. Thumbnail legibility matters more than microdetail. No floor, scenery, backdrop, UI panel, frame, text, letters, symbols, coins, jewels, weapons, relics, characters, or extra objects.
+
+## `astra_empty_relic_cradle_r1.png`
+
+> Use case: stylized-concept. Asset type: production fantasy RTS War Chest menu illustration, displayed at about 160 to 220 screen pixels as the empty Details state beside an empty ironbound highland chest. Create ONE VACANT RELIC DISPLAY CRADLE: an upright octagonal dark-iron and aged-bronze setting on a low smoked-oak stand, with a deep empty navy velvet recess where a relic would be placed. The center must be visibly empty; no item, gemstone, rune, text, or symbol inside it. Restrained forged-knotwork detail, realistic hammered metal and wood, warm upper-left highlights and a cool blue rim matching a premium hand-painted fantasy game inventory asset. Strong complete silhouette in three-quarter view, centered on a square canvas with at least 12% genuine transparent alpha gutter around every side. No floor, backdrop, environment, UI frame, panel, words, letters, diamonds, stars, weapons, coins, jewels, hands, characters, or extra objects.
