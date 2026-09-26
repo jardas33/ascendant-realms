@@ -52,50 +52,94 @@ func _ready() -> void:
 	_build_visual()
 
 func _build_visual() -> void:
+	# Presentation only: flight speed, collision/impact timing and damage are
+	# unchanged. Arrows are dark shafts with a faint warm streak; magic bolts are
+	# a small hot core inside a soft additive halo, so neither reads as a bright
+	# solid bar or disc under the battlefield glow.
 	_mesh = MeshInstance3D.new()
 	var col := Color(0.9, 0.85, 0.5)
-	var m: Mesh
 	match kind:
 		"arrow", "bolt", "thorn":
-			var cap := CylinderMesh.new()
-			# R15 presentation-only readability at the default RTS camera. Flight
-			# speed, collision/impact timing and damage remain unchanged.
-			cap.top_radius = P1_PROJECTILE_RADIUS
-			cap.bottom_radius = P1_PROJECTILE_RADIUS
-			cap.height = P1_PROJECTILE_HEIGHT
-			m = cap
-			col = Color(1.0, 0.84, 0.36) if kind != "thorn" else Color(0.58, 0.95, 0.46)
+			var shaft := CylinderMesh.new()
+			shaft.top_radius = 0.022
+			shaft.bottom_radius = 0.022
+			shaft.height = 0.85
+			shaft.radial_segments = 5
+			_mesh.mesh = shaft
 			_mesh.rotation_degrees.x = 90.0
-		"cinder", "void_bolt", "lume_bolt", "rift_shell", "thornpod", "cannon":
-			var sp := SphereMesh.new()
-			sp.radius = 0.26
-			sp.height = 0.52
-			m = sp
+			var wood := StandardMaterial3D.new()
+			wood.albedo_color = Color(0.30, 0.20, 0.11) if kind != "thorn" else Color(0.22, 0.34, 0.14)
+			wood.roughness = 0.8
+			_mesh.material_override = wood
+			add_child(_mesh)
+			col = Color(1.0, 0.78, 0.40) if kind != "thorn" else Color(0.58, 0.95, 0.46)
+			var streak := MeshInstance3D.new()
+			var quad := QuadMesh.new()
+			quad.size = Vector2(0.12, 1.3)
+			streak.mesh = quad
+			streak.rotation_degrees.x = 90.0
+			streak.position.z = 0.35
+			streak.material_override = _glow_material(col, 0.55, BaseMaterial3D.BILLBOARD_FIXED_Y)
+			streak.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			add_child(streak)
+		_:
 			match kind:
-				"cinder": col = Color(1.0, 0.5, 0.15)
-				"void_bolt", "rift_shell": col = Color(0.7, 0.3, 0.9)
+				"cinder": col = Color(1.0, 0.45, 0.12)
+				"void_bolt", "rift_shell": col = Color(0.72, 0.30, 0.95)
 				"lume_bolt": col = Color(1.0, 0.85, 0.4)
 				"thornpod": col = Color(0.5, 0.75, 0.4)
-		_:
-			var sp2 := SphereMesh.new()
-			sp2.radius = 0.15
-			m = sp2
-	_mesh.mesh = m
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = col
-	mat.emission_enabled = true
-	mat.emission = col
-	mat.emission_energy_multiplier = P1_PROJECTILE_EMISSION
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	_mesh.material_override = mat
-	add_child(_mesh)
+				"cannon": col = Color(0.35, 0.32, 0.30)
+			var core := SphereMesh.new()
+			core.radius = 0.11 if kind != "cannon" else 0.2
+			core.height = core.radius * 2.0
+			_mesh.mesh = core
+			var core_mat := StandardMaterial3D.new()
+			core_mat.albedo_color = col.lerp(Color.WHITE, 0.35)
+			if kind != "cannon":
+				core_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			_mesh.material_override = core_mat
+			add_child(_mesh)
+			if kind != "cannon":
+				var halo := MeshInstance3D.new()
+				var hq := QuadMesh.new()
+				hq.size = Vector2(0.75, 0.75)
+				halo.mesh = hq
+				halo.material_override = _glow_material(col, 0.9, BaseMaterial3D.BILLBOARD_ENABLED)
+				halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				add_child(halo)
 	# glow light for magic
 	if kind in ["cinder", "void_bolt", "lume_bolt", "rift_shell"]:
 		var l := OmniLight3D.new()
 		l.light_color = col
-		l.light_energy = 2.0
+		l.light_energy = 1.4
 		l.omni_range = 4.0
 		add_child(l)
+
+static var _glow_cache := {}
+static var _glow_tex: Texture2D
+
+static func _glow_material(col: Color, energy: float, billboard: int) -> StandardMaterial3D:
+	var key := "%s_%s_%d" % [col.to_html(false), energy, billboard]
+	if _glow_cache.has(key):
+		return _glow_cache[key]
+	if _glow_tex == null:
+		var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+		for y in 32:
+			for x in 32:
+				var p := Vector2((x + 0.5) / 32.0 - 0.5, (y + 0.5) / 32.0 - 0.5) * 2.0
+				var a := clampf(1.0 - p.length(), 0.0, 1.0)
+				img.set_pixel(x, y, Color(1, 1, 1, a * a))
+		_glow_tex = ImageTexture.create_from_image(img)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.billboard_mode = billboard
+	m.albedo_color = Color(col.r * energy, col.g * energy, col.b * energy, 1.0)
+	m.albedo_texture = _glow_tex
+	m.disable_receive_shadows = true
+	_glow_cache[key] = m
+	return m
 
 func _physics_process(delta: float) -> void:
 	_alive_time += delta

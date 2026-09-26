@@ -2515,10 +2515,15 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 		"cinder": col = Color(1, 0.5, 0.15)
 		"void_bolt", "rift_shell": col = Color(0.7, 0.3, 0.9)
 		"thorn", "thornpod": col = Color(0.5, 0.8, 0.4)
-	# Shared impact treatment: slightly more legible at the normal RTS camera,
-	# while remaining a single short-lived, non-gameplay effect for all projectile
-	# and melee impact kinds.
-	_burst(pos, col, 8, 0.46)
+	# Sparks, flash and a dust kick from cached materials (CombatVfx); still a
+	# single short-lived, non-gameplay effect for every impact kind.
+	if kind == "melee":
+		col = Color(1.0, 0.72, 0.42)
+	CombatVfx.hit(_fx_container, pos, col, kind in ["cinder", "rift_shell", "thornpod"])
+
+func spawn_death_fx(pos: Vector3) -> void:
+	if is_instance_valid(_fx_container):
+		CombatVfx.death(_fx_container, pos)
 
 func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)

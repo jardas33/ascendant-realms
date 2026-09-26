@@ -1053,7 +1053,10 @@ func _build_r15_combat_presentation() -> void:
 	arc_material.albedo_color = Color(0.98, 0.67, 0.30, 0.84) if team == 0 else Color(0.86, 0.24, 0.16, 0.84)
 	arc_material.emission_enabled = true
 	arc_material.emission = arc_material.albedo_color
-	arc_material.emission_energy_multiplier = 0.9
+	# Kept under the glow threshold so the swing reads as a warm trail, not a
+	# white bloom bar.
+	arc_material.albedo_color.a = 0.55
+	arc_material.emission_energy_multiplier = 0.25
 	arc_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	arc_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	arc_material.no_depth_test = true
@@ -1085,11 +1088,13 @@ func _build_r15_combat_presentation() -> void:
 	_r15_hit_flash.position.y = maxf(0.6, _visual_height * 0.52)
 	_r15_hit_flash.visible = false
 	var flash_mat := StandardMaterial3D.new()
-	flash_mat.albedo_color = Color(1.0, 0.78, 0.36, 0.92)
-	flash_mat.emission_enabled = true
-	flash_mat.emission = Color(1.0, 0.32, 0.12)
-	flash_mat.emission_energy_multiplier = 1.8
+	# A soft additive glow on the struck unit rather than an opaque orb; the
+	# sparks and flash from CombatVfx carry the impact itself.
+	flash_mat.albedo_color = Color(0.55, 0.26, 0.08, 1.0)
 	flash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	flash_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	flash_mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	flash_mat.no_depth_test = true
 	_r15_hit_flash.material_override = flash_mat
 	add_child(_r15_hit_flash)
 
@@ -1137,7 +1142,7 @@ func _update_r15_combat_presentation(delta: float) -> void:
 			var arc_material := _weapon_arc_cue.material_override as StandardMaterial3D
 			if arc_material:
 				var fade_color := arc_material.albedo_color
-				fade_color.a = lerpf(0.76, 0.0, arc_progress)
+				fade_color.a = lerpf(0.5, 0.0, arc_progress)
 				arc_material.albedo_color = fade_color
 	if _r15_lethal_cue_time > 0.0:
 		_r15_lethal_cue_time = maxf(0.0, _r15_lethal_cue_time - delta)
@@ -1157,11 +1162,11 @@ func _update_r15_combat_presentation(delta: float) -> void:
 				flash_scale = 1.08 + sin((1.0 - flash_progress) * PI) * 0.34
 				var flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if flash_material:
-					flash_material.albedo_color = Color(1.0, 0.44, 0.30, 1.0)
+					flash_material.albedo_color = Color(0.70, 0.18, 0.08, 1.0)
 			else:
 				var normal_flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if normal_flash_material:
-					normal_flash_material.albedo_color = Color(1.0, 0.78, 0.36, 0.92)
+					normal_flash_material.albedo_color = Color(0.55, 0.26, 0.08, 1.0)
 			_r15_hit_flash.scale = Vector3.ONE * flash_scale
 	if _r15_damage_label_time > 0.0:
 		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
@@ -2854,6 +2859,8 @@ func _die(from = null) -> void:
 	set_selected(false)
 	collision_layer = 0
 	_play_sfx("death", -12.0)
+	if world and world.has_method("spawn_death_fx"):
+		world.spawn_death_fx(global_position)
 	if is_instance_valid(model_root):
 		# Presentation-only death cue. Logical removal, collision ownership, and
 		# target validity are already settled above and remain unchanged.
