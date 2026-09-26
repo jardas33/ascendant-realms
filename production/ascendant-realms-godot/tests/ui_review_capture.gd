@@ -146,6 +146,18 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			# Read the imported texture size, not the source PNG size. A 1024px
+			# import cap previously cropped the lower resource and force objects even
+			# though their atlas regions were valid in the 1254px source art.
+			for metric_panel in [hud._top_panel, hud._force_panel]:
+				for icon in metric_panel.find_children("*", "TextureRect", true, false):
+					var atlas_texture := icon.texture as AtlasTexture
+					if atlas_texture == null or atlas_texture.atlas == null:
+						continue
+					var atlas_size := atlas_texture.atlas.get_size()
+					var region_end := atlas_texture.region.end
+					if region_end.x > atlas_size.x + 0.5 or region_end.y > atlas_size.y + 0.5:
+						validation_errors.append("metric_icon_atlas_clipped:" + icon.name)
 			if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
 				if not tooltip_target_found or not instance.hud._command_tooltip.visible:
 					validation_errors.append("command_tooltip_hover_missing")
