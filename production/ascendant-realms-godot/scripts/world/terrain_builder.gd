@@ -32,6 +32,7 @@ var _rng := RandomNumberGenerator.new()
 var _theme := {}
 var _water_on := true
 var _bay_open := true
+var _ground_material: Material = null
 
 # WORLD-03 is a player-facing environment layer for Hollowspan only. These
 # shelves are shallow, non-colliding visual landforms over the existing flat
@@ -71,7 +72,8 @@ func _build_ground(map: Dictionary) -> void:
 	mi.mesh = plane
 	mi.position = GROUND_CENTER
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mi.material_override = _make_ground_material(map)
+	_ground_material = _make_ground_material(map)
+	mi.material_override = _ground_material
 	add_child(mi)
 
 
@@ -130,14 +132,14 @@ func _make_world03_shelf(size: Vector2, rotation_y: float, index: int) -> MeshIn
 	mi.mesh = st.commit()
 	mi.rotation.y = rotation_y
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var mat := StandardMaterial3D.new()
-	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	if ResourceLoader.exists(GROUND_TEX["meadow"]):
-		mat.albedo_texture = load(GROUND_TEX["meadow"])
-		mat.uv1_scale = Vector3(0.08, 0.08, 1.0)
-	mat.albedo_color = Color(0.82, 0.86, 0.64)
-	mat.roughness = 0.96
-	mi.material_override = mat
+	# Shelves share the ground's world-space material, so they read as a gentle
+	# rise in the same meadow instead of a flat green carpet laid on top.
+	if _ground_material:
+		mi.material_override = _ground_material
+	else:
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.34, 0.44, 0.29)
+		mi.material_override = mat
 	return mi
 
 

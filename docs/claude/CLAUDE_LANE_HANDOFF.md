@@ -50,6 +50,8 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Order markers: soft ring collapses onto the target with inward chevrons for attack/attack-move (CombatVfx.order_marker); ability rings are soft expanding shockwaves (CombatVfx.shockwave) |
 | (latest) | Minimap shows the real battlefield: game_world._bake_overview_texture renders one orthographic top-down picture at match start (units, buildings, objectives, FX and fog moved to a skipped layer; skipped headless); hud falls back to the old raster if absent |
 | (latest) | Ground/water value-noise hash replaced with an integer hash: the old fract hash lost GPU precision and drew hard 20-50 m square seams across the ground |
+| (latest) | Ground cover: instanced wind-blown grass tufts and wildflowers (scripts/world/ground_cover.gd, grass_cover.gdshader), clumped by noise, per-theme colours/density, chunked for culling, kept off roads, water and start yards; buildings, resources and capture points clear it via a mask. About +80k triangles in view, no measurable frame cost on a GTX 1070 |
+| (latest) | World03 field shelves use the ground material (no more flat green carpets) |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 

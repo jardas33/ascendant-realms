@@ -127,6 +127,8 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	if commander:
 		build_time *= commander.build_speed_mult()
 	rally_point = global_position + Vector3(0, 0, footprint + 3.0)
+	if world and world.has_method("clear_ground_cover"):
+		world.clear_ground_cover(global_position, footprint * 1.2 + 1.0)
 	_build_model()
 	_build_visual_convergence_identity_dressing()
 	_build_construction_stage_visual()

@@ -103,6 +103,8 @@ var _visibility_overlay: MeshInstance3D
 ## Top-down picture of the battlefield (terrain, water, trees, bases), rendered
 ## once at match start for the minimap. Null until the bake finishes.
 var overview_texture: Texture2D = null
+const GroundCoverScript := preload("res://scripts/world/ground_cover.gd")
+var _ground_cover: Node3D = null
 var _visibility_overlay_material: ShaderMaterial
 var _visibility_image: Image
 var _visibility_texture: ImageTexture
@@ -588,6 +590,15 @@ func _scatter_environment() -> void:
 	_scatter_world03_roadside_dressing(decor, trees, rocks, starts, rng)
 	_scatter_world03_landmarks(decor, trees, rocks, starts, rng)
 	_build_visual_convergence_hollowspan(decor, starts)
+	_ground_cover = GroundCoverScript.new()
+	_ground_cover.name = "GroundCover"
+	add_child(_ground_cover)
+	_ground_cover.build(map, str(map.get("theme", "highland")))
+
+## Clears grass and flowers inside a circle, e.g. under a new building.
+func clear_ground_cover(pos: Vector3, radius: float) -> void:
+	if is_instance_valid(_ground_cover):
+		_ground_cover.clear_circle(pos, radius)
 
 
 func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void:
@@ -2200,6 +2211,7 @@ func _spawn_resources() -> void:
 		add_child(node)
 		node.global_position = r["pos"]
 		node.configure(kind, amounts.get(kind, 800), models.get(kind, ""), heights.get(kind, 2.0))
+		clear_ground_cover(node.global_position, 3.8)
 		_register_resource_navigation_blocker(node)
 	var recorder = _m20_recorder()
 	if recorder:
@@ -2213,6 +2225,7 @@ func _spawn_capture_points() -> void:
 		add_child(cp)
 		cp.global_position = c["pos"]
 		cp.configure(c["name"], c["benefit"], c.get("model", ""), self)
+		clear_ground_cover(cp.global_position, 6.0)
 		cp.captured.connect(_on_point_captured_signal)
 	var recorder = _m20_recorder()
 	if recorder:
