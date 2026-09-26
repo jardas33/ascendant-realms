@@ -8,10 +8,12 @@ const SPACING := Vector2(196.0, 105.0)
 const FOCUSED_SPACING := Vector2(246.0, 106.0)
 const MARGIN := Vector2(34.0, 48.0)
 const NODE_SIZE := Vector2(184.0, 92.0)
-const GRAPH_ZOOM := 0.82
+const GRAPH_ZOOM := 0.74
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
 const INK := Color("#0b1020")
+const BACKDROP := "res://assets/textures/backgrounds/main_menu_bg.png"
+var _backdrop: Texture2D
 const PANEL := Color("#11182a")
 const PAPER := Color("#e8dfca")
 const MUTED := Color("#9ba9bb")
@@ -466,16 +468,27 @@ func _on_viewport_input(event: InputEvent) -> void:
 		_apply_transform()
 
 func _draw_background() -> void:
+	# The realm's key art under a deep night scrim, the same treatment as the
+	# skirmish and war-chest screens, instead of a flat navy field.
 	draw_rect(Rect2(Vector2.ZERO, size), INK)
+	if _backdrop == null and ResourceLoader.exists(BACKDROP):
+		_backdrop = load(BACKDROP)
+	if _backdrop:
+		var tex_size := _backdrop.get_size()
+		var cover := maxf(size.x / tex_size.x, size.y / tex_size.y)
+		var draw_size := tex_size * cover
+		draw_texture_rect(_backdrop, Rect2((size - draw_size) * 0.5, draw_size), false, Color(1, 1, 1, 0.55))
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.03, 0.07, 0.62))
+		# Vignette toward the edges keeps the constellation the brightest thing.
+		for i in 10:
+			var inset := float(i) * 26.0
+			draw_rect(Rect2(Vector2(inset, inset), size - Vector2(inset, inset) * 2.0), Color(0, 0, 0, 0.045), false, 26.0)
 	for i in range(8):
 		var x := float(i) * size.x / 7.0
 		draw_line(Vector2(x, 0), Vector2(x + 160.0, size.y), Color(0.18, 0.25, 0.38, 0.08), 1.0)
 	for i in range(6):
 		var y := 120.0 + float(i) * maxf(1.0, (size.y - 170.0) / 5.0)
 		draw_line(Vector2(390.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
-	for p in [Vector2(size.x * 0.48, 130), Vector2(size.x * 0.82, 760), Vector2(size.x * 0.2, 860)]:
-		draw_circle(p, 120.0, Color(0.14, 0.2, 0.34, 0.12))
-		draw_arc(p, 120.0, 0.0, TAU, 40, Color(GOLD, 0.08), 1.0, true)
 	draw_line(Vector2(24, 108), Vector2(size.x - 24, 108), Color(GOLD, 0.35), 1.0)
 	draw_line(Vector2(24, size.y - 105), Vector2(size.x - 24, size.y - 105), Color(GOLD, 0.22), 1.0)
 

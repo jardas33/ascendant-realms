@@ -326,7 +326,7 @@ func _draw_path() -> void:
 			col = Color(0.85, 0.75, 0.3, 0.82)
 		else:
 			col = Color(0.38, 0.4, 0.45, 0.45)
-		_canvas.draw_line(from, to, col, 4.0, true)
+		_draw_march_route(from, to, lit)
 
 		# Draw node number circle on each node
 		var radius := 10.0
@@ -360,3 +360,21 @@ func _on_node_pressed(i: int) -> void:
 func _on_back_pressed() -> void:
 	Sfx.play("select")
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+
+func _draw_march_route(from: Vector2, to: Vector2, lit: bool) -> void:
+	# A curved, inked march route: a dark under-stroke, then dashes that glow
+	# gold once the leg is open and stay faint slate while it is sealed.
+	var mid := (from + to) * 0.5
+	var normal := Vector2(-(to - from).y, (to - from).x).normalized()
+	var ctrl := mid + normal * (to - from).length() * 0.12
+	var pts := PackedVector2Array()
+	for k in 33:
+		var t := float(k) / 32.0
+		pts.append(from.lerp(ctrl, t).lerp(ctrl.lerp(to, t), t))
+	_canvas.draw_polyline(pts, Color(0.02, 0.02, 0.03, 0.7), 7.0, true)
+	var dash_col := Color(0.98, 0.80, 0.38, 0.95) if lit else Color(0.55, 0.58, 0.64, 0.55)
+	if lit:
+		_canvas.draw_polyline(pts, Color(0.98, 0.72, 0.30, 0.18), 12.0, true)
+	for k in range(0, 32, 2):
+		_canvas.draw_line(pts[k], pts[k + 1], dash_col, 3.0, true)

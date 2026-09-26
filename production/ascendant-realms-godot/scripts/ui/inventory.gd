@@ -43,21 +43,42 @@ func _build() -> void:
 	add_child(scrim)
 
 	var title := Label.new()
-	title.text = "WAR CHEST"
+	# Same title block as the skirmish council: centred crest title, a small
+	# caps subtitle and a gold rule.
+	title.text = "War Chest"
 	title.add_theme_font_override("font", _title_font())
-	title.add_theme_font_size_override("font_size", 34)
-	title.add_theme_color_override("font_color", Color(0.96, 0.9, 0.7))
-	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-	title.offset_left = 24.0
-	title.offset_top = 16.0
-	title.offset_right = 400.0
-	title.offset_bottom = 58.0
+	title.add_theme_font_size_override("font_size", 40)
+	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.52))
+	title.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	title.add_theme_constant_override("outline_size", 6)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	title.offset_top = 6.0
+	title.offset_bottom = 56.0
 	add_child(title)
+	var subtitle := Label.new()
+	subtitle.text = "RELICS AND ARMS YOUR HERO CARRIES INTO BATTLE"
+	subtitle.add_theme_font_override("font", _title_font())
+	subtitle.add_theme_font_size_override("font_size", 13)
+	subtitle.add_theme_color_override("font_color", Color(0.72, 0.68, 0.60))
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	subtitle.offset_top = 54.0
+	subtitle.offset_bottom = 72.0
+	add_child(subtitle)
+	var rule := ColorRect.new()
+	rule.color = Color(0.86, 0.70, 0.40, 0.35)
+	rule.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	rule.offset_left = 40.0
+	rule.offset_right = -40.0
+	rule.offset_top = 76.0
+	rule.offset_bottom = 77.0
+	add_child(rule)
 
 	# Three columns
 	var cols := HBoxContainer.new()
 	cols.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	cols.offset_top = 84.0
+	cols.offset_top = 92.0
 	cols.offset_bottom = -130.0
 	cols.offset_left = 64.0
 	cols.offset_right = -64.0
@@ -91,6 +112,7 @@ func _build() -> void:
 	footer.add_theme_constant_override("separation", 20)
 	add_child(footer)
 	_grant_button = _button("Claim Starter Relics", _on_grant)
+	_style_primary(_grant_button)
 	footer.add_child(_grant_button)
 	footer.add_child(_button("Back", func(): _goto("res://scenes/ui/hero_sheet.tscn")))
 
@@ -373,3 +395,18 @@ func _button(text: String, cb: Callable) -> Button:
 func _goto(path: String) -> void:
 	Sfx.play("select")
 	get_tree().change_scene_to_file(path)
+
+
+func _style_primary(b: Button) -> void:
+	# The skirmish screen's bronze call-to-action treatment.
+	for state in ["normal", "hover", "pressed"]:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.36, 0.22, 0.08) if state == "normal" else (Color(0.50, 0.32, 0.12) if state == "hover" else Color(0.28, 0.17, 0.06))
+		sb.border_color = Color(1.0, 0.86, 0.52)
+		sb.set_border_width_all(2)
+		sb.set_corner_radius_all(3)
+		sb.shadow_color = Color(0.95, 0.65, 0.25, 0.35)
+		sb.shadow_size = 10 if state == "hover" else 6
+		b.add_theme_stylebox_override(state, sb)
+	b.add_theme_font_override("font", _title_font())
+	b.add_theme_color_override("font_color", Color(1.0, 0.93, 0.74))
