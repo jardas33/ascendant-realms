@@ -5,6 +5,11 @@ const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const EMPTY_CHEST_ART := "res://assets/ui/inventory/astra_empty_war_chest_r1.png"
 const EMPTY_RELIC_ART := "res://assets/ui/inventory/astra_empty_relic_cradle_r1.png"
+const RELIC_ART := {
+	"Lumeforged Blade": "res://assets/ui/inventory/lumeforged_blade_relic_r1.png",
+	"Ironbark Helm": "res://assets/ui/inventory/ironbark_helm_relic_r1.png",
+	"Warden's Band": "res://assets/ui/inventory/wardens_band_relic_r1.png",
+}
 const MENU_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 const SLOTS := ["main_hand", "off_hand", "head", "body", "hands", "feet",
@@ -266,8 +271,12 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = 13
 	content.offset_right = -12
+	content.add_theme_constant_override("separation", 12)
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(content)
+	var relic_art := _item_art(item, 74, "EquippedRelicArt")
+	if relic_art != null:
+		content.add_child(relic_art)
 	var stack := VBoxContainer.new()
 	stack.alignment = BoxContainer.ALIGNMENT_CENTER
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -337,8 +346,12 @@ func _item_card(item: Dictionary) -> Button:
 	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = 15
 	content.offset_right = -14
+	content.add_theme_constant_override("separation", 11)
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(content)
+	var relic_art := _item_art(item, 70, "CarriedRelicArt")
+	if relic_art != null:
+		content.add_child(relic_art)
 	var labels := VBoxContainer.new()
 	labels.alignment = BoxContainer.ALIGNMENT_CENTER
 	labels.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -374,6 +387,7 @@ func _show_item_detail(item: Dictionary) -> void:
 	_clear_after(_detail_box, 2)
 	_detail_box.add_child(_detail_title(item))
 	_detail_box.add_child(_detail_meta(item, false))
+	_add_detail_art(item)
 	_detail_box.add_child(_wrap_label(str(item.get("desc", ""))))
 	# comparison vs currently equipped in same slot
 	var slot: String = str(item.get("slot", ""))
@@ -391,6 +405,7 @@ func _show_equipped_detail(slot: String, item: Dictionary) -> void:
 	_clear_after(_detail_box, 2)
 	_detail_box.add_child(_detail_title(item))
 	_detail_box.add_child(_detail_meta(item, true))
+	_add_detail_art(item)
 	_detail_box.add_child(_wrap_label(str(item.get("desc", ""))))
 	_detail_box.add_child(_stats_block(item, null))
 	var uq := _button("Unequip", func():
@@ -415,6 +430,28 @@ func _detail_meta(item: Dictionary, equipped: bool) -> Label:
 	label.add_theme_font_size_override("font_size", 14)
 	label.add_theme_color_override("font_color", RARITY_COLORS.get(rarity, Color.WHITE))
 	return label
+
+func _item_art(item: Dictionary, edge: int, node_name: String) -> TextureRect:
+	var art_path := str(RELIC_ART.get(str(item.get("name", "")), ""))
+	if art_path.is_empty() or not ResourceLoader.exists(art_path):
+		return null
+	var art := TextureRect.new()
+	art.name = node_name
+	art.texture = load(art_path)
+	art.custom_minimum_size = Vector2(edge, edge)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return art
+
+func _add_detail_art(item: Dictionary) -> void:
+	var art := _item_art(item, 295, "InspectedRelicArt")
+	if art == null:
+		return
+	art.custom_minimum_size = Vector2(0, 295)
+	art.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_detail_box.add_child(art)
 
 func _stats_block(item: Dictionary, compare) -> VBoxContainer:
 	var v := VBoxContainer.new()
