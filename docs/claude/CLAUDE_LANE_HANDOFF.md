@@ -65,6 +65,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Chapel capture sites are composed (MapDefs.RUIN = "composed:ruin_chapel", CapturePoint._build_ruin_chapel: pillar ring, fallen column, cairn altar with green light; only the altar collides) instead of reusing the Lume Spire. The boundary marker (Z-up GLB) is stood upright and moved out of the chapel ring |
 | (latest) | Vision capture sites are composed (MapDefs.WATCH, CapturePoint._build_highland_watch). Health bars also show for 5 s after any hit. Scattered oaks 5-7.5 m, pines 6-9 m (were 6.5-10.5 m; canopies swallowed squads) |
 | (latest) | Food resource nodes use assets/props/misc/resource_harvest_grain.glb (tools/blender/generateHarvestFoodNode.py: tilled soil, grain tufts, stook, loose sheaves, sacks), height 1.5; previously the timber pile |
+| (latest) | Deaths leave CombatVfx.battle_scar (battle_scar.gdshader churned dark earth, fades after 18+8 s, max 40 live) and trample the grass (clear_ground_cover r=0.9). Food GLB colours are sRGB converted to linear in the Blender script |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 

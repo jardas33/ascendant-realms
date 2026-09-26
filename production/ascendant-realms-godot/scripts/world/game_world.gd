@@ -2333,6 +2333,7 @@ func _prewarm_combat_presentation() -> void:
 	CombatVfx.hit(_fx_container, spot, Color(1.0, 0.72, 0.42), false)
 	CombatVfx.hit(_fx_container, spot, Color(1, 0.5, 0.15), true)
 	CombatVfx.death(_fx_container, spot)
+	CombatVfx.battle_scar(_fx_container, spot)
 	CombatVfx.motes(_fx_container, spot, Color(1.0, 0.82, 0.38))
 	CombatVfx.slam(_fx_container, spot, 6.0)
 	for kind in ["arrow", "cinder", "void_bolt", "thorn"]:
@@ -2857,6 +2858,9 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 func spawn_death_fx(pos: Vector3) -> void:
 	if is_instance_valid(_fx_container):
 		CombatVfx.death(_fx_container, pos)
+		CombatVfx.battle_scar(_fx_container, pos)
+		# The grass where a unit fell stays trampled.
+		clear_ground_cover(pos, 0.9)
 
 func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)

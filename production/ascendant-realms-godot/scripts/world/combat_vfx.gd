@@ -316,3 +316,40 @@ static func selection_ring_material(col: Color) -> ShaderMaterial:
 		m.set_shader_parameter("ring_color", col)
 		_selection_ring_materials[key] = m
 	return _selection_ring_materials[key]
+
+
+## Churned, darkened ground where a unit fell; fades out over ~25 s. At most
+## MAX_SCARS stay on the field (oldest recycled) so long wars stay cheap.
+const MAX_SCARS := 40
+static var _scar_shader: Shader
+static var _scar_mesh: QuadMesh
+static var _scars: Array = []
+
+static func battle_scar(parent: Node3D, pos: Vector3) -> void:
+	if _scar_shader == null:
+		_scar_shader = load("res://assets/shaders/battle_scar.gdshader")
+		_scar_mesh = QuadMesh.new()
+		_scar_mesh.orientation = PlaneMesh.FACE_Y
+		_scar_mesh.size = Vector2(2.2, 2.2)
+	while _scars.size() >= MAX_SCARS:
+		var old = _scars.pop_front()
+		if is_instance_valid(old):
+			old.queue_free()
+	var scar := MeshInstance3D.new()
+	scar.mesh = _scar_mesh
+	var m := ShaderMaterial.new()
+	m.shader = _scar_shader
+	m.set_shader_parameter("seed", randf() * 100.0)
+	scar.material_override = m
+	scar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(scar)
+	scar.global_position = Vector3(pos.x, 0.05, pos.z)
+	scar.rotation.y = randf() * TAU
+	scar.scale = Vector3.ONE * randf_range(0.8, 1.2)
+	_scars.append(scar)
+	var t := scar.create_tween()
+	t.tween_interval(18.0)
+	t.tween_method(func(v: float): m.set_shader_parameter("fade", v), 1.0, 0.0, 8.0)
+	t.tween_callback(func():
+		_scars.erase(scar)
+		scar.queue_free())
