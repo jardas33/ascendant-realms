@@ -249,10 +249,10 @@ func _fit_to_viewport() -> void:
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
 		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(512, 92)
+		_top_panel.size = Vector2(512, 104)
 	if is_instance_valid(_force_panel):
 		_force_panel.position = Vector2(524, 8)
-		_force_panel.size = Vector2(612, 92)
+		_force_panel.size = Vector2(612, 104)
 	if is_instance_valid(_age_panel):
 		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
 		_age_panel.size = Vector2(176, 78)
@@ -1041,7 +1041,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	plate.accent = accent
 	# A common height keeps both ribbons' lower rails level after the resource
 	# numerals and force numerals resolve to slightly different font metrics.
-	plate.custom_minimum_size = Vector2(width, 92)
+	plate.custom_minimum_size = Vector2(width, 104)
 	plate.tooltip_text = tooltip
 	plate.mouse_filter = Control.MOUSE_FILTER_STOP
 	var inset := StyleBoxFlat.new()
@@ -1088,7 +1088,7 @@ func _build_top_bar() -> void:
 	rack_inset.bg_color = Color.TRANSPARENT
 	rack_inset.set_content_margin_all(0)
 	panel.add_theme_stylebox_override("panel", rack_inset)
-	panel.custom_minimum_size = Vector2(512, 92)
+	panel.custom_minimum_size = Vector2(512, 104)
 	add_child(panel)
 
 	var resource_accents := {
@@ -1104,7 +1104,7 @@ func _build_top_bar() -> void:
 	for k in RES_ORDER:
 		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_resource_object_icon(k, 34))
+		cell.add_child(_mk_resource_object_icon(k, 48))
 		var l := _mk_label("0", 28, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1117,7 +1117,7 @@ func _build_top_bar() -> void:
 	_force_panel.name = "ForceInstrument"
 	_force_panel.embedded = true
 	_force_panel.add_theme_stylebox_override("panel", rack_inset)
-	_force_panel.custom_minimum_size = Vector2(612, 92)
+	_force_panel.custom_minimum_size = Vector2(612, 104)
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
@@ -1127,7 +1127,7 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_force_object_icon("population", 34))
+	pop_cell.add_child(_mk_force_object_icon("population", 48))
 	_pop_label = _mk_label("0/0", 27)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1139,7 +1139,7 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_force_object_icon("opponent", 34))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 48))
 	_opponent_count_label = _mk_label("0", 27, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(64, 0)
@@ -1152,7 +1152,7 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_force_object_icon("worker", 34))
+	worker_cell.add_child(_mk_force_object_icon("worker", 48))
 	_idle_worker_label = _mk_label("0", 27, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1163,7 +1163,7 @@ func _build_top_bar() -> void:
 	# separate so "Idle 3" can never be mistaken for an idle army count.
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_force_object_icon("army", 34))
+	army_cell.add_child(_mk_force_object_icon("army", 48))
 	_idle_military_label = _mk_label("0", 27, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1291,15 +1291,51 @@ func _build_top_bar() -> void:
 	mission_stack.add_child(objective_label)
 
 
+func _format_top_resource_amount(amount: int) -> String:
+	# Keep ordinary build-order values exact. Very large stocks use a compact
+	# reading while the hover surface retains the exact amount.
+	if amount < 10000:
+		return str(amount)
+	if amount < 100000:
+		return "%.1fK" % (floori(amount / 100.0) / 10.0)
+	if amount < 1000000:
+		return "%dK" % floori(amount / 1000.0)
+	if amount < 100000000:
+		return "%.1fM" % (floori(amount / 100000.0) / 10.0)
+	return "%dM" % floori(amount / 1000000.0)
+
+
+func _set_top_metric_text(label: Label, value: String, base_size: int) -> void:
+	# A compact resource instrument must remain truthful once a late-match
+	# value grows beyond the three digits visible in the opening capture.
+	if label.text == value:
+		return
+	var font := label.get_theme_font("font")
+	var available_width := label.custom_minimum_size.x - 2.0
+	var chosen_size := base_size
+	while chosen_size > 16 and font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, chosen_size).x > available_width:
+		chosen_size -= 1
+	if label.get_theme_font_size("font_size") != chosen_size:
+		label.add_theme_font_size_override("font_size", chosen_size)
+	label.text = value
+
+
 func _on_resources_changed(res: Dictionary) -> void:
 	for k in RES_ORDER:
 		if _res_labels.has(k) and is_instance_valid(_res_labels[k]):
-			_res_labels[k].text = str(int(res.get(k, 0)))
+			var amount := int(res.get(k, 0))
+			var label := _res_labels[k] as Label
+			_set_top_metric_text(label, _format_top_resource_amount(amount), 28)
+			var metric_surface := label.get_parent().get_parent() as Control
+			var exact_readout := "%s: %d" % [k.capitalize(), amount]
+			if metric_surface.tooltip_text != exact_readout:
+				metric_surface.tooltip_text = exact_readout
+				(metric_surface.get_parent() as Control).tooltip_text = exact_readout
 
 
 func _on_pop_changed(used: int, cap: int) -> void:
 	if is_instance_valid(_pop_label):
-		_pop_label.text = "%d/%d" % [used, cap]
+		_set_top_metric_text(_pop_label, "%d/%d" % [used, cap], 27)
 		_pop_label.add_theme_color_override("font_color",
 			Color(0.95, 0.5, 0.45) if used >= cap and cap > 0 else FONT_COLOR)
 
@@ -1317,7 +1353,7 @@ func _refresh_opponent_count() -> void:
 		var cmd = world.commanders[i]
 		if is_instance_valid(cmd) and not cmd.defeated:
 			count += 1
-	_opponent_count_label.text = str(count)
+	_set_top_metric_text(_opponent_count_label, str(count), 27)
 
 
 # ---------------------------------------------------------------------------
@@ -1870,7 +1906,7 @@ func _count_meaningfully_idle_military() -> int:
 func _on_idle_worker_count(count: int) -> void:
 	if not is_instance_valid(_idle_worker_label):
 		return
-	_idle_worker_label.text = str(count)
+	_set_top_metric_text(_idle_worker_label, str(count), 27)
 	_idle_worker_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 
@@ -1878,7 +1914,7 @@ func _on_idle_worker_count(count: int) -> void:
 func _on_idle_military_count(count: int) -> void:
 	if not is_instance_valid(_idle_military_label):
 		return
-	_idle_military_label.text = str(count)
+	_set_top_metric_text(_idle_military_label, str(count), 27)
 	_idle_military_label.add_theme_color_override("font_color",
 		Color(0.98, 0.73, 0.36) if count > 0 else Color(0.72, 0.73, 0.68))
 

@@ -101,6 +101,22 @@ func _run() -> void:
 		for sample in 12:
 			instance.world._refresh_player_visibility_overlay()
 		print("UI_FOG_REBUILD_MS ", float(Time.get_ticks_usec() - fog_start) / 12000.0)
+	var metric_stress_mode := OS.get_environment("ASCENDANT_UI_METRIC_STRESS")
+	if metric_stress_mode in ["1", "large"]:
+		# Exercise the late-match digit widths without changing economy state.
+		# Keep the HUD poll from restoring opening values during a slower capture.
+		instance.hud._slow_accum = -999.0
+		var stress_amount := 123456 if metric_stress_mode == "large" else 9999
+		var stress_resources := {}
+		for resource_kind in ["food", "timber", "stone", "gold"]:
+			stress_resources[resource_kind] = stress_amount
+		instance.hud._on_resources_changed(stress_resources)
+		instance.hud._on_pop_changed(125, 125)
+		instance.hud._set_top_metric_text(instance.hud._opponent_count_label, "12", 27)
+		instance.hud._on_idle_worker_count(128)
+		instance.hud._on_idle_military_count(128)
+		for index in 2:
+			await process_frame
 	var tooltip_target_found := false
 	if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
 		var wanted_title := OS.get_environment("ASCENDANT_UI_TOOLTIP_TITLE")
@@ -146,6 +162,18 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			if metric_stress_mode in ["1", "large"]:
+				var stress_amount := 123456 if metric_stress_mode == "large" else 9999
+				for resource_kind in ["food", "timber", "stone", "gold"]:
+					var resource_label := hud._res_labels[resource_kind] as Label
+					var expected_display := "123K" if metric_stress_mode == "large" else "9999"
+					if resource_label.text != expected_display:
+						validation_errors.append("metric_stress_value_was_refreshed:" + resource_kind)
+					var metric_surface := resource_label.get_parent().get_parent() as Control
+					if not metric_surface.tooltip_text.contains(str(stress_amount)):
+						validation_errors.append("metric_stress_exact_tooltip_missing:" + resource_kind)
+				if hud._pop_label.text != "125/125":
+					validation_errors.append("metric_stress_population_was_refreshed")
 			# Read the imported texture size, not the source PNG size. A 1024px
 			# import cap previously cropped the lower resource and force objects even
 			# though their atlas regions were valid in the 1254px source art.
@@ -186,6 +214,18 @@ func _run() -> void:
 					var measured_width: float = title_label.get_theme_font("font").get_string_size(title_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_label.get_theme_font_size("font_size")).x
 					if measured_width > title_label.size.x + 1.0:
 						validation_errors.append("top_metric_title_clipped:" + title_label.text)
+				for metric_plate in instrument.get_child(0).get_children():
+					var plate_rect := (metric_plate as Control).get_global_rect()
+					for content in metric_plate.find_children("*", "Control", true, false):
+						if content is Label or content is TextureRect:
+							var metric_control := content as Control
+							if not plate_rect.encloses(metric_control.get_global_rect()):
+								validation_errors.append("top_metric_content_outside_plate:" + metric_plate.name)
+							if content is Label:
+								var metric_label := content as Label
+								var label_width: float = metric_label.get_theme_font("font").get_string_size(metric_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, metric_label.get_theme_font_size("font_size")).x
+								if label_width > metric_label.size.x + 1.0:
+									validation_errors.append("top_metric_value_clipped:" + metric_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
 			if player_race in ["barrosan", "lioraen"]:
