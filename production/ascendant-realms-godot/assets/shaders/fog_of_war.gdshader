@@ -7,8 +7,8 @@ render_mode unshaded, cull_disabled, depth_test_disabled, blend_mix, shadows_dis
 uniform sampler2D visibility_states : filter_linear, repeat_disable;
 // Plain vec4 (no source_color) so the values match the previous vertex-colour
 // overlay exactly.
-uniform vec4 unexplored_color = vec4(0.035, 0.050, 0.075, 0.78);
-uniform vec4 explored_color = vec4(0.060, 0.080, 0.105, 0.38);
+uniform vec4 unexplored_color = vec4(0.025, 0.035, 0.045, 0.70);
+uniform vec4 explored_color = vec4(0.050, 0.065, 0.075, 0.34);
 uniform float blur_texels = 0.6;
 
 float state_at(vec2 uv) {

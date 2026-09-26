@@ -14,20 +14,38 @@ const THEME_PATH := "res://assets/ui/theme.tres"
 const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
+const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
+const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
+const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
+const HUD_ALERT_DISPATCH_SCRIPT := preload("res://scripts/ui/hud_alert_dispatch.gd")
+const HUD_COMMAND_TOOLTIP_SCRIPT := preload("res://scripts/ui/hud_command_tooltip.gd")
+const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
+const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
+const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
+const HUD_VITAL_BAR_SCRIPT := preload("res://scripts/ui/hud_vital_bar.gd")
+const RESOURCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/resource_objects_atlas_r1.png")
+const FORCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/force_objects_atlas_r2.png")
+const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
+const LIORAEN_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+const COMMAND_CRESTS := {
+	"barrosan": BARROSAN_COMMAND_CREST,
+	"lioraen": LIORAEN_COMMAND_CREST,
+}
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
-const MINIMAP_SIZE := 220.0 # Compact navigation instrument; battlefield remains primary.
+const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
+const MINIMAP_BACKGROUND_RASTER_SIZE := 224
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
-const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 42.0
-const MINIMAP_GRID_DIVISIONS := 4
+const MINIMAP_SNOW_TEXTURE := "res://assets/textures/nature/frostmere_windswept_snow_r1.png"
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 44.0
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
 const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
 const COMMAND_PANEL_WIDTH := 430.0
-const SELECTION_PANEL_WIDTH := 360.0
-const SELECTION_PANEL_HEIGHT := 260.0
+const SELECTION_PANEL_WIDTH := 410.0
+const SELECTION_PANEL_HEIGHT := 230.0
 const INTERACTION_PANEL_SCALE := 1.2
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
@@ -53,6 +71,21 @@ const RES_ICONS := {
 	"gold": "res://assets/ui/icon_gold.png",
 }
 const RES_ORDER := ["food", "timber", "stone", "gold"]
+const BARROSAN_BUILD_ART := {
+	"barrosan_clanhold": "res://assets/ui/construction_art/astra_r1/clanhold.png",
+	"barrosan_clan_croft": "res://assets/ui/construction_art/astra_r1/clan_croft.png",
+	"barrosan_war_hall": "res://assets/ui/construction_art/astra_r1/war_hall.png",
+	"barrosan_iron_forge": "res://assets/ui/construction_art/astra_r1/iron_forge.png",
+	"barrosan_watchtower": "res://assets/ui/construction_art/astra_r1/watchtower.png",
+}
+const LIORAEN_BUILD_ART := {
+	"lioraen_groveheart": "res://assets/ui/construction_art/lioraen_r1/groveheart.png",
+	"lioraen_lifewell": "res://assets/ui/construction_art/lioraen_r1/lifewell.png",
+	"lioraen_thornhall": "res://assets/ui/construction_art/lioraen_r1/thornhall.png",
+	"lioraen_lifewell_forge": "res://assets/ui/construction_art/lioraen_r1/grove_forge.png",
+	"lioraen_spirit_glade": "res://assets/ui/construction_art/lioraen_r1/spirit_glade.png",
+	"lioraen_bloom_spire": "res://assets/ui/construction_art/lioraen_r1/bloom_spire.png",
+}
 const TIER_NAMES := {1: "Age I", 2: "Age II", 3: "Age III"}
 
 # --- refs ---
@@ -70,19 +103,32 @@ var _idle_worker_label: Label = null
 var _idle_military_label: Label = null
 var _tier_label: Label = null
 var _top_panel: PanelContainer = null
+var _force_panel: PanelContainer = null
+var _age_panel: PanelContainer = null
+var _objective_panel: PanelContainer = null
 var _menu_button: Button = null
 
 # --- minimap ---
 var _minimap: Control = null
 var _minimap_background: ImageTexture = null
 var _minimap_background_key := ""
+var _minimap_fog: ImageTexture = null
+var _minimap_fog_states := PackedByteArray()
+var _minimap_fog_columns := 0
+var _minimap_fog_rows := 0
 var _minimap_panel: PanelContainer = null
+var _faction_crest: TextureRect = null
 
 # --- selection / command panels (rebuilt on selection change) ---
 var _sel_panel: PanelContainer = null
 var _sel_body: Control = null
+var _sel_header_spacer: Control = null
+var _selection_portrait: PanelContainer = null
 var _cmd_panel: PanelContainer = null
+var _cmd_fixed: VBoxContainer = null
+var _cmd_scroll: ScrollContainer = null
 var _cmd_body: Control = null
+var _command_chassis: Control = null
 var _command_tooltip: PanelContainer = null
 
 # live-tracked selection widgets (refreshed in _process)
@@ -102,6 +148,7 @@ var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
 var _production_status_label: Label = null
+var _production_progress_bar: ProgressBar = null
 var _watched_building = null           # building whose production we listen to
 var _production_card_queue_key := ""
 var _watched_construction_building = null # selected building whose construction can complete
@@ -173,6 +220,7 @@ func setup(p_world, p_rts) -> void:
 	_build_minimap()
 	_build_selection_panel()
 	_build_command_panel()
+	_build_command_chassis()
 	_build_resource_tooltip()
 	_build_alert_feed()
 	_fit_to_viewport()
@@ -197,14 +245,38 @@ func _fit_to_viewport() -> void:
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 	var margin := 14.0
+	# The resource, force, age and objective instruments float independently.
+	# No opaque control spans the sky between them.
+	if is_instance_valid(_top_panel):
+		_top_panel.position = Vector2(12, 8)
+		_top_panel.size = Vector2(512, 92)
+	if is_instance_valid(_force_panel):
+		_force_panel.position = Vector2(524, 8)
+		_force_panel.size = Vector2(612, 92)
+	if is_instance_valid(_age_panel):
+		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
+		_age_panel.size = Vector2(176, 78)
+	if is_instance_valid(_objective_panel):
+		_objective_panel.offset_left = -530.0
+		_objective_panel.offset_right = -106.0
+		_objective_panel.offset_top = 8.0
+		_objective_panel.offset_bottom = 100.0
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
+	if is_instance_valid(_tracked_single):
+		if _tracked_single is Unit:
+			# Two-line combat readouts need clear breathing room above the live
+			# activity line; workers keep their more compact economy dossier.
+			requested_selection_height = 244.0 if _tracked_single.is_hero else (210.0 if _tracked_single.is_worker else 224.0)
+		elif _tracked_single is Building:
+			requested_selection_height = 196.0 if not _tracked_single.is_built else 176.0
 	# Give the selected entity and two-column command deck enough room to be read
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
 	# actual context while retaining a ceiling for denser production surfaces.
-	var command_height := minf(390.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + 24.0))
+	var fixed_height := _cmd_fixed.get_combined_minimum_size().y if is_instance_valid(_cmd_fixed) else 0.0
+	var command_height := minf(430.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0))
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
@@ -215,25 +287,37 @@ func _fit_to_viewport() -> void:
 		_minimap_panel.offset_bottom = _minimap_panel.offset_top + map_size.y
 	var command_visual_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 	if is_instance_valid(_sel_panel):
-		# Treat the selected entity and command deck as one interaction system:
-		# preserve a visible seam after scaling the panels within the native
-		# 1920x1080 logical viewport. This leaves project-wide sizing unchanged.
+		# Reserve a narrow forged join between the live dossier and command deck.
+		# The chassis rail occupies the left edge of the command deck; placing the
+		# dossier directly against it covered the rightmost status and stat glyphs
+		# at compact resolutions. The chassis still bridges the visual gap.
 		selection_height = maxf(selection_height, _sel_panel.get_combined_minimum_size().y)
 		_sel_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
-		var selection_left := command_visual_left - 16.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
+		var selection_left := command_visual_left - 18.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
 		_sel_panel.offset_left = selection_left - viewport_size.x * 0.5
 		_sel_panel.offset_right = _sel_panel.offset_left + SELECTION_PANEL_WIDTH
 		_sel_panel.offset_top = -margin - selection_height * INTERACTION_PANEL_SCALE
 		_sel_panel.offset_bottom = _sel_panel.offset_top + selection_height
+	if is_instance_valid(_selection_portrait) and is_instance_valid(_sel_panel):
+		_selection_portrait.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		_selection_portrait.position = Vector2(_sel_panel.get_global_rect().position.x + 4.0, _sel_panel.get_global_rect().position.y - 35.0)
 	if is_instance_valid(_cmd_panel):
 		_cmd_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
 		_cmd_panel.offset_left = command_visual_left - viewport_size.x
 		_cmd_panel.offset_right = _cmd_panel.offset_left + COMMAND_PANEL_WIDTH
 		_cmd_panel.offset_top = -margin - command_height * INTERACTION_PANEL_SCALE
 		_cmd_panel.offset_bottom = _cmd_panel.offset_top + command_height
+	if is_instance_valid(_command_chassis) and is_instance_valid(_sel_panel) and is_instance_valid(_cmd_panel):
+		var selected_rect := _sel_panel.get_global_rect()
+		var command_rect := _cmd_panel.get_global_rect()
+		var portrait_ready := is_instance_valid(_selection_portrait)
+		var portrait_rect := _selection_portrait.get_global_rect() if portrait_ready else Rect2()
+		_command_chassis.configure(selected_rect, command_rect, portrait_rect, portrait_ready)
+		_command_chassis.visible = _sel_panel.visible and _cmd_panel.visible
 	if is_instance_valid(_menu_button):
-		_menu_button.offset_left = -104.0
-		_menu_button.offset_right = -margin
+		_menu_button.offset_left = -100.0
+		_menu_button.offset_right = -12.0
+	queue_redraw()
 
 
 func _fit_command_panel_next_frame() -> void:
@@ -379,11 +463,10 @@ func _mk_title_label(text: String, size: int, col: Color) -> Label:
 	return l
 
 
-func _mk_hud_panel() -> PanelContainer:
-	# Clean, predictable HUD surface. The ornate 9-slice frame reserves 30px of
-	# content margin on every side, which starved these dense panels and made
-	# text overflow — a flat box with a thin border gives reliable interior space.
-	var p := PanelContainer.new()
+func _mk_hud_panel(kind: String = "selection", accent: Color = HUD_BRONZE) -> PanelContainer:
+	var p: PanelContainer = HUD_PLATE_SCRIPT.new()
+	p.plate_kind = kind
+	p.accent = accent
 	p.mouse_filter = Control.MOUSE_FILTER_STOP
 	p.add_theme_stylebox_override("panel", _hud_stylebox())
 	return p
@@ -391,13 +474,10 @@ func _mk_hud_panel() -> PanelContainer:
 
 func _hud_stylebox() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = HUD_SURFACE
-	sb.set_border_width_all(2)
-	sb.border_color = Color(HUD_BRONZE.r, HUD_BRONZE.g, HUD_BRONZE.b, 0.92)
-	sb.set_corner_radius_all(8)
+	# The shaped plate script paints the material and silhouette. Theme margins
+	# only reserve safe space for real controls inside the cut metal perimeter.
+	sb.bg_color = Color.TRANSPARENT
 	sb.set_content_margin_all(10)
-	sb.shadow_color = Color(0, 0, 0, 0.38)
-	sb.shadow_size = 4
 	return sb
 
 
@@ -420,6 +500,44 @@ func _mk_icon(path: String, px: float) -> TextureRect:
 	t.custom_minimum_size = Vector2(px, px)
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return t
+
+
+func _mk_atlas_object_icon(texture: Texture2D, region: Rect2, px: float) -> TextureRect:
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = region
+	atlas.filter_clip = true
+	var icon := TextureRect.new()
+	icon.texture = atlas
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = Vector2(px, px)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
+
+
+func _mk_resource_object_icon(kind: String, px: float) -> TextureRect:
+	# One authored atlas keeps the four resource silhouettes and lighting in the
+	# same visual family while leaving the existing resource data untouched.
+	# Crop transparent atlas gutters in the texture region, keeping each object
+	# large enough to resolve at the live HUD's normal display scale.
+	var region := Rect2(90, 45, 484, 532)
+	match kind:
+		"timber": region = Rect2(651, 82, 584, 511)
+		"stone": region = Rect2(55, 691, 556, 515)
+		"gold": region = Rect2(670, 721, 554, 464)
+	return _mk_atlas_object_icon(RESOURCE_OBJECT_ATLAS, region, px)
+
+
+func _mk_force_object_icon(kind: String, px: float) -> TextureRect:
+	# The two upper illustrations cross the atlas's 627px midpoint. Split in
+	# their actual transparent gutter instead, so neither silhouette is cut.
+	var region := Rect2(0, 0, 685, 627)
+	match kind:
+		"opponent": region = Rect2(690, 0, 564, 627)
+		"worker": region = Rect2(0, 627, 627, 627)
+		"army": region = Rect2(627, 627, 627, 627)
+	return _mk_atlas_object_icon(FORCE_OBJECT_ATLAS, region, px)
 
 
 func _cost_string(cost: Dictionary) -> String:
@@ -498,11 +616,17 @@ func _command_kind(title: String, visible_effect_prefix: String, has_preview: bo
 	return "ORDER"
 
 
-func _command_accent(title: String, state: String) -> Color:
+func _command_accent(title: String, state: String, kind: String = "ORDER") -> Color:
+	var family := COMMAND_GOLD
+	match kind:
+		"ABILITY": family = Color(0.98, 0.75, 0.37)
+		"BUILD": family = COMMAND_MINT
+		"TRAIN": family = Color(0.89, 0.67, 0.43)
+		"RESEARCH": family = COMMAND_SKY
+	if kind != "ORDER":
+		return family.lerp(COMMAND_MUTED, 0.74) if state in ["LOCKED", "COMPLETED"] else family
 	if state == "LOCKED":
 		return COMMAND_MUTED
-	if state == "COOLDOWN":
-		return Color(0.52, 0.7, 0.9)
 	var haystack := title.to_lower()
 	if haystack.contains("attack"):
 		return COMMAND_FLAME
@@ -518,13 +642,13 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.custom_minimum_size = Vector2(min_width, 20.0)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(color.r, color.g, color.b, 0.16)
-	sb.border_color = Color(color.r, color.g, color.b, 0.72)
-	sb.set_border_width_all(1)
-	sb.set_corner_radius_all(4)
+	sb.bg_color = Color(color.r, color.g, color.b, 0.10)
+	sb.border_color = Color(color.r, color.g, color.b, 0.48)
+	sb.border_width_left = 1
+	sb.set_corner_radius_all(1)
 	sb.set_content_margin_all(3)
 	badge.add_theme_stylebox_override("panel", sb)
-	var label := _mk_label(text, 9, color)
+	var label := _mk_label(text, 10, color)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge.add_child(label)
@@ -534,15 +658,19 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 func _mk_command_keycap(text: String, accent: Color) -> PanelContainer:
 	var cap := PanelContainer.new()
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cap.custom_minimum_size = Vector2(30, 25)
+	cap.custom_minimum_size = Vector2(29, 23)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.035, 0.045, 0.06, 0.98)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.95)
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(5)
-	sb.set_content_margin_all(3)
+	sb.bg_color = Color(0.11, 0.12, 0.12, 0.91)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.67)
+	sb.border_width_top = 1
+	sb.border_width_left = 1
+	sb.border_width_bottom = 1
+	sb.set_corner_radius_all(1)
+	sb.set_content_margin_all(2)
+	sb.shadow_color = Color(0, 0, 0, 0.53)
+	sb.shadow_size = 2
 	cap.add_theme_stylebox_override("panel", sb)
-	var label := _mk_label(text, 11, Color(1.0, 0.96, 0.82))
+	var label := _mk_label(text, 14, Color(1.0, 0.96, 0.82))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	cap.add_child(label)
@@ -577,42 +705,50 @@ func _mk_command_icon(kind: String, accent: Color, size_px: float) -> Control:
 	icon.custom_minimum_size = Vector2(size_px, size_px)
 	icon.size = Vector2(size_px, size_px)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.configure(kind, accent)
+	var visual_faction := str(_commander.race) if is_instance_valid(_commander) else "barrosan"
+	icon.configure(kind, accent, visual_faction)
 	return icon
 
 
 func _command_icon_stylebox(accent: Color, ability_card: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.22 if ability_card else 0.14)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.96)
+	sb.bg_color = Color(accent.r, accent.g, accent.b, 0.14 if ability_card else 0.07)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.58)
 	sb.set_border_width_all(0)
 	sb.border_width_left = 2
-	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(4)
+	sb.set_corner_radius_all(1)
 	sb.set_content_margin_all(3)
 	return sb
 
 
 func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: String, accent: Color) -> void:
 	var chip := PanelContainer.new()
-	chip.custom_minimum_size = Vector2(64, 34)
+	chip.custom_minimum_size = Vector2(62, 42)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.055, 0.07, 0.082, 0.98)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.58)
-	sb.border_width_left = 2
-	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(3)
-	sb.set_content_margin_all(4)
+	sb.bg_color = Color(0.055, 0.07, 0.082, 0.28)
+	sb.border_color = Color(accent.r, accent.g, accent.b, 0.40)
+	sb.border_width_right = 0 if kind == "range" else 1
+	sb.set_corner_radius_all(0)
+	sb.content_margin_left = 2
+	sb.content_margin_right = 2
+	sb.content_margin_top = 1
+	sb.content_margin_bottom = 1
 	chip.add_theme_stylebox_override("panel", sb)
-	var label := _mk_label("%s  %s" % [caption, value], 10, FONT_COLOR)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.tooltip_text = "%s: %s" % [caption, value]
-	chip.add_child(label)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", -3)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title_label := _mk_label(caption, 10, accent.lerp(Color(0.86, 0.87, 0.83), 0.40))
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stack.add_child(title_label)
+	var value_label := _mk_label(value, 18, FONT_COLOR)
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	value_label.tooltip_text = "%s: %s" % [caption, value]
+	stack.add_child(value_label)
+	chip.add_child(stack)
 	row.add_child(chip)
-	_single_stat_cards.append({"kind": kind, "label": label, "caption": caption})
+	_single_stat_cards.append({"kind": kind, "label": value_label, "caption": caption})
 
 
 func _apply_ability_button_style(button: Button, accent: Color) -> void:
@@ -637,22 +773,26 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "") -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "", emblem_id: String = "", unit_art_definition: Dictionary = {}) -> Button:
 	var has_preview := not preview_definition.is_empty()
 	# The card is intentionally a scan surface. Hero abilities provide their
 	# authored hotkey explicitly; ordinary orders derive theirs from the title.
 	var ability_card := visible_effect_prefix == "Effect" and not hotkey_override.is_empty()
-	var command_kind := "ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, false)
+	var command_kind := command_kind_override if not command_kind_override.is_empty() else ("ABILITY" if ability_card else _command_kind(title, visible_effect_prefix, has_preview, false))
 	# Costs, tiers and population are actionable scan data. Long authored prose
 	# stays in the anchored tooltip so the command grid reads like an RTS deck,
 	# not a stack of debug forms.
-	var scan_detail := has_preview or ability_card or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
+	var scan_detail := has_preview or ability_card or command_kind in ["TRAIN", "RESEARCH"] or detail.to_lower().contains("cost") or detail.to_lower().contains("tier") or detail.to_lower().contains("population")
 	var detail_text := _command_card_summary(detail) if scan_detail else ""
 	# The status footer carries readiness; the full reason stays in the tooltip.
-	var accent := _command_accent(title, state)
+	var accent := _command_accent(title, state, command_kind)
 	var hotkey := hotkey_override if not hotkey_override.is_empty() else _command_hotkey(title)
-	var btn := _mk_button("", 11)
-	var card_height := 78 if has_preview else (74 if ability_card else 68)
+	var btn = HUD_ACTION_SCRIPT.new()
+	btn.text = ""
+	btn.accent = accent
+	btn.command_kind = command_kind
+	btn.command_state = state
+	var card_height := 96 if has_preview else (74 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -661,26 +801,30 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(6, 6)
-		preview.size = Vector2(42, 42)
-		preview.custom_minimum_size = Vector2(42, 42)
+		preview.position = Vector2(8, 10)
+		preview.size = Vector2(68, 68)
+		preview.custom_minimum_size = Vector2(68, 68)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		preview.set_deferred("custom_minimum_size", Vector2(42, 42))
-		preview.set_deferred("size", Vector2(42, 42))
+		preview.set_deferred("custom_minimum_size", Vector2(68, 68))
+		preview.set_deferred("size", Vector2(68, 68))
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(54, 6)
-		var preview_text_height := card_height - 10
-		text_col.size = Vector2(120, preview_text_height)
-		text_col.custom_minimum_size = Vector2(120, preview_text_height)
-		text_col.add_theme_constant_override("separation", 1)
+		text_col.name = "BuildingCardCopy"
+		text_col.anchor_right = 1.0
+		text_col.offset_left = 81.0
+		text_col.offset_top = 10.0
+		text_col.offset_right = -7.0
+		text_col.offset_bottom = -21.0
+		text_col.add_theme_constant_override("separation", 2)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 12, FONT_COLOR)
+		var title_label := _mk_label(title, 18, FONT_COLOR)
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(detail_text, 11, preview_detail_color)
+		var detail_label := _mk_label(detail_text.replace(", ", "\n"), 14, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -688,31 +832,50 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
 	else:
+		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
+		var field_order_art := command_kind == "ORDER" and _command_icon_kind(title, command_kind) in ["attack", "stop", "hold", "patrol"]
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(6, 6)
-		glyph_plate.size = Vector2(38, 38)
+		glyph_plate.position = Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
+		glyph_plate.size = Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38))
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
-		glyph_plate.add_child(_mk_command_icon(_command_icon_kind(title, command_kind), accent, 28.0))
+		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+			var unit_art: Control = load(ENTITY_PORTRAIT_SCRIPT).new()
+			unit_art.name = "UnitCommandPortrait"
+			unit_art.custom_minimum_size = Vector2(44, 44)
+			unit_art.size = Vector2(44, 44)
+			if state in ["LOCKED", "COMPLETED"]:
+				unit_art.modulate = Color(0.72, 0.77, 0.80, 0.76)
+			glyph_plate.add_child(unit_art)
+			unit_art.configure_definition(unit_art_definition, false)
+		else:
+			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem or field_order_art else 28.0)
+			glyph.name = "CommandEmblem" if painted_emblem or field_order_art else "CommandGlyph"
+			if painted_emblem and state in ["LOCKED", "COMPLETED"]:
+				glyph.modulate = Color(0.72, 0.77, 0.80, 0.76)
+			if painted_emblem or field_order_art:
+				glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(50, 6)
+		text_col.position = Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6))
 		var text_height := card_height - 10
-		text_col.size = Vector2(112, text_height)
-		text_col.custom_minimum_size = Vector2(112, text_height)
+		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
+		text_col.size = Vector2(text_width, text_height)
+		text_col.custom_minimum_size = Vector2(text_width, text_height)
 		text_col.add_theme_constant_override("separation", 1)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_color := Color(0.52, 0.52, 0.5, 0.9) if state == "LOCKED" else FONT_COLOR
-		var detail_color := Color(0.42, 0.42, 0.39, 0.9) if state == "LOCKED" else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 13, title_color)
-		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
+		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
+		var title_label := _mk_label(title, 18, title_color)
+		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
+		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(detail_text, 11, detail_color)
-		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		var detail_label := _mk_label(detail_text, 14, detail_color)
+		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
+		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		text_col.add_child(detail_label)
@@ -726,40 +889,33 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		key_badge.offset_top = 6.0
 		key_badge.offset_bottom = 26.0
 		btn.add_child(key_badge)
-	var kind_label := _mk_label(command_kind, 10, Color(accent.r, accent.g, accent.b, 0.82))
-	kind_label.position = Vector2(6, card_height - 17)
-	kind_label.size = Vector2(72, 15)
-	kind_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	btn.add_child(kind_label)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 10, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
+		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else COMMAND_MUTED)
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
-		status_label.offset_left = -68.0
+		status_label.offset_left = -83.0
 		status_label.offset_right = -8.0
-		status_label.offset_top = card_height - 17
+		status_label.offset_top = card_height - 19
 		status_label.offset_bottom = card_height - 2
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)
 		btn.set_meta("command_status_label", status_label)
 	else:
-		# The worker deck already labels the family as BUILD. Use the lower-right
-		# slot for the actionable state so READY versus LOCKED is readable without
-		# relying on a paragraph of disabled-reason text.
-		var build_status := _mk_label(state, 10, accent if state == "READY" else COMMAND_MUTED)
-		build_status.anchor_left = 1.0
-		build_status.anchor_right = 1.0
-		build_status.offset_left = -68.0
-		build_status.offset_right = -8.0
-		build_status.offset_top = card_height - 17
+		# The art and readiness share a column; long two-resource costs keep the
+		# entire right side without colliding with READY or LOCKED.
+		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
+		build_status.offset_left = 7.0
+		build_status.offset_right = 77.0
+		build_status.offset_top = card_height - 18
 		build_status.offset_bottom = card_height - 2
-		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
 		btn.set_meta("command_status_label", build_status)
 	btn.set_meta("command_kind", command_kind)
+	btn.set_meta("emblem_id", emblem_id)
 	var tooltip_text := tooltip
 	if not hotkey.is_empty():
 		tooltip_text += "\nHotkey: " + hotkey
@@ -770,28 +926,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.set_meta("command_tooltip_text", full_tooltip)
 	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, disabled_reason, accent))
 	btn.mouse_exited.connect(_hide_command_tooltip)
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.055, 0.09, 0.145, 0.99) if ability_card else Color(0.065, 0.08, 0.095, 0.98)
-	normal.border_color = Color(accent.r, accent.g, accent.b, 0.68)
-	normal.set_border_width_all(0)
-	normal.border_width_left = 4 if ability_card else 3
-	normal.border_width_bottom = 1
-	normal.set_corner_radius_all(5)
-	normal.set_content_margin_all(4)
-	var hover := normal.duplicate()
-	hover.bg_color = Color(accent.r, accent.g, accent.b, 0.17)
-	hover.border_color = accent
-	hover.border_width_left = 3
-	hover.border_width_bottom = 2
-	var pressed := hover.duplicate()
-	pressed.bg_color = Color(accent.r, accent.g, accent.b, 0.28)
-	var disabled := normal.duplicate()
-	disabled.bg_color = Color(0.045, 0.05, 0.06, 0.94) if not ability_card else Color(0.06, 0.065, 0.08, 0.98)
-	disabled.border_color = Color(0.25, 0.26, 0.27, 0.7)
-	btn.add_theme_stylebox_override("normal", normal)
-	btn.add_theme_stylebox_override("hover", hover)
-	btn.add_theme_stylebox_override("pressed", pressed)
-	btn.add_theme_stylebox_override("disabled", disabled)
+	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
+		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
 	btn.add_theme_color_override("font_disabled_color", Color(0.48, 0.47, 0.43, 0.9))
 	return btn
 
@@ -819,52 +955,76 @@ func _ability_glyph_stylebox(accent: Color) -> StyleBoxFlat:
 func _mk_command_grid() -> GridContainer:
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.add_theme_constant_override("h_separation", 5)
+	grid.add_theme_constant_override("v_separation", 3)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return grid
 
 
-func _add_command_section(title: String, hint: String = "") -> void:
+func _add_field_order_grid() -> GridContainer:
+	var rack: PanelContainer = HUD_COMMAND_RACK_SCRIPT.new()
+	rack.name = "FieldOrderRack"
+	rack.mouse_filter = Control.MOUSE_FILTER_PASS
+	var inset := StyleBoxFlat.new()
+	inset.bg_color = Color.TRANSPARENT
+	inset.set_content_margin_all(4)
+	rack.add_theme_stylebox_override("panel", inset)
+	_cmd_body.add_child(rack)
+	var grid := _mk_command_grid()
+	grid.add_theme_constant_override("h_separation", 3)
+	grid.add_theme_constant_override("v_separation", 3)
+	rack.add_child(grid)
+	return grid
+
+
+func _add_command_section(title: String, hint: String = "", pinned: bool = false) -> void:
 	var row := HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 26)
+	if pinned:
+		row.name = "PinnedCommandSection"
+	row.custom_minimum_size = Vector2(0, 30)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(3, 18)
-	rule.color = COMMAND_GOLD
+	rule.color = Color(COMMAND_GOLD.r, COMMAND_GOLD.g, COMMAND_GOLD.b, 0.55)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(rule)
-	var title_label := _mk_label(title.to_upper(), 12, COMMAND_GOLD)
-	title_label.custom_minimum_size = Vector2(78, 20)
+	var title_label := _mk_label(title.to_upper(), 16, COMMAND_GOLD)
+	title_label.custom_minimum_size = Vector2(132, 24)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title_label)
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
 	if not hint.is_empty():
-		var hint_label := _mk_label(hint, 10, Color(0.68, 0.7, 0.68))
-		hint_label.custom_minimum_size = Vector2(120, 20)
+		var hint_label := _mk_label(hint, 13, Color(0.75, 0.77, 0.74))
+		hint_label.custom_minimum_size = Vector2(150, 24)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
-	_cmd_body.add_child(row)
+	if pinned:
+		_cmd_fixed.add_child(row)
+	else:
+		_cmd_body.add_child(row)
 
 
 # ---------------------------------------------------------------------------
 # 1. TOP BAR
 # ---------------------------------------------------------------------------
-func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String) -> Dictionary:
-	# Metrics live inside a family ribbon rather than reading as independent
-	# telemetry cards. The value row contract is retained so all authoritative
-	# refresh handlers remain unchanged.
+func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String, instrument: bool = true) -> Dictionary:
+	# The value row contract is retained so authoritative refresh handlers do
+	# not change as the individual visual instruments replace the group slabs.
 	var surface := VBoxContainer.new()
-	surface.custom_minimum_size = Vector2(width, 46)
+	surface.custom_minimum_size = Vector2(width - 10.0 if instrument else width, 46)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 9, accent.lerp(HUD_TEXT_MUTED, 0.16))
+	var title_label := _mk_label(title.to_upper(), 16 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	if instrument:
+		title_label.name = "TopMetricTitle"
+		# The compact forged corners need equal air on both sides of each name.
+		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	surface.add_child(title_label)
@@ -872,9 +1032,26 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	value_row.add_theme_constant_override("separation", 5)
 	value_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	value_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	value_row.custom_minimum_size = Vector2(0, 26)
+	value_row.custom_minimum_size = Vector2(0, 34 if instrument else 26)
 	surface.add_child(value_row)
-	return {"surface": surface, "value_row": value_row}
+	if not instrument:
+		return {"surface": surface, "value_row": value_row}
+	var plate: PanelContainer = HUD_TOP_METRIC_SCRIPT.new()
+	plate.accent = accent
+	# A common height keeps both ribbons' lower rails level after the resource
+	# numerals and force numerals resolve to slightly different font metrics.
+	plate.custom_minimum_size = Vector2(width, 92)
+	plate.tooltip_text = tooltip
+	plate.mouse_filter = Control.MOUSE_FILTER_STOP
+	var inset := StyleBoxFlat.new()
+	inset.bg_color = Color.TRANSPARENT
+	inset.content_margin_left = 5.0
+	inset.content_margin_right = 4.0
+	inset.content_margin_top = 14.0
+	inset.content_margin_bottom = 16.0
+	plate.add_theme_stylebox_override("panel", inset)
+	plate.add_child(surface)
+	return {"surface": plate, "value_row": value_row}
 
 
 func _top_group(title: String, accent: Color, width: float) -> Dictionary:
@@ -883,7 +1060,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_label(title, 9, accent)
+	var heading := _mk_title_label(title, 15, accent.lightened(0.14))
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -900,26 +1077,18 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 
 
 func _build_top_bar() -> void:
-	var panel := _mk_hud_panel()
+	# The top readings are independent instruments rather than one black ribbon.
+	# Their spacing is resolved against the actual viewport in _fit_to_viewport.
+	var panel := _mk_hud_panel("economy", COMMAND_GOLD)
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
-	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	panel.offset_bottom = 56.0
-	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(0, 56)
+	panel.embedded = true
+	var rack_inset := StyleBoxFlat.new()
+	rack_inset.bg_color = Color.TRANSPARENT
+	rack_inset.set_content_margin_all(0)
+	panel.add_theme_stylebox_override("panel", rack_inset)
+	panel.custom_minimum_size = Vector2(512, 92)
 	add_child(panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_right", 112)  # keep clear of the Menu button
-	margin.add_theme_constant_override("margin_top", 2)
-	margin.add_theme_constant_override("margin_bottom", 2)
-	panel.add_child(margin)
-
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 14)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	margin.add_child(row)
 
 	var resource_accents := {
 		"food": Color(0.96, 0.72, 0.32),
@@ -927,32 +1096,38 @@ func _build_top_bar() -> void:
 		"stone": Color(0.63, 0.72, 0.78),
 		"gold": Color(0.98, 0.86, 0.42),
 	}
-	var economy := _top_group("ECONOMY", COMMAND_GOLD, 370.0)
-	var economy_metrics: HBoxContainer = economy["metrics"]
+	var economy_metrics := HBoxContainer.new()
+	economy_metrics.add_theme_constant_override("separation", 3)
+	economy_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
+	economy_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 88.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_icon(RES_ICONS[k], 25))
-		var l := _mk_label("0", 30, FONT_COLOR)
-		l.custom_minimum_size = Vector2(64, 0)
+		cell.add_child(_mk_resource_object_icon(k, 34))
+		var l := _mk_label("0", 28, FONT_COLOR)
+		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
 		cell.add_child(l)
 		economy_metrics.add_child(metric["surface"])
-	row.add_child(economy["group"])
+	panel.add_child(economy_metrics)
 
-	var sep := VSeparator.new()
-	sep.custom_minimum_size = Vector2(1, 46)
-	sep.modulate = Color(0.75, 0.62, 0.36, 0.62)
-	row.add_child(sep)
+	_force_panel = _mk_hud_panel("force", COMMAND_SKY)
+	_force_panel.name = "ForceInstrument"
+	_force_panel.embedded = true
+	_force_panel.add_theme_stylebox_override("panel", rack_inset)
+	_force_panel.custom_minimum_size = Vector2(612, 92)
+	add_child(_force_panel)
 
-	var force := _top_group("ARMY / CONTROL", COMMAND_SKY, 410.0)
-	var force_metrics: HBoxContainer = force["metrics"]
+	var force_metrics := HBoxContainer.new()
+	force_metrics.add_theme_constant_override("separation", 3)
+	force_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
+	force_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 98.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_icon(RES_ICONS["food"], 21))
-	_pop_label = _mk_label("0/0", 28)
+	pop_cell.add_child(_mk_force_object_icon("population", 34))
+	_pop_label = _mk_label("0/0", 27)
 	_pop_label.custom_minimum_size = Vector2(76, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
@@ -961,11 +1136,12 @@ func _build_top_bar() -> void:
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 96.0, "Living opposing commanders")
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	_opponent_count_label = _mk_label("0", 28, Color(0.92, 0.84, 0.74))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 34))
+	_opponent_count_label = _mk_label("0", 27, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
-	_opponent_count_label.custom_minimum_size = Vector2(100, 0)
+	_opponent_count_label.custom_minimum_size = Vector2(64, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	opponent_cell.add_child(_opponent_count_label)
 	force_metrics.add_child(opponent_metric["surface"])
@@ -973,10 +1149,10 @@ func _build_top_bar() -> void:
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 108.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_icon(RES_ICONS["food"], 21))
-	_idle_worker_label = _mk_label("0", 28, Color(0.82, 0.94, 0.78))
+	worker_cell.add_child(_mk_force_object_icon("worker", 34))
+	_idle_worker_label = _mk_label("0", 27, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
@@ -984,38 +1160,66 @@ func _build_top_bar() -> void:
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 104.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_icon(RES_ICONS["stone"], 21))
-	_idle_military_label = _mk_label("0", 28, Color(0.82, 0.9, 1.0))
+	army_cell.add_child(_mk_force_object_icon("army", 34))
+	_idle_military_label = _mk_label("0", 27, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(74, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
 	force_metrics.add_child(army_metric["surface"])
-	row.add_child(force["group"])
+	_force_panel.add_child(force_metrics)
 
-	# age / tier
+	_age_panel = _mk_hud_panel("age", COMMAND_GOLD)
+	_age_panel.name = "AgeMedallion"
+	_age_panel.custom_minimum_size = Vector2(176, 78)
+	var age_inset := StyleBoxFlat.new()
+	age_inset.bg_color = Color.TRANSPARENT
+	age_inset.content_margin_left = 25.0
+	age_inset.content_margin_right = 10.0
+	age_inset.content_margin_top = 10.0
+	age_inset.content_margin_bottom = 8.0
+	_age_panel.add_theme_stylebox_override("panel", age_inset)
+	add_child(_age_panel)
+	# Progression is a separate medallion rather than another telemetry column.
 	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 132.0)
 	var progression_metrics: HBoxContainer = progression["metrics"]
-	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age")
+	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age", false)
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
 	_tier_label = _mk_label("Age I", 29, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(122, 0)
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_cell.add_child(_tier_label)
 	progression_metrics.add_child(tier_metric["surface"])
-	row.add_child(progression["group"])
+	_age_panel.add_child(progression["group"])
 
 	# menu button (top-right corner)
-	var menu_btn := _mk_button("Menu", 16)
+	var menu_btn: Button = HUD_ACTION_SCRIPT.new()
+	menu_btn.text = ""
+	menu_btn.accent = COMMAND_GOLD
+	menu_btn.is_menu = true
+	menu_btn.add_theme_font_size_override("font_size", 15)
+	menu_btn.add_theme_color_override("font_color", Color(0.98, 0.91, 0.76))
+	menu_btn.add_theme_color_override("font_hover_color", Color.WHITE)
+	menu_btn.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.9))
+	menu_btn.add_theme_constant_override("outline_size", 3)
+	if _font:
+		menu_btn.add_theme_font_override("font", _font)
+	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
+		menu_btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
 	_menu_button = menu_btn
 	_menu_button.name = "MenuButton"
-	menu_btn.custom_minimum_size = Vector2(88, 36)
+	menu_btn.custom_minimum_size = Vector2(86, 42)
 	menu_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	menu_btn.offset_left = -104.0
-	menu_btn.offset_right = -14.0
-	menu_btn.offset_top = 12.0
-	menu_btn.offset_bottom = 48.0
+	menu_btn.offset_left = -100.0
+	menu_btn.offset_right = -12.0
+	menu_btn.offset_top = 17.0
+	menu_btn.offset_bottom = 59.0
+	var menu_copy := _mk_title_label("MENU", 14, Color(0.98, 0.91, 0.76))
+	menu_copy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	menu_copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	menu_copy.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	menu_btn.add_child(menu_copy)
 	menu_btn.pressed.connect(func(): emit_signal("pause_requested"))
 	add_child(menu_btn)
 
@@ -1034,32 +1238,56 @@ func _build_top_bar() -> void:
 	var map_name := str(MapDefs.get_map(map_id).get("name", map_id)).strip_edges()
 	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
 	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
-	var identity_label := _mk_label(short_identity, 12, Color(0.88, 0.82, 0.7))
+	var objective_crest_path := String(COMMAND_CRESTS.get(player_race, ""))
+	var objective_has_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
+	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
+	_objective_panel.name = "MatchObjectiveInstrument"
+	_objective_panel.set("objective_has_crest", objective_has_crest)
+	_objective_panel.custom_minimum_size = Vector2(360, 92)
+	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	var objective_inset := StyleBoxFlat.new()
+	objective_inset.bg_color = Color.TRANSPARENT
+	objective_inset.content_margin_left = 11.0
+	objective_inset.content_margin_right = 12.0
+	objective_inset.content_margin_top = 9.0
+	objective_inset.content_margin_bottom = 6.0
+	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
+	add_child(_objective_panel)
+	var mission_row := HBoxContainer.new()
+	mission_row.add_theme_constant_override("separation", 9)
+	mission_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_objective_panel.add_child(mission_row)
+	if objective_has_crest:
+		var campaign_crest := TextureRect.new()
+		campaign_crest.name = "MatchFactionCrest"
+		campaign_crest.texture = load(objective_crest_path)
+		campaign_crest.custom_minimum_size = Vector2(61, 69)
+		campaign_crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		campaign_crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		campaign_crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mission_row.add_child(campaign_crest)
+	var mission_stack := VBoxContainer.new()
+	mission_stack.add_theme_constant_override("separation", 3)
+	mission_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mission_row.add_child(mission_stack)
+	var battlefield_label := _mk_label(map_name.to_upper(), 15, COMMAND_GOLD)
+	battlefield_label.name = "MatchBattlefieldLabel"
+	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	mission_stack.add_child(battlefield_label)
+	var identity_label := _mk_title_label(short_identity, 21, Color(0.97, 0.92, 0.80))
 	identity_label.name = "MatchIdentityLabel"
 	identity_label.tooltip_text = full_identity
-	identity_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	identity_label.offset_left = -370.0
-	identity_label.offset_right = -122.0
-	identity_label.offset_top = 3.0
-	identity_label.offset_bottom = 20.0
-	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(identity_label)
+	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
-	var objective_text := "CONQUEST  •  END ENEMY REBUILD" if victory_kind == "conquest" else victory_kind.capitalize()
-	var objective_label := _mk_label(objective_text, 12, Color(0.78, 0.72, 0.61))
+	var objective_text := "CONQUEST · End enemy rebuild" if victory_kind == "conquest" else victory_kind.capitalize()
+	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
 	objective_label.name = "MatchObjectiveLabel"
 	objective_label.tooltip_text = "Eliminate the enemy's rebuild capability." if victory_kind == "conquest" else objective_text
-	objective_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	objective_label.offset_left = -370.0
-	objective_label.offset_right = -122.0
-	objective_label.offset_top = 29.0
-	objective_label.offset_bottom = 47.0
-	objective_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(objective_label)
+	mission_stack.add_child(objective_label)
 
 
 func _on_resources_changed(res: Dictionary) -> void:
@@ -1095,11 +1323,10 @@ func _refresh_opponent_count() -> void:
 # 2. MINIMAP
 # ---------------------------------------------------------------------------
 func _build_minimap() -> void:
-	var panel := _mk_hud_panel()
+	var panel := _mk_hud_panel("minimap", Color(0.83, 0.65, 0.35))
 	_minimap_panel = panel
 	_minimap_panel.name = "MinimapPanel"
-	# The map is a navigation instrument; its title carries the interaction hint
-	# and marker shapes carry the legend, avoiding a tiny debug-like footer.
+	# Give the surveyed place the emphasis; the map itself carries the markers.
 	var box := MINIMAP_SIZE + 24.0
 	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -1116,15 +1343,19 @@ func _build_minimap() -> void:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(column)
-	var title := _mk_label("TACTICAL MAP", 13, Color(0.95, 0.85, 0.55))
+	var map_name := str(world.map.get("name", "Battlefield")) if is_instance_valid(world) else "Battlefield"
+	var title := _mk_label(map_name.to_upper(), 14, Color(0.95, 0.85, 0.55))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
-	var hint := _mk_label("BLUE/RED  /  ◆ ARMY  /  ○ WORKER  /  ✦ HERO", 9, HUD_TEXT_MUTED)
+	var hint := _mk_label("FIELD OVERVIEW    ·    CLICK TO PAN", 11, HUD_TEXT_MUTED)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(hint)
 	_minimap = Control.new()
 	_minimap.custom_minimum_size = Vector2(MINIMAP_SIZE, MINIMAP_SIZE)
 	_minimap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Camera-footprint sights can extend past the surveyed area near map edges.
+	# Keep every map stroke inside the frame's opening.
+	_minimap.clip_contents = true
 	_minimap.mouse_filter = Control.MOUSE_FILTER_STOP
 	_minimap.draw.connect(_draw_minimap)
 	_minimap.gui_input.connect(_on_minimap_input)
@@ -1193,7 +1424,7 @@ func _draw_minimap() -> void:
 		if hidden_enemy_objective:
 			continue
 		var col: Color = GameData.TEAM_COLORS.get(team_owner, Color(0.85, 0.85, 0.85)) if team_owner >= 0 else Color(0.85, 0.85, 0.85)
-		var r := 5.0
+		var r := 6.0
 		var diamond := PackedVector2Array([
 			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)])
 		_minimap.draw_colored_polygon(diamond, col.darkened(0.18))
@@ -1243,9 +1474,17 @@ func _draw_minimap() -> void:
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
 		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
-		# The footprint is a quiet navigation cue, not a competing selection box.
+		# The true footprint retains its quiet outline, while short corner sights
+		# make the currently framed region visible over dark explored terrain.
 		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.36), 1.8, false)
 		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, false)
+		for corner_index in 4:
+			var corner: Vector2 = corners[corner_index]
+			var toward_next: Vector2 = (corners[(corner_index + 1) % 4] - corner).normalized() * 11.0
+			var toward_previous: Vector2 = (corners[(corner_index + 3) % 4] - corner).normalized() * 11.0
+			for direction in [toward_next, toward_previous]:
+				_minimap.draw_line(corner, corner + direction, Color(0.02, 0.03, 0.03, 0.88), 3.0, true)
+				_minimap.draw_line(corner, corner + direction, Color(0.98, 0.91, 0.59, 0.90), 1.6, true)
 
 
 func _draw_minimap_visibility(size: Vector2) -> void:
@@ -1257,15 +1496,29 @@ func _draw_minimap_visibility(size: Vector2) -> void:
 	var states: PackedByteArray = grid.get("states", PackedByteArray())
 	if columns <= 0 or rows <= 0 or states.size() != columns * rows:
 		return
-	var cell_width := size.x / float(columns)
-	var cell_height := size.y / float(rows)
-	for row in rows:
-		for column in columns:
-			var state := int(states[row * columns + column])
-			if state == 2:
-				continue
-			var fog_color := Color(0.025, 0.040, 0.060, 0.72) if state == 0 else Color(0.045, 0.065, 0.085, 0.32)
-			_minimap.draw_rect(Rect2(column * cell_width, row * cell_height, cell_width + 0.5, cell_height + 0.5), fog_color, true)
+	# One raster removes the dark seams made by overlapping translucent cells.
+	# It still samples the authoritative visibility grid, with no extra scouting.
+	if _minimap_fog == null or columns != _minimap_fog_columns or rows != _minimap_fog_rows or states != _minimap_fog_states:
+		var fog_image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
+		for y in MINIMAP_RASTER_SIZE:
+			var row := mini(rows - 1, int(float(y) / float(MINIMAP_RASTER_SIZE) * float(rows)))
+			for x in MINIMAP_RASTER_SIZE:
+				var column := mini(columns - 1, int(float(x) / float(MINIMAP_RASTER_SIZE) * float(columns)))
+				var state := int(states[row * columns + column])
+				var fog_color := Color.TRANSPARENT
+				if state == 0:
+					fog_color = Color(0.023, 0.034, 0.043, 0.54)
+				elif state == 1:
+					fog_color = Color(0.038, 0.056, 0.067, 0.20)
+				fog_image.set_pixel(x, y, fog_color)
+		if _minimap_fog == null:
+			_minimap_fog = ImageTexture.create_from_image(fog_image)
+		else:
+			_minimap_fog.update(fog_image)
+		_minimap_fog_states = states
+		_minimap_fog_columns = columns
+		_minimap_fog_rows = rows
+	_minimap.draw_texture_rect(_minimap_fog, Rect2(Vector2.ZERO, size), false)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
@@ -1273,8 +1526,6 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	# from the same map/world that renders the battlefield; live markers are
 	# layered separately below. Avoid synthetic camouflage blobs or a decorative
 	# board-game overlay that has no spatial correspondence to the world.
-	var edge := Color(0.86, 0.78, 0.58, 0.68)
-	_minimap.draw_rect(Rect2(Vector2(6, 6), size - Vector2(12, 12)), edge, false, 2.0)
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
 	if bool(water.get("enabled", false)):
@@ -1289,16 +1540,21 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 		else:
 			var shore_y := _world_to_map(Vector3(0.0, 0.0, center_z - half_width)).y
 			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), MINIMAP_WATER_SHORE, 1.25, true)
-	_draw_minimap_roads(size)
+	# Roads are baked into the background at the terrain shader's actual width.
 
 func _draw_minimap_frame(size: Vector2) -> void:
-	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 3.0)
-	_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color(0.68, 0.55, 0.30, 0.92), false, 1.0)
-	for corner in [Vector2(5, 5), Vector2(size.x - 5, 5), Vector2(size.x - 5, size.y - 5), Vector2(5, size.y - 5)]:
-		_minimap.draw_circle(corner, 1.5, Color(0.95, 0.79, 0.38, 0.95))
+	# The forged housing is the frame. A quiet compass mark gives orientation
+	# without putting another bright rectangle over the terrain.
+	var compass := Vector2(size.x - 19.0, 18.0)
+	_minimap.draw_circle(compass, 12.0, Color(0.018, 0.028, 0.033, 0.74))
+	_minimap.draw_arc(compass, 10.0, 0.0, TAU, 24, Color(0.88, 0.72, 0.43, 0.54), 1.0, true)
+	_minimap.draw_colored_polygon(PackedVector2Array([
+		compass + Vector2(0.0, -8.0), compass + Vector2(3.3, 4.0),
+		compass, compass + Vector2(-3.3, 4.0)]), Color(0.97, 0.82, 0.52, 0.86))
+	_minimap.draw_circle(compass, 1.3, Color(0.04, 0.06, 0.07))
 
 func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_enemy: bool = false) -> void:
-	var radius := 7.0 if is_major else 5.0
+	var radius := 8.0 if is_major else 5.7
 	_minimap.draw_circle(p, radius + 1.8, Color(0.02, 0.03, 0.03, 0.9))
 	var points: PackedVector2Array
 	if is_enemy:
@@ -1321,7 +1577,7 @@ func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_e
 func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero: bool = false) -> void:
 	# Role shapes make the minimap answer "what is there?" without changing the
 	# existing team-color ownership channel or live-unit source.
-	var r := 3.0 if is_worker else (6.0 if is_hero else 4.0)
+	var r := 3.6 if is_worker else (7.2 if is_hero else 4.8)
 	_minimap.draw_circle(p, r + 1.25, Color(0.02, 0.03, 0.03, 0.86))
 	if is_worker:
 		_minimap.draw_circle(p, r, col)
@@ -1344,24 +1600,10 @@ func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero
 		_minimap.draw_polyline(army_points, Color(1, 1, 1, 0.76), 1.0, true)
 
 func _draw_minimap_resource(p: Vector2, col: Color) -> void:
-	_minimap.draw_circle(p, 3.3, Color(0.03, 0.04, 0.04, 0.82))
-	_minimap.draw_circle(p, 2.05, col)
+	_minimap.draw_circle(p, 3.8, Color(0.03, 0.04, 0.04, 0.82))
+	_minimap.draw_circle(p, 2.5, col)
 	_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
 
-
-func _draw_minimap_roads(_size: Vector2) -> void:
-	if not is_instance_valid(world):
-		return
-	# The ground shader burns these same start-to-centre segments into the
-	# authored battlefield material. Mirror that source geometry as subdued
-	# navigation tracks instead of consuming presentation-only overview roads.
-	var route_color := Color(0.25, 0.19, 0.12, 0.24)
-	for start in world.map.get("start_positions", []):
-		if start is Vector3:
-			_minimap.draw_line(_world_to_map(start), _world_to_map(Vector3.ZERO), route_color, 1.25, true)
-	# This is the corresponding authored contested-middle link in
-	# TerrainBuilder._make_ground_material(). Keep it subordinate to terrain.
-	_minimap.draw_line(_world_to_map(Vector3(-30.0, 0.0, -20.0)), _world_to_map(Vector3(30.0, 0.0, 20.0)), Color(0.28, 0.23, 0.15, 0.18), 0.8, true)
 
 func _minimap_resource_color(kind: String) -> Color:
 	match kind:
@@ -1376,7 +1618,7 @@ func _minimap_theme_color(theme_name: String, accent: bool) -> Color:
 		"volcanic": return Color(0.42, 0.25, 0.18, 1.0) if not accent else Color(0.58, 0.32, 0.18, 1.0)
 		"snow": return Color(0.37, 0.45, 0.48, 1.0) if not accent else Color(0.60, 0.68, 0.70, 1.0)
 		"desert", "badlands": return Color(0.40, 0.29, 0.18, 1.0) if not accent else Color(0.58, 0.42, 0.24, 1.0)
-		_: return Color(0.22, 0.30, 0.20, 1.0) if not accent else Color(0.30, 0.38, 0.24, 1.0)
+		_: return Color(0.31, 0.39, 0.27, 1.0) if not accent else Color(0.39, 0.47, 0.31, 1.0)
 
 
 func _minimap_world_landform_specs() -> Array:
@@ -1408,7 +1650,7 @@ func _ensure_minimap_background() -> void:
 	var cache_key := map_id + ":" + theme_name + ":" + str(shelf_count)
 	if cache_key == _minimap_background_key and is_instance_valid(_minimap_background):
 		return
-	var image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
+	var image := Image.create(MINIMAP_BACKGROUND_RASTER_SIZE, MINIMAP_BACKGROUND_RASTER_SIZE, false, Image.FORMAT_RGBA8)
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
 	var base := _minimap_theme_color(theme_name, false)
@@ -1419,21 +1661,33 @@ func _ensure_minimap_background() -> void:
 	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
 	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
 	var landforms: Array = _minimap_world_landform_specs()
+	# TerrainBuilder draws these exact start-to-centre paths and middle link.
+	# Rasterizing their width makes the miniature read like the battlefield,
+	# rather than an unrelated schematic with hairline routes.
+	var paths: Array = []
+	for start in world.map.get("start_positions", []):
+		if start is Vector3:
+			paths.append([start, Vector3.ZERO])
+	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
+	var road_color := Color(0.60, 0.45, 0.27) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
+	var snow_texture: Texture2D = load(MINIMAP_SNOW_TEXTURE) as Texture2D if theme_name == "snow" else null
 	var has_ground_image: bool = is_instance_valid(ground_texture)
 	var has_meadow_image: bool = is_instance_valid(meadow_texture)
+	var has_snow_image: bool = is_instance_valid(snow_texture)
 	var ground_image: Image = ground_texture.get_image() if has_ground_image else Image.new()
 	var meadow_image: Image = meadow_texture.get_image() if has_meadow_image else Image.new()
-	for y in range(MINIMAP_RASTER_SIZE):
-		for x in range(MINIMAP_RASTER_SIZE):
+	var snow_image: Image = snow_texture.get_image() if has_snow_image else Image.new()
+	for y in range(MINIMAP_BACKGROUND_RASTER_SIZE):
+		for x in range(MINIMAP_BACKGROUND_RASTER_SIZE):
 			var wp := Vector3(
-				(float(x) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
+				(float(x) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
 				0.0,
-				(float(y) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
+				(float(y) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
 			# A restrained north-to-south grade gives the miniature depth without
 			# inventing random blobs that the player cannot find in the world.
-			var latitude := float(y) / float(MINIMAP_RASTER_SIZE - 1)
+			var latitude := float(y) / float(MINIMAP_BACKGROUND_RASTER_SIZE - 1)
 			var col := base.lerp(base.lightened(0.10), 1.0 - absf(latitude - 0.5) * 1.45)
 			# Reuse the same authored ground materials as TerrainBuilder. This is a
 			# one-time cache build, not a live texture load or a second world render.
@@ -1443,12 +1697,30 @@ func _ensure_minimap_background() -> void:
 				var ground_sample: Color = ground_image.get_pixel(tx, tz)
 				if has_meadow_image:
 					var meadow_sample: Color = meadow_image.get_pixel(posmod(tx, meadow_image.get_width()), posmod(tz, meadow_image.get_height()))
-					ground_sample = ground_sample.lerp(meadow_sample, 0.36)
-				col = col.lerp(ground_sample, 0.42)
-				# Keep authored texture variation readable at minimap scale while
-				# avoiding any newly invented landform shapes.
+					ground_sample = ground_sample.lerp(meadow_sample, 0.52 if theme_name == "highland" else 0.36)
 				var texture_luma := (ground_sample.r + ground_sample.g + ground_sample.b) / 3.0
-				col = col.lightened(clampf((texture_luma - 0.42) * 0.16, -0.05, 0.08))
+				# The world shader grades this texture per biome. Keep its hue only
+				# for the highlands; on snow, ash and desert it supplies detail, not
+				# an unrelated green cast over the battlefield's actual palette.
+				if theme_name == "highland":
+					# The world reads as a living meadow at battle zoom. Keep that
+					# authored color in its survey rather than flattening it to olive.
+					col = col.lerp(ground_sample, 0.58)
+				col = col.lightened(clampf((texture_luma - 0.42) * 0.18, -0.05, 0.08))
+			if has_snow_image:
+				var snow_sample := snow_image.get_pixel(
+					posmod(int(floor(wp.x * 0.92)), snow_image.get_width()),
+					posmod(int(floor(wp.z * 0.92)), snow_image.get_height()))
+				col = col.lerp(snow_sample, 0.52)
+			var nearest_path := 1000.0
+			for path in paths:
+				nearest_path = minf(nearest_path, _minimap_segment_distance(wp, path[0], path[1]))
+			if theme_name == "highland" and nearest_path < 15.0:
+				var road_shoulder := 1.0 - smoothstep(10.5, 15.0, nearest_path)
+				col = col.lerp(Color(0.20, 0.25, 0.17), road_shoulder * 0.26)
+			if nearest_path < 12.5:
+				var road_weight := 1.0 - smoothstep(7.0, 12.5, nearest_path)
+				col = col.lerp(road_color, road_weight * (0.82 if theme_name == "highland" else 0.70))
 			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
 			if edge < 10.0:
 				col = col.darkened(0.18)
@@ -1458,7 +1730,7 @@ func _ensure_minimap_background() -> void:
 					# Tint the authored water toward the surrounding material so the
 					# crossing reads as a world feature rather than a UI stripe.
 					var water_tint := deep.lerp(shallow, 0.12 + clampf(absf(wp.x) / MAP_HALF, 0.0, 1.0) * 0.10)
-					col = water_tint.lerp(base, 0.16)
+					col = water_tint.lerp(base, 0.06)
 				elif distance < 5.0:
 					col = shallow.lerp(base, distance / 5.0).lerp(base, 0.08)
 			for landform in landforms:
@@ -1473,8 +1745,41 @@ func _ensure_minimap_background() -> void:
 				elif landform_distance < 1.0:
 					col = Color(0.40, 0.42, 0.35, 1.0)
 			image.set_pixel(x, y, col)
+	_paint_minimap_decor(image, theme_name)
 	_minimap_background = ImageTexture.create_from_image(image)
 	_minimap_background_key = cache_key
+
+func _paint_minimap_decor(image: Image, theme_name: String) -> void:
+	# Scattered scenery already has stable, authored world positions. Its small
+	# canopy/stone impressions give the survey geographic texture without
+	# introducing invented forests or leaking live tactical entities.
+	var decor: Node = world.get_node_or_null("Decor")
+	if not is_instance_valid(decor):
+		return
+	var forest_color := Color(0.18, 0.34, 0.21) if theme_name == "highland" else _minimap_theme_color(theme_name, false).darkened(0.22)
+	var stone_color := Color(0.55, 0.54, 0.44) if theme_name == "highland" else _minimap_theme_color(theme_name, true)
+	for node in decor.get_children():
+		if not node is Node3D:
+			continue
+		var scene_path: String = node.scene_file_path
+		var is_tree := "/vegetation/" in scene_path
+		if not is_tree and not "/rocks/" in scene_path:
+			continue
+		var position_3d: Vector3 = node.global_position
+		if absf(position_3d.x) > MAP_HALF or absf(position_3d.z) > MAP_HALF:
+			continue
+		var center := Vector2(
+			(position_3d.x + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1),
+			(position_3d.z + MAP_HALF) / (MAP_HALF * 2.0) * float(MINIMAP_BACKGROUND_RASTER_SIZE - 1))
+		var radius := (4.1 if theme_name == "highland" else 3.6) if is_tree else 2.3
+		var mark_color: Color = forest_color if is_tree else stone_color
+		var strength := (0.69 if theme_name == "highland" else 0.62) if is_tree else 0.43
+		for py in range(maxi(0, int(floor(center.y - radius - 1.0))), mini(image.get_height(), int(ceil(center.y + radius + 1.0)))):
+			for px in range(maxi(0, int(floor(center.x - radius - 1.0))), mini(image.get_width(), int(ceil(center.x + radius + 1.0)))):
+				var distance := Vector2(float(px), float(py)).distance_to(center)
+				var coverage := 1.0 - smoothstep(radius - 1.4, radius + 0.5, distance)
+				if coverage > 0.0:
+					image.set_pixel(px, py, image.get_pixel(px, py).lerp(mark_color, coverage * strength))
 
 func _minimap_segment_distance(point: Vector3, a: Vector3, b: Vector3) -> float:
 	var ab := Vector2(b.x - a.x, b.z - a.z)
@@ -1578,15 +1883,10 @@ func _on_idle_military_count(count: int) -> void:
 # 3. SELECTION PANEL
 # ---------------------------------------------------------------------------
 func _build_selection_panel() -> void:
-	_sel_panel = _mk_hud_panel()
+	_sel_panel = _mk_hud_panel("selection", Color(0.76, 0.62, 0.37))
+	_sel_panel.set("embedded", true)
 	_sel_panel.name = "SelectionPanel"
-	var selection_surface := _hud_stylebox()
-	selection_surface.bg_color = Color(0.035, 0.048, 0.062, 0.985)
-	selection_surface.border_color = Color(0.82, 0.65, 0.30, 0.96)
-	selection_surface.set_corner_radius_all(8)
-	selection_surface.set_content_margin_all(10)
-	_sel_panel.add_theme_stylebox_override("panel", selection_surface)
-	_sel_panel.custom_minimum_size = Vector2(SELECTION_PANEL_WIDTH, SELECTION_PANEL_HEIGHT)
+	_sel_panel.custom_minimum_size = Vector2(SELECTION_PANEL_WIDTH, 200)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	# center it: anchor middle-bottom
@@ -1612,6 +1912,10 @@ func _build_selection_panel() -> void:
 	entity_header.custom_minimum_size = Vector2(0, 22)
 	entity_header.add_theme_constant_override("separation", 7)
 	entity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_sel_header_spacer = Control.new()
+	_sel_header_spacer.custom_minimum_size = Vector2(168, 0)
+	_sel_header_spacer.visible = false
+	entity_header.add_child(_sel_header_spacer)
 	var entity_rule := ColorRect.new()
 	entity_rule.custom_minimum_size = Vector2(4, 18)
 	entity_rule.color = COMMAND_GOLD
@@ -1645,6 +1949,11 @@ func _clear_children(node: Node) -> void:
 
 
 func _reset_selection_widgets() -> void:
+	if is_instance_valid(_selection_portrait):
+		_selection_portrait.queue_free()
+	_selection_portrait = null
+	if is_instance_valid(_sel_header_spacer):
+		_sel_header_spacer.visible = false
 	_tracked_single = null
 	_single_read_only = false
 	_single_hp_bar = null
@@ -1660,6 +1969,7 @@ func _reset_selection_widgets() -> void:
 	_multi_bars.clear()
 	_queue_container = null
 	_production_status_label = null
+	_production_progress_bar = null
 	_production_card_queue_key = ""
 	if is_instance_valid(_watched_building) and _watched_building.production_updated.is_connected(_on_production_updated):
 		_watched_building.production_updated.disconnect(_on_production_updated)
@@ -1699,6 +2009,7 @@ func _rebuild_selection(sel: Array) -> void:
 	_clear_children(_sel_body)
 	if is_instance_valid(_sel_panel):
 		_sel_panel.remove_meta("multi_selection_height")
+		_sel_panel.custom_minimum_size.y = 200.0
 
 	# filter to valid
 	var valid := []
@@ -1757,20 +2068,15 @@ func _rebuild_inspection(target) -> void:
 
 
 func _mk_bar(col: Color) -> ProgressBar:
-	var bar := ProgressBar.new()
+	var bar: ProgressBar = HUD_VITAL_BAR_SCRIPT.new()
+	bar.fill_color = col
 	bar.show_percentage = false
 	bar.min_value = 0.0
 	bar.max_value = 1.0
 	bar.custom_minimum_size = Vector2(0, 16)
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(0.08, 0.08, 0.08, 0.9)
-	bg.set_corner_radius_all(3)
-	var fg := StyleBoxFlat.new()
-	fg.bg_color = col
-	fg.set_corner_radius_all(3)
-	bar.add_theme_stylebox_override("background", bg)
-	bar.add_theme_stylebox_override("fill", fg)
+	for style_name in ["background", "fill"]:
+		bar.add_theme_stylebox_override(style_name, StyleBoxEmpty.new())
 	return bar
 
 
@@ -1779,20 +2085,52 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	_single_read_only = read_only
 	var row := HBoxContainer.new()
 	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", 13)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_sel_body.add_child(row)
 
-	# Actual authored model preview, isolated from the live gameplay node.
+	# The portrait is its own raised instrument, overlapping the selection plate.
+	# That breaks the old three-box silhouette without changing selection data.
+	var portrait_space := Control.new()
+	portrait_space.custom_minimum_size = Vector2(165, 1)
+	portrait_space.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(portrait_space)
+	if is_instance_valid(_sel_header_spacer):
+		_sel_header_spacer.visible = true
+	var portrait_plinth := _mk_hud_panel("portrait", COMMAND_FLAME if read_only else (COMMAND_SKY if u.is_hero else COMMAND_GOLD))
+	portrait_plinth.set("embedded", true)
+	portrait_plinth.custom_minimum_size = Vector2(175, 232)
+	portrait_plinth.size = Vector2(175, 232)
+	portrait_plinth.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_selection_portrait = portrait_plinth
+	add_child(portrait_plinth)
+	var portrait_stack := VBoxContainer.new()
+	portrait_stack.add_theme_constant_override("separation", 3)
+	portrait_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_plinth.add_child(portrait_stack)
+	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 11, COMMAND_GOLD)
+	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	portrait_stack.add_child(portrait_overline)
+	# Authored UI portrait with an isolated 3D model fallback.
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(96, 96)
-		row.add_child(portrait)
+		portrait.custom_minimum_size = Vector2(153, 153)
+		portrait_stack.add_child(portrait)
 		portrait.configure_entity(u)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 88)
-		row.add_child(portrait)
+		portrait = _mk_icon(FRAME_PORTRAIT, 150)
+		portrait_stack.add_child(portrait)
+	var role_word := "WORKER" if u.is_worker else "WARRIOR"
+	if String(u.unit_id) == "lioraen_thorn_ranger":
+		role_word = "RANGER"
+	if u.is_hero:
+		var hero_race := String(u.def.get("race", ""))
+		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else "HERO")
+	var portrait_footer := _mk_title_label(role_word, 12, Color(0.96, 0.83, 0.58))
+	portrait_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	portrait_stack.add_child(portrait_footer)
+	call_deferred("_fit_to_viewport")
 
 	# info column
 	var info := VBoxContainer.new()
@@ -1808,7 +2146,10 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_header := HBoxContainer.new()
 	identity_header.add_theme_constant_override("separation", 6)
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, 16, identity_color)
+	# Give short hero and unit names presence without sacrificing the full names
+	# of workers and longer troops in the compact selected-entity column.
+	var identity_font_size := 16 if uname.length() > 13 or read_only else 18
+	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
@@ -1822,14 +2163,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	info.add_child(_single_hp_text)
 
 	if not read_only and u.is_hero and u.max_mana > 0.0:
-		var mana_header := HBoxContainer.new()
-		mana_header.add_theme_constant_override("separation", 6)
-		mana_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		mana_header.add_child(_mk_label("MANA", 9, COMMAND_SKY))
-		_single_mana_text = _mk_label("", 11, Color(0.78, 0.86, 1.0))
-		_single_mana_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		mana_header.add_child(_single_mana_text)
-		info.add_child(mana_header)
+		_single_mana_text = _mk_label("", 13, Color(0.78, 0.86, 1.0))
+		info.add_child(_single_mana_text)
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		info.add_child(_single_mana_bar)
 
@@ -1907,6 +2242,7 @@ func _refresh_single_live() -> void:
 			var unavailable_overlay: Label = w["overlay"]
 			if is_instance_valid(unavailable_button):
 				unavailable_button.disabled = true
+				unavailable_button.set_command_state("LOCKED")
 			if is_instance_valid(unavailable_overlay):
 				unavailable_overlay.text = unavailable_reason
 		return
@@ -1917,7 +2253,7 @@ func _refresh_single_live() -> void:
 	if is_instance_valid(_single_mana_bar) and "max_mana" in u and u.max_mana > 0.0:
 		_single_mana_bar.value = clamp(u.mana / u.max_mana, 0.0, 1.0)
 	if is_instance_valid(_single_mana_text) and "max_mana" in u:
-		_single_mana_text.text = "%d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
+		_single_mana_text.text = "MANA %d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
 	if u is Unit and not _single_stat_cards.is_empty() and u.has_method("cur_dmg"):
 		for stat in _single_stat_cards:
 			var stat_label: Label = stat["label"]
@@ -1928,7 +2264,7 @@ func _refresh_single_live() -> void:
 				"dmg": stat_value = _compact_combat_stat(u.cur_dmg())
 				"armor": stat_value = _compact_combat_stat(u.cur_armor())
 				"range": stat_value = "%.1f" % u.cur_range()
-			stat_label.text = "%s  %s" % [stat["caption"], stat_value]
+			stat_label.text = stat_value
 			stat_label.tooltip_text = "%s: %s" % [stat["caption"], stat_value]
 	if is_instance_valid(_single_stat_label):
 		if _single_read_only:
@@ -1960,10 +2296,12 @@ func _refresh_single_live() -> void:
 		var overlay: Label = w["overlay"]
 		if cd > 0.05:
 			btn.disabled = true
+			btn.set_command_state("COOLDOWN")
 			if is_instance_valid(overlay):
 				overlay.text = "CD %d" % int(ceil(cd))
 		else:
 			btn.disabled = not mana_ok
+			btn.set_command_state("READY" if mana_ok else "LOCKED")
 			if is_instance_valid(overlay):
 				overlay.text = "READY" if mana_ok else "MANA"
 
@@ -1999,34 +2337,33 @@ func _compact_combat_stat(value: float) -> String:
 func _build_multi(units: Array) -> void:
 	var displayed_count := mini(units.size(), 24)
 	var row_count := ceili(float(displayed_count) / 6.0)
-	# Keep the existing six-column card layout, but let dense selections grow
-	# their anchored panel enough to show the complete 3–4 row composition.
-	if is_instance_valid(_sel_panel) and row_count > 2:
-		_sel_panel.set_meta("multi_selection_height", 52.0 + float(row_count) * 72.0)
+	# A small formation needs a short selection wing. Dense formations keep the
+	# existing scrollable grid and gain height according to their row count.
+	if is_instance_valid(_sel_panel):
+		if row_count == 1:
+			_sel_panel.custom_minimum_size.y = 180.0
+			_sel_panel.set_meta("multi_selection_height", 188.0)
+		elif row_count > 2:
+			_sel_panel.set_meta("multi_selection_height", 52.0 + float(row_count) * 72.0)
 		_fit_to_viewport()
-	var formation_header := PanelContainer.new()
+	var formation_header := HBoxContainer.new()
 	formation_header.custom_minimum_size = Vector2(0, 42)
 	formation_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var formation_style := StyleBoxFlat.new()
-	formation_style.bg_color = Color(0.1, 0.075, 0.065, 0.98)
-	formation_style.border_color = Color(COMMAND_FLAME.r, COMMAND_FLAME.g, COMMAND_FLAME.b, 0.72)
-	formation_style.set_border_width_all(1)
-	formation_style.set_corner_radius_all(6)
-	formation_style.set_content_margin_all(6)
-	formation_header.add_theme_stylebox_override("panel", formation_style)
-	var formation_row := HBoxContainer.new()
-	formation_row.add_theme_constant_override("separation", 7)
-	formation_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	formation_row.add_child(_mk_command_badge("FORMATION", COMMAND_FLAME, 78.0))
+	formation_header.add_theme_constant_override("separation", 9)
+	var formation_rule := ColorRect.new()
+	formation_rule.custom_minimum_size = Vector2(3, 29)
+	formation_rule.color = COMMAND_FLAME
+	formation_rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	formation_header.add_child(formation_rule)
 	var formation_info := VBoxContainer.new()
 	formation_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	formation_info.add_theme_constant_override("separation", 0)
 	formation_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	formation_info.add_child(_mk_label("%d UNITS SELECTED" % units.size(), 13, FONT_COLOR))
-	formation_info.add_child(_mk_label(_selection_type_summary(units), 9, Color(0.76, 0.79, 0.75)))
-	formation_row.add_child(formation_info)
-	formation_header.add_child(formation_row)
+	formation_info.add_child(_mk_label("%d UNITS SELECTED" % units.size(), 15, FONT_COLOR))
+	formation_info.add_child(_mk_label(_selection_type_summary(units), 10, Color(0.76, 0.79, 0.75)))
+	formation_header.add_child(formation_info)
 	_sel_body.add_child(formation_header)
+	formation_header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 
 	var scroll := ScrollContainer.new()
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -2036,7 +2373,8 @@ func _build_multi(units: Array) -> void:
 	_sel_body.add_child(scroll)
 
 	var grid := GridContainer.new()
-	grid.columns = 6
+	var expanded_pair := displayed_count <= 2
+	grid.columns = 2 if expanded_pair else 6
 	grid.add_theme_constant_override("h_separation", 4)
 	grid.add_theme_constant_override("v_separation", 4)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2048,29 +2386,35 @@ func _build_multi(units: Array) -> void:
 			break
 		if not is_instance_valid(u):
 			continue
-		var cell := VBoxContainer.new()
-		cell.custom_minimum_size = Vector2(54, 64)
-		cell.add_theme_constant_override("separation", 1)
+		var cell: BoxContainer = HBoxContainer.new() if expanded_pair else VBoxContainer.new()
+		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(54, 64)
+		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var portrait_size := Vector2(64, 64) if expanded_pair else Vector2(54, 46)
 		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-			portrait.custom_minimum_size = Vector2(54, 46)
+			portrait.custom_minimum_size = portrait_size
 			cell.add_child(portrait)
 			portrait.configure_entity(u)
 			# EntityPortraitView restores its full-card minimum during _ready();
 			# defer the compact override so 8–20 member groups keep both rows
 			# inside the fixed selection panel at narrow and wide viewports.
-			portrait.set_deferred("custom_minimum_size", Vector2(54, 46))
-			portrait.set_deferred("size", Vector2(54, 46))
+			portrait.set_deferred("custom_minimum_size", portrait_size)
+			portrait.set_deferred("size", portrait_size)
 		else:
 			cell.add_child(_mk_icon(FRAME_PORTRAIT, 46))
-		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + str(u.def.get("name", "Unit")), 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
+		var details := VBoxContainer.new() if expanded_pair else cell
+		if expanded_pair:
+			details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			details.add_theme_constant_override("separation", 4)
+			cell.add_child(details)
+		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + str(u.def.get("name", "Unit")), 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		cell.add_child(nm)
+		details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
-		bar.custom_minimum_size = Vector2(50, 8)
-		cell.add_child(bar)
+		bar.custom_minimum_size = Vector2(70, 8) if expanded_pair else Vector2(50, 8)
+		details.add_child(bar)
 		grid.add_child(cell)
 		_multi_bars.append({"unit": u, "bar": bar})
 		shown += 1
@@ -2094,6 +2438,10 @@ func _refresh_multi_live() -> void:
 func _build_single_building(b, read_only: bool = false) -> void:
 	_tracked_single = b
 	_single_read_only = read_only
+	# The building dossier is a compact partner to the action deck. Giving it a
+	# hero-sized height leaves a large blank slab over the battlefield.
+	if is_instance_valid(_sel_panel):
+		_sel_panel.custom_minimum_size.y = 196.0 if not b.is_built else 176.0
 	if not read_only and b.has_signal("construction_completed"):
 		b.construction_completed.connect(_on_tracked_building_construction_completed)
 		_watched_construction_building = b
@@ -2105,17 +2453,24 @@ func _build_single_building(b, read_only: bool = false) -> void:
 
 	var identity := HBoxContainer.new()
 	identity.add_theme_constant_override("separation", 8)
-	identity.custom_minimum_size = Vector2(0, 76)
+	# The selected structure is the visual anchor of its dossier. At 100 px the
+	# authored roof and facade collapsed into a small seal beside empty space.
+	identity.custom_minimum_size = Vector2(0, 128)
 	identity.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(identity)
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(76, 76)
+		portrait.custom_minimum_size = Vector2(128, 128)
 		identity.add_child(portrait)
-		portrait.configure_entity(b)
+		# Finished structures use the same authored identity as the construction
+		# gallery; unfinished sites keep their live stage preview.
+		if b.is_built:
+			portrait.configure_definition(_building_portrait_definition(b.def, String(b.building_id)))
+		else:
+			portrait.configure_entity(b)
 	else:
-		portrait = _mk_icon(FRAME_PORTRAIT, 72)
+		portrait = _mk_icon(FRAME_PORTRAIT, 128)
 		identity.add_child(portrait)
 	var identity_info := VBoxContainer.new()
 	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2183,6 +2538,12 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		queue_row.add_child(_production_status_label)
 		queue_row.add_child(_queue_container)
 		identity_info.add_child(queue_row)
+		# One full-width production rail makes active work legible at RTS scale;
+		# the tiny per-slot bars remain useful for distinguishing queued orders.
+		_production_progress_bar = _mk_bar(Color(0.9, 0.66, 0.28))
+		_production_progress_bar.custom_minimum_size = Vector2(0, 9)
+		_production_progress_bar.visible = false
+		col.add_child(_production_progress_bar)
 		# watch production updates
 		if b.production_updated.is_connected(_on_production_updated):
 			b.production_updated.disconnect(_on_production_updated)
@@ -2273,8 +2634,17 @@ func _refresh_queue() -> void:
 	var b = _watched_building
 	if not is_instance_valid(b):
 		return
+	# Queue slots need a taller dossier than the idle building. Resize only on a
+	# state transition so frequent production ticks do not relayout the HUD.
+	if is_instance_valid(_sel_panel):
+		var queue_height := 220.0 if not b.queue.is_empty() else 176.0
+		if not is_equal_approx(_sel_panel.custom_minimum_size.y, queue_height):
+			_sel_panel.custom_minimum_size.y = queue_height
+			call_deferred("_fit_to_viewport")
 	if b.queue.is_empty():
 		_production_status_label.text = "Idle"
+		if is_instance_valid(_production_progress_bar):
+			_production_progress_bar.visible = false
 		return
 	var active = b.queue[0]
 	var active_kind: String = active.get("kind", "unit")
@@ -2288,6 +2658,9 @@ func _refresh_queue() -> void:
 	var active_total: float = float(active.get("total", 1.0))
 	var active_left: float = float(active.get("time_left", 0.0))
 	var active_prog := clampf(1.0 - active_left / maxf(0.01, active_total), 0.0, 1.0)
+	if is_instance_valid(_production_progress_bar):
+		_production_progress_bar.value = active_prog
+		_production_progress_bar.visible = true
 	var active_verb := "Training" if active_kind == "unit" else "Researching"
 	_production_status_label.text = "%s: %s %d%%" % [active_verb, active_display, roundi(active_prog * 100.0)]
 	var idx := 0
@@ -2331,15 +2704,20 @@ func _refresh_queue() -> void:
 # ---------------------------------------------------------------------------
 # 4. COMMAND CARD (bottom-right)
 # ---------------------------------------------------------------------------
+func _build_command_chassis() -> void:
+	_command_chassis = HUD_CHASSIS_SCRIPT.new()
+	_command_chassis.name = "BarrosanCommandChassis"
+	_command_chassis.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_command_chassis.visible = false
+	add_child(_command_chassis)
+	_command_chassis.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	move_child(_command_chassis, 0)
+
+
 func _build_command_panel() -> void:
-	_cmd_panel = _mk_hud_panel()
+	_cmd_panel = _mk_hud_panel("command", Color(0.83, 0.62, 0.31))
+	_cmd_panel.set("embedded", true)
 	_cmd_panel.name = "CommandPanel"
-	var command_surface := _hud_stylebox()
-	command_surface.bg_color = Color(0.035, 0.048, 0.062, 0.985)
-	command_surface.border_color = Color(0.82, 0.65, 0.30, 0.96)
-	command_surface.set_corner_radius_all(8)
-	command_surface.set_content_margin_all(10)
-	_cmd_panel.add_theme_stylebox_override("panel", command_surface)
 	_cmd_panel.anchor_left = 1.0
 	_cmd_panel.anchor_right = 1.0
 	_cmd_panel.anchor_top = 1.0
@@ -2352,12 +2730,26 @@ func _build_command_panel() -> void:
 	_cmd_panel.offset_bottom = -12
 	add_child(_cmd_panel)
 
+	var deck_layout := VBoxContainer.new()
+	deck_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	deck_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	deck_layout.add_theme_constant_override("separation", 6)
+	_cmd_panel.add_child(deck_layout)
+
+	_cmd_fixed = VBoxContainer.new()
+	_cmd_fixed.name = "CommandFixedHeader"
+	_cmd_fixed.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_cmd_fixed.add_theme_constant_override("separation", 6)
+	deck_layout.add_child(_cmd_fixed)
+
 	var scroll := ScrollContainer.new()
+	scroll.name = "CommandScroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_cmd_panel.add_child(scroll)
+	deck_layout.add_child(scroll)
 	scroll.gui_input.connect(_consume_hud_wheel)
+	_cmd_scroll = scroll
 
 	_cmd_body = VBoxContainer.new()
 	_cmd_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2365,17 +2757,17 @@ func _build_command_panel() -> void:
 	scroll.add_child(_cmd_body)
 	_cmd_panel.visible = false
 
-	_command_tooltip = PanelContainer.new()
+	_command_tooltip = HUD_COMMAND_TOOLTIP_SCRIPT.new()
 	_command_tooltip.name = "CommandTooltip"
 	_command_tooltip.visible = false
 	_command_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_command_tooltip.custom_minimum_size = Vector2(270, 0)
-	var tooltip_style := _hud_stylebox()
-	tooltip_style.bg_color = Color(0.035, 0.045, 0.06, 0.985)
-	tooltip_style.border_color = Color(0.88, 0.72, 0.36, 0.98)
-	tooltip_style.set_border_width_all(2)
-	tooltip_style.set_corner_radius_all(7)
-	tooltip_style.set_content_margin_all(10)
+	_command_tooltip.custom_minimum_size = Vector2(420, 0)
+	var tooltip_style := StyleBoxFlat.new()
+	tooltip_style.bg_color = Color.TRANSPARENT
+	tooltip_style.content_margin_left = 20.0
+	tooltip_style.content_margin_right = 20.0
+	tooltip_style.content_margin_top = 13.0
+	tooltip_style.content_margin_bottom = 12.0
 	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
 	add_child(_command_tooltip)
 
@@ -2392,20 +2784,23 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel):
 		return
 	_clear_children(_command_tooltip)
+	_command_tooltip.set("accent", accent)
+	_command_tooltip.queue_redraw()
 	var stack := VBoxContainer.new()
-	stack.add_theme_constant_override("separation", 5)
+	stack.add_theme_constant_override("separation", 8)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 7)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tooltip_title := _mk_label(title, 13, FONT_COLOR)
-	tooltip_title.custom_minimum_size = Vector2(124, 20)
+	var tooltip_title := _mk_title_label(title, 20, FONT_COLOR)
+	tooltip_title.custom_minimum_size = Vector2(144, 28)
 	tooltip_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(tooltip_title)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(spacer)
-	header.add_child(_mk_command_badge(kind, accent, 64.0))
+	var kind_label := _mk_label(kind, 14, accent)
+	kind_label.custom_minimum_size = Vector2(78, 25)
+	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	kind_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(kind_label)
 	if not hotkey.is_empty():
 		header.add_child(_mk_command_keycap(hotkey, accent))
 	stack.add_child(header)
@@ -2413,12 +2808,16 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	rule.modulate = Color(accent.r, accent.g, accent.b, 0.72)
 	stack.add_child(rule)
 	var body_text := tooltip.strip_edges()
+	var first_line := body_text.get_slice("\n", 0).strip_edges()
+	if first_line.to_lower() == title.to_lower():
+		body_text = body_text.substr(first_line.length()).strip_edges()
 	if not disabled_reason.is_empty():
 		body_text += "\nUnavailable: " + disabled_reason
-	var body := _mk_label(body_text, 11, Color(0.88, 0.87, 0.8))
+	var body := _mk_label(body_text, 17, Color(0.91, 0.90, 0.84))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	body.custom_minimum_size = Vector2(244, 0)
+	body.custom_minimum_size = Vector2(376, 0)
+	body.add_theme_constant_override("line_spacing", 3)
 	stack.add_child(body)
 	_command_tooltip.add_child(stack)
 	_command_tooltip.reset_size()
@@ -2441,6 +2840,7 @@ func _hide_command_tooltip() -> void:
 
 func _rebuild_command_card(single, selection: Array) -> void:
 	_hide_command_tooltip()
+	_clear_children(_cmd_fixed)
 	_clear_children(_cmd_body)
 	if is_instance_valid(_inspection_target):
 		_cmd_panel.visible = false
@@ -2496,78 +2896,100 @@ func _add_command_context(single, selection: Array) -> void:
 	if single != null and single is Unit:
 		title = String(single.def.get("name", "Unit"))
 		role = "HERO" if single.is_hero else ("WORKER" if single.is_worker else "MILITARY")
-		subtitle = "Player orders · %s" % role.capitalize()
+		subtitle = "RMB move/gather · click to build" if single.is_worker else "RMB move/attack · use commands below"
 		accent = COMMAND_SKY if single.is_hero else (COMMAND_MINT if single.is_worker else COMMAND_FLAME)
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
 		role = "BUILDING"
-		subtitle = "Production and research"
+		subtitle = "Production and research" if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
 		title = "%d UNITS SELECTED" % selection.size()
-		role = "FORMATION"
-		subtitle = "Shared combat orders"
+		role = "SQUAD"
+		subtitle = "RMB move/attack · shared orders"
 		accent = COMMAND_FLAME
 	var header := PanelContainer.new()
 	header.name = "CommandDeckHeader"
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.custom_minimum_size = Vector2(0, 44)
+	header.custom_minimum_size = Vector2(0, 51)
 	var header_style := StyleBoxFlat.new()
-	header_style.bg_color = Color(0.06, 0.078, 0.094, 0.98)
-	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.76)
-	header_style.border_width_left = 3
+	header_style.bg_color = Color(0.035, 0.05, 0.055, 0.31)
+	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.40)
 	header_style.border_width_bottom = 1
-	header_style.set_corner_radius_all(4)
-	header_style.set_content_margin_all(8)
+	header_style.content_margin_left = 2
+	header_style.content_margin_right = 3
+	header_style.content_margin_top = 5
+	header_style.content_margin_bottom = 5
 	header.add_theme_stylebox_override("panel", header_style)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var marker := _mk_command_badge(_command_glyph(role), accent, 28.0)
-	marker.custom_minimum_size = Vector2(28, 28)
-	row.add_child(marker)
+	var command_crest_path := String(COMMAND_CRESTS.get(str(_commander.race), "")) if is_instance_valid(_commander) else ""
+	if not command_crest_path.is_empty() and ResourceLoader.exists(command_crest_path):
+		var crest := TextureRect.new()
+		crest.name = "CommandFactionCrest"
+		crest.texture = load(command_crest_path)
+		crest.custom_minimum_size = Vector2(34, 34)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(crest)
+	else:
+		var marker := _mk_command_badge(_command_glyph(role), accent, 25.0)
+		marker.custom_minimum_size = Vector2(25, 25)
+		row.add_child(marker)
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 0)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(_mk_label(title, 14, FONT_COLOR))
-	info.add_child(_mk_label(subtitle, 9, Color(0.7, 0.73, 0.72)))
+	info.add_child(_mk_title_label(title, 20, FONT_COLOR))
+	info.add_child(_mk_label(subtitle, 13, Color(0.76, 0.79, 0.77)))
 	row.add_child(info)
-	var role_badge := _mk_command_badge(role, accent, 62.0)
-	role_badge.custom_minimum_size = Vector2(62, 22)
+	var role_badge := _mk_command_badge(role, accent, 59.0)
+	role_badge.custom_minimum_size = Vector2(59, 22)
 	row.add_child(role_badge)
 	header.add_child(row)
-	_cmd_body.add_child(header)
+	_cmd_fixed.add_child(header)
 
 
 func _add_context_hints(hints: Array[String]) -> void:
 	var strip := PanelContainer.new()
 	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	strip.custom_minimum_size = Vector2(0, 22)
+	strip.custom_minimum_size = Vector2(0, 20)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.03, 0.04, 0.05, 0.72)
-	sb.border_color = Color(0.34, 0.4, 0.4, 0.46)
+	sb.bg_color = Color(0.03, 0.04, 0.05, 0.20)
+	sb.border_color = Color(0.34, 0.4, 0.4, 0.24)
 	sb.border_width_bottom = 1
-	sb.set_corner_radius_all(2)
-	sb.set_content_margin_all(4)
+	sb.content_margin_left = 2
+	sb.content_margin_right = 2
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
 	strip.add_theme_stylebox_override("panel", sb)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for hint in hints:
-		var label := _mk_label(hint, 9, Color(0.78, 0.84, 0.8))
+		var label := _mk_label(hint, 11, Color(0.82, 0.87, 0.84))
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(label)
 	strip.add_child(row)
-	_cmd_body.add_child(strip)
+	_cmd_fixed.add_child(strip)
+
+
+func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dictionary:
+	var visual_definition := bdef.duplicate()
+	if BARROSAN_BUILD_ART.has(building_id):
+		visual_definition["command_art"] = BARROSAN_BUILD_ART[building_id]
+	elif LIORAEN_BUILD_ART.has(building_id):
+		visual_definition["command_art"] = LIORAEN_BUILD_ART[building_id]
+	return visual_definition
 
 
 func _build_worker_card() -> void:
-	_add_context_hints(["RMB  MOVE", "RMB  GATHER", "CLICK  BUILD", "ESC  CANCEL BUILD"])
 	_add_command_section("Build", "Choose a structure.")
-	var grid := _mk_command_grid()
-	_cmd_body.add_child(grid)
+	var build_buttons: Array[Button] = []
+	var build_definitions: Array[Dictionary] = []
 	for bid in GameData.buildings_for_race(_commander.race):
 		var bdef := GameData.get_building(bid)
 		if bdef.is_empty():
@@ -2577,32 +2999,79 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = _commander.missing_resource_summary(cost)
-		# The Build section already establishes this as a cost line. Keeping the
-		# canonical resource name/amount but dropping the redundant "Cost:" prefix
-		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
-		# without changing resource definitions or the command-card geometry.
+		# The gallery shows the full structure, name, cost and readiness at once.
 		var build_detail := _cost_string(cost).trim_prefix("  (").trim_suffix(")")
-		# Keep the scan line to the actionable cost only. Population benefit and
-		# the full authored explanation remain available in the anchored tooltip;
-		# this prevents the narrow two-column cards from truncating secondary text.
+		# Keep the scan line actionable; secondary effects remain in the tooltip.
 		var tooltip_detail := str(bdef.get("desc", ""))
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
 			tooltip_detail += "\nProvides: +%d population" % grants_pop
-		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", bdef, tooltip_detail, "Purpose")
+		var preview_definition := _building_portrait_definition(bdef, String(bid))
+		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, tooltip_detail, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
 			if is_instance_valid(rts) and rts.has_method("enter_build_mode"):
 				rts.enter_build_mode(cap_id))
-		grid.add_child(btn)
+		build_buttons.append(btn)
+		build_definitions.append(bdef)
+	var gallery := VBoxContainer.new()
+	gallery.name = "BuildGallery"
+	gallery.add_theme_constant_override("separation", 3)
+	gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_cmd_body.add_child(gallery)
+	for index in range(0, build_buttons.size(), 2):
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 5)
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		gallery.add_child(row)
+		if index + 1 < build_buttons.size():
+			row.add_child(build_buttons[index])
+			row.add_child(build_buttons[index + 1])
+		else:
+			# A single final structure spans the gallery instead of leaving a
+			# conspicuous empty slot in the construction deck.
+			var featured_card := build_buttons[index]
+			row.add_child(featured_card)
+			var copy := featured_card.get_node_or_null("BuildingCardCopy") as Control
+			if is_instance_valid(copy):
+				copy.anchor_right = 0.57
+				copy.offset_right = -6.0
+			var divider := ColorRect.new()
+			divider.color = Color(0.72, 0.56, 0.27, 0.55)
+			divider.anchor_left = 0.57
+			divider.anchor_right = 0.57
+			divider.offset_right = 1.0
+			divider.offset_top = 13.0
+			divider.anchor_bottom = 1.0
+			divider.offset_bottom = -13.0
+			divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			featured_card.add_child(divider)
+			var role := VBoxContainer.new()
+			role.anchor_left = 0.59
+			role.anchor_right = 1.0
+			role.anchor_bottom = 1.0
+			role.offset_top = 12.0
+			role.offset_right = -11.0
+			role.offset_bottom = -8.0
+			role.add_theme_constant_override("separation", 2)
+			role.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var role_heading := _mk_label(String(build_definitions[index].get("kind", "structure")).to_upper(), 11, Color(0.89, 0.70, 0.35))
+			role.add_child(role_heading)
+			var first_sentence := String(build_definitions[index].get("desc", "")).get_slice(".", 0).strip_edges()
+			var role_description := _mk_label(first_sentence + "." if not first_sentence.is_empty() else "", 13, Color(0.86, 0.84, 0.76))
+			role_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			role_description.max_lines_visible = 3
+			role_description.size_flags_vertical = Control.SIZE_EXPAND_FILL
+			role.add_child(role_description)
+			featured_card.add_child(role)
 
 
 func _build_hero_command_card(u) -> void:
-	_add_context_hints(["RMB  MOVE / ATTACK", "Q / T / E / R  ABILITIES", "J  ATTACK-MOVE"])
 	if not u.abilities.is_empty():
 		_add_command_section("Abilities", "Cast when ready.")
 		var ability_grid := _mk_command_grid()
+		ability_grid.columns = 1
 		_cmd_body.add_child(ability_grid)
 		var abilities: Dictionary = SkillDefs.get_abilities()
 		for id in u.abilities:
@@ -2619,7 +3088,8 @@ func _build_hero_command_card(u) -> void:
 			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
 			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
-			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label)
+			var ability_emblem := "rally" if cap_id == "rally" else ""
+			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
 			btn.disabled = not ready
 			var cap_u = u
 			btn.pressed.connect(func():
@@ -2629,9 +3099,8 @@ func _build_hero_command_card(u) -> void:
 			var status_label: Label = btn.get_meta("command_status_label")
 			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})
 
-	_add_command_section("Orders", "Movement and stance")
-	var order_grid := _mk_command_grid()
-	_cmd_body.add_child(order_grid)
+	_add_command_section("Orders", "Move · attack")
+	var order_grid := _add_field_order_grid()
 	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
 	_add_military_command_button(order_grid, "Stop", "Stop current orders.", "Stop: clear the selected hero's current orders.", "stop")
 	_add_military_command_button(order_grid, "Hold", "Hold this position.", "Hold: keep the selected hero here while retaining current combat behavior.", "hold")
@@ -2639,10 +3108,8 @@ func _build_hero_command_card(u) -> void:
 
 
 func _build_military_card() -> void:
-	_add_context_hints(["RMB  MOVE / ATTACK", "J  ATTACK-MOVE", "K  STOP"])
-	_add_command_section("Commands", "Movement and stance")
-	var grid := _mk_command_grid()
-	_cmd_body.add_child(grid)
+	_add_command_section("Commands", "Move · attack")
+	var grid := _add_field_order_grid()
 	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
 	_add_military_command_button(grid, "Stop", "Stop current orders.", "Stop: clear the selected units' current orders.", "stop")
 	_add_military_command_button(grid, "Hold", "Hold this position.", "Hold: keep the selected units here while retaining their current combat behavior.", "hold")
@@ -2674,29 +3141,66 @@ func _invoke_military_command(action: String) -> void:
 				rts._cmd_patrol_prompt()
 
 
+func _construction_phase(value: float) -> String:
+	if value < 0.25:
+		return "Laying foundations"
+	if value < 0.70:
+		return "Raising the frame"
+	return "Finishing the site"
+
+
 func _build_building_card(b) -> void:
-	_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	if not b.is_built:
-		_add_command_section("Construction", "Under construction.")
-		var progress_label := _mk_label("Build progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
-		_cmd_body.add_child(progress_label)
-		var progress_bar := _mk_bar(Color(0.85, 0.7, 0.3))
-		progress_bar.value = clampf(b.build_progress, 0.0, 1.0)
-		_cmd_body.add_child(progress_bar)
+		_add_context_hints(["BUILD SITE", "AWAIT COMPLETION"])
+		_add_command_section("Construction", "SITE IN PROGRESS")
+		var site = HUD_CONSTRUCTION_SCRIPT.new()
+		site.name = "ConstructionProgress"
+		site.custom_minimum_size = Vector2(0, 112)
+		site.set_progress(float(b.build_progress))
+		_cmd_body.add_child(site)
+		var site_name := _mk_label(String(b.def.get("name", "Building")), 18, FONT_COLOR)
+		site_name.position = Vector2(112, 14)
+		site_name.size = Vector2(190, 27)
+		site_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(site_name)
+		var stage_label := _mk_label(_construction_phase(float(b.build_progress)), 13, Color(0.75, 0.89, 0.82))
+		stage_label.position = Vector2(112, 44)
+		stage_label.size = Vector2(240, 21)
+		stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(stage_label)
+		var rail_caption := _mk_label("SITE PROGRESS", 10, COMMAND_MINT)
+		rail_caption.position = Vector2(112, 70)
+		rail_caption.size = Vector2(140, 17)
+		rail_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(rail_caption)
+		var progress_label := _mk_label("%d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 22, FONT_COLOR)
+		progress_label.anchor_left = 1.0
+		progress_label.anchor_right = 1.0
+		progress_label.offset_left = -82.0
+		progress_label.offset_right = -12.0
+		progress_label.offset_top = 17.0
+		progress_label.offset_bottom = 46.0
+		progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		progress_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		site.add_child(progress_label)
 		var cap_b = b
 		var cap_label := progress_label
-		var cap_bar := progress_bar
+		var cap_site = site
+		var cap_stage := stage_label
 		var t := Timer.new()
 		t.wait_time = 0.2
 		t.autostart = true
-		_cmd_body.add_child(t)
+		site.add_child(t)
 		t.timeout.connect(func():
-			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_bar):
+			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_site):
 				var pct := roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0)
-				cap_label.text = "Build progress: %d%%" % pct
-				cap_bar.value = clampf(cap_b.build_progress, 0.0, 1.0)
+				cap_label.text = "%d%%" % pct
+				cap_site.set_progress(float(cap_b.build_progress))
+				if is_instance_valid(cap_stage):
+					cap_stage.text = _construction_phase(float(cap_b.build_progress))
 		)
 		return
+	_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var def: Dictionary = b.def
 	var produces: Array = def.get("produces", [])
 	var research: Array = def.get("research", [])
@@ -2704,8 +3208,9 @@ func _build_building_card(b) -> void:
 
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "Queue a unit.")
+		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Queue a unit.", produces.size() > 4 and research.is_empty() and not is_hq)
 		var train_grid := _mk_command_grid()
+		train_grid.columns = 1
 		_cmd_body.add_child(train_grid)
 		for uid in produces:
 			var udef := GameData.get_unit(uid)
@@ -2729,9 +3234,11 @@ func _build_building_card(b) -> void:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
-			var train_detail := "Tier %d | Population: %d | Cost: %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
+			var train_detail := "Age %d · %d pop · %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
 			var train_state := "TRAINING" if queued_for_training else ("LOCKED" if not reason.is_empty() else "READY")
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role")
+			var unit_emblem := String(uid) if String(uid) == "barrosan_worker" else ""
+			var unit_card_art := {} if not unit_emblem.is_empty() else udef
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -2750,6 +3257,7 @@ func _build_building_card(b) -> void:
 	if not tech_ids.is_empty():
 		_add_command_section("Research", "Advance technology.")
 		var research_grid := _mk_command_grid()
+		research_grid.columns = 1
 		_cmd_body.add_child(research_grid)
 		for tid in tech_ids:
 			var tdef := GameData.get_tech(tid)
@@ -2779,7 +3287,8 @@ func _build_building_card(b) -> void:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")))
+			var tech_emblem := String(tid) if String(tid) in ["advance_tier_2", "advance_tier_3"] else ""
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
@@ -2928,9 +3437,9 @@ func _show_command_feedback(message: String, col: Color) -> void:
 func _build_alert_feed() -> void:
 	_alert_box = VBoxContainer.new()
 	_alert_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_alert_box.offset_left = -360
-	_alert_box.offset_right = -14
-	_alert_box.offset_top = 74
+	_alert_box.offset_left = -466
+	_alert_box.offset_right = -106
+	_alert_box.offset_top = 108
 	_alert_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_alert_box.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_alert_box.add_theme_constant_override("separation", 4)
@@ -2959,17 +3468,33 @@ func _push_alert(message: String, col: Color) -> void:
 		var oldest := _alert_box.get_child(0)
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
-	var l := _mk_label(message, 15, col)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var dispatch: PanelContainer = HUD_ALERT_DISPATCH_SCRIPT.new()
+	dispatch.accent = COMMAND_GOLD
+	dispatch.custom_minimum_size = Vector2(360, 60)
+	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var padding := StyleBoxFlat.new()
+	padding.bg_color = Color.TRANSPARENT
+	padding.content_margin_left = 20.0
+	padding.content_margin_right = 11.0
+	padding.content_margin_top = 8.0
+	padding.content_margin_bottom = 9.0
+	dispatch.add_theme_stylebox_override("panel", padding)
+	var l := _mk_label(message, 18, col)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(340, 24)
-	_alert_box.add_child(l)
-	var tw := l.create_tween()
+	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	l.custom_minimum_size = Vector2(318, 42)
+	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
+	l.add_theme_constant_override("outline_size", 2)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dispatch.add_child(l)
+	_alert_box.add_child(dispatch)
+	var tw := dispatch.create_tween()
 	tw.tween_interval(3.2)
-	tw.tween_property(l, "modulate:a", 0.0, 0.8)
+	tw.tween_property(dispatch, "modulate:a", 0.0, 0.8)
 	tw.tween_callback(func():
-		if is_instance_valid(l):
-			l.queue_free())
+		if is_instance_valid(dispatch):
+			dispatch.queue_free())
 
 
 # ---------------------------------------------------------------------------

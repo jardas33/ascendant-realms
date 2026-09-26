@@ -1,22 +1,30 @@
 extends Control
 class_name EntityPortraitView
-## Small visual-only 3D preview used by the selected-entity card.
-## It duplicates the entity's authored model into an isolated SubViewport;
-## no gameplay node, selection state, collision, or simulation object is used.
+## Visual-only portrait for selected entities and command cards. It shows
+## authored UI artwork when supplied, otherwise duplicates the entity's model
+## into an isolated SubViewport without gameplay state or collision.
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
 const VIEW_SIZE := Vector2i(128, 128)
 const PORTRAIT_MIN_SIZE := 46.0
-const PORTRAIT_MAX_SIZE := 116.0
+const PORTRAIT_MAX_SIZE := 180.0
 const PORTRAIT_FRAME_INSET := 5.0
 const PORTRAIT_ARTWORK_INSET := 8.0
+const PORTRAIT_MODEL_INSET := 10.0
+const PORTRAIT_COMPACT_MODEL_INSET := 4.0
 const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
+const LIORAEN_UNIT_PORTRAITS := {
+	"Seedkeeper": "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png",
+	"Grove Warden": "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png",
+	"Thornrunner": "res://assets/ui/portraits/lioraen/astra_r1/thornrunner.png",
+}
 static var _portrait_texture_cache: Dictionary = {}
 
 var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
 var _pivot: Node3D
 var _camera: Camera3D
+var _compact_building_fill: OmniLight3D
 var _artwork: TextureRect
 var _active_portrait_path := ""
 var _pending_entity = null
@@ -49,12 +57,20 @@ func _build_view() -> void:
 	_viewport_container.name = "PortraitViewport"
 	_viewport_container.stretch = true
 	_viewport_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# The frame is decorative, so the live model needs its own clipped aperture.
+	# Without this inset, wide roofs render over the lower frame ornament.
+	var model_inset := PORTRAIT_COMPACT_MODEL_INSET if custom_minimum_size.x < 80.0 else PORTRAIT_MODEL_INSET
+	_viewport_container.offset_left = model_inset
+	_viewport_container.offset_top = model_inset
+	_viewport_container.offset_right = -model_inset
+	_viewport_container.offset_bottom = -model_inset
+	_viewport_container.clip_contents = true
 	_viewport_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_viewport_container)
 
 	_viewport = SubViewport.new()
 	_viewport.size = VIEW_SIZE
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if custom_minimum_size.x < 80.0 else SubViewport.UPDATE_ALWAYS
 	_viewport.transparent_bg = true
 	_viewport_container.add_child(_viewport)
 
@@ -65,10 +81,14 @@ func _build_view() -> void:
 	# and show the full source image; the frame is decoration, never a crop mask.
 	_artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_artwork.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_artwork.offset_left = PORTRAIT_ARTWORK_INSET
-	_artwork.offset_top = PORTRAIT_ARTWORK_INSET
-	_artwork.offset_right = -PORTRAIT_ARTWORK_INSET
-	_artwork.offset_bottom = -PORTRAIT_ARTWORK_INSET
+	# Small train/build choices need the complete authored silhouette to fill
+	# their aperture. A second inset inside the clipped thumbnail made detailed
+	# structures read as dark specks once the HUD scaled to a compact window.
+	var artwork_inset := 0.0 if custom_minimum_size.x < 80.0 else PORTRAIT_ARTWORK_INSET
+	_artwork.offset_left = artwork_inset
+	_artwork.offset_top = artwork_inset
+	_artwork.offset_right = -artwork_inset
+	_artwork.offset_bottom = -artwork_inset
 	_artwork.texture_filter = PORTRAIT_TEXTURE_FILTER
 	_artwork.clip_contents = true
 	_artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -103,6 +123,16 @@ func _build_view() -> void:
 	fill.light_energy = 0.42
 	fill.rotation_degrees = Vector3(-20.0, 145.0, 0.0)
 	_viewport.add_child(fill)
+	# Small building previews need a front-facing bounce light. Their dark
+	# authored timber otherwise disappears at command-card thumbnail size.
+	_compact_building_fill = OmniLight3D.new()
+	_compact_building_fill.name = "CompactBuildingFill"
+	_compact_building_fill.position = Vector3(-1.5, 2.6, 2.7)
+	_compact_building_fill.light_color = Color(1.0, 0.88, 0.73)
+	_compact_building_fill.light_energy = 1.4
+	_compact_building_fill.omni_range = 7.0
+	_compact_building_fill.visible = false
+	_viewport.add_child(_compact_building_fill)
 
 	_pivot = Node3D.new()
 	_pivot.name = "PortraitModel"
@@ -116,6 +146,9 @@ func _build_view() -> void:
 	frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	frame.texture_filter = PORTRAIT_TEXTURE_FILTER
+	# Tiny build choices need the model silhouette more than a second ornate
+	# square. Keep the full portrait frame for the large selected-unit view.
+	frame.modulate.a = 0.22 if custom_minimum_size.x < 80.0 else 1.0
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
@@ -140,12 +173,14 @@ func _apply_entity(entity) -> void:
 	_pending_entity = null
 	_pending_definition = {}
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
-	_apply_definition(definition, entity.get_class() == "Building", String(entity.unit_id) if entity is Unit else "")
+	_apply_definition(definition, entity is Building, String(entity.unit_id) if entity is Unit else "")
 
 
 func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
 	if not is_instance_valid(_pivot):
 		return
+	if custom_minimum_size.x < 80.0:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	_active_portrait_path = ""
 	if is_instance_valid(_artwork):
 		var portrait_path := _portrait_path_for_definition(definition, is_building, unit_id)
@@ -166,6 +201,7 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	var path := str(definition.get("model", ""))
 	var target_height: float = 2.45 if is_building else 1.95
 	var model: Node3D = null
+	var model_radius := 0.0
 	if not path.is_empty() and ResourceLoader.exists(path):
 		var packed = load(path)
 		if packed:
@@ -178,6 +214,8 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		ModelUtils.ground_model(model)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(model)
+		if is_building or bool(definition.get("is_siege", false)):
+			model_radius = ModelUtils.measure_radius(model)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
 		var mesh := MeshInstance3D.new()
@@ -194,19 +232,40 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
 	var compact_card := custom_minimum_size.x < 80.0
-	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else (2.65 if not is_building else 3.2))
-	_camera.position = Vector3(0.0, target_height * 0.58, distance)
-	_camera.fov = 56.0 if compact_card else 62.0
-	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	_compact_building_fill.visible = is_building or (compact_card and _active_portrait_path.is_empty())
+	_compact_building_fill.light_energy = (2.4 if not is_building else 1.4) if compact_card else 1.0
+	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
+	if is_building and not compact_card:
+		# Wide structures need a three-quarter architectural view; character
+		# framing used to crop the building down to one wall texture.
+		distance = maxf(3.55, model_radius * 2.55 + 0.5)
+		_camera.position = Vector3(distance * 0.48, target_height * 1.48, distance)
+		_camera.fov = 58.0
+		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	elif compact_card and bool(definition.get("is_siege", false)):
+		distance = maxf(3.1, model_radius * 2.4 + 0.45)
+		_camera.position = Vector3(distance * 0.3, target_height * 0.8, distance)
+		_camera.fov = 58.0
+		_camera.look_at(Vector3(0.0, target_height * 0.38, 0.0), Vector3.UP)
+	else:
+		_camera.position = Vector3(0.0, target_height * 0.58, distance)
+		_camera.fov = 56.0 if compact_card else 62.0
+		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	_pivot.rotation_degrees.y = -18.0
 
 
 func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
 	if is_building:
-		return ""
+		# Worker build choices and finished selections may supply identity art.
+		# Unfinished selected sites omit it to show the live construction stage.
+		return String(definition.get("command_art", ""))
 	var portrait_path := String(definition.get("portrait", ""))
 	if portrait_path.is_empty() and not unit_id.is_empty():
 		portrait_path = String(GameData.get_unit(unit_id).get("portrait", ""))
+	if portrait_path.is_empty() and String(definition.get("race", "")) == "lioraen":
+		# Keep this visual treatment in the HUD lane. The same definition reaches
+		# selected-unit portraits and compact training cards without data edits.
+		portrait_path = String(LIORAEN_UNIT_PORTRAITS.get(String(definition.get("name", "")), ""))
 	return portrait_path
 
 

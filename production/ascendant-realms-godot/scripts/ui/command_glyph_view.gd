@@ -1,19 +1,54 @@
 extends Control
-## Small procedural action glyphs used by the command deck. These are local
-## vector affordances, not gameplay icons or external art assets.
+## Action emblems used by the command deck. The field orders share one painted
+## atlas so they remain visually distinct at their small gameplay size.
+
+const EMBLEMS := {
+	"barrosan_worker": "res://assets/ui/command_emblems/astra_r1/recruit_highland_worker.png",
+	"advance_tier_2": "res://assets/ui/command_emblems/astra_r1/age_of_iron.png",
+	"advance_tier_3": "res://assets/ui/command_emblems/astra_r1/age_of_lume.png",
+	"rally": "res://assets/ui/command_emblems/astra_r1/rallying_cry.png",
+}
+const FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/astra_r1/field_orders_atlas.png"
+const LIORAEN_FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/lioraen_r1/field_orders_atlas.png"
+const LIORAEN_RALLY_EMBLEM := "res://assets/ui/command_emblems/lioraen_r1/rallying_cry.png"
+const FIELD_ORDER_QUADRANTS := {
+	"attack": Vector2i(0, 0),
+	"stop": Vector2i(1, 0),
+	"hold": Vector2i(0, 1),
+	"patrol": Vector2i(1, 1),
+}
+
+static var _emblem_cache: Dictionary = {}
 
 var icon_kind := "command"
 var accent := Color.WHITE
+var visual_faction := "barrosan"
 
-func configure(kind: String, tint: Color) -> void:
+func configure(kind: String, tint: Color, faction: String = "barrosan") -> void:
 	icon_kind = kind
 	accent = tint
+	visual_faction = faction
 	queue_redraw()
 
 func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if FIELD_ORDER_QUADRANTS.has(icon_kind):
+		var atlas_path := LIORAEN_FIELD_ORDERS_ATLAS if visual_faction == "lioraen" else FIELD_ORDERS_ATLAS
+		var atlas: Texture2D = _load_emblem(atlas_path)
+		if atlas:
+			var half := atlas.get_size() * 0.5
+			var quadrant: Vector2i = FIELD_ORDER_QUADRANTS[icon_kind]
+			var source := Rect2(Vector2(quadrant) * half + Vector2.ONE, half - Vector2(2, 2))
+			draw_texture_rect_region(atlas, Rect2(Vector2.ZERO, size), source)
+			return
+	if EMBLEMS.has(icon_kind):
+		var emblem_path: String = LIORAEN_RALLY_EMBLEM if icon_kind == "rally" and visual_faction == "lioraen" else EMBLEMS[icon_kind]
+		var emblem: Texture2D = _load_emblem(emblem_path)
+		if emblem:
+			draw_texture_rect(emblem, Rect2(Vector2.ZERO, size), false)
+			return
 	var center := size * 0.5
 	var dark := Color(0.02, 0.025, 0.035, 0.9)
 	var line_width := maxf(2.0, size.x * 0.075)
@@ -60,3 +95,12 @@ func _draw() -> void:
 	# A subtle center shadow improves contrast against pale battlefield terrain.
 	if dark.a > 0.0:
 		draw_circle(center, size.x * 0.07, dark)
+
+
+func _load_emblem(path: String) -> Texture2D:
+	if _emblem_cache.has(path):
+		return _emblem_cache[path]
+	var texture := load(path) as Texture2D
+	if texture:
+		_emblem_cache[path] = texture
+	return texture

@@ -10,6 +10,20 @@ func _run() -> void:
 		if parts.size() == 2:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
+	var map_id := OS.get_environment("ASCENDANT_UI_MAP")
+	var player_race := OS.get_environment("ASCENDANT_UI_PLAYER_RACE")
+	if player_race.is_empty():
+		player_race = "barrosan"
+	if not map_id.is_empty():
+		root.get_node("Match").set_config({
+			"player_race": player_race,
+			"opponents": [{"race": "vorthak", "difficulty": "easy"}],
+			"map": map_id,
+			"start_resources": "standard",
+			"victory": "conquest",
+			"mode": "skirmish",
+			"game_speed": 1.0,
+		})
 	var target := OS.get_environment("ASCENDANT_UI_SCENE")
 	if target.is_empty():
 		target = "res://scenes/game_world.tscn"
@@ -23,6 +37,13 @@ func _run() -> void:
 	var frames := maxi(5, int(OS.get_environment("ASCENDANT_UI_FRAMES")))
 	for index in frames:
 		await process_frame
+	# A capture is not a pass when a HUD dependency fails to compile and the
+	# world quietly continues without the interface under review.
+	if not is_instance_valid(instance.get("hud")) or not is_instance_valid(instance.hud._cmd_panel):
+		push_error("UI_CAPTURE_HUD_MISSING_OR_INCOMPLETE")
+		instance.queue_free()
+		quit(3)
+		return
 	if OS.get_environment("ASCENDANT_UI_SELECT") == "hero" and instance.get("rts") != null:
 		instance.rts._cycle_hero()
 		for index in 5:
@@ -40,14 +61,81 @@ func _run() -> void:
 			instance.rts.selection_changed.emit(instance.rts.selected)
 		for index in 5:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SELECT") == "group" and instance.get("rts") != null:
+		instance.rts._select_army()
+		for index in 5:
+			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "building_queued", "war_hall", "war_hall_queued", "construction"] and instance.get("rts") != null:
+		var building = null
+		if OS.get_environment("ASCENDANT_UI_SELECT") in ["building", "building_queued"]:
+			for candidate in instance.world.commanders[0].buildings:
+				if is_instance_valid(candidate) and not candidate.is_dead and bool(candidate.def.get("is_hq", false)):
+					building = candidate
+					break
+		else:
+			var building_id := "barrosan_watchtower" if OS.get_environment("ASCENDANT_UI_SELECT") == "construction" else "barrosan_war_hall"
+			var definition: Dictionary = root.get_node("GameData").get_building(building_id).duplicate()
+			definition["id"] = building_id
+			building = instance.world._create_building(definition, 0, Vector3(8, 0, 8), building_id != "barrosan_watchtower")
+		if is_instance_valid(building):
+			instance.rts._clear_selection()
+			instance.rts._add_to_selection(building)
+			instance.rts.selection_changed.emit(instance.rts.selected)
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "building_queued":
+				building.queue_unit("barrosan_worker")
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "war_hall_queued":
+				building.queue_unit("barrosan_clan_levy")
+			if OS.get_environment("ASCENDANT_UI_SELECT") == "construction":
+				building.build_progress = 0.5
+				await create_timer(0.25).timeout
+		for index in 5:
+			await process_frame
+	if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1" and instance.get("hud") != null:
+		var command_scroll := instance.hud._cmd_scroll as ScrollContainer
+		if command_scroll:
+			command_scroll.scroll_vertical = int(command_scroll.get_v_scroll_bar().max_value)
+			for index in 3:
+				await process_frame
+	if OS.get_environment("ASCENDANT_UI_MEASURE_FOG") == "1" and instance.get("world") != null:
+		var fog_start := Time.get_ticks_usec()
+		for sample in 12:
+			instance.world._refresh_player_visibility_overlay()
+		print("UI_FOG_REBUILD_MS ", float(Time.get_ticks_usec() - fog_start) / 12000.0)
+	var tooltip_target_found := false
+	if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
+		var wanted_title := OS.get_environment("ASCENDANT_UI_TOOLTIP_TITLE")
+		if wanted_title.is_empty():
+			wanted_title = "Rallying Cry"
+		for command_button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
+			for command_label in command_button.find_children("*", "Label", true, false):
+				if command_label.text == wanted_title:
+					# Desktop focus varies between capture runs. Exercise the same
+					# connected hover signal deterministically for geometry review.
+					command_button.mouse_entered.emit()
+					tooltip_target_found = true
+					break
+			if tooltip_target_found:
+				break
+		for index in 2:
+			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	if instance.get("hud") != null:
 		var hud = instance.hud
+		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1" and OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1":
+			var fixed_header := hud._cmd_fixed.get_child(0) as Control if is_instance_valid(hud._cmd_fixed) and hud._cmd_fixed.get_child_count() > 0 else null
+			var command_scroll := hud._cmd_scroll as ScrollContainer
+			if not is_instance_valid(fixed_header) or not is_instance_valid(command_scroll):
+				validation_errors.append("command_fixed_header_missing")
+			elif not hud._cmd_panel.get_global_rect().encloses(fixed_header.get_global_rect()) or fixed_header.get_global_rect().end.y > command_scroll.get_global_rect().position.y:
+				validation_errors.append("command_header_scrolled_or_overlapping")
 		print("UI_COMMAND_CONTENT_SIZE ", hud._cmd_body.get_combined_minimum_size())
 		for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 			if is_instance_valid(panel):
 				print("UI_PANEL ", panel.name, " visible=", panel.visible, " rect=", panel.get_global_rect(), " scale=", panel.scale, " offsets=", [panel.offset_left, panel.offset_top, panel.offset_right, panel.offset_bottom], " min=", panel.get_combined_minimum_size())
+		for instrument in [hud._top_panel, hud._force_panel, hud._age_panel, hud._objective_panel, hud._menu_button, hud._faction_crest, hud._selection_portrait]:
+			if is_instance_valid(instrument):
+				print("UI_INSTRUMENT ", instrument.name, " rect=", instrument.get_global_rect())
 		var objective = hud.find_child("MatchObjectiveLabel", true, false)
 		if is_instance_valid(objective):
 			print("UI_OBJECTIVE ", objective.text, " rect=", objective.get_global_rect())
@@ -58,24 +146,107 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
+				if not tooltip_target_found or not instance.hud._command_tooltip.visible:
+					validation_errors.append("command_tooltip_hover_missing")
+				elif not safe_rect.encloses(instance.hud._command_tooltip.get_global_rect()):
+					validation_errors.append("command_tooltip_outside_viewport")
 			for panel in [hud._minimap_panel, hud._sel_panel, hud._cmd_panel]:
 				if is_instance_valid(panel) and panel.visible and not safe_rect.encloses(panel.get_global_rect()):
 					validation_errors.append("panel_outside_viewport:" + panel.name)
+			for instrument in [hud._top_panel, hud._force_panel, hud._age_panel, hud._objective_panel, hud._menu_button, hud._faction_crest, hud._selection_portrait]:
+				if is_instance_valid(instrument) and instrument.visible and not safe_rect.encloses(instrument.get_global_rect()):
+					validation_errors.append("instrument_outside_viewport:" + instrument.name)
+			if hud._top_panel.get_global_rect().intersects(hud._force_panel.get_global_rect()):
+				validation_errors.append("top_economy_force_overlap")
+			if hud._force_panel.get_global_rect().intersects(hud._age_panel.get_global_rect()):
+				validation_errors.append("top_force_age_overlap")
+			if hud._age_panel.get_global_rect().intersects(hud._objective_panel.get_global_rect()):
+				validation_errors.append("top_age_objective_overlap")
+			if hud._objective_panel.get_global_rect().intersects(hud._menu_button.get_global_rect()):
+				validation_errors.append("top_objective_menu_overlap")
+			for instrument in [hud._top_panel, hud._force_panel]:
+				var metric_titles: Array[Node] = instrument.find_children("TopMetricTitle", "Label", true, false)
+				if metric_titles.size() != 4:
+					validation_errors.append("top_metric_title_count:%d_expected_4" % metric_titles.size())
+				for metric_title in metric_titles:
+					var title_label := metric_title as Label
+					var measured_width: float = title_label.get_theme_font("font").get_string_size(title_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_label.get_theme_font_size("font_size")).x
+					if measured_width > title_label.size.x + 1.0:
+						validation_errors.append("top_metric_title_clipped:" + title_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
+			if player_race in ["barrosan", "lioraen"]:
+				var expected_crest_path := "res://assets/ui/barrosan_command_crest_i2.png" if player_race == "barrosan" else "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+				var match_crest := hud.find_child("MatchFactionCrest", true, false) as TextureRect
+				if not is_instance_valid(match_crest) or not is_instance_valid(match_crest.texture) or match_crest.texture.resource_path != expected_crest_path:
+					validation_errors.append("match_faction_crest_missing:" + player_race)
+				elif not hud._objective_panel.get_global_rect().encloses(match_crest.get_global_rect()):
+					validation_errors.append("match_faction_crest_outside_plaque")
+				if OS.get_environment("ASCENDANT_UI_SELECT") in ["hero", "worker", "military"]:
+					var command_crest := hud._cmd_panel.find_child("CommandFactionCrest", true, false) as TextureRect
+					if not is_instance_valid(command_crest) or not is_instance_valid(command_crest.texture) or command_crest.texture.resource_path != expected_crest_path:
+						validation_errors.append("command_faction_crest_missing:" + player_race)
 			if hud._sel_panel.get_global_rect().intersects(hud._cmd_panel.get_global_rect()):
 				validation_errors.append("selection_command_overlap")
 			if hud._minimap_panel.get_global_rect().intersects(hud._sel_panel.get_global_rect()):
 				validation_errors.append("minimap_selection_overlap")
 			var selected_kind := OS.get_environment("ASCENDANT_UI_SELECT")
-			var expected_cards := 5 if selected_kind in ["hero", "worker"] else (4 if selected_kind == "military" else 0)
+			if selected_kind in ["worker", "hero"] and String(instance.world.commanders[0].race) == "lioraen":
+				var active_unit_portrait := ""
+				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						active_unit_portrait = String(portrait_view.get_active_portrait_path())
+				var expected_portrait := "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png" if selected_kind == "worker" else "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png"
+				if active_unit_portrait != expected_portrait:
+					validation_errors.append("lioraen_%s_portrait_missing:%s" % [selected_kind, active_unit_portrait])
+				if selected_kind == "hero":
+					var warden_caption := false
+					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+						if portrait_label.text == "WARDEN":
+							warden_caption = true
+					if not warden_caption:
+						validation_errors.append("lioraen_hero_caption_missing")
+			if selected_kind == "military" and player_race == "lioraen" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "lioraen_thorn_ranger":
+				var thornrunner_portrait := ""
+				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						thornrunner_portrait = String(portrait_view.get_active_portrait_path())
+				if thornrunner_portrait != "res://assets/ui/portraits/lioraen/astra_r1/thornrunner.png":
+					validation_errors.append("lioraen_thornrunner_portrait_missing:" + thornrunner_portrait)
+				var ranger_caption := false
+				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+					if portrait_label.text == "RANGER":
+						ranger_caption = true
+				if not ranger_caption:
+					validation_errors.append("lioraen_thornrunner_caption_missing")
+			if selected_kind in ["building", "construction"]:
+				var selected_building_art := ""
+				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
+					if portrait_view.has_method("get_active_portrait_path"):
+						selected_building_art = String(portrait_view.get_active_portrait_path())
+				if selected_kind == "building":
+					var building_race := String(instance.world.commanders[0].race)
+					var expected_building_art := "res://assets/ui/construction_art/astra_r1/clanhold.png" if building_race == "barrosan" else ("res://assets/ui/construction_art/lioraen_r1/groveheart.png" if building_race == "lioraen" else "")
+					if not expected_building_art.is_empty() and selected_building_art != expected_building_art:
+						validation_errors.append("selected_building_art_missing:" + selected_building_art)
+					if not selected_building_art.is_empty():
+						var artwork := hud._sel_panel.find_child("PortraitArtwork", true, false) as Control
+						var portrait_frame := artwork.get_parent() as Control if is_instance_valid(artwork) else null
+						if not is_instance_valid(portrait_frame) or not portrait_frame.get_global_rect().encloses(artwork.get_global_rect()):
+							validation_errors.append("selected_building_art_outside_frame")
+				elif not selected_building_art.is_empty():
+					validation_errors.append("construction_site_art_replaced_live_stage")
+			var expected_cards: int = 5 if selected_kind == "hero" else (int(root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race).size()) if selected_kind == "worker" else (4 if selected_kind == "military" else 0))
 			var actual_cards := 0
+			var card_kinds: Array[String] = []
 			var card_copy := ""
 			for button in hud._cmd_panel.find_children("*", "Button", true, false):
 				if not button.has_meta("command_kind"):
 					continue
 				actual_cards += 1
-				if not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
+				card_kinds.append(str(button.get_meta("command_kind")))
+				if selected_kind not in ["war_hall", "war_hall_queued"] and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
 					validation_errors.append("card_outside_deck:" + str(actual_cards))
 				if button.pressed.get_connections().is_empty():
 					validation_errors.append("card_missing_command:" + str(actual_cards))
@@ -83,11 +254,79 @@ func _run() -> void:
 					card_copy += label.text + " "
 			if expected_cards > 0 and actual_cards != expected_cards:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
+			if selected_kind in ["building", "building_queued"] and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
+				validation_errors.append("building_action_families_missing:" + str(card_kinds))
+			if selected_kind == "building":
+				var expected_emblems := {
+					"Highland Worker": "barrosan_worker",
+					"Advance to Age of Iron": "advance_tier_2",
+					"Advance to Age of Lume": "advance_tier_3",
+				}
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if not button.has_meta("command_kind"):
+						continue
+					for label in button.find_children("*", "Label", true, false):
+						if expected_emblems.has(label.text):
+							var emblem = button.find_child("CommandEmblem", true, false) as Control
+							if not is_instance_valid(emblem) or emblem.get("icon_kind") != expected_emblems[label.text]:
+								validation_errors.append("building_command_emblem_missing:" + label.text)
+				var aperture = hud._sel_panel.find_child("PortraitViewport", true, false) as Control
+				if not is_instance_valid(aperture) or not aperture.clip_contents:
+					validation_errors.append("building_portrait_aperture_missing")
+				else:
+					var portrait := aperture.get_parent() as Control
+					if not is_instance_valid(portrait) or not portrait.get_global_rect().encloses(aperture.get_global_rect()) or aperture.size.x >= portrait.size.x - 12.0:
+						validation_errors.append("building_portrait_aperture_not_inset")
+			if selected_kind in ["hero", "military"]:
+				var field_orders := {"Attack Move": "attack", "Stop": "stop", "Hold": "hold", "Patrol": "patrol"}
+				var pictured_orders := 0
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					for label in button.find_children("*", "Label", true, false):
+						if field_orders.has(label.text):
+							var emblem = button.find_child("CommandEmblem", true, false) as Control
+							if is_instance_valid(emblem) and emblem.get("icon_kind") == field_orders[label.text] and emblem.get("visual_faction") == player_race:
+								pictured_orders += 1
+				if pictured_orders != 4:
+					validation_errors.append("field_order_art_missing:%d_expected_4" % pictured_orders)
+			if selected_kind == "hero":
+				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
+				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally" or rally_art.get("visual_faction") != player_race:
+					validation_errors.append("rally_art_missing")
+			if selected_kind in ["building_queued", "war_hall_queued"]:
+				var queue = hud._queue_container
+				if not is_instance_valid(queue) or queue.get_child_count() == 0:
+					validation_errors.append("selected_building_queue_missing")
+				elif not hud._sel_panel.get_global_rect().encloses(queue.get_global_rect()):
+					validation_errors.append("selected_building_queue_clipped")
+			if selected_kind in ["war_hall", "war_hall_queued"] and not card_kinds.has("TRAIN"):
+				validation_errors.append("war_hall_train_family_missing:" + str(card_kinds))
+			if selected_kind in ["war_hall", "war_hall_queued"]:
+				var unit_portraits := 0
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if button.has_meta("command_kind") and button.get_meta("command_kind") == "TRAIN" and is_instance_valid(button.find_child("UnitCommandPortrait", true, false)):
+						unit_portraits += 1
+				if unit_portraits != 6:
+					validation_errors.append("war_hall_unit_portraits:%d_expected_6" % unit_portraits)
+				var deck_scroll := hud._cmd_scroll as ScrollContainer
+				if deck_scroll == null or deck_scroll.get_v_scroll_bar().max_value <= deck_scroll.size.y:
+					validation_errors.append("war_hall_overflow_not_scrollable")
+				if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1":
+					var train_heading := hud._cmd_fixed.get_node_or_null("PinnedCommandSection") as Control
+					if not is_instance_valid(train_heading) or not is_instance_valid(deck_scroll) or train_heading.get_global_rect().end.y > deck_scroll.get_global_rect().position.y or deck_scroll.scroll_vertical <= 0:
+						validation_errors.append("war_hall_train_heading_not_pinned")
+			if selected_kind == "construction":
+				var site = hud._cmd_panel.find_child("ConstructionProgress", true, false)
+				if not is_instance_valid(site) or site.get_combined_minimum_size().y < 100.0:
+					validation_errors.append("construction_site_surface_missing")
+				elif absf(site.progress - 0.5) > 0.02:
+					validation_errors.append("construction_progress_did_not_refresh")
 			var expected_words: Array[String] = []
 			if selected_kind == "hero":
 				expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
 			elif selected_kind == "worker":
-				expected_words = ["Clanhold", "Clan Croft", "War Hall", "Iron Forge", "Watchtower", "timber", "stone", "LOCKED", "READY"]
+				expected_words = ["timber", "stone", "LOCKED", "READY"]
+				for building_id in root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race):
+					expected_words.append(str(root.get_node("GameData").get_building(building_id).get("name", building_id)))
 			elif selected_kind == "military":
 				expected_words = ["Attack Move", "Stop", "Hold", "Patrol"]
 			for word in expected_words:
@@ -115,16 +354,27 @@ func _run() -> void:
 			if not button.has_meta("command_kind"):
 				continue
 			for label in button.find_children("*", "Label", true, false):
-				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft"]:
+				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Advance to Age of Iron", "Clan Levy"]:
 					card_by_title[label.text] = button
 		if selected_kind in ["hero", "military"]:
 			for title in ["Attack Move", "Stop", "Hold", "Patrol"]:
 				if not card_by_title.has(title):
 					validation_errors.append("missing_command_button:" + title)
 			if validation_errors.is_empty():
-				card_by_title["Attack Move"].pressed.emit()
+				if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+					var attack_center: Vector2 = card_by_title["Attack Move"].get_global_rect().get_center()
+					for down in [true, false]:
+						var click := InputEventMouseButton.new()
+						click.button_index = MOUSE_BUTTON_LEFT
+						click.pressed = down
+						click.position = attack_center
+						click.global_position = attack_center
+						root.get_viewport().push_input(click, true)
+						await process_frame
+				else:
+					card_by_title["Attack Move"].pressed.emit()
 				if not instance.rts._attack_move_mode:
-					validation_errors.append("attack_move_button_did_not_activate")
+					validation_errors.append("attack_move_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "attack_move_button_did_not_activate")
 				card_by_title["Stop"].pressed.emit()
 				if instance.rts._attack_move_mode:
 					validation_errors.append("stop_button_did_not_cancel_attack_move")
@@ -139,11 +389,85 @@ func _run() -> void:
 			card_by_title["Rallying Cry"].pressed.emit()
 			if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
 				validation_errors.append("rallying_cry_button_did_not_cast")
-		if selected_kind == "worker" and card_by_title.has("Clan Croft"):
-			card_by_title["Clan Croft"].pressed.emit()
-			if instance.rts._build_id.is_empty():
-				validation_errors.append("build_button_did_not_activate")
+		if selected_kind == "worker":
+			var worker_race := String(instance.world.commanders[0].race)
+			var expected_art_count := 5 if worker_race == "barrosan" else (6 if worker_race == "lioraen" else 0)
+			if expected_art_count > 0:
+				var art_paths := {}
+				for preview in instance.hud._cmd_panel.find_children("BuildingPreview", "Control", true, false):
+					if preview.has_method("get_active_portrait_path"):
+						var art_path := String(preview.get_active_portrait_path())
+						if not art_path.is_empty():
+							art_paths[art_path] = true
+				if art_paths.size() != expected_art_count:
+					validation_errors.append("worker_build_art_missing:%s:%d_expected_%d" % [worker_race, art_paths.size(), expected_art_count])
+		var build_target := "Clan Croft" if card_by_title.has("Clan Croft") else ("Lifewell" if card_by_title.has("Lifewell") else "")
+		if selected_kind == "worker" and not build_target.is_empty():
+			if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+				var build_center: Vector2 = card_by_title[build_target].get_global_rect().get_center()
+				Input.warp_mouse(root.get_viewport().get_screen_transform() * build_center)
+				for down in [true, false]:
+					var build_click := InputEventMouseButton.new()
+					build_click.button_index = MOUSE_BUTTON_LEFT
+					build_click.pressed = down
+					build_click.position = build_center
+					build_click.global_position = build_center
+					root.get_viewport().push_input(build_click, true)
+					await process_frame
+			else:
+				card_by_title[build_target].pressed.emit()
+			var expected_build_id := "barrosan_clan_croft" if build_target == "Clan Croft" else "lioraen_lifewell"
+			if instance.rts._build_id != expected_build_id:
+				validation_errors.append("build_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
+		if selected_kind == "building" and card_by_title.has("Advance to Age of Iron"):
+			card_by_title["Advance to Age of Iron"].pressed.emit()
+			var selected_building = instance.rts.selected[0]
+			if selected_building.queue.is_empty() or str(selected_building.queue[0].get("id", "")) != "advance_tier_2":
+				validation_errors.append("research_button_did_not_queue_tech")
+		if selected_kind == "war_hall" and card_by_title.has("Clan Levy"):
+			card_by_title["Clan Levy"].pressed.emit()
+			var selected_hall = instance.rts.selected[0]
+			if selected_hall.queue.is_empty() or str(selected_hall.queue[0].get("id", "")) != "barrosan_clan_levy":
+				validation_errors.append("train_button_did_not_queue_unit")
+		if selected_kind == "building_queued" and is_instance_valid(instance.hud._queue_container):
+			var queue_slot = instance.hud._queue_container.get_child(0) if instance.hud._queue_container.get_child_count() > 0 else null
+			if is_instance_valid(queue_slot):
+				queue_slot.pressed.emit()
+				for index in 3:
+					await process_frame
+				if not instance.rts.selected[0].queue.is_empty():
+					validation_errors.append("queue_slot_did_not_cancel")
+				if instance.hud._sel_panel.custom_minimum_size.y > 180.0:
+					validation_errors.append("selection_panel_did_not_contract_after_queue")
+		var map_click := InputEventMouseButton.new()
+		map_click.button_index = MOUSE_BUTTON_LEFT
+		map_click.pressed = true
+		map_click.position = instance.hud._minimap.size * Vector2(0.35, 0.65)
+		if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+			var map_position: Vector2 = instance.hud._minimap.get_global_transform() * map_click.position
+			Input.warp_mouse(root.get_viewport().get_screen_transform() * map_position)
+			for down in [true, false]:
+				var pointer := InputEventMouseButton.new()
+				pointer.button_index = MOUSE_BUTTON_LEFT
+				pointer.pressed = down
+				pointer.position = map_position
+				pointer.global_position = map_position
+				root.get_viewport().push_input(pointer, true)
+				await process_frame
+		else:
+			instance.hud._on_minimap_input(map_click)
+		var expected_focus := Vector2(-42.0, 42.0)
+		var actual_focus := Vector2(instance.rts.cam_pivot.global_position.x, instance.rts.cam_pivot.global_position.z)
+		if actual_focus.distance_to(expected_focus) > 2.0:
+			validation_errors.append("minimap_pointer_did_not_focus_camera" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "minimap_click_did_not_focus_camera")
+		if OS.get_environment("ASCENDANT_UI_ALERT_LIFECYCLE_CHECK") == "1":
+			var dispatches: VBoxContainer = instance.hud._alert_box
+			if dispatches.get_child_count() == 0:
+				validation_errors.append("opening_alert_missing")
+			await create_timer(4.2).timeout
+			if dispatches.get_child_count() != 0:
+				validation_errors.append("opening_alert_did_not_clear")
 		print("UI_FUNCTIONAL ", "PASS" if validation_errors.is_empty() else "FAIL", " ", validation_errors)
 	instance.queue_free()
 	for index in 2:

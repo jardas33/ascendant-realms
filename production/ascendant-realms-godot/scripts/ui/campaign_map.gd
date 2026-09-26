@@ -5,6 +5,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG   := "res://assets/textures/backgrounds/main_menu_bg.png"
 const THEME_PATH := "res://assets/ui/theme.tres"
+const REGION_BUTTON_SCRIPT := preload("res://scripts/ui/campaign_region_button.gd")
 
 # --- Campaign node definitions ------------------------------------------------
 # Each entry: name, description, difficulty label, opponent list
@@ -13,7 +14,7 @@ const NODE_NAMES := [
 	"Verdant Hollow",
 	"Emberfall Pass",
 	"Frostmere Vale",
-	"The Sunken Necropolis",
+	"Sunken Necropolis",
 	"The Sundered Keep",
 ]
 
@@ -107,7 +108,7 @@ func _build() -> void:
 	# Dark scrim for readability
 	var scrim := ColorRect.new()
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scrim.color = Color(0.02, 0.03, 0.07, 0.65)
+	scrim.color = Color(0.02, 0.03, 0.07, 0.57)
 	add_child(scrim)
 
 	# Title
@@ -166,18 +167,23 @@ func _build() -> void:
 	desc_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	# Keep enough vertical room for the title/difficulty line plus the wrapped
 	# story line at the supported 16 px presentation size.
-	desc_panel.offset_top = -128.0
-	desc_panel.offset_bottom = -70.0
+	desc_panel.offset_top = -168.0
+	desc_panel.offset_bottom = -72.0
 	desc_panel.offset_left = 180.0
 	desc_panel.offset_right = -180.0
-	if ResourceLoader.exists(THEME_PATH):
-		desc_panel.theme = load(THEME_PATH)
+	var story_style := StyleBoxFlat.new()
+	story_style.bg_color = Color(0.027, 0.035, 0.048, 0.92)
+	story_style.border_color = Color(0.70, 0.57, 0.35, 0.66)
+	story_style.border_width_top = 2
+	story_style.border_width_bottom = 1
+	story_style.set_content_margin_all(12)
+	desc_panel.add_theme_stylebox_override("panel", story_style)
 	add_child(desc_panel)
 
 	_desc_label = Label.new()
 	_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_desc_label.add_theme_font_override("font", _title_font())
-	_desc_label.add_theme_font_size_override("font_size", 16)
+	_desc_label.add_theme_font_override("font", ThemeDB.fallback_font)
+	_desc_label.add_theme_font_size_override("font_size", 20)
 	_desc_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78))
 	_desc_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.7))
 	_desc_label.add_theme_constant_override("outline_size", 2)
@@ -186,7 +192,7 @@ func _build() -> void:
 	_desc_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_desc_label.offset_left = 12.0
 	_desc_label.offset_right = -12.0
-	_desc_label.text = "Hover over a region to read its story."
+	_desc_label.text = "Select a region to read its story."
 	desc_panel.add_child(_desc_label)
 
 	# Back button
@@ -205,6 +211,7 @@ func _build() -> void:
 	back.offset_right = 226.0
 	back.pressed.connect(_on_back_pressed)
 	add_child(back)
+	_show_desc(clampi(int(camp.get("node", 0)), 0, NODE_NAMES.size() - 1))
 
 # --------------------------------------------------------------------------
 func _build_node(i: int, camp: Dictionary) -> void:
@@ -216,15 +223,15 @@ func _build_node(i: int, camp: Dictionary) -> void:
 	# A node is "cleared" if the player has already beaten it (node index < campaign.node)
 	var is_cleared: bool = i < current_node
 
-	var btn := Button.new()
+	var btn: Button = REGION_BUTTON_SCRIPT.new()
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.custom_minimum_size = NODE_SIZE
 	btn.size = NODE_SIZE
 	btn.position = _node_positions[i] - NODE_SIZE * 0.5
+	btn.configure(is_unlocked, is_cleared)
 	btn.disabled = not is_unlocked
-
-	if ResourceLoader.exists(THEME_PATH):
-		btn.theme = load(THEME_PATH)
+	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
+		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
 
 	# VBox for node contents
 	var vb := VBoxContainer.new()
@@ -234,6 +241,7 @@ func _build_node(i: int, camp: Dictionary) -> void:
 	vb.offset_top = 6.0
 	vb.offset_bottom = -6.0
 	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 3)
 	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	# Battle number + node name
@@ -241,21 +249,23 @@ func _build_node(i: int, camp: Dictionary) -> void:
 	name_lbl.add_theme_font_override("font", _title_font())
 	name_lbl.add_theme_font_size_override("font_size", 20)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if is_unlocked:
 		name_lbl.add_theme_color_override("font_color", Color(1.0, 0.87, 0.35))
 		name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 		name_lbl.add_theme_constant_override("outline_size", 4)
 	else:
-		name_lbl.add_theme_color_override("font_color", Color(0.42, 0.44, 0.5))
-		name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.7))
+		name_lbl.add_theme_color_override("font_color", Color(0.77, 0.82, 0.85))
+		name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.92))
 		name_lbl.add_theme_constant_override("outline_size", 3)
 	name_lbl.text = NODE_NAMES[i]
 	vb.add_child(name_lbl)
 
 	# Status line
 	var status_lbl := Label.new()
-	status_lbl.add_theme_font_size_override("font_size", 13)
+	status_lbl.add_theme_font_size_override("font_size", 15)
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if is_cleared:
@@ -269,22 +279,22 @@ func _build_node(i: int, camp: Dictionary) -> void:
 		status_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
 		status_lbl.add_theme_constant_override("outline_size", 3)
 	else:
-		status_lbl.text = "Locked — win the previous battle"
-		status_lbl.add_theme_color_override("font_color", Color(0.48, 0.5, 0.56))
-		status_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.7))
+		status_lbl.text = "SEALED · WIN PRIOR BATTLE"
+		status_lbl.add_theme_color_override("font_color", Color(0.68, 0.73, 0.77))
+		status_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.95))
 		status_lbl.add_theme_constant_override("outline_size", 2)
 	vb.add_child(status_lbl)
 
 	# Difficulty label
 	var diff_lbl := Label.new()
-	diff_lbl.add_theme_font_size_override("font_size", 12)
+	diff_lbl.add_theme_font_size_override("font_size", 15)
 	diff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	diff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var diff_str: String = NODE_DIFFICULTY[i]
 	diff_lbl.text = diff_str
 	var diff_col: Color = DIFF_COLORS.get(diff_str, Color(0.8, 0.8, 0.8))
 	if not is_unlocked:
-		diff_col = Color(0.38, 0.4, 0.44)
+		diff_col = diff_col.lerp(Color(0.64, 0.70, 0.74), 0.55)
 	diff_lbl.add_theme_color_override("font_color", diff_col)
 	diff_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.75))
 	diff_lbl.add_theme_constant_override("outline_size", 2)
@@ -292,8 +302,8 @@ func _build_node(i: int, camp: Dictionary) -> void:
 
 	btn.add_child(vb)
 
+	btn.mouse_entered.connect(_show_desc.bind(i))
 	if is_unlocked:
-		btn.mouse_entered.connect(_show_desc.bind(i))
 		btn.pressed.connect(_on_node_pressed.bind(i))
 
 	add_child(btn)

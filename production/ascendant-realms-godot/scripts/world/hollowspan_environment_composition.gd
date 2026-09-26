@@ -322,9 +322,36 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	instance.rotation.y = yaw
 	var target_height := height_override if height_override > 0.0 else float(ASSET_SCALE.get(asset_key, 2.0))
 	ModelUtils.scale_to_height(instance, target_height)
+	if asset_key == "wall":
+		# Retain the wall's X/Z route footprint while lowering its parapet so the
+		# opening view is not dominated by a block taller than nearby buildings.
+		instance.scale.y *= 0.52
 	ModelUtils.ground_model(instance)
+	if asset_key in ["wall", "cairn"]:
+		_finish_stonework(instance)
 	_set_presentation_only(instance)
 	_mark_navigation_blocker(instance, asset_key)
+
+
+func _finish_stonework(root: Node3D) -> void:
+	# The wall and cairn GLBs share a plain pale slate material with no albedo
+	# map. Give the stone a common matte finish from the existing local atlas;
+	# the authored geometry, placement and navigation footprint stay intact.
+	var stone_atlas := load(SLICE_ROCK_TEXTURE) as Texture2D
+	for child in root.find_children("*", "MeshInstance3D"):
+		var mesh_instance := child as MeshInstance3D
+		if not mesh_instance or not mesh_instance.mesh:
+			continue
+		for surface in mesh_instance.mesh.get_surface_count():
+			var source := mesh_instance.get_active_material(surface)
+			if not source is StandardMaterial3D:
+				continue
+			var finish := source.duplicate() as StandardMaterial3D
+			finish.albedo_color = Color(0.38, 0.36, 0.31)
+			finish.albedo_texture = stone_atlas
+			finish.roughness = 1.0
+			finish.metallic = 0.0
+			mesh_instance.set_surface_override_material(surface, finish)
 
 
 func _build_barrosan_settlement(parent: Node3D, anchor: Vector3) -> void:
