@@ -1081,9 +1081,18 @@ func enter_build_mode(building_id: String) -> void:
 		_build_ghost.add_child(m)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.isolate_a03_house_a(m)
+		# The placed Building strips review-staging planes (A01 yard/fence, A02
+		# grass/yard pads) and turns and enlarges A01 before scaling. The ghost
+		# skipped that, so the War Hall preview was scaled around its big staging
+		# pad and read as a flat translucent slab. Mirror the same preparation.
+		Building._strip_a01_review_staging(m, path)
+		Building._strip_a02_review_staging(m, path)
 		# Match Building's presentation envelope without changing the authoritative
 		# footprint used by placement and affordability checks.
 		var presentation_height := clampf(float(bdef.get("footprint", 4.0)) * 1.15, 3.2, 12.0)
+		if path == "res://assets/environment/buildings/barrosan_civic_keep_a01.glb":
+			m.rotation.y = deg_to_rad(Building.TASK604_A01_R1_YAW_DEGREES)
+			presentation_height = minf(12.0, presentation_height * Building.TASK604_A01_R1_SCALE)
 		ModelUtils.scale_to_height(m, presentation_height)
 		ModelUtils.ground_model(m)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
@@ -1154,14 +1163,26 @@ func _apply_build_ghost_surface_materials(root: Node3D) -> void:
 		var mesh := child as MeshInstance3D
 		if not mesh:
 			continue
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = _ghost_identity_tint
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		mat.roughness = 0.92
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-		mesh.material_override = mat
+		# Keep each surface's own painted texture so the preview reads as the
+		# building (roof, timber, stone) rather than one flat tinted slab.
 		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		_ghost_surface_mats.append(mat)
+		if mesh.mesh == null:
+			continue
+		for surface in mesh.mesh.get_surface_count():
+			var source := mesh.get_active_material(surface)
+			var mat: StandardMaterial3D
+			if source is StandardMaterial3D:
+				mat = (source as StandardMaterial3D).duplicate() as StandardMaterial3D
+			else:
+				mat = StandardMaterial3D.new()
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+			mat.albedo_color = _ghost_identity_tint
+			mat.metallic = 0.0
+			mat.roughness = 0.92
+			mat.emission_enabled = false
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+			mesh.set_surface_override_material(surface, mat)
+			_ghost_surface_mats.append(mat)
 
 func _set_build_ghost_state(valid: bool) -> void:
 	var state_color := Color(0.30, 0.90, 0.40, 0.30) if valid else Color(0.90, 0.30, 0.30, 0.30)
@@ -1175,8 +1196,10 @@ func _set_build_ghost_state(valid: bool) -> void:
 		_ghost_fill_mat.albedo_color = fill_color
 	for mat in _ghost_surface_mats:
 		if is_instance_valid(mat):
-			var surface_color := _ghost_identity_tint.lerp(state_color, 0.22)
-			surface_color.a = 0.46
+			# Multiplied over the painted texture: near-white keeps it readable,
+			# with a green or red cast for the placement state.
+			var surface_color := Color(1.0, 1.0, 1.0).lerp(Color(state_color.r, state_color.g, state_color.b), 0.35)
+			surface_color.a = 0.62
 			mat.albedo_color = surface_color
 	if is_instance_valid(_build_reason_label):
 		_build_reason_label.text = _build_reason

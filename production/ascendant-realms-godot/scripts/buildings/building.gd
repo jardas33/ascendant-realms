@@ -375,7 +375,7 @@ func _apply_slice7_barrosan_surface_material(model: Node3D, path: String) -> voi
 		mesh.material_override = surface_material
 
 
-func _strip_a01_review_staging(model: Node3D, path: String) -> void:
+static func _strip_a01_review_staging(model: Node3D, path: String) -> void:
 	# A01's yard and fence are review-scene staging geometry, not part of the
 	# production main hall. Remove only those named mesh leaves before height,
 	# grounding, and standard collision generation so the authored keep remains
@@ -394,7 +394,7 @@ func _strip_a01_review_staging(model: Node3D, path: String) -> void:
 			parent.remove_child(mesh)
 		mesh.free()
 
-func _strip_a02_review_staging(model: Node3D, path: String) -> void:
+static func _strip_a02_review_staging(model: Node3D, path: String) -> void:
 	# GROK-ART-A02-R2 documents the grass/isolation pad and packed-yard planes
 	# as review convention only. Remove only those exact authored leaves; do not
 	# treat legitimate hall, palisade, gate, dummy, rack, banner, or shed meshes
