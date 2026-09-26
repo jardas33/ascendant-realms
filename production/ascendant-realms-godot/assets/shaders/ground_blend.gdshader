@@ -110,6 +110,26 @@ float cloud_shadow(vec2 xz, float t) {
 	return smoothstep(0.5, 0.68, n);
 }
 
+// Cellular crack pattern: distance to the nearest cell border (0 on a crack).
+vec2 cell_point(vec2 i) {
+	return vec2(hash21(i), hash21(i + vec2(17.0, 31.0)));
+}
+
+float crack_dist(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	float d1 = 8.0;
+	float d2 = 8.0;
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 g = vec2(float(x), float(y));
+			float d = length(g + cell_point(i + g) - f);
+			if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) { d2 = d; }
+		}
+	}
+	return d2 - d1;
+}
+
 // distance from point p to segment a-b (all in XZ)
 float seg_dist(vec2 p, vec2 a, vec2 b) {
 	vec2 ab = b - a;
@@ -243,6 +263,14 @@ void fragment() {
 		vec3 ash = mix(vec3(0.055, 0.05, 0.055), vec3(0.13, 0.115, 0.12), fbm(wxz * 0.35 + 3.0)) * (0.8 + 0.5 * ash_luma);
 		// A few ember-warm cinders in the heart of the burn.
 		ash += vec3(0.20, 0.06, 0.02) * smoothstep(0.82, 0.95, fbm(wxz * 0.6 + 9.0)) * (1.0 - smoothstep(0.2, 0.6, d));
+		// Cracked basalt plates: dark seams, a few of which glow with embers
+		// toward the heart of the holdfast.
+		float seam = 1.0 - smoothstep(0.0, 0.07, crack_dist(wxz * 0.32 + float(i) * 5.0));
+		float fine = 1.0 - smoothstep(0.0, 0.05, crack_dist(wxz * 0.9 + 3.0));
+		ash *= 1.0 - 0.55 * seam - 0.25 * fine;
+		ash += vec3(0.95, 0.30, 0.06) * seam * smoothstep(0.55, 0.8, fbm(wxz * 0.12 + 40.0 + TIME * 0.05)) * (1.0 - smoothstep(0.1, 0.75, d)) * 1.5;
+		// Plates catch a little light at their raised centres.
+		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
 	}
 	ALBEDO = ground;
