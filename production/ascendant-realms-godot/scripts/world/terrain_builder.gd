@@ -56,6 +56,8 @@ func build(map: Dictionary) -> void:
 	_build_mountains()
 	if _water_on:
 		_build_lake()
+		if map.has("bridge"):
+			_build_ford(map)
 
 
 # ---------------------------------------------------------------------------
@@ -81,6 +83,9 @@ func _build_world03_landforms(map: Dictionary) -> void:
 	add_child(layer)
 	for index in WORLD03_HOLLOWSPAN_SHELVES.size():
 		var spec: Array = WORLD03_HOLLOWSPAN_SHELVES[index]
+		# Two shelves sat on the crossing line and floated over the ford.
+		if map.has("bridge") and absf(Vector3(spec[0]).z - float(map.get("overview", {}).get("water_center_z", 52.0))) < 14.0:
+			continue
 		var shelf := _make_world03_shelf(spec[1], float(spec[2]), index)
 		shelf.position = spec[0]
 		shelf.add_to_group("world03_shelves")
@@ -179,6 +184,9 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
 	sm.set_shader_parameter("field_strength", float(grade.get("field_strength", 0.0)))
 	sm.set_shader_parameter("relief_strength", float(grade.get("relief_strength", 0.0)))
+	if _water_on and map.has("bridge"):
+		var ov: Dictionary = map.get("overview", {})
+		sm.set_shader_parameter("ford", Vector3(float(ov.get("water_center_z", 52.0)), float(ov.get("water_width", 22.0)) * 0.5, 1.0))
 	# Scorched ash yards under Vorthak opponent starts (start i+1 is opponent i).
 	var scorch: Array = []
 	var opponents: Array = Match.get_config().get("opponents", [])
@@ -221,6 +229,35 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 			# WORLD-03 highland grade: broader value variation and a clearer
 			# road verge, while keeping the grass palette restrained for units.
 			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.82, "field_strength": 0.5, "relief_strength": 1.0}
+
+
+# ---------------------------------------------------------------------------
+# Bridge maps (Hollowspan Crossing, Mirefen, Frostmere, Duskwater) name and
+# draw a river crossing on the minimap, but the battlefield had no water: the
+# bridge stood on grass. A shallow, walkable ford now runs along the crossing
+# line. It is presentation only: navigation, pathing and the bridge's own
+# structural blockers are unchanged, so units wade the ford or take the bridge.
+func _build_ford(map: Dictionary) -> void:
+	if not ResourceLoader.exists(WATER_SHADER):
+		return
+	var ov: Dictionary = map.get("overview", {})
+	var center_z := float(ov.get("water_center_z", 52.0))
+	var width := float(ov.get("water_width", 22.0)) * 0.8
+	var water := MeshInstance3D.new()
+	water.name = "CrossingFord"
+	var pm := PlaneMesh.new()
+	pm.size = Vector2(GROUND_SIZE, width)
+	water.mesh = pm
+	var wm := ShaderMaterial.new()
+	wm.shader = load("res://assets/shaders/ford_water.gdshader")
+	var w: Dictionary = _theme.get("water", {})
+	if w.get("lava", false):
+		wm.set_shader_parameter("shallow_tint", Color(0.9, 0.35, 0.08))
+		wm.set_shader_parameter("deep_tint", Color(0.55, 0.12, 0.03))
+	water.material_override = wm
+	water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	water.position = Vector3(0.0, 0.07, center_z)
+	add_child(water)
 
 
 # ---------------------------------------------------------------------------

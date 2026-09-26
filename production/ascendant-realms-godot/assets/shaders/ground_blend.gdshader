@@ -59,6 +59,9 @@ uniform float relief_scale = 0.018;
 // noisy burn fade, not a pasted decal.
 uniform vec4 scorch_zones[4];
 uniform int scorch_count = 0;
+// River ford: x = centre z, y = half width, z = strength. Paints wet banks
+// and a pebbled bed under the shallow crossing water.
+uniform vec3 ford = vec3(0.0, 0.0, 0.0);
 
 varying vec3 world_pos;
 
@@ -194,6 +197,18 @@ void fragment() {
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
 	}
 
+	if (ford.z > 0.0) {
+		float edge_wobble = (fbm(vec2(wxz.x * 0.045, 7.0)) - 0.5) * 0.7 * ford.y + (fbm(vec2(wxz.x * 0.21, 3.0)) - 0.5) * 0.18 * ford.y;
+		float dz = abs(wxz.y - ford.x) + edge_wobble;
+		float bank = 1.0 - smoothstep(ford.y * 0.62, ford.y * 1.25, dz);
+		vec3 wet = ground * 0.55 + vec3(0.03, 0.03, 0.02);
+		// Wet, darkened bank soil; a soft sandy lip where the water meets it.
+		vec3 sand = mix(ground, vec3(0.40, 0.36, 0.28), 0.55) * (0.8 + 0.35 * fbm(wxz * 0.3));
+		float lip = smoothstep(ford.y * 0.72, ford.y * 0.9, dz) * (1.0 - smoothstep(ford.y * 0.95, ford.y * 1.2, dz));
+		lip *= smoothstep(0.35, 0.65, fbm(wxz * 0.18 + 21.0));
+		vec3 bed = mix(wet, sand, lip * 0.6);
+		ground = mix(ground, bed, bank * ford.z);
+	}
 	for (int i = 0; i < scorch_count; i++) {
 		float d = length(wxz - scorch_zones[i].xy) / max(scorch_zones[i].z, 0.1);
 		float edge = d + (fbm(wxz * 0.09 + float(i) * 13.0) - 0.5) * 0.55;

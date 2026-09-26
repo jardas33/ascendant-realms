@@ -1015,6 +1015,11 @@ func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGenerator) -> void:
 	if pool.is_empty():
 		return
+	# Keep trees and boulders out of the river ford on bridge maps.
+	if map.has("bridge") and _theme.get("water", {}).get("enabled", false):
+		var ov: Dictionary = map.get("overview", {})
+		if absf(pos.z - float(ov.get("water_center_z", 52.0))) < float(ov.get("water_width", 22.0)) * 0.6:
+			return
 	var path: String = pool[rng.randi() % pool.size()]
 	var load_start := Time.get_ticks_usec()
 	var inst = load(path).instantiate()
