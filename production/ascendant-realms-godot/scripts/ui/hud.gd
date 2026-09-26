@@ -3516,16 +3516,31 @@ func _on_game_over(victory: bool) -> void:
 	var dim_tw := dim.create_tween()
 	dim_tw.tween_property(dim, "color:a", 0.78, 0.6)
 
+	# Result ledger on the forged vellum plate used by the hero screens: a
+	# crest title, the outcome line, a stat ledger and the two actions. The old
+	# single summary line ellipsised at common resolutions.
+	var accent := Color(0.98, 0.84, 0.46) if victory else Color(0.92, 0.36, 0.30)
+	var plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
+	var plate_style := StyleBoxFlat.new()
+	plate_style.bg_color = Color.TRANSPARENT
+	for side in ["left", "right"]:
+		plate_style.set("content_margin_" + side, 56.0)
+	plate_style.content_margin_top = 34.0
+	plate_style.content_margin_bottom = 34.0
+	plate.add_theme_stylebox_override("panel", plate_style)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	plate.grow_vertical = Control.GROW_DIRECTION_BOTH
+	plate.custom_minimum_size = Vector2(620, 0)
+	plate.modulate.a = 0.0
+	_gameover_layer.add_child(plate)
+	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.5).set_delay(0.25)
 	var box := VBoxContainer.new()
-	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 18)
-	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	box.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_gameover_layer.add_child(box)
+	box.add_theme_constant_override("separation", 14)
+	plate.add_child(box)
 
-	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 64,
-		Color(0.98, 0.85, 0.4) if victory else Color(0.9, 0.35, 0.3))
+	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 64, accent)
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(heading)
 
@@ -3536,10 +3551,33 @@ func _on_game_over(victory: bool) -> void:
 	var mins := int(t) / 60
 	var secs := int(t) % 60
 	var reason := String(result.get("reason", "Conquest"))
-	var summary := "%s   |   Enemies defeated: %d     Experience gained: %d     Time: %d:%02d" % [reason, kills, xp, mins, secs]
-	var sum_label := _mk_label(summary, 20, Color(0.9, 0.87, 0.78))
-	sum_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(sum_label)
+	var outcome := _mk_label(("The field is yours  ·  " if victory else "Your host has fallen  ·  ") + reason, 20, Color(0.9, 0.86, 0.76))
+	outcome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outcome.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	box.add_child(outcome)
+	var rule := ColorRect.new()
+	rule.color = Color(accent, 0.45)
+	rule.custom_minimum_size = Vector2(0, 1)
+	box.add_child(rule)
+	var ledger := GridContainer.new()
+	ledger.columns = 3
+	ledger.add_theme_constant_override("h_separation", 48)
+	ledger.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(ledger)
+	for stat in [["ENEMIES DEFEATED", str(kills)], ["EXPERIENCE", "+%d" % xp], ["BATTLE TIME", "%d:%02d" % [mins, secs]]]:
+		var cell := VBoxContainer.new()
+		cell.add_theme_constant_override("separation", 2)
+		var value := _mk_title_label(String(stat[1]), 34, Color(0.96, 0.92, 0.82))
+		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cell.add_child(value)
+		var caption := _mk_label(String(stat[0]), 13, Color(0.72, 0.68, 0.60))
+		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		caption.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		cell.add_child(caption)
+		ledger.add_child(cell)
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 8)
+	box.add_child(spacer)
 
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -3547,11 +3585,11 @@ func _on_game_over(victory: bool) -> void:
 	box.add_child(btn_row)
 
 	var continue_btn := _mk_button("Continue", 22)
-	continue_btn.custom_minimum_size = Vector2(180, 56)
+	continue_btn.custom_minimum_size = Vector2(200, 56)
 	continue_btn.pressed.connect(func(): emit_signal("return_to_menu"))
 	btn_row.add_child(continue_btn)
 
 	var replay_btn := _mk_button("Play Again", 22)
-	replay_btn.custom_minimum_size = Vector2(180, 56)
+	replay_btn.custom_minimum_size = Vector2(200, 56)
 	replay_btn.pressed.connect(func(): emit_signal("replay"))
 	btn_row.add_child(replay_btn)
