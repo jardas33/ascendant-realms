@@ -176,7 +176,9 @@ func _build_model() -> void:
 			target_h = minf(PRESENTATION_HEIGHT_MAX, target_h * TASK604_A01_R1_SCALE)
 		ModelUtils.scale_to_height(m, target_h)
 		ModelUtils.ground_model(m)
-		ModelUtils.add_per_part_convex_collision(m, 4)
+		# Same hulls as before, but shapes are generated once per model and
+		# reused (and prewarmed at match load by GameWorld).
+		ModelUtils.add_cached_per_part_convex_collision(m, 4, path)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(m)
 		for mi in m.find_children("*", "MeshInstance3D"):

@@ -1649,6 +1649,14 @@ func _setup_commanders() -> void:
 		commanders.append(ec)
 		t += 1
 
+	# Prewarm building models and collision hulls for every race in the match
+	# so later construction never stalls the frame mid-battle.
+	var races_in_match := {}
+	for cmd in commanders:
+		races_in_match[String(cmd.race)] = true
+	for bdef in BuildingDefs.get_all().values():
+		if races_in_match.has(String(bdef.get("race", ""))):
+			ModelUtils.prewarm_building_collision(String(bdef.get("model", "")))
 	# build starting bases
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
@@ -2108,8 +2116,57 @@ func _on_point_captured_signal(point, team: int) -> void:
 # --------------------------------------------------------------------------
 # Match lifecycle
 # --------------------------------------------------------------------------
+func _prewarm_combat_presentation() -> void:
+	# Draw each combat effect and projectile look once, just under the ground in
+	# front of the opening camera, so their pipelines compile during the
+	# loading fade instead of stalling the first fight. Presentation only.
+	if not is_instance_valid(_fx_container) or not is_instance_valid(player_commander):
+		return
+	var spot: Vector3 = map.get("start_positions", [Vector3.ZERO])[player_team] + Vector3(0, -1.5, 0)
+	var cam := get_viewport().get_camera_3d()
+	if cam:
+		# Behind the ground plane along the opening view ray: inside the frustum,
+		# hidden by the opaque ground, so the GPU compiles without anything showing.
+		var focus := cam.global_position + (-cam.global_transform.basis.z) * 60.0
+		spot = cam.global_position + (focus - cam.global_position).normalized() * 90.0
+	# Enemy units and buildings stay hidden by fog until first sighted, so their
+	# materials would otherwise compile at the moment the first attack arrives.
+	var races_in_match := {}
+	for cmd in commanders:
+		races_in_match[String(cmd.race)] = true
+	var warm_models: Array = []
+	for udef in UnitDefs.get_all().values():
+		if races_in_match.has(String(udef.get("race", ""))):
+			warm_models.append(String(udef.get("model", "")))
+	for bdef in BuildingDefs.get_all().values():
+		if races_in_match.has(String(bdef.get("race", ""))):
+			warm_models.append(String(bdef.get("model", "")))
+	for path in warm_models:
+		if path.is_empty() or not ResourceLoader.exists(path):
+			continue
+		var packed = load(path)
+		if not packed is PackedScene:
+			continue
+		var model: Node3D = packed.instantiate()
+		_fx_container.add_child(model)
+		model.global_position = spot
+		for body in model.find_children("*", "CollisionObject3D", true, false):
+			body.queue_free()
+		get_tree().create_timer(0.6).timeout.connect(model.queue_free)
+	CombatVfx.hit(_fx_container, spot, Color(1.0, 0.72, 0.42), false)
+	CombatVfx.hit(_fx_container, spot, Color(1, 0.5, 0.15), true)
+	CombatVfx.death(_fx_container, spot)
+	for kind in ["arrow", "cinder", "void_bolt", "thorn"]:
+		var p = ProjectileScript.new()
+		p.kind = kind
+		_fx_container.add_child(p)
+		p.set_physics_process(false)
+		p.global_position = spot
+		get_tree().create_timer(0.6).timeout.connect(p.queue_free)
+
 func _start_match() -> void:
 	game_running = true
+	_prewarm_combat_presentation()
 	_visibility_timer = VISIBILITY_UPDATE_INTERVAL
 	_update_player_visibility()
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)

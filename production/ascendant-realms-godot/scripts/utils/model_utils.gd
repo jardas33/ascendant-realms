@@ -205,6 +205,23 @@ static func add_cached_per_part_convex_collision(node: Node3D, collision_layer: 
 				}
 	return {"cache_hits": cache_hits, "cache_misses": cache_misses, "parts": filtered.size()}
 
+static var _prewarmed_scenes: Array = []
+
+## Loads a building model and generates its per-part convex collision into
+## the shape cache ahead of time, so the first placement of that building
+## mid-match does not stall on hull generation (60-830 ms per model on a
+## GTX 1070 test rig). Keeps the PackedScene referenced so it stays loaded.
+static func prewarm_building_collision(path: String) -> void:
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return
+	var packed = load(path)
+	if not packed is PackedScene:
+		return
+	_prewarmed_scenes.append(packed)
+	var node: Node3D = packed.instantiate()
+	add_cached_per_part_convex_collision(node, 4, path)
+	node.free()
+
 static func set_animation_loops(anim_player: AnimationPlayer) -> void:
 	var oneshot_anims = ["jump", "attack", "slash", "shoot", "hurt", "die", "death",
 		"fall", "climb", "dive", "hit", "cast", "throw", "reload", "pick_up", "punch", "spell"]
