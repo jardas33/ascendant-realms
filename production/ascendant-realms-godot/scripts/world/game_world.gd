@@ -1404,7 +1404,23 @@ func _segment_clear_of_active_route_blockers(a: Vector3, b: Vector3, blockers: A
 	_active_route_segment_cache[cache_key] = true
 	return true
 
+# Rebuilt for every moving unit on every physics tick (allocating a
+# dictionary per building and de-duplicating soft blockers with nested
+# scans). The result only depends on world state, so the default snapshot is
+# built once per physics frame and shared; callers only read it.
+var _blocker_snapshot_cache: Array[Dictionary] = []
+var _blocker_snapshot_frame := -1
+
 func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
+	if building_snapshot == null:
+		var frame := Engine.get_physics_frames()
+		if frame != _blocker_snapshot_frame:
+			_blocker_snapshot_cache = _build_navigation_blocker_snapshots(null)
+			_blocker_snapshot_frame = frame
+		return _blocker_snapshot_cache
+	return _build_navigation_blocker_snapshots(building_snapshot)
+
+func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
 	var blockers: Array[Dictionary] = []
 	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
 	var registered_buildings: Array = []
@@ -1539,8 +1555,15 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 		return requested_velocity
 	var step_end: Vector3 = origin + requested_velocity * maxf(delta, 0.016)
 	var blockers := _navigation_blocker_snapshots()
+	# Cheap reject before the per-blocker rectangle work: a blocker whose
+	# largest possible padded extent cannot reach this step is skipped.
+	var reach := (step_end - origin).length() + clearance + ROUTE_BLOCKER_MARGIN
 	for blocker in blockers:
 		var center: Vector3 = blocker["center"]
+		var base_half: Vector2 = blocker.get("half_extents", Vector2.ONE)
+		var limit := maxf(base_half.x, base_half.y) + reach + 0.5
+		if absf(origin.x - center.x) > limit or absf(origin.z - center.z) > limit:
+			continue
 		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
 		var radial: Vector3 = origin - center
 		radial.y = 0.0
@@ -1895,11 +1918,30 @@ func _is_dead(n) -> bool:
 # --------------------------------------------------------------------------
 # Queries used by unit AI
 # --------------------------------------------------------------------------
+# Every unit scanned the whole unit and building groups each physics tick
+# (find_enemy_in_range and friends), and each call allocated a fresh group
+# array: O(n^2) allocations per tick, about 0.5 ms per unit in a 20v20 fight.
+# The group snapshots are now taken once per physics frame and shared; all
+# callers only iterate them. Entries can still be freed mid-frame, so callers
+# keep their is_instance_valid checks.
+var _units_snapshot: Array = []
+var _units_snapshot_frame := -1
+var _buildings_snapshot: Array = []
+var _buildings_snapshot_frame := -1
+
 func all_units() -> Array:
-	return get_tree().get_nodes_in_group("units")
+	var frame := Engine.get_physics_frames()
+	if frame != _units_snapshot_frame:
+		_units_snapshot = get_tree().get_nodes_in_group("units")
+		_units_snapshot_frame = frame
+	return _units_snapshot
 
 func all_buildings() -> Array:
-	return get_tree().get_nodes_in_group("buildings")
+	var frame := Engine.get_physics_frames()
+	if frame != _buildings_snapshot_frame:
+		_buildings_snapshot = get_tree().get_nodes_in_group("buildings")
+		_buildings_snapshot_frame = frame
+	return _buildings_snapshot
 
 func find_enemy_in_range(unit, rng: float):
 	var best = null
@@ -1908,12 +1950,14 @@ func find_enemy_in_range(unit, rng: float):
 	for u in all_units():
 		if not is_instance_valid(u) or u.is_dead or u.team == unit.team:
 			continue
+		var d = p.distance_squared_to(u.global_position)
+		if d >= best_d:
+			continue
+		# Visibility is only consulted for candidates that would actually win.
 		if unit.team == player_team and not is_player_visible(u):
 			continue
-		var d = p.distance_squared_to(u.global_position)
-		if d < best_d:
-			best_d = d
-			best = u
+		best_d = d
+		best = u
 	# also consider buildings if no unit and unit is combat
 	if best == null and not unit.is_worker:
 		for b in all_buildings():
