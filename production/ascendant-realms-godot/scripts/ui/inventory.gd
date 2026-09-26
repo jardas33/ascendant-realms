@@ -22,6 +22,7 @@ var _slots_box: VBoxContainer
 var _items_box: VBoxContainer
 var _detail_box: VBoxContainer
 var _grant_button: Button
+var _item_group: ButtonGroup
 
 func _ready() -> void:
 	_build()
@@ -191,6 +192,11 @@ func _rebuild_slots() -> void:
 		race_label.add_theme_font_size_override("font_size", 17)
 		race_label.add_theme_color_override("font_color", Color(0.78, 0.8, 0.77))
 		identity_text.add_child(race_label)
+		var loadout_label := Label.new()
+		loadout_label.text = "%d / %d SLOTS FILLED" % [equip.size(), SLOTS.size()]
+		loadout_label.add_theme_font_size_override("font_size", 13)
+		loadout_label.add_theme_color_override("font_color", Color(0.72, 0.62, 0.43))
+		identity_text.add_child(loadout_label)
 	_slots_box.add_child(HSeparator.new())
 	for slot in SLOTS:
 		var item = equip.get(slot, null)
@@ -226,23 +232,80 @@ func _rebuild_slots() -> void:
 
 func _rebuild_items() -> void:
 	_clear_after(_items_box, 2)
+	_item_group = ButtonGroup.new()
 	var inv: Array = ProfileManager.hero().get("inventory", [])
 	if inv.is_empty():
 		_items_box.add_child(_empty_message("NO RELICS CARRIED", "The chest is empty. Claim your starter relics below to outfit your hero.", EMPTY_CHEST_ART))
 		return
+	var count_label := Label.new()
+	count_label.text = "%d RELICS CARRIED  ·  SELECT TO INSPECT" % inv.size()
+	count_label.add_theme_font_size_override("font_size", 13)
+	count_label.add_theme_color_override("font_color", Color(0.72, 0.67, 0.55))
+	_items_box.add_child(count_label)
 	for item in inv:
-		var b := Button.new()
-		b.focus_mode = Control.FOCUS_NONE
-		b.custom_minimum_size = Vector2(0, 50)
-		var col: Color = RARITY_COLORS.get(item.get("rarity", "common"), Color.WHITE)
-		_label_button(b, "%s (%s)" % [item.get("name", "?"), _pretty(item.get("slot", ""))], col)
-		b.pressed.connect(_show_item_detail.bind(item))
-		_items_box.add_child(b)
+		_items_box.add_child(_item_card(item))
+
+func _item_card(item: Dictionary) -> Button:
+	var rarity := str(item.get("rarity", "common"))
+	var accent: Color = RARITY_COLORS.get(rarity, Color.WHITE)
+	var card := Button.new()
+	card.name = "RelicItemCard"
+	card.focus_mode = Control.FOCUS_NONE
+	card.toggle_mode = true
+	card.button_group = _item_group
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.custom_minimum_size = Vector2(0, 76)
+	for state in ["normal", "hover", "pressed", "hover_pressed"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("#1b2430") if state == "normal" else Color("#2b3240") if state == "hover" else Color("#302a20")
+		style.border_color = Color(accent, 0.55 if state == "normal" else 0.88)
+		style.set_border_width_all(1)
+		style.border_width_left = 3
+		style.set_corner_radius_all(5)
+		style.shadow_color = Color(0, 0, 0, 0.28)
+		style.shadow_size = 3
+		card.add_theme_stylebox_override(state, style)
+	var content := HBoxContainer.new()
+	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 15
+	content.offset_right = -14
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(content)
+	var labels := VBoxContainer.new()
+	labels.alignment = BoxContainer.ALIGNMENT_CENTER
+	labels.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	labels.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(labels)
+	var name_label := Label.new()
+	name_label.text = str(item.get("name", "?"))
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.max_lines_visible = 2
+	name_label.add_theme_font_override("font", _title_font())
+	name_label.add_theme_font_size_override("font_size", 20)
+	name_label.add_theme_color_override("font_color", accent.lightened(0.18))
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	labels.add_child(name_label)
+	var meta_label := Label.new()
+	meta_label.text = "%s  ·  %s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper()]
+	meta_label.add_theme_font_size_override("font_size", 13)
+	meta_label.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
+	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	labels.add_child(meta_label)
+	var inspect_label := Label.new()
+	inspect_label.text = "INSPECT  ›"
+	inspect_label.add_theme_font_size_override("font_size", 13)
+	inspect_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.46))
+	inspect_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	inspect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(inspect_label)
+	card.pressed.connect(_show_item_detail.bind(item))
+	return card
 
 func _show_item_detail(item: Dictionary) -> void:
 	Sfx.play("select")
 	_clear_after(_detail_box, 2)
 	_detail_box.add_child(_detail_title(item))
+	_detail_box.add_child(_detail_meta(item, false))
 	_detail_box.add_child(_wrap_label(str(item.get("desc", ""))))
 	# comparison vs currently equipped in same slot
 	var slot: String = str(item.get("slot", ""))
@@ -252,12 +315,14 @@ func _show_item_detail(item: Dictionary) -> void:
 		ProfileManager.equip_item(item)
 		_clear_after(_detail_box, 2)
 		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
+	_style_primary(eq)
 	_detail_box.add_child(eq)
 
 func _show_equipped_detail(slot: String, item: Dictionary) -> void:
 	Sfx.play("select")
 	_clear_after(_detail_box, 2)
 	_detail_box.add_child(_detail_title(item))
+	_detail_box.add_child(_detail_meta(item, true))
 	_detail_box.add_child(_wrap_label(str(item.get("desc", ""))))
 	_detail_box.add_child(_stats_block(item, null))
 	var uq := _button("Unequip", func():
@@ -275,6 +340,14 @@ func _detail_title(item: Dictionary) -> Label:
 	l.add_theme_color_override("font_color", RARITY_COLORS.get(item.get("rarity", "common"), Color.WHITE))
 	return l
 
+func _detail_meta(item: Dictionary, equipped: bool) -> Label:
+	var rarity := str(item.get("rarity", "common"))
+	var label := Label.new()
+	label.text = "%s  ·  %s%s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper(), "  ·  EQUIPPED" if equipped else ""]
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", RARITY_COLORS.get(rarity, Color.WHITE))
+	return label
+
 func _stats_block(item: Dictionary, compare) -> VBoxContainer:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 8)
@@ -287,20 +360,44 @@ func _stats_block(item: Dictionary, compare) -> VBoxContainer:
 	var stats: Dictionary = item.get("stats", {})
 	var cmp: Dictionary = compare.get("stats", {}) if compare else {}
 	for k in stats:
-		var row := Label.new()
-		var line := "%s   +%s" % [_pretty(k).to_upper(), str(stats[k])]
-		var row_color := Color(0.72, 0.94, 0.76)
+		var row := PanelContainer.new()
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.07, 0.10, 0.13, 0.86)
+		style.border_color = Color(0.68, 0.57, 0.37, 0.30)
+		style.set_border_width_all(1)
+		style.border_width_left = 3
+		style.set_corner_radius_all(4)
+		style.content_margin_left = 13
+		style.content_margin_right = 13
+		style.content_margin_top = 9
+		style.content_margin_bottom = 9
+		row.add_theme_stylebox_override("panel", style)
+		var content := VBoxContainer.new()
+		content.add_theme_constant_override("separation", 2)
+		row.add_child(content)
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 8)
+		content.add_child(line)
+		var stat_name := Label.new()
+		stat_name.text = _pretty(str(k)).to_upper()
+		stat_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		stat_name.add_theme_font_size_override("font_size", 15)
+		stat_name.add_theme_color_override("font_color", Color(0.78, 0.75, 0.65))
+		line.add_child(stat_name)
+		var stat_value := Label.new()
+		stat_value.text = "+%s" % str(stats[k])
+		stat_value.add_theme_font_size_override("font_size", 20)
+		stat_value.add_theme_color_override("font_color", Color(0.82, 0.95, 0.84))
+		line.add_child(stat_value)
 		if compare != null and compare.get("slot", "") == item.get("slot", ""):
 			var delta = float(stats[k]) - float(cmp.get(k, 0))
-			var sign := "+" if delta >= 0 else ""
-			line += "   ·   %s%s VS EQUIPPED" % [sign, str(delta)]
-			if delta < 0:
-				row_color = Color(0.96, 0.67, 0.58)
-		row.text = line
-		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		row.add_theme_font_override("font", ThemeDB.fallback_font)
-		row.add_theme_font_size_override("font_size", 19)
-		row.add_theme_color_override("font_color", row_color)
+			var delta_label := Label.new()
+			var signed_delta := "%+.0f" % delta if absf(delta - roundf(delta)) < 0.0001 else "%+.2f" % delta
+			delta_label.text = "%s VS EQUIPPED" % signed_delta
+			delta_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			delta_label.add_theme_font_size_override("font_size", 16)
+			delta_label.add_theme_color_override("font_color", Color(0.58, 0.86, 0.64) if delta >= 0 else Color(0.96, 0.67, 0.58))
+			content.add_child(delta_label)
 		v.add_child(row)
 	if stats.is_empty():
 		var none := Label.new()
