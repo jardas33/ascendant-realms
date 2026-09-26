@@ -594,6 +594,10 @@ func _scatter_environment() -> void:
 	_ground_cover.name = "GroundCover"
 	add_child(_ground_cover)
 	_ground_cover.build(map, str(map.get("theme", "highland")))
+	var weather: Node3D = load("res://scripts/world/ambient_weather.gd").new()
+	weather.name = "AmbientWeather"
+	add_child(weather)
+	weather.build(str(map.get("theme", "highland")))
 
 ## Clears grass and flowers inside a circle, e.g. under a new building.
 func clear_ground_cover(pos: Vector3, radius: float) -> void:
