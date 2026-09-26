@@ -40,6 +40,13 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Unit packed-metal cap at 0.3 |
 | 7d0618a2 | Team-coloured combat rings (player blue, hostile red), friendly bars stay green until low, thicker bars; smaller hit glow |
 | b8b671a8 | All themes get the battlefield grade (haze thinned 45%); every map builds faction start dressing via build_faction_start |
+| 41c0d0fe | Tropical grade; bloom zone damped on snow |
+| ea52e577 | Entity snapshots invalidated on configure/exit; r730a observation window in physics ticks |
+| bc957d53 | Victory/defeat result ledger |
+| e983b0a9 | Edge scroll only when focused and cursor inside |
+| c0fbcf27 | Placement ghost mirrors Building model prep, keeps textures |
+
+All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 
 The free character pipeline is documented in `tools/charpipe/README.md`. Only the user can run the Hugging Face upload step.
 
