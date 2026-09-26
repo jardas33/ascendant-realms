@@ -64,6 +64,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Selection rings (units and buildings) use selection_ring.gdshader via CombatVfx.selection_ring_material: glowing ring with slowly turning brackets. Capture points: capture_zone.gdshader rune circle over the true 7.5 m radius with a progress arc in the contesting colour, capture_beam.gdshader soft light column |
 | (latest) | Chapel capture sites are composed (MapDefs.RUIN = "composed:ruin_chapel", CapturePoint._build_ruin_chapel: pillar ring, fallen column, cairn altar with green light; only the altar collides) instead of reusing the Lume Spire. The boundary marker (Z-up GLB) is stood upright and moved out of the chapel ring |
 | (latest) | Vision capture sites are composed (MapDefs.WATCH, CapturePoint._build_highland_watch). Health bars also show for 5 s after any hit. Scattered oaks 5-7.5 m, pines 6-9 m (were 6.5-10.5 m; canopies swallowed squads) |
+| (latest) | Food resource nodes use assets/props/misc/resource_harvest_grain.glb (tools/blender/generateHarvestFoodNode.py: tilled soil, grain tufts, stook, loose sheaves, sacks), height 1.5; previously the timber pile |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 
