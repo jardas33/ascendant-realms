@@ -405,9 +405,9 @@ func _build_barrosan_base_ground_slice(parent: Node3D, origin: Vector3) -> void:
 	var ground := Node3D.new()
 	ground.name = "BarrosanBaseGroundSlice"
 	parent.add_child(ground)
-	var contact_dirt := _slice_material("BarrosanContactDirt", Color(0.58, 0.50, 0.40, 0.42), SLICE_DIRT_TEXTURE)
-	var yard_dirt := _slice_material("BarrosanWorkingYard", Color(0.62, 0.51, 0.38, 0.48), SLICE_DIRT_TEXTURE)
-	var track_dirt := _slice_material("BarrosanPrimaryTrack", Color(0.68, 0.55, 0.39, 0.62), SLICE_DIRT_TEXTURE)
+	var contact_dirt := _slice_material("BarrosanContactDirt", Color(0.58, 0.50, 0.40, 0.42), SLICE_DIRT_TEXTURE, true)
+	var yard_dirt := _slice_material("BarrosanWorkingYard", Color(0.62, 0.51, 0.38, 0.48), SLICE_DIRT_TEXTURE, true)
+	var track_dirt := _slice_material("BarrosanPrimaryTrack", Color(0.60, 0.50, 0.38, 0.55), SLICE_DIRT_TEXTURE)
 	var edge_rock := _slice_material("BarrosanEdgeRock", Color("8f9089"), SLICE_ROCK_TEXTURE)
 
 	# Formal Clanhold threshold and a compact military working yard beside it.
@@ -456,7 +456,17 @@ func _build_barrosan_r2_dressing(parent: Node3D, origin: Vector3) -> void:
 		)
 
 
-func _slice_material(material_name: String, color: Color, texture_path: String = "") -> StandardMaterial3D:
+func _slice_material(material_name: String, color: Color, texture_path: String = "", radial: bool = false) -> Material:
+	if color.a < 0.99 and not texture_path.is_empty() and ResourceLoader.exists(texture_path):
+		# Translucent wear (tracks, yards, lanes) fades out at a noisy edge; the
+		# hard-edged translucent panels read as coloured overlays on the grass.
+		var soft := ShaderMaterial.new()
+		soft.resource_name = material_name
+		soft.shader = load("res://assets/shaders/ground_wear_soft.gdshader")
+		soft.set_shader_parameter("dirt_tex", load(texture_path))
+		soft.set_shader_parameter("tint", color)
+		soft.set_shader_parameter("radial", radial)
+		return soft
 	var material := StandardMaterial3D.new()
 	material.resource_name = material_name
 	material.albedo_color = color
