@@ -3,6 +3,8 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const EMPTY_CHEST_ART := "res://assets/ui/inventory/astra_empty_war_chest_r1.png"
+const EMPTY_RELIC_ART := "res://assets/ui/inventory/astra_empty_relic_cradle_r1.png"
 const MENU_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 const SLOTS := ["main_hand", "off_hand", "head", "body", "hands", "feet",
@@ -152,7 +154,7 @@ func _refresh() -> void:
 	_rebuild_slots()
 	_rebuild_items()
 	if _detail_box.get_child_count() <= 2:
-		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers, compare it to equipped gear, and prepare it for battle."))
+		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers, compare it to equipped gear, and prepare it for battle.", EMPTY_RELIC_ART))
 	var hero := ProfileManager.hero()
 	_grant_button.visible = (hero.get("inventory", []) as Array).is_empty() and (hero.get("equipment", {}) as Dictionary).is_empty()
 
@@ -226,7 +228,7 @@ func _rebuild_items() -> void:
 	_clear_after(_items_box, 2)
 	var inv: Array = ProfileManager.hero().get("inventory", [])
 	if inv.is_empty():
-		_items_box.add_child(_empty_message("NO RELICS CARRIED", "The chest is empty. Claim your starter relics below to outfit your hero."))
+		_items_box.add_child(_empty_message("NO RELICS CARRIED", "The chest is empty. Claim your starter relics below to outfit your hero.", EMPTY_CHEST_ART))
 		return
 	for item in inv:
 		var b := Button.new()
@@ -249,7 +251,7 @@ func _show_item_detail(item: Dictionary) -> void:
 	var eq := _button("Equip", func():
 		ProfileManager.equip_item(item)
 		_clear_after(_detail_box, 2)
-		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.")))
+		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
 	_detail_box.add_child(eq)
 
 func _show_equipped_detail(slot: String, item: Dictionary) -> void:
@@ -261,7 +263,7 @@ func _show_equipped_detail(slot: String, item: Dictionary) -> void:
 	var uq := _button("Unequip", func():
 		ProfileManager.unequip_slot(slot)
 		_clear_after(_detail_box, 2)
-		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.")))
+		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
 	_detail_box.add_child(uq)
 
 func _detail_title(item: Dictionary) -> Label:
@@ -341,20 +343,34 @@ func _wrap_label(text: String) -> Label:
 	l.add_theme_font_size_override("font_size", 19)
 	return l
 
-func _empty_message(title_text: String, body_text: String) -> VBoxContainer:
+func _empty_message(title_text: String, body_text: String, art_path: String = "") -> VBoxContainer:
 	var content := VBoxContainer.new()
-	content.custom_minimum_size = Vector2(0, 340)
+	var has_art := not art_path.is_empty() and ResourceLoader.exists(art_path)
+	var chest_art := art_path == EMPTY_CHEST_ART
+	content.custom_minimum_size = Vector2(0, 500 if chest_art else (420 if has_art else 340))
 	content.add_theme_constant_override("separation", 14)
 	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 68)
+	spacer.custom_minimum_size = Vector2(0, 16 if chest_art else (30 if has_art else 68))
 	content.add_child(spacer)
-	var sigil := Label.new()
-	sigil.text = "◆"
-	sigil.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sigil.add_theme_font_override("font", ThemeDB.fallback_font)
-	sigil.add_theme_font_size_override("font_size", 62)
-	sigil.add_theme_color_override("font_color", Color(0.76, 0.63, 0.40, 0.8))
-	content.add_child(sigil)
+	if has_art:
+		var artwork := TextureRect.new()
+		artwork.name = "EmptyChestArtwork" if chest_art else "EmptyRelicArtwork"
+		artwork.texture = load(art_path)
+		artwork.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		artwork.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		artwork.custom_minimum_size = Vector2(340, 300) if chest_art else Vector2(260, 250)
+		artwork.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		content.add_child(artwork)
+	else:
+		var sigil := Label.new()
+		sigil.text = "◆"
+		sigil.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sigil.add_theme_font_override("font", ThemeDB.fallback_font)
+		sigil.add_theme_font_size_override("font_size", 62)
+		sigil.add_theme_color_override("font_color", Color(0.76, 0.63, 0.40, 0.8))
+		content.add_child(sigil)
 	var heading := Label.new()
 	heading.text = title_text
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
