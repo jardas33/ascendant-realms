@@ -792,7 +792,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.accent = accent
 	btn.command_kind = command_kind
 	btn.command_state = state
-	var card_height := 96 if has_preview else (74 if ability_card else 60)
+	var card_height := 96 if has_preview else (86 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -833,11 +833,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(text_col)
 	else:
 		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
+		var featured_ability := command_kind == "ABILITY"
 		var field_order_art := command_kind == "ORDER" and _command_icon_kind(title, command_kind) in ["attack", "stop", "hold", "patrol"]
 		var glyph_plate := PanelContainer.new()
 		glyph_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph_plate.position = Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
-		glyph_plate.size = Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38))
+		glyph_plate.position = Vector2(4, 4) if featured_ability else Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
+		glyph_plate.size = Vector2(68, 68) if featured_ability else (Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38)))
 		glyph_plate.custom_minimum_size = glyph_plate.size
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
 		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
@@ -850,7 +851,8 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(unit_art)
 			unit_art.configure_definition(unit_art_definition, false)
 		else:
-			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, 44.0 if painted_emblem or field_order_art else 28.0)
+			var glyph_size := 60.0 if featured_ability else (44.0 if painted_emblem or field_order_art else 28.0)
+			var glyph := _mk_command_icon(emblem_id if painted_emblem else _command_icon_kind(title, command_kind), accent, glyph_size)
 			glyph.name = "CommandEmblem" if painted_emblem or field_order_art else "CommandGlyph"
 			if painted_emblem and state in ["LOCKED", "COMPLETED"]:
 				glyph.modulate = Color(0.72, 0.77, 0.80, 0.76)
@@ -859,7 +861,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6))
+		text_col.position = Vector2(82, 8) if featured_ability else (Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6)))
 		var text_height := card_height - 10
 		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
 		text_col.size = Vector2(text_width, text_height)
@@ -868,12 +870,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var title_color := Color(0.69, 0.70, 0.68, 0.9) if state in ["LOCKED", "COMPLETED"] else FONT_COLOR
 		var detail_color := Color(0.57, 0.60, 0.59, 0.9) if state in ["LOCKED", "COMPLETED"] else Color(0.86, 0.84, 0.76)
-		var title_label := _mk_label(title, 18, title_color)
+		var title_label := _mk_label(title, 20 if featured_ability else 18, title_color)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var detail_label := _mk_label(detail_text, 14, detail_color)
+		var detail_label := _mk_label(detail_text, 15 if featured_ability else 14, detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if command_kind in ["TRAIN", "RESEARCH"] else TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if command_kind in ["TRAIN", "RESEARCH"] else TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -344,6 +344,12 @@ func _run() -> void:
 				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
 				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally" or rally_art.get("visual_faction") != player_race:
 					validation_errors.append("rally_art_missing")
+				else:
+					var ability_button := rally_art.get_parent().get_parent() as Button
+					var ability_labels := ability_button.find_children("*", "Label", true, false)
+					var ability_title := ability_labels[0] as Label if not ability_labels.is_empty() else null
+					if not ability_button.get_global_rect().encloses(rally_art.get_global_rect()) or not is_instance_valid(ability_title) or rally_art.get_global_rect().end.x >= ability_title.get_global_rect().position.x:
+						validation_errors.append("rally_art_overlaps_card_copy")
 			if selected_kind in ["building_queued", "war_hall_queued"]:
 				var queue = hud._queue_container
 				if not is_instance_valid(queue) or queue.get_child_count() == 0:
@@ -438,9 +444,42 @@ func _run() -> void:
 		if selected_kind == "hero" and card_by_title.has("Rallying Cry"):
 			var hero = instance.rts.selected[0]
 			var mana_before: float = float(hero.mana)
-			card_by_title["Rallying Cry"].pressed.emit()
-			if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
-				validation_errors.append("rallying_cry_button_did_not_cast")
+			# Order actions can rebuild the command deck. Resolve the live card
+			# again before delivering a pointer event to its current on-screen rect.
+			var live_ability_button: Button = null
+			for button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
+				if not button.has_meta("command_kind"):
+					continue
+				for label in button.find_children("*", "Label", true, false):
+					if label.text == "Rallying Cry":
+						live_ability_button = button
+						break
+				if live_ability_button != null:
+					break
+			if live_ability_button == null:
+				validation_errors.append("rallying_cry_card_missing_after_orders")
+			else:
+				if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
+					var ability_center: Vector2 = live_ability_button.get_global_rect().get_center()
+					Input.warp_mouse(root.get_viewport().get_screen_transform() * ability_center)
+					await process_frame
+					var ability_motion := InputEventMouseMotion.new()
+					ability_motion.position = ability_center
+					ability_motion.global_position = ability_center
+					root.get_viewport().push_input(ability_motion, true)
+					await process_frame
+					for down in [true, false]:
+						var ability_click := InputEventMouseButton.new()
+						ability_click.button_index = MOUSE_BUTTON_LEFT
+						ability_click.pressed = down
+						ability_click.position = ability_center
+						ability_click.global_position = ability_center
+						root.get_viewport().push_input(ability_click, true)
+						await process_frame
+				else:
+					live_ability_button.pressed.emit()
+				if hero.mana >= mana_before or float(hero.ability_cd.get("rally", 0.0)) <= 0.0:
+					validation_errors.append("rallying_cry_button_did_not_cast_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "rallying_cry_button_did_not_cast")
 		if selected_kind == "worker":
 			var worker_race := String(instance.world.commanders[0].race)
 			var expected_art_count := 5 if worker_race == "barrosan" else (6 if worker_race == "lioraen" else 0)
