@@ -279,8 +279,10 @@ static func theme(name: String) -> Dictionary:
 		"tropical": {
 			"ground_tint": Color(0.9, 1.05, 0.82), "dirt_bias": 0.0, "rock_bias": 0.0, "snow": 0.0,
 			"rock_tint": Color(0.6, 0.64, 0.52),
-			"fog_color": Color(0.7, 0.85, 0.85), "fog_density": 0.0014,
+			"fog_color": Color(0.7, 0.85, 0.85), "fog_density": 0.00077,
 			"sun_color": Color(1.0, 0.98, 0.9), "sun_energy": 1.25, "ambient_energy": 0.7,
+			"fog_aerial_perspective": 0.35, "ssao": true, "glow": true, "sun_pitch": -42.0,
+			"grade_contrast": 1.07, "grade_saturation": 0.92, "grade_brightness": 1.0,
 			"decor_density": 1.3,
 			"water": {"enabled": true, "deep": Color(0.05, 0.42, 0.5), "shallow": Color(0.16, 0.72, 0.72), "foam": Color(0.9, 1.0, 1.0)},
 		},

@@ -200,7 +200,7 @@ void fragment() {
 		float zone = (1.0 - smoothstep(0.55, 1.0, edge));
 		if (scorch_zones[i].w < 0.0) {
 			// Bloom meadow: deeper, saturated green with pale gold-green blossoms.
-			float bloom = zone * -scorch_zones[i].w;
+			float bloom = zone * -scorch_zones[i].w * (1.0 - 0.8 * clamp(snow_amt, 0.0, 1.0)); // a grove thaws snow a little, not into teal
 			vec3 lush = ground * vec3(0.78, 1.12, 0.62);
 			float petals = smoothstep(0.78, 0.9, fbm(wxz * 1.7 + float(i) * 7.0));
 			lush = mix(lush, vec3(0.86, 0.92, 0.58), petals * 0.55);
