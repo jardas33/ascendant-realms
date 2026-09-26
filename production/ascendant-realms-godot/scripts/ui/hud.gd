@@ -1393,12 +1393,19 @@ func _draw_minimap() -> void:
 		return
 	var size := _minimap.size
 	if is_instance_valid(world):
-		_ensure_minimap_background()
-		if is_instance_valid(_minimap_background):
-			_minimap.draw_texture_rect(_minimap_background, Rect2(Vector2.ZERO, size), false)
+		var overview = world.get("overview_texture")
+		if overview is Texture2D:
+			# The real battlefield, rendered top-down at match start, dimmed a
+			# touch so live markers stay the brightest thing on the map.
+			_minimap.draw_texture_rect(overview, Rect2(Vector2.ZERO, size), false, Color(0.86, 0.86, 0.84))
+			_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.03, 0.03, 0.10), true)
 		else:
-			_minimap.draw_rect(Rect2(Vector2.ZERO, size), _minimap_theme_color(str(world.map.get("theme", "highland")), false), true)
-		_draw_minimap_terrain(size)
+			_ensure_minimap_background()
+			if is_instance_valid(_minimap_background):
+				_minimap.draw_texture_rect(_minimap_background, Rect2(Vector2.ZERO, size), false)
+			else:
+				_minimap.draw_rect(Rect2(Vector2.ZERO, size), _minimap_theme_color(str(world.map.get("theme", "highland")), false), true)
+			_draw_minimap_terrain(size)
 		_draw_minimap_visibility(size)
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:

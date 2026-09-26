@@ -48,6 +48,8 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | 3d43e08b | Walkable river ford (ford_water shader + ground-shader riverbed) under bridges on the 6 bridge maps; decor/shelves kept off it |
 | 0b8155a9 | Construction rises (multi-part bottom-up reveal, single-mesh upward growth) instead of a 60% transparency fade |
 | (latest) | Order markers: soft ring collapses onto the target with inward chevrons for attack/attack-move (CombatVfx.order_marker); ability rings are soft expanding shockwaves (CombatVfx.shockwave) |
+| (latest) | Minimap shows the real battlefield: game_world._bake_overview_texture renders one orthographic top-down picture at match start (units, buildings, objectives, FX and fog moved to a skipped layer; skipped headless); hud falls back to the old raster if absent |
+| (latest) | Ground/water value-noise hash replaced with an integer hash: the old fract hash lost GPU precision and drew hard 20-50 m square seams across the ground |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 
@@ -69,6 +71,5 @@ Each one documents its command line in its docstring. The worker script takes th
 
 - Only the Barrosan worker was rebuilt. The Lioraen and Vorthak workers and the military units still need the same pass.
 - Lioraen has no faction settlement kit yet, and the Groveheart still reads as toy-like.
-- The minimap is still a grid with no terrain.
 - The menus outside battle (skirmish setup, skill tree label truncation, War Chest, campaign map) are untouched.
 - 2135 draw calls in the opening. A MultiMesh pass for decor would be the next render-side win.

@@ -100,6 +100,9 @@ var _visibility_columns := 0
 var _visibility_rows := 0
 var _visibility_timer := 0.0
 var _visibility_overlay: MeshInstance3D
+## Top-down picture of the battlefield (terrain, water, trees, bases), rendered
+## once at match start for the minimap. Null until the bake finishes.
+var overview_texture: Texture2D = null
 var _visibility_overlay_material: ShaderMaterial
 var _visibility_image: Image
 var _visibility_texture: ImageTexture
@@ -2274,9 +2277,80 @@ func _prewarm_combat_presentation() -> void:
 		p.global_position = spot
 		get_tree().create_timer(0.6).timeout.connect(p.queue_free)
 
+const OVERVIEW_BAKE_SIZE := 384
+const OVERVIEW_HIDDEN_LAYER := 1 << 19
+
+func _bake_overview_texture() -> void:
+	# One orthographic render of the static battlefield for the minimap. Units,
+	# buildings, objectives, effects and the fog shroud are moved to a layer the
+	# bake camera skips (the main camera still draws them), so nothing live or
+	# hidden by fog is baked in. Presentation only.
+	if DisplayServer.get_name() == "headless":
+		return
+	var half := float(map.get("size", 140.0))
+	var vp := SubViewport.new()
+	vp.name = "OverviewBake"
+	vp.size = Vector2i(OVERVIEW_BAKE_SIZE, OVERVIEW_BAKE_SIZE)
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	vp.msaa_3d = Viewport.MSAA_4X
+	var cam := Camera3D.new()
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = half * 2.0
+	cam.near = 1.0
+	cam.far = 200.0
+	cam.cull_mask = 0xFFFFF & ~OVERVIEW_HIDDEN_LAYER
+	var env_node := get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if env_node and env_node.environment:
+		var env: Environment = env_node.environment.duplicate()
+		env.fog_enabled = false
+		env.volumetric_fog_enabled = false
+		env.ssao_enabled = false
+		env.ssr_enabled = false
+		env.glow_enabled = false
+		cam.environment = env
+	vp.add_child(cam)
+	add_child(vp)
+	cam.global_position = Vector3(0.0, 90.0, 0.0)
+	cam.look_at(Vector3.ZERO, Vector3(0, 0, -1))
+	cam.current = true
+	var moved: Array = []
+	var roots: Array = []
+	roots.append_array(all_units())
+	roots.append_array(all_buildings())
+	roots.append_array(get_tree().get_nodes_in_group("capture_points"))
+	roots.append(_fx_container)
+	roots.append(_projectile_container)
+	if is_instance_valid(_visibility_overlay):
+		roots.append(_visibility_overlay)
+	for r in roots:
+		if not is_instance_valid(r):
+			continue
+		var visuals: Array = r.find_children("*", "VisualInstance3D", true, false)
+		if r is VisualInstance3D:
+			visuals.append(r)
+		for v in visuals:
+			moved.append([v, v.layers])
+			v.layers = OVERVIEW_HIDDEN_LAYER
+	# Two frames: the first registers the bake camera, the second draws with it.
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	for entry in moved:
+		if is_instance_valid(entry[0]):
+			entry[0].layers = entry[1]
+	if not is_instance_valid(vp):
+		return
+	var img := vp.get_texture().get_image()
+	vp.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	vp.queue_free()
+	if img == null or img.is_empty():
+		return
+	img.generate_mipmaps()
+	overview_texture = ImageTexture.create_from_image(img)
+
 func _start_match() -> void:
 	game_running = true
 	_prewarm_combat_presentation()
+	_bake_overview_texture()
 	_visibility_timer = VISIBILITY_UPDATE_INTERVAL
 	_update_player_visibility()
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
