@@ -236,11 +236,13 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	_compact_building_fill.light_energy = (2.4 if not is_building else 1.4) if compact_card else 1.0
 	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
 	if is_building and not compact_card:
-		# Wide structures need a three-quarter architectural view; character
-		# framing used to crop the building down to one wall texture.
-		distance = maxf(3.55, model_radius * 2.55 + 0.5)
-		_camera.position = Vector3(distance * 0.48, target_height * 1.48, distance)
-		_camera.fov = 58.0
+		# Broad structures need a three-quarter architectural view. A slender
+		# tower occupies only a few pixels with that same camera, so let its live
+		# model fill the portrait aperture without cropping the roof or footing.
+		var narrow_structure := model_radius < target_height * 0.16
+		distance = 2.3 if narrow_structure else maxf(3.55, model_radius * 2.55 + 0.5)
+		_camera.position = Vector3(distance * (0.34 if narrow_structure else 0.48), target_height * (1.05 if narrow_structure else 1.48), distance)
+		_camera.fov = 50.0 if narrow_structure else 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	elif compact_card and bool(definition.get("is_siege", false)):
 		distance = maxf(3.1, model_radius * 2.4 + 0.45)

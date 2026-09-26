@@ -2488,7 +2488,9 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var building_name := _mk_label(identity_text, 18, identity_color)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
-	building_header.add_child(_mk_command_badge("BUILDING", Color(0.93, 0.72, 0.32) if not read_only else Color(1.0, 0.55, 0.45), 70.0))
+	var building_badge_text := "BUILDING" if b.is_built else "BUILD SITE"
+	var building_badge_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.93, 0.72, 0.32)
+	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, 70.0 if b.is_built else 85.0))
 	identity_info.add_child(building_header)
 	identity_info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -2904,7 +2906,7 @@ func _add_command_context(single, selection: Array) -> void:
 		accent = COMMAND_SKY if single.is_hero else (COMMAND_MINT if single.is_worker else COMMAND_FLAME)
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
-		role = "BUILDING"
+		role = "BUILDING" if single.is_built else "BUILD SITE"
 		subtitle = "Production and research" if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
