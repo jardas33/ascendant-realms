@@ -2,6 +2,7 @@ extends PanelContainer
 ## Cut-corner vellum and forged-metal backing for the hero's progression.
 
 var surface_alpha := 0.87
+var surface_alpha_bottom := 0.87
 
 
 func _ready() -> void:
@@ -19,7 +20,11 @@ func _draw() -> void:
 		Vector2(cut, 0), Vector2(w - cut, 0), Vector2(w, cut),
 		Vector2(w, h - cut), Vector2(w - cut, h), Vector2(cut, h),
 		Vector2(0, h - cut), Vector2(0, cut)])
-	draw_polygon(shape, PackedColorArray([Color(0.018, 0.027, 0.039, surface_alpha)]))
+	var top_ink := Color(0.018, 0.027, 0.039, surface_alpha)
+	var bottom_ink := Color(0.018, 0.027, 0.039, surface_alpha_bottom)
+	draw_polygon(shape, PackedColorArray([
+		top_ink, top_ink, top_ink, bottom_ink,
+		bottom_ink, bottom_ink, bottom_ink, top_ink]))
 	var gilt := Color(0.80, 0.66, 0.42, 0.72)
 	draw_polyline(PackedVector2Array([Vector2(0, h - cut), Vector2(0, cut), Vector2(cut, 0), Vector2(w - cut, 0)]), gilt, 1.6, true)
 	draw_line(Vector2(w - cut, 0), Vector2(w, cut), gilt.darkened(0.18), 1.2, true)

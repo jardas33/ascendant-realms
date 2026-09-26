@@ -132,7 +132,9 @@ func _column(header: String, assign: Callable) -> Control:
 	var panel: PanelContainer = MENU_PLATE_SCRIPT.new()
 	if _barrosan_vault_active:
 		var panel_alpha := 0.76 if header == "Equipped" else (0.70 if header == "Details" else 0.64)
+		var panel_bottom_alpha := 0.66 if header == "Equipped" else (0.22 if header == "Details" else 0.18)
 		panel.set("surface_alpha", panel_alpha)
+		panel.set("surface_alpha_bottom", panel_bottom_alpha)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color.TRANSPARENT
