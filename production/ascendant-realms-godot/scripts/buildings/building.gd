@@ -1193,6 +1193,62 @@ func take_damage(amount: float, from = null) -> void:
 	if hp <= 0.0:
 		_destroy(from)
 
+var _damage_smoke: Array = []
+static var _dark_smoke: ParticleProcessMaterial
+
+static func _dark_smoke_process(base: Material) -> ParticleProcessMaterial:
+	# Battle smoke is thick and sooty, not the pale hearth smoke of the hamlet.
+	if _dark_smoke == null and base is ParticleProcessMaterial:
+		_dark_smoke = (base as ParticleProcessMaterial).duplicate()
+		var fade := Gradient.new()
+		fade.set_color(0, Color(0.12, 0.10, 0.09, 0.0))
+		fade.set_color(1, Color(0.30, 0.29, 0.29, 0.0))
+		fade.add_point(0.1, Color(0.10, 0.09, 0.08, 0.8))
+		fade.add_point(0.6, Color(0.24, 0.23, 0.23, 0.45))
+		var ramp := GradientTexture1D.new()
+		ramp.gradient = fade
+		_dark_smoke.color_ramp = ramp
+		_dark_smoke.initial_velocity_min = 1.4
+		_dark_smoke.initial_velocity_max = 2.0
+	return _dark_smoke
+var _damage_fires: Array = []
+
+## Battle damage you can see from across the map: smoke rises from a
+## building below 70% health, and flames break out below 40%. Both go away
+## again when it is repaired. Presentation only.
+func _update_damage_fires(ratio: float) -> void:
+	var top := _presentation_height()
+	var want_smoke := 0 if ratio >= 0.7 else (1 if ratio >= 0.4 else 2)
+	var want_fire := 0 if ratio >= 0.4 else (1 if ratio >= 0.2 else 2)
+	var spots := [Vector3(footprint * 0.35, top * 0.98, -footprint * 0.2), Vector3(-footprint * 0.3, top * 0.9, footprint * 0.3)]
+	while _damage_smoke.size() < want_smoke:
+		var smoke := ChimneySmoke.new()
+		smoke.name = "DamageSmoke"
+		add_child(smoke)
+		smoke.position = spots[_damage_smoke.size()]
+		smoke.scale = Vector3.ONE * 1.6
+		smoke.amount = 22
+		smoke.process_material = _dark_smoke_process(smoke.process_material)
+		_damage_smoke.append(smoke)
+	while _damage_smoke.size() > want_smoke:
+		var old = _damage_smoke.pop_back()
+		if is_instance_valid(old):
+			old.queue_free()
+	while _damage_fires.size() < want_fire:
+		var fire := BrazierFire.new()
+		fire.name = "DamageFire"
+		fire.flame_scale = 2.2
+		fire.light_energy = 2.8
+		fire.light_range = 9.0
+		add_child(fire)
+		fire.position = spots[_damage_fires.size()] - Vector3(0, 0.3, 0)
+		fire.scale = Vector3.ONE * 2.4
+		_damage_fires.append(fire)
+	while _damage_fires.size() > want_fire:
+		var old = _damage_fires.pop_back()
+		if is_instance_valid(old):
+			old.queue_free()
+
 func _update_damage_visual() -> void:
 	var ratio := get_hp_ratio()
 	var damaged := is_built and not is_dead and ratio < 0.99
@@ -1205,6 +1261,7 @@ func _update_damage_visual() -> void:
 		_damage_status_fill.visible = damaged
 		_damage_status_fill.scale.x = maxf(0.02, ratio)
 		_damage_status_fill.position.x = width * (clampf(ratio, 0.0, 1.0) - 1.0) * 0.5
+	_update_damage_fires(ratio if is_built and not is_dead else 1.0)
 	if ratio < 0.35:
 		for mi in _mesh_instances:
 			if is_instance_valid(mi):

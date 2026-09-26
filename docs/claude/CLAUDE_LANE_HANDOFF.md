@@ -67,6 +67,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Food resource nodes use assets/props/misc/resource_harvest_grain.glb (tools/blender/generateHarvestFoodNode.py: tilled soil, grain tufts, stook, loose sheaves, sacks), height 1.5; previously the timber pile |
 | (latest) | Deaths leave CombatVfx.battle_scar (battle_scar.gdshader churned dark earth, fades after 18+8 s, max 40 live) and trample the grass (clear_ground_cover r=0.9). Food GLB colours are sRGB converted to linear in the Blender script |
 | (latest) | Timber and gold resource sites: resource_timber_stack.glb and resource_gold_vein.glb (tools/blender/generateTimberAndGoldNodes.py; heights 1.6 and 2.6), added to the loading-screen preload list; the old timber pile and gold-mine models are no longer used for resources |
+| (latest) | Damaged buildings: building._update_damage_fires adds sooty ChimneySmoke below 70% health (2 below 40%) and BrazierFire flames below 40% (2 below 20%), removed on repair. Scorch zones get cellular cracked-basalt plates with ember seams (ground_blend crack_dist). Minimap unexplored shroud alpha 0.54 to 0.44 |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 

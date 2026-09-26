@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-26, 22:05 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-26, 23:15 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -59,7 +59,7 @@ Last updated: 2026-09-26, 22:05 UTC. Claude updates this file after every pass.
 - **Fog of war:** it looks like drifting mist with soft, moving edges and extends past the map border.
 - **Faction starting bases:**
   - A lived-in Barrosan hamlet with houses, chimney smoke, lanterns, woodpiles and fences.
-  - A scorched Vorthak holdfast with charred walls, ash-glass shards and violet braziers.
+  - A scorched Vorthak holdfast with charred walls, ash-glass shards and violet braziers, on cracked basalt ground with glowing ember seams.
   - A living Lioraen grove with a bloom meadow, moonstones, glowing blooms and floating motes.
   - Every map dresses each faction's start this way.
 - **Blender-made props** (scripts in `tools/blender/`):
@@ -93,12 +93,13 @@ Last updated: 2026-09-26, 22:05 UTC. Claude updates this file after every pass.
 - **Battle marks:** fallen units leave churned, darkened ground that fades after about 25 seconds.
 - **Construction:** a building rises behind a moving work line, with its walls and floors going up, instead of a see-through fade.
 - **Placement preview:** it shows the real, textured building.
+- **Damaged buildings:** smoke rises from a building below 70% health, and flames break out below 40%. Both disappear when it is repaired.
 - **Banners:** every building flies a waving banner in its owner's colour.
 - **Orders:** a soft ring shrinks onto the clicked spot. Attack orders also show inward chevrons.
 
 ## Interface
 
-- **Minimap:** it shows a real top-down picture of the battlefield, taken at match start with units and fog left out.
+- **Minimap:** it shows a real top-down picture of the battlefield, taken at match start with units and fog left out. Unexplored areas are shaded lighter so the terrain still reads.
 - **Skirmish setup:** rebuilt as a war-council screen, with faction banner cards, a dossier and a tactical map preview.
 - **Other screens:** the hero forge preview, skill tree, War Chest and campaign map are reskinned to match.
 - **Victory and defeat:** a result ledger on the ornate plate.
