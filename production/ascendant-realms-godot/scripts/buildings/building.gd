@@ -130,6 +130,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	if world and world.has_method("clear_ground_cover"):
 		world.clear_ground_cover(global_position, footprint * 1.2 + 1.0)
 	_build_model()
+	_build_team_banner()
 	_build_visual_convergence_identity_dressing()
 	_build_construction_stage_visual()
 	_build_damage_status_visual()
@@ -203,6 +204,55 @@ func _build_model() -> void:
 	_add_selection_pick_shape()
 
 
+static var _banner_material: ShaderMaterial
+static var _banner_wood: StandardMaterial3D
+
+func _build_team_banner() -> void:
+	# A waving banner in the owner's colour at the front corner of every
+	# building, so ownership reads at a glance on any map. Presentation only.
+	if _banner_material == null:
+		_banner_material = ShaderMaterial.new()
+		_banner_material.shader = load("res://assets/shaders/team_banner.gdshader")
+		_banner_wood = StandardMaterial3D.new()
+		_banner_wood.albedo_color = Color(0.22, 0.15, 0.09)
+		_banner_wood.roughness = 0.9
+	var root := Node3D.new()
+	root.name = "TeamBanner"
+	add_child(root)
+	var big := bool(def.get("is_hq", false))
+	var pole_h := 4.2 if big else 3.3
+	root.position = Vector3(footprint * 0.95 + 0.4, 0.0, footprint * 0.95 + 0.4)
+	var pole := MeshInstance3D.new()
+	var pole_mesh := CylinderMesh.new()
+	pole_mesh.top_radius = 0.05
+	pole_mesh.bottom_radius = 0.07
+	pole_mesh.height = pole_h
+	pole_mesh.radial_segments = 8
+	pole.mesh = pole_mesh
+	pole.material_override = _banner_wood
+	pole.position.y = pole_h * 0.5
+	root.add_child(pole)
+	var bar := MeshInstance3D.new()
+	var bar_mesh := BoxMesh.new()
+	bar_mesh.size = Vector3(1.05, 0.06, 0.06)
+	bar.mesh = bar_mesh
+	bar.material_override = _banner_wood
+	bar.position = Vector3(0.5, pole_h - 0.12, 0.0)
+	root.add_child(bar)
+	var cloth := MeshInstance3D.new()
+	var cloth_mesh := PlaneMesh.new()
+	cloth_mesh.orientation = PlaneMesh.FACE_Z
+	var cloth_h := 1.9 if big else 1.45
+	cloth_mesh.size = Vector2(0.9, cloth_h)
+	cloth_mesh.subdivide_width = 3
+	cloth_mesh.subdivide_depth = 12
+	cloth.mesh = cloth_mesh
+	cloth.material_override = _banner_material
+	cloth.position = Vector3(0.55, pole_h - 0.15 - cloth_h * 0.5, 0.0)
+	cloth.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	cloth.set_instance_shader_parameter("team_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
+	root.add_child(cloth)
+
 func _build_visual_convergence_identity_dressing() -> void:
 	# Slice 2 is a Hollowspan-only presentation layer. It gives each Barrosan
 	# building a restrained functional ground transition and a small identity
@@ -230,8 +280,6 @@ func _build_visual_convergence_identity_dressing() -> void:
 			for x in [-footprint * 0.92, footprint * 0.92]:
 				for z in [-footprint * 0.92, footprint * 0.92]:
 					_add_visual_identity_cylinder(root, 0.16, 0.72, Vector3(x, 0.36, z), stone, "ClanholdFoundationMarker")
-			_add_visual_identity_box(root, Vector3(0.10, 1.45, 0.62), Vector3(-footprint - 0.25, 0.82, 0), accent, "ClanholdBanner")
-			_add_visual_identity_box(root, Vector3(0.10, 1.45, 0.62), Vector3(footprint + 0.25, 0.82, 0), accent, "ClanholdBanner")
 		"barrosan_war_hall":
 			for point in [Vector3(-footprint * 0.86, 0.42, -footprint * 0.86), Vector3(footprint * 0.86, 0.42, -footprint * 0.86), Vector3(-footprint * 0.86, 0.42, footprint * 0.86), Vector3(footprint * 0.86, 0.42, footprint * 0.86)]:
 				_add_visual_identity_cylinder(root, 0.14, 0.84, point, timber, "TrainingPost")

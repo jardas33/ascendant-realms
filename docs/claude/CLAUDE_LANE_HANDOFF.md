@@ -59,6 +59,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Theme buttons use forged-bronze 9-patch skins (assets/ui/buttons, regenerate with tools/ui/make_forged_buttons.py); pause menu sits on the hero_sheet_plate with readable key rows. Base tracks/yards/lane use ground_wear_soft.gdshader (noisy soft edges) |
 | (latest) | Ambient weather (scripts/world/ambient_weather.gd): GPU particles in a box that follows the camera's ground focus; per theme pollen, autumn leaves, snow, blown sand, embers and ash |
 | (latest) | Fog of war: drifting domain-warped cloud texture in the shroud and noise-feathered, slowly moving borders (grid stays authoritative) |
+| (latest) | Every building flies a waving team banner (building._build_team_banner, assets/shaders/team_banner.gdshader: team colour, gilt border and lozenge, swallowtail hem); the Clanhold red box banners were removed. Ground and grass share drifting cloud shadows |
 | (latest) | Composition walls/cairns keep their Blender stone texture (the atlas finish had made them near black) |
 | (latest) | Grass thins over the ground shader's dirt/rock fields (same noise in grass_cover.gdshader) and clumps tighter |
 
