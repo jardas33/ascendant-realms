@@ -648,6 +648,14 @@ func _apply_m_initial_facing() -> void:
 	model_root.rotation.y = atan2(-to_battlefield.x, -to_battlefield.z)
 
 
+static var _xray_material: ShaderMaterial
+
+static func _xray_overlay_material() -> ShaderMaterial:
+	if _xray_material == null:
+		_xray_material = ShaderMaterial.new()
+		_xray_material.shader = load("res://assets/shaders/unit_xray.gdshader")
+	return _xray_material
+
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
 	var team_tint: Color = commander.color if is_instance_valid(commander) else Color.WHITE
@@ -673,6 +681,9 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			if mat is StandardMaterial3D and (mat as StandardMaterial3D).metallic_texture != null:
 				mat.metallic = minf(mat.metallic, 0.3)
 			mi.set_surface_override_material(surface, mat)
+		# Units behind trees or buildings show a team-coloured silhouette.
+		mi.material_overlay = _xray_overlay_material()
+		mi.set_instance_shader_parameter("xray_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
 
 func _build_p1r22_contact_shadow() -> void:
 	# A small, flat contact cue separates feet from noisy terrain without adding a

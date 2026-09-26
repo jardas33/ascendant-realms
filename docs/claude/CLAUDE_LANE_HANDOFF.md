@@ -52,6 +52,7 @@ Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was
 | (latest) | Ground/water value-noise hash replaced with an integer hash: the old fract hash lost GPU precision and drew hard 20-50 m square seams across the ground |
 | (latest) | Ground cover: instanced wind-blown grass tufts and wildflowers (scripts/world/ground_cover.gd, grass_cover.gdshader), clumped by noise, per-theme colours/density, chunked for culling, kept off roads, water and start yards; buildings, resources and capture points clear it via a mask. About +80k triangles in view, no measurable frame cost on a GTX 1070 |
 | (latest) | World03 field shelves use the ground material (no more flat green carpets) |
+| (latest) | Occluded units: unit meshes carry a material_overlay (assets/shaders/unit_xray.gdshader) that draws a team-coloured silhouette only where scenery stands 2.5 m+ in front (depth-texture compare), so units under tree canopies or behind buildings stay readable; other units never trigger it |
 
 All nine self-checking tests pass (v0433 economy and identity, v0434 combat, v0435 easy AI, v0436 conquest and navigation, r730a in both modes, r730b1).
 
