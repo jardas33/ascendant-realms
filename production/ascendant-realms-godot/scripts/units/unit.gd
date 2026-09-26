@@ -840,22 +840,19 @@ func _add_team_marker() -> void:
 
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
-	var torus := TorusMesh.new()
 	_selection_visual_radius = _measure_selection_visual_radius()
 	# Give selected units a readable ground contact cue at normal RTS distance.
 	# This is presentation-only; the measured visual/pick radii remain unchanged.
 	_selection_indicator_radius = clampf(_selection_visual_radius * (1.25 if is_hero else 1.34), 0.58, 1.28)
 	var r: float = _selection_indicator_radius
-	torus.inner_radius = r * 0.78
-	torus.outer_radius = r
-	selection_ring.mesh = torus
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = commander.color if commander else Color.WHITE
-	mat.emission_enabled = true
-	mat.emission = commander.color if commander else Color.WHITE
-	mat.emission_energy_multiplier = 1.9
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	selection_ring.material_override = mat
+	# A glowing ground ring with slowly turning brackets instead of a flat
+	# torus. Quad sized so the ring (72% of the half-width) sits at radius r.
+	var quad := QuadMesh.new()
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.size = Vector2.ONE * (r / 0.72) * 2.0
+	selection_ring.mesh = quad
+	selection_ring.material_override = CombatVfx.selection_ring_material(commander.color if commander else Color.WHITE)
+	selection_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	selection_ring.position.y = 0.08
 	selection_ring.visible = false
 	add_child(selection_ring)

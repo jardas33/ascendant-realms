@@ -566,20 +566,18 @@ func _presentation_height() -> float:
 
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
-	var torus := TorusMesh.new()
 	_selection_visual_extents = _measure_selection_visual_extents()
 	_selection_indicator_extents = Vector2(
 		_selection_visual_extents.x * 1.12,
 		_selection_visual_extents.y * 1.12)
-	torus.inner_radius = 0.88
-	torus.outer_radius = 1.0
-	selection_ring.mesh = torus
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = commander.color if commander else Color.WHITE
-	mat.emission_enabled = true
-	mat.emission = commander.color if commander else Color.WHITE
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	selection_ring.material_override = mat
+	# Same glowing ring with turning brackets as units (unit-radius quad; the
+	# ring sits at 72% of its half-width, so this keeps the old radius of 1).
+	var quad := QuadMesh.new()
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.size = Vector2.ONE * (2.0 / 0.72)
+	selection_ring.mesh = quad
+	selection_ring.material_override = CombatVfx.selection_ring_material(commander.color if commander else Color.WHITE)
+	selection_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	selection_ring.position.y = 0.1
 	selection_ring.scale = Vector3(_selection_indicator_extents.x, 1.0, _selection_indicator_extents.y)
 	selection_ring.visible = false

@@ -304,3 +304,15 @@ static func slam(parent: Node3D, pos: Vector3, radius: float) -> void:
 	dust.scale = Vector3.ONE * clampf(radius * 0.32, 1.4, 3.2)
 	dust.visibility_aabb = AABB(Vector3(-12, -1, -12), Vector3(24, 8, 24))
 	_emitter(parent, Vector3(pos.x, 0.3, pos.z), _clod_process, _clod_mesh, null, 18, 1.0).scale = Vector3.ONE * 1.5
+
+## Shared selection-ring material per team colour (units and buildings).
+static var _selection_ring_materials := {}
+
+static func selection_ring_material(col: Color) -> ShaderMaterial:
+	var key := col.to_html(false)
+	if not _selection_ring_materials.has(key):
+		var m := ShaderMaterial.new()
+		m.shader = load("res://assets/shaders/selection_ring.gdshader")
+		m.set_shader_parameter("ring_color", col)
+		_selection_ring_materials[key] = m
+	return _selection_ring_materials[key]
