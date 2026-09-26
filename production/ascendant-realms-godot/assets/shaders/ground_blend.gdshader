@@ -52,6 +52,7 @@ uniform vec3 field_lush : source_color = vec3(0.26, 0.36, 0.16);
 uniform vec3 field_dry : source_color = vec3(0.52, 0.48, 0.26);
 uniform vec3 field_moss : source_color = vec3(0.18, 0.25, 0.14);
 uniform float field_strength = 0.0;
+uniform float cloud_shadow_strength = 0.2;
 uniform float relief_strength = 0.0;
 uniform float relief_scale = 0.018;
 // Faction ground: scorched ash yards around Vorthak holdfasts. xy = centre,
@@ -99,6 +100,14 @@ float fbm(vec2 p) {
 		amp *= 0.5;
 	}
 	return v;
+}
+
+// Broad cloud shadows drifting across the battlefield (shared by the ground
+// and grass shaders so both darken together).
+float cloud_shadow(vec2 xz, float t) {
+	vec2 p = xz * 0.011 + vec2(t * 0.022, t * 0.009);
+	float n = fbm(p) * 0.7 + fbm(p * 2.3 + 4.0) * 0.3;
+	return smoothstep(0.5, 0.68, n);
 }
 
 // distance from point p to segment a-b (all in XZ)
@@ -250,6 +259,7 @@ void fragment() {
 		// Cavity darkening in the hollows of the relief.
 		ALBEDO *= mix(0.88, 1.03, smoothstep(-0.6, 0.6, hc));
 	}
+	ALBEDO *= 1.0 - cloud_shadow_strength * cloud_shadow(wxz, TIME);
 	ROUGHNESS = mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0));
 	SPECULAR = 0.02;
 }

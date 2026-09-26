@@ -51,6 +51,16 @@ float fbm(vec2 p) {
 	return v;
 }
 
+// Broad cloud shadows drifting across the battlefield (shared by the ground
+// and grass shaders so both darken together).
+float cloud_shadow(vec2 xz, float t) {
+	vec2 p = xz * 0.011 + vec2(t * 0.022, t * 0.009);
+	float n = fbm(p) * 0.7 + fbm(p * 2.3 + 4.0) * 0.3;
+	return smoothstep(0.5, 0.68, n);
+}
+
+uniform float cloud_shadow_strength = 0.2;
+varying float v_shade;
 varying float v_height;
 varying float v_head;
 varying vec4 v_custom;
@@ -74,6 +84,7 @@ void vertex() {
 	// Convert the world-space bend into the instance's local space.
 	VERTEX += (inverse(mat3(MODEL_MATRIX)) * bend_world) * grow;
 	v_height = h;
+	v_shade = 1.0 - cloud_shadow_strength * cloud_shadow(origin.xz, TIME);
 	v_head = step(1.5, UV.x);
 	v_custom = INSTANCE_CUSTOM;
 }
@@ -83,7 +94,7 @@ void fragment() {
 	vec3 blade = mix(root_color, tip_color, smoothstep(0.0, 1.0, v_height));
 	blade = mix(blade, dry_color * mix(0.6, 1.0, v_height), v_custom.a * 0.85);
 	vec3 col = mix(blade, v_custom.rgb, v_head);
-	ALBEDO = col;
+	ALBEDO = col * v_shade;
 	// Blades light like the ground they sit on, so the field reads as one
 	// surface with texture rather than a mass of dark back faces.
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
