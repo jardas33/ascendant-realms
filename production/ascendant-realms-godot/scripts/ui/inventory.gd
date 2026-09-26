@@ -198,37 +198,105 @@ func _rebuild_slots() -> void:
 		loadout_label.add_theme_color_override("font_color", Color(0.72, 0.62, 0.43))
 		identity_text.add_child(loadout_label)
 	_slots_box.add_child(HSeparator.new())
+	var equipped_heading := Label.new()
+	equipped_heading.text = "EQUIPPED RELICS"
+	equipped_heading.add_theme_font_override("font", _title_font())
+	equipped_heading.add_theme_font_size_override("font_size", 20)
+	equipped_heading.add_theme_color_override("font_color", Color(0.90, 0.76, 0.48))
+	_slots_box.add_child(equipped_heading)
+	var open_slots: Array[String] = []
+	var equipped_count := 0
 	for slot in SLOTS:
 		var item = equip.get(slot, null)
-		var row := HBoxContainer.new()
-		row.custom_minimum_size = Vector2(0, 37)
-		row.add_theme_constant_override("separation", 8)
-		_slots_box.add_child(row)
-		var slot_name := Label.new()
-		slot_name.text = _pretty(slot).to_upper()
-		slot_name.custom_minimum_size = Vector2(160, 0)
-		slot_name.add_theme_font_size_override("font_size", 16)
-		slot_name.add_theme_color_override("font_color", Color(0.87, 0.77, 0.57))
-		row.add_child(slot_name)
-		if item:
-			var b := Button.new()
-			b.focus_mode = Control.FOCUS_NONE
-			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			b.custom_minimum_size = Vector2(0, 34)
-			_label_button(b, str(item.get("name", "?")), RARITY_COLORS.get(item.get("rarity", "common"), Color.WHITE))
-			b.pressed.connect(_show_equipped_detail.bind(slot, item))
-			row.add_child(b)
+		if item is Dictionary:
+			equipped_count += 1
+			_slots_box.add_child(_equipped_card(slot, item))
 		else:
-			var vacant := Label.new()
-			vacant.text = "—  EMPTY"
-			vacant.add_theme_font_size_override("font_size", 16)
-			vacant.add_theme_color_override("font_color", Color(0.56, 0.60, 0.62))
-			row.add_child(vacant)
-		var rule := ColorRect.new()
-		rule.custom_minimum_size = Vector2(0, 1)
-		rule.color = Color(0.78, 0.68, 0.48, 0.17)
-		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_slots_box.add_child(rule)
+			open_slots.append(slot)
+	if equipped_count == 0:
+		var empty_equipment := Label.new()
+		empty_equipment.text = "No relics equipped. Inspect the chest to prepare your hero."
+		empty_equipment.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		empty_equipment.add_theme_font_size_override("font_size", 16)
+		empty_equipment.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
+		_slots_box.add_child(empty_equipment)
+	var open_heading := Label.new()
+	open_heading.text = "OPEN SLOTS  ·  %d REMAINING" % open_slots.size()
+	open_heading.add_theme_font_override("font", _title_font())
+	open_heading.add_theme_font_size_override("font_size", 18)
+	open_heading.add_theme_color_override("font_color", Color(0.70, 0.66, 0.57))
+	_slots_box.add_child(open_heading)
+	var open_grid := GridContainer.new()
+	open_grid.name = "OpenEquipmentSlots"
+	open_grid.columns = 2
+	open_grid.add_theme_constant_override("h_separation", 16)
+	open_grid.add_theme_constant_override("v_separation", 5)
+	_slots_box.add_child(open_grid)
+	for slot in open_slots:
+		var slot_label := Label.new()
+		slot_label.text = _pretty(slot).to_upper()
+		slot_label.custom_minimum_size = Vector2(0, 34)
+		slot_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		slot_label.add_theme_font_size_override("font_size", 16)
+		slot_label.add_theme_color_override("font_color", Color(0.65, 0.70, 0.70))
+		slot_label.tooltip_text = "%s slot is empty" % _pretty(slot)
+		open_grid.add_child(slot_label)
+
+func _equipped_card(slot: String, item: Dictionary) -> Button:
+	var accent: Color = RARITY_COLORS.get(str(item.get("rarity", "common")), Color.WHITE)
+	var card := Button.new()
+	card.name = "EquippedRelic_%s" % slot
+	card.focus_mode = Control.FOCUS_NONE
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.custom_minimum_size = Vector2(0, 84)
+	card.tooltip_text = "%s equipped in %s" % [str(item.get("name", "?")), _pretty(slot)]
+	for state in ["normal", "hover", "pressed"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("#15222b") if state == "normal" else Color("#24343a") if state == "hover" else Color("#2d2925")
+		style.border_color = Color(accent, 0.55 if state == "normal" else 0.88)
+		style.set_border_width_all(1)
+		style.border_width_left = 3
+		style.set_corner_radius_all(4)
+		style.shadow_color = Color(0, 0, 0, 0.25)
+		style.shadow_size = 3
+		card.add_theme_stylebox_override(state, style)
+	var content := HBoxContainer.new()
+	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 13
+	content.offset_right = -12
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(content)
+	var stack := VBoxContainer.new()
+	stack.alignment = BoxContainer.ALIGNMENT_CENTER
+	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(stack)
+	var slot_label := Label.new()
+	slot_label.text = _pretty(slot).to_upper()
+	slot_label.add_theme_font_size_override("font_size", 15)
+	slot_label.add_theme_color_override("font_color", Color(0.74, 0.70, 0.61))
+	slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(slot_label)
+	var name_label := Label.new()
+	name_label.text = str(item.get("name", "?"))
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.max_lines_visible = 2
+	name_label.add_theme_font_override("font", _title_font())
+	name_label.add_theme_font_size_override("font_size", 21)
+	name_label.add_theme_color_override("font_color", accent.lightened(0.18))
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(name_label)
+	var inspect := Label.new()
+	inspect.text = "INSPECT  ›"
+	inspect.add_theme_font_size_override("font_size", 13)
+	inspect.add_theme_color_override("font_color", Color(0.85, 0.72, 0.46))
+	inspect.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	inspect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(inspect)
+	card.pressed.connect(_show_equipped_detail.bind(slot, item))
+	return card
 
 func _rebuild_items() -> void:
 	_clear_after(_items_box, 2)
