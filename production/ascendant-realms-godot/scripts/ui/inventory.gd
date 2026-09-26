@@ -232,13 +232,19 @@ func _rebuild_slots() -> void:
 		empty_equipment.text = "No relics equipped. Inspect the chest to prepare your hero."
 		empty_equipment.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty_equipment.add_theme_font_size_override("font_size", 16)
-		empty_equipment.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
+		empty_equipment.add_theme_color_override("font_color", Color(0.78, 0.82, 0.82) if _barrosan_vault_active else Color(0.68, 0.72, 0.73))
+		if _barrosan_vault_active:
+			empty_equipment.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.9))
+			empty_equipment.add_theme_constant_override("outline_size", 2)
 		_slots_box.add_child(empty_equipment)
 	var open_heading := Label.new()
 	open_heading.text = "OPEN SLOTS  ·  %d REMAINING" % open_slots.size()
 	open_heading.add_theme_font_override("font", _title_font())
 	open_heading.add_theme_font_size_override("font_size", 18)
-	open_heading.add_theme_color_override("font_color", Color(0.70, 0.66, 0.57))
+	open_heading.add_theme_color_override("font_color", Color(0.82, 0.77, 0.65) if _barrosan_vault_active else Color(0.70, 0.66, 0.57))
+	if _barrosan_vault_active:
+		open_heading.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.9))
+		open_heading.add_theme_constant_override("outline_size", 2)
 	_slots_box.add_child(open_heading)
 	var open_grid := GridContainer.new()
 	open_grid.name = "OpenEquipmentSlots"
@@ -254,7 +260,10 @@ func _rebuild_slots() -> void:
 		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		slot_label.add_theme_font_size_override("font_size", 16)
-		slot_label.add_theme_color_override("font_color", Color(0.65, 0.70, 0.70))
+		slot_label.add_theme_color_override("font_color", Color(0.80, 0.84, 0.82) if _barrosan_vault_active else Color(0.65, 0.70, 0.70))
+		if _barrosan_vault_active:
+			slot_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.94))
+			slot_label.add_theme_constant_override("outline_size", 2)
 		slot_label.tooltip_text = "%s slot is empty" % _pretty(slot)
 		open_grid.add_child(slot_label)
 
