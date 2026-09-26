@@ -240,9 +240,13 @@ func _update_camera(delta: float) -> void:
 	if Input.is_action_pressed("cam_left"): dir.x -= 1
 	if Input.is_action_pressed("cam_right"): dir.x += 1
 	# edge scroll
-	if edge_scroll and not _dragging:
-		var mp := get_viewport().get_mouse_position()
-		var vs := get_viewport().get_visible_rect().size
+	# Edge-scroll only while the game window has focus and the cursor is inside
+	# it: alt-tabbing away, or the cursor resting outside the window, used to
+	# slide the camera off the base (e.g. during the loading fade).
+	var mp := get_viewport().get_mouse_position()
+	var vs := get_viewport().get_visible_rect().size
+	var cursor_inside := mp.x >= 0.0 and mp.y >= 0.0 and mp.x <= vs.x and mp.y <= vs.y
+	if edge_scroll and not _dragging and cursor_inside and DisplayServer.window_is_focused():
 		var m := 12.0
 		if mp.x < m: dir.x -= 1
 		elif mp.x > vs.x - m: dir.x += 1
