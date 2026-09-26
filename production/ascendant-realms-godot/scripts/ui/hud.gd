@@ -2097,7 +2097,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	row.add_child(portrait_space)
 	if is_instance_valid(_sel_header_spacer):
 		_sel_header_spacer.visible = true
-	var portrait_plinth := _mk_hud_panel("portrait", COMMAND_FLAME if read_only else (COMMAND_SKY if u.is_hero else COMMAND_GOLD))
+	var role_accent := Color(1.0, 0.55, 0.45) if read_only else (COMMAND_SKY if u.is_hero else (COMMAND_MINT if u.is_worker else COMMAND_FLAME))
+	var portrait_plinth := _mk_hud_panel("portrait", role_accent)
 	portrait_plinth.set("embedded", true)
 	portrait_plinth.custom_minimum_size = Vector2(175, 232)
 	portrait_plinth.size = Vector2(175, 232)
@@ -2108,7 +2109,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	portrait_stack.add_theme_constant_override("separation", 3)
 	portrait_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_plinth.add_child(portrait_stack)
-	var portrait_overline := _mk_title_label("ASCENDANT" if u.is_hero else "WAR HOST", 11, COMMAND_GOLD)
+	var portrait_role := "ASCENDANT" if u.is_hero else ("WORKFORCE" if u.is_worker else "WAR HOST")
+	var portrait_overline := _mk_title_label(portrait_role, 11, role_accent.lightened(0.14))
 	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_overline)
 	# Authored UI portrait with an isolated 3D model fallback.
@@ -2142,7 +2144,6 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var uname: String = u.def.get("name", "Unit")
 	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
 	var role_label := "HERO" if u.is_hero else ("WORKER" if u.is_worker else "MILITARY")
-	var role_accent := Color(1.0, 0.55, 0.45) if read_only else (COMMAND_SKY if u.is_hero else (COMMAND_MINT if u.is_worker else COMMAND_FLAME))
 	var identity_header := HBoxContainer.new()
 	identity_header.add_theme_constant_override("separation", 6)
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
