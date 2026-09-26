@@ -26,7 +26,9 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 	collision_mask = 0
 	var root := Node3D.new()
 	add_child(root)
-	if model_path != "" and ResourceLoader.exists(model_path):
+	if model_path == "composed:ruin_chapel":
+		_build_ruin_chapel(root)
+	elif model_path != "" and ResourceLoader.exists(model_path):
 		var load_start := Time.get_ticks_usec()
 		var m = load(model_path).instantiate()
 		var recorder = get_node_or_null("/root/HP4M20Startup")
@@ -39,6 +41,49 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 		footprint = max(3.0, ModelUtils.measure_radius(m))
 	_build_ring()
 	_build_beam()
+
+const _PILLAR := "res://assets/environment/structures/ancient_ruin_pillar.glb"
+const _ALTAR := "res://assets/environment/visual_convergence/small_stone_cairn.glb"
+
+func _build_ruin_chapel(root: Node3D) -> void:
+	# A broken circle of old pillars around a lit altar stone. Only the altar
+	# collides; the pillars stand outside the path units take to the centre.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(global_position.x * 13.0 + global_position.z * 7.0)
+	var count := 7
+	for i in count:
+		if i == 4:
+			continue  # the gap: a fallen pillar lies here instead
+		var a := TAU * float(i) / float(count) + 0.3
+		var pillar: Node3D = load(_PILLAR).instantiate()
+		root.add_child(pillar)
+		pillar.position = Vector3(cos(a), 0.0, sin(a)) * 5.4
+		ModelUtils.scale_to_height(pillar, rng.randf_range(2.6, 4.8) if i % 3 != 1 else rng.randf_range(1.2, 2.0))
+		ModelUtils.ground_model(pillar)
+		pillar.rotation = Vector3(rng.randf_range(-0.06, 0.06), rng.randf() * TAU, rng.randf_range(-0.06, 0.06))
+		for body in pillar.find_children("*", "CollisionObject3D", true, false):
+			body.queue_free()
+	var fallen: Node3D = load(_PILLAR).instantiate()
+	root.add_child(fallen)
+	var fa := TAU * 4.0 / float(count) + 0.3
+	ModelUtils.scale_to_height(fallen, 3.6)
+	fallen.position = Vector3(cos(fa), 0.35, sin(fa)) * 5.8
+	fallen.rotation = Vector3(PI * 0.5, fa, 0.0)
+	for body in fallen.find_children("*", "CollisionObject3D", true, false):
+		body.queue_free()
+	var altar: Node3D = load(_ALTAR).instantiate()
+	root.add_child(altar)
+	ModelUtils.scale_to_height(altar, 1.5)
+	ModelUtils.ground_model(altar)
+	ModelUtils.add_per_part_convex_collision(altar, 16)
+	var glow := OmniLight3D.new()
+	glow.light_color = Color(0.55, 1.0, 0.7)
+	glow.light_energy = 1.6
+	glow.omni_range = 6.5
+	glow.shadow_enabled = false
+	glow.position = Vector3(0, 1.8, 0)
+	root.add_child(glow)
+	footprint = 3.0
 
 func _build_ring() -> void:
 	# Rune circle over the real 7.5 m capture radius with a progress arc that

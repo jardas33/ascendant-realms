@@ -8,7 +8,9 @@ class_name MapDefs
 const MAP_SIZE := 140.0   # half-extent; world spans -140..140
 
 const LUME := "res://assets/environment/structures/lume_spire_ruin.glb"
-const RUIN := "res://assets/environment/structures/lume_spire_ruin.glb"
+# The chapel is composed in CapturePoint (a ring of ruined pillars around an
+# altar); it used to reuse the Lume Spire model, so two sites looked identical.
+const RUIN := "composed:ruin_chapel"
 const GOLD_MINE := "res://assets/environment/rocks/gold_mine_lumevein.glb"
 const BRIDGE := "res://assets/environment/structures/highland_crossing_bridge.glb"
 

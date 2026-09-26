@@ -122,7 +122,7 @@ const PLACEMENTS := [
 	{"asset": "cairn", "world": Vector3(-34.0, 0.0, -24.0), "yaw": 0.0},
 	{"asset": "logs", "world": Vector3(-42.0, 0.0, 24.0), "yaw": 0.55},
 	{"asset": "wall", "world": Vector3(38.0, 0.0, 34.0), "yaw": -0.35},
-	{"asset": "marker", "world": Vector3(44.0, 0.0, -34.0), "yaw": 0.0},
+	{"asset": "marker", "world": Vector3(51.0, 0.0, -30.0), "yaw": 0.0},  # kept outside the chapel's capture ring
 	# Band D: readable outer framing, deliberately outside the central routes.
 	{"asset": "brush", "world": Vector3(-76.0, 0.0, -44.0), "yaw": 0.3},
 	{"asset": "brush", "world": Vector3(76.0, 0.0, 44.0), "yaw": -0.25},
@@ -564,6 +564,9 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	parent.add_child(instance)
 	instance.position = position
 	instance.rotation.y = yaw
+	if asset_key == "marker":
+		# The marker GLB is authored Z-up and lay on its side; stand it upright.
+		instance.rotation.x = PI * 0.5
 	var target_height := height_override if height_override > 0.0 else float(ASSET_SCALE.get(asset_key, 2.0))
 	ModelUtils.scale_to_height(instance, target_height)
 	if asset_key == "wall":
