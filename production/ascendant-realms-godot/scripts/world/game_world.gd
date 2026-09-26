@@ -591,9 +591,20 @@ func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void
 	# Slice 1 is a presentation-only authored layer for the Barrosan starting
 	# base on Hollowspan. These shallow opaque meshes have no collision, are not
 	# part of the navmesh, and do not replace any authoritative map geometry.
-	if map.get("id", "") != "hollowspan" or starts.is_empty():
+	if starts.is_empty():
 		return
 	var origin: Vector3 = starts[0]
+	if map.get("id", "") != "hollowspan":
+		# Other battlefields get each faction's start dressing (hamlet, grove,
+		# holdfast) so no base stands alone on an empty plain.
+		var kit = load("res://scripts/world/hollowspan_environment_composition.gd").new()
+		var race_list: Array = [String(Match.get_config().get("player_race", "barrosan"))]
+		for opponent in Match.get_config().get("opponents", []):
+			race_list.append(String(opponent.get("race", "")))
+		for i in mini(starts.size(), race_list.size()):
+			kit.build_faction_start(parent, starts[i], race_list[i])
+		_rebuild_navigation_soft_blockers()
+		return
 	var layer := Node3D.new()
 	layer.name = "VisualConvergenceBarrosanBase"
 	parent.add_child(layer)

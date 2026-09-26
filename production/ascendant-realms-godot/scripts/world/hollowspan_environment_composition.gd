@@ -175,6 +175,18 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary, start_race: St
 		_build_barrosan_hamlet(layer, origin)
 
 
+# Faction dressing for a start on any battlefield. Hollowspan's own authored
+# layer (build) adds its map-specific scenery on top of this for the player.
+func build_faction_start(parent: Node3D, origin: Vector3, race: String) -> void:
+	match race:
+		"barrosan":
+			_build_barrosan_hamlet(parent, origin)
+		"lioraen":
+			build_lioraen_grove(parent, origin)
+		"vorthak":
+			build_vorthak_holdfast(parent, origin)
+
+
 # Lived-in hamlet behind the Barrosan start: cottages with hearth smoke and
 # door lanterns, woodpiles, a well-worn lane and garden walls. Placed in the
 # start's own frame (toward = map centre) on the side away from the fight and
