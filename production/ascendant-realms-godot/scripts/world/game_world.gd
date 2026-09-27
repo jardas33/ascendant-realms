@@ -2664,6 +2664,20 @@ func on_building_damaged(building, from, hp_before: float = -1.0, final_damage: 
 			Sfx.play("under_attack", -6.0)
 			emit_signal("alert", "Your base is under attack!", building.global_position)
 
+## Kills made within 18 m of a team's living hero feed that hero's battlefield
+## level (see Unit.gain_field_xp). Heroes are worth more than soldiers.
+func _award_hero_field_xp(victim, source_team: int) -> void:
+	if source_team < 0 or source_team >= commanders.size():
+		return
+	var hero = commanders[source_team].hero_ref
+	if not is_instance_valid(hero) or hero.is_dead or not hero.has_method("gain_field_xp"):
+		return
+	if hero.global_position.distance_to(victim.global_position) > 18.0:
+		return
+	var amount := 60 if victim.is_hero else (6 if victim.is_worker else 12)
+	if hero.gain_field_xp(amount) and source_team == player_team:
+		emit_signal("hero_leveled", hero.field_level)
+
 func _on_unit_died(unit) -> void:
 	if unit.get_meta("v0434_death_handled", false):
 		return
@@ -2681,6 +2695,7 @@ func _on_unit_died(unit) -> void:
 	if unit.team < commanders.size():
 		commanders[unit.team].units.erase(unit)
 		commanders[unit.team].recompute_pop()
+	_award_hero_field_xp(unit, source_team)
 	# hero down handling
 	for cmd in commanders:
 		if cmd.hero_ref == unit:

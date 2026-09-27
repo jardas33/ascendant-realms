@@ -2883,6 +2883,29 @@ func apply_slow(t: float) -> void:
 		return
 	_slow = max(_slow, t)
 
+## Battlefield levels for heroes: XP from kills made near the hero during
+## this match. Separate from the profile level earned between matches.
+const FIELD_LEVEL_XP := [0, 60, 150, 280, 450]
+var field_level := 1
+var field_xp := 0
+
+func gain_field_xp(amount: int) -> bool:
+	if not is_hero or is_dead or field_level >= FIELD_LEVEL_XP.size():
+		return false
+	field_xp += amount
+	var levelled := false
+	while field_level < FIELD_LEVEL_XP.size() and field_xp >= int(FIELD_LEVEL_XP[field_level]):
+		field_level += 1
+		levelled = true
+		var gain := max_hp * 0.10
+		max_hp += gain
+		hp = minf(max_hp, hp + gain + max_hp * 0.25)
+		base_dmg *= 1.08
+		if world and is_instance_valid(world.get("_fx_container")):
+			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.8)
+			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 4.0)
+	return levelled
+
 func gain_veterancy() -> void:
 	_kills += 1
 	if _kills % 3 == 0 and _veterancy < 3:
@@ -2893,7 +2916,7 @@ func gain_veterancy() -> void:
 		if world and is_instance_valid(world.get("_fx_container")):
 			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.4)
 			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 2.2)
-		if world and team == world.player_team and world.has_signal("alert"):
+		if world and team == world.player_team and not is_hero and world.has_signal("alert"):
 			world.emit_signal("alert", "%s promoted to veteran rank %d" % [String(def.get("name", "Unit")), _veterancy], global_position)
 
 func set_aura_bonus(d: float, a: float) -> void:

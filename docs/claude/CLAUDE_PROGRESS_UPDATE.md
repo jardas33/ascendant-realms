@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 04:10 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 04:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -102,6 +102,7 @@ Last updated: 2026-09-27, 04:10 UTC. Claude updates this file after every pass.
 - **Placement preview:** it shows the real, textured building.
 - **Damaged buildings:** smoke rises from a building below 70% health, and flames break out below 40%. Both disappear when it is repaired.
 - **Destroyed buildings:** they list to one side and sink into a dust cloud with thrown debris and a short camera shake, leaving a rubble heap and scorched ground for the rest of the match. Before, they just shrank into the ground.
+- **Hero battle levels:** heroes now level up during a match from kills made within 18 m of them (soldiers 12 XP, workers 6, enemy heroes 60), up to level 5 at 60/150/280/450 XP. Each level adds 10% health, heals a quarter, adds 8% damage, bursts with golden light and fires the "Hero reached level N" alert, which existed but never fired before.
 - **Veterans:** when a unit is promoted after three kills, a golden flare marks it and your promotions get an alert. Before, promotion had no visible sign at all.
 - **New recruits:** a freshly trained unit arrives in a burst of team-coloured light with a small ring.
 - **Banners:** every building flies a waving banner in its owner's colour.
@@ -123,7 +124,7 @@ Last updated: 2026-09-27, 04:10 UTC. Claude updates this file after every pass.
 ## Top-10 plan (started 2026-09-27)
 
 1. DONE. Full AI-vs-AI playtests on several maps and difficulties to catch gameplay bugs: stuck units, AI stalls, matches that never end.
-2. Hero progression in battle: the level-up alert exists but nothing ever fires it; wire in-match hero XP and level-ups.
+2. DONE. Hero progression in battle: the level-up alert exists but nothing ever fires it; wire in-match hero XP and level-ups.
 3. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
 4. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
 5. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
