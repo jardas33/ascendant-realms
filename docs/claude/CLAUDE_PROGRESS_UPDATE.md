@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 11:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -170,13 +170,16 @@ Last updated: 2026-09-28, 11:30 UTC. Claude updates this file after every pass.
     - In duels it now crushes Vorthak and loses narrowly to Barrosan (it used to be wiped out).
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
   - Carried to plan 12: unit render cost in 100+ unit battles, Hard and Brutal from a player's view, and matching every chapter's map to its story.
-- **Plan 12 (started):**
-  1. Character draw cost. Measured per unit: the Barrosan Spear Guard is 37 draw parts (32 separately skinned body pieces and 5 accessories), the Clan Levy 10, the Vorthak Ash Thrall 8, the Cinder Spitter 1. Joining each model's parts by material in Blender would cut big-battle draw calls sharply. These are Codex's character assets, so the re-export will keep file names and rigs unchanged and be noted in the handoff.
-  2. Hard and Brutal from a player's point of view (first attack timing and wave sizes).
-  3. Check every chapter's map fits its story.
-  4. Barrosan AI strategy: attack timing and army composition.
-  5. Recheck Codex's newest work.
-  6. Regression, review and progress update.
+- **Plan 12 (done):**
+  - **Character draw cost.** A census of every unit model found characters built from many separately drawn pieces:
+    - Ironmaw Ogre: 146. Bowcrusha: 119. Rift Blade: 43. Stoneward Spears: 42. Outrider and Veil Warlock: about 43 with their accessory kits. Crag Archer: 17.
+    - **Bodies:** six models were re-exported from Blender with every rig-driven piece joined into one mesh (Ogre 146 to 1, Rift Blade 43 to 1, Stoneward Spears 32 to 1, plus Clan Levy, Ash Thrall and the Vorthak worker). Rig, bones and animations are unchanged; walk animation was verified on each, and screenshots match. The joined bodies now cast their full shadow (before, only the largest piece did), so they look slightly better. Originals are backed up in D:\ClaudeWork\tmp\glb_backup and noted in the handoff for Codex.
+    - **Accessory kits:** the pieces of each attachment are merged at runtime, built once and shared by every unit (Outrider, Veil Warlock and Crag Archer went from about 43 parts to 4 or 5).
+    - **Result:** the 120-unit fight went from 43 to 46 fps while also drawing full character shadows. The Bowcrusha (119 rigid pieces) is not joined yet; its pieces are not attached to bones directly.
+  - **Hard and Brutal:** against a player who does nothing, Normal and Hard first attack at minute 4 and Brutal at minute 5 with a larger army (18 soldiers). With Easy's gentle waves, that is a sensible ramp.
+  - **Chapter maps:** all 39 chapter-to-map pairings fit their stories (winter chapters on snow maps, the Dominion's south on desert and canyon maps, the fountain grove on the verdant map, the drowned villages on water maps). No swaps needed.
+  - **Barrosan AI strategy:** still open (it loses AI-vs-AI games on strategy, not units or economy).
+  - Regression passed: all 9 tests. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
