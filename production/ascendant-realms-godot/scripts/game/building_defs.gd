@@ -94,6 +94,7 @@ static func get_all() -> Dictionary:
 	# ---------------- VORTHAK ----------------
 	"vorthak_nighthold": {
 		"race": "vorthak", "name": "Nighthold", "kind": "main", "model": _b("vorthak_nighthold"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/nighthold.png",
 		"hp": 1900, "armor_class": "fortified", "armor": 7, "footprint": 7.0,
 		"cost": {"timber": 330, "stone": 190}, "build_time": 56, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["vorthak_worker"], "drop_off": true, "is_hq": true,
@@ -101,6 +102,7 @@ static func get_all() -> Dictionary:
 	},
 	"vorthak_ash_forge": {
 		"race": "vorthak", "name": "Ash Forge", "kind": "economy", "model": _b("vorthak_ash_forge"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/ash_forge.png",
 		"hp": 620, "armor_class": "medium", "armor": 2, "footprint": 3.8,
 		"cost": {"timber": 100, "stone": 70}, "build_time": 26, "grants_pop": 0, "is_research": true,
 		"produces": [], "research": ["tech_weapons", "tech_armor"],
@@ -114,6 +116,7 @@ static func get_all() -> Dictionary:
 	},
 	"vorthak_bone_barracks": {
 		"race": "vorthak", "name": "Bone Barracks", "kind": "barracks", "model": _b("vorthak_bone_barracks"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/bone_barracks.png",
 		"hp": 800, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 140, "stone": 40}, "build_time": 28, "grants_pop": 0,
 		"produces": ["vorthak_ash_thrall", "vorthak_cinder_spitter", "vorthak_gloom_hound", "vorthak_rift_blade"],
@@ -121,6 +124,7 @@ static func get_all() -> Dictionary:
 	},
 	"vorthak_warlock_spire": {
 		"race": "vorthak", "name": "Warlock Spire", "kind": "arcane", "model": _b("vorthak_warlock_spire"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/warlock_spire.png",
 		"hp": 680, "armor_class": "light", "armor": 1, "footprint": 4.0,
 		"cost": {"timber": 110, "gold": 90}, "build_time": 34, "grants_pop": 0,
 		"produces": ["vorthak_veil_warlock", "vorthak_fracture_engine"],
@@ -128,6 +132,7 @@ static func get_all() -> Dictionary:
 	},
 	"vorthak_rift_obelisk": {
 		"race": "vorthak", "name": "Rift Obelisk", "kind": "tower", "model": _b("vorthak_rift_obelisk"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/rift_obelisk.png",
 		"hp": 650, "armor_class": "medium", "armor": 3, "footprint": 3.0,
 		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 26, "tower_range": 19.0, "tower_cd": 1.3, "tower_type": "arcane", "projectile": "void_bolt",

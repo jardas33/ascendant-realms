@@ -90,6 +90,42 @@ func _run() -> void:
 				await create_timer(0.25).timeout
 		for index in 5:
 			await process_frame
+	var review_building_id := OS.get_environment("ASCENDANT_UI_BUILDING_ID")
+	if not review_building_id.is_empty() and instance.get("rts") != null:
+		var review_definition: Dictionary = root.get_node("GameData").get_building(review_building_id).duplicate()
+		if not review_definition.is_empty():
+			review_definition["id"] = review_building_id
+			var review_building = instance.world._create_building(review_definition, 0, Vector3(8, 0, 8), true)
+			if is_instance_valid(review_building):
+				instance.rts._clear_selection()
+				instance.rts._add_to_selection(review_building)
+				instance.rts.selection_changed.emit(instance.rts.selected)
+				for index in 5:
+					await process_frame
+	if OS.get_environment("ASCENDANT_UI_CENTER_HQ") == "1" and instance.get("rts") != null:
+		for candidate in instance.world.commanders[0].buildings:
+			if is_instance_valid(candidate) and bool(candidate.def.get("is_hq", false)):
+				instance.rts.cam_pivot.global_position.x = candidate.global_position.x
+				instance.rts.cam_pivot.global_position.z = candidate.global_position.z
+				break
+		for index in 5:
+			await process_frame
+	if OS.get_environment("ASCENDANT_UI_CENTER_SELECTED") == "1" and instance.get("rts") != null and not instance.rts.selected.is_empty():
+		# A review capture should not drift because the desktop pointer happens to
+		# rest near an edge while the camera is being centered.
+		instance.rts.edge_scroll = false
+		var focus = instance.rts.selected[0]
+		if is_instance_valid(focus) and focus is Node3D:
+			instance.rts.cam_pivot.global_position.x = focus.global_position.x
+			instance.rts.cam_pivot.global_position.z = focus.global_position.z
+		for index in 5:
+			await process_frame
+	var review_zoom := OS.get_environment("ASCENDANT_UI_ZOOM")
+	if not review_zoom.is_empty() and instance.get("rts") != null:
+		instance.rts._zoom = clampf(float(review_zoom), instance.rts.get_camera_zoom_min(), instance.rts.get_camera_zoom_max())
+		instance.rts.cam_arm.spring_length = instance.rts._zoom
+		for index in 5:
+			await process_frame
 	if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1" and instance.get("hud") != null:
 		var command_scroll := instance.hud._cmd_scroll as ScrollContainer
 		if command_scroll:
@@ -136,6 +172,15 @@ func _run() -> void:
 			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
+	var expected_art := OS.get_environment("ASCENDANT_UI_EXPECT_ART")
+	if not expected_art.is_empty() and instance.get("hud") != null:
+		var visible_art_instances := 0
+		for art_view in instance.hud.find_children("*", "Control", true, false):
+			if art_view.has_method("get_active_portrait_path") and art_view.is_visible_in_tree() and String(art_view.get_active_portrait_path()) == expected_art:
+				visible_art_instances += 1
+		print("UI_EXPECTED_ART ", expected_art, " visible_instances=", visible_art_instances)
+		if visible_art_instances == 0:
+			validation_errors.append("expected_art_not_visible:" + expected_art)
 	if instance.get("hud") != null:
 		var hud = instance.hud
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1" and OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1":
@@ -272,6 +317,33 @@ func _run() -> void:
 						ranger_caption = true
 				if not ranger_caption:
 					validation_errors.append("lioraen_thornrunner_caption_missing")
+			if selected_kind == "military" and player_race == "vorthak" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "vorthak_ash_thrall":
+				var thrall_portrait := hud._selection_portrait.find_child("PortraitArtwork", true, false) as TextureRect
+				var portrait_view := thrall_portrait.get_parent() if is_instance_valid(thrall_portrait) else null
+				if not is_instance_valid(portrait_view) or not portrait_view.has_method("get_active_portrait_path") or String(portrait_view.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/ash_thrall.png":
+					validation_errors.append("vorthak_ash_thrall_selected_portrait_missing")
+			if review_building_id == "vorthak_bone_barracks":
+				var expected_unit_art := {
+					"Ash Thrall": "ash_thrall.png",
+					"Cinder Spitter": "cinder_spitter.png",
+					"Gloom Hound": "gloom_hound.png",
+					"Rift Blade": "rift_blade.png",
+				}
+				var seen_art := {}
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if String(button.get_meta("command_kind", "")) != "TRAIN":
+						continue
+					var title := ""
+					for label in button.find_children("*", "Label", true, false):
+						if expected_unit_art.has(label.text):
+							title = label.text
+					var portrait_view: Node = button.find_child("UnitCommandPortrait", true, false)
+					if not title.is_empty() and is_instance_valid(portrait_view) and portrait_view.has_method("get_active_portrait_path"):
+						var expected_path: String = "res://assets/ui/portraits/vorthak/astra_r1/" + String(expected_unit_art[title])
+						if String(portrait_view.get_active_portrait_path()) == expected_path:
+							seen_art[title] = true
+				if seen_art.size() != expected_unit_art.size():
+					validation_errors.append("vorthak_barracks_unit_art:%d_expected_%d" % [seen_art.size(), expected_unit_art.size()])
 			if selected_kind in ["building", "construction"]:
 				var selected_building_art := ""
 				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
@@ -415,7 +487,7 @@ func _run() -> void:
 			if not button.has_meta("command_kind"):
 				continue
 			for label in button.find_children("*", "Label", true, false):
-				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Advance to Age of Iron", "Clan Levy"]:
+				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Ash Forge", "Advance to Age of Iron", "Clan Levy", "Ash Thrall"]:
 					card_by_title[label.text] = button
 		if selected_kind in ["hero", "military"]:
 			for title in ["Attack Move", "Stop", "Hold", "Patrol"]:
@@ -485,7 +557,18 @@ func _run() -> void:
 					validation_errors.append("rallying_cry_button_did_not_cast_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "rallying_cry_button_did_not_cast")
 		if selected_kind == "worker":
 			var worker_race := String(instance.world.commanders[0].race)
-			var expected_art_count := 5 if worker_race == "barrosan" else (6 if worker_race == "lioraen" else 0)
+			var expected_art_count := 5 if worker_race in ["barrosan", "vorthak"] else (6 if worker_race == "lioraen" else 0)
+			for build_card in instance.hud._cmd_panel.find_children("*", "Button", true, false):
+				var copy_column: Node = build_card.find_child("BuildingCardCopy", true, false)
+				if not is_instance_valid(copy_column) or not build_card.has_meta("command_status_label"):
+					continue
+				var status_label := build_card.get_meta("command_status_label") as Label
+				var cost_label := copy_column.get_child(1) as Label if copy_column.get_child_count() > 1 else null
+				if is_instance_valid(status_label) and is_instance_valid(cost_label):
+					if cost_label.get_global_rect().intersects(status_label.get_global_rect()):
+						validation_errors.append("build_cost_overlaps_status:" + String(build_card.name))
+					if not build_card.get_global_rect().encloses(status_label.get_global_rect()):
+						validation_errors.append("build_status_outside_card:" + String(build_card.name))
 			if expected_art_count > 0:
 				var art_paths := {}
 				for preview in instance.hud._cmd_panel.find_children("BuildingPreview", "Control", true, false):
@@ -495,7 +578,7 @@ func _run() -> void:
 							art_paths[art_path] = true
 				if art_paths.size() != expected_art_count:
 					validation_errors.append("worker_build_art_missing:%s:%d_expected_%d" % [worker_race, art_paths.size(), expected_art_count])
-		var build_target := "Clan Croft" if card_by_title.has("Clan Croft") else ("Lifewell" if card_by_title.has("Lifewell") else "")
+		var build_target := "Clan Croft" if card_by_title.has("Clan Croft") else ("Lifewell" if card_by_title.has("Lifewell") else ("Ash Forge" if card_by_title.has("Ash Forge") else ""))
 		if selected_kind == "worker" and not build_target.is_empty():
 			if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1":
 				var build_center: Vector2 = card_by_title[build_target].get_global_rect().get_center()
@@ -510,7 +593,7 @@ func _run() -> void:
 					await process_frame
 			else:
 				card_by_title[build_target].pressed.emit()
-			var expected_build_id := "barrosan_clan_croft" if build_target == "Clan Croft" else "lioraen_lifewell"
+			var expected_build_id := "barrosan_clan_croft" if build_target == "Clan Croft" else ("lioraen_lifewell" if build_target == "Lifewell" else "vorthak_ash_forge")
 			if instance.rts._build_id != expected_build_id:
 				validation_errors.append("build_button_did_not_activate_via_pointer" if OS.get_environment("ASCENDANT_UI_POINTER_CHECK") == "1" else "build_button_did_not_activate")
 			instance.rts.cancel_build_mode()
@@ -524,6 +607,11 @@ func _run() -> void:
 			var selected_hall = instance.rts.selected[0]
 			if selected_hall.queue.is_empty() or str(selected_hall.queue[0].get("id", "")) != "barrosan_clan_levy":
 				validation_errors.append("train_button_did_not_queue_unit")
+		if review_building_id == "vorthak_bone_barracks" and card_by_title.has("Ash Thrall"):
+			card_by_title["Ash Thrall"].pressed.emit()
+			var selected_barracks = instance.rts.selected[0]
+			if selected_barracks.queue.is_empty() or str(selected_barracks.queue[0].get("id", "")) != "vorthak_ash_thrall":
+				validation_errors.append("vorthak_train_button_did_not_queue_unit")
 		if selected_kind == "building_queued" and is_instance_valid(instance.hud._queue_container):
 			var queue_slot = instance.hud._queue_container.get_child(0) if instance.hud._queue_container.get_child_count() > 0 else null
 			if is_instance_valid(queue_slot):

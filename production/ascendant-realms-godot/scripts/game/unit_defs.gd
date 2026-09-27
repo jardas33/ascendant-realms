@@ -145,6 +145,7 @@ static func get_all() -> Dictionary:
 	"vorthak_ash_thrall": {
 		"race": "vorthak", "name": "Ash Thrall", "role": "melee", "tier": 1,
 		"model": _char("vorthak_ash_thrall"), "height": 1.8,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/ash_thrall.png",
 		"hp": 95, "dmg": 11, "dmg_type": "slash", "armor_class": "unarmored", "armor": 0,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.0, "vision": 20.0,
 		"cost": {"food": 40, "gold": 5}, "build_time": 9, "pop": 1, "produced_by": "barracks",
@@ -153,6 +154,7 @@ static func get_all() -> Dictionary:
 	"vorthak_rift_blade": {
 		"race": "vorthak", "name": "Rift Blade", "role": "melee", "tier": 2,
 		"model": _char("vorthak_rift_blade"), "height": 1.82,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/rift_blade.png",
 		"hp": 160, "dmg": 24, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 0.9, "speed": 4.4, "vision": 22.0,
 		"cost": {"food": 90, "gold": 40}, "build_time": 18, "pop": 2, "produced_by": "barracks",
@@ -161,6 +163,7 @@ static func get_all() -> Dictionary:
 	"vorthak_cinder_spitter": {
 		"race": "vorthak", "name": "Cinder Spitter", "role": "ranged", "tier": 1,
 		"model": _char("vorthak_cinder_spitter"), "height": 1.78,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/cinder_spitter.png",
 		"hp": 80, "dmg": 17, "dmg_type": "arcane", "armor_class": "unarmored", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "cinder",
 		"cost": {"food": 55, "gold": 20}, "build_time": 16, "pop": 1, "produced_by": "barracks",
@@ -169,6 +172,7 @@ static func get_all() -> Dictionary:
 	"vorthak_gloom_hound": {
 		"race": "vorthak", "name": "Gloom Hound", "role": "flanker", "tier": 2,
 		"model": _char("vorthak_gloom_hound"), "height": 1.3,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/gloom_hound.png",
 		"hp": 110, "dmg": 16, "dmg_type": "slash", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 0.8, "speed": 6.0, "vision": 30.0,
 		"cost": {"food": 70, "gold": 15}, "build_time": 14, "pop": 1, "produced_by": "barracks",

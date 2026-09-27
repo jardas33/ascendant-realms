@@ -42,36 +42,34 @@ func _draw() -> void:
 		draw_polyline(outline, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.43), 1.2, true)
 		return
 	if command_kind == "ORDER":
-		# The order rack supplies the perimeter. These controls read as engraved
-		# slots with a distinct active edge, not four stacked mini panels.
-		var order_shape := PackedVector2Array([
-			Vector2(0, 5), Vector2(5, 0), Vector2(w - 9, 0),
-			Vector2(w, 9), Vector2(w, h - 5), Vector2(w - 5, h),
+		# Four independent hit targets sit in a single cast command well. A
+		# complete rim on every target made the 2x2 grid look like four boxes.
+		# These engraved bays leave the shared forged perimeter in charge.
+		var face := PackedVector2Array([
+			Vector2(0, 5), Vector2(5, 0), Vector2(w - 6, 0),
+			Vector2(w, 6), Vector2(w, h - 5), Vector2(w - 5, h),
 			Vector2(5, h), Vector2(0, h - 5)])
-		var order_base := Color(0.078, 0.086, 0.084, 0.87) if enabled else Color(0.048, 0.053, 0.052, 0.64)
-		draw_colored_polygon(order_shape, order_base)
-		draw_polygon(PackedVector2Array([
-			Vector2(1, 5), Vector2(54, 1), Vector2(54, h - 1), Vector2(1, h - 5)]), PackedColorArray([
-			Color(metal.r, metal.g, metal.b, 0.13),
-			Color(metal.r, metal.g, metal.b, 0.06),
-			Color(metal.r, metal.g, metal.b, 0.025),
-			Color(metal.r, metal.g, metal.b, 0.08)]))
-		draw_line(Vector2(55, 5), Vector2(55, h - 5), Color(metal.r, metal.g, metal.b, 0.20), 1.0, true)
-		var slot_rim := PackedVector2Array(order_shape)
-		slot_rim.append(order_shape[0])
-		draw_polyline(slot_rim, Color(metal.r, metal.g, metal.b, 0.48 if enabled else 0.16), 1.0, true)
-		# Two inset cuts keep each order readable as an engraved socket without
-		# competing with the shared rack's heavier outside perimeter.
-		draw_line(Vector2(8, 3), Vector2(w - 13, 3), Color(metal.r, metal.g, metal.b, 0.39 if enabled else 0.11), 1.0, true)
-		draw_line(Vector2(9, h - 3), Vector2(w - 9, h - 3), Color(metal.r, metal.g, metal.b, 0.26 if enabled else 0.09), 1.0, true)
-		draw_line(Vector2(w - 3, 12), Vector2(w - 3, h - 9), Color(metal.r, metal.g, metal.b, 0.23 if enabled else 0.08), 1.0, true)
-		draw_line(Vector2(1, 5), Vector2(6, 0), Color(metal.r, metal.g, metal.b, 0.72 if enabled else 0.17), 1.4, true)
-		draw_line(Vector2(w - 10, 0), Vector2(w - 1, 9), Color(metal.r, metal.g, metal.b, 0.54 if enabled else 0.14), 1.2, true)
+		var face_color := Color(0.032, 0.045, 0.048, 0.85) if enabled else Color(0.028, 0.038, 0.041, 0.59)
 		if lit or active:
-			var lit_outline := PackedVector2Array(order_shape)
-			lit_outline.append(order_shape[0])
-			draw_polyline(lit_outline, Color(metal.r, metal.g, metal.b, 0.65 if lit else 0.50), 1.2, true)
-		draw_line(Vector2(1, 7), Vector2(1, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else 0.34), 2.5, true)
+			face_color = Color(0.075, 0.079, 0.067, 0.95)
+		draw_colored_polygon(face, face_color)
+		# An inset art bay seats the painted order emblem without another frame.
+		draw_polygon(PackedVector2Array([
+			Vector2(2, 5), Vector2(55, 2), Vector2(55, h - 2), Vector2(2, h - 5)]), PackedColorArray([
+			Color(metal.r, metal.g, metal.b, 0.12 if enabled else 0.04),
+			Color(metal.r, metal.g, metal.b, 0.06 if enabled else 0.02),
+			Color(0.005, 0.016, 0.019, 0.06),
+			Color(metal.r, metal.g, metal.b, 0.035 if enabled else 0.01)]))
+		draw_line(Vector2(55, 7), Vector2(55, h - 7), Color(metal.r, metal.g, metal.b, 0.29 if enabled else 0.11), 1.0, true)
+		# Fine illuminated cuts show material and state; the rack supplies the
+		# strong outer edge and the central cross-joint.
+		draw_line(Vector2(8, 2), Vector2(w - 9, 2), Color(metal.r, metal.g, metal.b, 0.31 if enabled else 0.08), 1.0, true)
+		draw_line(Vector2(8, h - 2), Vector2(w - 8, h - 2), Color(0.30, 0.34, 0.30, 0.25 if enabled else 0.08), 1.0, true)
+		draw_line(Vector2(2, 7), Vector2(2, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else (0.36 if enabled else 0.11)), 2.0, true)
+		if lit or active:
+			var highlight := PackedVector2Array(face)
+			highlight.append(face[0])
+			draw_polyline(highlight, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.56), 1.3, true)
 		return
 	if command_kind in ["BUILD", "TRAIN", "RESEARCH"]:
 		# Give the authored structure and technology art a lit recess instead of
