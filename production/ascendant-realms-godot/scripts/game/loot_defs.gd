@@ -30,6 +30,17 @@ const SUFFIXES := ["of Salto", "of the Larouco", "of the Chega", "of Tourém", "
 ## Stat value per point of item budget.
 const STAT_SCALE := {"dmg": 0.55, "hp": 5.0, "armor": 0.18, "speed": 0.02, "attack_speed": 0.006,
 	"mana": 3.5, "mana_regen": 0.12, "heal_power": 0.8, "aura_dmg": 0.12}
+## Gear sets: 2 pieces give a stat that grows with the set's item level,
+## 4 pieces add a power.
+const SETS := {
+	"salto_oath": {"name": "Oath of Salto", "two": "health", "four": ["last_stand", true, "survive one lethal blow"]},
+	"furna_ashglass": {"name": "Furna's Ashglass", "two": "damage", "four": ["lifesteal", 0.1, "10% lifesteal"]},
+	"moura_silver": {"name": "Moura Silver", "two": "mana", "four": ["execute", true, "execute wounded foes"]},
+	"careto_masks": {"name": "Careto Masks", "two": "speed", "four": ["cleave", true, "cleave"]},
+}
+
+const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ashglass", "moura_silver": "Moura-silver", "careto_masks": "Careto"}
+
 ## [flag, value, description] - powers the hero already understands.
 const LEGENDARY_POWERS := [
 	["cleave", true, "Power: every blow also strikes the enemies around the target."],
@@ -89,10 +100,17 @@ static func make_item(rng: RandomNumberGenerator, item_level: int, shift: float)
 		var power: Array = LEGENDARY_POWERS[rng.randi() % LEGENDARY_POWERS.size()]
 		flags[power[0]] = power[1]
 		power_desc = " " + String(power[2])
+	var set_id := ""
+	if rarity in ["epic", "legendary"] and rng.randf() < 0.5:
+		set_id = String(SETS.keys()[rng.randi() % SETS.size()])
+		var st: Dictionary = SETS[set_id]
+		power_desc += " Set: %s (2 pieces: +%s, 4 pieces: %s)." % [st["name"], st["two"], st["four"][2]]
 	var name := "%s %s" % [PREFIXES[rng.randi() % PREFIXES.size()], base[0]]
 	if rarity in ["rare", "epic", "legendary"]:
 		name += " " + String(SUFFIXES[rng.randi() % SUFFIXES.size()])
-	return {"name": name, "slot": slot, "rarity": rarity, "stats": stats, "flags": flags,
+	if set_id != "":
+		name = "%s %s" % [SET_PREFIX[set_id], base[0]]
+	return {"name": name, "slot": slot, "rarity": rarity, "stats": stats, "flags": flags, "set": set_id,
 		"item_level": item_level, "desc": "Taken from the field. Item level %d.%s" % [item_level, power_desc]}
 
 static func _add_stat(stats: Dictionary, key: String, points: float) -> void:

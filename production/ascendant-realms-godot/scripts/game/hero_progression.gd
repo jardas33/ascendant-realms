@@ -44,6 +44,28 @@ static func compute(hero: Dictionary) -> Dictionary:
 		var item = hero["equipment"][slot]
 		_apply_item(out, item)
 
+	# --- Gear sets (LootDefs.SETS): 2 and 4 matching pieces ---
+	var set_count := {}
+	var set_level := {}
+	for slot in hero.get("equipment", {}):
+		var it: Dictionary = hero["equipment"][slot]
+		var sid := String(it.get("set", ""))
+		if sid == "":
+			continue
+		set_count[sid] = int(set_count.get(sid, 0)) + 1
+		set_level[sid] = mini(int(set_level.get(sid, 99999)), int(it.get("item_level", 1)))
+	for sid in set_count:
+		var lvl := float(set_level[sid])
+		if int(set_count[sid]) >= 2:
+			match sid:
+				"salto_oath": out["bonus_hp"] += 40.0 + lvl * 6.0
+				"furna_ashglass": out["bonus_dmg"] += 3.0 + lvl * 0.6
+				"moura_silver": out["max_mana"] += 30.0 + lvl * 4.0; out["mana_regen"] += 1.0 + lvl * 0.05
+				"careto_masks": out["bonus_speed"] += 0.2 + sqrt(lvl) * 0.03; out["attack_speed"] += 0.03 + sqrt(lvl) * 0.004
+		if int(set_count[sid]) >= 4:
+			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
+			out["flags"][four[0]] = four[1]
+
 	# --- Mastery (endless, no ceiling) ---
 	var ms: Dictionary = hero.get("mastery_spent", {})
 	for con in ms:

@@ -5,6 +5,14 @@ extends RefCounted
 ## for every player - ready for shared leaderboards and online play later.
 
 const RACE_IDS := ["vorthak", "sunspear", "hollow", "frostborn", "wyldkin", "karak", "grimtusk", "sylvan", "lioraen", "barrosan"]
+## Every tenth stage is one of Barroso's feasts, fought the old way.
+const FESTIVALS := [
+	{"title": "Entrudo", "race": "frostborn", "mood": "dusk", "text": "Carnival. The Caretos come down from the hills in red and green fringes, cowbells ringing, and they do not come to dance alone."},
+	{"title": "The Chega de Bois", "race": "barrosan", "mood": "", "text": "The villages set their bulls against each other, and this year the rival clans want more than a bull fight."},
+	{"title": "The Night of the Witches", "race": "hollow", "mood": "night", "text": "Friday the thirteenth in Montalegre. The queimada burns blue, and the candles on the road are not all held by the living."},
+	{"title": "Magusto", "race": "wyldkin", "mood": "dusk", "text": "Chestnuts roast in the ash and the new wine is opened. The wolves smell the feast from the Larouco."},
+	{"title": "The Fires of São João", "race": "vorthak", "mood": "ember", "text": "Midsummer bonfires on every hill. Across the valley, drowned Furna lights fires of its own."},
+]
 const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils"]
 const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",
 	"champions": "Champions: enemy heroes far tougher", "warband": "Warband: enemy reinforcements at 3 minutes",
@@ -56,11 +64,24 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 					continue
 				mood = t
 			twists.append(t)
+	var festival := {}
+	if depth % 10 == 0:
+		festival = FESTIVALS[(depth / 10 - 1) % FESTIVALS.size()]
+		for o in opponents:
+			o["race"] = festival["race"]
+		twists = ["spoils"]
+		mood = String(festival["mood"])
+		if mood != "":
+			twists.append(mood)
 	# Past the ladder, the enemy's Lume swells: bonus income that keeps rising.
 	var might := maxf(0.0, float(depth - 12)) * 0.35
+	var title := "%s %s" % [PLACES[rng.randi() % PLACES.size()], EPITHETS[rng.randi() % EPITHETS.size()]]
+	if not festival.is_empty():
+		title = String(festival["title"])
 	return {
 		"depth": depth,
-		"title": "%s %s" % [PLACES[rng.randi() % PLACES.size()], EPITHETS[rng.randi() % EPITHETS.size()]],
+		"festival": String(festival.get("text", "")),
+		"title": title,
 		"map": String(map_info["id"]),
 		"opponents": opponents,
 		"might": might,

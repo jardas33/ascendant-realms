@@ -297,7 +297,7 @@ func _open_endless() -> void:
 	var t := _label(String(st["title"]), 34, Color(0.98, 0.84, 0.46), true)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(t)
-	var body := _label("The saga ends, but the Lume does not. Every Ascension leaves roads that never close, and something always waits on them. Each stage is harder than the last, and pays more.", 17, Color(0.92, 0.89, 0.80))
+	var body := _label(String(st["festival"]) if String(st.get("festival", "")) != "" else "The saga ends, but the Lume does not. Every Ascension leaves roads that never close, and something always waits on them. Each stage is harder than the last, and pays more.", 17, Color(0.92, 0.89, 0.80))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.custom_minimum_size = Vector2(656, 0)
 	box.add_child(body)
