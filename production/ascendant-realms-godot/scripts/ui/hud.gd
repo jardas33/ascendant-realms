@@ -237,6 +237,7 @@ func setup(p_world, p_rts) -> void:
 	_rebuild_selection([])
 	_last_viewport_size = get_viewport_rect().size
 	_m20_end(stage)
+	call_deferred("_show_saga_title_card")
 
 
 func _fit_to_viewport() -> void:
@@ -3534,6 +3535,61 @@ var last_alert_position := Vector3.INF
 
 var _survival_label: Label
 
+## A campaign battle opens on a title card: the Act, the chapter, and the
+## first line of its chronicle, fading out as the battle begins.
+func _show_saga_title_card() -> void:
+	var chapter := CampaignDefs.find(String(Match.get_config().get("campaign_chapter", "")))
+	if chapter.is_empty():
+		return
+	# A soft dark band across the middle of the screen keeps the text legible.
+	var holder := Control.new()
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(holder)
+	var band := TextureRect.new()
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0, 0, 0, 0))
+	fade.set_color(1, Color(0, 0, 0, 0))
+	fade.add_point(0.5, Color(0, 0, 0, 0.62))
+	var fade_tex := GradientTexture2D.new()
+	fade_tex.gradient = fade
+	fade_tex.fill_from = Vector2(0, 0)
+	fade_tex.fill_to = Vector2(0, 1)
+	band.texture = fade_tex
+	band.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	band.stretch_mode = TextureRect.STRETCH_SCALE
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	band.set_anchors_and_offsets_preset(Control.PRESET_HCENTER_WIDE)
+	band.offset_top = -170.0
+	band.offset_bottom = 170.0
+	holder.add_child(band)
+	var card := VBoxContainer.new()
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.alignment = BoxContainer.ALIGNMENT_CENTER
+	card.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	card.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	card.custom_minimum_size = Vector2(900, 0)
+	card.add_theme_constant_override("separation", 8)
+	holder.add_child(card)
+	var act := _mk_title_label(String(CampaignDefs.ACTS[int(chapter["act"])]["title"]).to_upper(), 18, Color(0.85, 0.76, 0.55))
+	var title := _mk_title_label(String(chapter["title"]), 56, Color(0.99, 0.86, 0.48))
+	var line := _mk_label(String(chapter["briefing"]).split("\n")[0], 19, Color(0.94, 0.90, 0.80))
+	line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	line.custom_minimum_size = Vector2(900, 0)
+	for l in [act, title, line]:
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.add_theme_constant_override("outline_size", 8)
+		card.add_child(l)
+	holder.modulate.a = 0.0
+	var t := holder.create_tween()
+	t.tween_interval(1.0)
+	t.tween_property(holder, "modulate:a", 1.0, 0.8)
+	t.tween_interval(5.0)
+	t.tween_property(holder, "modulate:a", 0.0, 1.2)
+	t.tween_callback(holder.queue_free)
+
 func _update_survival_label() -> void:
 	if not is_instance_valid(_survival_label) or not is_instance_valid(world) or not world.has_method("survival_remaining"):
 		return
@@ -3662,8 +3718,13 @@ func _on_game_over(victory: bool) -> void:
 	box.add_child(outcome)
 	# Campaign victories continue the saga on the ledger.
 	var chapter_id := String(Match.get_config().get("campaign_chapter", "")) if Match else ""
-	if victory and chapter_id != "":
-		var chronicle := _mk_label(CampaignDefs.victory_text(chapter_id, ProfileManager.saga()), 17, Color(0.93, 0.88, 0.76))
+	if chapter_id != "" and victory and String(CampaignDefs.find(chapter_id).get("victory", "")) == "ENDING":
+		var ends := _mk_title_label("THE SAGA ENDS", 22, accent)
+		ends.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(ends)
+	if chapter_id != "":
+		var story := CampaignDefs.victory_text(chapter_id, ProfileManager.saga()) if victory else "You fall at %s. The Lume does not let go of you so easily: it never has. Rise, Jardas, and try again." % String(CampaignDefs.find(chapter_id).get("title", "the field"))
+		var chronicle := _mk_label(story, 17, Color(0.93, 0.88, 0.76))
 		chronicle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		chronicle.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		chronicle.custom_minimum_size = Vector2(620, 0)

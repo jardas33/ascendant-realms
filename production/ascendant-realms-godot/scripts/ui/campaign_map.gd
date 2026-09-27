@@ -30,6 +30,10 @@ var _act_buttons: Array = []
 var _positions := {}          # chapter id -> Vector2 centre
 var _next_id := "1-1"
 var _briefing: Control
+var _mood: ColorRect
+## Each Act tints the realm map: ember for the raid, drowned teal, grave
+## blue-grey, Dominion bronze, and the violet of the Ascension.
+const ACT_MOODS := [Color(0.55, 0.25, 0.05, 0.16), Color(0.05, 0.35, 0.40, 0.16), Color(0.25, 0.30, 0.45, 0.20), Color(0.55, 0.42, 0.12, 0.16), Color(0.40, 0.12, 0.55, 0.20)]
 
 # --------------------------------------------------------------------------
 func _ready() -> void:
@@ -87,6 +91,10 @@ func _build() -> void:
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scrim.color = Color(0.02, 0.03, 0.07, 0.6)
 	add_child(scrim)
+	_mood = ColorRect.new()
+	_mood.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_mood.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_mood)
 
 	var title := _label("The Seventy-Seventh Ascension", 38, Color(0.97, 0.92, 0.68), true)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -211,6 +219,8 @@ func _act_reached(a: int) -> bool:
 # --------------------------------------------------------------------------
 func _show_act(a: int) -> void:
 	_act = a
+	if is_instance_valid(_mood):
+		_mood.color = ACT_MOODS[a]
 	for child in _act_layer.get_children():
 		child.queue_free()
 	_positions.clear()
@@ -363,7 +373,9 @@ func _open_briefing(id: String) -> void:
 	var foes: Array = []
 	for o in c["opponents"]:
 		foes.append(String(GameData.get_race(String(o["race"])).get("name", o["race"])))
-	var meta := _label("Enemies: %s   ·   Difficulty: %s%s" % [", ".join(foes), String(c["difficulty"]), "   ·   A jar of Wine of the Dead lies here" if bool(c.get("jar", false)) else ""] + ("
+	var suggested := 1 + int(round(CampaignDefs.index_of(id) * 1.2))
+	var hero_level := int(ProfileManager.hero().get("level", 1))
+	var meta := _label("Enemies: %s   ·   Difficulty: %s   ·   Suggested hero level %d%s%s" % [", ".join(foes), String(c["difficulty"]), suggested, " (yours: %d)" % hero_level, "   ·   A jar of Wine of the Dead lies here" if bool(c.get("jar", false)) else ""] + ("
 Objective: hold out for %d minutes." % (int(c.get("survive", 0)) / 60) if int(c.get("survive", 0)) > 0 else "
 Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

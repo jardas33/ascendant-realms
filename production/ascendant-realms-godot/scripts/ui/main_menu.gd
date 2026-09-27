@@ -62,7 +62,7 @@ func _build() -> void:
 	col.offset_bottom = 360.0
 	add_child(col)
 
-	col.add_child(_make_button("Play Campaign", _on_campaign))
+	col.add_child(_make_button(_campaign_label(), _on_campaign))
 	col.add_child(_make_button("Skirmish", _on_skirmish))
 	col.add_child(_make_button("Hero", _on_hero))
 	col.add_child(_make_button("How to Play", _on_tutorial))
@@ -92,6 +92,16 @@ func _build() -> void:
 	footer.offset_left = -300.0
 	footer.offset_right = 300.0
 	add_child(footer)
+
+## "Continue the Saga" once the player has won a chapter.
+func _campaign_label() -> String:
+	var s: Dictionary = ProfileManager.saga()
+	if s["cleared"].is_empty():
+		return "Begin the Saga"
+	var act := 0
+	for id in s["unlocked"]:
+		act = maxi(act, int(String(id).substr(0, 1)))
+	return "Continue the Saga · Act %s" % ["I", "II", "III", "IV", "V"][clampi(act - 1, 0, 4)]
 
 func _make_button(text: String, cb: Callable) -> Button:
 	var b := Button.new()
