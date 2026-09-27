@@ -328,7 +328,7 @@ static func get_all() -> Dictionary:
 	"sylvan_lightweaver": {
 		"race": "sylvan", "name": "Silver Chorister", "role": "healer", "tier": 2,
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
-		"hp": 95, "dmg": 8, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
+		"hp": 110, "dmg": 10, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
 		"heal": 14.0, "heal_range": 13.0, "heal_cd": 1.2,
 		"cost": {"food": 80, "gold": 30}, "build_time": 20, "pop": 2, "produced_by": "sylvan_arcanum",

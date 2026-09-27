@@ -81,6 +81,9 @@ func _apply_personality() -> void:
 			_worker_target += 2
 		"frostborn":
 			_army_attack_size += 1
+		"barrosan":
+			# The clans strike early with cheap levies before the enemy masses.
+			_army_attack_size = maxi(5, _army_attack_size - 2)
 
 func _apply_difficulty() -> void:
 	match difficulty:

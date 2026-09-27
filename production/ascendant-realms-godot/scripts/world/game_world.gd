@@ -104,6 +104,7 @@ func _start_lume_surge() -> void:
 		return
 	_surge_hold.clear()
 	emit_signal("alert", "The Lume surges from the earth! Hold the light for its gift.", _surge_pos)
+	Sfx.play("spell", -2.0)
 	# The AI races for it too, with idle soldiers that are close enough.
 	for cmd in commanders:
 		if int(cmd.team) == player_team or cmd.defeated:
@@ -136,6 +137,7 @@ func _tick_lume_surge(elapsed: int) -> void:
 			if team == player_team:
 				ProfileManager.add_xp(80.0 + float(ProfileManager.hero().get("level", 1)) * 6.0)
 				emit_signal("alert", "The Lume's gift is yours: 200 gold, 200 food and your hero grows wiser.", _surge_pos)
+				Sfx.play("levelup", -4.0)
 			else:
 				emit_signal("alert", "The enemy seized the Lume's gift.", _surge_pos)
 			return
@@ -3133,6 +3135,7 @@ func _on_unit_died(unit) -> void:
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 1
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
+		Sfx.play("levelup", -8.0)
 	# hero down handling
 	for cmd in commanders:
 		if cmd.hero_ref == unit:

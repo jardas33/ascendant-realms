@@ -3058,9 +3058,11 @@ func gain_veterancy() -> void:
 			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 2.2)
 		if _veterancy >= 3 and veteran_name == "":
 			veteran_name = _make_veteran_name()
+		_update_rank_badge()
 		if world and team == world.player_team and not is_hero and world.has_signal("alert"):
 			if _veterancy == 3:
 				world.emit_signal("alert", "%s reaches rank 3. The army calls them %s." % [String(def.get("name", "Unit")), veteran_name], global_position)
+				_play_sfx("levelup", -10.0)
 			else:
 				world.emit_signal("alert", "%s promoted to veteran rank %d" % [veteran_name if veteran_name != "" else String(def.get("name", "Unit")), _veterancy], global_position)
 
@@ -3088,6 +3090,28 @@ func set_veterancy(rank: int) -> void:
 		_kills = _kills_for_rank(_veterancy)
 		max_hp += 15.0
 		hp += 15.0
+	_update_rank_badge()
+
+## Gold stars over a veteran's head: one per rank, a number past five.
+var _rank_badge: Label3D
+
+func _update_rank_badge() -> void:
+	if _veterancy <= 0 or is_hero or is_worker:
+		return
+	if not is_instance_valid(_rank_badge):
+		_rank_badge = Label3D.new()
+		_rank_badge.name = "RankBadge"
+		_rank_badge.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_rank_badge.no_depth_test = true
+		_rank_badge.fixed_size = true
+		_rank_badge.pixel_size = 0.0009
+		_rank_badge.font_size = 22
+		_rank_badge.outline_size = 6
+		_rank_badge.modulate = Color(1.0, 0.82, 0.3)
+		_rank_badge.outline_modulate = Color(0.1, 0.05, 0.0, 0.9)
+		add_child(_rank_badge)
+		_rank_badge.position = Vector3(0.0, _visual_height + 0.55, 0.0)
+	_rank_badge.text = "★".repeat(_veterancy) if _veterancy <= 5 else "★ %d" % _veterancy
 
 func set_aura_bonus(d: float, a: float) -> void:
 	_aura_bonus_dmg = d
