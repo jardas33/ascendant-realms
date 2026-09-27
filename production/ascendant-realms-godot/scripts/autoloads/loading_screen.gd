@@ -208,6 +208,21 @@ var _load01_timings: Array = []
 var _root: Control
 var _progress: ProgressBar
 var _status: Label
+var _tip: Label
+
+# One of these shows under the bar on every load: controls and tactics a new
+# player would otherwise have to discover by accident.
+const TIPS := [
+	"Right-click a resource with workers selected to gather it. Idle workers are counted at the top of the screen.",
+	"Press J, then click the ground, to attack-move: your army fights anything it meets on the way.",
+	"Capture points pay out while you hold them: the Lume Spire gives gold, chapels heal, watches grant sight.",
+	"Units become veterans after three kills and gain health with each rank. Keep them alive.",
+	"Ctrl + 1-5 saves a control group; press the number again to select it.",
+	"Your hero's abilities are on Q, T, E and R. Slam stuns every enemy around the hero.",
+	"Buildings smoke when damaged and burn below 40% health. Send workers to repair them.",
+	"Press F to jump to an idle worker, and Space to find your hero.",
+	"Scout early: the fog hides the enemy base until one of your units has seen it.",
+]
 
 
 func _ready() -> void:
@@ -298,9 +313,9 @@ func _build_ui() -> void:
 	band.anchor_right = 0.5
 	band.anchor_top = 1.0
 	band.anchor_bottom = 1.0
-	band.offset_left = -360
-	band.offset_right = 360
-	band.offset_top = -160
+	band.offset_left = -420
+	band.offset_right = 420
+	band.offset_top = -190
 	band.offset_bottom = -40
 
 	var vbox := VBoxContainer.new()
@@ -332,10 +347,26 @@ func _build_ui() -> void:
 	_progress.add_theme_stylebox_override("background", pb_bg)
 	_progress.add_theme_stylebox_override("fill", pb_fill)
 	vbox.add_child(_progress)
+	pb_bg.set_border_width_all(2)
+	pb_bg.border_color = Color(0.72, 0.56, 0.30, 0.95)
+	pb_bg.shadow_color = Color(0, 0, 0, 0.6)
+	pb_bg.shadow_size = 6
+	pb_fill.set_border_width_all(2)
+	pb_fill.border_color = Color(0, 0, 0, 0)
+	_tip = Label.new()
+	_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_tip.add_theme_font_size_override("font_size", 17)
+	_tip.add_theme_color_override("font_color", Color(0.93, 0.88, 0.76))
+	_tip.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	_tip.add_theme_constant_override("outline_size", 4)
+	vbox.add_child(_tip)
 
 
 func _show() -> void:
 	visible = true
+	if _tip:
+		_tip.text = "TIP  ·  " + String(TIPS[randi() % TIPS.size()])
 	set_progress(0.0)
 
 
