@@ -111,6 +111,9 @@ func _run() -> void:
 		for index in 5:
 			await process_frame
 	if OS.get_environment("ASCENDANT_UI_CENTER_SELECTED") == "1" and instance.get("rts") != null and not instance.rts.selected.is_empty():
+		# A review capture should not drift because the desktop pointer happens to
+		# rest near an edge while the camera is being centered.
+		instance.rts.edge_scroll = false
 		var focus = instance.rts.selected[0]
 		if is_instance_valid(focus) and focus is Node3D:
 			instance.rts.cam_pivot.global_position.x = focus.global_position.x
@@ -314,6 +317,33 @@ func _run() -> void:
 						ranger_caption = true
 				if not ranger_caption:
 					validation_errors.append("lioraen_thornrunner_caption_missing")
+			if selected_kind == "military" and player_race == "vorthak" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "vorthak_ash_thrall":
+				var thrall_portrait := hud._selection_portrait.find_child("PortraitArtwork", true, false) as TextureRect
+				var portrait_view := thrall_portrait.get_parent() if is_instance_valid(thrall_portrait) else null
+				if not is_instance_valid(portrait_view) or not portrait_view.has_method("get_active_portrait_path") or String(portrait_view.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/ash_thrall.png":
+					validation_errors.append("vorthak_ash_thrall_selected_portrait_missing")
+			if review_building_id == "vorthak_bone_barracks":
+				var expected_unit_art := {
+					"Ash Thrall": "ash_thrall.png",
+					"Cinder Spitter": "cinder_spitter.png",
+					"Gloom Hound": "gloom_hound.png",
+					"Rift Blade": "rift_blade.png",
+				}
+				var seen_art := {}
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if String(button.get_meta("command_kind", "")) != "TRAIN":
+						continue
+					var title := ""
+					for label in button.find_children("*", "Label", true, false):
+						if expected_unit_art.has(label.text):
+							title = label.text
+					var portrait_view: Node = button.find_child("UnitCommandPortrait", true, false)
+					if not title.is_empty() and is_instance_valid(portrait_view) and portrait_view.has_method("get_active_portrait_path"):
+						var expected_path: String = "res://assets/ui/portraits/vorthak/astra_r1/" + String(expected_unit_art[title])
+						if String(portrait_view.get_active_portrait_path()) == expected_path:
+							seen_art[title] = true
+				if seen_art.size() != expected_unit_art.size():
+					validation_errors.append("vorthak_barracks_unit_art:%d_expected_%d" % [seen_art.size(), expected_unit_art.size()])
 			if selected_kind in ["building", "construction"]:
 				var selected_building_art := ""
 				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
@@ -457,7 +487,7 @@ func _run() -> void:
 			if not button.has_meta("command_kind"):
 				continue
 			for label in button.find_children("*", "Label", true, false):
-				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Ash Forge", "Advance to Age of Iron", "Clan Levy"]:
+				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Ash Forge", "Advance to Age of Iron", "Clan Levy", "Ash Thrall"]:
 					card_by_title[label.text] = button
 		if selected_kind in ["hero", "military"]:
 			for title in ["Attack Move", "Stop", "Hold", "Patrol"]:
@@ -577,6 +607,11 @@ func _run() -> void:
 			var selected_hall = instance.rts.selected[0]
 			if selected_hall.queue.is_empty() or str(selected_hall.queue[0].get("id", "")) != "barrosan_clan_levy":
 				validation_errors.append("train_button_did_not_queue_unit")
+		if review_building_id == "vorthak_bone_barracks" and card_by_title.has("Ash Thrall"):
+			card_by_title["Ash Thrall"].pressed.emit()
+			var selected_barracks = instance.rts.selected[0]
+			if selected_barracks.queue.is_empty() or str(selected_barracks.queue[0].get("id", "")) != "vorthak_ash_thrall":
+				validation_errors.append("vorthak_train_button_did_not_queue_unit")
 		if selected_kind == "building_queued" and is_instance_valid(instance.hud._queue_container):
 			var queue_slot = instance.hud._queue_container.get_child(0) if instance.hud._queue_container.get_child_count() > 0 else null
 			if is_instance_valid(queue_slot):
