@@ -72,6 +72,8 @@ func setup(p_world, p_commander, p_difficulty: String) -> void:
 
 ## Faction personalities on top of difficulty: swarm factions attack early
 ## with smaller waves; the disciplined ones mass a bigger army first.
+var _second_barracks_army := 6
+
 func _apply_personality() -> void:
 	match String(commander.race):
 		"vorthak", "hollow", "grimtusk", "wyldkin":
@@ -84,6 +86,10 @@ func _apply_personality() -> void:
 		"barrosan":
 			# The clans strike early with cheap levies before the enemy masses.
 			_army_attack_size = maxi(5, _army_attack_size - 2)
+			# Their soldiers train slowly: a single War Hall fielded 4 men by
+			# minute two against 8 to 12 from swarm factions. Raise a second
+			# hall as soon as a few levies are out.
+			_second_barracks_army = 2
 
 func _apply_difficulty() -> void:
 	match difficulty:
@@ -614,10 +620,20 @@ func _assign_idle_workers() -> void:
 		if not is_instance_valid(u) or u.is_dead or not u.is_worker:
 			continue
 		if u.state == u.State.IDLE:
-			var kind := _needed_resource()
-			var node = world.find_nearest_resource(u.global_position, kind)
-			if node:
-				u.command_gather(node)
+			# A refused order (a node out of reach or out of sight) left the
+			# worker idle, and the next think chose the same node again: a
+			# Barrosan AI had 7 of 15 workers standing by an unusable quarry.
+			# Try the needed resource first, then the others, nearest first.
+			var kinds: Array = [_needed_resource()]
+			for k in ["food", "timber", "gold", "stone"]:
+				if not kinds.has(k):
+					kinds.append(k)
+			for kind in kinds:
+				var node = world.find_nearest_resource_exact(u.global_position, kind)
+				if node:
+					u.command_gather(node)
+					if u.state != u.State.IDLE:
+						break
 
 # Workers only took new jobs when idle, and a gathering worker never goes
 # idle, so the first assignment stuck forever. Fixed thresholds were not
@@ -754,7 +770,7 @@ func _manage_production() -> void:
 	# ...and for anyone whose resources pile up faster than one barracks can
 	# spend them (a Barrosan AI sat on 400+ food with 3 soldiers).
 	var piling: bool = int(commander.resources.get("food", 0)) > 350 and int(commander.resources.get("timber", 0)) > 250
-	if _count_building_kind("barracks") < 2 and ((_tech_aggression >= 1.4 and _army_size() > 6) or piling):
+	if _count_building_kind("barracks") < 2 and ((_tech_aggression >= 1.4 and _army_size() > _second_barracks_army) or piling):
 		_try_build("barracks")
 
 	# A side reduced to a handful of workers spent every scrap of food on

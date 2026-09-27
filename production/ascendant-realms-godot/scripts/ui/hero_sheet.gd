@@ -291,7 +291,7 @@ func _refresh() -> void:
 	var dps := dmg * (1.0 + float(b.get("attack_speed", 0))) / maxf(0.35, float(hero_def.get("attack_cd", 1.1)))
 	var power := int(sqrt(dps * hp * (1.0 + armor * 0.06)))
 	build_panel.add_child(_stat_line("Hero Power", str(power)))
-	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable"}
+	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable", "thornmail": "Thornmail", "chain_lightning": "Stormcall", "haste_on_kill": "Bloodrush"}
 	var powers: Array = []
 	for f in b.get("flags", {}):
 		if flag_names.has(f):
@@ -300,6 +300,46 @@ func _refresh() -> void:
 	if not powers.is_empty():
 		build_panel.add_child(_stat_line("Powers", ", ".join(powers)))
 
+	right_panel.add_child(_hsep())
+
+	# Talents: a choice of three every tenth level, stacking forever.
+	var TalentDefs = load("res://scripts/game/talent_defs.gd")
+	var t_pts: int = ProfileManager.talent_points()
+	var owned: Array = []
+	var tal = h.get("talents", {})
+	if tal is Dictionary:
+		for tid in tal:
+			owned.append("%s %d" % [String(TalentDefs.find(String(tid)).get("name", tid)), int(tal[tid])])
+	right_panel.add_child(_heading("TALENTS"))
+	var next_at: int = (int(h.get("level", 1)) / TalentDefs.EVERY_LEVELS + 1) * TalentDefs.EVERY_LEVELS
+	right_panel.add_child(_stat_line("Taken", ", ".join(owned) if not owned.is_empty() else "None yet. A choice every %d levels." % TalentDefs.EVERY_LEVELS))
+	if t_pts > 0:
+		right_panel.add_child(_stat_line("Choose one", "%d pick%s waiting" % [t_pts, "" if t_pts == 1 else "s"]))
+		var trow := HBoxContainer.new()
+		trow.add_theme_constant_override("separation", 10)
+		for tid in ProfileManager.talent_offer():
+			var td: Dictionary = TalentDefs.find(String(tid))
+			var tb := Button.new()
+			_label_button(tb, String(td.get("name", tid)), Color(1.0, 0.86, 0.5))
+			tb.tooltip_text = String(td.get("desc", ""))
+			tb.custom_minimum_size = Vector2(190, 40)
+			tb.focus_mode = Control.FOCUS_NONE
+			tb.pressed.connect(func(): Sfx.play("levelup"); ProfileManager.pick_talent(String(tid)))
+			trow.add_child(tb)
+		right_panel.add_child(trow)
+		var descs: Array = []
+		for tid in ProfileManager.talent_offer():
+			var td2: Dictionary = TalentDefs.find(String(tid))
+			descs.append("%s: %s" % [String(td2.get("name", tid)), String(td2.get("desc", ""))])
+		var dl := Label.new()
+		dl.text = "
+".join(descs)
+		dl.add_theme_font_override("font", _body_font())
+		dl.add_theme_font_size_override("font_size", 15)
+		dl.add_theme_color_override("font_color", Color(0.8, 0.78, 0.7))
+		right_panel.add_child(dl)
+	else:
+		right_panel.add_child(_stat_line("Next choice", "Level %d" % next_at))
 	right_panel.add_child(_hsep())
 
 	# Mastery panel

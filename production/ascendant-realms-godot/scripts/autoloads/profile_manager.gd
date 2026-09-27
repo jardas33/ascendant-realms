@@ -91,10 +91,20 @@ func campaign() -> Dictionary:
 		c["wins"] = 0
 	if not c.has("unlocked") or typeof(c["unlocked"]) != TYPE_ARRAY:
 		c["unlocked"] = [0]
-	# Node 0 is ALWAYS unlocked — heal old saves silently
-	if not (0 in c["unlocked"]):
-		c["unlocked"].append(0)
+	# Node 0 is ALWAYS unlocked — heal old saves silently. JSON reads numbers
+	# back as floats, and 0 is not "in" [0.0], so every load appended another
+	# 0 (one save had grown to 445 entries). Keep the list as unique ints.
+	var clean: Array = []
+	for v in c["unlocked"]:
+		if typeof(v) in [TYPE_INT, TYPE_FLOAT] and not clean.has(int(v)):
+			clean.append(int(v))
+	if not clean.has(0):
+		clean.append(0)
+	if clean.size() != (c["unlocked"] as Array).size():
+		c["unlocked"] = clean
 		save_game()
+	else:
+		c["unlocked"] = clean
 	return c
 
 ## Saga progress (CampaignDefs chapters by id): unlocked and cleared
@@ -299,6 +309,41 @@ func spend_mastery(constellation: String) -> bool:
 	var ms = h.get("mastery_spent", {})
 	ms[constellation] = int(ms.get(constellation, 0)) + 1
 	h["mastery_spent"] = ms
+	emit_signal("profile_changed")
+	save_game()
+	return true
+
+# --- talents (TalentDefs): a choice of three every tenth level, forever ---
+const TalentDefs := preload("res://scripts/game/talent_defs.gd")
+
+func talents_taken() -> int:
+	if not has_hero():
+		return 0
+	var n := 0
+	var t = hero().get("talents", {})
+	if t is Dictionary:
+		for k in t:
+			n += int(t[k])
+	return n
+
+## Unspent talent picks. Derived from the level, so old saves get theirs.
+func talent_points() -> int:
+	if not has_hero():
+		return 0
+	return maxi(0, TalentDefs.earned(int(hero().get("level", 1))) - talents_taken())
+
+func talent_offer() -> Array:
+	return TalentDefs.offer(talents_taken())
+
+func pick_talent(id: String) -> bool:
+	if talent_points() <= 0 or not (id in talent_offer()):
+		return false
+	var h = data["hero"]
+	var t = h.get("talents", {})
+	if not t is Dictionary:
+		t = {}
+	t[id] = int(t.get(id, 0)) + 1
+	h["talents"] = t
 	emit_signal("profile_changed")
 	save_game()
 	return true
@@ -536,6 +581,7 @@ func _normalize_profile(d: Dictionary) -> Dictionary:
 		if typeof(h.get("equipment")) != TYPE_DICTIONARY: h["equipment"] = {}
 		if typeof(h.get("loadouts")) != TYPE_ARRAY: h["loadouts"] = []
 		if typeof(h.get("history")) != TYPE_ARRAY: h["history"] = []
+		if h.has("talents") and typeof(h.get("talents")) != TYPE_DICTIONARY: h["talents"] = {}
 		if typeof(h.get("name")) != TYPE_STRING or String(h["name"]).strip_edges() == "": h["name"] = "Hero"
 		if typeof(h.get("race")) != TYPE_STRING or not GameData.RACES.has(String(h["race"])): h["race"] = "barrosan"
 		if typeof(h.get("archetype")) != TYPE_STRING or not ["Warrior", "Commander", "Ranger", "Mage", "Summoner"].has(String(h["archetype"])): h["archetype"] = "Warrior"
@@ -589,8 +635,15 @@ func _migrate(d: Dictionary) -> Dictionary:
 			c["wins"] = 0
 		if not c.has("unlocked") or typeof(c["unlocked"]) != TYPE_ARRAY:
 			c["unlocked"] = [0]
-		elif not (0 in c["unlocked"]):
-			c["unlocked"].append(0)
+		else:
+			# Unique ints: JSON floats never matched 0 and the list grew each load.
+			var clean: Array = []
+			for v in c["unlocked"]:
+				if typeof(v) in [TYPE_INT, TYPE_FLOAT] and not clean.has(int(v)):
+					clean.append(int(v))
+			if not clean.has(0):
+				clean.append(0)
+			c["unlocked"] = clean
 	d["version"] = SAVE_VERSION
 	return d
 
@@ -636,4 +689,4 @@ func endless_won(depth: int) -> void:
 func retinue_cap() -> int:
 	if not has_hero():
 		return 0
-	return 2 + int(hero().get("level", 1)) / 6
+	return 2 + int(hero().get("level", 1)) / 6 + int((hero().get("talents", {}) as Dictionary).get("quartermaster", 0))

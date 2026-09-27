@@ -13,10 +13,15 @@ const FESTIVALS := [
 	{"title": "Magusto", "race": "wyldkin", "mood": "dusk", "text": "Chestnuts roast in the ash and the new wine is opened. The wolves smell the feast from the Larouco."},
 	{"title": "The Fires of São João", "race": "vorthak", "mood": "ember", "text": "Midsummer bonfires on every hill. Across the valley, drowned Furna lights fires of its own."},
 ]
-const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils"]
+const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils", "blood_moon", "lean", "fortified", "veterans", "allies"]
 const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",
 	"champions": "Champions: enemy heroes far tougher", "warband": "Warband: enemy reinforcements at 3 minutes",
-	"spoils": "Rich spoils: extra loot and +25% experience"}
+	"spoils": "Rich spoils: extra loot and +25% experience",
+	"blood_moon": "Blood Moon: every blow lands 25% harder, on both sides",
+	"lean": "Lean Season: both sides start with half their stores",
+	"fortified": "Fortified: the enemy starts with two towers raised",
+	"veterans": "Veteran foes: enemy soldiers arrive already ranked",
+	"allies": "Allies: four of your own soldiers join at the start"}
 const DIFFICULTY_STEPS := ["easy", "normal", "normal", "hard", "hard", "brutal"]
 const PLACES := [
 	"Pitões das Júnias", "Tourém Ford", "Cabril Gorge", "Paredes do Rio", "Sirvozelo",

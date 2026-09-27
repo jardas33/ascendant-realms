@@ -16,7 +16,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_highlander_worker"), "height": 1.8,
 		"hp": 60, "dmg": 5, "dmg_type": "blunt", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 1.2, "speed": 3.6, "vision": 18.0,
-		"cost": {"food": 50}, "build_time": 12, "pop": 1,
+		"cost": {"food": 45}, "build_time": 11, "pop": 1,
 		"desc": "Shepherd, charcoal-burner and quarryman in one. Gathers, builds and repairs; every loaf the village bakes feeds the Lume.",
 	},
 	"barrosan_clan_levy": {
@@ -25,7 +25,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_clan_levy"), "height": 1.8,
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 50, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 50, "timber": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
 		"desc": "Farmers who fight in family blocks under the village banner. Cheap and stubborn; good against unarmoured foes.",
 	},
 	"barrosan_spear_guard": {

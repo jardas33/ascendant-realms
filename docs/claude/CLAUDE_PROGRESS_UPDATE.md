@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 21:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-27, 23:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -291,6 +291,17 @@ Last updated: 2026-09-27, 21:30 UTC. Claude updates this file after every pass. 
   - **Convergence audit** for the director: `docs/claude/CONVERGENCE_AUDIT.md` lists the exact commits and confirms every current Codex tip, including 05d9f857, is already in this branch. Emanuel pushed the branch to GitHub as a backup; Claude will push it after each batch from now on.
   - **Merged Codex's work from 27 September:** the HUD order rack, Vorthak portraits, field-order atlas and Nighthold colours, authored ash-and-basalt ground on volcanic maps, tactical hero range dashes, the Groveheart base and quieter building selection halos (2fad7cf1 and a552e10e). One conflict in the ground shader was resolved by keeping both sides.
   - Regression passed on the merged build: compile check, menu smoke tour, all 9 tests and the saga data check. Pushed to GitHub.
+- **Plan 23 (done):**
+  - **Hero talents:** every tenth hero level offers a choice of three talents (Bloodthirst, Executioner, Thornhide, Giant's Blood, Swift Blade, Warlord, Stormcaller, Quartermaster, Treasure Hunter). Talents stack forever with no cap. The offer is fixed per pick, so reloading can't reroll it. They're shown on the hero sheet, and the result screen says when a pick is waiting. Old saves get their picks from their level.
+  - **Five new Endless Road twists:** Blood Moon (every blow 25% harder, both sides), Lean Season (half starting stores), Fortified (the enemy starts with two towers), Veteran Foes (enemy soldiers arrive ranked) and Allies (four of your soldiers join you).
+  - **Three new legendary powers:** Thornmail (melee attackers take 15% back), Stormcall (every fourth blow arcs lightning, deterministic so it works online later) and Bloodrush (a kill speeds up attacks by 40% for 4 seconds).
+  - **Save safety:** a new save round-trip test covers every progression system. It found a bug where the old campaign unlock list gained an entry on every load (one save had 445). Fixed.
+  - **Fog of war:** explored resources now stay on the map and can be ordered, as in any RTS. Before, only resources in live sight could be, so workers stood idle.
+  - **Balance:** Barrosan Clan Levy trains in 11 s (was 14), Barrosan workers cost 45 food and take 11 s (was 50 and 12, now like other factions), and the Barrosan AI raises a second War Hall earlier. From the AI seat, Barrosan now beats Vorthak, Sunspear and Lioraen and draws with Hollow. Note: AI-versus-AI tests are harder for the side in the player's seat, which follows the fog of war and uses the test profile's hero, so earlier "Barrosan loses" results were partly that seat.
+  - **Building collision audit:** every building of all ten factions now has collision within its footprint.
+  - **Multiplayer groundwork:** every player order (move, attack, attack-move, gather, build, repair, stop, hold, patrol) now travels through a command bus as plain data with network ids, and survives a JSON round trip. This is the seam a host-authoritative online mode needs.
+  - **Checked windowed:** about 40 fps in the 120-unit fight, no regression from the Codex merges. Volcanic maps show Codex's new ash-and-basalt ground.
+  - Regression passed: compile check, menu smoke tour, all 9 tests, the saga data check, plus new checks for save round trip, talents, command bus and twists.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

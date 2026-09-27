@@ -30,3 +30,9 @@ Two families of RTS networking exist:
 ## Suggested first milestone
 
 A two-player LAN co-op skirmish: host plus one client on the same team against the AI, using ENet, a MultiplayerSynchronizer per unit (position, hp, state) and command RPCs. That proves the model before PvP matchmaking or any server work.
+
+## Step taken (plan 23): the command bus
+
+`scripts/world/command_bus.gd` (owned by `GameWorld` as `command_bus`). Every order the player controller gives (move with formation slots, attack with per-unit target pairing, attack-move, gather, build, repair, stop, hold, patrol) now goes through `command_bus.issue(order)`. The bus runs the order at once, exactly as before, and keeps its serialisable form (order type, unit network ids, target network id or position, physics tick) in `command_bus.history`. `serialize()` / `deserialize()` round-trip through JSON with the same units and targets (checked by `D:\ClaudeWork\ar-review\claude_cmdbus.gd`).
+
+Still direct calls, to route next: building placement, training and research from the HUD, rally points, and hero abilities. Network ids are assigned on first use, so the host must be the one assigning them in an online match.

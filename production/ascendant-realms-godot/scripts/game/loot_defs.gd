@@ -47,6 +47,9 @@ const LEGENDARY_POWERS := [
 	["lifesteal", 0.08, "Power: heals the hero for 8% of all damage dealt."],
 	["execute", true, "Power: +50% damage to enemies below 30% health."],
 	["last_stand", true, "Power: survives one lethal blow each battle."],
+	["thornmail", 0.15, "Power: melee attackers take 15% of their blow back."],
+	["chain_lightning", true, "Power: every fourth blow arcs lightning into the enemies around the target."],
+	["haste_on_kill", true, "Power: each kill quickens the hero's attacks by 40% for 4 seconds."],
 ]
 const AFFIX_POOL := ["dmg", "hp", "armor", "speed", "attack_speed", "mana", "mana_regen", "heal_power", "aura_dmg"]
 

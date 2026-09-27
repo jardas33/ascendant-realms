@@ -8,6 +8,9 @@ const Unit := preload("res://scripts/units/unit.gd")
 const Building := preload("res://scripts/buildings/building.gd")
 const ProjectileScript := preload("res://scripts/units/projectile.gd")
 const ResourceNodeScript := preload("res://scripts/world/resource_node.gd")
+const CommandBusScript := preload("res://scripts/world/command_bus.gd")
+## Player orders as serialisable data (the seam for online play).
+var command_bus = CommandBusScript.new(self)
 const CapturePointScript := preload("res://scripts/world/capture_point.gd")
 const WorldBlockerContract := preload("res://scripts/world/world_blocker_contract.gd")
 
@@ -418,7 +421,10 @@ func is_player_visible(target) -> bool:
 	if not _player_visibility_scope_active() or not is_instance_valid(target):
 		return true
 	if target is ResourceNode:
-		return player_visibility_state_at(target.global_position) == VISIBILITY_CURRENTLY_VISIBLE
+		# Resources never move: once explored they stay on the map and can be
+		# ordered, as in any RTS. Requiring live sight left workers idle beside
+		# a remembered field and hid explored forests as soon as units left.
+		return player_visibility_state_at(target.global_position) != VISIBILITY_UNEXPLORED
 	if "team" in target and int(target.team) == player_team:
 		return true
 	return player_visibility_state_at(target.global_position) == VISIBILITY_CURRENTLY_VISIBLE
@@ -1961,6 +1967,7 @@ func _setup_commanders() -> void:
 	# build starting bases
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
+	_apply_start_twists()
 	_m20_end(stage)
 
 ## Enemy heroes used to be bare stat blocks with no spells. They now get a
@@ -2053,6 +2060,9 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	u.reset_physics_interpolation()
 	u.configure(udef, team, commanders[team] if team < commanders.size() else null, self)
 	_maybe_make_elite(u, team)
+	# Endless Road "Veteran foes" twist: enemy soldiers arrive already ranked.
+	if team != player_team and twist_veteran_foes and not u.is_worker and not u.is_hero:
+		u.set_veterancy(1)
 	u.died.connect(_on_unit_died)
 	if team < commanders.size():
 		commanders[team].units.append(u)
@@ -2692,7 +2702,7 @@ func _roll_battle_loot(victory: bool) -> Array:
 		if order.find(String(o.get("difficulty", "normal"))) > order.find(hardest):
 			hardest = String(o.get("difficulty", "normal"))
 	var ilvl := int(hero.get("level", 1)) + int(cfg.get("endless_depth", 0)) + maxi(0, CampaignDefs.index_of(String(cfg.get("campaign_chapter", "")))) / 2
-	var fortune := int(hero.get("attributes", {}).get("fortune", 0))
+	var fortune := int(hero.get("attributes", {}).get("fortune", 0)) + 2 * int((hero.get("talents", {}) as Dictionary).get("treasure_hunter", 0))
 	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
 	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
 	if _bounty_met(victory):
@@ -2794,6 +2804,56 @@ func _spawn_champion(depth: int) -> void:
 	get_tree().create_timer(8.0, false).timeout.connect(func():
 		if game_running:
 			emit_signal("alert", "A Champion guards the enemy stronghold. Break it, and the road pays threefold.", boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
+
+## Endless Road stage twists that shape the start of a battle.
+var twist_damage_mult := 1.0
+var twist_veteran_foes := false
+
+func _apply_start_twists() -> void:
+	var twists: Array = Match.get_config().get("twists", [])
+	# Blood Moon: every blow on the field lands harder, for both sides.
+	if "blood_moon" in twists:
+		twist_damage_mult = 1.25
+	twist_veteran_foes = "veterans" in twists
+	# Lean Season: everyone starts with half the stores.
+	if "lean" in twists:
+		for cmd in commanders:
+			for k in cmd.resources.keys():
+				cmd.resources[k] = int(float(cmd.resources[k]) * 0.5)
+	# Fortified: each enemy start already has two towers raised.
+	if "fortified" in twists:
+		for i in range(1, commanders.size()):
+			var cmd = commanders[i]
+			var tower_id := ""
+			for bid in GameData.buildings_for_race(String(cmd.race)):
+				if String(GameData.get_building(bid).get("kind", "")) == "tower":
+					tower_id = bid
+					break
+			if tower_id == "":
+				continue
+			var start: Vector3 = map["start_positions"][i]
+			var toward := (Vector3.ZERO - start).normalized()
+			var side := Vector3(toward.z, 0, -toward.x)
+			for s in [-1.0, 1.0]:
+				var tdef := GameData.get_building(tower_id).duplicate()
+				tdef["id"] = tower_id
+				_create_building(tdef, i, start + toward * 20.0 + side * s * 10.0, true)
+	# Allies: a band of the player's own soldiers joins at the start.
+	if "allies" in twists and player_team < commanders.size():
+		var race := String(commanders[player_team].race)
+		var picks: Array = []
+		for id in UnitDefs.get_all():
+			var d: Dictionary = UnitDefs.get_all()[id]
+			if String(d.get("race", "")) == race and int(d.get("tier", 1)) == 1 and String(d.get("role", "")) in ["melee", "ranged", "defender"]:
+				picks.append(id)
+		var start2: Vector3 = map["start_positions"][player_team]
+		var toward2 := (Vector3.ZERO - start2).normalized()
+		for k in mini(4, picks.size() * 4):
+			if picks.is_empty():
+				break
+			var u = spawn_unit(String(picks[k % picks.size()]), player_team, start2 + toward2 * 12.0 + Vector3(toward2.z, 0, -toward2.x) * (float(k) - 1.5) * 2.0)
+			if u:
+				u.set_meta("saga_ally", true)
 
 func _schedule_warband() -> void:
 	get_tree().create_timer(180.0, false).timeout.connect(func():
@@ -3063,6 +3123,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
 		"bounty": String(bounty.get("text", "")), "bounty_won": bounty_won,
 		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
+		"talent_points": ProfileManager.talent_points() if ProfileManager.has_hero() else 0,
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)

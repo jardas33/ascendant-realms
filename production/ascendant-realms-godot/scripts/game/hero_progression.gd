@@ -66,6 +66,16 @@ static func compute(hero: Dictionary) -> Dictionary:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
 			out["flags"][four[0]] = four[1]
 
+	# Thornmail (legendary power) feeds the same reflection as Thornhide.
+	if out["flags"].has("thornmail"):
+		out["thorns"] = float(out.get("thorns", 0.0)) + float(out["flags"]["thornmail"])
+
+	# --- Talents (TalentDefs): picked every tenth level, stacking forever ---
+	var tal = hero.get("talents", {})
+	if tal is Dictionary:
+		for tid in tal:
+			_apply_talent(out, String(tid), int(tal[tid]))
+
 	# --- Mastery (endless, no ceiling) ---
 	var ms: Dictionary = hero.get("mastery_spent", {})
 	for con in ms:
@@ -131,6 +141,19 @@ static func _apply_mastery(out: Dictionary, con: String, ranks: int) -> void:
 		"attunement": out["max_mana"] += eff * 10.0; out["mana_regen"] += eff * 0.3
 		"lorecraft": out["spell_power"] += eff * 0.06
 		_: out["bonus_hp"] += eff * 8.0
+
+static func _apply_talent(out: Dictionary, id: String, ranks: int) -> void:
+	var eff := pow(float(maxi(0, ranks)), 0.9)
+	match id:
+		"bloodthirst": out["flags"]["lifesteal"] = float(out["flags"].get("lifesteal", 0.0)) + eff * 0.02
+		"executioner": out["execute_bonus"] = float(out.get("execute_bonus", 0.0)) + eff * 0.12
+		"thorns": out["thorns"] = float(out.get("thorns", 0.0)) + eff * 0.06
+		"giants_blood": out["hp_mult"] = float(out.get("hp_mult", 0.0)) + eff * 0.06
+		"swift_blade": out["attack_speed"] += eff * 0.03
+		"warlord": out["aura_dmg"] += eff * 0.8; out["aura_armor"] += eff * 0.4
+		"stormcaller": out["spell_power"] += eff * 0.08
+		# quartermaster (retinue) and treasure_hunter (loot) are read where
+		# those systems live.
 
 static func _find(nid: String) -> Dictionary:
 	for n in SkillDefs.get_tree():

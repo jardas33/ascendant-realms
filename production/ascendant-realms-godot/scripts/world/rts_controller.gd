@@ -807,28 +807,35 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 		issue_attack_target(hit)
 		return
 	if intent == COMMAND_GATHER and hit is ResourceNode:
-		for u in units:
-			if u.is_worker:
-				u.command_gather(hit)
+		_issue({"type": "gather", "units": units.filter(func(u): return u.is_worker), "target": hit})
 		_emit_command_feedback(COMMAND_GATHER, "GATHER", hit.global_position, hit)
 		return
 	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team:
 		var repair_issued := false
 		var construction_issued := false
-		for u in units:
-			if u.is_worker:
-				if not hit.is_built:
-					u.command_build(hit)
-					construction_issued = true
-				elif hit.hp < hit.max_hp:
-					u.command_repair(hit)
-					repair_issued = true
+		var workers: Array = units.filter(func(u): return u.is_worker)
+		if not workers.is_empty():
+			if not hit.is_built:
+				_issue({"type": "build", "units": workers, "target": hit})
+				construction_issued = true
+			elif hit.hp < hit.max_hp:
+				_issue({"type": "repair", "units": workers, "target": hit})
+				repair_issued = true
 		if repair_issued or construction_issued:
 			_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "REPAIR" if repair_issued and not construction_issued else "BUILD/CONTINUE", hit.global_position, hit)
 		return
 	if intent == COMMAND_MOVE and ground != null:
 		_formation_move(units, ground)
 		_emit_command_feedback(COMMAND_MOVE, "MOVE", ground, null)
+
+## Orders go through the world's command bus as data (see command_bus.gd),
+## falling back to direct calls if a test world has no bus.
+func _issue(order: Dictionary) -> void:
+	if world and world.get("command_bus") != null:
+		world.command_bus.issue(order)
+	else:
+		var CommandBusScript = load("res://scripts/world/command_bus.gd")
+		CommandBusScript.new(world).execute(order)
 
 func issue_attack_target(target) -> bool:
 	_clean_selection()
@@ -843,10 +850,15 @@ func issue_attack_target(target) -> bool:
 	var order_id: String = recorder.record_public_order("attack_target", units, target, Vector3.ZERO) if recorder else ""
 	var issued := false
 	var assignments := _pairing_assign_targets(target, units)
+	var attackers: Array = []
+	var picks: Array = []
 	for u in units:
 		if u.has_method("command_attack") and assignments.has(u.get_instance_id()):
-			u.command_attack(assignments[u.get_instance_id()], order_id)
-			issued = u.state == Unit.State.ATTACKING or issued
+			attackers.append(u)
+			picks.append(assignments[u.get_instance_id()])
+	_issue({"type": "attack", "units": attackers, "target": target, "positions": picks, "order_id": order_id})
+	for u in attackers:
+		issued = u.state == Unit.State.ATTACKING or issued
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK, "ATTACK", target.global_position, target)
 	return issued
@@ -854,7 +866,7 @@ func issue_attack_target(target) -> bool:
 func _formation_move(units: Array, target: Vector3) -> void:
 	if units.size() <= 1:
 		if units.size() == 1:
-			units[0].command_move(target)
+			_issue({"type": "move", "units": units, "pos": target})
 		return
 	# Center a deterministic rectangular formation around the clicked point. The
 	# previous half-cell offset pushed every group toward one corner and made the
@@ -863,12 +875,14 @@ func _formation_move(units: Array, target: Vector3) -> void:
 	var rows := int(ceil(float(units.size()) / float(cols)))
 	var spacing := 2.4
 	var i := 0
+	var slots: Array = []
 	for u in units:
 		var row := i / cols
 		var col := i % cols
 		var offset := Vector3((float(col) - float(cols - 1) * 0.5) * spacing, 0, (float(row) - float(rows - 1) * 0.5) * spacing)
-		u.command_move(target + offset)
+		slots.append(target + offset)
 		i += 1
+	_issue({"type": "move", "units": units, "pos": target, "positions": slots})
 
 func _begin_attack_move() -> void:
 	_clean_selection()
@@ -892,10 +906,8 @@ func issue_attack_move_destination(destination: Vector3) -> bool:
 		return false
 	var recorder = _v0436_r1j_recorder()
 	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
-	var issued := false
-	for u in units:
-		u.command_move(destination, true, false, order_id)
-		issued = true
+	var issued := not units.is_empty()
+	_issue({"type": "attack_move", "units": units, "pos": destination, "order_id": order_id})
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK_MOVE, "ATTACK-MOVE", destination, null)
 	cancel_attack_move_mode()
@@ -952,10 +964,9 @@ func _cmd_stop() -> void:
 func issue_stop() -> bool:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
-	var issued := false
-	for u in _selected_units():
-		u.command_stop()
-		issued = true
+	var sel := _selected_units()
+	var issued := not sel.is_empty()
+	_issue({"type": "stop", "units": sel})
 	if issued:
 		_emit_command_feedback(COMMAND_STOP, "STOP", Vector3.ZERO, null, false)
 	return issued
@@ -966,10 +977,9 @@ func _cmd_hold() -> void:
 func issue_hold() -> bool:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
-	var issued := false
-	for u in _selected_units():
-		u.command_hold()
-		issued = true
+	var sel := _selected_units()
+	var issued := not sel.is_empty()
+	_issue({"type": "hold", "units": sel})
 	if issued:
 		_emit_command_feedback(COMMAND_HOLD, "HOLD", Vector3.ZERO, null, false)
 	return issued
@@ -992,10 +1002,9 @@ func issue_patrol(ground) -> bool:
 	cancel_patrol_mode()
 	if ground == null or not _has_live_patrol_authority():
 		return false
-	var issued := false
-	for u in _selected_units():
-		u.command_patrol(ground)
-		issued = true
+	var sel := _selected_units()
+	var issued := not sel.is_empty()
+	_issue({"type": "patrol", "units": sel, "pos": ground})
 	if issued:
 		_emit_command_feedback(COMMAND_PATROL, "PATROL", ground, null)
 	return issued

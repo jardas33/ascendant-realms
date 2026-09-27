@@ -144,6 +144,11 @@ var _navigation_last_target_ready := false
 var _navigation_retry_elapsed := 0.0
 var _navigation_repath_cooldown := 0.0
 var _navigation_waypoints: Array = []
+var _power_hits := 0
+var _haste_time := 0.0
+var execute_bonus := 0.0
+var thorns := 0.0
+var _reflecting := false
 var _progress_clock := 0.0
 var _progress_best := INF
 var _progress_target := Vector3.INF
@@ -428,7 +433,10 @@ func _add_pick_shape() -> void:
 func _apply_hero_stats() -> void:
 	var hs = commander.hero_stats if commander else {}
 	max_hp += float(hs.get("bonus_hp", 0.0))
+	max_hp *= 1.0 + float(hs.get("hp_mult", 0.0))
 	hp = max_hp
+	execute_bonus = float(hs.get("execute_bonus", 0.0))
+	thorns = float(hs.get("thorns", 0.0))
 	base_dmg += float(hs.get("bonus_dmg", 0.0))
 	base_armor += float(hs.get("bonus_armor", 0.0))
 	move_speed += float(hs.get("bonus_speed", 0.0))
@@ -1355,9 +1363,13 @@ func refresh_upgrade_bonuses() -> void:
 # --------------------------------------------------------------------------
 func cur_dmg() -> float:
 	var d := base_dmg + _upg_dmg + _aura_bonus_dmg + float(_veterancy) * 2.0
-	if hero_flags.get("execute", false) and is_instance_valid(_target) and _target.has_method("get_hp_ratio"):
+	if world:
+		var twist_mult = world.get("twist_damage_mult")
+		if twist_mult != null:
+			d *= float(twist_mult)
+	if (hero_flags.get("execute", false) or execute_bonus > 0.0) and is_instance_valid(_target) and _target.has_method("get_hp_ratio"):
 		if _target.get_hp_ratio() < 0.3:
-			d *= 1.5
+			d *= (1.5 if hero_flags.get("execute", false) else 1.0) + execute_bonus
 	return d
 
 func cur_armor() -> float:
@@ -2033,7 +2045,9 @@ func _physics_process(delta: float) -> void:
 		return
 	_update_health_bar()
 	# timers
-	if _attack_timer > 0.0: _attack_timer -= delta
+	if _haste_time > 0.0:
+		_haste_time -= delta
+	if _attack_timer > 0.0: _attack_timer -= delta * (1.4 if _haste_time > 0.0 else 1.0)
 	# Timed movement effects use wall-clock simulation time even while a stun
 	# suppresses movement. Keep their expiry independent of the stun early exit.
 	if _rooted > 0.0: _rooted -= delta
@@ -2407,6 +2421,17 @@ func _on_dealt_damage(dealt: float, tgt) -> void:
 	# lifesteal
 	if hero_flags.get("lifesteal", 0.0) > 0.0:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
+	# Stormcall (legendary power): every fourth blow arcs lightning into the
+	# enemies around the target. A counter, not a dice roll, so it replays
+	# identically in a shared (online) simulation.
+	if bool(hero_flags.get("chain_lightning", false)) and is_instance_valid(tgt) and world:
+		_power_hits += 1
+		if _power_hits % 4 == 0:
+			world.apply_splash(tgt.global_position, 5.0, maxf(dealt, cur_dmg()) * 0.6, "magic", team, tgt, self, "arcane")
+			world.spawn_hit_fx(tgt.global_position + Vector3.UP, "arcane")
+	# Bloodrush (legendary power): a kill quickens the next blows.
+	if bool(hero_flags.get("haste_on_kill", false)) and is_instance_valid(tgt) and bool(tgt.get("is_dead")):
+		_haste_time = 4.0
 
 func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_event_id: String = "") -> float:
 	if _is_defeated_remnant() or not _can_attack_target(tgt):
@@ -3006,6 +3031,12 @@ func take_damage(amount: float, from = null) -> void:
 	var hp_before := hp
 	var applied := maxf(0.0, amount)
 	hp = maxf(0.0, hp - applied)
+	# Thornhide talent: melee attackers take part of the blow back (never a
+	# reflection of a reflection).
+	if thorns > 0.0 and from is Unit and is_instance_valid(from) and not from.is_dead and from.atk_range <= 3.0 and not _reflecting:
+		_reflecting = true
+		from.take_damage(applied * thorns, self)
+		_reflecting = false
 	_last_damage_source = from if from is Unit and is_instance_valid(from) else from.get("source_unit", null) if from is Dictionary and is_instance_valid(from.get("source_unit", null)) else null
 	_last_damage_source_team = source_team
 	_last_damage_source_id = _combat_source_id(from)

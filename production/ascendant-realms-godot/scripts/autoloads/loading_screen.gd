@@ -238,6 +238,7 @@ const TIPS := [
 	"Four matching set pieces grant a power; two already grant a bonus that grows with item level.",
 	"Every tenth stage of the Endless Road is a Barroso feast: Entrudo, the Chega de Bois, the Night of the Witches.",
 	"Deeds never run out. Every tier earns a title and a mastery point.",
+	"Every tenth level, the hero picks one of three talents. Talents stack forever.",
 	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
 	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
 ]
