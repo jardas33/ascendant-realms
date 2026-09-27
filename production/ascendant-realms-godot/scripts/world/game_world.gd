@@ -85,6 +85,51 @@ var elites_slain := 0
 var bounty := {}
 var enemy_heroes_slain := 0
 
+## A world event once per battle: the Lume surges from the ground somewhere
+## near the middle of the field. The first side to hold it for 8 seconds
+## takes its gift (resources, and hero experience for the player).
+var _surge_pos := Vector3.ZERO
+var _surge_hold := {}
+
+func _schedule_lume_surge() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sim_seed_for(9090)
+	var at := 240.0 + rng.randf() * 360.0
+	var ang := rng.randf() * TAU
+	_surge_pos = Vector3(cos(ang), 0.0, sin(ang)) * rng.randf_range(10.0, 45.0)
+	get_tree().create_timer(at, false).timeout.connect(_start_lume_surge)
+
+func _start_lume_surge() -> void:
+	if not game_running:
+		return
+	_surge_hold.clear()
+	emit_signal("alert", "The Lume surges from the earth! Hold the light for its gift.", _surge_pos)
+	_tick_lume_surge(0)
+
+func _tick_lume_surge(elapsed: int) -> void:
+	if not game_running or elapsed > 90:
+		return
+	if elapsed % 2 == 0 and is_instance_valid(_fx_container):
+		CombatVfx.lume_pillar(_fx_container, _surge_pos, Color(0.7, 0.85, 1.0))
+	var present := {}
+	for u in all_units():
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(_surge_pos) < 6.0:
+			present[int(u.team)] = true
+	if present.size() == 1:
+		var team: int = present.keys()[0]
+		_surge_hold[team] = int(_surge_hold.get(team, 0)) + 1
+		if int(_surge_hold[team]) >= 8:
+			var cmd = commanders[team]
+			cmd.add_resources("gold", 200)
+			cmd.add_resources("food", 200)
+			if team == player_team:
+				ProfileManager.add_xp(80.0 + float(ProfileManager.hero().get("level", 1)) * 6.0)
+				emit_signal("alert", "The Lume's gift is yours: 200 gold, 200 food and your hero grows wiser.", _surge_pos)
+			else:
+				emit_signal("alert", "The enemy seized the Lume's gift.", _surge_pos)
+			return
+	get_tree().create_timer(1.0, false).timeout.connect(_tick_lume_surge.bind(elapsed + 1))
+
 func _pick_bounty() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sim_seed_for(4242)
@@ -2763,6 +2808,7 @@ func _start_match() -> void:
 	_start_saga_voices()
 	_start_saga_events()
 	_pick_bounty()
+	_schedule_lume_surge()
 	if "warband" in Match.get_config().get("twists", []):
 		_schedule_warband()
 	if String(Match.get_config().get("mode", "")) == "endless":
@@ -3197,7 +3243,7 @@ func on_building_destroyed(building) -> void:
 func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> void:
 	# Spells grow with the hero forever: they scale with the hero's real
 	# damage (levels, gear, mastery) over the unit's base damage.
-	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30))))
+	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30)))) * (1.0 + float(hero.get("spell_power") if hero.get("spell_power") != null else 0.0))
 	var ab := SkillDefs.get_abilities().get(id, {})
 	match id:
 		"rally":

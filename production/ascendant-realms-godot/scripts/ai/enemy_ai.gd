@@ -779,11 +779,34 @@ func _choose_unit(choices: Array) -> String:
 			legal.append(c)
 	if legal.is_empty():
 		return ""
-	# prefer a mix: bias toward higher tier when available
-	legal.sort_custom(func(a, b): return int(GameData.get_unit(a).get("tier",1)) > int(GameData.get_unit(b).get("tier",1)))
-	if _rng.randf() < 0.55:
+	# Counter the enemy: favour damage types that hit the most common armour in
+	# the opposing army hardest (slash into Vorthak's unarmoured swarm, pierce
+	# into light troops), still leaning toward higher tiers, with some variety.
+	var dominant := _dominant_enemy_armor()
+	legal.sort_custom(func(a, b):
+		var da := GameData.get_unit(a)
+		var db := GameData.get_unit(b)
+		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1)))
+		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1)))
+		return sa > sb)
+	if _rng.randf() < 0.6:
 		return legal[0]
 	return legal[_rng.randi() % legal.size()]
+
+func _dominant_enemy_armor() -> String:
+	var counts := {}
+	for u in world.all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == commander.team or u.is_worker:
+			continue
+		var ac := String(u.armor_class)
+		counts[ac] = int(counts.get(ac, 0)) + 1
+	var best := "light"
+	var best_n := -1
+	for k in counts:
+		if int(counts[k]) > best_n:
+			best = k
+			best_n = int(counts[k])
+	return best
 
 # --- defense --------------------------------------------------------------
 func _manage_defense() -> void:

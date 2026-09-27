@@ -440,6 +440,7 @@ func _apply_hero_stats() -> void:
 	aura_range = float(hs.get("aura_range", 0.0))
 	regen = float(hs.get("regen", 0.0))
 	heal_power += float(hs.get("heal_power", 0.0))
+	spell_power = float(hs.get("spell_power", 0.0))
 	abilities = hs.get("abilities", {}).duplicate()
 	hero_flags = hs.get("flags", {}).duplicate()
 	for id in abilities:
@@ -2129,6 +2130,8 @@ func _state_idle(delta: float) -> void:
 const ACQUIRE_INTERVAL := 0.2
 ## Order of creation in the match; a deterministic source of per-unit variety.
 var spawn_serial := 0
+## Extra spell strength from the Lorecraft mastery (0.06 = +6%).
+var spell_power := 0.0
 var _max_abs_x := -1.0
 var _max_abs_z := -1.0
 var _acquire_timer := 0.0

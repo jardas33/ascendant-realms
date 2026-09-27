@@ -9,7 +9,7 @@ static func compute(hero: Dictionary) -> Dictionary:
 	var out := {
 		"bonus_hp": 0.0, "bonus_dmg": 0.0, "bonus_armor": 0.0, "bonus_speed": 0.0,
 		"attack_speed": 0.0, "bonus_vision": 0.0, "bonus_range": 0.0,
-		"max_mana": 100.0, "mana_regen": 5.0, "heal_power": 0.0,
+		"max_mana": 100.0, "mana_regen": 5.0, "heal_power": 0.0, "spell_power": 0.0,
 		"aura_dmg": 0.0, "aura_armor": 0.0, "aura_range": 0.0,
 		"regen": 0.0,
 		"flags": {}, "abilities": {},
@@ -129,6 +129,7 @@ static func _apply_mastery(out: Dictionary, con: String, ranks: int) -> void:
 		"celerity": out["bonus_speed"] += eff * 0.05; out["attack_speed"] += eff * 0.01
 		"dominion": out["aura_dmg"] += eff * 0.5; out["aura_range"] += eff * 0.5
 		"attunement": out["max_mana"] += eff * 10.0; out["mana_regen"] += eff * 0.3
+		"lorecraft": out["spell_power"] += eff * 0.06
 		_: out["bonus_hp"] += eff * 8.0
 
 static func _find(nid: String) -> Dictionary:
@@ -144,4 +145,5 @@ static func mastery_constellations() -> Array:
 		{"id": "celerity", "name": "Celerity", "desc": "+speed & attack speed per rank."},
 		{"id": "dominion", "name": "Dominion", "desc": "+command aura per rank."},
 		{"id": "attunement", "name": "Attunement", "desc": "+mana & regen per rank."},
+		{"id": "lorecraft", "name": "Lorecraft", "desc": "+spell power per rank, forever."},
 	]
