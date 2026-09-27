@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 16:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 19:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -66,17 +66,33 @@ Last updated: 2026-09-27, 16:30 UTC. Claude updates this file after every pass.
   - The Hero Forge shows each race's saga origin, and every one of the 10 factions now has its own origin story (prologue briefing and Act III ledger reveal) and its own first words on the night of the Ascension.
   - Regression passed: all 9 tests and the saga data check (39 chapters, 7 jars, 0 problems).
   - Codex check: the only unmerged Codex UI branch is `astra-complete-ui-overhaul-r1` (22 Sept). Codex's later convergence work (26 Sept, already merged) branched around it and it conflicts with that newer HUD work in about 20 places, so I treated it as superseded and did not merge it. If Codex still wants it, it needs a rebase onto the convergence branch.
-- **Plan 6 (started):**
-  1. Retinue, Warlords Battlecry's signature: veterans who survive a campaign battle march with the Jardas into the next one.
-  2. Heroic laurels: mark heroic clears on the campaign map and hero sheet.
-  3. Check that the four survival chapters are winnable and tense.
-  4. Instance repeated decor to cut the ~2,800 opening draw calls.
-  5. Late-game performance soak (20 minutes: frame time, memory, unit count).
-  6. Campaign difficulty curve audit across all 39 chapters.
-  7. A Chronicle screen that lets the player reread every unlocked chapter's story.
-  8. Result ledger statistics check (kills, losses, time).
-  9. Hero death in campaign battles: make the rule clear and fair.
-  10. Codex check, regression and review pass.
+- **Plan 6 (done):**
+  - **Retinue**, the Warlords Battlecry signature: after a campaign win, the best living veterans (rank 1 and up) join the Jardas's retinue and march into the next battle already promoted. The cap is 2 plus one every 5 hero levels, up to 6. After a defeat, only retinue members who survived stay. Retinue troops don't use population. The result ledger and hero sheet show the retinue.
+  - **Heroic laurels:** winning a Heroic Replay marks the chapter "Heroic laurel" in gold on the map; the hero sheet counts them.
+  - **Survival chapters:** all four were soaked with a Normal-level AI playing the Jardas, and all four are winnable. The soak exposed two AI economy bugs that made every enemy weaker than intended:
+    - Brutal's passive income was rounded down to 0 every frame, so Brutal never got its bonus. Fixed.
+    - AI workers only switched to a resource nobody was gathering, so food sat near 0 while gold piled up in the thousands. The AI now also moves a gatherer off a large hoard.
+    - Food was the bottleneck for every side, the player too (under 100 food against 1,400+ gold). House gardens now make 1 food per second (was 0.5).
+    - After the fixes the final chapter is genuinely tense: the defending player fell to 1 to 3 soldiers while enemy armies reached 13 to 22, and still held. A standard Hard skirmish still ends (minute 17).
+  - **Draw calls:** the sun now uses two shadow cascades instead of four. Draw calls in the opening dropped from 2,687 to 2,086 (22 percent), with identical screenshots at play zoom.
+  - **Difficulty curve:** audited all 39 chapters. Act V conquest battles had two or three Brutal enemies at once, which became a wall once Brutal income worked. Each main-road battle now has one Brutal leader; the rest are Hard or Normal. The finale keeps three Brutal enemies because it is a survival chapter and was tested winnable. Heroic Replay still offers the double-Brutal fights.
+  - **Chronicle:** a Chronicle button on the campaign map opens a scrolling book of every cleared chapter, act by act: its briefing, its victory text, and side-road and laurel tags.
+  - **Result ledger:** defeats showed raw ids ("hq_destroyed") on screen; they now read "Your stronghold was razed" and "Your last hall burned". The ledger adds Buildings Razed and Units Lost.
+  - **Hero revival:** a fallen hero was gone for the rest of the battle. Now the Lume raises them at their stronghold after 45 seconds, plus one second per hero level (at most 90), with a golden flare and an alert. This applies to enemy heroes too. With no stronghold standing, the revival waits until there is one.
+  - **Enemy heroes cast spells:** enemy heroes were bare stat blocks with no abilities. They now get a spell kit that fits their race (none on Easy, 1 on Normal, 2 on Hard, 3 on Brutal) and cast it in fights (heal when hurt, slam into crowds, roots, charge, bolts). In the campaign they grow tougher with each chapter (more health, damage and mana).
+  - **Late-game performance soak:** an 18-minute Hard AI-vs-AI match in a window. Memory grows slowly (205 to 314 MB) with no leak in object counts. But frame rate falls in the late game: a normal-speed profile at minute 14 shows 12.3 ms of physics per tick with only 62 units, about three quarters of the frame budget. This is the first item of plan 7.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 7 (started):**
+  1. Cut the late-game physics cost (12 ms per tick at 62 units).
+  2. Navigation agents: 108 registered for 62 units, so something is not unregistering.
+  3. Stuck units rise with army size (18 in the long soak).
+  4. Stalemates: a winning AI with 47 soldiers did not finish a side left with 2 buildings and no workers.
+  5. Enemy heroes idle at base: march them with attack waves and pull them back when hurt.
+  6. Per-chapter atmosphere (for example night lighting for the Night of the Witches).
+  7. Loading-screen tips for the retinue, hero revival and the Chronicle.
+  8. Check the player's early-game economy after the food change.
+  9. Check the hero revival visually (flare, HUD hero portrait).
+  10. Check Codex, run the regression and review.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

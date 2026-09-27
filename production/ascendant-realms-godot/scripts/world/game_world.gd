@@ -434,9 +434,11 @@ func _setup_environment() -> void:
 	sun.light_color = _theme.get("sun_color", Color(0.96, 0.94, 0.88))
 	var quality := graphics_quality()
 	sun.shadow_enabled = quality != "low"
-	sun.directional_shadow_max_distance = 200.0 if quality == "high" else 120.0
-	sun.directional_shadow_split_1 = 0.08
-	sun.directional_shadow_split_2 = 0.25
+	# Two cascades are enough for the RTS camera: the four-split default drew
+	# every shadow caster four times (about a third of all draw calls).
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_max_distance = 140.0 if quality == "high" else 110.0
+	sun.directional_shadow_split_1 = 0.35
 	add_child(sun)
 
 func _build_terrain() -> void:
@@ -1796,7 +1798,7 @@ func _setup_commanders() -> void:
 		var ec := Commander.new()
 		ec.name = "Commander_%d" % t
 		add_child(ec)
-		ec.setup(t, o.get("race", "vorthak"), false, bank.duplicate(), {})
+		ec.setup(t, o.get("race", "vorthak"), false, bank.duplicate(), _ai_hero_stats(String(o.get("race", "vorthak")), String(o.get("difficulty", "normal"))))
 		commanders.append(ec)
 		t += 1
 
@@ -1812,6 +1814,29 @@ func _setup_commanders() -> void:
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
 	_m20_end(stage)
+
+## Enemy heroes used to be bare stat blocks with no spells. They now get a
+## race-flavoured spell kit by difficulty (none on Easy, up to three on
+## Brutal), and in the campaign they grow tougher chapter by chapter.
+const AI_HERO_KITS := {
+	"barrosan": ["rally", "charge", "slam"], "grimtusk": ["charge", "slam", "rally"],
+	"karak": ["slam", "rally", "charge"], "frostborn": ["slam", "charge", "rally"],
+	"lioraen": ["heal", "root", "bolt"], "sylvan": ["bolt", "root", "heal"],
+	"vorthak": ["bolt", "slam", "root"], "hollow": ["bolt", "root", "heal"],
+	"sunspear": ["rally", "charge", "bolt"], "wyldkin": ["charge", "root", "slam"],
+}
+
+func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
+	var count := int({"easy": 0, "normal": 1, "hard": 2, "brutal": 3}.get(difficulty, 1))
+	var level := 2 if difficulty in ["hard", "brutal"] else 1
+	var abilities := {}
+	var kit: Array = AI_HERO_KITS.get(race, ["bolt", "charge", "rally"])
+	for i in mini(count, kit.size()):
+		abilities[String(kit[i])] = level
+	var chapter_index := CampaignDefs.index_of(String(Match.get_config().get("campaign_chapter", "")))
+	var growth := float(maxi(chapter_index, 0))
+	return {"abilities": abilities, "max_mana": 120.0 + growth * 3.0, "mana_regen": 5.0 + growth * 0.1,
+		"bonus_hp": growth * 8.0, "bonus_dmg": growth * 0.5, "bonus_armor": floorf(growth / 10.0)}
 
 func _build_starting_base(cmd, pos: Vector3) -> void:
 	var stage := _m20_begin("GAMEWORLD_STARTING_BASE_%d" % int(cmd.team), "GAMEWORLD_COMMANDER_SETUP", 3)
@@ -2751,6 +2776,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	result_snapshot = {"victory": victory, "reason": reason, "mode": Match.get_config().get("mode", "skirmish"),
 		"victory_kind": _victory_kind, "player_team": player_team, "kills": kills_by_player,
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
+		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)
@@ -2870,6 +2896,44 @@ func _on_unit_died(unit) -> void:
 	for cmd in commanders:
 		if cmd.hero_ref == unit:
 			cmd.hero_ref = null
+			_schedule_hero_revival(cmd, String(unit.unit_id))
+
+## Warlords Battlecry heroes are not lost for the whole battle: the Lume
+## raises a fallen hero at their stronghold after a while (45 s, plus a second
+## per player hero level up to 90 s). No stronghold, no revival until one
+## stands again.
+func _schedule_hero_revival(cmd, hero_id: String) -> void:
+	if hero_id == "" or not game_running:
+		return
+	var delay := 45.0
+	if cmd.is_human and ProfileManager.has_hero():
+		delay += minf(45.0, float(ProfileManager.hero().get("level", 1)))
+	if cmd.team == player_team:
+		emit_signal("alert", "Your hero has fallen. The Lume will raise them at your stronghold in %d seconds." % int(delay), Vector3.ZERO)
+	get_tree().create_timer(delay, false).timeout.connect(_try_hero_revival.bind(cmd, hero_id))
+
+func _try_hero_revival(cmd, hero_id: String) -> void:
+	if not game_running or cmd.defeated or is_instance_valid(cmd.hero_ref):
+		return
+	var hq = null
+	for b in cmd.buildings:
+		if is_instance_valid(b) and not b.is_dead and bool(b.def.get("is_hq", false)) and bool(b.get("is_built")):
+			hq = b
+			break
+	if hq == null:
+		get_tree().create_timer(15.0, false).timeout.connect(_try_hero_revival.bind(cmd, hero_id))
+		return
+	var hq_pos: Vector3 = hq.global_position
+	var toward := (Vector3.ZERO - hq_pos).normalized()
+	var hero = spawn_unit(hero_id, cmd.team, hq_pos + toward * 9.0)
+	if hero == null:
+		return
+	cmd.hero_ref = hero
+	if is_instance_valid(_fx_container):
+		CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.82, 0.35), 2.0)
+		CombatVfx.shockwave(_fx_container, hero.global_position, Color(1.0, 0.82, 0.35), 3.0)
+	if cmd.team == player_team:
+		emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
 
 func _on_building_died(building) -> void:
 	_unregister_world_blocker(building)

@@ -3712,6 +3712,8 @@ func _on_game_over(victory: bool) -> void:
 	var mins := int(t) / 60
 	var secs := int(t) % 60
 	var reason := String(result.get("reason", "Conquest"))
+	# The result keeps machine reasons for tests; the ledger shows words.
+	reason = String({"hq_destroyed": "Your stronghold was razed", "no_live_buildings": "Your last hall burned"}.get(reason, reason))
 	var outcome := _mk_label(("The field is yours  ·  " if victory else "Your host has fallen  ·  ") + reason, 20, Color(0.9, 0.86, 0.76))
 	outcome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	outcome.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
@@ -3748,11 +3750,11 @@ func _on_game_over(victory: bool) -> void:
 	rule.custom_minimum_size = Vector2(0, 1)
 	box.add_child(rule)
 	var ledger := GridContainer.new()
-	ledger.columns = 3
-	ledger.add_theme_constant_override("h_separation", 48)
+	ledger.columns = 5
+	ledger.add_theme_constant_override("h_separation", 36)
 	ledger.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(ledger)
-	for stat in [["ENEMIES DEFEATED", str(kills)], ["EXPERIENCE", "+%d" % xp], ["BATTLE TIME", "%d:%02d" % [mins, secs]]]:
+	for stat in [["ENEMIES DEFEATED", str(kills)], ["BUILDINGS RAZED", str(int(result.get("building_kills", 0)))], ["UNITS LOST", str(int(result.get("units_lost", 0)))], ["EXPERIENCE", "+%d" % xp], ["BATTLE TIME", "%d:%02d" % [mins, secs]]]:
 		var cell := VBoxContainer.new()
 		cell.add_theme_constant_override("separation", 2)
 		var value := _mk_title_label(String(stat[1]), 34, Color(0.96, 0.92, 0.82))

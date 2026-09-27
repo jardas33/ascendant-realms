@@ -16,6 +16,10 @@ var _army_attack_size := 8
 var _eco_efficiency := 1.0
 var _tech_aggression := 1.0
 var _brutal_income := 0.0
+# int(income * delta) was 0 every frame, so the trickle never paid; the
+# fractions now accumulate.
+var _brutal_gold_acc := 0.0
+var _brutal_food_acc := 0.0
 
 var _think_timer := 0.0
 var _build_cooldown := 0.0
@@ -106,8 +110,14 @@ func _process(delta: float) -> void:
 		_build_cooldown -= delta
 	# brutal passive trickle (labeled advantage)
 	if _brutal_income > 0.0:
-		commander.add_resources("gold", int(_brutal_income * delta))
-		commander.add_resources("food", int(_brutal_income * delta * 0.5))
+		_brutal_gold_acc += _brutal_income * delta
+		_brutal_food_acc += _brutal_income * delta * 0.5
+		if _brutal_gold_acc >= 1.0:
+			commander.add_resources("gold", int(_brutal_gold_acc))
+			_brutal_gold_acc -= float(int(_brutal_gold_acc))
+		if _brutal_food_acc >= 1.0:
+			commander.add_resources("food", int(_brutal_food_acc))
+			_brutal_food_acc -= float(int(_brutal_food_acc))
 	_think_timer += delta
 	if _think_timer >= _think_interval:
 		_think_timer = 0.0
@@ -127,6 +137,7 @@ func _think() -> void:
 	_manage_production()
 	_manage_defense()
 	_manage_offense()
+	_cast_hero_spells()
 	_manage_capture()
 
 # --------------------------------------------------------------------------
@@ -564,6 +575,7 @@ func _assign_idle_workers() -> void:
 # that is running short and has nobody on it.
 const REBALANCE_SHORT := 150
 const REBALANCE_SURPLUS := 300
+const REBALANCE_HOARD := 700
 
 func _rebalance_gatherers() -> void:
 	var crews := {"food": [], "timber": [], "stone": [], "gold": []}
@@ -583,13 +595,25 @@ func _rebalance_gatherers() -> void:
 		if crews[k].is_empty() and v < short_v:
 			short = k
 			short_v = v
+	# A crewed resource can still starve (food at 0 while gold piles up in the
+	# thousands); then move a gatherer off a big hoard even though the short
+	# resource already has workers.
+	var hoard_needed := REBALANCE_SURPLUS
+	if short == "":
+		short_v = REBALANCE_SHORT
+		for k in crews:
+			var v := int(r.get(k, 0))
+			if v < short_v:
+				short = k
+				short_v = v
+		hoard_needed = REBALANCE_HOARD
 	if short == "":
 		return
 	var donor := ""
-	var donor_v := REBALANCE_SURPLUS
+	var donor_v := hoard_needed
 	for k in crews:
 		var v := int(r.get(k, 0))
-		if crews[k].size() >= 1 and v > donor_v and k != short:
+		if crews[k].size() >= (1 if hoard_needed == REBALANCE_SURPLUS else 2) and v > donor_v and k != short:
 			donor = k
 			donor_v = v
 	if donor == "":
@@ -950,3 +974,51 @@ func _count_building_kind(kind: String) -> int:
 		if is_instance_valid(b) and not b.is_dead and b.def.get("kind", "") == kind:
 			n += 1
 	return n
+
+# --- hero spells ------------------------------------------------------------
+## Enemy heroes fight like the player's: spend mana on their kit whenever a
+## fight is on. One cast per think, most useful first.
+func _cast_hero_spells() -> void:
+	var hero = commander.hero_ref
+	if not is_instance_valid(hero) or hero.is_dead or hero.abilities.is_empty():
+		return
+	var near_enemies: Array = []
+	var near_allies := 0
+	for u in get_tree().get_nodes_in_group("units"):
+		if not is_instance_valid(u) or u.is_dead or u == hero:
+			continue
+		var d: float = u.global_position.distance_to(hero.global_position)
+		if d > 18.0:
+			continue
+		if int(u.team) == int(commander.team):
+			near_allies += 1
+		else:
+			near_enemies.append(u)
+	if near_enemies.is_empty():
+		return
+	var close := near_enemies.filter(func(e): return e.global_position.distance_to(hero.global_position) <= 7.0)
+	var nearest = near_enemies[0]
+	for e in near_enemies:
+		if e.global_position.distance_to(hero.global_position) < nearest.global_position.distance_to(hero.global_position):
+			nearest = e
+	var hurt: bool = hero.hp < hero.max_hp * 0.6
+	for id in ["heal", "slam", "root", "charge", "rally", "bolt"]:
+		if not hero.can_cast(id):
+			continue
+		var ok := false
+		var at: Vector3 = hero.global_position
+		match id:
+			"heal":
+				ok = hurt or near_allies >= 5
+			"rally":
+				ok = near_allies >= 3
+			"slam":
+				ok = close.size() >= 3
+			"root":
+				ok = near_enemies.size() >= 3
+				at = nearest.global_position
+			"charge", "bolt":
+				ok = true
+				at = nearest.global_position
+		if ok and hero.cast_ability(id, at):
+			return
