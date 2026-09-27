@@ -84,21 +84,22 @@ The living groves of the springs. The Barrosans call them fairy-folk and leave b
 
 The raiders of Act I. Violet ash-glass armour, thralls in chains, hounds that should not exist. They look like monsters, and they are what's left of the village of **Furna**, drowned by the Dominion's first dam seventy-seven years ago. Their Lume rotted into ash-glass and it rotted them with it. Their captain is the saga's most important rival.
 
-- **Hero: Malrec, the Ash-Masked** (the *Rift Binder*). He was once **Malrique of Furna, the Jardas of the seventy-sixth Ascension**. He failed to stop the drowning, and the Lume in him turned to glass. He wants the new Jardas's Lume to heal his people. He will burn Salto to get it, and he will cry while he does it.
+- **Malrec, the Ash-Masked.** He was once **Malrique of Furna, the Jardas of the seventy-sixth Ascension**. He failed to stop the drowning, and the Lume in him turned to glass. He wants the new Jardas's Lume to heal his people. He will burn Salto to get it, and he will cry while he does it.
 
 ### The Aurean Dominion (the Sunspear Dominion's saga identity)
 *"Every Ascension, a war. Every war, a graveyard. We are building a world without either."*
 
 The southern empire of bronze and sun, which won the seventy-fifth Ascension and never gave it back. Its engineers build **great dams**, walls of stone and bronze, to drown the highland springs. The Dominion is not greedy. It has done the arithmetic: each Ascension has killed more people than the last. If the Lume is drowned forever, there will be no seventy-eighth war.
 
-- **Leader: the Sun Regent Aurelia Vess.** She is patient and brilliant, and she is not wrong. Her dams will also drown every highland village and turn the Lume into ash-glass.
+- **Leader: the Sun Regent Aurelia Vess.** In battle, her armies are led by Sun Legates. She is patient and brilliant, and she is not wrong. Her dams will also drown every highland village and turn the Lume into ash-glass.
 
 ### The Compaña (the Hollow Legion's saga identity)
 *"Candle in the hand, the road beneath the feet."*
 
 The procession of the dead that walks the highland roads at night, candles lit, a living person forced to carry the cross at the front. In the saga they are the dead whose memory was lost or drowned. They walk until someone remembers their names. They are terrifying, and they are also *the saddest people in the world*.
 
-- **Leader: the Cross-Bearer.** A living woman who has carried the cross for nineteen years: **Leonor of Salto, the Jardas's mother**, who everyone said drowned.
+- **Leader: the Candle-King**, the oldest of the forgotten dead.
+- **At the front: the Cross-Bearer.** A living woman who has carried the cross for nineteen years: **Leonor of Salto, the Jardas's mother**, who everyone said drowned.
 
 ### The Careto Host (the Frostborn Jarls' saga identity)
 *"Winter must be chased out. So must the dead."*
@@ -136,7 +137,7 @@ The Mouras who refused to fade. They bartered their Lume for immortality with th
 ## 4. The Jardas
 
 The player names and creates the hero at the Hero Forge. In the saga:
-- They are nineteen, the orphaned grandchild of **Avó Brites**, Salto's wise woman, who brews the *queimada* and speaks the *esconjuro* over it every witch-night.
+- They are nineteen, the orphaned grandchild of **Avó Brites**, Salto's wise woman. She was born in Furna and fled to Salto as a girl when the valley was drowned; Malrique of Furna, the failed Jardas who became Malrec, is her elder brother. She brews the *queimada* and speaks the *esconjuro* over it every witch-night.
 - Their mother **Leonor** vanished in the drowning of the lower pastures when they were an infant.
 - In the prologue, the Vorthak raid Salto. The hero is struck down at the Spring of the Seven Mouths, and the spring blazes. The villagers see them stand up with fire in their eyes. They believe the Lume *saved* them.
 - It did not. **The hero died at the spring.** The Lume ascended *into a dead body*, because the dead remember best. The Jardas is Ascendant in the oldest sense: they rose.

@@ -216,7 +216,7 @@ static func get_all() -> Dictionary:
 		"model": _char("vorthak_hero_binder"), "height": 2.0,
 		"hp": 300, "dmg": 44, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
 		"range": 17.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
-		"desc": "Malrec the Ash-Masked, once Malrique of Furna, the Jardas who failed. Enormous burst magic, fragile if caught.",
+		"desc": "An ash-glass sorcerer of drowned Furna who binds rotten Lume into violet fire. Enormous burst magic, fragile if caught.",
 	},
 
 	# ---------------- GRIMTUSK HORDE ----------------
@@ -442,11 +442,11 @@ static func get_all() -> Dictionary:
 		"desc": "Preaches a world without Ascensions, and heals those who fight for it.",
 	},
 	"sunspear_hero_pharaoh": {
-		"race": "sunspear", "name": "Sun Regent", "role": "hero", "tier": 1, "is_hero": true,
+		"race": "sunspear", "name": "Sun Legate", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("sunspear_hero_pharaoh"), "height": 2.0,
 		"hp": 400, "dmg": 34, "dmg_type": "slash", "armor_class": "heavy", "armor": 6,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.9, "vision": 28.0, "pop": 0,
-		"desc": "Aurelia Vess, who kept the Dominion alive for forty years and will drown the highlands to end the wars.",
+		"desc": "A field commander of the Aurean Dominion, sworn to the Regent's dream of a world without Ascensions.",
 	},
 
 	# ---------------- WYLDKIN ----------------
@@ -557,11 +557,11 @@ static func get_all() -> Dictionary:
 		"desc": "Sings the procession's hymn. The dead rise to answer.",
 	},
 	"hollow_hero_lich": {
-		"race": "hollow", "name": "Cross-Bearer", "role": "hero", "tier": 1, "is_hero": true,
+		"race": "hollow", "name": "Candle-King", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("hollow_hero_lich"), "height": 2.1,
 		"hp": 300, "dmg": 44, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
 		"range": 17.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
-		"desc": "Leonor of Salto, who has carried the Compaña's cross for nineteen years, waiting.",
+		"desc": "The oldest of the forgotten dead, who leads the procession by candlelight. A living soul is always made to carry the cross before him.",
 	},
 
 	# ---------------- FROSTBORN JARLS ----------------

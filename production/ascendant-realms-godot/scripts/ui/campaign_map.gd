@@ -98,7 +98,7 @@ func _build() -> void:
 	# Hero, jars and choice.
 	var s := ProfileManager.saga()
 	var h: Dictionary = ProfileManager.hero()
-	var hero_line := "No Jardas yet. Forge one from the main menu." if h.is_empty() else "%s, Jardas of %s  ·  Level %d" % [str(h.get("name", "Hero")), str(GameData.get_race(_hero_race()).get("name", _hero_race())), int(h.get("level", 1))]
+	var hero_line := "No Jardas yet. Forge one from the main menu." if h.is_empty() else "%s, Jardas of the %s  ·  Level %d" % [str(h.get("name", "Hero")), str(GameData.get_race(_hero_race()).get("name", _hero_race())), int(h.get("level", 1))]
 	var jars := "Wine of the Dead: %d / %d jars" % [s["jars"].size(), CampaignDefs.JARS_TOTAL]
 	var choice := ""
 	if String(s["choice"]) == "break":
@@ -294,7 +294,9 @@ func _build_node(c: Dictionary) -> void:
 	else:
 		btn.modulate = Color(0.78, 0.78, 0.8, 0.85)
 	_act_layer.add_child(btn)
-	if id == _next_id:
+	# Both roads of the Rabagão choice pulse while the choice is still open.
+	var choice_open: bool = c.has("branch") and String(s["choice"]) == "" and available and not cleared
+	if id == _next_id or choice_open:
 		btn.pivot_offset = NODE_SIZE * 0.5
 		var pulse := btn.create_tween().set_loops()
 		pulse.tween_property(btn, "scale", Vector2.ONE * 1.05, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
