@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 11:40 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 16:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -57,6 +57,26 @@ Last updated: 2026-09-27, 11:40 UTC. Claude updates this file after every pass.
   - Skirmish map names were kept: they already fit the world.
   - Codex had nothing new, and the regression passed.
   - Review probes now restore the whole profile afterwards. Earlier test victories had added some experience to the local test hero.
+- **Plan 5 (done, commit 3ec5d877):**
+  - Every enemy faction now fights with its own personality: swarm factions (Ironmaw, Wolfveil, the Compaña) attack early in small waves; disciplined ones (Aurean Dominion, Granitborn) mass bigger armies before marching.
+  - Chapters can send mid-battle reinforcement waves for either side, with a spoken line. Some chapters give the player allied troops (village levies, a Careto band). Allies do not use the player's population.
+  - Each of the 7 side roads pays out a named relic item for the hero the first time it is won (for example the Esconjuro Bowl), shown on the result ledger.
+  - Cleared chapters can be replayed as a Heroic Replay: every enemy is one difficulty step harder and experience is 1.5 times higher. Replays never pay a jar or relic twice.
+  - In a campaign battle the pause menu names the chapter and its goal.
+  - The Hero Forge shows each race's saga origin, and every one of the 10 factions now has its own origin story (prologue briefing and Act III ledger reveal) and its own first words on the night of the Ascension.
+  - Regression passed: all 9 tests and the saga data check (39 chapters, 7 jars, 0 problems).
+  - Codex check: the only unmerged Codex UI branch is `astra-complete-ui-overhaul-r1` (22 Sept). Codex's later convergence work (26 Sept, already merged) branched around it and it conflicts with that newer HUD work in about 20 places, so I treated it as superseded and did not merge it. If Codex still wants it, it needs a rebase onto the convergence branch.
+- **Plan 6 (started):**
+  1. Retinue, Warlords Battlecry's signature: veterans who survive a campaign battle march with the Jardas into the next one.
+  2. Heroic laurels: mark heroic clears on the campaign map and hero sheet.
+  3. Check that the four survival chapters are winnable and tense.
+  4. Instance repeated decor to cut the ~2,800 opening draw calls.
+  5. Late-game performance soak (20 minutes: frame time, memory, unit count).
+  6. Campaign difficulty curve audit across all 39 chapters.
+  7. A Chronicle screen that lets the player reread every unlocked chapter's story.
+  8. Result ledger statistics check (kills, losses, time).
+  9. Hero death in campaign battles: make the rule clear and fair.
+  10. Codex check, regression and review pass.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
