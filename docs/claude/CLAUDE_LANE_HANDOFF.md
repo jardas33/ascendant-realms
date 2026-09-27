@@ -108,3 +108,5 @@ Six character GLBs were re-exported from Blender with every mesh driven by the a
 | vorthak_bondservant_worker | 5 | 1 |
 
 `grimtusk_bowcrusha_r704c` (119 rigid parts) was not joined: its parts are not parented to bones directly and need a closer look. Accessory GLBs in `visual_convergence/` were not changed; unit.gd now merges the chosen pieces of each attachment at runtime (cached per accessory and prefix).
+
+Follow-up: `grimtusk_bowcrusha_r704c` joined too (120 free-standing pieces to 1 static mesh). Note for Codex: this model never animated. Its pieces are not skinned or parented to the 52-bone armature, so it moves as a rigid statue (verified before and after the join). Skinning it to the rig would bring it to life.
