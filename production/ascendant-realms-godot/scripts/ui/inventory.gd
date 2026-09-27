@@ -397,7 +397,7 @@ func _item_card(item: Dictionary) -> Button:
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	labels.add_child(name_label)
 	var meta_label := Label.new()
-	meta_label.text = "%s  ·  %s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper()]
+	meta_label.text = "%s  ·  %s%s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper(), "  ·  LOCKED" if bool(item.get("locked", false)) else ""]
 	meta_label.add_theme_font_size_override("font_size", 13)
 	meta_label.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
 	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -441,6 +441,13 @@ func _show_item_detail(item: Dictionary) -> void:
 		_clear_after(_detail_box, 2)
 		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
 	_detail_box.add_child(sv)
+	# Locked items are never melted by "Salvage Commons".
+	var lk := _button("Unlock" if bool(item.get("locked", false)) else "Lock (keep safe)", func():
+		item["locked"] = not bool(item.get("locked", false))
+		ProfileManager.save_game()
+		_refresh()
+		_show_item_detail(item))
+	_detail_box.add_child(lk)
 
 func _show_equipped_detail(slot: String, item: Dictionary) -> void:
 	Sfx.play("select")

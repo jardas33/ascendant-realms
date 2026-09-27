@@ -331,7 +331,7 @@ func salvage_rarities(rarities: Array) -> Dictionary:
 	var n := 0
 	var loot = load("res://scripts/game/loot_defs.gd")
 	for it in inv:
-		if String(it.get("rarity", "common")) in rarities:
+		if String(it.get("rarity", "common")) in rarities and not bool(it.get("locked", false)):
 			xp += loot.salvage_xp(it)
 			n += 1
 		else:
@@ -574,6 +574,18 @@ func endless_won(depth: int) -> void:
 			var item: Dictionary = load("res://scripts/game/endless_defs.gd").relic(depth)
 			add_item(item)
 			s["last_relic"] = String(item["name"])
+		# Every 25th stage: a guaranteed legendary, forged at the stage's depth.
+		if depth % 25 == 0 and has_hero():
+			var rng := RandomNumberGenerator.new()
+			rng.seed = depth * 2654435
+			var legend: Dictionary = {}
+			for attempt in 50:
+				legend = load("res://scripts/game/loot_defs.gd").make_item(rng, int(hero().get("level", 1)) + depth, 3.0)
+				if String(legend["rarity"]) == "legendary":
+					break
+			legend["rarity"] = "legendary"
+			add_item(legend)
+			s["last_relic"] = String(s.get("last_relic", "")) + ("  ·  " if String(s.get("last_relic", "")) != "" else "") + String(legend["name"]) + " (milestone)"
 	save_game()
 
 ## How many veterans may march with the Jardas: 2, plus one every 6 hero
