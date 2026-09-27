@@ -49,10 +49,14 @@ func _draw() -> void:
 			Vector2(0, 5), Vector2(5, 0), Vector2(w - 6, 0),
 			Vector2(w, 6), Vector2(w, h - 5), Vector2(w - 5, h),
 			Vector2(5, h), Vector2(0, h - 5)])
-		var face_color := Color(0.032, 0.045, 0.048, 0.85) if enabled else Color(0.028, 0.038, 0.041, 0.59)
+		var face_top := Color(0.069, 0.081, 0.079, 0.94) if enabled else Color(0.043, 0.050, 0.051, 0.71)
+		var face_bottom := Color(0.025, 0.036, 0.039, 0.96) if enabled else Color(0.022, 0.029, 0.031, 0.73)
 		if lit or active:
-			face_color = Color(0.075, 0.079, 0.067, 0.95)
-		draw_colored_polygon(face, face_color)
+			face_top = Color(0.112, 0.105, 0.080, 0.98)
+			face_bottom = Color(0.052, 0.057, 0.052, 0.98)
+		draw_polygon(face, PackedColorArray([
+			face_top, face_top, face_top, face_top,
+			face_bottom, face_bottom, face_bottom, face_bottom]))
 		# An inset art bay seats the painted order emblem without another frame.
 		draw_polygon(PackedVector2Array([
 			Vector2(2, 5), Vector2(55, 2), Vector2(55, h - 2), Vector2(2, h - 5)]), PackedColorArray([
@@ -61,11 +65,11 @@ func _draw() -> void:
 			Color(0.005, 0.016, 0.019, 0.06),
 			Color(metal.r, metal.g, metal.b, 0.035 if enabled else 0.01)]))
 		draw_line(Vector2(55, 7), Vector2(55, h - 7), Color(metal.r, metal.g, metal.b, 0.29 if enabled else 0.11), 1.0, true)
-		# Fine illuminated cuts show material and state; the rack supplies the
-		# strong outer edge and the central cross-joint.
-		draw_line(Vector2(8, 2), Vector2(w - 9, 2), Color(metal.r, metal.g, metal.b, 0.31 if enabled else 0.08), 1.0, true)
-		draw_line(Vector2(8, h - 2), Vector2(w - 8, h - 2), Color(0.30, 0.34, 0.30, 0.25 if enabled else 0.08), 1.0, true)
-		draw_line(Vector2(2, 7), Vector2(2, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else (0.36 if enabled else 0.11)), 2.0, true)
+		# A short glint and the illuminated art-side cut convey state without
+		# repeating full-width boxes inside the shared command rack.
+		draw_line(Vector2(62, 2), Vector2(w - 24, 2), Color(metal.r, metal.g, metal.b, 0.23 if enabled else 0.07), 1.0, true)
+		draw_line(Vector2(7, h - 3), Vector2(50, h - 3), Color(metal.r, metal.g, metal.b, 0.20 if enabled else 0.06), 1.0, true)
+		draw_line(Vector2(2, 7), Vector2(2, h - 7), Color(metal.r, metal.g, metal.b, 0.95 if lit or active else (0.43 if enabled else 0.11)), 1.7, true)
 		if lit or active:
 			var highlight := PackedVector2Array(face)
 			highlight.append(face[0])
