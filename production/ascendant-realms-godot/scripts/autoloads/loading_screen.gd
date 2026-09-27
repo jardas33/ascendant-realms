@@ -218,7 +218,7 @@ const TIPS := [
 	"Capture points pay out while you hold them: the Lume Spire gives gold, chapels heal, watches grant sight.",
 	"Units become veterans after three kills and gain health with each rank. Keep them alive.",
 	"Ctrl + 1-5 saves a control group; press the number again to select it.",
-	"Your hero's abilities are on Q, T, E and R. Slam stuns every enemy around the hero.",
+	"Your hero's abilities are on Q, T, E and R, and Y, U and V once learned. Slam stuns every enemy around the hero.",
 	"Buildings smoke when damaged and burn below 40% health. Send workers to repair them.",
 	"Press F to jump to an idle worker, and Space to find your hero.",
 	"Scout early: the fog hides the enemy base until one of your units has seen it.",

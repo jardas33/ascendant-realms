@@ -12,6 +12,8 @@ const LOOKS := {
 	"snow": {"amount": 800, "size": 0.2, "color": Color(0.96, 0.98, 1.0, 0.9), "gravity": Vector3(0.35, -1.3, 0.15), "speed": 0.2, "life": 9.0, "spin": 0.0, "glow": 0.1},
 	"sand": {"amount": 260, "size": 0.1, "color": Color(0.92, 0.80, 0.58, 0.55), "gravity": Vector3(2.2, -0.08, 0.6), "speed": 1.2, "life": 5.0, "spin": 0.0, "glow": 0.0},
 	"embers": {"amount": 140, "size": 0.13, "color": Color(1.0, 0.52, 0.18, 1.0), "gravity": Vector3(0.2, 0.55, 0.1), "speed": 0.3, "life": 6.0, "spin": 0.0, "glow": 2.2},
+	"rain": {"amount": 1500, "size": 0.035, "streak": 0.75, "color": Color(0.74, 0.82, 0.95, 0.42), "gravity": Vector3(-1.2, -24.0, 0.4), "speed": 2.0, "life": 0.9, "spin": 0.0, "glow": 0.0},
+	"fireflies": {"amount": 90, "size": 0.11, "color": Color(0.85, 1.0, 0.45, 1.0), "gravity": Vector3(0.0, 0.02, 0.0), "speed": 0.5, "life": 7.0, "spin": 0.0, "glow": 3.0},
 	"ash": {"amount": 240, "size": 0.15, "color": Color(0.42, 0.40, 0.40, 0.8), "gravity": Vector3(0.3, -0.45, 0.1), "speed": 0.2, "life": 10.0, "spin": 90.0, "glow": 0.0},
 }
 
@@ -21,12 +23,18 @@ const THEME_LAYERS := {
 	"volcanic": ["embers", "ash"], "ashen": ["ash", "embers"],
 }
 
+## Campaign chapter moods replace the map's own air (CampaignDefs.MOODS).
+const MOOD_LAYERS := {
+	"night": ["fireflies"], "ember": ["embers", "ash"], "storm": ["rain"], "dusk": ["meadow"],
+}
+
 const BOX := Vector3(46.0, 7.0, 34.0)
 
 var _systems: Array[GPUParticles3D] = []
 
-func build(theme_name: String) -> void:
-	for layer in THEME_LAYERS.get(theme_name, ["meadow"]):
+func build(theme_name: String, mood: String = "") -> void:
+	var layers: Array = MOOD_LAYERS.get(mood, THEME_LAYERS.get(theme_name, ["meadow"]))
+	for layer in layers:
 		_systems.append(_make_layer(LOOKS[layer]))
 
 
@@ -71,10 +79,17 @@ func _make_layer(look: Dictionary) -> GPUParticles3D:
 	var quad := QuadMesh.new()
 	var size := float(look["size"])
 	quad.size = Vector2(size, size * (0.6 if float(look["spin"]) > 0.0 else 1.0))
+	var streak := float(look.get("streak", 0.0))
+	if streak > 0.0:
+		# Rain: thin upright streaks falling straight, no drifting turbulence.
+		quad.size = Vector2(size, streak)
+		pm.turbulence_enabled = false
+		pm.direction = Vector3(0, -1, 0)
+		pm.spread = 4.0
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y if streak > 0.0 else BaseMaterial3D.BILLBOARD_PARTICLES
 	mat.vertex_color_use_as_albedo = true
 	mat.albedo_color = look["color"]
 	mat.albedo_texture = _soft_dot()

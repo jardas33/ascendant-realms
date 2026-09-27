@@ -617,14 +617,14 @@ func _scatter_environment() -> void:
 		var weather: Node3D = load("res://scripts/world/ambient_weather.gd").new()
 		weather.name = "AmbientWeather"
 		add_child(weather)
-		weather.build(str(map.get("theme", "highland")))
+		weather.build(str(map.get("theme", "highland")), String(CampaignDefs.CHAPTER_MOODS.get(String(Match.get_config().get("campaign_chapter", "")), "")))
 
 ## Battlefield ambience (wind, birds, crackle, the highland recording).
 func _start_ambient_sound() -> void:
 	var amb: Node = load("res://scripts/world/ambient_sound.gd").new()
 	amb.name = "AmbientSound"
 	add_child(amb)
-	amb.build(str(map.get("theme", "highland")))
+	amb.build(str(map.get("theme", "highland")), String(CampaignDefs.CHAPTER_MOODS.get(String(Match.get_config().get("campaign_chapter", "")), "")))
 
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:

@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 23:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -107,17 +107,34 @@ Last updated: 2026-09-27, 23:30 UTC. Claude updates this file after every pass.
   - **Hero revival presentation:** a pillar of golden Lume light with a light flash, and the hero grows up out of it.
   - **Loading tips** for the retinue, hero revival, Heroic Replay, the Chronicle and enemy hero spells.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
-- **Plan 8 (started):**
-  1. Investigate the remaining 1-in-5 long AI match.
-  2. Faction balance: round-robin AI soaks across factions (Barrosan trailed Vorthak).
-  3. Unit render cost in huge battles: merge character parts or add distance detail levels.
-  4. Weather to match the moods: rain for storm chapters, embers in the air for fire chapters.
-  5. Mood ambience sound (night insects, storm rain, crackling fire).
-  6. Minimap: hero markers and the revival point.
-  7. Player hero feel: ability hotkey feedback and range previews.
-  8. Check click and selection feel under 30 Hz interpolation.
-  9. Campaign polish: check every chapter's map, factions and moods in one tour.
-  10. Check Codex, run the regression and review.
+- **Plan 8 (done):**
+  - **AI matches:** 6 follow-up cross-faction matches all ended (minutes 9 to 20). Matches between evenly matched sides can still run past 20 minutes. The remaining stuck units are wedged between buildings of their own dense bases (plan 9).
+  - **Faction balance:** Barrosan lost all 4 of its AI matches. Unit data showed its tier-2 Outrider was the weakest mid unit (1.8 value per cost, against 3.3 for the Vorthak Rift Blade and 2.6 for the Gloom Hound), and its Clan Levy cost more than the other basic infantry.
+    - Outrider: health 120 to 150, damage 15 to 19.
+    - Clan Levy: food 60 to 50.
+    - Crag Archer: damage 16 to 17.
+    - After the change Barrosan went 2 losses and 2 draws. All tests still pass.
+  - **Weather matches the chapter moods:** rain streaks in storm chapters, fireflies at night, embers and ash in fire chapters.
+  - **Mood ambience (generated, no downloads):** crickets at night; steady rain with distant thunder every 18 to 40 seconds in storms; fire crackle in ember chapters.
+  - **Minimap:** while your hero is down, a gold ring pulses on your stronghold where they will rise.
+  - **Hero abilities:**
+    - Heal Wave, Entangling Roots and Avatar of War had buttons but no keys; they are now Y, U and V.
+    - A failed cast now says why (recharging with seconds left, not enough mana, or out of range) instead of doing nothing.
+    - HUD buttons for aimed spells (Roots, Bolt, Charge) target the nearest enemy instead of the hero's own feet.
+  - **Click feel at 30 Hz:** clicks hit the simulated position, which is at most one tick (about 13 cm at walking speed) behind the drawn unit. That is not noticeable, so no change was made.
+  - **Chapter tour:** all 39 chapters load and start with the right factions and heroes, with no script errors.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 9 (started):**
+  1. AI base layout: spread buildings so units stop wedging inside their own base.
+  2. Finish evenly matched AI games: late-game pressure (bigger final waves, target the weakest building).
+  3. Unit render cost in 100+ unit battles (merge character parts or simplify distant units).
+  4. Faction balance for the other 7 factions (the unit value table).
+  5. Player-facing difficulty labels: check Easy is easy for a new player.
+  6. Campaign: a short intro for each Act's new enemy faction.
+  7. Settings: expose the new ability keys in the controls list.
+  8. Review Codex's newest work again and merge anything new.
+  9. Performance check of the chapter moods (fog, rain) on Medium quality.
+  10. Regression, review and progress update.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

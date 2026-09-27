@@ -1513,6 +1513,17 @@ func _draw_minimap() -> void:
 			bool(u.is_worker),
 			bool(u.is_hero))
 
+	# While the player's hero is down, a gold ring pulses on the stronghold
+	# where the Lume will raise them.
+	if is_instance_valid(_commander) and not is_instance_valid(_commander.hero_ref):
+		for b in _commander.buildings:
+			if is_instance_valid(b) and not b.is_dead and bool(b.def.get("is_hq", false)):
+				var hq_p := _world_to_map(b.global_position)
+				var pulse := fmod(float(Time.get_ticks_msec()) / 1000.0, 1.4) / 1.4
+				_minimap.draw_arc(hq_p, 5.0 + pulse * 9.0, 0.0, TAU, 28, Color(1.0, 0.8, 0.35, 1.0 - pulse), 2.0, true)
+				_minimap.draw_circle(hq_p, 3.0, Color(1.0, 0.85, 0.4, 0.95))
+				break
+
 	# camera view marker corresponds to the current RTS camera footprint, not a
 	# fixed square that implied a false zoom level.
 	if is_instance_valid(rts) and "cam_pivot" in rts and is_instance_valid(rts.cam_pivot):
@@ -2283,7 +2294,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 
 
 func _ability_key_label(id: String) -> String:
-	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R"}
+	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R", "heal": "Y", "root": "U", "avatar": "V"}
 	return String(hotkeys.get(id, ""))
 
 
@@ -3177,7 +3188,14 @@ func _build_hero_command_card(u) -> void:
 			var cap_u = u
 			btn.pressed.connect(func():
 				if is_instance_valid(cap_u) and not cap_u.is_dead and cap_u.has_method("cast_ability"):
-					cap_u.cast_ability(cap_id, cap_u.global_position))
+					# Aimed spells cast from the button target the nearest enemy
+					# instead of the hero's own feet.
+					var aim: Vector3 = cap_u.global_position
+					if cap_id in ["root", "bolt", "charge"] and world and world.has_method("_nearest_enemy_to"):
+						var foe = world._nearest_enemy_to(cap_u.global_position, cap_u.team, [])
+						if is_instance_valid(foe):
+							aim = foe.global_position
+					cap_u.cast_ability(cap_id, aim))
 			ability_grid.add_child(btn)
 			var status_label: Label = btn.get_meta("command_status_label")
 			_ability_widgets.append({"id": cap_id, "button": btn, "overlay": status_label})

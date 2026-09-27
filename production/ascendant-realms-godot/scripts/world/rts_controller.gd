@@ -84,7 +84,20 @@ var _defeated_hero_selection_notified := false
 const DIRECT_ATTACK_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascendant_direct_attack_cursor.svg")
 const ATTACK_MOVE_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascendant_attack_move_cursor.svg")
 
+## Heal Wave, Entangling Roots and Avatar of War had buttons but no keys.
+const EXTRA_ABILITY_KEYS := {"ability_5": KEY_Y, "ability_6": KEY_U, "ability_7": KEY_V}
+
+func _register_extra_ability_keys() -> void:
+	for action in EXTRA_ABILITY_KEYS:
+		if InputMap.has_action(action):
+			continue
+		InputMap.add_action(action)
+		var ev := InputEventKey.new()
+		ev.physical_keycode = EXTRA_ABILITY_KEYS[action]
+		InputMap.action_add_event(action, ev)
+
 func setup(p_world, p_team: int) -> void:
+	_register_extra_ability_keys()
 	world = p_world
 	player_team = p_team
 	_apply_settings()
@@ -442,6 +455,9 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("ability_2"): _queue_ability("slam")
 	elif Input.is_action_just_pressed("ability_3"): _queue_ability("charge")
 	elif Input.is_action_just_pressed("ability_4"): _queue_ability("bolt")
+	elif Input.is_action_just_pressed("ability_5"): _queue_ability("heal")
+	elif Input.is_action_just_pressed("ability_6"): _queue_ability("root")
+	elif Input.is_action_just_pressed("ability_7"): _queue_ability("avatar")
 
 # --------------------------------------------------------------------------
 # Selection
@@ -1020,13 +1036,21 @@ func _queue_ability(id: String) -> void:
 		return
 	if not hero.abilities.has(id):
 		return
+	# A failed cast used to do nothing at all; say why.
+	if not hero.can_cast(id):
+		var ab: Dictionary = SkillDefs.get_abilities().get(id, {})
+		var left := float(hero.ability_cd.get(id, 0.0))
+		var why := "%s is recharging (%.0fs)" % [ab.get("name", id), ceilf(left)] if left > 0.0 else "Not enough mana for %s" % ab.get("name", id)
+		world.emit_signal("alert", why, Vector3.ZERO)
+		return
 	var ground = _raycast_ground()
 	var target_pos = ground if ground != null else hero.global_position
 	# some abilities target enemy pos under cursor
 	var hit = _raycast_object()
 	if hit and ("global_position" in hit):
 		target_pos = hit.global_position
-	hero.cast_ability(id, target_pos)
+	if not hero.cast_ability(id, target_pos):
+		world.emit_signal("alert", "Out of range: move the cursor closer to an enemy", Vector3.ZERO)
 
 func _selected_hero():
 	for u in selected:

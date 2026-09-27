@@ -19,15 +19,33 @@ const LOOKS := {
 	"volcanic": [0.4, false, true, false], "ashen": [0.5, false, true, false],
 }
 
+## Campaign moods override the map's sound: [wind level, birds, crackle,
+## recording] as above, plus a mood extra (crickets, rain and thunder).
+const MOOD_LOOKS := {
+	"night": [0.25, false, false, false], "ember": [0.4, false, true, false],
+	"storm": [0.75, false, false, false],
+}
+
 var _rng := RandomNumberGenerator.new()
+var _thunder_player: AudioStreamPlayer
+var _thunder_timer := 12.0
 var _songs: Array[AudioStreamWAV] = []
 var _bird_player: AudioStreamPlayer
 var _bird_timer := 3.0
 
 
-func build(theme_name: String) -> void:
-	var look: Array = LOOKS.get(theme_name, LOOKS["highland"])
+func build(theme_name: String, mood: String = "") -> void:
+	var look: Array = MOOD_LOOKS.get(mood, LOOKS.get(theme_name, LOOKS["highland"]))
 	_rng.seed = 90210
+	if mood == "night":
+		_loop_player(_cricket_loop(), -21.0)
+	elif mood == "storm":
+		_loop_player(_rain_loop(), -13.0)
+		_thunder_player = AudioStreamPlayer.new()
+		_thunder_player.bus = "SFX"
+		_thunder_player.volume_db = -9.0
+		_thunder_player.stream = _thunder()
+		add_child(_thunder_player)
 	if bool(look[3]) and ResourceLoader.exists(RECORDED):
 		var stream = load(RECORDED)
 		if stream is AudioStreamMP3:
@@ -43,10 +61,16 @@ func build(theme_name: String) -> void:
 		_bird_player.bus = "SFX"
 		_bird_player.volume_db = -19.0
 		add_child(_bird_player)
-	set_process(bool(look[1]))
+	set_process(bool(look[1]) or is_instance_valid(_thunder_player))
 
 
 func _process(delta: float) -> void:
+	if is_instance_valid(_thunder_player):
+		_thunder_timer -= delta
+		if _thunder_timer <= 0.0:
+			_thunder_timer = _rng.randf_range(18.0, 40.0)
+			_thunder_player.pitch_scale = _rng.randf_range(0.8, 1.15)
+			_thunder_player.play()
 	_bird_timer -= delta
 	if _bird_timer <= 0.0 and is_instance_valid(_bird_player):
 		_bird_timer = _rng.randf_range(3.0, 9.0)
@@ -99,6 +123,58 @@ func _wind_loop(level: float) -> AudioStreamWAV:
 		var k := float(i) / float(fade)
 		out[n - fade + i] = out[n - fade + i] * (1.0 - k) + out[i] * k
 	return _wav(out, true)
+
+
+## Steady rain: bright noise with a softer body, no gusting.
+func _rain_loop() -> AudioStreamWAV:
+	var n := RATE * 6
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var lp := 0.0
+	for i in n:
+		var w := _rng.randf() * 2.0 - 1.0
+		lp += (w - lp) * 0.35
+		var drop := (_rng.randf() * 2.0 - 1.0) * 0.8 if _rng.randf() < 0.004 else 0.0
+		out[i] = lp * 0.28 + (w - lp) * 0.06 + drop * 0.12
+	var fade := RATE / 2
+	for i in fade:
+		var k := float(i) / float(fade)
+		out[n - fade + i] = out[n - fade + i] * (1.0 - k) + out[i] * k
+	return _wav(out, true)
+
+
+## Night insects: short pulsed chirps around 4.4 kHz from a few crickets.
+func _cricket_loop() -> AudioStreamWAV:
+	var n := RATE * 4
+	var out := PackedFloat32Array()
+	out.resize(n)
+	for c in 3:
+		var f := 4200.0 + c * 260.0
+		var period := int(RATE * (0.42 + c * 0.11))
+		var start := int(_rng.randf() * period)
+		for i in n:
+			var k := (i + start) % period
+			var burst := int(RATE * 0.09)
+			if k < burst:
+				var env := sin(PI * float(k) / float(burst)) * (0.5 + 0.5 * sin(TAU * float(k) / (RATE * 0.012)))
+				out[i] += sin(TAU * f * float(i) / RATE) * env * 0.12
+	return _wav(out, true)
+
+
+## A distant roll of thunder: low rumbling noise with a slow swell and decay.
+func _thunder() -> AudioStreamWAV:
+	var n := RATE * 5
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var lp := 0.0
+	var lp2 := 0.0
+	for i in n:
+		var t := float(i) / float(n)
+		var env := minf(1.0, t * 8.0) * pow(1.0 - t, 1.6) * (0.7 + 0.3 * sin(t * 37.0))
+		lp += (_rng.randf() * 2.0 - 1.0 - lp) * 0.02
+		lp2 += (lp - lp2) * 0.05
+		out[i] = lp2 * 14.0 * env
+	return _wav(out, false)
 
 
 func _crackle_loop() -> AudioStreamWAV:
