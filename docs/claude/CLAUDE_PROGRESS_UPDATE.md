@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 10:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 10:15 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -35,6 +35,7 @@ Last updated: 2026-09-27, 10:00 UTC. Claude updates this file after every pass.
 - **In battle:** an opening line, the enemy commander speaking at 3 and 8 minutes, and a victory chronicle on the result ledger that moves the story forward.
 - **Factions, units and buildings:** all 10 factions rewritten into the saga (Barrosan Clans, Lioraen Concord as the Mouras, Vorthak as drowned Furna, Aurean Dominion, the Compaña, Careto Host, Wolfveil Clans, Granitborn, Ironmaw Horde, Moura Court). 73 unit and 39 building names and descriptions were rewritten; the Barrosan hero is now the Jardas. Ids, stats and portraits are unchanged.
 - **Review fixes:** a data check confirmed all 39 chapters have valid maps, factions and links, every chapter is reachable, and there are exactly 7 jars. Story fixes: Avó Brites is now Malrec's younger sister, born in Furna (their ages did not work before). The Compaña's battle hero is the Candle-King rather than Leonor, so you no longer kill your own mother in every Compaña battle. The Vorthak and Dominion battle heroes are generic ranks, because Malrec dies in Act IV and the Regent surrenders, yet both armies keep fighting. The Seventh Son side road no longer has you fighting the wolves you came to save. Both roads of the Wall choice pulse while the choice is open. Every enemy faction the saga uses was checked in AI matches with no errors.
+- **Every hero fits the story:** a Lioraen hero is a Moura foundling Avó Brites found in the spring; a Vorthak hero carries Furna's blood through their grandmother. Each origin is added to the prologue briefing and the Act III ledger reveal.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
