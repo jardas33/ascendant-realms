@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 21:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-29, 02:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -222,6 +222,22 @@ Last updated: 2026-09-28, 21:00 UTC. Claude updates this file after every pass.
      - docs/claude/MULTIPLAYER_READINESS.md recommends a host-authoritative design (Godot's high-level multiplayer), not lockstep, and lists what must change. The suggested first milestone is two-player LAN co-op against the AI.
   8. **Big battles:** units no longer write two audit metadata values every tick. Benchmark runs are noisy (38 to 46 fps for 120 units), so there is no measurable gain to claim.
   9. Codex had nothing new. 10. Regression passed: all 9 tests and the saga data check.
+- **Plan 15 (done):**
+  - **Legendary powers:** legendary loot now carries a power (Cleave, 8% Lifesteal, Execute or Last Stand) as well as stats.
+  - **Bug fixed:** the skill-tree node "Hero attacks splash to nearby enemies" set a cleave flag that nothing implemented, so the skill did nothing. Cleave now deals half damage to enemies around the target (tested: all three clustered enemies die instead of one).
+  - **Endless Road twists:** from stage 3 every stage has one or two twists: night, storm, ember or dusk moods (with matching weather and sound), Champions (enemy heroes half again as tough), Warband (enemy reinforcements at 3 minutes) or Rich Spoils (an extra loot roll and +25% experience). Enemy heroes also grow with every stage.
+  - **Deeds:** achievement tracks for victories, foes slain, Endless Road depth, saga chapters, heroic laurels and legendary finds. Tiers never end: after the named tiers the goal doubles and the title gains a numeral ("Legend of the Larouco VII"). Each tier grants a mastery point. New deeds are announced on the result screen; the hero sheet shows the hero's title and every track with its next goal. Existing heroes are credited for past deeds.
+  - **Named veterans:** at rank 3 a soldier earns a Barroso name ("Rosa the Quiet", "Chico the Garrano"), announced in battle and kept in the retinue.
+  - **Auto-salvage setting:** Off, Common, Up to Uncommon or Up to Rare.
+  - **Hero sheet:** a Hero Power rating and a list of the hero's active powers.
+  - **Trapped armies (a real bug):** stuck-unit logs showed Barrosan soldiers circling inside their own base. The AI had been building across its army's road out. It now keeps a lane clear toward the battlefield. Stuck units fell from 9 to 21 per long match to 1 to 4.
+  - **Barrosan AI:** still loses most AI-vs-AI games. This is noted honestly and does not affect human players of Barrosan.
+- **Plan 16 (done):**
+  - **New units** fill tier gaps, reusing existing models: Granitborn Castro Rider (tier 2 cavalry), Moura Court Silver Colossus (tier 3), Aurean Dominion Sun Scorpion (tier 3 siege) and Wolfveil Moon Bear (tier 3). All four spawn and animate (the Scorpion is a machine, like the other siege engines).
+  - **Elite enemies:** about 1 in 30 enemy soldiers is an Elite (80% more health, 50% more damage, larger, gold-edged). Each Elite you kill adds a loot roll with better odds and is announced when it falls.
+  - **Gear sets:** epic and legendary drops can belong to one of four sets (Oath of Salto, Furna's Ashglass, Moura Silver, Careto Masks). Two pieces give a stat that grows with the set's item level; four pieces grant a power (for example Careto Masks give Cleave).
+  - **Festival stages:** every tenth Endless Road stage is a Barroso feast with its own foes, mood and rich spoils: Entrudo (Careto Host), the Chega de Bois (rival Barrosan clans, a mirror match), the Night of the Witches in Montalegre (the Compaña), Magusto (Wolfveil) and the Fires of São João (Vorthak).
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new. The 120-unit fight benchmark stays at about 36 to 46 fps.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
