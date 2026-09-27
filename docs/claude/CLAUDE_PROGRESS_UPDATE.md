@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 05:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -124,16 +124,33 @@ Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass.
   - **Click feel at 30 Hz:** clicks hit the simulated position, which is at most one tick (about 13 cm at walking speed) behind the drawn unit. That is not noticeable, so no change was made.
   - **Chapter tour:** all 39 chapters load and start with the right factions and heroes, with no script errors.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
-- **Plan 9 (started):**
-  1. AI base layout: spread buildings so units stop wedging inside their own base.
-  2. Finish evenly matched AI games: late-game pressure (bigger final waves, target the weakest building).
-  3. Unit render cost in 100+ unit battles (merge character parts or simplify distant units).
-  4. Faction balance for the other 7 factions (the unit value table).
-  5. Player-facing difficulty labels: check Easy is easy for a new player.
-  6. Campaign: a short intro for each Act's new enemy faction.
-  7. Settings: expose the new ability keys in the controls list.
-  8. Review Codex's newest work again and merge anything new.
-  9. Performance check of the chapter moods (fog, rain) on Medium quality.
+- **Plan 9 (done):**
+  - **Easy difficulty was broken.** A new player idling against Easy saw no attack in 15 minutes:
+    - The first wave waited for every soldier to reach the rally point, and one straggler held it back forever. Staging now times out after 40 seconds.
+    - Easy never sent a second wave. It now sends a follow-up wave every 150 seconds once its idle army reaches wave size.
+    - The Easy wave test still passes.
+  - **AI base layout:** buildings now keep a walking lane between both footprints and stay off resource nodes, and the search reaches further out as a base fills.
+  - **Late-game pressure:** after 15 minutes every AI commits whatever army it has (8 or more). All 5 cross-faction soak matches ended (minutes 7 to 18).
+  - **AI economy and building fixes:**
+    - A second barracks is built when food and timber pile up.
+    - No towers are built while the AI is short of housing.
+    - Up to six spots are tried before pausing on a blocked placement. A Barrosan AI failed to place its house 5 times in 8 minutes because of its hamlet dressing; Lioraen never failed.
+  - **Open finding: the Barrosan AI still loses most AI matches.** It lost 13 of 16 recent matches across three maps and both seats. Economy, housing, placement and unit stats were all adjusted, and the trend held. Plan 10 starts with equal-cost army fights to tell unit strength apart from AI decisions.
+  - **Chapter briefings** now introduce each enemy faction the first time the saga fields it (for example "New enemy: The Compaña...").
+  - **Controls:** the settings controls list and the pause menu now show all seven hero ability keys.
+  - **Medium quality:** weather uses half the particles.
+  - Unit render cost in 100+ unit battles is moved to plan 10.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 10 (started):**
+  1. Barrosan: equal-cost army fights against each faction, then fix what they show.
+  2. Unit render cost in 100+ unit battles.
+  3. Faction value table for the other 7 factions.
+  4. Hard and Brutal difficulty check from a player's point of view.
+  5. Result screen: a short per-battle summary (hero kills, veterans made).
+  6. Campaign: make sure every chapter's map fits its story, and swap maps where they don't.
+  7. Tutorial: mention hero revival and the retinue in the first campaign battles.
+  8. Audio: check volume balance of the new mood sounds against the music.
+  9. Recheck Codex's newest work.
   10. Regression, review and progress update.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 

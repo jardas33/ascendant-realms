@@ -513,6 +513,23 @@ Objective: hold out for %d minutes." % (int(c.get("survive", 0)) / 60) if int(c.
 Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(meta)
+	# The first chapter that fields a faction introduces it.
+	var seen := {}
+	for earlier in CampaignDefs.CHAPTERS:
+		if String(earlier["id"]) == id:
+			break
+		for o in earlier["opponents"]:
+			seen[String(o["race"])] = true
+	for o in c["opponents"]:
+		var race_id := String(o["race"])
+		if seen.has(race_id):
+			continue
+		seen[race_id] = true
+		var rd: Dictionary = GameData.get_race(race_id)
+		var blurb := String(rd.get("blurb", "")).split(". ")[0].trim_suffix(".")
+		var intro := _label("New enemy: %s. %s." % [rd.get("name", race_id), blurb], 15, Color(0.95, 0.62, 0.42))
+		intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(intro)
 	if c.has("branch"):
 		var warn := _label("This is the choice. Marching here seals the other road forever.", 15, Color(0.95, 0.45, 0.35), true)
 		warn.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

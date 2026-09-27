@@ -618,6 +618,10 @@ func _scatter_environment() -> void:
 		weather.name = "AmbientWeather"
 		add_child(weather)
 		weather.build(str(map.get("theme", "highland")), String(CampaignDefs.CHAPTER_MOODS.get(String(Match.get_config().get("campaign_chapter", "")), "")))
+		# Medium quality keeps the weather but at half the particles (storm rain is 1,500).
+		if quality == "medium":
+			for ps in weather.find_children("*", "GPUParticles3D", true, false):
+				ps.amount = maxi(20, ps.amount / 2)
 
 ## Battlefield ambience (wind, birds, crackle, the highland recording).
 func _start_ambient_sound() -> void:

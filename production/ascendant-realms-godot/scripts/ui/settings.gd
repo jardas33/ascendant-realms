@@ -11,7 +11,7 @@ const CONTROLS := [
 	["SELECTION", "Left-click selects. Drag selects a group. Hold Shift to add to selection."],
 	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs."],
 	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
-	["HERO POWERS", "Q / T / E / R cast hero abilities."],
+	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). Aim at the cursor."],
 	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it. Tab selects the army."],
 	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],

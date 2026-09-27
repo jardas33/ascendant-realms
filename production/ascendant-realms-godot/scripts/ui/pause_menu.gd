@@ -115,7 +115,7 @@ func setup() -> void:
 	_add_key_row(system, "F", "Select idle worker", font)
 	_add_key_row(system, "SPACE", "Focus hero", font)
 	_add_key_row(system, "BACKSPACE", "Jump to latest alert", font)
-	_add_key_row(system, "Q / T / E / R", "Hero abilities", font)
+	_add_key_row(system, "Q T E R  ·  Y U V", "Hero abilities", font)
 	_add_key_row(system, "ESC", "Pause / resume", font)
 	_add_key_row(system, "WHEEL / Z C", "Zoom / rotate camera", font)
 

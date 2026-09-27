@@ -163,6 +163,7 @@ func _think_easy() -> void:
 	_manage_easy_hq_pressure()
 	_manage_easy_replacement()
 	_manage_easy_mixed_production()
+	_manage_easy_followup_waves()
 
 func _sync_easy_deposits() -> void:
 	if not world:
@@ -340,6 +341,33 @@ func _queued_easy_combat_count(barracks) -> int:
 			count += 1
 	return count
 
+var _easy_stage_started := -1.0
+var _easy_next_wave := -1.0
+
+## Easy only ever sent its first wave; after it broke, the army idled at the
+## rally point for the rest of the match. Every 150 s it now attacks again
+## with the whole idle army once that army reaches wave size.
+func _manage_easy_followup_waves() -> void:
+	if not _easy_wave_launched:
+		return
+	if _easy_next_wave < 0.0:
+		_easy_next_wave = _easy_elapsed + 150.0
+		return
+	if _easy_elapsed < _easy_next_wave:
+		return
+	var idle: Array = []
+	for u in _easy_army():
+		if is_instance_valid(u) and not u.is_dead and u.state == u.State.IDLE:
+			idle.append(u)
+	if idle.size() < _army_attack_size:
+		return
+	var target := _find_player_target()
+	if target == Vector3.ZERO:
+		return
+	for u in idle:
+		u.command_move(target, true)
+	_easy_next_wave = _easy_elapsed + 150.0
+
 func _manage_easy_staging_and_wave() -> void:
 	if _easy_wave_launched:
 		return
@@ -360,7 +388,12 @@ func _manage_easy_staging_and_wave() -> void:
 		for u in army:
 			if u.global_position.distance_to(_rally) > 8.0:
 				staged = false
-		if not staged:
+		# One soldier that could not reach the rally point held the Easy wave
+		# back forever: a new player saw no attack in fifteen minutes. After
+		# 40 s of staging the wave goes with whoever is there.
+		if _easy_stage_started < 0.0:
+			_easy_stage_started = _easy_elapsed
+		if not staged and _easy_elapsed - _easy_stage_started < 40.0:
 			return
 		_easy_wave_staged = true
 		_easy_staging_audit.append({"event": "army_staged", "count": army.size(),
@@ -698,7 +731,10 @@ func _manage_production() -> void:
 	if commander.tier >= 2 and not _has_building_kind("arcane") and _tech_aggression >= 1.0:
 		_try_build("arcane")
 	# second barracks for hard/brutal
-	if _tech_aggression >= 1.4 and _count_building_kind("barracks") < 2 and _army_size() > 6:
+	# ...and for anyone whose resources pile up faster than one barracks can
+	# spend them (a Barrosan AI sat on 400+ food with 3 soldiers).
+	var piling: bool = int(commander.resources.get("food", 0)) > 350 and int(commander.resources.get("timber", 0)) > 250
+	if _count_building_kind("barracks") < 2 and ((_tech_aggression >= 1.4 and _army_size() > 6) or piling):
 		_try_build("barracks")
 
 	# A side reduced to a handful of workers spent every scrap of food on
@@ -735,7 +771,9 @@ func _choose_unit(choices: Array) -> String:
 # --- defense --------------------------------------------------------------
 func _manage_defense() -> void:
 	# build a tower or two near base early-mid
-	if _count_building_kind("tower") < (2 if _tech_aggression >= 1.0 else 1) and _worker_count() >= 5:
+	# Housing comes first: towers built while capped at population starved
+	# the army (a Barrosan AI sat at 20/20 with two new towers).
+	if _count_building_kind("tower") < (2 if _tech_aggression >= 1.0 else 1) and _worker_count() >= 5 and commander.pop_used < commander.pop_cap - 3:
 		if randf() < 0.4:
 			_try_build("tower")
 	# recall army to defend if base attacked
@@ -760,6 +798,10 @@ func _manage_offense() -> void:
 	# Waves grow a little, but not without bound: the old +2 per wave soon
 	# asked for more troops than the AI could keep alive, so it stopped attacking.
 	var needed := _army_attack_size + mini(_wave_number, 3) * 2
+	# Evenly matched sides could trade waves for half an hour. After fifteen
+	# minutes every AI commits whatever army it has.
+	if float(world.get("match_time")) > 900.0:
+		needed = mini(needed, 8)
 	if size >= needed and _attack_timer > 8.0:
 		_attack_timer = 0.0
 		_wave_number += 1
@@ -883,8 +925,17 @@ func _try_build(kind: String) -> void:
 	var worker = _free_worker()
 	if not worker:
 		return
-	var pos := _find_build_spot()
-	if not world.can_place_building(bid, commander.team, pos, true, worker):
+	# Barrosan bases are ringed by hamlet dressing, and one blocked spot cost a
+	# 2 s pause: its houses lagged and the army sat population-capped. Try
+	# several spots before pausing.
+	var pos := Vector3.ZERO
+	var placed_ok := false
+	for _try in 6:
+		pos = _find_build_spot(float(bdef.get("footprint", 4.0)))
+		if world.can_place_building(bid, commander.team, pos, true, worker):
+			placed_ok = true
+			break
+	if not placed_ok:
 		_build_cooldown = 2.0
 		return
 	var b = world.place_building(bid, commander.team, pos)
@@ -919,27 +970,34 @@ func _cancel_dead_sites() -> void:
 			b._destroy(null)
 			return
 
-func _find_build_spot() -> Vector3:
+func _find_build_spot(footprint: float = 4.0) -> Vector3:
 	# spiral out from base, avoid overlapping existing buildings
 	# Build on the side of the base that faces the battlefield. The rear of
 	# each start holds the settlement dressing (hamlet, holdfast, grove), and
 	# sites placed there could be walled off so the builder never arrived.
 	var toward := atan2(-_base_pos.z, -_base_pos.x)
-	for attempt in 20:
+	# Later attempts reach further out, so a crowded base grows outward
+	# instead of cramming buildings together.
+	for attempt in 36:
 		var ang := toward + randf_range(-1.5, 1.5)
-		var dist := 12.0 + randf() * 22.0
+		var dist := 12.0 + attempt * 0.8 + randf() * 20.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
 		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
-		if _spot_clear(p):
+		if _spot_clear(p, footprint):
 			return p
 	return _base_pos + Vector3(cos(toward), 0, sin(toward)) * 16.0 + Vector3(randf_range(-6, 6), 0, randf_range(-6, 6))
 
-func _spot_clear(p: Vector3) -> bool:
+## Units wedged between tightly packed buildings in their own base. Keep a
+## walking lane between both footprints, and stay off resource nodes.
+func _spot_clear(p: Vector3, footprint: float = 4.0) -> bool:
 	for b in commander.buildings:
 		if is_instance_valid(b) and not b.is_dead:
-			if p.distance_to(b.global_position) < (float(b.def.get("footprint", 4.0)) + 5.0):
+			if p.distance_to(b.global_position) < float(b.def.get("footprint", 4.0)) + footprint + 3.5:
 				return false
+	for r in get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(r) and p.distance_to(r.global_position) < footprint + 4.0:
+			return false
 	return true
 
 func _free_worker():
