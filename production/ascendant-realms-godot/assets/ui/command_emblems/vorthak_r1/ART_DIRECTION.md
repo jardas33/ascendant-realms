@@ -1,5 +1,7 @@
-# Vorthak rally command emblem
+# Vorthak command emblems
 
 `rallying_cry.png` is original UI art generated with the built-in image-generation tool on 2026-09-27 in original-generation mode. Source: `C:/Users/barro/.codex/generated_images/01a073a7-7453-7061-ad0e-33954b8b69ee/exec-4420196a-5c2f-42eb-b670-77846cdceef0.png`. No external image was used as an edit target.
+
+`field_orders_atlas.png` is original 2x2 UI art generated with the built-in image-generation tool on 2026-09-27, then edited with the same tool to improve its 44-pixel gameplay read. Initial source: `C:/Users/barro/.codex/generated_images/01a073a7-7453-7061-ad0e-33954b8b69ee/exec-8fad54f2-bc1e-451c-bf5b-722d774c4526.png`. Final source: `C:/Users/barro/.codex/generated_images/01a073a7-7453-7061-ad0e-33954b8b69ee/exec-735902a1-0e32-4763-9c88-b91d0fcf9745.png`. Its equal quadrants contain Attack Move (obsidian glaive), Stop (armored binding palm), Hold (planted basalt ward), and Patrol (violet route between watch spires). The edit kept those four subjects and the exact atlas layout while lifting the blade edge, ash-silver hand, shield sigil, and route contrast. The command renderer crops the quarters without any changes to action IDs, hotkeys, callbacks, or saves.
 
 Prompt brief: a single black-obsidian and aged-bronze Vorthak ritual horn in an ash-grey armored hand, emitting three distinct violet sound waves over a smoky volcanic battlefield. Strong horn-and-wave silhouette at 60 pixels; safe edge margin; no lettering, interface, border, watermark, or extra figure. The violet spell signal distinguishes this shared rally action from Barrosan's amber horn and Lioraen's green horn while preserving the same ability ID, cost, cooldown, hotkey, and effect.

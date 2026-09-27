@@ -10,6 +10,7 @@ const EMBLEMS := {
 }
 const FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/astra_r1/field_orders_atlas.png"
 const LIORAEN_FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/lioraen_r1/field_orders_atlas.png"
+const VORTHAK_FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/vorthak_r1/field_orders_atlas.png"
 const LIORAEN_RALLY_EMBLEM := "res://assets/ui/command_emblems/lioraen_r1/rallying_cry.png"
 const VORTHAK_RALLY_EMBLEM := "res://assets/ui/command_emblems/vorthak_r1/rallying_cry.png"
 const FIELD_ORDER_QUADRANTS := {
@@ -36,7 +37,10 @@ func _ready() -> void:
 
 func _draw() -> void:
 	if FIELD_ORDER_QUADRANTS.has(icon_kind):
-		var atlas_path := LIORAEN_FIELD_ORDERS_ATLAS if visual_faction == "lioraen" else FIELD_ORDERS_ATLAS
+		var atlas_path := FIELD_ORDERS_ATLAS
+		match visual_faction:
+			"lioraen": atlas_path = LIORAEN_FIELD_ORDERS_ATLAS
+			"vorthak": atlas_path = VORTHAK_FIELD_ORDERS_ATLAS
 		var atlas: Texture2D = _load_emblem(atlas_path)
 		if atlas:
 			var half := atlas.get_size() * 0.5
