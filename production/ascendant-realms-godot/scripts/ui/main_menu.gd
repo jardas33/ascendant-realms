@@ -54,7 +54,7 @@ func _build() -> void:
 	var col := VBoxContainer.new()
 	col.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	col.add_theme_constant_override("separation", 14)
+	col.add_theme_constant_override("separation", 10)
 	col.custom_minimum_size = Vector2(340, 0)
 	col.offset_left = -170.0
 	col.offset_right = 170.0
@@ -63,6 +63,9 @@ func _build() -> void:
 	add_child(col)
 
 	col.add_child(_make_button(_campaign_label(), _on_campaign))
+	# The Endless Road, straight from the menu once the first chapter is won.
+	if ProfileManager.has_hero() and not ProfileManager.saga()["cleared"].is_empty():
+		col.add_child(_make_button("Endless Road  ·  Stage %d" % (ProfileManager.endless_best() + 1), _on_endless))
 	col.add_child(_make_button("Skirmish", _on_skirmish))
 	col.add_child(_make_button("Hero", _on_hero))
 	col.add_child(_make_button("How to Play", _on_tutorial))
@@ -106,7 +109,7 @@ func _campaign_label() -> String:
 func _make_button(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(320, 56)
+	b.custom_minimum_size = Vector2(320, 50)
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", 24)
 	b.add_theme_color_override("font_color", Color(0.95, 0.86, 0.64))
@@ -185,6 +188,10 @@ func _on_campaign() -> void:
 		_goto("res://scenes/ui/hero_creation.tscn")
 		return
 	Match.clear_pending_hero_origin()
+	_goto("res://scenes/ui/campaign_map.tscn")
+
+func _on_endless() -> void:
+	Match.set_meta("open_endless", true)
 	_goto("res://scenes/ui/campaign_map.tscn")
 
 func _on_skirmish() -> void:

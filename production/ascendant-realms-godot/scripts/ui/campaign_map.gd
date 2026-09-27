@@ -246,6 +246,11 @@ func _build() -> void:
 	add_child(endless)
 
 	_show_act(_act)
+	# Arriving from the main menu's Endless Road button.
+	if Match.has_meta("open_endless"):
+		Match.remove_meta("open_endless")
+		call_deferred("_open_endless")
+		return
 	# A new Act is announced once, the first time the map shows it; after a
 	# victory the next chronicle opens by itself.
 	var saga_state := ProfileManager.saga()
