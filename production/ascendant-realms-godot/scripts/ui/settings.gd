@@ -97,6 +97,10 @@ func _build() -> void:
 	var quality_names := ["low", "medium", "high"]
 	display.add_child(_option_row("Graphics Quality", ["Low", "Medium", "High"], maxi(0, quality_names.find(String(s.get("graphics", "high")))), func(index):
 		ProfileManager.update_setting("graphics", quality_names[index])))
+	# Loot piles up over a long campaign; melt low tiers into experience on drop.
+	var salvage_names := ["none", "common", "uncommon", "rare"]
+	display.add_child(_option_row("Auto-salvage Loot", ["Off", "Common", "Up to Uncommon", "Up to Rare"], maxi(0, salvage_names.find(String(s.get("auto_salvage", "none")))), func(index):
+		ProfileManager.update_setting("auto_salvage", salvage_names[index])))
 
 	var camera := _group(left, "CAMERA")
 	camera.add_child(_toggle_row("Edge Scrolling", bool(s.get("edge_scroll", true)),

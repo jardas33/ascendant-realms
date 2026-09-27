@@ -2572,7 +2572,16 @@ func _roll_battle_loot(victory: bool) -> Array:
 	if "spoils" in cfg.get("twists", []):
 		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 1, ilvl, fortune, victory, hardest))
 	var shown: Array = []
+	# Auto-salvage setting: low tiers turn straight into experience.
+	var ladder := ["common", "uncommon", "rare"]
+	var limit := ladder.find(String(ProfileManager.settings().get("auto_salvage", "none")))
 	for it in items:
+		var tier := ladder.find(String(it["rarity"]))
+		if limit >= 0 and tier >= 0 and tier <= limit:
+			var gained: float = load("res://scripts/game/loot_defs.gd").salvage_xp(it)
+			ProfileManager.add_xp(gained)
+			shown.append({"name": "%s (salvaged, +%d XP)" % [String(it["name"]), int(gained)], "rarity": String(it["rarity"])})
+			continue
 		ProfileManager.add_item(it)
 		shown.append({"name": String(it["name"]), "rarity": String(it["rarity"])})
 	return shown
