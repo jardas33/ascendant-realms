@@ -110,3 +110,11 @@ Six character GLBs were re-exported from Blender with every mesh driven by the a
 `grimtusk_bowcrusha_r704c` (119 rigid parts) was not joined: its parts are not parented to bones directly and need a closer look. Accessory GLBs in `visual_convergence/` were not changed; unit.gd now merges the chosen pieces of each attachment at runtime (cached per accessory and prefix).
 
 Follow-up: `grimtusk_bowcrusha_r704c` joined too (120 free-standing pieces to 1 static mesh). Note for Codex: this model never animated. Its pieces are not skinned or parented to the 52-bone armature, so it moves as a rigid statue (verified before and after the join). Skinning it to the rig would bring it to life.
+
+## Building collision hulls (plan 22)
+
+`ModelUtils.add_cached_per_part_convex_collision` wraps each model part in one convex hull. On the Barrosan War Hall (`barrosan_war_hall_a02.glb`) a yard wall part turned into a solid block reaching 11.7 m from the centre against a 5 m footprint, and the Clan Croft's reached 8.9 m against 3.6 m. Troops trained inside those blocks could never leave, and routes planned around the footprint ran into them. `building.gd` now drops any part hull that reaches past `footprint * 1.25 + 0.5` (`_drop_oversized_part_hulls`); the footprint blocker covers the rest. For Codex: if a building model should really block a wider yard, give the wall its own thin collision parts (or split it into segments) so each hull stays small.
+
+`GameWorld` now also prewarms each building's hulls through the real model path (`Building.prewarm_model`), because the raw-scene prewarm cached different parts and the first Clan Croft of a match stalled for about 0.25 s.
+
+The old single-live-transaction guard on the Clan Croft (`place_building`) refused every Croft while another was under construction. It now only rejects a repeated confirmation of the same spot in the same frame.

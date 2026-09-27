@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29, 14:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 21:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -8,9 +8,8 @@ Last updated: 2026-09-29, 14:00 UTC. Claude updates this file after every pass.
 - **Branch:** `claude/perf-placeholders-r1`, in the clone at `D:\ClaudeWork\ar-lane`.
   - It is based on Codex's `codex/current-godot-baseline-next` (ebef47ae).
   - It merges Codex's ornate HUD branch (b6bcbe25).
-  - About 140 commits.
-- **Status:** not pushed and not merged. Emanuel pushes it with:
-  `cd D:\ClaudeWork\ar-lane; git push https://github.com/jardas33/ascendant-realms.git claude/perf-placeholders-r1`
+  - About 155 Claude commits; every current Codex branch tip is included (see `docs/claude/CONVERGENCE_AUDIT.md`).
+- **Status:** pushed to GitHub as a backup branch (2026-09-27); not merged into main. Claude pushes it after each batch of commits.
 - **Codex work included:** the branch merges Codex's newest committed work: the UI convergence branch (ad35fe9f: War Chest armory, HUD icon atlases, skill constellation, top metrics, production/research legibility, hero ability art, living Groveheart HQ) and the Clan Levy character branch (f5283cd9). All tests pass on the combined build. Later merged Codex's Vorthak HUD portraits and building-gallery work (4d34f2b2); tests pass and the portraits show in play.
 - **Handoff notes:** the commit-by-commit notes for Codex are in `docs/claude/CLAUDE_LANE_HANDOFF.md`.
 - **Constraints kept throughout:**
@@ -275,6 +274,22 @@ Last updated: 2026-09-29, 14:00 UTC. Claude updates this file after every pass.
   - **Loading tips** for bounties, Lume Surges, elites, gear sets, festivals, deeds, named veterans and item locking.
   - **Soak:** 5 of 6 matches ended. One Lioraen-versus-Barrosan match ran the full 25 minutes with 22 stuck units, so stuck units have returned in that matchup (plan 21).
   - Regression passed: the compile check, all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 21 (done):**
+  - **Endless Road stage select:** the Endless Road window has "< Stage" and "Stage >" buttons to replay any stage already reached.
+  - **War Chest "Equip Best":** puts on the strongest item for every slot in one click.
+  - **Deeds:** each deed's next goal shows in a tooltip on the hero sheet.
+  - **Veteran rank stars** float over ranked units.
+  - **New sounds** for the Lume Surge, elite kills and named veterans.
+  - **Balance:** Barrosan AI presses earlier; Moura Court healers are stronger.
+- **Plan 22 (done):**
+  - **Champion stages:** every fifth Endless Road stage (except festivals) brings an enemy champion.
+  - **Elite kills** raise a gold pillar of light where the elite fell.
+  - **Found the cause of the stalled Lioraen-versus-Barrosan matches:** the Barrosan War Hall model has a yard wall, and its collision was one solid block reaching 11.7 m from the hall's centre against a 5 m footprint (the Clan Croft's reached 8.9 m against 3.6 m). Troops trained inside the block could never leave, which is also why Barrosan lost most AI-versus-AI games. Collision now stops near each building's footprint. All three Lioraen-versus-Barrosan test matches now finish (before: stalls with 20 to 30 stuck units).
+  - **Barrosan players can build several houses at once.** An old guard allowed only one Clan Croft under construction at a time and silently refused the rest.
+  - **AI build stalls:** the first house of a match froze the game for about 0.25 s because its collision was not prepared at load. It now is, and the AI's worst decision time fell from about 300 ms to about 40 ms.
+  - **Movement:** units crowding the same route corner now count it as reached and move on, and AI bases keep a walking gap between buildings.
+  - **Convergence audit** for the director: `docs/claude/CONVERGENCE_AUDIT.md` lists the exact commits and confirms every current Codex tip, including 05d9f857, is already in this branch. Emanuel pushed the branch to GitHub as a backup; Claude will push it after each batch from now on.
+  - Regression passed: compile check, menu smoke tour, all 9 tests and the saga data check.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

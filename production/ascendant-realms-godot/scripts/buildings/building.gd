@@ -150,6 +150,44 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 		_set_construction_visual(0.0)
 	_update_damage_visual()
 
+## A convex hull wraps each model part whole, so a yard wall or fence became
+## a solid block the size of the whole yard (the War Hall's reached 11.7 m
+## from its centre against a 5 m footprint). Troops trained inside it could
+## never leave, and routes planned around the footprint ran into it. Keep only
+## hulls that stay near the footprint; the footprint blocker covers the rest.
+func _drop_oversized_part_hulls(m: Node3D) -> void:
+	var limit := footprint * 1.25 + 0.5
+	for body in m.find_children("*", "StaticBody3D", true, false):
+		var extent := 0.0
+		for cs in body.find_children("*", "CollisionShape3D", true, false):
+			if cs.shape == null:
+				continue
+			var dbg = cs.shape.get_debug_mesh()
+			if dbg == null:
+				continue
+			# Walk up to this building by hand: the model is built before the
+			# building is placed in the tree.
+			var local := Transform3D.IDENTITY
+			var n: Node = cs
+			while n != null and n != self:
+				if n is Node3D:
+					local = (n as Node3D).transform * local
+				n = n.get_parent()
+			var a: AABB = local * dbg.get_aabb()
+			extent = maxf(extent, maxf(maxf(absf(a.position.x), absf(a.end.x)), maxf(absf(a.position.z), absf(a.end.z))))
+		if extent > limit:
+			body.get_parent().remove_child(body)
+			body.free()
+
+## Match-load prewarm: run the exact model preparation a real building does
+## (staging strips, part isolation, scaling) so the collision hull cache holds
+## the same parts. The raw-scene prewarm missed them, and the first Clan Croft
+## of a match froze the game for about a quarter of a second.
+func prewarm_model(p_def: Dictionary) -> void:
+	def = p_def
+	footprint = float(p_def.get("footprint", 4.0))
+	_build_model()
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -185,6 +223,7 @@ func _build_model() -> void:
 		# Same hulls as before, but shapes are generated once per model and
 		# reused (and prewarmed at match load by GameWorld).
 		ModelUtils.add_cached_per_part_convex_collision(m, 4, path)
+		_drop_oversized_part_hulls(m)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(m)
 		for mi in m.find_children("*", "MeshInstance3D"):

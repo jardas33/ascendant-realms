@@ -144,6 +144,9 @@ var _navigation_last_target_ready := false
 var _navigation_retry_elapsed := 0.0
 var _navigation_repath_cooldown := 0.0
 var _navigation_waypoints: Array = []
+var _progress_clock := 0.0
+var _progress_best := INF
+var _progress_target := Vector3.INF
 var _navigation_waypoint_index := 0
 var _navigation_last_requested := Vector3(INF, INF, INF)
 var _navigation_last_command := ""
@@ -2854,6 +2857,26 @@ func _move_along_path(delta: float) -> bool:
 	# walking in place for the rest of the match. If it has not moved 0.35 m in
 	# 1.5 s while trying to, side-step for a moment (alternating sides) and
 	# ask for a fresh route.
+	# Crowds jostling at a shared route corner moved a little every second, so
+	# the short watchdog never fired, yet nobody reached the corner and whole
+	# armies circled a barracks for the rest of the match. Measure real
+	# progress toward the current waypoint over a longer window: near a corner,
+	# count it as reached; otherwise side-step and ask for a fresh route.
+	_progress_clock += delta
+	var to_wp := global_position.distance_to(_navigation_effective_target)
+	if to_wp < _progress_best - 1.0 or _progress_clock > 10.0 or _navigation_effective_target.distance_to(_progress_target) > 0.5:
+		_progress_target = _navigation_effective_target
+		_progress_best = to_wp
+		_progress_clock = 0.0
+	elif _progress_clock >= 4.0:
+		_progress_clock = 0.0
+		_progress_best = INF
+		if _navigation_waypoints.size() > 1 and _navigation_waypoint_index < _navigation_waypoints.size() - 1 and to_wp < 5.0:
+			_advance_navigation_waypoint()
+			return false
+		_sidestep_time = 0.9
+		_sidestep_sign = -_sidestep_sign
+		_navigation_last_requested = Vector3(INF, INF, INF)
 	_stall_clock += delta
 	if _stall_clock >= 1.5:
 		if _stall_anchor.x != INF and global_position.distance_to(_stall_anchor) < 0.35:

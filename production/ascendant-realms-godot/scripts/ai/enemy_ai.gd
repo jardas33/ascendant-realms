@@ -980,7 +980,7 @@ func _try_build(kind: String) -> void:
 	# several spots before pausing.
 	var pos := Vector3.ZERO
 	var placed_ok := false
-	for _try in 6:
+	for _try in 4:
 		pos = _find_build_spot(float(bdef.get("footprint", 4.0)))
 		if world.can_place_building(bid, commander.team, pos, true, worker) and _reachable(worker.global_position, pos, float(bdef.get("footprint", 4.0))):
 			placed_ok = true
@@ -1000,6 +1000,10 @@ func _try_build(kind: String) -> void:
 					u.command_build(b)
 					break
 		_build_cooldown = 3.0
+	else:
+		# A refused placement (a race to the same spot, or a guard in the
+		# world) was retried every think with no pause.
+		_build_cooldown = 2.0
 
 func _unbuilt_count() -> int:
 	var n := 0
@@ -1044,7 +1048,15 @@ func _reachable(from: Vector3, to: Vector3, footprint: float) -> bool:
 		length += path[i - 1].distance_to(path[i])
 	return length <= from.distance_to(to) * 1.8 + 6.0
 
+var _spot_resources: Array = []
+var _spot_blockers: Array = []
+const SPOT_WALK_GAP := 4.5
+
 func _find_build_spot(footprint: float = 4.0) -> Vector3:
+	# One resource list per search (it was fetched for every candidate spot,
+	# which made AI build decisions spike to hundreds of milliseconds).
+	_spot_resources = get_tree().get_nodes_in_group("resources")
+	_spot_blockers = world._navigation_blocker_snapshots() if world.has_method("_navigation_blocker_snapshots") else []
 	# spiral out from base, avoid overlapping existing buildings
 	# Build on the side of the base that faces the battlefield. The rear of
 	# each start holds the settlement dressing (hamlet, holdfast, grove), and
@@ -1052,9 +1064,9 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 	var toward := atan2(-_base_pos.z, -_base_pos.x)
 	# Later attempts reach further out, so a crowded base grows outward
 	# instead of cramming buildings together.
-	for attempt in 36:
-		var ang := toward + _rng.randf_range(-1.0, 1.0) * (0.9 + attempt * 0.02)
-		var dist := 12.0 + attempt * 0.7 + _rng.randf() * 14.0
+	for attempt in 24:
+		var ang := toward + _rng.randf_range(-1.0, 1.0) * (0.9 + attempt * 0.03)
+		var dist := 12.0 + attempt * 1.05 + _rng.randf() * 14.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
 		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
@@ -1065,11 +1077,21 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 ## Units wedged between tightly packed buildings in their own base. Keep a
 ## walking lane between both footprints, and stay off resource nodes.
 func _spot_clear(p: Vector3, footprint: float = 4.0) -> bool:
-	for b in commander.buildings:
-		if is_instance_valid(b) and not b.is_dead:
-			if p.distance_to(b.global_position) < float(b.def.get("footprint", 4.0)) + footprint + 3.5:
-				return false
-	for r in get_tree().get_nodes_in_group("resources"):
+	# Units route around buildings as rectangles (visual size included), so a
+	# round spacing check still let corners overlap diagonally and sealed the
+	# army inside its own base for the rest of the match. Keep a real walking
+	# gap between rectangles against every building and settlement blocker.
+	var half := footprint * 1.15
+	for blocker in _spot_blockers:
+		var node = blocker.get("node")
+		if not is_instance_valid(node) or node.is_in_group("resources"):
+			continue
+		var c: Vector3 = blocker.get("center", node.global_position)
+		var he: Vector2 = blocker.get("half_extents", Vector2(4.0, 4.0))
+		var gap := maxf(absf(p.x - c.x) - half - he.x, absf(p.z - c.z) - half - he.y)
+		if gap < SPOT_WALK_GAP:
+			return false
+	for r in _spot_resources:
 		if not is_instance_valid(r):
 			continue
 		if p.distance_to(r.global_position) < footprint + 4.0:

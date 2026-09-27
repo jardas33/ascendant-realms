@@ -221,6 +221,8 @@ var resource_transactions: Array = []
 var resource_rejections: Array = []
 var resource_extractions: Array = []
 var _active_build_transaction := ""
+var _last_croft_frame := -1
+var _last_croft_pos := Vector3.INF
 var _build_transaction_seq := 0
 
 # combat spatial helpers (rebuilt cheaply)
@@ -1952,6 +1954,10 @@ func _setup_commanders() -> void:
 	for bdef in BuildingDefs.get_all().values():
 		if races_in_match.has(String(bdef.get("race", ""))):
 			ModelUtils.prewarm_building_collision(String(bdef.get("model", "")))
+			var warm = Building.new()
+			add_child(warm)
+			warm.prewarm_model(bdef)
+			warm.free()
 	# build starting bases
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
@@ -2082,7 +2088,11 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	var is_v0431_target := building_id == "barrosan_clan_croft" and team == 0
 	# One live transaction per confirmed placement. Preview and invalid clicks
 	# never reach this function; the guard also makes repeated input idempotent.
-	if is_v0431_target and _active_build_transaction != "":
+	# This guard used to refuse every Croft while another was still under
+	# construction, so a Barrosan player could only raise one house at a time
+	# and extra placements vanished silently. Keep it to its real job: a
+	# repeated confirmation of the same placement in the same frame.
+	if is_v0431_target and _active_build_transaction != "" and Engine.get_physics_frames() == _last_croft_frame and pos.distance_to(_last_croft_pos) < 0.5:
 		return null
 	if not cmd.can_afford(bdef.get("cost", {})):
 		return null
@@ -2097,6 +2107,8 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	_build_transaction_seq += 1
 	var tx_id := "v0431-clan-croft-%03d" % _build_transaction_seq
 	_active_build_transaction = tx_id
+	_last_croft_frame = Engine.get_physics_frames()
+	_last_croft_pos = pos
 	var after: Dictionary = cmd.resources.duplicate()
 	var audit := {"id": tx_id, "building_id": building_id, "team": team,
 		"position": {"x": pos.x, "y": pos.y, "z": pos.z},
@@ -3172,6 +3184,8 @@ func _on_unit_died(unit) -> void:
 		elites_slain += 3 if unit.has_meta("champion") else 1
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
 		Sfx.play("levelup", -8.0)
+		if is_instance_valid(_fx_container):
+			CombatVfx.lume_pillar(_fx_container, unit.global_position, Color(1.0, 0.8, 0.3))
 	# hero down handling
 	for cmd in commanders:
 		if cmd.hero_ref == unit:
