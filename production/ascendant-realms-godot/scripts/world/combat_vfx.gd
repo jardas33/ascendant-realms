@@ -353,3 +353,54 @@ static func battle_scar(parent: Node3D, pos: Vector3) -> void:
 	t.tween_callback(func():
 		_scars.erase(scar)
 		scar.queue_free())
+
+## A building coming down: a towering dust cloud, thrown debris, and a
+## rubble heap with scorched ground that stays for the rest of the match.
+const _RUBBLE := "res://assets/environment/visual_convergence/small_stone_cairn.glb"
+const _LOGS := "res://assets/environment/visual_convergence/fallen_timber_cluster.glb"
+
+static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
+	_ensure()
+	for k in 3:
+		var off := Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)) * footprint * 0.4
+		var dust := _emitter(parent, Vector3(pos.x, 0.4, pos.z) + off, _dust_process, _dust_mesh, _dust_mat, 30, 2.6)
+		dust.scale = Vector3.ONE * clampf(footprint * 0.7, 1.8, 4.0)
+		dust.visibility_aabb = AABB(Vector3(-15, -1, -15), Vector3(30, 14, 30))
+	_emitter(parent, Vector3(pos.x, 0.8, pos.z), _clod_process, _clod_mesh, null, 30, 1.2).scale = Vector3.ONE * 2.6
+	# Scorched footprint that does not fade.
+	if _scar_shader == null:
+		_scar_shader = load("res://assets/shaders/battle_scar.gdshader")
+	var scar := MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.size = Vector2.ONE * footprint * 3.0
+	scar.mesh = quad
+	var m := ShaderMaterial.new()
+	m.shader = _scar_shader
+	m.set_shader_parameter("seed", randf() * 100.0)
+	scar.material_override = m
+	scar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(scar)
+	scar.global_position = Vector3(pos.x, 0.045, pos.z)
+	# Rubble: tumbled stones and broken timbers, rising as the dust clears.
+	var rubble := Node3D.new()
+	parent.add_child(rubble)
+	rubble.global_position = Vector3(pos.x, 0.0, pos.z)
+	var pieces := 5 + int(footprint * 1.5)
+	for i in pieces:
+		var path := _LOGS if i % 3 == 2 else _RUBBLE
+		if not ResourceLoader.exists(path):
+			continue
+		var piece: Node3D = load(path).instantiate()
+		rubble.add_child(piece)
+		var a := randf() * TAU
+		piece.position = Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.75)
+		ModelUtils.scale_to_height(piece, randf_range(1.0, 1.9) if path == _RUBBLE else 1.3)
+		ModelUtils.ground_model(piece)
+		piece.rotation.y = randf() * TAU
+		for body in piece.find_children("*", "CollisionObject3D", true, false):
+			body.queue_free()
+		for g in piece.find_children("*", "GeometryInstance3D", true, false):
+			g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	rubble.scale = Vector3(1, 0.01, 1)
+	rubble.create_tween().tween_property(rubble, "scale", Vector3.ONE, 1.4).set_delay(0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

@@ -2856,6 +2856,13 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 		col = Color(1.0, 0.72, 0.42)
 	CombatVfx.hit(_fx_container, pos, col, kind in ["cinder", "rift_shell", "thornpod"])
 
+func spawn_collapse_fx(pos: Vector3, footprint: float) -> void:
+	if not is_instance_valid(_fx_container):
+		return
+	CombatVfx.collapse(_fx_container, pos, footprint)
+	clear_ground_cover(pos, footprint * 1.5)
+	emit_signal("camera_shake", 0.7, pos)
+
 func spawn_death_fx(pos: Vector3) -> void:
 	if is_instance_valid(_fx_container):
 		CombatVfx.death(_fx_container, pos)

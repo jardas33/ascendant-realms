@@ -1306,11 +1306,16 @@ func _destroy(from = null) -> void:
 	emit_signal("died", self)
 	if world:
 		world.on_building_destroyed(self)
-	# collapse animation
+	# Collapse: the structure shudders, lists to one side and sinks into a
+	# cloud of dust, leaving a rubble heap and scorched ground behind.
+	if world and world.has_method("spawn_collapse_fx"):
+		world.spawn_collapse_fx(global_position, footprint)
 	var t := create_tween()
 	t.set_parallel(true)
 	if model_root:
-		t.tween_property(model_root, "position:y", model_root.position.y - footprint, 1.2)
-		t.tween_property(model_root, "scale", model_root.scale * 0.7, 1.2)
+		var lean := Vector3(randf_range(-0.22, 0.22), 0.0, randf_range(-0.22, 0.22))
+		t.tween_property(model_root, "rotation", model_root.rotation + lean, 1.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		t.tween_property(model_root, "position:y", model_root.position.y - _presentation_height() * 1.05, 1.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).set_delay(0.15)
+		t.tween_property(model_root, "scale", model_root.scale * Vector3(1.05, 0.75, 1.05), 1.6).set_delay(0.15)
 	await t.finished
 	queue_free()
