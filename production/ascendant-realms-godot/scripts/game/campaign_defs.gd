@@ -286,6 +286,35 @@ const ORIGINS := {
 static func survive_seconds(id: String) -> int:
 	return int(find(id).get("survive", 0))
 
+## What an enemy commander says when their stronghold falls or their hero
+## dies, by faction.
+const REACTIONS := {
+	"vorthak": {"hq": "The Cabal: \"Furna drowned once. We will not drown twice!\"", "hero": "A thrall wails: \"The binder is gone. Who will hold the glass together?\""},
+	"sunspear": {"hq": "A legate: \"Fall back! Fall back to the Wall!\"", "hero": "A centurion: \"The legate is down! Hold formation!\""},
+	"lioraen": {"hq": "The grove sighs, and a hundred leaves fall at once.", "hero": "The Lioraen: \"Remember her. Please, remember her.\""},
+	"hollow": {"hq": "The candles gutter. The procession stops, and waits.", "hero": "The Compaña: \"The Candle-King falls... another will carry the light.\""},
+	"frostborn": {"hq": "O Velho laughs: \"Well danced, cousin! Well danced!\"", "hero": "The bells go silent across the snow."},
+	"wyldkin": {"hq": "The pack scatters into the trees, howling.", "hero": "Every wolf on the hillside howls at once."},
+	"karak": {"hq": "Carvalho: \"Write it in the ledger. We were beaten fairly.\"", "hero": "Stone grinds on stone, like a mountain grieving."},
+	"grimtusk": {"hq": "Brasa: \"You broke our pit! Fine! We never liked it!\"", "hero": "The Ironmaw roar their fallen warboss's name."},
+	"sylvan": {"hq": "A silver Moura: \"This is not how eternity was supposed to end.\"", "hero": "The Moura Court's silver dims to grey."},
+	"barrosan": {"hq": "Covelo's elder: \"The bull knows when it is beaten. So do we.\"", "hero": "The rival clans lower their banners."},
+}
+
+## The Jardas's first words, by faction, on the night of the Ascension.
+const ORIGIN_OPENINGS := {
+	"lioraen": "The spring remembers me. It always has.",
+	"vorthak": "The ash in my veins is burning. For once, it is burning for Salto.",
+}
+
+static func opening_for(id: String, race: String) -> String:
+	if id == "1-1" and ORIGIN_OPENINGS.has(race):
+		return String(ORIGIN_OPENINGS[race])
+	return String(find(id).get("opening", ""))
+
+static func is_side(id: String) -> bool:
+	return bool(find(id).get("side", false))
+
 static func briefing_for(id: String, race: String) -> String:
 	var text := String(find(id).get("briefing", ""))
 	var extra := String(ORIGINS.get(race, {}).get(id, ""))

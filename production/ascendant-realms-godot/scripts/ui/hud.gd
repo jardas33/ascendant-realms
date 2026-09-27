@@ -3730,6 +3730,10 @@ func _on_game_over(victory: bool) -> void:
 		chronicle.custom_minimum_size = Vector2(620, 0)
 		chronicle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(chronicle)
+		if victory and bool(CampaignDefs.find(chapter_id).get("jar", false)):
+			var jar_line := _mk_title_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
+			jar_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			box.add_child(jar_line)
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
 	rule.custom_minimum_size = Vector2(0, 1)

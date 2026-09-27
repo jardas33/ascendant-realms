@@ -2439,6 +2439,18 @@ func _bake_overview_texture() -> void:
 
 ## Campaign battles speak: an opening line a few seconds in, then the enemy
 ## commander at three and eight minutes of battle time (CampaignDefs).
+## In campaign battles an enemy faction speaks when its stronghold falls or
+## its hero dies (CampaignDefs.REACTIONS).
+func _saga_react(team: int, kind: String) -> void:
+	if team == player_team or String(Match.get_config().get("campaign_chapter", "")) == "" or not game_running:
+		return
+	var cmd = commander_for_team(team)
+	if cmd == null:
+		return
+	var line := String(CampaignDefs.REACTIONS.get(String(cmd.race), {}).get(kind, ""))
+	if line != "":
+		emit_signal("alert", line, Vector3.ZERO)
+
 func _start_saga_voices() -> void:
 	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
 	if chapter_id == "":
@@ -2446,7 +2458,7 @@ func _start_saga_voices() -> void:
 	var chapter := CampaignDefs.find(chapter_id)
 	if chapter.is_empty():
 		return
-	var lines: Array = [[4.0, String(chapter.get("opening", ""))]]
+	var lines: Array = [[4.0, CampaignDefs.opening_for(chapter_id, String(player_commander.race) if is_instance_valid(player_commander) else "")]]
 	var taunts: Array = chapter.get("taunts", [])
 	if taunts.size() > 0:
 		lines.append([180.0, String(taunts[0])])
@@ -2629,6 +2641,9 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	AudioManager.play_music_path(Sfx.music_key("victory" if victory else "defeat"), -6.0, false)
 	# rewards
 	var xp := 200.0 + float(kills_by_player) * 12.0 + match_time * 0.5
+	# Side roads are optional; they pay half again in experience.
+	if CampaignDefs.is_side(String(Match.get_config().get("campaign_chapter", ""))):
+		xp *= 1.5
 	if victory:
 		xp *= 1.6
 	if not _profile_recorded and ProfileManager.has_hero():
@@ -2751,6 +2766,8 @@ func _on_unit_died(unit) -> void:
 		commanders[unit.team].units.erase(unit)
 		commanders[unit.team].recompute_pop()
 	_award_hero_field_xp(unit, source_team)
+	if unit.is_hero:
+		_saga_react(int(unit.team), "hero")
 	# hero down handling
 	for cmd in commanders:
 		if cmd.hero_ref == unit:
@@ -2788,6 +2805,8 @@ func get_v0431_construction_audit() -> Dictionary:
 		"completed_count": construction_events.size()}
 
 func on_building_destroyed(building) -> void:
+	if bool(building.def.get("is_hq", false)) or String(building.def.get("kind", "")) == "main":
+		_saga_react(int(building.team), "hq")
 	_unregister_world_blocker(building)
 	if building.get_meta("v0436_destruction_recorded", false):
 		return

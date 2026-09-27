@@ -119,6 +119,13 @@ func _refresh() -> void:
 	sub.add_theme_color_override("font_color", Color(0.85, 0.85, 0.78))
 	sub.add_theme_font_size_override("font_size", 20)
 	identity.add_child(sub)
+	var saga_state: Dictionary = ProfileManager.saga()
+	var saga_line := Label.new()
+	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7" % [saga_state["cleared"].size(), saga_state["jars"].size()]
+	saga_line.add_theme_font_override("font", _body_font())
+	saga_line.add_theme_color_override("font_color", Color(0.86, 0.72, 0.95))
+	saga_line.add_theme_font_size_override("font_size", 16)
+	identity.add_child(saga_line)
 	identity_row.add_child(identity)
 
 	var lvl := int(h.get("level", 1))

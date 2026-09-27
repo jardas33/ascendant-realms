@@ -209,6 +209,41 @@ func _build() -> void:
 	add_child(back)
 
 	_show_act(_act)
+	# A new Act is announced once, the first time the map shows it; after a
+	# victory the next chronicle opens by itself.
+	var saga_state := ProfileManager.saga()
+	if not saga_state.has("seen_acts"):
+		saga_state["seen_acts"] = []
+	var fresh_act: bool = not (_act in saga_state["seen_acts"])
+	if fresh_act:
+		saga_state["seen_acts"].append(_act)
+		_show_act_card(_act)
+	elif bool(saga_state.get("auto_brief", false)) and ProfileManager.chapter_available(_next_id):
+		_open_briefing(_next_id)
+	saga_state["auto_brief"] = false
+	ProfileManager.save_game()
+
+func _show_act_card(a: int) -> void:
+	var layer := ColorRect.new()
+	layer.color = Color(0, 0, 0, 0.82)
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(layer)
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	box.add_theme_constant_override("separation", 14)
+	layer.add_child(box)
+	var parts: PackedStringArray = String(CampaignDefs.ACTS[a]["title"]).split(": ")
+	for spec in [[parts[0].to_upper(), 22, Color(0.85, 0.74, 0.5), true], [parts[1] if parts.size() > 1 else parts[0], 54, Color(0.99, 0.86, 0.48), true], [String(CampaignDefs.ACTS[a]["subtitle"]), 20, Color(0.92, 0.88, 0.78), false], ["Click to continue", 14, Color(0.7, 0.66, 0.58), false]]:
+		var l := _label(String(spec[0]), int(spec[1]), spec[2], bool(spec[3]))
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(l)
+	layer.modulate.a = 0.0
+	layer.create_tween().tween_property(layer, "modulate:a", 1.0, 0.8)
+	layer.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed:
+			layer.queue_free())
 
 func _act_reached(a: int) -> bool:
 	for c in CampaignDefs.chapters_in_act(a):

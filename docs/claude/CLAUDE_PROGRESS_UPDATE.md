@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 11:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 11:40 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -46,6 +46,17 @@ Last updated: 2026-09-27, 11:00 UTC. Claude updates this file after every pass.
   - Every briefing shows a suggested hero level.
   - Each Act tints the campaign map (ember, drowned teal, grave blue, bronze, violet).
   - Codex had no new commits, and a full regression passed: all tests, the saga data check, the mode sweep and the tour.
+- **Plan 4 (done):**
+  - In campaign battles every enemy faction reacts when its stronghold falls or its hero dies.
+  - Jar chapters end with a violet "A jar of Wine of the Dead · N of 7" line.
+  - Each new Act is announced with a full-screen card the first time it opens.
+  - After a win, the campaign map opens the next chronicle automatically.
+  - Side roads give 1.5 times the hero experience.
+  - Lioraen and Vorthak heroes have their own first words on the night of the Ascension.
+  - The hero sheet shows saga progress (chapters and jars).
+  - Skirmish map names were kept: they already fit the world.
+  - Codex had nothing new, and the regression passed.
+  - Review probes now restore the whole profile afterwards. Earlier test victories had added some experience to the local test hero.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

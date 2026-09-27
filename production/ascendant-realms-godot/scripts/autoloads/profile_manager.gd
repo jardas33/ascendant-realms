@@ -133,6 +133,8 @@ func complete_chapter(id: String) -> void:
 	for next in chapter.get("unlocks", []):
 		if not (String(next) in s["unlocked"]):
 			s["unlocked"].append(String(next))
+	# The campaign map opens the next chronicle straight away after a win.
+	s["auto_brief"] = true
 	var c := campaign()
 	c["wins"] = int(c.get("wins", 0)) + 1
 	emit_signal("profile_changed")
