@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 05:20 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 05:50 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -119,6 +119,7 @@ Last updated: 2026-09-27, 05:20 UTC. Claude updates this file after every pass.
 - **Rally points:** a selected building shows its rally point as a small banner in the owner's colour, with a dashed trail flowing to it from the building.
 - **Alert pings:** alerts with a location (base under attack, building lost, point captured) flash a ring on the minimap, red for threats and gold otherwise. Backspace jumps the camera to the latest alert, and the key is listed in the pause menu and the Settings field manual.
 - **Settings:** a new Graphics Quality option. Low turns off shadows, ambient occlusion, grass and weather and cuts draw calls from about 2,800 to about 1,000. Medium halves the grass and shortens shadows. High is the full look. A new Reduce Screen Shake toggle controls the camera shake; that setting existed but had no switch.
+- **Tutorial:** the step panel covered the Population, Opponents and idle counters that the steps refer to, and long steps spilled their goal line out below the panel. The panel now sits under the top bar, grows to fit, and shows the goal as a separate gold line. The attack step wrongly said A for attack-move; it now says J.
 - **Loading screen:** a gilded progress bar and a random tip on every load, covering controls, capture points, veterans, repair and scouting.
 - **Main menu:** the painted background drifts slowly, gold motes rise across the realm, a vignette frames it, the title and buttons fade in, and buttons lift on hover.
 - **Minimap:** it shows a real top-down picture of the battlefield, taken at match start with units and fog left out. Unexplored areas are shaded lighter so the terrain still reads.
@@ -134,11 +135,13 @@ Last updated: 2026-09-27, 05:20 UTC. Claude updates this file after every pass.
 3. DONE. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
 4. CHECKED. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
 5. DONE. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
-6. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
-7. Tutorial and first-match onboarding review.
+6. REVIEWED. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
+7. DONE. Tutorial and first-match onboarding review.
 8. Verify recent features in real play: Medium quality, Backspace jump, veteran flare.
 9. Polish known weak spots: collapse dust at normal zoom and pale grain on the food site.
 10. Campaign map screen polish with what is available now; the painted map still needs the token.
+
+- **Lioraen and Vorthak units (plan item 6):** reviewed up close; they read clearly at play zoom with team colours and silhouettes. A worthwhile upgrade needs the model rebuild, which still waits on the Hugging Face token run.
 
 ## Still open
 

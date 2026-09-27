@@ -62,8 +62,10 @@ func setup(p_world, p_rts) -> void:
 	_panel.anchor_bottom = 0.0
 	_panel.offset_left = -360.0
 	_panel.offset_right = 360.0
-	_panel.offset_top = 68.0
-	_panel.offset_bottom = 196.0
+	# Below the top metric row: at 68 px the panel covered Population,
+	# Opponents and the idle counts that the steps talk about.
+	_panel.offset_top = 118.0
+	_panel.offset_bottom = 290.0
 
 	var vb := VBoxContainer.new()
 	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -88,8 +90,16 @@ func setup(p_world, p_rts) -> void:
 	_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	_label.add_theme_constant_override("outline_size", 3)
 	_label.add_theme_font_size_override("font_size", 18)
-	_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vb.add_child(_label)
+
+	_success = Label.new()
+	_success.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_success.add_theme_color_override("font_color", Color(0.93, 0.78, 0.45))
+	_success.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	_success.add_theme_constant_override("outline_size", 3)
+	_success.add_theme_font_size_override("font_size", 15)
+	vb.add_child(_success)
+	_vb = vb
 
 	_skip_button = Button.new()
 	_skip_button.text = "Skip Tutorial"
@@ -106,6 +116,22 @@ func setup(p_world, p_rts) -> void:
 	_build_steps()
 	_show_step()
 
+var _success: Label
+var _vb: VBoxContainer
+
+## Grow the panel to fit the step text; the fixed height let long steps
+## spill the goal line out below the panel.
+func _fit_panel() -> void:
+	if not is_instance_valid(_vb):
+		return
+	var h := 24.0
+	for child in _vb.get_children():
+		if child is Label:
+			var l := child as Label
+			var lines := maxi(1, l.get_line_count()) if l.text != "" else 0
+			h += lines * (l.get_line_height() + 1) + 6
+	_panel.offset_bottom = _panel.offset_top + maxf(110.0, h)
+
 func _build_steps() -> void:
 	_steps = [
 		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "The camera focus moves to a new position.", "check": "camera"},
@@ -114,7 +140,7 @@ func _build_steps() -> void:
 		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "The placed structure finishes construction.", "check": "build"},
 		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "A newly queued military unit completes training.", "check": "train"},
 		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and unlock abilities on the Hero screen between fights.", "success": "Your selected hero receives a real move order and changes position.", "check": "hero"},
-		{"id": "combat", "title": "Attack the Enemy", "text": "Point at the ground and press A for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
+		{"id": "combat", "title": "Attack the Enemy", "text": "Press J, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
 		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Your units enter the site, capture progress completes, and the Lume becomes yours.", "check": "final"},
 	]
 
@@ -122,11 +148,15 @@ func _show_step() -> void:
 	if _completed:
 		_title.text = "Tutorial Complete"
 		_label.text = "You have learned the core battlefield loop. Your Lume claim was recorded through normal gameplay."
+		if _success: _success.text = ""
+		_fit_panel.call_deferred()
 		_skip_button.text = "Return to Main Menu"
 		return
 	var s = _steps[_step]
 	_title.text = "Step %d/%d: %s" % [_step + 1, _steps.size(), s["title"]]
-	_label.text = "%s\n\nSuccess when: %s" % [s["text"], s["success"]]
+	_label.text = String(s["text"])
+	_success.text = "Goal: " + String(s["success"])
+	_fit_panel.call_deferred()
 	if s["check"] == "hero":
 		var hero = world.player_commander.hero_ref
 		_hero_origin = hero.global_position if is_instance_valid(hero) else Vector3.ZERO
