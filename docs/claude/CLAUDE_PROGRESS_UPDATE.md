@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29, 11:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-29, 14:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -266,6 +266,14 @@ Last updated: 2026-09-29, 11:00 UTC. Claude updates this file after every pass.
   - **AI and the Lume Surge:** AI armies now race for the surge with nearby idle soldiers.
   - **Vorthak economy trim:** the Thrall Pit gives 8 population like every other house (was 9).
   - **Mastery respec:** a free "Reset Mastery" button on the hero sheet (skill respec already existed).
+  - Regression passed: the compile check, all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 20 (done):**
+  - **Menu smoke test:** every menu (main menu, campaign map, hero sheet, War Chest, settings, skirmish setup, skill tree, Hero Forge) opens and runs for real with no errors. Screenshots checked.
+  - **Main menu:** a direct "Endless Road · Stage N" button once the first chapter is won. It opens the stage window on the campaign map. Button height and spacing were tightened so seven buttons fit above the subtitle.
+  - **Levelling pace:** a typical won battle gives about 1,800 experience: about 2 battles per level at level 10, 3 to 4 at level 50 and about 9 at level 100, before Endless Road multipliers. Slow and steady, never capped. No change needed.
+  - **New units duel-checked at tier 3:** Aurean Dominion and Vorthak narrowly win, Granitborn and Wolfveil narrowly lose. The Moura Court's Silver Colossus got more health and damage; the Moura Court still trails at tier 3, partly because its test army carries weak healers.
+  - **Loading tips** for bounties, Lume Surges, elites, gear sets, festivals, deeds, named veterans and item locking.
+  - **Soak:** 5 of 6 matches ended. One Lioraen-versus-Barrosan match ran the full 25 minutes with 22 stuck units, so stuck units have returned in that matchup (plan 21).
   - Regression passed: the compile check, all 9 tests and the saga data check. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
