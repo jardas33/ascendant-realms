@@ -2453,6 +2453,54 @@ func _saga_react(team: int, kind: String) -> void:
 
 ## Chapter events (CampaignDefs.EVENTS): allies join at the start, enemy
 ## reinforcements arrive later and march on the player's base.
+## Warlords Battlecry's retinue: veterans who survived the last campaign
+## battle march in beside the Jardas.
+func _spawn_retinue() -> void:
+	if String(Match.get_config().get("campaign_chapter", "")) == "" or not is_instance_valid(player_commander) or not ProfileManager.has_hero():
+		return
+	var roster: Array = ProfileManager.saga().get("retinue", [])
+	if roster.is_empty():
+		return
+	var hq_pos: Vector3 = map.get("start_positions", [Vector3.ZERO])[player_team]
+	var toward := (Vector3.ZERO - hq_pos).normalized()
+	var side_axis := Vector3(toward.z, 0, -toward.x)
+	var k := 0
+	for entry in roster:
+		if not UnitDefs.get_all().has(String(entry.get("id", ""))):
+			continue
+		var u = spawn_unit(String(entry["id"]), player_team, hq_pos + toward * 10.0 - side_axis * (float(k) - 2.5) * 1.8)
+		if u == null:
+			continue
+		u.set_meta("retinue", true)
+		if u.has_method("set_veterancy"):
+			u.set_veterancy(int(entry.get("vet", 1)))
+		k += 1
+	player_commander.recompute_pop()
+	if k > 0:
+		get_tree().create_timer(12.0, false).timeout.connect(func():
+			if game_running:
+				emit_signal("alert", "Your retinue marches with you: %d veteran%s of earlier battles." % [k, "" if k == 1 else "s"], hq_pos))
+
+## After a campaign battle the best living veterans join the retinue. After a
+## defeat only the retinue members who survived stay with the Jardas.
+func _record_retinue(victory: bool) -> void:
+	if String(Match.get_config().get("campaign_chapter", "")) == "" or not ProfileManager.has_hero():
+		return
+	var picks: Array = []
+	for u in get_tree().get_nodes_in_group("units"):
+		if not is_instance_valid(u) or u.is_dead or int(u.team) != player_team or u.is_hero or u.is_worker or u.has_meta("saga_ally"):
+			continue
+		var vet := int(u.get("_veterancy"))
+		if victory and vet < 1:
+			continue
+		if not victory and not u.has_meta("retinue"):
+			continue
+		picks.append({"id": String(u.unit_id), "vet": maxi(vet, 1)})
+	picks.sort_custom(func(a, b): return int(a["vet"]) > int(b["vet"]))
+	var s := ProfileManager.saga()
+	s["retinue"] = picks.slice(0, ProfileManager.retinue_cap())
+	ProfileManager.save_game()
+
 func _start_saga_events() -> void:
 	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
 	var ev: Dictionary = CampaignDefs.EVENTS.get(chapter_id, {})
@@ -2529,6 +2577,7 @@ func _start_match() -> void:
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()
 	_start_saga_events()
+	_spawn_retinue()
 
 func get_runtime_identity_snapshot() -> Dictionary:
 	var cfg := Match.get_identity_snapshot()
@@ -2696,6 +2745,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.6
 	if not _profile_recorded and ProfileManager.has_hero():
 		_profile_recorded = true
+		_record_retinue(victory)
 		profile_record_count += 1
 		ProfileManager.record_battle(victory, kills_by_player, xp)
 	result_snapshot = {"victory": victory, "reason": reason, "mode": Match.get_config().get("mode", "skirmish"),

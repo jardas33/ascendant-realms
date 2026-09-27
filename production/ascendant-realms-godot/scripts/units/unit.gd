@@ -2939,6 +2939,15 @@ func gain_veterancy() -> void:
 		if world and team == world.player_team and not is_hero and world.has_signal("alert"):
 			world.emit_signal("alert", "%s promoted to veteran rank %d" % [String(def.get("name", "Unit")), _veterancy], global_position)
 
+## Retinue veterans arrive already promoted (same bonuses as earning it).
+func set_veterancy(rank: int) -> void:
+	var r := clampi(rank, 0, 3)
+	while _veterancy < r:
+		_veterancy += 1
+		_kills = _veterancy * 3
+		max_hp += 15.0
+		hp += 15.0
+
 func set_aura_bonus(d: float, a: float) -> void:
 	_aura_bonus_dmg = d
 	_aura_bonus_armor = a

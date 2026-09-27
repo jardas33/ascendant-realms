@@ -121,7 +121,7 @@ func _refresh() -> void:
 	identity.add_child(sub)
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
-	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7" % [saga_state["cleared"].size(), saga_state["jars"].size()]
+	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
 	saga_line.add_theme_font_override("font", _body_font())
 	saga_line.add_theme_color_override("font_color", Color(0.86, 0.72, 0.95))
 	saga_line.add_theme_font_size_override("font_size", 16)

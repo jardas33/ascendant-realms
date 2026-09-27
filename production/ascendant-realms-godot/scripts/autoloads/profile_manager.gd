@@ -115,6 +115,10 @@ func saga() -> Dictionary:
 			s[key] = []
 	if not s.has("choice"):
 		s["choice"] = ""
+	if not s.has("heroic") or typeof(s["heroic"]) != TYPE_ARRAY:
+		s["heroic"] = []
+	if not s.has("retinue") or typeof(s["retinue"]) != TYPE_ARRAY:
+		s["retinue"] = []
 	if not ("1-1" in s["unlocked"]):
 		s["unlocked"].append("1-1")
 	return s
@@ -126,6 +130,9 @@ func complete_chapter(id: String) -> void:
 		return
 	if not (id in s["cleared"]):
 		s["cleared"].append(id)
+	# A Heroic Replay win earns the chapter its laurel.
+	if bool(Match.get_config().get("campaign_heroic", false)) and String(Match.get_config().get("campaign_chapter", "")) == id and not (id in s["heroic"]):
+		s["heroic"].append(id)
 	if bool(chapter.get("jar", false)) and not (id in s["jars"]):
 		s["jars"].append(id)
 	if chapter.has("branch"):
@@ -467,3 +474,10 @@ func wipe_hero() -> void:
 func update_setting(key: String, value) -> void:
 	data["settings"][key] = value
 	save_game()
+
+## How many veterans may march with the Jardas: 2, plus one every 5 hero
+## levels, at most 6.
+func retinue_cap() -> int:
+	if not has_hero():
+		return 0
+	return mini(6, 2 + int(hero().get("level", 1)) / 5)

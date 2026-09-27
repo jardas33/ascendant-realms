@@ -325,10 +325,11 @@ func _build_node(c: Dictionary) -> void:
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(name_lbl)
-	var status := "Sealed by your choice" if sealed_by_choice else ("Cleared" if cleared else (String(c["difficulty"]) if available else "Sealed"))
+	var laurel: bool = id in s.get("heroic", [])
+	var status := "Sealed by your choice" if sealed_by_choice else (("Heroic laurel" if laurel else "Cleared") if cleared else (String(c["difficulty"]) if available else "Sealed"))
 	if bool(c.get("jar", false)):
 		status += ("  ·  jar found" if id in s["jars"] else "  ·  a jar lies here") if available or cleared else ""
-	var status_lbl := _label(status, 13, Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
+	var status_lbl := _label(status, 13, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(status_lbl)

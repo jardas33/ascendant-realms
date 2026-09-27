@@ -3738,6 +3738,11 @@ func _on_game_over(victory: bool) -> void:
 			var jar_line := _mk_title_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
 			jar_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(jar_line)
+		var retinue_size: int = ProfileManager.saga().get("retinue", []).size()
+		if retinue_size > 0 and String(CampaignDefs.find(chapter_id).get("victory", "")) != "ENDING":
+			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle" % [retinue_size, "" if retinue_size == 1 else "s"], 16, Color(0.78, 0.86, 0.66))
+			retinue_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			box.add_child(retinue_line)
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
 	rule.custom_minimum_size = Vector2(0, 1)
