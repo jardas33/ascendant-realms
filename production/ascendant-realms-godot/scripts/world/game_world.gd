@@ -2619,6 +2619,11 @@ func _start_match() -> void:
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()
 	_start_saga_events()
+	if String(Match.get_config().get("mode", "")) == "endless":
+		var ecfg := Match.get_config()
+		get_tree().create_timer(3.0, false).timeout.connect(func():
+			if game_running:
+				emit_signal("alert", "The Endless Road, stage %d: %s" % [int(ecfg.get("endless_depth", 1)), String(ecfg.get("endless_title", ""))], Vector3.ZERO))
 	_spawn_retinue()
 
 func get_runtime_identity_snapshot() -> Dictionary:
@@ -2783,6 +2788,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.5
 	if bool(Match.get_config().get("campaign_heroic", false)):
 		xp *= 1.5
+	if String(Match.get_config().get("mode", "")) == "endless":
+		xp *= float(Match.get_config().get("endless_xp_mult", 1.0))
 	if victory:
 		xp *= 1.6
 	if not _profile_recorded and ProfileManager.has_hero():

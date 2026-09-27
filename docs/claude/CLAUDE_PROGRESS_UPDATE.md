@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 18:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -180,6 +180,30 @@ Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass.
   - **Chapter maps:** all 39 chapter-to-map pairings fit their stories (winter chapters on snow maps, the Dominion's south on desert and canyon maps, the fountain grove on the verdant map, the drowned villages on water maps). No swaps needed.
   - **Barrosan AI strategy:** still open (it loses AI-vs-AI games on strategy, not units or economy).
   - Regression passed: all 9 tests. Codex had nothing new.
+- **Direction from Emanuel (2026-09-27):** the game should take a very long time to finish while staying fun and addictive; heroes need endless levels and upgrades with no limits; online PvP and co-op should be possible later. Hugging Face character work is dropped (quality too poor); Codex owns character model quality.
+- **Plan 13 (done):**
+  - **No more caps:**
+    - Unit veterancy ranks are endless; each rank asks a few more kills (3, 9, 18, 30...).
+    - Hero mastery keeps paying with no ceiling. Before, 100 ranks were worth about 13; now they are worth about 63.
+    - The retinue grows by one veteran every 6 hero levels, with no maximum.
+    - Hero levels were already endless.
+  - **The Endless Road**, a new long-play mode on the campaign map, opened by the first chapter win:
+    - A chain of battles with no last stage. Opponents grow from one Easy enemy to three, every enemy reaches Brutal, and past stage 12 the enemy gets rising bonus income forever.
+    - Experience grows with each stage (x1.08 at stage 1, x9 at stage 100).
+    - Every fifth stage forges a relic for the hero whose stats scale with the stage without limit (rare, then epic from stage 15, legendary from 35).
+    - Every stage is generated from its number alone, so the same stage is the same battle for every player. That is ready for leaderboards and online play later.
+    - Stage names use Barroso places (Pitões das Júnias, Tourém Ford, Cabril Gorge...).
+  - **Ironmaw freeze (a real bug):** the Ironmaw Slinger's animations target a rig its model does not have (all 60 tracks unresolved), and every animation change rebuilt the mixer for about 4.3 seconds. Every Slinger shot froze the whole battle; this is why battles against Ironmaw ran slowly and the earlier Grimtusk duel "stalled". Units whose animations do not match their rig now skip animation. Only the five siege engines have no animation, which is expected.
+  - **Character joins:** the Ironmaw Slinger (Bowcrusha) joined, 120 pieces to 1. Note for Codex: it never animated, because its 52-bone rig is about 0.27 m tall against a 2.3 m body.
+  - **Barrosan AI:**
+    - Houses may now be started while the population is capped (the AI sat at 12/12 for minutes with 650 food).
+    - Build spots must be reachable by a worker.
+    - The AI keeps buildings out of the lanes between its stronghold and nearby resources; houses dropped there were walling off the food and gold gatherers in some matches.
+    - Result: all 8 soak matches ended with 0 to 5 stuck units. Barrosan still loses AI-vs-AI games, though its armies now win equal-cost fights against every faction. This stays an open strategy question and does not affect human players of Barrosan.
+  - **Balance for the other seven factions** (equal-cost duels against Barrosan, Vorthak and Lioraen):
+    - Granitborn was far too strong: its passive gives +1 armour and +8% health (was +2 and +12%), and its basic Warrior and Ironbreaker are slightly less tanky. It now sits mid-pack at tier 1. It looked dominant at tier 2 only because it has no tier-2 units, so its test armies had no weak support units.
+    - Moura Court (Precision, +7% damage) and Wolfveil (Pack Hunt, +10% damage) lost every duel; each now beats two of the three reference factions.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
@@ -314,6 +338,4 @@ Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass.
 
 ## Still open
 
-- **Characters:** the Lioraen and Vorthak workers and the military units still need the same character rebuild as the Barrosan worker. This needs Emanuel's Hugging Face token run.
-- **Campaign map:** the painted campaign map script (`D:\ClaudeWork\charpipe\make_campaign_map.py`) is ready. It is waiting on the same token run.
 - **Draw calls:** about 2,800 draw calls in the opening. Instancing the decor would be the next rendering win.

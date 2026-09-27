@@ -5,6 +5,7 @@ extends Control
 ## starts it. The jars of Wine of the Dead and the Rabagão Wall choice are
 ## shown in the header.
 const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
+const EndlessDefs := preload("res://scripts/game/endless_defs.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG   := "res://assets/textures/backgrounds/main_menu_bg.png"
@@ -226,6 +227,24 @@ func _build() -> void:
 	chronicle.pressed.connect(_open_chronicle)
 	add_child(chronicle)
 
+	# The Endless Road opens once the first chapter is won.
+	var endless := Button.new()
+	endless.text = "Endless Road"
+	endless.custom_minimum_size = Vector2(210, 50)
+	endless.focus_mode = Control.FOCUS_NONE
+	if ResourceLoader.exists(THEME_PATH):
+		endless.theme = load(THEME_PATH)
+	endless.add_theme_font_override("font", _title_font())
+	endless.add_theme_font_size_override("font_size", 20)
+	endless.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	endless.offset_left = -456.0
+	endless.offset_right = -246.0
+	endless.offset_top = -66.0
+	endless.offset_bottom = -16.0
+	endless.disabled = ProfileManager.saga()["cleared"].is_empty()
+	endless.pressed.connect(_open_endless)
+	add_child(endless)
+
 	_show_act(_act)
 	# A new Act is announced once, the first time the map shows it; after a
 	# victory the next chronicle opens by itself.
@@ -243,6 +262,83 @@ func _build() -> void:
 
 ## A book of the saga so far: each cleared chapter's briefing and the
 ## chronicle of its victory, act by act, in road order.
+## The Endless Road: the next stage's battle, with no last stage.
+func _open_endless() -> void:
+	Sfx.play("select")
+	var depth := ProfileManager.endless_best() + 1
+	var st := EndlessDefs.stage(depth, _hero_race())
+	var layer := Control.new()
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.72)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var plate: PanelContainer = PLATE_SCRIPT.new()
+	var ps := StyleBoxFlat.new()
+	ps.bg_color = Color.TRANSPARENT
+	ps.content_margin_left = 52.0
+	ps.content_margin_right = 52.0
+	ps.content_margin_top = 30.0
+	ps.content_margin_bottom = 30.0
+	plate.add_theme_stylebox_override("panel", ps)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	plate.grow_vertical = Control.GROW_DIRECTION_BOTH
+	plate.custom_minimum_size = Vector2(760, 0)
+	layer.add_child(plate)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	plate.add_child(box)
+	var head := _label("THE ENDLESS ROAD  ·  STAGE %d" % depth, 16, Color(0.75, 0.68, 0.52), true)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(head)
+	var t := _label(String(st["title"]), 34, Color(0.98, 0.84, 0.46), true)
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(t)
+	var body := _label("The saga ends, but the Lume does not. Every Ascension leaves roads that never close, and something always waits on them. Each stage is harder than the last, and pays more.", 17, Color(0.92, 0.89, 0.80))
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.custom_minimum_size = Vector2(656, 0)
+	box.add_child(body)
+	var foes: Array = []
+	for o in st["opponents"]:
+		foes.append("%s (%s)" % [GameData.get_race(String(o["race"])).get("name", o["race"]), String(o["difficulty"]).capitalize()])
+	var extra := "   ·   Enemy Lume swollen: +%d%% income" % int(float(st["might"]) * 100.0 / 3.0) if float(st["might"]) > 0.0 else ""
+	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best()], 15, Color(0.85, 0.72, 0.45))
+	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(meta)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 24)
+	box.add_child(row)
+	for spec in [["Back", func(): layer.queue_free()], ["March On", func(): _launch_endless(st)]]:
+		var b := Button.new()
+		b.text = String(spec[0])
+		b.custom_minimum_size = Vector2(220, 54)
+		b.focus_mode = Control.FOCUS_NONE
+		if ResourceLoader.exists(THEME_PATH):
+			b.theme = load(THEME_PATH)
+		b.add_theme_font_override("font", _title_font())
+		b.add_theme_font_size_override("font_size", 20)
+		b.pressed.connect(spec[1])
+		row.add_child(b)
+
+func _launch_endless(st: Dictionary) -> void:
+	Sfx.play("select")
+	var cfg: Dictionary = Match.default_config()
+	cfg["player_race"] = _hero_race()
+	cfg["opponents"] = st["opponents"].duplicate(true)
+	cfg["mode"] = "endless"
+	cfg["victory"] = "conquest"
+	cfg["map"] = String(st["map"])
+	cfg["endless_depth"] = int(st["depth"])
+	cfg["endless_title"] = String(st["title"])
+	cfg["endless_might"] = float(st["might"])
+	cfg["endless_xp_mult"] = float(st["xp_mult"])
+	Match.set_config(cfg)
+	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
+
 func _open_chronicle() -> void:
 	Sfx.play("select")
 	var s := ProfileManager.saga()

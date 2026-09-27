@@ -44,7 +44,7 @@ static func compute(hero: Dictionary) -> Dictionary:
 		var item = hero["equipment"][slot]
 		_apply_item(out, item)
 
-	# --- Mastery (endless, diminishing) ---
+	# --- Mastery (endless, no ceiling) ---
 	var ms: Dictionary = hero.get("mastery_spent", {})
 	for con in ms:
 		var ranks := int(ms[con])
@@ -98,10 +98,9 @@ static func _apply_item(out: Dictionary, item: Dictionary) -> void:
 		out["flags"][f] = item["flags"][f]
 
 static func _apply_mastery(out: Dictionary, con: String, ranks: int) -> void:
-	# Diminishing returns: each rank slightly weaker (soft cap feel).
-	var eff := 0.0
-	for i in ranks:
-		eff += 1.0 / (1.0 + float(i) * 0.15)
+	# Mastery never stops paying: gently sub-linear, but unbounded (the old
+	# curve flattened into a soft cap, 100 ranks were worth about 13).
+	var eff := pow(float(ranks), 0.9)
 	match con:
 		"warfare": out["bonus_dmg"] += eff * 2.0
 		"fortitude": out["bonus_hp"] += eff * 20.0
@@ -118,8 +117,8 @@ static func _find(nid: String) -> Dictionary:
 
 static func mastery_constellations() -> Array:
 	return [
-		{"id": "warfare", "name": "Warfare", "desc": "+damage per rank (diminishing)."},
-		{"id": "fortitude", "name": "Fortitude", "desc": "+health per rank (diminishing)."},
+		{"id": "warfare", "name": "Warfare", "desc": "+damage per rank, forever."},
+		{"id": "fortitude", "name": "Fortitude", "desc": "+health per rank, forever."},
 		{"id": "celerity", "name": "Celerity", "desc": "+speed & attack speed per rank."},
 		{"id": "dominion", "name": "Dominion", "desc": "+command aura per rank."},
 		{"id": "attunement", "name": "Attunement", "desc": "+mana & regen per rank."},

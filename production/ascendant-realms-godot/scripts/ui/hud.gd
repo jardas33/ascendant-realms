@@ -3763,6 +3763,14 @@ func _on_game_over(victory: bool) -> void:
 			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle" % [retinue_size, "" if retinue_size == 1 else "s"], 16, Color(0.78, 0.86, 0.66))
 			retinue_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(retinue_line)
+	if Match and String(Match.get_config().get("mode", "")) == "endless":
+		var road_line := _mk_title_label(("Stage %d won  ·  the road goes on" if victory else "Stage %d holds  ·  the road waits") % int(Match.get_config().get("endless_depth", 1)), 18, Color(0.98, 0.84, 0.46))
+		road_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(road_line)
+		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
+			var loot := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
+			loot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			box.add_child(loot)
 	var story_bits: Array = []
 	if int(result.get("hero_kills", 0)) > 0:
 		story_bits.append("Your hero slew %d" % int(result.get("hero_kills", 0)))

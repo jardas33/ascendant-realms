@@ -456,16 +456,18 @@ func _apply_race_passive() -> void:
 			base_dmg *= 1.12
 		"sylvan":                         # Precision — keener sight and reach
 			vision += 5.0
+			base_dmg *= 1.07
 			if atk_range > 0.0:
 				atk_range += 2.0
 		"karak":                          # Stone Resolve — armored and hardy
-			base_armor += 2.0
-			max_hp *= 1.12
+			base_armor += 1.0
+			max_hp *= 1.08
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
 			regen += 2.0
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
 			move_speed *= 1.15
+			base_dmg *= 1.10
 		"hollow":                         # Undying — every warrior drains life on hit
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.12)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
@@ -512,6 +514,20 @@ func _limit_part_shadows(m: Node) -> void:
 		if mi != biggest:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
+func _animation_matches_rig(ap: AnimationPlayer) -> bool:
+	var root_node := ap.get_node_or_null(ap.root_node)
+	if root_node == null:
+		return false
+	for lib_name in ap.get_animation_library_list():
+		var lib := ap.get_animation_library(lib_name)
+		for anim_name in lib.get_animation_list():
+			var a: Animation = lib.get_animation(anim_name)
+			for t in mini(a.get_track_count(), 6):
+				if root_node.get_node_or_null(NodePath(a.track_get_path(t).get_concatenated_names())) != null:
+					return true
+			return a.get_track_count() == 0
+	return true
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -544,6 +560,12 @@ func _build_model() -> void:
 					recorder.record_resource_load(lib_path, "unit._build_model.animation", anim_start, Time.get_ticks_usec(), "load")
 				if lib:
 					anim.add_animation_library("", lib)
+		# An animation library whose tracks point at a rig this model does not
+		# have (the Ironmaw Slinger) made every animation change rebuild the
+		# mixer for seconds, freezing the whole battle. Such models stay still.
+		if anim and not _animation_matches_rig(anim):
+			anim.active = false
+			anim = null
 		if anim:
 			ModelUtils.set_animation_loops(anim)
 			_map_anims()
@@ -3005,7 +3027,9 @@ func gain_field_xp(amount: int) -> bool:
 
 func gain_veterancy() -> void:
 	_kills += 1
-	if _kills % 3 == 0 and _veterancy < 3:
+	# Veterancy has no ceiling: each rank asks for a few more kills than the
+	# last (3, 9, 18, 30, ... kills).
+	if _kills >= _kills_for_rank(_veterancy + 1):
 		_veterancy += 1
 		if world and team == world.player_team and not is_hero:
 			world.veterans_made += 1
@@ -3019,11 +3043,14 @@ func gain_veterancy() -> void:
 			world.emit_signal("alert", "%s promoted to veteran rank %d" % [String(def.get("name", "Unit")), _veterancy], global_position)
 
 ## Retinue veterans arrive already promoted (same bonuses as earning it).
+static func _kills_for_rank(rank: int) -> int:
+	return 3 * rank * (rank + 1) / 2
+
 func set_veterancy(rank: int) -> void:
-	var r := clampi(rank, 0, 3)
+	var r := maxi(rank, 0)
 	while _veterancy < r:
 		_veterancy += 1
-		_kills = _veterancy * 3
+		_kills = _kills_for_rank(_veterancy)
 		max_hp += 15.0
 		hp += 15.0
 

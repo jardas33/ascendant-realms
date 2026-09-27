@@ -71,6 +71,7 @@ func _ready() -> void:
 		if i - 1 < opps.size():
 			diff = opps[i - 1].get("difficulty", "normal")
 		ai.setup(world, world.commanders[i], diff)
+		ai.endless_might = float(cfg.get("endless_might", 0.0))
 		ais.append(ai)
 	_m20_end(ai_stage)
 
@@ -285,6 +286,8 @@ func _toggle_pause() -> void:
 func _on_game_over(victory: bool) -> void:
 	# handled visually by HUD; campaign progression here
 	var cfg := Match.get_config()
+	if victory and cfg.get("mode", "") == "endless":
+		ProfileManager.endless_won(int(cfg.get("endless_depth", 1)))
 	if victory and cfg.get("mode", "") == "campaign":
 		if String(cfg.get("campaign_chapter", "")) != "":
 			ProfileManager.complete_chapter(String(cfg["campaign_chapter"]))
@@ -295,7 +298,7 @@ func _return_to_menu() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	# Campaign battles return to the saga map so the next chapter is one click away.
-	var back_to := "res://scenes/ui/campaign_map.tscn" if String(Match.get_config().get("mode", "")) == "campaign" else "res://scenes/ui/main_menu.tscn"
+	var back_to := "res://scenes/ui/campaign_map.tscn" if String(Match.get_config().get("mode", "")) in ["campaign", "endless"] else "res://scenes/ui/main_menu.tscn"
 	get_tree().change_scene_to_file(back_to)
 
 func _replay() -> void:

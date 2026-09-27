@@ -475,9 +475,25 @@ func update_setting(key: String, value) -> void:
 	data["settings"][key] = value
 	save_game()
 
-## How many veterans may march with the Jardas: 2, plus one every 5 hero
-## levels, at most 6.
+## The Endless Road: the deepest stage won (0 before the first).
+func endless_best() -> int:
+	return int(saga().get("endless_best", 0))
+
+func endless_won(depth: int) -> void:
+	var s := saga()
+	s["last_relic"] = ""
+	if depth > int(s.get("endless_best", 0)):
+		s["endless_best"] = depth
+		# Every fifth stage forges a relic, the first time it is won.
+		if depth % 5 == 0 and has_hero():
+			var item: Dictionary = load("res://scripts/game/endless_defs.gd").relic(depth)
+			add_item(item)
+			s["last_relic"] = String(item["name"])
+	save_game()
+
+## How many veterans may march with the Jardas: 2, plus one every 6 hero
+## levels, with no ceiling.
 func retinue_cap() -> int:
 	if not has_hero():
 		return 0
-	return mini(6, 2 + int(hero().get("level", 1)) / 5)
+	return 2 + int(hero().get("level", 1)) / 6

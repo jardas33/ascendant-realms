@@ -22,6 +22,8 @@ var _brutal_gold_acc := 0.0
 var _brutal_food_acc := 0.0
 
 var _think_timer := 0.0
+## Endless Road stages past the difficulty ladder feed the enemy extra Lume.
+var endless_might := 0.0
 var _build_cooldown := 0.0
 var _attack_timer := 0.0
 var _wave_number := 0
@@ -107,6 +109,16 @@ func _process(delta: float) -> void:
 		return
 	if _build_cooldown > 0.0:
 		_build_cooldown -= delta
+	if endless_might > 0.0:
+		_brutal_gold_acc += endless_might * delta
+		_brutal_food_acc += endless_might * 0.6 * delta
+		if _brutal_income <= 0.0:
+			if _brutal_gold_acc >= 1.0:
+				commander.add_resources("gold", int(_brutal_gold_acc))
+				_brutal_gold_acc -= float(int(_brutal_gold_acc))
+			if _brutal_food_acc >= 1.0:
+				commander.add_resources("food", int(_brutal_food_acc))
+				_brutal_food_acc -= float(int(_brutal_food_acc))
 	# brutal passive trickle (labeled advantage)
 	if _brutal_income > 0.0:
 		_brutal_gold_acc += _brutal_income * delta
@@ -919,7 +931,10 @@ func _try_build(kind: String) -> void:
 	if not commander.can_afford(bdef.get("cost", {})):
 		return
 	# Finish what is already laid out before starting more sites.
-	if _unbuilt_count() >= 2:
+	# ...except a house when the population is capped: a Barrosan AI sat at
+	# 12/12 for minutes with 650 food, its house queued behind slow sites.
+	var housing_crisis: bool = kind == "house" and commander.pop_used >= commander.pop_cap - 1 and _unbuilt_count() < 4
+	if _unbuilt_count() >= 2 and not housing_crisis:
 		return
 	var worker = _free_worker()
 	if not worker:
@@ -1012,9 +1027,21 @@ func _spot_clear(p: Vector3, footprint: float = 4.0) -> bool:
 			if p.distance_to(b.global_position) < float(b.def.get("footprint", 4.0)) + footprint + 3.5:
 				return false
 	for r in get_tree().get_nodes_in_group("resources"):
-		if is_instance_valid(r) and p.distance_to(r.global_position) < footprint + 4.0:
+		if not is_instance_valid(r):
+			continue
+		if p.distance_to(r.global_position) < footprint + 4.0:
+			return false
+		# Keep the gathering lanes open: a house dropped between the stronghold
+		# and its food or gold walled the workers off for the whole match.
+		if r.global_position.distance_to(_base_pos) < 45.0 and _segment_distance_xz(p, _base_pos, r.global_position) < footprint + 3.0:
 			return false
 	return true
+
+static func _segment_distance_xz(p: Vector3, a: Vector3, b: Vector3) -> float:
+	var pa := Vector2(p.x - a.x, p.z - a.z)
+	var ba := Vector2(b.x - a.x, b.z - a.z)
+	var h := clampf(pa.dot(ba) / maxf(ba.length_squared(), 0.0001), 0.0, 1.0)
+	return (pa - ba * h).length()
 
 func _free_worker():
 	# prefer an idle/gathering worker
