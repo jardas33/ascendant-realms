@@ -208,6 +208,24 @@ func _build() -> void:
 	back.pressed.connect(_on_back_pressed)
 	add_child(back)
 
+	# The Chronicle: every cleared chapter's story, to reread in order.
+	var chronicle := Button.new()
+	chronicle.text = "Chronicle"
+	chronicle.custom_minimum_size = Vector2(190, 50)
+	chronicle.focus_mode = Control.FOCUS_NONE
+	if ResourceLoader.exists(THEME_PATH):
+		chronicle.theme = load(THEME_PATH)
+	chronicle.add_theme_font_override("font", _title_font())
+	chronicle.add_theme_font_size_override("font_size", 20)
+	chronicle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	chronicle.offset_left = -226.0
+	chronicle.offset_right = -36.0
+	chronicle.offset_top = -66.0
+	chronicle.offset_bottom = -16.0
+	chronicle.disabled = ProfileManager.saga()["cleared"].is_empty()
+	chronicle.pressed.connect(_open_chronicle)
+	add_child(chronicle)
+
 	_show_act(_act)
 	# A new Act is announced once, the first time the map shows it; after a
 	# victory the next chronicle opens by itself.
@@ -222,6 +240,85 @@ func _build() -> void:
 		_open_briefing(_next_id)
 	saga_state["auto_brief"] = false
 	ProfileManager.save_game()
+
+## A book of the saga so far: each cleared chapter's briefing and the
+## chronicle of its victory, act by act, in road order.
+func _open_chronicle() -> void:
+	Sfx.play("select")
+	var s := ProfileManager.saga()
+	var layer := Control.new()
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.78)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var plate: PanelContainer = PLATE_SCRIPT.new()
+	var ps := StyleBoxFlat.new()
+	ps.bg_color = Color.TRANSPARENT
+	ps.content_margin_left = 52.0
+	ps.content_margin_right = 40.0
+	ps.content_margin_top = 28.0
+	ps.content_margin_bottom = 24.0
+	plate.add_theme_stylebox_override("panel", ps)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	plate.offset_left = 180.0
+	plate.offset_right = -180.0
+	plate.offset_top = 50.0
+	plate.offset_bottom = -50.0
+	layer.add_child(plate)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 10)
+	plate.add_child(outer)
+	var head := _label("The Chronicle of the Seventy-Seventh Ascension", 30, Color(0.98, 0.84, 0.46), true)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(head)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	outer.add_child(scroll)
+	var book := VBoxContainer.new()
+	book.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	book.add_theme_constant_override("separation", 8)
+	scroll.add_child(book)
+	for a in CampaignDefs.ACTS.size():
+		var done: Array = CampaignDefs.chapters_in_act(a).filter(func(c): return String(c["id"]) in s["cleared"])
+		if done.is_empty():
+			continue
+		var act_head := _label(String(CampaignDefs.ACTS[a]["title"]).to_upper(), 20, Color(0.85, 0.74, 0.5), true)
+		act_head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		book.add_child(act_head)
+		for c in done:
+			var id := String(c["id"])
+			var tag := "  ·  side road" if bool(c.get("side", false)) else ""
+			if id in s.get("heroic", []):
+				tag += "  ·  heroic laurel"
+			book.add_child(_label(String(c["title"]) + tag, 22, Color(0.99, 0.86, 0.48), true))
+			var brief := _label(CampaignDefs.briefing_for(id, _hero_race()), 16, Color(0.86, 0.84, 0.78))
+			brief.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			brief.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			book.add_child(brief)
+			var won := _label(CampaignDefs.victory_text(id, s), 16, Color(0.72, 0.88, 0.70))
+			won.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			won.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			book.add_child(won)
+			var gap := Control.new()
+			gap.custom_minimum_size = Vector2(0, 10)
+			book.add_child(gap)
+	var close := Button.new()
+	close.text = "Close"
+	close.custom_minimum_size = Vector2(200, 50)
+	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close.focus_mode = Control.FOCUS_NONE
+	if ResourceLoader.exists(THEME_PATH):
+		close.theme = load(THEME_PATH)
+	close.add_theme_font_override("font", _title_font())
+	close.add_theme_font_size_override("font_size", 20)
+	close.pressed.connect(func(): layer.queue_free())
+	outer.add_child(close)
+	layer.modulate.a = 0.0
+	layer.create_tween().tween_property(layer, "modulate:a", 1.0, 0.3)
 
 func _show_act_card(a: int) -> void:
 	var layer := ColorRect.new()
