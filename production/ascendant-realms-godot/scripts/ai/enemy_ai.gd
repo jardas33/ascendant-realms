@@ -931,7 +931,7 @@ func _try_build(kind: String) -> void:
 	var placed_ok := false
 	for _try in 6:
 		pos = _find_build_spot(float(bdef.get("footprint", 4.0)))
-		if world.can_place_building(bid, commander.team, pos, true, worker):
+		if world.can_place_building(bid, commander.team, pos, true, worker) and _reachable(worker.global_position, pos, float(bdef.get("footprint", 4.0))):
 			placed_ok = true
 			break
 	if not placed_ok:
@@ -969,6 +969,23 @@ func _cancel_dead_sites() -> void:
 			b._destroy(null)
 			return
 
+## Sites across the Barrosan settlement dressing could be placed but never
+## reached: the builder stalled half way and the base sat at its population
+## cap. Only accept spots with a real, reasonably direct path.
+func _reachable(from: Vector3, to: Vector3, footprint: float) -> bool:
+	var rid = world.get("navigation_map_rid")
+	if rid == null or not rid.is_valid():
+		return true
+	var path := NavigationServer3D.map_get_path(rid, from, to, true)
+	if path.is_empty():
+		return false
+	if Vector3(path[path.size() - 1].x, 0.0, path[path.size() - 1].z).distance_to(Vector3(to.x, 0.0, to.z)) > footprint + 2.5:
+		return false
+	var length := 0.0
+	for i in range(1, path.size()):
+		length += path[i - 1].distance_to(path[i])
+	return length <= from.distance_to(to) * 1.8 + 6.0
+
 func _find_build_spot(footprint: float = 4.0) -> Vector3:
 	# spiral out from base, avoid overlapping existing buildings
 	# Build on the side of the base that faces the battlefield. The rear of
@@ -978,8 +995,8 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 	# Later attempts reach further out, so a crowded base grows outward
 	# instead of cramming buildings together.
 	for attempt in 36:
-		var ang := toward + randf_range(-1.5, 1.5)
-		var dist := 12.0 + attempt * 0.8 + randf() * 20.0
+		var ang := toward + randf_range(-1.0, 1.0) * (0.9 + attempt * 0.02)
+		var dist := 12.0 + attempt * 0.7 + randf() * 14.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
 		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)

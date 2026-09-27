@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 09:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 11:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -155,14 +155,21 @@ Last updated: 2026-09-28, 09:00 UTC. Claude updates this file after every pass.
   - **Mood sound:** thunder lowered to sit under the music.
   - Hero revival and the retinue are already introduced through alerts, the result ledger and loading tips, so no tutorial change was needed.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
-- **Plan 11 (started):**
-  1. Barrosan AI decision-making: compare its build order and attack timing with Vorthak's minute by minute and fix the difference.
-  2. Aurean Dominion (the main antagonist) lost its duel badly: tune it so the Regent's legions feel dangerous.
-  3. Unit render cost in 100+ unit battles.
-  4. Hard and Brutal from a player's point of view.
-  5. Check every chapter's map fits its story.
-  6. Recheck Codex's newest work.
-  7. Regression, review and progress update.
+- **Plan 11 (done so far):**
+  - **Unreachable build sites:**
+    - Found by comparing the Barrosan and Vorthak AIs minute by minute: the Barrosan AI's first house sat unbuilt from minute 1 to minute 5, so it was capped at 12 population with no army.
+    - The site was 41 m away across the settlement dressing, and the builder stalled on the way.
+    - The AI now accepts only spots its worker can path to by a reasonably direct route, within a tighter cone toward the battlefield.
+    - Houses now go up on time. Checked separately: a worker builds a Clan Croft in open ground in 24 seconds, and every faction gathers at the same rate per worker.
+  - **Barrosan AI:** it still loses full AI matches (0 of 6), though it now survives up to 21 minutes. Its armies win equal-cost fights and its economy matches, so what remains is strategy (attack timing and composition). This stays open. It does not affect human players of Barrosan.
+  - **Aurean Dominion:** its units were the old, weaker Barrosan stats. The legions now fit the saga's main villain:
+    - Legionary: health 140, damage 14, armour 2.
+    - Phalanx: health 200, damage 16.
+    - Archer: damage 18.
+    - Charioteer: health 145, damage 19.
+    - In duels it now crushes Vorthak and loses narrowly to Barrosan (it used to be wiped out).
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+  - Carried to plan 12: unit render cost in 100+ unit battles, Hard and Brutal from a player's view, and matching every chapter's map to its story.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

@@ -403,7 +403,7 @@ static func get_all() -> Dictionary:
 	"sunspear_legion": {
 		"race": "sunspear", "name": "Bronze Legionary", "role": "melee", "tier": 1,
 		"model": _char("sunspear_legionary"), "height": 1.8,
-		"hp": 130, "dmg": 12, "dmg_type": "slash", "armor_class": "light", "armor": 1,
+		"hp": 140, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 2,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
 		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "sunspear_legion_hall",
 		"desc": "The backbone of seventy-seven years of victory. Disciplined to the last.",
@@ -411,7 +411,7 @@ static func get_all() -> Dictionary:
 	"sunspear_phalanx": {
 		"race": "sunspear", "name": "Bronze Phalanx", "role": "defender", "tier": 1,
 		"model": _char("barrosan_spear_guard"), "height": 1.85,
-		"hp": 180, "dmg": 14, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
+		"hp": 200, "dmg": 16, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "sunspear_legion_hall",
 		"desc": "A wall of bronze shields that never breaks and never retreats.",
@@ -419,7 +419,7 @@ static func get_all() -> Dictionary:
 	"sunspear_bowman": {
 		"race": "sunspear", "name": "Dominion Archer", "role": "ranged", "tier": 1,
 		"model": _char("barrosan_crag_archer"), "height": 1.8,
-		"hp": 90, "dmg": 16, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
+		"hp": 90, "dmg": 18, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "arrow",
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "sunspear_legion_hall",
 		"desc": "Volleys fired on the whistle, in perfect time.",
@@ -427,7 +427,7 @@ static func get_all() -> Dictionary:
 	"sunspear_charioteer": {
 		"race": "sunspear", "name": "Sun Charioteer", "role": "flanker", "tier": 2,
 		"model": _char("barrosan_outrider"), "height": 1.8,
-		"hp": 125, "dmg": 16, "dmg_type": "slash", "armor_class": "light", "armor": 1,
+		"hp": 145, "dmg": 19, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 5.5, "vision": 26.0,
 		"cost": {"food": 80, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "sunspear_legion_hall",
 		"desc": "Bronze chariots that cut through open ground like a scythe.",
