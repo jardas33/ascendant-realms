@@ -94,6 +94,7 @@ static func get_all() -> Dictionary:
 	# ---------------- VORTHAK ----------------
 	"vorthak_nighthold": {
 		"race": "vorthak", "name": "Nighthold", "kind": "main", "model": _b("vorthak_nighthold"),
+		"command_art": "res://assets/ui/construction_art/vorthak_r1/nighthold.png",
 		"hp": 1900, "armor_class": "fortified", "armor": 7, "footprint": 7.0,
 		"cost": {"timber": 330, "stone": 190}, "build_time": 56, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["vorthak_worker"], "drop_off": true, "is_hq": true,

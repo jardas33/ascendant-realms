@@ -90,6 +90,14 @@ func _run() -> void:
 				await create_timer(0.25).timeout
 		for index in 5:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_CENTER_HQ") == "1" and instance.get("rts") != null:
+		for candidate in instance.world.commanders[0].buildings:
+			if is_instance_valid(candidate) and bool(candidate.def.get("is_hq", false)):
+				instance.rts.cam_pivot.global_position.x = candidate.global_position.x
+				instance.rts.cam_pivot.global_position.z = candidate.global_position.z
+				break
+		for index in 5:
+			await process_frame
 	if OS.get_environment("ASCENDANT_UI_SCROLL_BOTTOM") == "1" and instance.get("hud") != null:
 		var command_scroll := instance.hud._cmd_scroll as ScrollContainer
 		if command_scroll:
