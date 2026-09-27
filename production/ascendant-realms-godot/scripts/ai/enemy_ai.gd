@@ -70,7 +70,6 @@ func _apply_personality() -> void:
 	match String(commander.race):
 		"vorthak", "hollow", "grimtusk", "wyldkin":
 			_army_attack_size = maxi(4, _army_attack_size - 3)
-			_think_interval *= 0.85
 		"sunspear", "karak", "sylvan":
 			_army_attack_size += 4
 			_worker_target += 2

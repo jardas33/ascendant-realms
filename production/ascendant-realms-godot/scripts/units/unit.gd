@@ -2965,6 +2965,8 @@ func gain_veterancy() -> void:
 	_kills += 1
 	if _kills % 3 == 0 and _veterancy < 3:
 		_veterancy += 1
+		if world and team == world.player_team and not is_hero:
+			world.veterans_made += 1
 		max_hp += 15.0
 		hp += 15.0
 		# Promotion was invisible; now a golden flare marks the veteran.
@@ -3029,6 +3031,8 @@ func _die(from = null) -> void:
 	if is_instance_valid(credit_source):
 		if credit_source.has_method("gain_veterancy"):
 			credit_source.gain_veterancy()
+		if credit_source is Unit and credit_source.is_hero and world and credit_source.team == world.player_team and team != world.player_team:
+			world.hero_kills += 1
 		if credit_source is Unit and credit_source.commander and credit_source.commander.build_flags.get("bounty", false):
 			credit_source.commander.add_resources("gold", 3)
 	if is_hero:

@@ -43,7 +43,7 @@ func build(theme_name: String, mood: String = "") -> void:
 		_loop_player(_rain_loop(), -13.0)
 		_thunder_player = AudioStreamPlayer.new()
 		_thunder_player.bus = "SFX"
-		_thunder_player.volume_db = -9.0
+		_thunder_player.volume_db = -14.0
 		_thunder_player.stream = _thunder()
 		add_child(_thunder_player)
 	if bool(look[3]) and ResourceLoader.exists(RECORDED):

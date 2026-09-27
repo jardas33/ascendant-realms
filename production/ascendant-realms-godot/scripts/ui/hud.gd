@@ -3763,6 +3763,16 @@ func _on_game_over(victory: bool) -> void:
 			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle" % [retinue_size, "" if retinue_size == 1 else "s"], 16, Color(0.78, 0.86, 0.66))
 			retinue_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(retinue_line)
+	var story_bits: Array = []
+	if int(result.get("hero_kills", 0)) > 0:
+		story_bits.append("Your hero slew %d" % int(result.get("hero_kills", 0)))
+	if int(result.get("veterans_made", 0)) > 0:
+		story_bits.append("%d veteran promotion%s" % [int(result.get("veterans_made", 0)), "" if int(result.get("veterans_made", 0)) == 1 else "s"])
+	if not story_bits.is_empty():
+		var story_line := _mk_label("  ·  ".join(story_bits), 15, Color(0.86, 0.80, 0.62))
+		story_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		story_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		box.add_child(story_line)
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
 	rule.custom_minimum_size = Vector2(0, 1)

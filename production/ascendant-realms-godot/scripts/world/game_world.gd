@@ -74,6 +74,9 @@ const BASE_ATTACK_ALERT_COOLDOWN_SEC := 6.0
 var _base_attack_alert_until_msec := 0
 var match_time := 0.0
 var kills_by_player := 0
+# Battle story for the result ledger.
+var hero_kills := 0
+var veterans_made := 0
 var combat_damage_events: Array = []
 var combat_death_events: Array = []
 var combat_kill_events: Array = []
@@ -2791,6 +2794,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"victory_kind": _victory_kind, "player_team": player_team, "kills": kills_by_player,
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
 		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
+		"hero_kills": hero_kills, "veterans_made": veterans_made,
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)

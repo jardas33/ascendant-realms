@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 05:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 09:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -141,17 +141,28 @@ Last updated: 2026-09-28, 05:30 UTC. Claude updates this file after every pass.
   - **Medium quality:** weather uses half the particles.
   - Unit render cost in 100+ unit battles is moved to plan 10.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
-- **Plan 10 (started):**
-  1. Barrosan: equal-cost army fights against each faction, then fix what they show.
-  2. Unit render cost in 100+ unit battles.
-  3. Faction value table for the other 7 factions.
-  4. Hard and Brutal difficulty check from a player's point of view.
-  5. Result screen: a short per-battle summary (hero kills, veterans made).
-  6. Campaign: make sure every chapter's map fits its story, and swap maps where they don't.
-  7. Tutorial: mention hero revival and the retinue in the first campaign battles.
-  8. Audio: check volume balance of the new mood sounds against the music.
-  9. Recheck Codex's newest work.
-  10. Regression, review and progress update.
+- **Plan 10 (done):**
+  - **Equal-cost army duels** (a new probe spawns about 1,200 resources of each faction's units and has them fight in the open). Before: Barrosan's tier-1 army lost every duel, with a third to half of the enemy army still standing, whichever side of the map it was on. The order was Vorthak, then Lioraen, then Barrosan. Changes:
+    - Barrosan: Clan Levy damage 12 to 14, Spear Guard 14 to 17, Crag Archer 17 to 19, Outrider 17 (was 15, briefly 19).
+    - Vorthak's cheap swarm: Ash Thrall food 40 to 50 and health 95 to 88; Cinder Spitter food 55 to 65 and damage 17 to 15.
+    - Tier-1 duels are now a close triangle: Barrosan beats Vorthak, Vorthak narrowly beats Lioraen, Barrosan and Lioraen split.
+    - With tier 2, Barrosan beats Vorthak, Lioraen, Aurean Dominion, Moura Court, Compaña, Careto Host and Wolfveil. Granitborn beats Barrosan.
+  - **AI fairness:** the "swarm" personality also made those AIs think 15% faster, an unfair economic edge I added in plan 5. Removed; only the attack-size difference remains.
+  - **Open finding:** in full AI-vs-AI games the Barrosan AI still loses (0 of 6 after these changes), even though its armies now win equal-cost fights. The cause is its decision-making, not unit strength. Human players mostly play Barrosan, so this mainly matters when Barrosan is the enemy (Chega de Bois and Barrosan skirmish opponents).
+  - **Duel artifact noted:** a Grimtusk-versus-Barrosan mass duel stalled with both armies "attacking" and no damage, identically in headless and windowed runs. One-on-one Grimtusk units fight normally and full AI matches against Grimtusk play out, so this is limited to that test setup.
+  - **Headless-only noise for Codex:** "Parameter material is null" errors from material_get_instance_shader_parameters come from the headless dummy renderer with the orc_grunt model, not from real play.
+  - **Result screen:** a battle-story line shows kills by your hero and veteran promotions.
+  - **Mood sound:** thunder lowered to sit under the music.
+  - Hero revival and the retinue are already introduced through alerts, the result ledger and loading tips, so no tutorial change was needed.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 11 (started):**
+  1. Barrosan AI decision-making: compare its build order and attack timing with Vorthak's minute by minute and fix the difference.
+  2. Aurean Dominion (the main antagonist) lost its duel badly: tune it so the Regent's legions feel dangerous.
+  3. Unit render cost in 100+ unit battles.
+  4. Hard and Brutal from a player's point of view.
+  5. Check every chapter's map fits its story.
+  6. Recheck Codex's newest work.
+  7. Regression, review and progress update.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
