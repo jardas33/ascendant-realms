@@ -55,9 +55,13 @@ var _easy_wave_audit: Array = []
 var _easy_replacement_audit: Array = []
 var _easy_last_deposit_index := 0
 
+## Seeded per AI from the match seed (see GameWorld.sim_seed_for).
+var _rng := RandomNumberGenerator.new()
+
 func setup(p_world, p_commander, p_difficulty: String) -> void:
 	world = p_world
 	commander = p_commander
+	_rng.seed = world.sim_seed_for(1000 + int(commander.team)) if world.has_method("sim_seed_for") else 1000
 	difficulty = p_difficulty
 	_apply_difficulty()
 	_apply_personality()
@@ -708,7 +712,9 @@ func _manage_economy() -> void:
 			var wid = GameData.get_race(commander.race).get("worker", "")
 			hq.queue_unit(wid)
 	# build houses when near pop cap
-	if commander.pop_used >= commander.pop_cap - 3 and commander.pop_cap < commander.POP_HARD_CAP:
+	# Plan housing early: factions whose soldiers take 2 population (Barrosan
+	# Spear Guard, Outrider) hit the cap long before a late house went up.
+	if commander.pop_used >= commander.pop_cap - 6 and commander.pop_cap < commander.POP_HARD_CAP:
 		_try_build("house")
 
 # --- tech -----------------------------------------------------------------
@@ -775,9 +781,9 @@ func _choose_unit(choices: Array) -> String:
 		return ""
 	# prefer a mix: bias toward higher tier when available
 	legal.sort_custom(func(a, b): return int(GameData.get_unit(a).get("tier",1)) > int(GameData.get_unit(b).get("tier",1)))
-	if randf() < 0.55:
+	if _rng.randf() < 0.55:
 		return legal[0]
-	return legal[randi() % legal.size()]
+	return legal[_rng.randi() % legal.size()]
 
 # --- defense --------------------------------------------------------------
 func _manage_defense() -> void:
@@ -785,7 +791,7 @@ func _manage_defense() -> void:
 	# Housing comes first: towers built while capped at population starved
 	# the army (a Barrosan AI sat at 20/20 with two new towers).
 	if _count_building_kind("tower") < (2 if _tech_aggression >= 1.0 else 1) and _worker_count() >= 5 and commander.pop_used < commander.pop_cap - 3:
-		if randf() < 0.4:
+		if _rng.randf() < 0.4:
 			_try_build("tower")
 	# recall army to defend if base attacked
 	var threat = world.find_enemy_near(_base_pos, 30.0, commander.team)
@@ -899,7 +905,7 @@ func _pick_attack_target() -> Vector3:
 # --- capture --------------------------------------------------------------
 func _manage_capture() -> void:
 	# occasionally send a small squad to a neutral/enemy capture point
-	if _army_size() < 4 or randf() > 0.15:
+	if _army_size() < 4 or _rng.randf() > 0.15:
 		return
 	var points = world.get_tree().get_nodes_in_group("capture_points")
 	for p in points:
@@ -933,7 +939,7 @@ func _try_build(kind: String) -> void:
 	# Finish what is already laid out before starting more sites.
 	# ...except a house when the population is capped: a Barrosan AI sat at
 	# 12/12 for minutes with 650 food, its house queued behind slow sites.
-	var housing_crisis: bool = kind == "house" and commander.pop_used >= commander.pop_cap - 1 and _unbuilt_count() < 4
+	var housing_crisis: bool = kind == "house" and commander.pop_used >= commander.pop_cap - 4 and _unbuilt_count() < 4
 	if _unbuilt_count() >= 2 and not housing_crisis:
 		return
 	var worker = _free_worker()
@@ -1010,14 +1016,14 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 	# Later attempts reach further out, so a crowded base grows outward
 	# instead of cramming buildings together.
 	for attempt in 36:
-		var ang := toward + randf_range(-1.0, 1.0) * (0.9 + attempt * 0.02)
-		var dist := 12.0 + attempt * 0.7 + randf() * 14.0
+		var ang := toward + _rng.randf_range(-1.0, 1.0) * (0.9 + attempt * 0.02)
+		var dist := 12.0 + attempt * 0.7 + _rng.randf() * 14.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
 		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		if _spot_clear(p, footprint):
 			return p
-	return _base_pos + Vector3(cos(toward), 0, sin(toward)) * 16.0 + Vector3(randf_range(-6, 6), 0, randf_range(-6, 6))
+	return _base_pos + Vector3(cos(toward), 0, sin(toward)) * 16.0 + Vector3(_rng.randf_range(-6, 6), 0, _rng.randf_range(-6, 6))
 
 ## Units wedged between tightly packed buildings in their own base. Keep a
 ## walking lane between both footprints, and stay off resource nodes.

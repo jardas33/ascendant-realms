@@ -5,6 +5,10 @@ const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 
 const SAVE_PATH := "user://ascendant_save.json"
 const SAVE_TEMP_PATH := "user://ascendant_save.json.tmp"
+## A rolling copy of the last good save. A corrupted save used to fall back
+## to a blank profile and overwrite the file, losing the hero for good.
+const SAVE_BACKUP_PATH := "user://ascendant_save.backup.json"
+var _last_backup_msec := -1000000
 const SAVE_VERSION := 1
 
 signal profile_changed
@@ -395,6 +399,9 @@ func save_game() -> void:
 	if write_error != OK:
 		push_error("SAVE_TEMP_WRITE_FAILED: %s" % error_string(write_error))
 		return
+	if FileAccess.file_exists(SAVE_PATH) and Time.get_ticks_msec() - _last_backup_msec > 120000:
+		_last_backup_msec = Time.get_ticks_msec()
+		DirAccess.copy_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(SAVE_BACKUP_PATH))
 	var replace_error := DirAccess.rename_absolute(
 		ProjectSettings.globalize_path(SAVE_TEMP_PATH),
 		ProjectSettings.globalize_path(SAVE_PATH))
@@ -414,6 +421,14 @@ func load_game() -> void:
 	var txt := f.get_as_text()
 	f.close()
 	var parsed = JSON.parse_string(txt)
+	if typeof(parsed) != TYPE_DICTIONARY and FileAccess.file_exists(SAVE_BACKUP_PATH):
+		push_warning("SAVE_CORRUPT_RESTORING_BACKUP")
+		parsed = JSON.parse_string(FileAccess.get_file_as_string(SAVE_BACKUP_PATH))
+		if typeof(parsed) == TYPE_DICTIONARY:
+			data = _normalize_profile(_migrate(parsed))
+			save_game()
+			emit_signal("profile_changed")
+			return
 	if typeof(parsed) != TYPE_DICTIONARY:
 		data = _default_data()
 		# Recover through the existing atomic save path so a valid default is not

@@ -2001,8 +2001,14 @@ func _physics_process(delta: float) -> void:
 		if state == State.ATTACKING:
 			state = State.ATTACK_MOVE if _attack_move_ordered else (State.HOLD if _hold_position else State.IDLE)
 	_update_r15_combat_presentation(delta)
-	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
-	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
+	# Audit metadata only needs writing when the extreme actually grows (two
+	# meta writes per unit per tick added up in big battles).
+	if absf(global_position.x) > _max_abs_x:
+		_max_abs_x = absf(global_position.x)
+		set_meta("v0436_max_abs_x", _max_abs_x)
+	if absf(global_position.z) > _max_abs_z:
+		_max_abs_z = absf(global_position.z)
+		set_meta("v0436_max_abs_z", _max_abs_z)
 	if world and world.has_method("is_inside_playable_bounds") and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance) and not _boundary_recovery_active:
 		_begin_boundary_recovery("position_outside_playable_tolerance")
 	if _boundary_recovery_active:
@@ -2121,6 +2127,10 @@ func _state_idle(delta: float) -> void:
 				state = State.ATTACKING
 
 const ACQUIRE_INTERVAL := 0.2
+## Order of creation in the match; a deterministic source of per-unit variety.
+var spawn_serial := 0
+var _max_abs_x := -1.0
+var _max_abs_z := -1.0
 var _acquire_timer := 0.0
 
 func _state_move(delta: float, attack_move: bool) -> void:
@@ -2132,7 +2142,7 @@ func _state_move(delta: float, attack_move: bool) -> void:
 		_acquire_timer -= delta
 		var e = null
 		if _acquire_timer <= 0.0:
-			_acquire_timer = ACQUIRE_INTERVAL * randf_range(0.8, 1.2)
+			_acquire_timer = ACQUIRE_INTERVAL * (0.8 + 0.4 * fposmod(float(spawn_serial) * 0.618034, 1.0))
 			e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 		if e and _can_attack_target(e):
 			_v0436_r1j_set_target(e, "auto_acquisition")

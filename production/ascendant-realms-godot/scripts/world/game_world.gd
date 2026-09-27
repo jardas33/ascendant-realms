@@ -75,6 +75,18 @@ var _base_attack_alert_until_msec := 0
 var match_time := 0.0
 var kills_by_player := 0
 var _battle_loot: Array = []
+## Simulation randomness comes from one match seed so every machine in a
+## future online match (or a replay) makes the same choices.
+var match_seed := 0
+var _spawn_serial := 0
+
+func sim_seed_for(salt: int) -> int:
+	if match_seed == 0:
+		var cfg := Match.get_config()
+		match_seed = int(cfg.get("seed", 0))
+		if match_seed == 0:
+			match_seed = absi(hash(str(cfg.get("map", "")) + str(cfg.get("opponents", [])) + str(cfg.get("player_race", "")))) + 1
+	return match_seed * 31 + salt
 # Battle story for the result ledger.
 var hero_kills := 0
 var veterans_made := 0
@@ -1903,6 +1915,8 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 		return null
 	udef["id"] = unit_id
 	var u = Unit.new()
+	u.spawn_serial = _spawn_serial
+	_spawn_serial += 1
 	nav_region.add_child(u) if nav_region else add_child(u)
 	u.global_position = pos + Vector3(0, 0.1, 0)
 	u.reset_physics_interpolation()

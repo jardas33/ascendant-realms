@@ -122,6 +122,13 @@ func _refresh() -> void:
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
 	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
+	var st: Dictionary = ProfileManager.data.get("stats", {})
+	var record_line := Label.new()
+	record_line.text = "ENDLESS ROAD  STAGE %d    ·    BATTLES %d    ·    VICTORIES %d    ·    FOES SLAIN %d" % [ProfileManager.endless_best(), int(st.get("battles", 0)), int(st.get("victories", 0)), int(st.get("units_killed", 0))]
+	record_line.add_theme_font_override("font", _body_font())
+	record_line.add_theme_color_override("font_color", Color(0.98, 0.80, 0.45))
+	record_line.add_theme_font_size_override("font_size", 16)
+	identity.add_child(record_line)
 	saga_line.add_theme_font_override("font", _body_font())
 	saga_line.add_theme_color_override("font_color", Color(0.86, 0.72, 0.95))
 	saga_line.add_theme_font_size_override("font_size", 16)
@@ -265,6 +272,16 @@ func _refresh() -> void:
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_mastery(con.get("id", "")))
 			row.add_child(plus)
+			if m_pts >= 5:
+				var plus5 := Button.new()
+				_label_button(plus5, "+5", Color(0.7, 1.0, 0.7))
+				plus5.custom_minimum_size = Vector2(56, 40)
+				plus5.focus_mode = Control.FOCUS_NONE
+				plus5.pressed.connect(func():
+					Sfx.play("select")
+					for i in 5:
+						ProfileManager.spend_mastery(con.get("id", "")))
+				row.add_child(plus5)
 		right_panel.add_child(row)
 
 func _goto(path: String) -> void:

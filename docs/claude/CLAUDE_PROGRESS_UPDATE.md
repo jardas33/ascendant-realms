@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 18:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-28, 21:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -204,6 +204,24 @@ Last updated: 2026-09-28, 18:00 UTC. Claude updates this file after every pass.
     - Granitborn was far too strong: its passive gives +1 armour and +8% health (was +2 and +12%), and its basic Warrior and Ironbreaker are slightly less tanky. It now sits mid-pack at tier 1. It looked dominant at tier 2 only because it has no tier-2 units, so its test armies had no weak support units.
     - Moura Court (Precision, +7% damage) and Wolfveil (Pack Hunt, +10% damage) lost every duel; each now beats two of the three reference factions.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 14 (done):**
+  1. **Battle loot (new).** Battles never dropped items before; the only gear was a starter kit and relics.
+     - Every battle now rolls gear: one item for a win, more on Hard and Brutal, and a 30% chance of one even in defeat.
+     - The Fortune attribute (which did nothing before) raises both the number of drops and their rarity.
+     - Rarities run common, uncommon, rare, epic and legendary, with more affixes at higher rarity and Barroso-flavoured names ("Oathbound Spear of Salto", "Wolfbone Mail of the Masked Winter").
+     - Item power grows with item level forever (hero level, plus Endless Road stage, plus campaign depth). Movement and attack speed grow along a square root so heroes never become absurdly fast.
+     - Loot is shown in rarity colour on the result screen, and rolls are seeded from the battle's own numbers.
+  2. **War Chest:** items sort by rarity and item level. Each item has a Salvage button showing the experience it gives, and "Salvage Commons" melts every common and uncommon item at once.
+  3. **Barrosan AI:** it now builds houses earlier (6 free population instead of 3) because its soldiers take more population each. Barrosan won its first AI match (against Lioraen). All 6 soak matches ended.
+  4. **Hero sheet:** a record line shows the Endless Road stage reached, battles, victories and foes slain.
+  5. **Endless mastery:** mastery points can be spent without limit, now five at a time with a "+5" button.
+  6. **Save safety:** the profile keeps a rolling backup (at most every 2 minutes). A corrupted save used to reset to a blank profile and overwrite the file. It now restores from the backup, which was tested on a copy of the real save with the original put back afterwards.
+  7. **Multiplayer readiness:**
+     - One match seed now drives the AI's random choices, and units stagger their target scans by creation order.
+     - A two-run test confirmed the simulation is not yet deterministic. Godot physics, navigation avoidance and frame-timed AI are the blockers.
+     - docs/claude/MULTIPLAYER_READINESS.md recommends a host-authoritative design (Godot's high-level multiplayer), not lockstep, and lists what must change. The suggested first milestone is two-player LAN co-op against the AI.
+  8. **Big battles:** units no longer write two audit metadata values every tick. Benchmark runs are noisy (38 to 46 fps for 120 units), so there is no measurable gain to claim.
+  9. Codex had nothing new. 10. Regression passed: all 9 tests and the saga data check.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
