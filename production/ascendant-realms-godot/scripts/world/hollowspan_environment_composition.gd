@@ -312,6 +312,7 @@ func _dress_hamlet_house(house: Node3D, position: Vector3, toward: Vector3, inde
 # edges, drifting pollen motes and a flowering meadow painted by the ground
 # shader (bloom zone). Living nature, restrained glow. Presentation only.
 const LIORAEN_STONES := [[-13.0, 0.0], [-9.0, -10.0], [-9.0, 10.0], [2.0, -14.0], [2.0, 14.0], [12.0, -8.0], [12.0, 8.0]]
+const LIORAEN_STONE_HEIGHTS := [3.4, 3.9, 3.6, 4.2, 3.3, 3.8, 3.5]
 const LIORAEN_BLOOMS := [
 	[-11.0, -4.5], [-11.5, 5.0], [-4.0, -13.0], [-3.5, 13.5], [7.0, -12.5], [7.5, 12.0], [15.0, 0.0],
 	[-16.0, -8.0], [-16.5, 9.0], [5.0, -17.0], [5.5, 17.5], [17.0, -12.0], [17.5, 12.5], [-6.0, -18.0],
@@ -330,10 +331,12 @@ func build_lioraen_grove(parent: Node3D, origin: Vector3) -> void:
 	parent.add_child(grove)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5150
-	for spec in LIORAEN_STONES:
+	for stone_index in LIORAEN_STONES.size():
+		var spec: Array = LIORAEN_STONES[stone_index]
 		var pos: Vector3 = origin - toward * float(spec[0]) + side * float(spec[1])
-		# Stones lean gently toward the Groveheart like a waking circle.
-		_place_asset(grove, "moonstone", pos, atan2(origin.x - pos.x, origin.z - pos.z) + rng.randf_range(-0.2, 0.2))
+		# Related carved waystones vary in stature instead of repeating as seven
+		# identical columns. Their placements and decorative-only role stay intact.
+		_place_asset(grove, "moonstone", pos, atan2(origin.x - pos.x, origin.z - pos.z) + rng.randf_range(-0.2, 0.2), LIORAEN_STONE_HEIGHTS[stone_index])
 	for spec in LIORAEN_BLOOMS:
 		var pos: Vector3 = origin - toward * float(spec[0]) + side * float(spec[1])
 		_place_asset(grove, "lume_bloom", pos, rng.randf() * TAU, rng.randf_range(1.6, 2.3))
