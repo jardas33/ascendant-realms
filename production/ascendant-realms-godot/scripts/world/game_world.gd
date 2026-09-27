@@ -2750,6 +2750,39 @@ func _start_saga_events() -> void:
 
 ## Endless Road "Warband" twist: at three minutes a war party of the first
 ## enemy's line infantry marches on the player.
+## Endless Road boss stages (every fifth stage that is not a festival): a
+## Champion guards the enemy stronghold. Slaying it pays like three Elites.
+func _spawn_champion(depth: int) -> void:
+	if commanders.size() < 2:
+		return
+	var race := String(commanders[1].race)
+	var pick := ""
+	var best_tier := 0
+	for id in UnitDefs.get_all():
+		var d: Dictionary = UnitDefs.get_all()[id]
+		if String(d.get("race", "")) != race or String(d.get("role", "")) in ["worker", "hero", "siege", "healer"] or bool(d.get("is_siege", false)):
+			continue
+		if int(d.get("tier", 1)) > best_tier:
+			best_tier = int(d.get("tier", 1))
+			pick = id
+	if pick == "":
+		return
+	var home: Vector3 = map.get("start_positions", [Vector3.ZERO, Vector3.ZERO])[1]
+	var toward := (Vector3.ZERO - home).normalized()
+	var boss = spawn_unit(pick, 1, home + toward * 18.0)
+	if boss == null:
+		return
+	boss.set_meta("elite", true)
+	boss.set_meta("champion", true)
+	boss.max_hp *= 4.0 + float(depth) * 0.1
+	boss.hp = boss.max_hp
+	boss.base_dmg *= 2.0
+	if is_instance_valid(boss.model_root):
+		boss.model_root.scale *= 1.5
+	get_tree().create_timer(8.0, false).timeout.connect(func():
+		if game_running:
+			emit_signal("alert", "A Champion guards the enemy stronghold. Break it, and the road pays threefold.", boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
+
 func _schedule_warband() -> void:
 	get_tree().create_timer(180.0, false).timeout.connect(func():
 		if not game_running or commanders.size() < 2:
@@ -2824,6 +2857,9 @@ func _start_match() -> void:
 	_schedule_lume_surge()
 	if "warband" in Match.get_config().get("twists", []):
 		_schedule_warband()
+	var e_depth := int(Match.get_config().get("endless_depth", 0))
+	if String(Match.get_config().get("mode", "")) == "endless" and e_depth % 5 == 0 and e_depth % 10 != 0:
+		_spawn_champion(e_depth)
 	if String(Match.get_config().get("mode", "")) == "endless":
 		var ecfg := Match.get_config()
 		get_tree().create_timer(3.0, false).timeout.connect(func():
@@ -3133,7 +3169,7 @@ func _on_unit_died(unit) -> void:
 		if int(unit.team) != player_team and source_team == player_team:
 			enemy_heroes_slain += 1
 	if unit.has_meta("elite") and source_team == player_team:
-		elites_slain += 1
+		elites_slain += 3 if unit.has_meta("champion") else 1
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
 		Sfx.play("levelup", -8.0)
 	# hero down handling

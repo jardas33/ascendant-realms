@@ -315,6 +315,8 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	var twist_lines: Array = []
 	for tw_id in st.get("twists", []):
 		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(tw_id, tw_id)))
+	if depth % 5 == 0 and depth % 10 != 0:
+		twist_lines.append("Champion stage: a giant guards the enemy stronghold (pays like three Elites)")
 	if not twist_lines.is_empty():
 		var tw := _label("Twists: " + "  ·  ".join(twist_lines), 15, Color(0.95, 0.62, 0.42))
 		tw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
