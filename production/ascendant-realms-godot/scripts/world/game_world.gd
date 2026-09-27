@@ -2542,6 +2542,8 @@ func _spawn_retinue() -> void:
 		u.set_meta("retinue", true)
 		if u.has_method("set_veterancy"):
 			u.set_veterancy(int(entry.get("vet", 1)))
+		if String(entry.get("name", "")) != "":
+			u.veteran_name = String(entry["name"])
 		k += 1
 	player_commander.recompute_pop()
 	if k > 0:
@@ -2587,7 +2589,7 @@ func _record_retinue(victory: bool) -> void:
 			continue
 		if not victory and not u.has_meta("retinue"):
 			continue
-		picks.append({"id": String(u.unit_id), "vet": maxi(vet, 1)})
+		picks.append({"id": String(u.unit_id), "vet": maxi(vet, 1), "name": String(u.get("veteran_name"))})
 	picks.sort_custom(func(a, b): return int(a["vet"]) > int(b["vet"]))
 	var s := ProfileManager.saga()
 	s["retinue"] = picks.slice(0, ProfileManager.retinue_cap())

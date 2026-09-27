@@ -3053,8 +3053,26 @@ func gain_veterancy() -> void:
 		if world and is_instance_valid(world.get("_fx_container")):
 			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.4)
 			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 2.2)
+		if _veterancy >= 3 and veteran_name == "":
+			veteran_name = _make_veteran_name()
 		if world and team == world.player_team and not is_hero and world.has_signal("alert"):
-			world.emit_signal("alert", "%s promoted to veteran rank %d" % [String(def.get("name", "Unit")), _veterancy], global_position)
+			if _veterancy == 3:
+				world.emit_signal("alert", "%s reaches rank 3. The army calls them %s." % [String(def.get("name", "Unit")), veteran_name], global_position)
+			else:
+				world.emit_signal("alert", "%s promoted to veteran rank %d" % [veteran_name if veteran_name != "" else String(def.get("name", "Unit")), _veterancy], global_position)
+
+## Soldiers who survive long enough earn a name: a Barroso first name and a
+## byname, fixed by the soldier's place in the muster (no randomness).
+const VETERAN_FIRST := ["Zé", "Tonho", "Quim", "Manel", "Chico", "Bento", "Albino", "Artur", "Delfim", "Custódio",
+	"Rosa", "Olinda", "Deolinda", "Amélia", "Glória", "Celeste", "Fernanda", "Lurdes", "Isaura", "Laurinda"]
+const VETERAN_BYNAME := ["of the Oven", "Stone-fist", "the Wolf-trapper", "of the Seven Springs", "Chestnut",
+	"the Bell-ringer", "of the Fojo", "Oxhorn", "the Unburied", "of the Larouco", "Ember-eyes", "the Ledger",
+	"Two-spears", "the Quiet", "of the Chega", "Candle-bane", "the Garrano", "Slate-back"]
+var veteran_name := ""
+
+func _make_veteran_name() -> String:
+	var k := spawn_serial * 7 + team * 13
+	return "%s %s" % [VETERAN_FIRST[k % VETERAN_FIRST.size()], VETERAN_BYNAME[(k / VETERAN_FIRST.size() + spawn_serial) % VETERAN_BYNAME.size()]]
 
 ## Retinue veterans arrive already promoted (same bonuses as earning it).
 static func _kills_for_rank(rank: int) -> int:

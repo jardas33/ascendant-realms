@@ -3760,7 +3760,11 @@ func _on_game_over(victory: bool) -> void:
 			box.add_child(jar_line)
 		var retinue_size: int = ProfileManager.saga().get("retinue", []).size()
 		if retinue_size > 0 and String(CampaignDefs.find(chapter_id).get("victory", "")) != "ENDING":
-			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle" % [retinue_size, "" if retinue_size == 1 else "s"], 16, Color(0.78, 0.86, 0.66))
+			var named: Array = []
+			for entry in ProfileManager.saga().get("retinue", []):
+				if String(entry.get("name", "")) != "":
+					named.append(String(entry["name"]))
+			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle%s" % [retinue_size, "" if retinue_size == 1 else "s", ("  ·  " + ", ".join(named.slice(0, 3))) if not named.is_empty() else ""], 16, Color(0.78, 0.86, 0.66))
 			retinue_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(retinue_line)
 	if Match and String(Match.get_config().get("mode", "")) == "endless":
