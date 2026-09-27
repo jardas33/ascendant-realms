@@ -102,11 +102,18 @@ float fbm(vec2 p) {
 	return v;
 }
 
+// Two-octave fbm for the broad, low-frequency fields (tile blend, meadow
+// patches, colour fields, macro shading, cloud shadows): their upper octaves
+// were sub-texel detail at these scales and cost most of the ground's GPU time.
+float fbm2(vec2 p) {
+	return 0.5 * vnoise(p) + 0.25 * vnoise(p * 2.03) + 0.1875;
+}
+
 // Broad cloud shadows drifting across the battlefield (shared by the ground
 // and grass shaders so both darken together).
 float cloud_shadow(vec2 xz, float t) {
 	vec2 p = xz * 0.011 + vec2(t * 0.022, t * 0.009);
-	float n = fbm(p) * 0.7 + fbm(p * 2.3 + 4.0) * 0.3;
+	float n = fbm2(p) * 0.7 + fbm2(p * 2.3 + 4.0) * 0.3;
 	return smoothstep(0.5, 0.68, n);
 }
 
@@ -161,13 +168,13 @@ void fragment() {
 	// Anti-tiling: each layer blends a second, rotated and rescaled sample,
 	// selected by low-frequency noise, so the flower tile never repeats in
 	// a visible grid across the battlefield.
-	float tile_mix = smoothstep(0.3, 0.7, fbm(wxz * 0.021 + 7.0));
+	float tile_mix = smoothstep(0.3, 0.7, fbm2(wxz * 0.021 + 7.0));
 	mat2 rot = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
 	vec3 grass_a = mix(texture(tex_grass, wxz * tile_grass * 0.42).rgb,
 		texture(tex_grass, rot * wxz * tile_grass * 0.29 + 0.37).rgb, tile_mix);
 	vec3 grass_b = mix(texture(tex_meadow, wxz * tile_grass * 0.35).rgb,
 		texture(tex_meadow, rot * wxz * tile_grass * 0.23 + 0.61).rgb, 1.0 - tile_mix);
-	float meadow_m = smoothstep(0.35, 0.65, fbm(wxz * 0.012));
+	float meadow_m = smoothstep(0.35, 0.65, fbm2(wxz * 0.012));
 	vec3 ground = mix(grass_a, grass_b, meadow_m);
 	ground = mix(ground_base, ground, clamp(surface_detail, 0.0, 1.0));
 
@@ -198,8 +205,8 @@ void fragment() {
 
 	// Painterly colour fields: broad swathes of lush, sun-dried and mossy
 	// turf, multiplied through the texture so detail survives.
-	float f1 = fbm(wxz * 0.0065 + 3.0);
-	float f2 = fbm(wxz * 0.011 + 17.0);
+	float f1 = fbm2(wxz * 0.0065 + 3.0);
+	float f2 = fbm2(wxz * 0.011 + 17.0);
 	vec3 field = mix(field_lush, field_dry, smoothstep(0.45, 0.75, f1));
 	field = mix(field, field_moss, smoothstep(0.55, 0.8, f2) * 0.8);
 	float grass_share = (1.0 - dirt_m * 0.85) * (1.0 - rock_m) * (1.0 - clamp(road, 0.0, 1.0));
@@ -207,7 +214,7 @@ void fragment() {
 	ground = mix(ground, field_tone, clamp(field_strength * grass_share, 0.0, 1.0));
 
 	// gentle macro shading for depth
-	float macro = (1.0 - surface_macro) + surface_macro * fbm(wxz * 0.006 + 5.0);
+	float macro = (1.0 - surface_macro) + surface_macro * fbm2(wxz * 0.006 + 5.0);
 	ground *= macro * tint;
 	float luma = dot(ground, vec3(0.299, 0.587, 0.114));
 	ground = mix(vec3(luma), ground, clamp(surface_saturation, 0.0, 1.0));
@@ -233,7 +240,7 @@ void fragment() {
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
 	}
 
-	if (ford.z > 0.0) {
+	if (ford.z > 0.0 && abs(wxz.y - ford.x) < ford.y * 1.7) {
 		float edge_wobble = (fbm(vec2(wxz.x * 0.045, 7.0)) - 0.5) * 0.7 * ford.y + (fbm(vec2(wxz.x * 0.21, 3.0)) - 0.5) * 0.18 * ford.y;
 		float dz = abs(wxz.y - ford.x) + edge_wobble;
 		float bank = 1.0 - smoothstep(ford.y * 0.62, ford.y * 1.25, dz);
@@ -247,6 +254,12 @@ void fragment() {
 	}
 	for (int i = 0; i < scorch_count; i++) {
 		float d = length(wxz - scorch_zones[i].xy) / max(scorch_zones[i].z, 0.1);
+		// The noisy edge never reaches past 1.3 radii: skip the zone's noise
+		// and crack work for the rest of the battlefield (it was paid on
+		// every pixel of the map).
+		if (d > 1.3) {
+			continue;
+		}
 		float edge = d + (fbm(wxz * 0.09 + float(i) * 13.0) - 0.5) * 0.55;
 		float zone = (1.0 - smoothstep(0.55, 1.0, edge));
 		if (scorch_zones[i].w < 0.0) {

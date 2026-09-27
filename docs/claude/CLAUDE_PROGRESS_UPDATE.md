@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 07:15 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 07:45 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -155,7 +155,7 @@ Last updated: 2026-09-27, 07:15 UTC. Claude updates this file after every pass.
    A Hard Vorthak AI now wins a 20-minute soak at about minute 18.
 2. DONE. A Vorthak player on Hollowspan now gets the scorched holdfast (Lioraen already had its grove). Noted for Codex: the Vorthak worker (Bondservant) selection portrait shows a T-posed model instead of portrait art.
 3. Units pushing against obstacles near their own base.
-4. Frame time rose from about 17 ms to about 21 ms in today's perf probe; find out why.
+4. DONE. Frame cost: a feature-by-feature GPU bisect showed the ground shader alone cost about 11 ms of GPU per frame at 1600x900, mostly the Vorthak/Lioraen zone noise and cracks being computed on every pixel of the map. Zones and the ford now skip that work outside their area, and the broad low-frequency fields use two noise octaves instead of four. GPU time for the whole frame dropped from about 16.7 ms to about 12 ms with no visible change.
 
 ## Still open
 
