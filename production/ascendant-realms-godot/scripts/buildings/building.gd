@@ -707,29 +707,42 @@ func _build_rally_marker() -> void:
 	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_rally_marker.add_child(ring)
 
-	var post := MeshInstance3D.new()
-	post.name = "RallyBeaconPost"
-	var post_mesh := CylinderMesh.new()
-	post_mesh.top_radius = 0.045
-	post_mesh.bottom_radius = 0.07
-	post_mesh.height = 0.9
-	post.mesh = post_mesh
-	post.position.y = 0.52
-	post.material_override = _rally_marker_material()
-	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_rally_marker.add_child(post)
-
-	for side in [-1.0, 1.0]:
-		var chevron := MeshInstance3D.new()
-		chevron.name = "RallyBeaconChevron%s" % ("Left" if side < 0.0 else "Right")
-		var chevron_mesh := BoxMesh.new()
-		chevron_mesh.size = Vector3(0.10, 0.34, 0.10)
-		chevron.mesh = chevron_mesh
-		chevron.position = Vector3(side * 0.11, 0.98, 0.0)
-		chevron.rotation.z = deg_to_rad(35.0 * side)
-		chevron.material_override = _rally_marker_material()
-		chevron.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		_rally_marker.add_child(chevron)
+	# A small banner in the owner's colour marks the rally point, and a dashed
+	# trail runs to it from the building while the building is selected.
+	var pole := MeshInstance3D.new()
+	pole.name = "RallyBeaconPost"
+	var pole_mesh := CylinderMesh.new()
+	pole_mesh.top_radius = 0.035
+	pole_mesh.bottom_radius = 0.05
+	pole_mesh.height = 2.0
+	pole.mesh = pole_mesh
+	pole.position.y = 1.0
+	pole.material_override = _banner_wood
+	_rally_marker.add_child(pole)
+	var cloth := MeshInstance3D.new()
+	cloth.name = "RallyBeaconFlag"
+	var cloth_mesh := PlaneMesh.new()
+	cloth_mesh.orientation = PlaneMesh.FACE_Z
+	cloth_mesh.size = Vector2(0.6, 0.8)
+	cloth_mesh.subdivide_width = 2
+	cloth_mesh.subdivide_depth = 8
+	cloth.mesh = cloth_mesh
+	cloth.material_override = _banner_material
+	cloth.position = Vector3(0.33, 1.55, 0.0)
+	cloth.set_instance_shader_parameter("team_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
+	_rally_marker.add_child(cloth)
+	_rally_path = MeshInstance3D.new()
+	_rally_path.name = "RallyPath"
+	var path_mesh := QuadMesh.new()
+	path_mesh.orientation = PlaneMesh.FACE_Y
+	path_mesh.size = Vector2(1.0, 0.35)
+	_rally_path.mesh = path_mesh
+	var path_mat := ShaderMaterial.new()
+	path_mat.shader = load("res://assets/shaders/rally_path.gdshader")
+	_rally_path.material_override = path_mat
+	_rally_path.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_rally_path.visible = false
+	add_child(_rally_path)
 
 	_update_rally_marker_position()
 
@@ -742,15 +755,32 @@ func _rally_marker_material() -> StandardMaterial3D:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	return mat
 
+var _rally_path: MeshInstance3D
+
 func _update_rally_marker_position() -> void:
 	if is_instance_valid(_rally_marker):
 		_rally_marker.position = to_local(rally_point)
+	if is_instance_valid(_rally_path):
+		var from := global_position
+		var to := rally_point
+		var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+		var length := flat.length()
+		if length > 0.5:
+			var start := from + flat.normalized() * minf(footprint, length * 0.5)
+			var run := Vector3(to.x - start.x, 0.0, to.z - start.z)
+			var mid := start + run * 0.5
+			_rally_path.global_position = Vector3(mid.x, 0.07, mid.z)
+			_rally_path.global_rotation = Vector3(0.0, atan2(-run.z, run.x), 0.0)
+			_rally_path.scale = Vector3(run.length(), 1.0, 1.0)
+			(_rally_path.material_override as ShaderMaterial).set_shader_parameter("path_length", run.length())
 
 func _refresh_rally_marker(selected: bool) -> void:
 	if not is_instance_valid(_rally_marker):
 		return
 	_update_rally_marker_position()
 	_rally_marker.visible = selected and _has_rally and _is_rally_capable()
+	if is_instance_valid(_rally_path):
+		_rally_path.visible = _rally_marker.visible
 
 func _set_construction_visual(p: float) -> void:
 	# Keep the footprint visibly grounded while construction progresses. The old

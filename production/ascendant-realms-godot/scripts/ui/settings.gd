@@ -13,7 +13,7 @@ const CONTROLS := [
 	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
 	["HERO POWERS", "Q / T / E / R cast hero abilities."],
 	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it. Tab selects the army."],
-	["QUICK SELECT", "F selects an idle worker. Space focuses the hero."],
+	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
 	["CAMERA", "Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
 	["SYSTEM", "F3 toggles debug information. Esc pauses the battle."],

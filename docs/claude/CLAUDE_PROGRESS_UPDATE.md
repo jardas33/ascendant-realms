@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 03:05 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 03:20 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -102,7 +102,8 @@ Last updated: 2026-09-27, 03:05 UTC. Claude updates this file after every pass.
 
 ## Interface
 
-- **Alert pings:** alerts with a location (base under attack, building lost, point captured) flash a ring on the minimap, red for threats and gold otherwise. Backspace jumps the camera to the latest alert.
+- **Rally points:** a selected building shows its rally point as a small banner in the owner's colour, with a dashed trail flowing to it from the building.
+- **Alert pings:** alerts with a location (base under attack, building lost, point captured) flash a ring on the minimap, red for threats and gold otherwise. Backspace jumps the camera to the latest alert, and the key is listed in the pause menu and the Settings field manual.
 - **Settings:** a new Graphics Quality option. Low turns off shadows, ambient occlusion, grass and weather and cuts draw calls from about 2,800 to about 1,000. Medium halves the grass and shortens shadows. High is the full look. A new Reduce Screen Shake toggle controls the camera shake; that setting existed but had no switch.
 - **Loading screen:** a gilded progress bar and a random tip on every load, covering controls, capture points, veterans, repair and scouting.
 - **Main menu:** the painted background drifts slowly, gold motes rise across the realm, a vignette frames it, the title and buttons fade in, and buttons lift on hover.
