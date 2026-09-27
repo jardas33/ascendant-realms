@@ -170,6 +170,13 @@ Last updated: 2026-09-28, 11:30 UTC. Claude updates this file after every pass.
     - In duels it now crushes Vorthak and loses narrowly to Barrosan (it used to be wiped out).
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
   - Carried to plan 12: unit render cost in 100+ unit battles, Hard and Brutal from a player's view, and matching every chapter's map to its story.
+- **Plan 12 (started):**
+  1. Character draw cost. Measured per unit: the Barrosan Spear Guard is 37 draw parts (32 separately skinned body pieces and 5 accessories), the Clan Levy 10, the Vorthak Ash Thrall 8, the Cinder Spitter 1. Joining each model's parts by material in Blender would cut big-battle draw calls sharply. These are Codex's character assets, so the re-export will keep file names and rigs unchanged and be noted in the handoff.
+  2. Hard and Brutal from a player's point of view (first attack timing and wave sizes).
+  3. Check every chapter's map fits its story.
+  4. Barrosan AI strategy: attack timing and army composition.
+  5. Recheck Codex's newest work.
+  6. Regression, review and progress update.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
