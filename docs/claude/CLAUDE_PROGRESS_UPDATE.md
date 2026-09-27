@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 23:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-27, 23:59 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -303,6 +303,17 @@ Last updated: 2026-09-27, 23:00 UTC. Claude updates this file after every pass. 
   - **Checked windowed:** about 40 fps in the 120-unit fight, no regression from the Codex merges. Volcanic maps show Codex's new ash-and-basalt ground.
   - Regression passed: compile check, menu smoke tour, all 9 tests, the saga data check, plus new checks for save round trip, talents, command bus and twists.
   - Merged Codex's carved slate waystones for Lioraen starts (1e70d881); compile check and conquest test pass, screenshot checked. Pushed to GitHub.
+- **Plan 24 (done):**
+  - **Road Tyrants:** a named boss holds the enemy stronghold on every 25th Endless Road stage, with its own mechanic. The Tarasca of the Cávado breathes a ring of fire every 8 s, with a warning flare. The Old Wolf of Larouco calls a wolf pack every 20 s. The Iron Abbot of Pitões heals fast when left unhit. The Moura Queen takes half damage while her court stands. They return stronger every 100 stages, and a kill pays like ten Elites.
+  - **Endless Road records:** best stage per faction and fastest clear of every stage, shown in the stage window. A new fastest clear gets an alert.
+  - **Every player order now travels through the command bus as data:** building placement, training, research, queue cancel, rally points and hero abilities. This is groundwork for online play.
+  - **War Chest:** before equipping, it shows the stats you would lose from the current piece and the Hero Power change (sets, powers and talents included).
+  - **Battle effects** for Thornhide, Stormcall and Bloodrush.
+  - **Fair AI-versus-AI testing:** both seats get the same hero on a map without fog. A 45-match round robin across all ten factions gave Hollow 9-0, Sylvan 7-2, Grimtusk/Vorthak/Wyldkin 6-3, Frostborn 3-5, Sunspear 2-6, Lioraen 2-7, Karak 1-7 and Barrosan 1-8.
+  - **Balance, first round:** the Hollow Skeleton has less health (85, was 95) and Hollow life drain is 8% (was 12%). The slower factions' houses, barracks and towers now cost and take the same as the swarm factions', and their basic infantry trains in 12 s. The AI now defends its fields and houses, not just its hall, and its waiting army now answers. AI gathering follows what each faction actually spends and moves workers off stockpiles faster.
+  - **Open finding:** equal-cost fights show Barrosan and Karak units win comfortably (Barrosan beat Vorthak and Hollow with 6 survivors), but their AI still loses most AI-versus-AI matches. The cause is in how their AI plays, not in unit strength, and plan 25 traces it.
+  - **Long-match check (windowed, 4x speed):** node count is steady (no leak). Frames run 35 to 60 ms at 4x, with a few 90 to 120 ms spikes in big fights.
+  - Regression passed (16 checks, now including the bosses). Merged Codex's Lioraen moonbell ferns. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
