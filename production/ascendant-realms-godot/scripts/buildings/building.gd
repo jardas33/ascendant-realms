@@ -100,6 +100,7 @@ static var _visual_identity_materials: Dictionary = {}
 static var _visual_identity_box_mesh: BoxMesh
 static var _visual_identity_cylinder_mesh: CylinderMesh
 static var _slice7_barrosan_surface_materials: Dictionary = {}
+static var _building_selection_materials: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("buildings")
@@ -615,7 +616,19 @@ func _build_selection_ring() -> void:
 	quad.orientation = PlaneMesh.FACE_Y
 	quad.size = Vector2.ONE * (2.0 / 0.72)
 	selection_ring.mesh = quad
-	selection_ring.material_override = CombatVfx.selection_ring_material(commander.color if commander else Color.WHITE)
+	# Buildings occupy much more screen space than units. Keep the team-colour
+	# selection cue, but let the architecture remain the visual focus.
+	var team_color: Color = commander.color if commander else Color.WHITE
+	var material_key := team_color.to_html(false)
+	if not _building_selection_materials.has(material_key):
+		var selection_material := CombatVfx.selection_ring_material(team_color).duplicate() as ShaderMaterial
+		selection_material.set_shader_parameter("energy", 0.56)
+		selection_material.set_shader_parameter("ring_width", 0.018)
+		selection_material.set_shader_parameter("glow_width", 0.06)
+		selection_material.set_shader_parameter("bracket_strength", 0.52)
+		selection_material.set_shader_parameter("wash_strength", 0.025)
+		_building_selection_materials[material_key] = selection_material
+	selection_ring.material_override = _building_selection_materials[material_key]
 	selection_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	selection_ring.position.y = 0.1
 	selection_ring.scale = Vector3(_selection_indicator_extents.x, 1.0, _selection_indicator_extents.y)
