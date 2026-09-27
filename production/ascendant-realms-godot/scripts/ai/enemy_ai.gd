@@ -939,7 +939,11 @@ func _try_build(kind: String) -> void:
 	# Finish what is already laid out before starting more sites.
 	# ...except a house when the population is capped: a Barrosan AI sat at
 	# 12/12 for minutes with 650 food, its house queued behind slow sites.
-	var housing_crisis: bool = kind == "house" and commander.pop_used >= commander.pop_cap - 4 and _unbuilt_count() < 4
+	var needs_house: bool = commander.pop_used >= commander.pop_cap - 6 and commander.pop_cap < commander.POP_HARD_CAP
+	# Houses first: nothing else is started while the army needs room.
+	if needs_house and kind != "house" and kind != "barracks":
+		return
+	var housing_crisis: bool = kind == "house" and needs_house and _unbuilt_count() < 4
 	if _unbuilt_count() >= 2 and not housing_crisis:
 		return
 	var worker = _free_worker()
