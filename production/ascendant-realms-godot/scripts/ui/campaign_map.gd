@@ -305,6 +305,13 @@ func _open_endless() -> void:
 	for o in st["opponents"]:
 		foes.append("%s (%s)" % [GameData.get_race(String(o["race"])).get("name", o["race"]), String(o["difficulty"]).capitalize()])
 	var extra := "   ·   Enemy Lume swollen: +%d%% income" % int(float(st["might"]) * 100.0 / 3.0) if float(st["might"]) > 0.0 else ""
+	var twist_lines: Array = []
+	for t in st.get("twists", []):
+		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(t, t)))
+	if not twist_lines.is_empty():
+		var tw := _label("Twists: " + "  ·  ".join(twist_lines), 15, Color(0.95, 0.62, 0.42))
+		tw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(tw)
 	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best()], 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(meta)
@@ -336,6 +343,8 @@ func _launch_endless(st: Dictionary) -> void:
 	cfg["endless_title"] = String(st["title"])
 	cfg["endless_might"] = float(st["might"])
 	cfg["endless_xp_mult"] = float(st["xp_mult"])
+	cfg["twists"] = st.get("twists", []).duplicate()
+	cfg["mood"] = String(st.get("mood", ""))
 	Match.set_config(cfg)
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
 

@@ -5,6 +5,10 @@ extends RefCounted
 ## for every player - ready for shared leaderboards and online play later.
 
 const RACE_IDS := ["vorthak", "sunspear", "hollow", "frostborn", "wyldkin", "karak", "grimtusk", "sylvan", "lioraen", "barrosan"]
+const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils"]
+const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",
+	"champions": "Champions: enemy heroes far tougher", "warband": "Warband: enemy reinforcements at 3 minutes",
+	"spoils": "Rich spoils: extra loot and +25% experience"}
 const DIFFICULTY_STEPS := ["easy", "normal", "normal", "hard", "hard", "brutal"]
 const PLACES := [
 	"Pitões das Júnias", "Tourém Ford", "Cabril Gorge", "Paredes do Rio", "Sirvozelo",
@@ -38,6 +42,20 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 		if depth > 12 + i * 6:
 			diff = "brutal"
 		opponents.append({"race": races[rng.randi() % races.size()], "difficulty": diff})
+	# Stage twists from stage 3: 1 or 2, seeded like everything else.
+	var twists: Array = []
+	var mood := ""
+	if depth >= 3:
+		var twist_pool := TWISTS.duplicate()
+		var n := 1 + rng.randi() % 2
+		for k in n:
+			var t: String = twist_pool[rng.randi() % twist_pool.size()]
+			twist_pool.erase(t)
+			if t in ["night", "storm", "ember", "dusk"]:
+				if mood != "":
+					continue
+				mood = t
+			twists.append(t)
 	# Past the ladder, the enemy's Lume swells: bonus income that keeps rising.
 	var might := maxf(0.0, float(depth - 12)) * 0.35
 	return {
@@ -47,6 +65,8 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 		"opponents": opponents,
 		"might": might,
 		"xp_mult": 1.0 + float(depth) * 0.08,
+		"twists": twists,
+		"mood": mood,
 	}
 
 const RELIC_SLOTS := ["main_hand", "body", "head", "amulet", "ring1", "cloak", "off_hand", "feet", "hands", "ring2", "relic"]

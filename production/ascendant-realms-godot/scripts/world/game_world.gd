@@ -179,7 +179,7 @@ func _ready() -> void:
 	_m20_end(bounds_stage)
 	_theme = MapDefs.theme(map.get("theme", "highland"))
 	# Campaign chapters can set the hour and weather over the map's own light.
-	var mood := String(CampaignDefs.CHAPTER_MOODS.get(String(cfg.get("campaign_chapter", "")), ""))
+	var mood := battle_mood()
 	if mood != "":
 		_theme = _theme.duplicate(true)
 		_theme.merge(CampaignDefs.MOODS[mood], true)
@@ -633,7 +633,7 @@ func _scatter_environment() -> void:
 		var weather: Node3D = load("res://scripts/world/ambient_weather.gd").new()
 		weather.name = "AmbientWeather"
 		add_child(weather)
-		weather.build(str(map.get("theme", "highland")), String(CampaignDefs.CHAPTER_MOODS.get(String(Match.get_config().get("campaign_chapter", "")), "")))
+		weather.build(str(map.get("theme", "highland")), battle_mood())
 		# Medium quality keeps the weather but at half the particles (storm rain is 1,500).
 		if quality == "medium":
 			for ps in weather.find_children("*", "GPUParticles3D", true, false):
@@ -644,7 +644,7 @@ func _start_ambient_sound() -> void:
 	var amb: Node = load("res://scripts/world/ambient_sound.gd").new()
 	amb.name = "AmbientSound"
 	add_child(amb)
-	amb.build(str(map.get("theme", "highland")), String(CampaignDefs.CHAPTER_MOODS.get(String(Match.get_config().get("campaign_chapter", "")), "")))
+	amb.build(str(map.get("theme", "highland")), battle_mood())
 
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
@@ -1854,6 +1854,13 @@ const AI_HERO_KITS := {
 	"sunspear": ["rally", "charge", "bolt"], "wyldkin": ["charge", "root", "slam"],
 }
 
+## The light and weather of this battle: a campaign chapter's mood, or an
+## Endless Road stage twist.
+func battle_mood() -> String:
+	var cfg := Match.get_config()
+	var chapter_mood := String(CampaignDefs.CHAPTER_MOODS.get(String(cfg.get("campaign_chapter", "")), ""))
+	return chapter_mood if chapter_mood != "" else String(cfg.get("mood", ""))
+
 func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var count := int({"easy": 0, "normal": 1, "hard": 2, "brutal": 3}.get(difficulty, 1))
 	var level := 2 if difficulty in ["hard", "brutal"] else 1
@@ -1863,6 +1870,10 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 		abilities[String(kit[i])] = level
 	var chapter_index := CampaignDefs.index_of(String(Match.get_config().get("campaign_chapter", "")))
 	var growth := float(maxi(chapter_index, 0))
+	# Endless Road "Champions" twist: enemy heroes half again as tough.
+	var champ := 1.5 if "champions" in Match.get_config().get("twists", []) else 1.0
+	# Enemy heroes also grow with every Endless Road stage.
+	growth = (growth + float(Match.get_config().get("endless_depth", 0)) * 0.8) * champ
 	return {"abilities": abilities, "max_mana": 120.0 + growth * 3.0, "mana_regen": 5.0 + growth * 0.1,
 		"bonus_hp": growth * 8.0, "bonus_dmg": growth * 0.5, "bonus_armor": floorf(growth / 10.0),
 		"regen": 1.5 + growth * 0.05}
@@ -2555,6 +2566,9 @@ func _roll_battle_loot(victory: bool) -> Array:
 	var fortune := int(hero.get("attributes", {}).get("fortune", 0))
 	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
 	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
+	# Endless Road "Rich spoils" twist: a second roll.
+	if "spoils" in cfg.get("twists", []):
+		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 1, ilvl, fortune, victory, hardest))
 	var shown: Array = []
 	for it in items:
 		ProfileManager.add_item(it)
@@ -2602,6 +2616,26 @@ func _start_saga_events() -> void:
 				emit_signal("alert", String(ev["allies"]["line"]), Vector3.ZERO))
 	for wave in ev.get("waves", []):
 		get_tree().create_timer(float(wave["at"]), false).timeout.connect(func(): _spawn_saga_wave(wave))
+
+## Endless Road "Warband" twist: at three minutes a war party of the first
+## enemy's line infantry marches on the player.
+func _schedule_warband() -> void:
+	get_tree().create_timer(180.0, false).timeout.connect(func():
+		if not game_running or commanders.size() < 2:
+			return
+		var race := String(commanders[1].race)
+		var picks: Array = []
+		for id in UnitDefs.get_all():
+			var d: Dictionary = UnitDefs.get_all()[id]
+			if String(d.get("race", "")) == race and int(d.get("tier", 1)) == 1 and String(d.get("role", "")) in ["melee", "ranged", "defender"]:
+				picks.append(id)
+		if picks.is_empty():
+			return
+		var n := 4 + int(Match.get_config().get("endless_depth", 1)) / 5
+		var units: Array = []
+		for i in n:
+			units.append(picks[i % picks.size()])
+		_spawn_saga_wave({"team": 1, "units": units, "line": "A warband crests the ridge. The road does not let you rest."}))
 
 func _spawn_saga_wave(wave: Dictionary) -> void:
 	if not game_running:
@@ -2655,6 +2689,8 @@ func _start_match() -> void:
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()
 	_start_saga_events()
+	if "warband" in Match.get_config().get("twists", []):
+		_schedule_warband()
 	if String(Match.get_config().get("mode", "")) == "endless":
 		var ecfg := Match.get_config()
 		get_tree().create_timer(3.0, false).timeout.connect(func():
@@ -2826,6 +2862,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.5
 	if String(Match.get_config().get("mode", "")) == "endless":
 		xp *= float(Match.get_config().get("endless_xp_mult", 1.0))
+	if "spoils" in Match.get_config().get("twists", []):
+		xp *= 1.25
 	if victory:
 		xp *= 1.6
 	if not _profile_recorded and ProfileManager.has_hero():

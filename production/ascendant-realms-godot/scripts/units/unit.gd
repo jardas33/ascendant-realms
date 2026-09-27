@@ -2371,6 +2371,10 @@ func _do_attack() -> void:
 					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
 				if splash > 0.0:
 					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
+				# Cleave (a skill-tree node and a legendary power) was granted but
+				# never implemented: half damage to enemies around the target.
+				if bool(hero_flags.get("cleave", false)) and is_instance_valid(tgt):
+					world.apply_splash(tgt.global_position, 2.5, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 		)
 
 func _spawn_projectile(attack_event_id: String = "") -> void:

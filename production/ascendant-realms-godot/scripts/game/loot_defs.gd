@@ -30,6 +30,13 @@ const SUFFIXES := ["of Salto", "of the Larouco", "of the Chega", "of Tourém", "
 ## Stat value per point of item budget.
 const STAT_SCALE := {"dmg": 0.55, "hp": 5.0, "armor": 0.18, "speed": 0.02, "attack_speed": 0.006,
 	"mana": 3.5, "mana_regen": 0.12, "heal_power": 0.8, "aura_dmg": 0.12}
+## [flag, value, description] - powers the hero already understands.
+const LEGENDARY_POWERS := [
+	["cleave", true, "Power: every blow also strikes the enemies around the target."],
+	["lifesteal", 0.08, "Power: heals the hero for 8% of all damage dealt."],
+	["execute", true, "Power: +50% damage to enemies below 30% health."],
+	["last_stand", true, "Power: survives one lethal blow each battle."],
+]
 const AFFIX_POOL := ["dmg", "hp", "armor", "speed", "attack_speed", "mana", "mana_regen", "heal_power", "aura_dmg"]
 
 ## Items for one finished battle.
@@ -75,11 +82,18 @@ static func make_item(rng: RandomNumberGenerator, item_level: int, shift: float)
 	var affixes := int(RARITY_AFFIXES[rarity])
 	for a in affixes:
 		_add_stat(stats, String(AFFIX_POOL[rng.randi() % AFFIX_POOL.size()]), budget * 0.5 / float(affixes))
+	# Legendary gear carries a power as well as stats.
+	var flags := {}
+	var power_desc := ""
+	if rarity == "legendary":
+		var power: Array = LEGENDARY_POWERS[rng.randi() % LEGENDARY_POWERS.size()]
+		flags[power[0]] = power[1]
+		power_desc = " " + String(power[2])
 	var name := "%s %s" % [PREFIXES[rng.randi() % PREFIXES.size()], base[0]]
 	if rarity in ["rare", "epic", "legendary"]:
 		name += " " + String(SUFFIXES[rng.randi() % SUFFIXES.size()])
-	return {"name": name, "slot": slot, "rarity": rarity, "stats": stats, "flags": {},
-		"item_level": item_level, "desc": "Taken from the field. Item level %d." % item_level}
+	return {"name": name, "slot": slot, "rarity": rarity, "stats": stats, "flags": flags,
+		"item_level": item_level, "desc": "Taken from the field. Item level %d.%s" % [item_level, power_desc]}
 
 static func _add_stat(stats: Dictionary, key: String, points: float) -> void:
 	var v := points * float(STAT_SCALE.get(key, 1.0))
