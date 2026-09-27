@@ -12,6 +12,7 @@ const GROUND_TEX := {
 	"dirt": "res://assets/textures/nature/highland_dirt_path.png",
 	"rock": "res://assets/textures/stone/highland_rock.png",
 	"snow": "res://assets/textures/nature/frostmere_windswept_snow_r1.png",
+	"volcanic": "res://assets/textures/ground/vorthak_volcanic_ash_r1.png",
 }
 const WATER_SHADER := "res://assets/shaders/toon_water.gdshader"
 const GROUND_SHADER := "res://assets/shaders/ground_blend.gdshader"
@@ -165,6 +166,7 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("dirt_bias", float(_theme.get("dirt_bias", 0.0)))
 	sm.set_shader_parameter("rock_bias", float(_theme.get("rock_bias", 0.0)))
 	sm.set_shader_parameter("snow_amt", float(_theme.get("snow", 0.0)))
+	sm.set_shader_parameter("volcanic_surface", 1.0 if String(map.get("theme", "")) == "volcanic" else 0.0)
 	# R19 material hierarchy: calm the walkable plane first, then let roads
 	# carry a restrained value shift.  This is presentation-only and does not
 	# change the map's authored geometry or navigation data.
@@ -178,6 +180,9 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("road_edge_strength", grade.road_edge_strength)
 	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
 	sm.set_shader_parameter("field_strength", float(grade.get("field_strength", 0.0)))
+	sm.set_shader_parameter("field_lush", grade.get("field_lush", Color(0.26, 0.36, 0.16)))
+	sm.set_shader_parameter("field_dry", grade.get("field_dry", Color(0.52, 0.48, 0.26)))
+	sm.set_shader_parameter("field_moss", grade.get("field_moss", Color(0.18, 0.25, 0.14)))
 	sm.set_shader_parameter("relief_strength", float(grade.get("relief_strength", 0.0)))
 	sm.set_shader_parameter("snow_shadow_color", grade.get("snow_shadow_color", Color(0.62, 0.69, 0.80)))
 	sm.set_shader_parameter("snow_highlight_color", grade.get("snow_highlight_color", Color(0.90, 0.95, 1.0)))
@@ -189,7 +194,9 @@ func _make_ground_material(map: Dictionary) -> Material:
 func _r19_ground_grade(theme_name: String) -> Dictionary:
 	match theme_name:
 		"volcanic":
-			return {"ground_base": Color(0.29, 0.29, 0.28), "road_base": Color(0.40, 0.35, 0.30), "road_edge_color": Color(0.15, 0.16, 0.15), "surface_detail": 0.20, "surface_macro": 0.12, "road_detail": 0.34, "road_edge_strength": 0.13, "surface_saturation": 0.22}
+			# Broad ash and basalt fields cool the play surface behind Vorthak's
+			# warm structures. Rusted roads retain a clear navigational read.
+			return {"ground_base": Color(0.35, 0.35, 0.37), "road_base": Color(0.47, 0.36, 0.29), "road_edge_color": Color(0.19, 0.19, 0.21), "surface_detail": 0.77, "surface_macro": 0.14, "road_detail": 0.38, "road_edge_strength": 0.21, "surface_saturation": 0.72, "field_strength": 0.32, "field_lush": Color(0.33, 0.34, 0.36), "field_dry": Color(0.49, 0.44, 0.40), "field_moss": Color(0.27, 0.28, 0.30), "relief_strength": 0.26}
 		"ashen":
 			# Ashen needs a firmer value floor and broader breakup so the existing
 			# stone/dirt inputs survive the full battlefield view.

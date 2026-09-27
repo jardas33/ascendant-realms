@@ -182,7 +182,7 @@ func _run() -> void:
 	if OS.get_environment("ASCENDANT_UI_CLEAN_POINTER") == "1" and OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") != "1":
 		# A physical desktop pointer left over a card should not insert its hover
 		# tooltip into a neutral comparison capture. Exercise tooltip separately.
-		var safe_pointer := root.get_viewport().get_visible_rect().size * Vector2(0.5, 0.34)
+		var safe_pointer := root.get_viewport().get_visible_rect().size * Vector2(0.30, 0.20)
 		Input.warp_mouse(root.get_viewport().get_screen_transform() * safe_pointer)
 		instance.hud._hide_command_tooltip()
 		for index in 2:
