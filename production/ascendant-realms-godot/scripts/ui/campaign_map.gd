@@ -356,7 +356,7 @@ func _open_briefing(id: String) -> void:
 	rule.color = Color(0.98, 0.84, 0.46, 0.4)
 	rule.custom_minimum_size = Vector2(0, 1)
 	box.add_child(rule)
-	var body := _label(String(c["briefing"]), 18, Color(0.92, 0.89, 0.80))
+	var body := _label(CampaignDefs.briefing_for(id, _hero_race()), 18, Color(0.92, 0.89, 0.80))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.custom_minimum_size = Vector2(716, 0)
 	box.add_child(body)

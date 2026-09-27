@@ -142,6 +142,13 @@ The player names and creates the hero at the Hero Forge. In the saga:
 - In the prologue, the Vorthak raid Salto. The hero is struck down at the Spring of the Seven Mouths, and the spring blazes. The villagers see them stand up with fire in their eyes. They believe the Lume *saved* them.
 - It did not. **The hero died at the spring.** The Lume ascended *into a dead body*, because the dead remember best. The Jardas is Ascendant in the oldest sense: they rose.
 
+**Every hero is the Jardas of Salto; their faction is their blood.**
+- A *Barrosan* Jardas is Salto born and bred.
+- A *Lioraen* Jardas is a foundling Avó Brites found as a baby in the spring, wrapped in bark: the child of a Moura, given to the spring to be remembered.
+- A *Vorthak* Jardas carries Furna's blood through their grandmother; ash-glass shows in their veins when they are angry.
+
+These origins are added to the prologue briefing and to the Act III ledger reveal.
+
 Clues are planted from the first battle:
 - Wolves go quiet when the Jardas passes.
 - The Compaña never attacks the Jardas personally.

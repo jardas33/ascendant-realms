@@ -268,6 +268,27 @@ const ENDINGS := {
 	"seize": "THE ASCENDANT REALM. You did not walk into the spring. You became it. The Lume is yours, the Wall is yours, and the highlands are safe under a ruler who never sleeps and never dies. The Dominion kneels. The Mouras are gone. Salto bakes bread every morning for a Jardas who can no longer taste it. In seventy-seven years the Lume will try to rise again, and for the first time in history, the Ascension war will be fought against you.",
 }
 
+## Every hero is the Jardas of Salto; their faction is their blood. These
+## lines join the prologue and the Act III reveal so a Lioraen or Vorthak
+## hero has their own place in the same story.
+const ORIGINS := {
+	"lioraen": {
+		"1-1": "You were a foundling. Avó Brites found you as a baby in the Spring of Seven Mouths, wrapped in bark, and raised you as her own. The Lioraen of the groves have always watched you from the trees.",
+		"3-3": "Carvalho turns one page back. Beside your name is a second entry: born of a Moura of the Seven Fountains, given to the spring to be remembered. The Mouras gave you to Salto. The spring gave you back.",
+	},
+	"vorthak": {
+		"1-1": "Your blood is Furna's. Your grandmother fled the drowned valley as a girl, and the violet ash-glass shows in your veins when you are angry. Salto raised you anyway.",
+		"3-3": "Beside your name, the ledger lists your line: Furna, drowned. The Lume in you and the ash-glass in the Vorthak are the same fire, one burning and one rotted.",
+	},
+}
+
+static func briefing_for(id: String, race: String) -> String:
+	var text := String(find(id).get("briefing", ""))
+	var extra := String(ORIGINS.get(race, {}).get(id, ""))
+	return text + ("
+
+" + extra if extra != "" else "")
+
 static func all() -> Array:
 	return CHAPTERS
 
