@@ -93,3 +93,18 @@ Each one documents its command line in its docstring. The worker script takes th
 - Lioraen has no faction settlement kit yet, and the Groveheart still reads as toy-like.
 - The menus outside battle (skirmish setup, skill tree label truncation, War Chest, campaign map) are untouched.
 - 2135 draw calls in the opening. A MultiMesh pass for decor would be the next render-side win.
+
+## Character part joins (2026-09-28)
+
+Six character GLBs were re-exported from Blender with every mesh driven by the armature joined into one object (one draw per material instead of one per part). The rig, bone names, node names of the skeleton and the external animation libraries are unchanged; walk animation was verified on each. Originals are kept outside the repo at `D:\ClaudeWork\tmp\glb_backup\`.
+
+| Model | Mesh parts before | After |
+|---|---|---|
+| grimtusk_ogre_r709b | 146 | 1 |
+| vorthak_rift_blade | 43 | 1 |
+| barrosan_stoneward_spears_r696_compat | 32 | 1 |
+| barrosan_clan_levy | 6 | 1 |
+| vorthak_ash_thrall | 8 | 1 |
+| vorthak_bondservant_worker | 5 | 1 |
+
+`grimtusk_bowcrusha_r704c` (119 rigid parts) was not joined: its parts are not parented to bones directly and need a closer look. Accessory GLBs in `visual_convergence/` were not changed; unit.gd now merges the chosen pieces of each attachment at runtime (cached per accessory and prefix).

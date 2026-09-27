@@ -571,6 +571,47 @@ func _build_model() -> void:
 	call_deferred("_apply_m_initial_facing")
 
 
+## Accessory models are many small rigid pieces (an Outrider's kit was 13
+## draw calls, a Veil Warlock's 13). Merge the pieces of each attachment into
+## one mesh with a surface per material, built once per accessory and shared
+## by every unit that wears it.
+static var _accessory_mesh_cache := {}
+
+func _merge_accessory(accessory: Node3D, key: String, prefix: String) -> void:
+	var keep: Array = []
+	for mi in accessory.find_children("*", "MeshInstance3D", true, false):
+		if mi.mesh != null and (prefix.is_empty() or String(mi.name).begins_with(prefix)):
+			keep.append(mi)
+	if keep.size() < 2:
+		return
+	var merged: ArrayMesh = _accessory_mesh_cache.get(key)
+	if merged == null:
+		var groups := {}
+		var order: Array = []
+		var inv := accessory.global_transform.affine_inverse()
+		for mi in keep:
+			var xf: Transform3D = inv * mi.global_transform
+			for surface in mi.mesh.get_surface_count():
+				var mat: Material = mi.get_active_material(surface)
+				if not groups.has(mat):
+					var st := SurfaceTool.new()
+					st.begin(Mesh.PRIMITIVE_TRIANGLES)
+					groups[mat] = st
+					order.append(mat)
+				(groups[mat] as SurfaceTool).append_from(mi.mesh, surface, xf)
+		merged = ArrayMesh.new()
+		for mat in order:
+			(groups[mat] as SurfaceTool).commit(merged)
+			merged.surface_set_material(merged.get_surface_count() - 1, mat)
+		_accessory_mesh_cache[key] = merged
+	for mi in keep:
+		mi.queue_free()
+	var out := MeshInstance3D.new()
+	out.name = "AccessoryBatch"
+	out.mesh = merged
+	out.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	accessory.add_child(out)
+
 func _build_slice4_role_accessories(model: Node3D) -> void:
 	var specs: Array = SLICE4_ACCESSORIES.get(unit_id, [])
 	if specs.is_empty():
@@ -617,6 +658,7 @@ func _build_slice4_role_accessories(model: Node3D) -> void:
 		accessory.scale = Vector3.ONE * float(spec.get("scale", 1.0))
 		for mesh in accessory.find_children("*", "GeometryInstance3D", true, false):
 			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_merge_accessory(accessory, "%s|%s" % [scene_path, prefix], prefix)
 
 func _build_r3b_worker_presentation(model: Node3D) -> void:
 	if not is_worker:
