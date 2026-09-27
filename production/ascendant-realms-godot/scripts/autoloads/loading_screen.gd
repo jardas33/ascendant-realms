@@ -227,6 +227,11 @@ const TIPS := [
 	"Seven jars of Wine of the Dead lie hidden on the campaign's side roads. Some say they change the ending.",
 	"Never take the candle the Compaña offers you. Everyone in the highlands knows that.",
 	"The Vorthak were a village once. Ask the Dominion what happened to Furna.",
+	"Veterans who survive a campaign battle join your retinue and march with the Jardas into the next one.",
+	"A fallen hero is not lost: the Lume raises them at your stronghold. Guard it, or they have nowhere to rise.",
+	"Win a chapter again as a Heroic Replay for harder enemies, more experience, and a laurel on the map.",
+	"The Chronicle on the campaign map keeps every chapter you have won. Reread it before the Wall.",
+	"Enemy heroes cast spells too. Scatter your army when theirs starts to slam.",
 ]
 
 

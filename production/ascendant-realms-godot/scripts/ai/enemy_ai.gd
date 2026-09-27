@@ -569,16 +569,15 @@ func _assign_idle_workers() -> void:
 				u.command_gather(node)
 
 # Workers only took new jobs when idle, and a gathering worker never goes
-# idle, so the first food/gold assignment stuck forever: timber and stone ran
-# dry, houses could not be built, population capped and no army was raised.
-# Each think, move at most one gatherer from the best-stocked resource to one
-# that is running short and has nobody on it.
-const REBALANCE_SHORT := 150
-const REBALANCE_SURPLUS := 300
-const REBALANCE_HOARD := 700
+# idle, so the first assignment stuck forever. Fixed thresholds were not
+# enough either: a Barrosan AI sat on 180 gold (above "short") all game and
+# could not afford soldiers. Each think now moves at most one gatherer toward
+# a target share per resource, scaled by how full each stockpile is.
+const GATHER_SHARE := {"food": 0.35, "timber": 0.25, "gold": 0.25, "stone": 0.15}
 
 func _rebalance_gatherers() -> void:
 	var crews := {"food": [], "timber": [], "stone": [], "gold": []}
+	var total := 0
 	for u in commander.units:
 		if not is_instance_valid(u) or u.is_dead or not u.is_worker:
 			continue
@@ -587,36 +586,25 @@ func _rebalance_gatherers() -> void:
 		var kind := String(u.get("_desired_gather_kind"))
 		if crews.has(kind):
 			crews[kind].append(u)
+			total += 1
+	if total < 3:
+		return
 	var r = commander.resources
 	var short := ""
-	var short_v := REBALANCE_SHORT
-	for k in crews:
-		var v := int(r.get(k, 0))
-		if crews[k].is_empty() and v < short_v:
-			short = k
-			short_v = v
-	# A crewed resource can still starve (food at 0 while gold piles up in the
-	# thousands); then move a gatherer off a big hoard even though the short
-	# resource already has workers.
-	var hoard_needed := REBALANCE_SURPLUS
-	if short == "":
-		short_v = REBALANCE_SHORT
-		for k in crews:
-			var v := int(r.get(k, 0))
-			if v < short_v:
-				short = k
-				short_v = v
-		hoard_needed = REBALANCE_HOARD
-	if short == "":
-		return
+	var short_gap := 0.99
 	var donor := ""
-	var donor_v := hoard_needed
+	var donor_gap := -0.99
 	for k in crews:
-		var v := int(r.get(k, 0))
-		if crews[k].size() >= (1 if hoard_needed == REBALANCE_SURPLUS else 2) and v > donor_v and k != short:
+		var stock := int(r.get(k, 0))
+		var pressure := 1.7 if stock < 150 else (1.2 if stock < 350 else (1.0 if stock < 800 else 0.35))
+		var gap: float = float(GATHER_SHARE[k]) * float(total) * pressure - float(crews[k].size())
+		if gap > short_gap:
+			short = k
+			short_gap = gap
+		if gap < donor_gap and crews[k].size() >= 1:
 			donor = k
-			donor_v = v
-	if donor == "":
+			donor_gap = gap
+	if short == "" or donor == "" or short == donor:
 		return
 	for u in crews[donor]:
 		var node = world.find_nearest_resource(u.global_position, short)
@@ -713,6 +701,11 @@ func _manage_production() -> void:
 	if _tech_aggression >= 1.4 and _count_building_kind("barracks") < 2 and _army_size() > 6:
 		_try_build("barracks")
 
+	# A side reduced to a handful of workers spent every scrap of food on
+	# replacement soldiers and never rebuilt its economy: matches deadlocked
+	# with 0 workers and thousands of unspent gold. Workers come first.
+	if _worker_count() < mini(6, _worker_target) and _get_building_of_kind("main") != null:
+		return
 	# train army from military buildings
 	for b in commander.buildings:
 		if not is_instance_valid(b) or b.is_dead or not b.is_built:
@@ -913,9 +906,16 @@ func _cancel_dead_sites() -> void:
 	for b in commander.buildings.duplicate():
 		if not is_instance_valid(b) or b.is_dead or b.is_built or not b.has_meta("ai_placed_msec"):
 			continue
-		var age := float(Time.get_ticks_msec() - int(b.get_meta("ai_placed_msec"))) / 1000.0 * Engine.time_scale
-		if b.build_progress <= 0.001 and age > 90.0:
-			commander.refund(b.def.get("cost", {}), 1.0)
+		# A site a builder touched once and then could not reach again sat at a
+		# sliver of progress forever, and the AI counted it as a working
+		# barracks. Cancel any site whose progress has not moved for 75 s.
+		var now := Time.get_ticks_msec()
+		if b.build_progress > float(b.get_meta("ai_last_progress", -1.0)) + 0.001:
+			b.set_meta("ai_last_progress", b.build_progress)
+			b.set_meta("ai_progress_msec", now)
+		var stalled := float(now - int(b.get_meta("ai_progress_msec", b.get_meta("ai_placed_msec")))) / 1000.0 * Engine.time_scale
+		if stalled > 75.0:
+			commander.refund(b.def.get("cost", {}), clampf(1.0 - b.build_progress, 0.0, 1.0))
 			b._destroy(null)
 			return
 
@@ -980,7 +980,18 @@ func _count_building_kind(kind: String) -> int:
 ## fight is on. One cast per think, most useful first.
 func _cast_hero_spells() -> void:
 	var hero = commander.hero_ref
-	if not is_instance_valid(hero) or hero.is_dead or hero.abilities.is_empty():
+	if not is_instance_valid(hero) or hero.is_dead:
+		return
+	# A badly hurt hero falls back to the stronghold to recover instead of
+	# dying for nothing; the next wave takes them along again.
+	if hero.hp < hero.max_hp * 0.3 and hero.global_position.distance_to(_base_pos) > 25.0 and not hero.can_cast("heal"):
+		if not bool(hero.get_meta("ai_retreating", false)):
+			hero.set_meta("ai_retreating", true)
+			hero.command_move(_base_pos, false)
+		return
+	if hero.hp > hero.max_hp * 0.8:
+		hero.set_meta("ai_retreating", false)
+	if hero.abilities.is_empty():
 		return
 	var near_enemies: Array = []
 	var near_allies := 0

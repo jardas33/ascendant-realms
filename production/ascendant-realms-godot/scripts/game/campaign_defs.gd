@@ -371,6 +371,25 @@ const ORIGIN_OPENINGS := {
 	"vorthak": "The ash in my veins is burning. For once, it is burning for Salto.",
 }
 
+## Light and weather a chapter lays over its map: the night of the
+## Ascension, burning villages, the flood, the Regent's dusk.
+const MOODS := {
+	"night": {"sun_energy": 0.62, "sun_color": Color(0.62, 0.70, 0.98), "sun_pitch": -42.0, "ambient_energy": 0.46,
+		"fog_color": Color(0.24, 0.30, 0.46), "fog_density": 0.0007, "grade_contrast": 1.06, "grade_saturation": 0.8, "grade_brightness": 1.0},
+	"ember": {"sun_energy": 0.85, "sun_color": Color(1.0, 0.56, 0.32), "sun_pitch": -24.0, "ambient_energy": 0.36,
+		"fog_color": Color(0.55, 0.30, 0.22), "fog_density": 0.0010, "grade_contrast": 1.1, "grade_saturation": 1.08, "grade_brightness": 0.95},
+	"storm": {"sun_energy": 0.62, "sun_color": Color(0.74, 0.80, 0.86), "ambient_energy": 0.44,
+		"fog_color": Color(0.46, 0.52, 0.58), "fog_density": 0.0016, "grade_contrast": 1.04, "grade_saturation": 0.72, "grade_brightness": 0.93},
+	"dusk": {"sun_energy": 0.8, "sun_color": Color(1.0, 0.70, 0.46), "sun_pitch": -18.0, "ambient_energy": 0.38,
+		"fog_color": Color(0.78, 0.58, 0.48), "fog_density": 0.0008, "grade_contrast": 1.06, "grade_saturation": 1.05, "grade_brightness": 0.97},
+}
+const CHAPTER_MOODS := {
+	"1-1": "night", "1-2": "ember", "1-S2": "night", "1-6": "ember",
+	"2-S1": "night", "2-4": "storm", "2-6": "storm",
+	"3-4": "night", "3-S2": "night", "3-5": "night",
+	"4-5": "dusk", "5-1": "ember", "5-6": "dusk", "5-7": "ember",
+}
+
 static func opening_for(id: String, race: String) -> String:
 	if id == "1-1" and ORIGIN_OPENINGS.has(race):
 		return String(ORIGIN_OPENINGS[race])

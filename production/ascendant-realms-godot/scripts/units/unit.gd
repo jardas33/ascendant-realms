@@ -491,6 +491,27 @@ func _setup_nav() -> void:
 	add_child(agent)
 	agent.velocity_computed.connect(_on_velocity_computed)
 
+## Characters are built from many parts (body, armour, weapon pieces) and
+## every part cast its own shadow: in a 120-unit battle that was hundreds of
+## extra shadow draws. Only the largest part (the body) casts one now.
+func _limit_part_shadows(m: Node) -> void:
+	var parts := m.find_children("*", "MeshInstance3D", true, false)
+	if parts.size() < 2:
+		return
+	var biggest: MeshInstance3D = null
+	var biggest_v := -1.0
+	for mi in parts:
+		if mi.mesh == null:
+			continue
+		var sz: Vector3 = mi.mesh.get_aabb().size
+		var v := sz.x * sz.y * sz.z
+		if v > biggest_v:
+			biggest_v = v
+			biggest = mi
+	for mi in parts:
+		if mi != biggest:
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -509,6 +530,7 @@ func _build_model() -> void:
 		_apply_p1r20_model_materials(m)
 		_build_slice4_role_accessories(m)
 		_build_r3b_worker_presentation(m)
+		_limit_part_shadows(m)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
@@ -2034,11 +2056,20 @@ func _state_idle(delta: float) -> void:
 				_v0436_r1j_set_target(e, "threat_response")
 				state = State.ATTACKING
 
+const ACQUIRE_INTERVAL := 0.2
+var _acquire_timer := 0.0
+
 func _state_move(delta: float, attack_move: bool) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
 	if attack_move and _attack_move_ordered:
-		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
+		# Scanning every unit on the map each physics tick made attack-moving
+		# armies quadratic; five staggered scans a second react just as fast.
+		_acquire_timer -= delta
+		var e = null
+		if _acquire_timer <= 0.0:
+			_acquire_timer = ACQUIRE_INTERVAL * randf_range(0.8, 1.2)
+			e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 		if e and _can_attack_target(e):
 			_v0436_r1j_set_target(e, "auto_acquisition")
 			state = State.ATTACKING
@@ -2192,8 +2223,11 @@ func _state_attack(delta: float) -> void:
 		# in range: face + attack
 		_attack_settled = true
 		velocity.x = 0; velocity.z = 0
-		if agent:
+		# Re-submitting the same spot every tick queued a fresh path query for
+		# every unit standing in a fight.
+		if agent and agent.target_position.distance_squared_to(global_position) > 0.04:
 			agent.target_position = global_position
+		if agent:
 			agent.set_velocity(Vector3.ZERO)
 		_face(_target.global_position)
 		if _attack_timer <= 0.0:
@@ -2837,7 +2871,8 @@ func _face(target_pos: Vector3) -> void:
 		return
 	var yaw := atan2(-to.x, -to.z)
 	if model_root:
-		model_root.rotation.y = lerp_angle(model_root.rotation.y, yaw, 0.25)
+		# Same turn speed at any simulation rate (0.25 per 60 Hz tick).
+		model_root.rotation.y = lerp_angle(model_root.rotation.y, yaw, 1.0 - pow(0.75, get_physics_process_delta_time() * 60.0))
 
 # --------------------------------------------------------------------------
 # Damage / death / heal

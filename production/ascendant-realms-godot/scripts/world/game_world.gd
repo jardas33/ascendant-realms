@@ -162,11 +162,18 @@ func _ready() -> void:
 	_setup_playable_bounds()
 	_m20_end(bounds_stage)
 	_theme = MapDefs.theme(map.get("theme", "highland"))
+	# Campaign chapters can set the hour and weather over the map's own light.
+	var mood := String(CampaignDefs.CHAPTER_MOODS.get(String(cfg.get("campaign_chapter", "")), ""))
+	if mood != "":
+		_theme = _theme.duplicate(true)
+		_theme.merge(CampaignDefs.MOODS[mood], true)
 	_projectile_container = Node3D.new()
 	_projectile_container.name = "Projectiles"
 	add_child(_projectile_container)
 	_fx_container = Node3D.new()
 	_fx_container.name = "FX"
+	# Effects animate with tweens every rendered frame, not on simulation ticks.
+	_fx_container.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	add_child(_fx_container)
 	_world_blocker_root = Node3D.new()
 	_world_blocker_root.name = "WorldBlockers"
@@ -1308,7 +1315,8 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 # asked for routes in the same frame (1-14 ms each), stalling frames by
 # 150-250 ms at 4x. Callers ask route_budget_available() first and defer
 # optional re-planning to a later frame once this frame has spent its budget.
-const ROUTE_FRAME_BUDGET_USEC := 5000
+# Heavy fights spent the whole budget every tick steering around buildings.
+const ROUTE_FRAME_BUDGET_USEC := 2500
 var _route_budget_frame := -1
 var _route_budget_used := 0
 
@@ -1660,7 +1668,7 @@ func _segment_enters_route_rectangle(a: Vector3, b: Vector3, center: Vector3, ha
 ## Last-frame guard for the broad production navmesh. It only constrains a
 ## movement velocity when a completed-building clearance envelope would be
 ## entered; it does not change targets, combat range, or authoritative state.
-const STEERING_DETOUR_FRAMES := 12
+const STEERING_DETOUR_FRAMES := 24
 var _steering_detour_cache := {}
 
 func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocity: Vector3, delta: float, clearance: float = 1.0, movement_reason: String = "OTHER") -> Vector3:
@@ -1836,7 +1844,8 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var chapter_index := CampaignDefs.index_of(String(Match.get_config().get("campaign_chapter", "")))
 	var growth := float(maxi(chapter_index, 0))
 	return {"abilities": abilities, "max_mana": 120.0 + growth * 3.0, "mana_regen": 5.0 + growth * 0.1,
-		"bonus_hp": growth * 8.0, "bonus_dmg": growth * 0.5, "bonus_armor": floorf(growth / 10.0)}
+		"bonus_hp": growth * 8.0, "bonus_dmg": growth * 0.5, "bonus_armor": floorf(growth / 10.0),
+		"regen": 1.5 + growth * 0.05}
 
 func _build_starting_base(cmd, pos: Vector3) -> void:
 	var stage := _m20_begin("GAMEWORLD_STARTING_BASE_%d" % int(cmd.team), "GAMEWORLD_COMMANDER_SETUP", 3)
@@ -1888,6 +1897,7 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	var u = Unit.new()
 	nav_region.add_child(u) if nav_region else add_child(u)
 	u.global_position = pos + Vector3(0, 0.1, 0)
+	u.reset_physics_interpolation()
 	u.configure(udef, team, commanders[team] if team < commanders.size() else null, self)
 	u.died.connect(_on_unit_died)
 	if team < commanders.size():
@@ -2930,8 +2940,14 @@ func _try_hero_revival(cmd, hero_id: String) -> void:
 		return
 	cmd.hero_ref = hero
 	if is_instance_valid(_fx_container):
+		CombatVfx.lume_pillar(_fx_container, hero.global_position, Color(1.0, 0.78, 0.36))
 		CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.82, 0.35), 2.0)
 		CombatVfx.shockwave(_fx_container, hero.global_position, Color(1.0, 0.82, 0.35), 3.0)
+	# The hero grows up out of the light.
+	if is_instance_valid(hero.model_root):
+		var full: Vector3 = hero.model_root.scale
+		hero.model_root.scale = full * 0.15
+		hero.model_root.create_tween().tween_property(hero.model_root, "scale", full, 0.7).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	if cmd.team == player_team:
 		emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
 

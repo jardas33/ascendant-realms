@@ -260,6 +260,49 @@ static func shockwave(parent: Node3D, pos: Vector3, col: Color, radius: float) -
 	t.chain().tween_callback(ring.queue_free)
 
 
+## A column of Lume light where a fallen hero rises again: a tall additive
+## beam that swells and fades, with a warm light flash on the ground.
+static func lume_pillar(parent: Node3D, pos: Vector3, col: Color) -> void:
+	var beam := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.7
+	cyl.bottom_radius = 1.1
+	cyl.height = 16.0
+	cyl.radial_segments = 20
+	cyl.cap_top = false
+	cyl.cap_bottom = false
+	beam.mesh = cyl
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(col.r, col.g, col.b, 0.0)
+	beam.material_override = mat
+	beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(beam)
+	beam.global_position = pos + Vector3(0, 8.0, 0)
+	beam.scale = Vector3(0.3, 1.0, 0.3)
+	var light := OmniLight3D.new()
+	light.light_color = col
+	light.light_energy = 0.0
+	light.omni_range = 9.0
+	parent.add_child(light)
+	light.global_position = pos + Vector3(0, 1.5, 0)
+	var t := beam.create_tween().set_parallel(true)
+	t.tween_property(mat, "albedo_color:a", 0.38, 0.35)
+	t.tween_property(beam, "scale", Vector3(1.0, 1.0, 1.0), 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_property(light, "light_energy", 5.0, 0.3)
+	t.chain().tween_interval(0.7)
+	t.chain().set_parallel(true)
+	t.tween_property(mat, "albedo_color:a", 0.0, 1.2)
+	t.tween_property(beam, "scale", Vector3(0.1, 1.0, 0.1), 1.2)
+	t.tween_property(light, "light_energy", 0.0, 1.2)
+	t.chain().tween_callback(func():
+		beam.queue_free()
+		light.queue_free())
+
+
 ## Rising glow motes around a unit (heals, rallies, empowerment).
 static var _mote_process: ParticleProcessMaterial
 static var _mote_mesh: QuadMesh

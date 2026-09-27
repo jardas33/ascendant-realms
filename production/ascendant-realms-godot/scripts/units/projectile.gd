@@ -31,6 +31,7 @@ const P1_PROJECTILE_EMISSION := 3.8
 
 func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0, p_source = null, p_attack_event_id: String = "") -> void:
 	global_position = from
+	reset_physics_interpolation()
 	target = tgt
 	damage = dmg
 	dmg_type = dtype
@@ -154,7 +155,12 @@ func _physics_process(delta: float) -> void:
 	var to := target_pos - global_position
 	var dist := to.length()
 	var step := speed * delta
-	if dist <= step or dist < 0.4:
+	# At the 30 Hz simulation a point-blank shot could land on the tick it was
+	# fired and never be seen; every projectile now flies at least one tick.
+	var first_tick := _alive_time <= delta + 0.0001
+	if first_tick and dist <= step and dist >= 0.4:
+		step = dist * 0.5
+	elif dist <= step or dist < 0.4:
 		_impact()
 		return
 	global_position += to.normalized() * step

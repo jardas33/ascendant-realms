@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 19:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 23:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -82,16 +82,41 @@ Last updated: 2026-09-27, 19:00 UTC. Claude updates this file after every pass.
   - **Enemy heroes cast spells:** enemy heroes were bare stat blocks with no abilities. They now get a spell kit that fits their race (none on Easy, 1 on Normal, 2 on Hard, 3 on Brutal) and cast it in fights (heal when hurt, slam into crowds, roots, charge, bolts). In the campaign they grow tougher with each chapter (more health, damage and mana).
   - **Late-game performance soak:** an 18-minute Hard AI-vs-AI match in a window. Memory grows slowly (205 to 314 MB) with no leak in object counts. But frame rate falls in the late game: a normal-speed profile at minute 14 shows 12.3 ms of physics per tick with only 62 units, about three quarters of the frame budget. This is the first item of plan 7.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
-- **Plan 7 (started):**
-  1. Cut the late-game physics cost (12 ms per tick at 62 units).
-  2. Navigation agents: 108 registered for 62 units, so something is not unregistering.
-  3. Stuck units rise with army size (18 in the long soak).
-  4. Stalemates: a winning AI with 47 soldiers did not finish a side left with 2 buildings and no workers.
-  5. Enemy heroes idle at base: march them with attack waves and pull them back when hurt.
-  6. Per-chapter atmosphere (for example night lighting for the Night of the Witches).
-  7. Loading-screen tips for the retinue, hero revival and the Chronicle.
-  8. Check the player's early-game economy after the food change.
-  9. Check the hero revival visually (flare, HUD hero portrait).
+- **Plan 7 (done):**
+  - **Big battles run 3 to 4 times faster.** In a window, a 120-unit fight ran at 11 fps (a 60-unit fight held 60). The simulation now runs at 30 Hz (the usual RTS rate) with Godot's physics interpolation, so movement is still drawn smoothly at full frame rate. The same 120-unit fight now runs at 43 fps. Supporting changes:
+    - The camera is excluded from interpolation and follows zoom every frame.
+    - Unit turning speed no longer depends on the tick rate.
+    - Units reset interpolation when spawned, so they never streak in from the map origin.
+    - Effects are animated per frame.
+    - At most 4 catch-up ticks run per frame, so a heavy moment slows slightly instead of freezing.
+    - Every projectile flies at least one visible tick (point-blank arrows used to land unseen).
+    - Only a character's main body casts a shadow; its 10 to 16 armour and weapon parts no longer do.
+    - Attack-moving units scan for targets 5 times a second instead of every tick.
+    - A fighting unit no longer re-queues a path query every tick.
+    - Building-avoidance steering has a smaller per-tick budget and caches detours longer.
+    - All 9 tests pass, including a projectile test that needed the one-tick flight fix.
+  - **Note for Codex (test tooling):** in headless runs, freeing a character costs about 15 ms per mesh part, which makes deaths look like 150 ms hitches. This does not happen in a real window. Headless timings of deaths are misleading.
+  - **Navigation agents:** the "extra" agents are building obstacles, which Godot counts as agents. There is no leak.
+  - **AI stalemates and stuck units:**
+    - Construction sites that a builder touched once and then could never reach sat at a sliver of progress forever. The AI counted them as working barracks and never built a real one. Sites with no progress for 75 seconds are now cancelled and refunded.
+    - A side reduced to a few workers spent all its food on replacement soldiers and never rebuilt: matches deadlocked with 0 workers and 5,000+ unspent gold. The AI now trains workers first when it has fewer than 6.
+    - Worker balancing now aims for a target share per resource (food 35%, timber 25%, gold 25%, stone 15%), adjusted by stockpile. Before, a Barrosan AI sat on 180 gold all game and could not afford soldiers.
+    - Result: 4 of 5 twenty-minute AI matches ended decisively at minutes 7 to 10 (most used to stall), with 0 to 4 stuck units.
+  - **Enemy heroes** now fall back to their stronghold below 30% health when they cannot heal. They regenerate slowly and rejoin the next wave.
+  - **Chapter moods:** 14 chapters now set their own hour and weather over the map's light. Night covers the Spring of Seven Mouths, the witches, the Candle Road and the Compaña chapters. Ember covers the Burning Oven, Malrec's Pyre, the Burning Geira and the finale. Storm covers Furna and Rising Water. Dusk covers the Sun Regent and The Ascendant. Night was brightened after a first capture was too dark to play.
+  - **Hero revival presentation:** a pillar of golden Lume light with a light flash, and the hero grows up out of it.
+  - **Loading tips** for the retinue, hero revival, Heroic Replay, the Chronicle and enemy hero spells.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 8 (started):**
+  1. Investigate the remaining 1-in-5 long AI match.
+  2. Faction balance: round-robin AI soaks across factions (Barrosan trailed Vorthak).
+  3. Unit render cost in huge battles: merge character parts or add distance detail levels.
+  4. Weather to match the moods: rain for storm chapters, embers in the air for fire chapters.
+  5. Mood ambience sound (night insects, storm rain, crackling fire).
+  6. Minimap: hero markers and the revival point.
+  7. Player hero feel: ability hotkey feedback and range previews.
+  8. Check click and selection feel under 30 Hz interpolation.
+  9. Campaign polish: check every chapter's map, factions and moods in one tour.
   10. Check Codex, run the regression and review.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 

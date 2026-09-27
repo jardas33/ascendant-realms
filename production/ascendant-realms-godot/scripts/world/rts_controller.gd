@@ -132,6 +132,8 @@ func _build_camera() -> void:
 	camera.far = 500.0
 	cam_arm.add_child(camera)
 	camera.current = true
+	# The camera moves every rendered frame, not on the 30 Hz simulation tick.
+	cam_pivot.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 
 func _build_select_box() -> void:
 	select_box = Panel.new()
@@ -266,6 +268,7 @@ func _update_camera(delta: float) -> void:
 	cam_pivot.rotation.y = _cam_yaw
 	# smooth zoom
 	cam_arm.spring_length = lerp(cam_arm.spring_length, _zoom, 0.2)
+	camera.position = Vector3(0.0, 0.0, cam_arm.spring_length)
 	_apply_camera_shake(delta)
 
 var _shake := 0.0
