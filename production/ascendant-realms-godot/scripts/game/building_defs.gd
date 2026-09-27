@@ -21,13 +21,13 @@ static func get_all() -> Dictionary:
 	"barrosan_clan_croft": {
 		"race": "barrosan", "name": "Clan Croft", "kind": "house", "model": _b("barrosan_houses_a03"),
 		"hp": 550, "armor_class": "medium", "armor": 2, "footprint": 3.6,
-		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
+		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Highland homestead. Raises your population capacity.",
 	},
 	"barrosan_war_hall": {
 		"race": "barrosan", "name": "War Hall", "kind": "barracks", "model": "res://assets/environment/buildings/barrosan_war_hall_a02.glb",
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
-		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
+		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer",
 			"barrosan_outrider", "barrosan_anvil_breaker", "barrosan_ballista"],
 		"desc": "Trains the clan's soldiers, archers, elites and siege.",
@@ -42,7 +42,7 @@ static func get_all() -> Dictionary:
 	"barrosan_watchtower": {
 		"race": "barrosan", "name": "Watchtower", "kind": "tower", "model": "res://assets/environment/visual_convergence/barrosan_settlement/barrosan_guard_tower_lod1.glb",
 		"hp": 800, "armor_class": "fortified", "armor": 6, "footprint": 3.2,
-		"cost": {"timber": 40, "stone": 100}, "build_time": 24, "grants_pop": 0,
+		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 22, "tower_range": 20.0, "tower_cd": 1.1, "tower_type": "pierce", "projectile": "bolt",
 		"produces": [], "desc": "Defensive tower that shoots enemies on sight. Barrosan specialty.",
 	},
@@ -59,13 +59,13 @@ static func get_all() -> Dictionary:
 	"lioraen_lifewell": {
 		"race": "lioraen", "name": "Lifewell", "kind": "house", "model": _b("lioraen_lifewell"),
 		"hp": 500, "armor_class": "medium", "armor": 1, "footprint": 3.4,
-		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
+		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Glowing spring that sustains more of your people.",
 	},
 	"lioraen_thornhall": {
 		"race": "lioraen", "name": "Thornhall", "kind": "barracks", "model": _b("lioraen_thornhall"),
 		"hp": 850, "armor_class": "medium", "armor": 3, "footprint": 5.0,
-		"cost": {"timber": 150, "stone": 50}, "build_time": 30, "grants_pop": 0,
+		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["lioraen_bloomdancer", "lioraen_rootwarden_guard", "lioraen_thorn_ranger", "lioraen_windstrider"],
 		"desc": "Grown war-grove that trains dancers, wardens, rangers and lancers.",
 	},
@@ -86,7 +86,7 @@ static func get_all() -> Dictionary:
 	"lioraen_bloom_spire": {
 		"race": "lioraen", "name": "Bloom Spire", "kind": "tower", "model": _b("lioraen_bloom_spire"),
 		"hp": 700, "armor_class": "medium", "armor": 3, "footprint": 3.2,
-		"cost": {"timber": 90, "stone": 60}, "build_time": 24, "grants_pop": 0,
+		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 20, "tower_range": 19.0, "tower_cd": 1.0, "tower_type": "pierce", "projectile": "thorn",
 		"produces": [], "desc": "Living tower that fires thorn volleys at intruders.",
 	},
@@ -229,13 +229,13 @@ static func get_all() -> Dictionary:
 	"karak_longhouse": {
 		"race": "karak", "name": "Roundhouse", "kind": "house", "model": _b("barrosan_clan_croft"),
 		"hp": 560, "armor_class": "medium", "armor": 2, "footprint": 3.6,
-		"cost": {"timber": 60, "stone": 25}, "build_time": 18, "grants_pop": 8,
+		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Sturdy stone longhouse that houses more of your dwarven kin.",
 	},
 	"karak_warforge": {
 		"race": "karak", "name": "Castro Forge", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 980, "armor_class": "fortified", "armor": 6, "footprint": 5.0,
-		"cost": {"timber": 150, "stone": 70}, "build_time": 32, "grants_pop": 0,
+		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["karak_warrior", "karak_ironbreaker", "karak_quarreler", "karak_castro_rider", "karak_hammerer", "karak_cannon"],
 		"desc": "Deep forge-hall that produces Karak's warriors, ironbreakers, quarrelers, hammerers, and cannon.",
 	},
@@ -249,7 +249,7 @@ static func get_all() -> Dictionary:
 	"karak_gun_tower": {
 		"race": "karak", "name": "Castro Rampart", "kind": "tower", "model": _b("barrosan_watchtower"),
 		"hp": 850, "armor_class": "fortified", "armor": 7, "footprint": 3.2,
-		"cost": {"timber": 45, "stone": 110}, "build_time": 26, "grants_pop": 0,
+		"cost": {"timber": 60, "stone": 80}, "build_time": 26, "grants_pop": 0,
 		"tower_dmg": 24, "tower_range": 20.0, "tower_cd": 1.2, "tower_type": "pierce", "projectile": "bolt",
 		"produces": [], "desc": "Stubby stone tower fitted with a repeating crossbow. Reliable, durable, lethal.",
 	},
@@ -265,13 +265,13 @@ static func get_all() -> Dictionary:
 	"sunspear_dwelling": {
 		"race": "sunspear", "name": "Settler Housing", "kind": "house", "model": _b("barrosan_clan_croft"),
 		"hp": 550, "armor_class": "medium", "armor": 2, "footprint": 3.6,
-		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
+		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Whitewashed desert dwelling that supports more of the Dominion's growing population.",
 	},
 	"sunspear_legion_hall": {
 		"race": "sunspear", "name": "Legion Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
-		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
+		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["sunspear_legion", "sunspear_phalanx", "sunspear_bowman", "sunspear_charioteer", "sunspear_scorpion"],
 		"desc": "Grand martial hall where the Dominion's legionaries, phalanx, archers and charioteers train.",
 	},
@@ -285,7 +285,7 @@ static func get_all() -> Dictionary:
 	"sunspear_obelisk_tower": {
 		"race": "sunspear", "name": "Survey Obelisk", "kind": "tower", "model": _b("barrosan_watchtower"),
 		"hp": 800, "armor_class": "fortified", "armor": 6, "footprint": 3.2,
-		"cost": {"timber": 40, "stone": 100}, "build_time": 24, "grants_pop": 0,
+		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 24, "tower_range": 20.0, "tower_cd": 1.1, "tower_type": "arcane", "projectile": "bolt",
 		"produces": [], "desc": "Tall golden obelisk that channels solar fire against intruders.",
 	},
@@ -394,13 +394,13 @@ static func get_all() -> Dictionary:
 	"frostborn_longhouse": {
 		"race": "frostborn", "name": "Mask House", "kind": "house", "model": _b("barrosan_clan_croft"),
 		"hp": 560, "armor_class": "medium", "armor": 2, "footprint": 3.6,
-		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
+		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Long timber-and-stone hall that shelters more of the clan through the endless winter.",
 	},
 	"frostborn_war_hall": {
 		"race": "frostborn", "name": "Entrudo Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 960, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
-		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
+		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["frostborn_reaver", "frostborn_shieldmaiden", "frostborn_hunter", "frostborn_berserker", "frostborn_jotun"],
 		"desc": "Frost-rimed war hall where reavers, shield maidens, hunters, berserkers and jotun are readied.",
 	},
@@ -414,7 +414,7 @@ static func get_all() -> Dictionary:
 	"frostborn_watchtower": {
 		"race": "frostborn", "name": "Larouco Lookout", "kind": "tower", "model": _b("barrosan_watchtower"),
 		"hp": 820, "armor_class": "fortified", "armor": 6, "footprint": 3.2,
-		"cost": {"timber": 40, "stone": 100}, "build_time": 24, "grants_pop": 0,
+		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 22, "tower_range": 20.0, "tower_cd": 1.1, "tower_type": "pierce", "projectile": "bolt",
 		"produces": [], "desc": "Ice-crusted watchtower that fires heavy bolts at anything approaching the mead hall.",
 	},

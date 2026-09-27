@@ -88,7 +88,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_bloomdancer"), "height": 1.8,
 		"hp": 115, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 0.95, "speed": 4.2, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 13, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "barracks",
 		"desc": "A Moura blade-dancer who strikes and is gone like light on water.",
 	},
 	"lioraen_rootwarden_guard": {
@@ -359,7 +359,7 @@ static func get_all() -> Dictionary:
 		"model": _char("dwarf_warrior"), "height": 1.6,
 		"hp": 130, "dmg": 12, "dmg_type": "blunt", "armor_class": "medium", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.2, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "karak_warforge",
+		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "karak_warforge",
 		"desc": "Half flesh, half granite. Slower than most, tougher than all.",
 	},
 	"karak_ironbreaker": {
@@ -424,7 +424,7 @@ static func get_all() -> Dictionary:
 		"model": _char("sunspear_legionary"), "height": 1.8,
 		"hp": 140, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 2,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "sunspear_legion_hall",
+		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "sunspear_legion_hall",
 		"desc": "The backbone of seventy-seven years of victory. Disciplined to the last.",
 	},
 	"sunspear_phalanx": {
@@ -554,7 +554,7 @@ static func get_all() -> Dictionary:
 	"hollow_skeleton": {
 		"race": "hollow", "name": "Forgotten Dead", "role": "melee", "tier": 1,
 		"model": _char("undead_skeleton"), "height": 1.8,
-		"hp": 95, "dmg": 11, "dmg_type": "slash", "armor_class": "unarmored", "armor": 0,
+		"hp": 85, "dmg": 11, "dmg_type": "slash", "armor_class": "unarmored", "armor": 0,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.0, "vision": 20.0,
 		"cost": {"food": 40, "gold": 5}, "build_time": 9, "pop": 1, "produced_by": "hollow_ossuary",
 		"desc": "A soul no one remembers the name of. It walks, and walks, and walks.",
@@ -613,7 +613,7 @@ static func get_all() -> Dictionary:
 		"model": _char("frostborn_warrior"), "height": 1.9,
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "frostborn_war_hall",
+		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "frostborn_war_hall",
 		"desc": "Red-and-green fringes, iron cowbells and a horned mask. Chases winter out of the villages.",
 	},
 	"frostborn_shieldmaiden": {

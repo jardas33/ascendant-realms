@@ -1932,6 +1932,10 @@ func _setup_commanders() -> void:
 	var hero_stats := {}
 	if ProfileManager.has_hero():
 		hero_stats = HeroProgression.compute(ProfileManager.hero())
+	# AI-versus-AI balance tests: the player's seat gets the same hero an AI
+	# of that difficulty would, so both seats are compared fairly.
+	if String(cfg.get("ai_seat_difficulty", "")) != "":
+		hero_stats = _ai_hero_stats(String(cfg.get("player_race", "barrosan")), String(cfg["ai_seat_difficulty"]))
 
 	# player
 	var pc := Commander.new()
@@ -2805,6 +2809,100 @@ func _spawn_champion(depth: int) -> void:
 		if game_running:
 			emit_signal("alert", "A Champion guards the enemy stronghold. Break it, and the road pays threefold.", boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
 
+## Road Tyrants (EndlessDefs.BOSSES): a named giant on every 25th stage, with
+## a mechanic of its own, run from a once-a-second tick while it lives.
+var road_boss = null
+var _boss_kind := ""
+var _boss_clock := 0.0
+
+func _spawn_road_boss(depth: int) -> void:
+	var bdef: Dictionary = load("res://scripts/game/endless_defs.gd").boss(depth)
+	if bdef.is_empty() or commanders.size() < 2:
+		return
+	var race := String(commanders[1].race)
+	var pick := ""
+	var best_tier := 0
+	for id in UnitDefs.get_all():
+		var d: Dictionary = UnitDefs.get_all()[id]
+		if String(d.get("race", "")) != race or String(d.get("role", "")) in ["worker", "hero", "siege", "healer"] or bool(d.get("is_siege", false)):
+			continue
+		if int(d.get("tier", 1)) > best_tier:
+			best_tier = int(d.get("tier", 1))
+			pick = id
+	if pick == "":
+		return
+	var home: Vector3 = map.get("start_positions", [Vector3.ZERO, Vector3.ZERO])[1]
+	var toward := (Vector3.ZERO - home).normalized()
+	var boss = spawn_unit(pick, 1, home + toward * 20.0)
+	if boss == null:
+		return
+	boss.def = boss.def.duplicate()
+	boss.def["name"] = String(bdef["name"])
+	boss.set_meta("elite", true)
+	boss.set_meta("champion", true)
+	boss.set_meta("road_boss", true)
+	var cycle := float(depth / 100)
+	boss.max_hp *= 12.0 + float(depth) * 0.25 + cycle * 6.0
+	boss.hp = boss.max_hp
+	boss.base_dmg *= 2.5 + cycle
+	boss.base_armor += 3.0 + cycle * 2.0
+	if is_instance_valid(boss.model_root):
+		boss.model_root.scale *= 2.0
+	road_boss = boss
+	_boss_kind = String(bdef["kind"])
+	if _boss_kind == "ward":
+		for k in 4:
+			var guard = spawn_unit(pick, 1, boss.global_position + Vector3(cos(k * 1.57), 0, sin(k * 1.57)) * 4.0)
+			if guard:
+				guard.set_meta("boss_court", true)
+	get_tree().create_timer(6.0, false).timeout.connect(func():
+		if game_running and is_instance_valid(boss):
+			emit_signal("alert", "%s holds the enemy stronghold. %s" % [String(bdef["name"]), String(bdef["text"])], boss.global_position))
+	_boss_tick()
+
+func _boss_tick() -> void:
+	if not game_running or not is_instance_valid(road_boss) or road_boss.is_dead:
+		return
+	get_tree().create_timer(1.0, false).timeout.connect(_boss_tick)
+	_boss_clock += 1.0
+	var b = road_boss
+	match _boss_kind:
+		"pulse":
+			# A ring of fire every 8 seconds, with a second's warning flare.
+			if int(_boss_clock) % 8 == 7:
+				spawn_ring_fx(b.global_position, Color(1.0, 0.45, 0.15), 5.0)
+			elif int(_boss_clock) % 8 == 0:
+				apply_splash(b.global_position, 7.0, b.cur_dmg() * 1.2, "magic", b.team, null, b, "fire")
+				spawn_hit_fx(b.global_position + Vector3.UP, "fire")
+		"summon":
+			# The pack answers every 20 seconds.
+			if int(_boss_clock) % 20 == 0:
+				var wolf := ""
+				for id in UnitDefs.get_all():
+					var d: Dictionary = UnitDefs.get_all()[id]
+					if String(d.get("race", "")) == String(b.commander.race) and int(d.get("tier", 1)) == 1 and String(d.get("role", "")) == "melee":
+						wolf = id
+						break
+				if wolf != "":
+					for k in 3:
+						var w = spawn_unit(wolf, b.team, b.global_position + Vector3(cos(k * 2.1), 0, sin(k * 2.1)) * 3.0)
+						if w:
+							w.command_move(map.get("start_positions", [Vector3.ZERO])[player_team], true)
+					emit_signal("alert", "The pack answers the howl.", b.global_position)
+		"regen":
+			# Heals 3% a second once it has gone 3 seconds without being hit.
+			if Time.get_ticks_msec() - int(b.get("_last_damaged_msec")) > int(3000.0 / maxf(0.01, Engine.time_scale)):
+				b.hp = minf(b.max_hp, b.hp + b.max_hp * 0.03)
+
+## The Moura Queen takes half damage while any of her court still stands.
+func boss_damage_scale(unit) -> float:
+	if unit != road_boss or _boss_kind != "ward":
+		return 1.0
+	for u in get_tree().get_nodes_in_group("units"):
+		if is_instance_valid(u) and not u.is_dead and u.has_meta("boss_court"):
+			return 0.5
+	return 1.0
+
 ## Endless Road stage twists that shape the start of a battle.
 var twist_damage_mult := 1.0
 var twist_veteran_foes := false
@@ -2930,7 +3028,9 @@ func _start_match() -> void:
 	if "warband" in Match.get_config().get("twists", []):
 		_schedule_warband()
 	var e_depth := int(Match.get_config().get("endless_depth", 0))
-	if String(Match.get_config().get("mode", "")) == "endless" and e_depth % 5 == 0 and e_depth % 10 != 0:
+	if String(Match.get_config().get("mode", "")) == "endless" and e_depth % 25 == 0:
+		_spawn_road_boss(e_depth)
+	elif String(Match.get_config().get("mode", "")) == "endless" and e_depth % 5 == 0 and e_depth % 10 != 0:
 		_spawn_champion(e_depth)
 	if String(Match.get_config().get("mode", "")) == "endless":
 		var ecfg := Match.get_config()
@@ -3241,6 +3341,10 @@ func _on_unit_died(unit) -> void:
 		_saga_react(int(unit.team), "hero")
 		if int(unit.team) != player_team and source_team == player_team:
 			enemy_heroes_slain += 1
+	if unit.has_meta("road_boss") and source_team == player_team:
+		# A Road Tyrant pays like ten Elites (on top of the milestone legendary).
+		elites_slain += 7
+		emit_signal("alert", "%s is slain! The road will remember this." % String(unit.def.get("name", "The Tyrant")), unit.global_position)
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 3 if unit.has_meta("champion") else 1
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
@@ -3472,11 +3576,14 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 		"cinder": col = Color(1, 0.5, 0.15)
 		"void_bolt", "rift_shell": col = Color(0.7, 0.3, 0.9)
 		"thorn", "thornpod": col = Color(0.5, 0.8, 0.4)
+		"arcane": col = Color(0.6, 0.8, 1.0)
+		"fire": col = Color(1.0, 0.4, 0.1)
+		"blood": col = Color(0.95, 0.2, 0.2)
 	# Sparks, flash and a dust kick from cached materials (CombatVfx); still a
 	# single short-lived, non-gameplay effect for every impact kind.
 	if kind == "melee":
 		col = Color(1.0, 0.72, 0.42)
-	CombatVfx.hit(_fx_container, pos, col, kind in ["cinder", "rift_shell", "thornpod"])
+	CombatVfx.hit(_fx_container, pos, col, kind in ["cinder", "rift_shell", "thornpod", "arcane", "fire"])
 
 func spawn_collapse_fx(pos: Vector3, footprint: float) -> void:
 	if not is_instance_valid(_fx_container):

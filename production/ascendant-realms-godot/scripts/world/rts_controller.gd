@@ -799,7 +799,7 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 	# selected building -> set rally
 	if intent == COMMAND_RALLY and selected.size() == 1 and (selected[0] is Building):
 		if ground != null:
-			selected[0].set_rally(ground)
+			_issue({"type": "rally", "target": selected[0], "pos": ground})
 			_emit_command_feedback(COMMAND_RALLY, "RALLY", ground, selected[0])
 		return
 	var units := _selected_units()
@@ -830,12 +830,11 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 
 ## Orders go through the world's command bus as data (see command_bus.gd),
 ## falling back to direct calls if a test world has no bus.
-func _issue(order: Dictionary) -> void:
+func _issue(order: Dictionary):
 	if world and world.get("command_bus") != null:
-		world.command_bus.issue(order)
-	else:
-		var CommandBusScript = load("res://scripts/world/command_bus.gd")
-		CommandBusScript.new(world).execute(order)
+		return world.command_bus.issue(order)
+	var CommandBusScript = load("res://scripts/world/command_bus.gd")
+	return CommandBusScript.new(world).execute(order)
 
 func issue_attack_target(target) -> bool:
 	_clean_selection()
@@ -1058,7 +1057,7 @@ func _queue_ability(id: String) -> void:
 	var hit = _raycast_object()
 	if hit and ("global_position" in hit):
 		target_pos = hit.global_position
-	if not hero.cast_ability(id, target_pos):
+	if not _issue({"type": "cast", "units": [hero], "id": id, "pos": target_pos}):
 		world.emit_signal("alert", "Out of range: move the cursor closer to an enemy", Vector3.ZERO)
 
 func _selected_hero():
@@ -1402,12 +1401,10 @@ func _try_place_building_at(g: Vector3) -> bool:
 		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "insufficient_resources")
 		cancel_build_mode()
 		return false
-	var b = world.place_building(bid, player_team, g)
+	# The nearest free worker is sent with the placement order itself.
+	var b = _issue({"type": "place", "id": bid, "team": player_team, "pos": g, "units": [worker] if worker else []})
 	var placed := false
 	if b:
-		# assign a selected worker (or nearest) to build it
-		if worker:
-			worker.command_build(b)
 		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)
 		Sfx.play("select", -6.0)
 		placed = true

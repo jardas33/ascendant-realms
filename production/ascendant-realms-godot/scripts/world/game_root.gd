@@ -287,7 +287,10 @@ func _on_game_over(victory: bool) -> void:
 	# handled visually by HUD; campaign progression here
 	var cfg := Match.get_config()
 	if victory and cfg.get("mode", "") == "endless":
+		var rec: Dictionary = ProfileManager.endless_record(int(cfg.get("endless_depth", 1)), String(cfg.get("player_race", "")), float(world.match_time) if world else 0.0)
 		ProfileManager.endless_won(int(cfg.get("endless_depth", 1)))
+		if world and bool(rec.get("new_fastest", false)):
+			world.emit_signal("alert", "New record: fastest clear of stage %d (%d:%02d)." % [int(cfg.get("endless_depth", 1)), int(world.match_time) / 60, int(world.match_time) % 60], Vector3.ZERO)
 		ProfileManager.check_achievements()
 	if victory and cfg.get("mode", "") == "campaign":
 		if String(cfg.get("campaign_chapter", "")) != "":

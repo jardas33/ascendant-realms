@@ -2780,7 +2780,7 @@ func _refresh_queue() -> void:
 		var cap_idx := idx
 		slot.pressed.connect(func():
 			if is_instance_valid(cap_b) and cap_b.has_method("cancel_queue_item"):
-				cap_b.cancel_queue_item(cap_idx))
+				_issue_order({"type": "cancel", "target": cap_b, "index": cap_idx}))
 		# progress mini-bar under text
 		var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
 		# Queue slots have an explicit compact size. Keep the progress bar on a
@@ -3403,10 +3403,16 @@ func _build_building_card(b) -> void:
 			research_grid.add_child(btn)
 
 
+## Production orders travel through the world's command bus (online seam).
+func _issue_order(order: Dictionary):
+	if world and world.get("command_bus") != null:
+		return world.command_bus.issue(order)
+	return load("res://scripts/world/command_bus.gd").new(world).execute(order)
+
 func _try_queue_unit(b, uid: String) -> void:
 	if not is_instance_valid(b) or not b.has_method("queue_unit"):
 		return
-	var res: Dictionary = b.queue_unit(uid)
+	var res: Dictionary = _issue_order({"type": "train", "target": b, "id": uid})
 	if res.get("ok", false):
 		var nm: String = GameData.get_unit(uid).get("name", "Unit")
 		_flash_notice("Training %s..." % nm, Color(0.6, 0.95, 0.6))
@@ -3419,7 +3425,7 @@ func _try_queue_unit(b, uid: String) -> void:
 func _try_queue_tech(b, tid: String) -> void:
 	if not is_instance_valid(b) or not b.has_method("queue_tech"):
 		return
-	var res: Dictionary = b.queue_tech(tid)
+	var res: Dictionary = _issue_order({"type": "research", "target": b, "id": tid})
 	if res.get("ok", false):
 		# tier advance / research done — refresh card so buttons grey out
 		_rebuild_command_card(b, [b])

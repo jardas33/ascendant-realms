@@ -284,12 +284,7 @@ func _refresh() -> void:
 	build_panel.add_child(_stat_line("Max Mana", "%d" % int(b.get("max_mana", 0))))
 	build_panel.add_child(_stat_line("Abilities Unlocked", str((b.get("abilities", {}) as Dictionary).size())))
 	# One number to watch grow: damage output times survivability.
-	var hero_def: Dictionary = GameData.get_unit(String(GameData.get_race(String(h.get("race", "barrosan"))).get("hero", "")))
-	var dmg := float(hero_def.get("dmg", 30)) + float(b.get("bonus_dmg", 0))
-	var hp := float(hero_def.get("hp", 400)) + float(b.get("bonus_hp", 0))
-	var armor := float(hero_def.get("armor", 3)) + float(b.get("bonus_armor", 0))
-	var dps := dmg * (1.0 + float(b.get("attack_speed", 0))) / maxf(0.35, float(hero_def.get("attack_cd", 1.1)))
-	var power := int(sqrt(dps * hp * (1.0 + armor * 0.06)))
+	var power := HeroProgression.power(h)
 	build_panel.add_child(_stat_line("Hero Power", str(power)))
 	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable", "thornmail": "Thornmail", "chain_lightning": "Stormcall", "haste_on_kill": "Bloodrush"}
 	var powers: Array = []

@@ -155,6 +155,16 @@ static func _apply_talent(out: Dictionary, id: String, ranks: int) -> void:
 		# quartermaster (retinue) and treasure_hunter (loot) are read where
 		# those systems live.
 
+## One number to watch grow: damage output times survivability.
+static func power(hero: Dictionary) -> int:
+	var b := compute(hero)
+	var hero_def: Dictionary = GameData.get_unit(String(GameData.get_race(String(hero.get("race", "barrosan"))).get("hero", "")))
+	var dmg := float(hero_def.get("dmg", 30)) + float(b.get("bonus_dmg", 0))
+	var hp := (float(hero_def.get("hp", 400)) + float(b.get("bonus_hp", 0))) * (1.0 + float(b.get("hp_mult", 0.0)))
+	var armor := float(hero_def.get("armor", 3)) + float(b.get("bonus_armor", 0))
+	var dps := dmg * (1.0 + float(b.get("attack_speed", 0))) / maxf(0.35, float(hero_def.get("attack_cd", 1.1)))
+	return int(sqrt(dps * hp * (1.0 + armor * 0.06)))
+
 static func _find(nid: String) -> Dictionary:
 	for n in SkillDefs.get_tree():
 		if n["id"] == nid:

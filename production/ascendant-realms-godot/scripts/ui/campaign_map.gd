@@ -315,13 +315,21 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	var twist_lines: Array = []
 	for tw_id in st.get("twists", []):
 		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(tw_id, tw_id)))
-	if depth % 5 == 0 and depth % 10 != 0:
+	var road_boss: Dictionary = EndlessDefs.boss(depth)
+	if not road_boss.is_empty():
+		twist_lines.append("Road Tyrant: %s. %s" % [String(road_boss["name"]), String(road_boss["text"])])
+	elif depth % 5 == 0 and depth % 10 != 0:
 		twist_lines.append("Champion stage: a giant guards the enemy stronghold (pays like three Elites)")
 	if not twist_lines.is_empty():
 		var tw := _label("Twists: " + "  ·  ".join(twist_lines), 15, Color(0.95, 0.62, 0.42))
 		tw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(tw)
-	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best()], 15, Color(0.85, 0.72, 0.45))
+	var race_now := String(ProfileManager.hero().get("race", "")) if ProfileManager.has_hero() else ""
+	var fastest := ProfileManager.endless_fastest(depth)
+	var records := "   ·   Best with %s: %d" % [GameData.get_race(race_now).get("name", race_now), ProfileManager.endless_best_for(race_now)] if race_now != "" else ""
+	if fastest > 0.0:
+		records += "   ·   Fastest clear: %d:%02d" % [int(fastest) / 60, int(fastest) % 60]
+	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d%s" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best(), records], 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(meta)
 	var row := HBoxContainer.new()

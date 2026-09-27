@@ -481,7 +481,7 @@ func _apply_race_passive() -> void:
 			move_speed *= 1.15
 			base_dmg *= 1.10
 		"hollow":                         # Undying — every warrior drains life on hit
-			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.12)
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.08)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			base_dmg *= 1.12
 			max_hp *= 1.10
@@ -2431,6 +2431,8 @@ func _on_dealt_damage(dealt: float, tgt) -> void:
 			world.spawn_hit_fx(tgt.global_position + Vector3.UP, "arcane")
 	# Bloodrush (legendary power): a kill quickens the next blows.
 	if bool(hero_flags.get("haste_on_kill", false)) and is_instance_valid(tgt) and bool(tgt.get("is_dead")):
+		if _haste_time <= 0.0 and world:
+			world.spawn_hit_fx(global_position + Vector3.UP * 1.5, "blood")
 		_haste_time = 4.0
 
 func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_event_id: String = "") -> float:
@@ -3030,6 +3032,8 @@ func take_damage(amount: float, from = null) -> void:
 		return
 	var hp_before := hp
 	var applied := maxf(0.0, amount)
+	if has_meta("road_boss") and world and world.has_method("boss_damage_scale"):
+		applied *= world.boss_damage_scale(self)
 	hp = maxf(0.0, hp - applied)
 	# Thornhide talent: melee attackers take part of the blow back (never a
 	# reflection of a reflection).
@@ -3037,6 +3041,8 @@ func take_damage(amount: float, from = null) -> void:
 		_reflecting = true
 		from.take_damage(applied * thorns, self)
 		_reflecting = false
+		if world and randf() < 0.35:
+			world.spawn_hit_fx(from.global_position + Vector3.UP, "thorn")
 	_last_damage_source = from if from is Unit and is_instance_valid(from) else from.get("source_unit", null) if from is Dictionary and is_instance_valid(from.get("source_unit", null)) else null
 	_last_damage_source_team = source_team
 	_last_damage_source_id = _combat_source_id(from)

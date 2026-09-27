@@ -660,6 +660,36 @@ func update_setting(key: String, value) -> void:
 func endless_best() -> int:
 	return int(saga().get("endless_best", 0))
 
+## Endless Road records: the deepest stage won with each faction, and the
+## fastest clear of every stage (in game seconds). Kept for later online boards.
+func endless_record(depth: int, race: String, seconds: float) -> Dictionary:
+	var s := saga()
+	var rec = s.get("endless_records", {})
+	if not rec is Dictionary:
+		rec = {}
+	var best_by_race = rec.get("best_by_race", {})
+	var fastest = rec.get("fastest", {})
+	var out := {"new_race_best": false, "new_fastest": false}
+	if depth > int(best_by_race.get(race, 0)):
+		best_by_race[race] = depth
+		out["new_race_best"] = true
+	var key := str(depth)
+	if seconds > 0.0 and (not fastest.has(key) or seconds < float(fastest[key])):
+		fastest[key] = snappedf(seconds, 0.1)
+		out["new_fastest"] = true
+	rec["best_by_race"] = best_by_race
+	rec["fastest"] = fastest
+	s["endless_records"] = rec
+	return out
+
+func endless_best_for(race: String) -> int:
+	var rec = saga().get("endless_records", {})
+	return int((rec.get("best_by_race", {}) as Dictionary).get(race, 0)) if rec is Dictionary else 0
+
+func endless_fastest(depth: int) -> float:
+	var rec = saga().get("endless_records", {})
+	return float((rec.get("fastest", {}) as Dictionary).get(str(depth), 0.0)) if rec is Dictionary else 0.0
+
 func endless_won(depth: int) -> void:
 	var s := saga()
 	s["last_relic"] = ""

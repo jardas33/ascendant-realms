@@ -68,6 +68,7 @@ func setup(p_world, p_commander, p_difficulty: String) -> void:
 	_easy_mode = difficulty == "easy"
 	_easy_rng.seed = _easy_seed + int(commander.team) * 101
 	_base_pos = _find_hq_pos()
+	_gather_share = _race_gather_share()
 	_rally = _base_pos.lerp(Vector3.ZERO, 0.35)
 
 ## Faction personalities on top of difficulty: swarm factions attack early
@@ -79,7 +80,9 @@ func _apply_personality() -> void:
 		"vorthak", "hollow", "grimtusk", "wyldkin":
 			_army_attack_size = maxi(4, _army_attack_size - 3)
 		"sunspear", "karak", "sylvan":
-			_army_attack_size += 4
+			# Massing four extra soldiers lost the first fights to swarm
+			# factions before the big army ever marched (1-7 records).
+			_army_attack_size += 2
 			_worker_target += 2
 		"frostborn":
 			_army_attack_size += 1
@@ -642,6 +645,37 @@ func _assign_idle_workers() -> void:
 # a target share per resource, scaled by how full each stockpile is.
 const GATHER_SHARE := {"food": 0.35, "timber": 0.25, "gold": 0.25, "stone": 0.15}
 
+## Gather shares shaped by what this faction actually spends. One fixed split
+## sent a quarter of the Barrosan workers to gold its soldiers barely use: it
+## sat on 700 gold with 30 food while its army starved.
+var _gather_share: Dictionary = {}
+
+func _race_gather_share() -> Dictionary:
+	var need := {"food": 0.0, "timber": 0.0, "stone": 0.0, "gold": 0.0}
+	var race_def: Dictionary = GameData.get_race(commander.race)
+	var worker: Dictionary = GameData.get_unit(String(race_def.get("worker", "")))
+	for k in worker.get("cost", {}):
+		need[k] = float(need.get(k, 0.0)) + float(worker["cost"][k]) * 2.0
+	for bid in GameData.buildings_for_race(commander.race):
+		var bd: Dictionary = GameData.get_building(bid)
+		if String(bd.get("kind", "")) == "barracks":
+			for uid in bd.get("produces", []):
+				var ud: Dictionary = GameData.get_unit(String(uid))
+				var weight := 2.0 if int(ud.get("tier", 1)) == 1 else 1.0
+				for k in ud.get("cost", {}):
+					need[k] = float(need.get(k, 0.0)) + float(ud["cost"][k]) * weight
+		elif String(bd.get("kind", "")) == "house":
+			for k in bd.get("cost", {}):
+				need[k] = float(need.get(k, 0.0)) + float(bd["cost"][k]) * 1.5
+	var total := 0.0
+	for k in need:
+		total += float(need[k])
+	var out := {}
+	for k in GATHER_SHARE:
+		var spent: float = float(need.get(k, 0.0)) / maxf(1.0, total)
+		out[k] = maxf(0.08, 0.5 * float(GATHER_SHARE[k]) + 0.5 * spent)
+	return out
+
 func _rebalance_gatherers() -> void:
 	var crews := {"food": [], "timber": [], "stone": [], "gold": []}
 	var total := 0
@@ -663,8 +697,10 @@ func _rebalance_gatherers() -> void:
 	var donor_gap := -0.99
 	for k in crews:
 		var stock := int(r.get(k, 0))
-		var pressure := 1.7 if stock < 150 else (1.2 if stock < 350 else (1.0 if stock < 800 else 0.35))
-		var gap: float = float(GATHER_SHARE[k]) * float(total) * pressure - float(crews[k].size())
+		# A Karak AI starved on 0 food and 10 timber while 900 gold sat
+		# unspent: a big stockpile now releases its gatherers much sooner.
+		var pressure := 1.7 if stock < 150 else (1.2 if stock < 350 else (0.6 if stock < 600 else 0.15))
+		var gap: float = float(_gather_share.get(k, GATHER_SHARE[k])) * float(total) * pressure - float(crews[k].size())
 		if gap > short_gap:
 			short = k
 			short_gap = gap
@@ -673,11 +709,15 @@ func _rebalance_gatherers() -> void:
 			donor_gap = gap
 	if short == "" or donor == "" or short == donor:
 		return
+	# Move two at once when one stock is starving and another is piled high.
+	var moves := 2 if int(r.get(short, 0)) < 100 and int(r.get(donor, 0)) > 500 else 1
 	for u in crews[donor]:
 		var node = world.find_nearest_resource(u.global_position, short)
 		if node:
 			u.command_gather(node)
-			return
+			moves -= 1
+			if moves <= 0:
+				return
 
 # A worker pulled off a construction site (or killed) left the site unbuilt
 # for the rest of the match. Send the nearest free worker back to finish it.
@@ -835,12 +875,30 @@ func _manage_defense() -> void:
 	if _count_building_kind("tower") < (2 if _tech_aggression >= 1.0 else 1) and _worker_count() >= 5 and commander.pop_used < commander.pop_cap - 3:
 		if _rng.randf() < 0.4:
 			_try_build("tower")
-	# recall army to defend if base attacked
-	var threat = world.find_enemy_near(_base_pos, 30.0, commander.team)
+	# Recall the army to defend. Raiders used to kill the workers at outlying
+	# fields and houses unanswered: only enemies within 30 m of the main hall
+	# counted, and only soldiers within 45 m answered, which left out the army
+	# waiting at its rally point about 50 m out. Now any enemy near a building
+	# of ours, or near a worker that was just hit, is a threat, and every
+	# soldier not already away on an attack answers.
+	var threat = world.find_enemy_near(_base_pos, 34.0, commander.team)
+	if threat == null:
+		for b in commander.buildings:
+			if is_instance_valid(b) and not b.is_dead and b.global_position.distance_to(_base_pos) < 70.0:
+				threat = world.find_enemy_near(b.global_position, 14.0, commander.team)
+				if threat:
+					break
+	if threat == null:
+		var now := Time.get_ticks_msec()
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and now - int(u.get("_last_damaged_msec")) < int(2500.0 / maxf(0.01, Engine.time_scale)):
+				threat = world.find_enemy_near(u.global_position, 12.0, commander.team)
+				if threat:
+					break
 	if threat:
 		for u in commander.units:
 			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
-				if u.global_position.distance_to(_base_pos) < 45.0:
+				if u.global_position.distance_to(threat.global_position) < 80.0 and u.global_position.distance_to(_base_pos) < 85.0:
 					u.command_attack(threat)
 
 # --- offense --------------------------------------------------------------

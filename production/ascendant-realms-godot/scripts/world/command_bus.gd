@@ -39,20 +39,49 @@ func resolve(id: int):
 ## Run an order now and record it. `order` holds live references:
 ## {"type": String, "units": Array[Unit], "target": Node or null,
 ##  "pos": Vector3, "positions": Array[Vector3] (per-unit slots), "order_id": String}
-func issue(order: Dictionary) -> void:
+## Returns what the order produced: the placed building for "place", the
+## queue result for "train" and "research", whether "cast" went off.
+func issue(order: Dictionary):
 	var data := serialize(order)
 	data["tick"] = Engine.get_physics_frames()
 	history.append(data)
 	if history.size() > LOG_LIMIT:
 		history.pop_front()
-	execute(order)
+	return execute(order)
 
-func execute(order: Dictionary) -> void:
+func execute(order: Dictionary):
 	var units: Array = order.get("units", [])
 	var target = order.get("target")
 	var pos: Vector3 = order.get("pos", Vector3.ZERO)
 	var slots: Array = order.get("positions", [])
 	var order_id := String(order.get("order_id", ""))
+	var id := String(order.get("id", ""))
+	# Orders given to a building or to the whole side.
+	match String(order.get("type", "")):
+		"place":
+			var b = world.place_building(id, int(order.get("team", world.player_team)), pos)
+			if b:
+				for w in units:
+					if is_instance_valid(w) and not w.is_dead:
+						w.command_build(b)
+			return b
+		"train":
+			return target.queue_unit(id) if is_instance_valid(target) else {"ok": false, "reason": "Building lost"}
+		"research":
+			return target.queue_tech(id) if is_instance_valid(target) else {"ok": false, "reason": "Building lost"}
+		"cancel":
+			if is_instance_valid(target):
+				target.cancel_queue_item(int(order.get("index", 0)))
+			return null
+		"rally":
+			if is_instance_valid(target):
+				target.set_rally(pos)
+			return null
+		"cast":
+			for h in units:
+				if is_instance_valid(h) and not h.is_dead:
+					return h.cast_ability(id, pos)
+			return false
 	var i := 0
 	for u in units:
 		if not is_instance_valid(u) or u.is_dead:
@@ -96,6 +125,9 @@ func serialize(order: Dictionary) -> Dictionary:
 		out["positions"] = slots
 	if String(order.get("order_id", "")) != "":
 		out["order_id"] = String(order["order_id"])
+	for k in ["id", "index", "team"]:
+		if order.has(k):
+			out[k] = order[k]
 	return out
 
 func deserialize(data: Dictionary) -> Dictionary:
@@ -105,6 +137,12 @@ func deserialize(data: Dictionary) -> Dictionary:
 		if u:
 			units.append(u)
 	var out := {"type": String(data.get("type", "")), "units": units, "order_id": String(data.get("order_id", ""))}
+	if data.has("id"):
+		out["id"] = String(data["id"])
+	if data.has("index"):
+		out["index"] = int(data["index"])
+	if data.has("team"):
+		out["team"] = int(data["team"])
 	if data.has("target"):
 		out["target"] = resolve(int(data["target"]))
 	if data.has("pos"):

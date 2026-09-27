@@ -426,6 +426,26 @@ func _show_item_detail(item: Dictionary) -> void:
 	var slot: String = str(item.get("slot", ""))
 	var equipped = ProfileManager.hero().get("equipment", {}).get(slot, null)
 	_detail_box.add_child(_stats_block(item, equipped))
+	# What the swap costs: stats only the equipped piece has, and the change
+	# in Hero Power (sets, powers and talents included).
+	if equipped is Dictionary:
+		var lost: Array = []
+		for k in (equipped.get("stats", {}) as Dictionary):
+			if not (item.get("stats", {}) as Dictionary).has(k):
+				lost.append("-%s %s" % [str(equipped["stats"][k]), _pretty(str(k))])
+		if not lost.is_empty():
+			var lost_label := _wrap_label("Lost from the equipped piece: " + ", ".join(lost))
+			lost_label.add_theme_color_override("font_color", Color(0.96, 0.67, 0.58))
+			_detail_box.add_child(lost_label)
+	var trial: Dictionary = ProfileManager.hero().duplicate(true)
+	var trial_eq: Dictionary = trial.get("equipment", {})
+	trial_eq[slot] = item
+	trial["equipment"] = trial_eq
+	var now_power := HeroProgression.power(ProfileManager.hero())
+	var then_power := HeroProgression.power(trial)
+	var pw := _wrap_label("Hero Power: %d -> %d (%+d)" % [now_power, then_power, then_power - now_power])
+	pw.add_theme_color_override("font_color", Color(0.58, 0.86, 0.64) if then_power >= now_power else Color(0.96, 0.67, 0.58))
+	_detail_box.add_child(pw)
 	if String(item.get("set", "")) != "":
 		var worn := 0
 		for it in ProfileManager.hero().get("equipment", {}).values():

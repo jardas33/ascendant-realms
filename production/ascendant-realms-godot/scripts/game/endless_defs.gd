@@ -95,6 +95,24 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 		"mood": mood,
 	}
 
+## Every 25th stage a Road Tyrant holds the enemy stronghold: a named giant
+## with a mechanic of its own. They return, stronger, every hundred stages.
+const BOSSES := [
+	{"id": "tarasca", "name": "The Tarasca of the Cávado", "kind": "pulse",
+		"text": "The river-dragon of the old tales. Every few seconds it breathes fire in a ring around itself: fight it from range, or step back when it rears."},
+	{"id": "old_wolf", "name": "The Old Wolf of Larouco", "kind": "summon",
+		"text": "Grey as the mountain and older than the villages. It howls, and the pack answers: kill the wolves or be buried in them."},
+	{"id": "iron_abbot", "name": "The Iron Abbot of Pitões", "kind": "regen",
+		"text": "The monastery's last guardian, bound in iron and prayer. It heals quickly whenever it is left alone for a breath: never stop striking."},
+	{"id": "moura_queen", "name": "The Moura Queen", "kind": "ward",
+		"text": "Queen of the enchanted Mouras, beautiful and terrible. While her court stands around her, she takes half damage: break the court first."},
+]
+
+static func boss(depth: int) -> Dictionary:
+	if depth <= 0 or depth % 25 != 0:
+		return {}
+	return BOSSES[(depth / 25 - 1) % BOSSES.size()]
+
 const RELIC_SLOTS := ["main_hand", "body", "head", "amulet", "ring1", "cloak", "off_hand", "feet", "hands", "ring2", "relic"]
 const RELIC_NOUNS := {"main_hand": "Blade", "body": "Mail", "head": "Helm", "amulet": "Amulet", "ring1": "Ring",
 	"cloak": "Cloak", "off_hand": "Shield", "feet": "Boots", "hands": "Gauntlets", "ring2": "Signet", "relic": "Reliquary"}
