@@ -393,6 +393,11 @@ func play_production_arrival_cue() -> void:
 	if is_instance_valid(_p1r22_contact_shadow):
 		settled_shadow_scale = _p1r22_contact_shadow.scale
 		_p1r22_contact_shadow.scale = settled_shadow_scale * PRODUCTION_ARRIVAL_SHADOW_START
+	# A burst of team-coloured light marks the new recruit joining the host.
+	if world and is_instance_valid(world.get("_fx_container")):
+		var col: Color = commander.color if commander else Color.WHITE
+		CombatVfx.motes(world._fx_container, global_position, col, 1.2)
+		CombatVfx.shockwave(world._fx_container, global_position, col, 1.6)
 	_production_arrival_tween = create_tween()
 	_production_arrival_tween.set_parallel(true)
 	_production_arrival_tween.set_trans(Tween.TRANS_QUAD)
