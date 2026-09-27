@@ -232,6 +232,14 @@ const TIPS := [
 	"Win a chapter again as a Heroic Replay for harder enemies, more experience, and a laurel on the map.",
 	"The Chronicle on the campaign map keeps every chapter you have won. Reread it before the Wall.",
 	"Enemy heroes cast spells too. Scatter your army when theirs starts to slam.",
+	"Every battle offers a bounty. Meet it and win for extra spoils and experience.",
+	"When the Lume surges from the earth, hold the light alone for eight seconds to claim its gift.",
+	"Elite enemies glow gold at the edges. Each one you slay adds a better roll to your spoils.",
+	"Four matching set pieces grant a power; two already grant a bonus that grows with item level.",
+	"Every tenth stage of the Endless Road is a Barroso feast: Entrudo, the Chega de Bois, the Night of the Witches.",
+	"Deeds never run out. Every tier earns a title and a mastery point.",
+	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
+	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
 ]
 
 

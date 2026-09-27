@@ -320,7 +320,7 @@ static func get_all() -> Dictionary:
 	"sylvan_silver_colossus": {
 		"race": "sylvan", "name": "Silver Colossus", "role": "antiarmor", "tier": 3,
 		"model": _char("barrosan_anvil_breaker"), "height": 2.2,
-		"hp": 260, "dmg": 30, "dmg_type": "arcane", "armor_class": "heavy", "armor": 4,
+		"hp": 310, "dmg": 35, "dmg_type": "arcane", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.7, "vision": 22.0,
 		"cost": {"food": 110, "stone": 40, "gold": 50}, "build_time": 28, "pop": 3, "produced_by": "sylvan_bladehall",
 		"desc": "A Moura's guardian woken from a silver-veined rock. It walks slowly and never forgets an insult.",
