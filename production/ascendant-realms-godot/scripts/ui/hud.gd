@@ -818,13 +818,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.offset_bottom = -21.0
 		text_col.add_theme_constant_override("separation", 2)
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var title_label := _mk_label(title, 17, FONT_COLOR)
+		# Narrow two-column build cards can wrap both the name and cost. Reserve
+		# the status footer by fitting those two scan lines inside the 96px card.
+		var title_label := _mk_label(title, 14, FONT_COLOR)
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
 		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
-		var detail_label := _mk_label(detail_text.replace(", ", "\n"), 14, preview_detail_color)
+		var detail_label := _mk_label(detail_text.replace(", ", "\n"), 12, preview_detail_color)
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
