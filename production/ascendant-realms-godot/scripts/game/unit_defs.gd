@@ -137,6 +137,7 @@ static func get_all() -> Dictionary:
 	"vorthak_worker": {
 		"race": "vorthak", "name": "Bondservant", "role": "worker", "tier": 1,
 		"model": _char("vorthak_bondservant_worker"), "height": 1.75,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/bondservant.png",
 		"hp": 50, "dmg": 5, "dmg_type": "blunt", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 1.2, "speed": 3.7, "vision": 18.0,
 		"cost": {"food": 45}, "build_time": 11, "pop": 1,
@@ -181,6 +182,7 @@ static func get_all() -> Dictionary:
 	"vorthak_veil_warlock": {
 		"race": "vorthak", "name": "Veil Warlock", "role": "caster", "tier": 3,
 		"model": _char("vorthak_veil_warlock"), "height": 1.85,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/veil_warlock.png",
 		"hp": 100, "dmg": 30, "dmg_type": "arcane", "armor_class": "unarmored", "armor": 0,
 		"range": 18.0, "attack_cd": 2.0, "speed": 3.3, "vision": 26.0, "projectile": "void_bolt", "splash": 3.5,
 		"cost": {"food": 90, "gold": 70}, "build_time": 24, "pop": 2, "produced_by": "arcane",
@@ -214,6 +216,7 @@ static func get_all() -> Dictionary:
 	"vorthak_hero_binder": {
 		"race": "vorthak", "name": "Rift Binder", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("vorthak_hero_binder"), "height": 2.0,
+		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/rift_binder.png",
 		"hp": 300, "dmg": 44, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
 		"range": 17.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
 		"desc": "Glass-cannon battlemage. Enormous burst magic, fragile if caught.",

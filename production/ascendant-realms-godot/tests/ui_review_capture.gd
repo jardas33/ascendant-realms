@@ -90,6 +90,15 @@ func _run() -> void:
 				await create_timer(0.25).timeout
 		for index in 5:
 			await process_frame
+	var review_unit_id := OS.get_environment("ASCENDANT_UI_UNIT_ID")
+	if not review_unit_id.is_empty() and instance.get("rts") != null:
+		var review_unit = instance.world.spawn_unit(review_unit_id, 0, Vector3(8, 0, 8))
+		if is_instance_valid(review_unit):
+			instance.rts._clear_selection()
+			instance.rts._add_to_selection(review_unit)
+			instance.rts.selection_changed.emit(instance.rts.selected)
+			for index in 5:
+				await process_frame
 	var review_building_id := OS.get_environment("ASCENDANT_UI_BUILDING_ID")
 	if not review_building_id.is_empty() and instance.get("rts") != null:
 		var review_definition: Dictionary = root.get_node("GameData").get_building(review_building_id).duplicate()
@@ -304,6 +313,18 @@ func _run() -> void:
 							warden_caption = true
 					if not warden_caption:
 						validation_errors.append("lioraen_hero_caption_missing")
+			if player_race == "vorthak":
+				for unit_id in ["vorthak_worker", "vorthak_veil_warlock", "vorthak_hero_binder"]:
+					var unit_definition: Dictionary = root.get_node("GameData").get_unit(unit_id)
+					var art_path := String(unit_definition.get("portrait", ""))
+					if art_path.is_empty() or not ResourceLoader.exists(art_path):
+						validation_errors.append("vorthak_character_art_missing:" + unit_id)
+				if selected_kind in ["worker", "hero"]:
+					var expected_vorthak_art := "res://assets/ui/portraits/vorthak/astra_r1/bondservant.png" if selected_kind == "worker" else "res://assets/ui/portraits/vorthak/astra_r1/rift_binder.png"
+					var selected_portrait_view: Control = hud._selection_portrait.find_child("PortraitArtwork", true, false) as Control
+					var selected_portrait_parent: Node = selected_portrait_view.get_parent() if is_instance_valid(selected_portrait_view) else null
+					if not is_instance_valid(selected_portrait_parent) or not selected_portrait_parent.has_method("get_active_portrait_path") or String(selected_portrait_parent.get_active_portrait_path()) != expected_vorthak_art:
+						validation_errors.append("vorthak_%s_selected_art_missing" % selected_kind)
 			if selected_kind == "military" and player_race == "lioraen" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "lioraen_thorn_ranger":
 				var thornrunner_portrait := ""
 				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
@@ -322,6 +343,11 @@ func _run() -> void:
 				var portrait_view := thrall_portrait.get_parent() if is_instance_valid(thrall_portrait) else null
 				if not is_instance_valid(portrait_view) or not portrait_view.has_method("get_active_portrait_path") or String(portrait_view.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/ash_thrall.png":
 					validation_errors.append("vorthak_ash_thrall_selected_portrait_missing")
+			if review_unit_id == "vorthak_veil_warlock":
+				var warlock_art: Control = hud._selection_portrait.find_child("PortraitArtwork", true, false) as Control
+				var warlock_portrait: Node = warlock_art.get_parent() if is_instance_valid(warlock_art) else null
+				if not is_instance_valid(warlock_portrait) or not warlock_portrait.has_method("get_active_portrait_path") or String(warlock_portrait.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/veil_warlock.png":
+					validation_errors.append("vorthak_veil_warlock_selected_art_missing")
 			if review_building_id == "vorthak_bone_barracks":
 				var expected_unit_art := {
 					"Ash Thrall": "ash_thrall.png",
