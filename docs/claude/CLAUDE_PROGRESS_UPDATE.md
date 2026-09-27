@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 03:20 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 04:10 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -28,6 +28,13 @@ Last updated: 2026-09-27, 03:20 UTC. Claude updates this file after every pass.
   - projectile-impact audio
 
 ## Performance and stability
+
+- **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
+  - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
+  - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
+  - the AI placed buildings behind its base where the settlement dressing could wall them off; it now builds on the side facing the battlefield, keeps at most two sites open and cancels (with a refund) any site nobody could start within 90 seconds;
+  - AI squads sent to capture points attack-moved into the solid landmark and stayed stuck forever; they now stand inside the capture ring.
+  After the fixes the enemy AI builds armies of 25 to 50 and destroys the opponent.
 
 - **Fog of war:** it is now drawn from a GPU texture instead of rebuilding an 18,000-vertex mesh every 0.2 s. Speed at 4x game speed went from 6 FPS to the vsync cap.
 - **Mid-match stalls:** building collision is cached, and every unit, building, effect and projectile is warmed up while the match loads. The worst frame in a 10-minute run at 4x went from 300 ms to about 33 ms.
@@ -112,6 +119,19 @@ Last updated: 2026-09-27, 03:20 UTC. Claude updates this file after every pass.
 - **Other screens:** the hero forge preview, skill tree, War Chest and campaign map are reskinned to match.
 - **Victory and defeat:** a result ledger on the ornate plate.
 - **Buttons:** every button uses a forged-bronze frame. The pause menu sits on the ornate plate, and its control list is easier to read.
+
+## Top-10 plan (started 2026-09-27)
+
+1. DONE. Full AI-vs-AI playtests on several maps and difficulties to catch gameplay bugs: stuck units, AI stalls, matches that never end.
+2. Hero progression in battle: the level-up alert exists but nothing ever fires it; wire in-match hero XP and level-ups.
+3. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
+4. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
+5. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
+6. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
+7. Tutorial and first-match onboarding review.
+8. Verify recent features in real play: Medium quality, Backspace jump, veteran flare.
+9. Polish known weak spots: collapse dust at normal zoom and pale grain on the food site.
+10. Campaign map screen polish with what is available now; the painted map still needs the token.
 
 ## Still open
 

@@ -1626,6 +1626,8 @@ func _route_request_reason(command_type: String) -> String:
 		return "AI_COMBAT" if command_type == "attack" else "AI_MOVE"
 	return "MILITARY_MOVE" if not is_worker else "PLAYER_MOVE"
 
+var _navigation_short_replan_msec := 0
+
 func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
 	if command_type != "":
@@ -1653,6 +1655,19 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	var same_tolerance := 1.0 if _navigation_command_type == "attack" else 0.1
 	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= same_tolerance and _navigation_last_command == _navigation_command_type
 	var path_needs_refresh: bool = _navigation_invalid_consecutive > 0 or _navigation_retry_elapsed > 0.0 or _navigation_terminal_failure_recorded
+	# The route solver can hand back a path that ends short of the target (for
+	# example a single waypoint at the unit's own position while the way was
+	# briefly blocked). The unit then stood on that last waypoint forever,
+	# because the unchanged request kept reusing the stale route: AI builders
+	# froze beside their sites and economies stalled. Re-plan once a second
+	# while parked short of the goal.
+	if same_request and not _navigation_waypoints.is_empty():
+		var last_wp: Vector3 = _navigation_waypoints[_navigation_waypoints.size() - 1]
+		if global_position.distance_to(last_wp) < 0.8 and last_wp.distance_to(pos) > 1.5:
+			var now := Time.get_ticks_msec()
+			if now - _navigation_short_replan_msec > 1000:
+				_navigation_short_replan_msec = now
+				path_needs_refresh = true
 	if same_request and not path_needs_refresh and not _navigation_waypoints.is_empty():
 		# A pending navigation-map sync is not a reason to rerun the authored
 		# route solver. Reuse the same path and let the broad NavigationAgent

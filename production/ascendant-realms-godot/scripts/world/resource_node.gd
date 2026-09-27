@@ -45,6 +45,8 @@ func _m21_record(row: Dictionary) -> void:
 	if recorder:
 		recorder.record_configure(row)
 
+const COMPACT_CORE_ONLY_MODELS := ["resource_harvest_grain.glb", "resource_timber_stack.glb", "resource_gold_vein.glb"]
+
 func configure(kind: String, amt: int, model_path: String, scale_h: float) -> void:
 	var m21_total_start := Time.get_ticks_usec()
 	var m21_recorder = _m21_recorder()
@@ -88,7 +90,10 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		ModelUtils.ground_model(m)
 		m21_visual_setup_us = Time.get_ticks_usec() - visual_start
 		var collision_start := Time.get_ticks_usec()
-		var collision_stats: Dictionary = ModelUtils.add_cached_per_part_convex_collision(m, 8, "resource:" + model_path)
+		# The Blender resource sites spread grain, logs and ore across a wide
+		# patch. Per-part hulls there walled workers out of the 2.1 m gather
+		# ring, so those sites rely on GameWorld's compact resource core only.
+		var collision_stats: Dictionary = {} if model_path.get_file() in COMPACT_CORE_ONLY_MODELS else ModelUtils.add_cached_per_part_convex_collision(m, 8, "resource:" + model_path)
 		m21_collision_cache_hits = int(collision_stats.get("cache_hits", 0))
 		m21_collision_cache_misses = int(collision_stats.get("cache_misses", 0))
 		m21_collision_helper_us = Time.get_ticks_usec() - collision_start

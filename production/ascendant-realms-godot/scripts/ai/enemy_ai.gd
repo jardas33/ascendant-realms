@@ -107,6 +107,7 @@ func _think() -> void:
 	_assign_idle_workers()
 	_rebalance_gatherers()
 	_finish_abandoned_construction()
+	_cancel_dead_sites()
 	_manage_economy()
 	_manage_tech()
 	_manage_production()
@@ -795,8 +796,14 @@ func _manage_capture() -> void:
 					squad.append(u)
 					if squad.size() >= 3:
 						break
+			# Stand inside the 7.5 m capture ring on the near side, not on the
+			# landmark itself: the centre is solid, so squads sent there pushed
+			# against it in attack-move forever and were lost to the AI.
+			var side: Vector3 = (_base_pos - p.global_position)
+			side.y = 0.0
+			var spot: Vector3 = p.global_position + (side.normalized() if side.length() > 0.1 else Vector3.RIGHT) * 4.5
 			for u in squad:
-				u.command_move(p.global_position, true)
+				u.command_move(spot, true)
 			return
 
 # --- building placement ---------------------------------------------------
@@ -809,6 +816,9 @@ func _try_build(kind: String) -> void:
 	var bdef := GameData.get_building(bid)
 	if not commander.can_afford(bdef.get("cost", {})):
 		return
+	# Finish what is already laid out before starting more sites.
+	if _unbuilt_count() >= 2:
+		return
 	var worker = _free_worker()
 	if not worker:
 		return
@@ -818,20 +828,44 @@ func _try_build(kind: String) -> void:
 		return
 	var b = world.place_building(bid, commander.team, pos)
 	if b:
+		b.set_meta("ai_placed_msec", Time.get_ticks_msec())
 		worker.command_build(b)
 		_build_cooldown = 3.0
 
+func _unbuilt_count() -> int:
+	var n := 0
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and not b.is_built:
+			n += 1
+	return n
+
+# A site nobody has managed to start after 90 s of game time is unreachable:
+# cancel it and take the materials back so the economy is not locked up.
+func _cancel_dead_sites() -> void:
+	for b in commander.buildings.duplicate():
+		if not is_instance_valid(b) or b.is_dead or b.is_built or not b.has_meta("ai_placed_msec"):
+			continue
+		var age := float(Time.get_ticks_msec() - int(b.get_meta("ai_placed_msec"))) / 1000.0 * Engine.time_scale
+		if b.build_progress <= 0.001 and age > 90.0:
+			commander.refund(b.def.get("cost", {}), 1.0)
+			b._destroy(null)
+			return
+
 func _find_build_spot() -> Vector3:
 	# spiral out from base, avoid overlapping existing buildings
+	# Build on the side of the base that faces the battlefield. The rear of
+	# each start holds the settlement dressing (hamlet, holdfast, grove), and
+	# sites placed there could be walled off so the builder never arrived.
+	var toward := atan2(-_base_pos.z, -_base_pos.x)
 	for attempt in 20:
-		var ang := randf() * TAU
+		var ang := toward + randf_range(-1.5, 1.5)
 		var dist := 12.0 + randf() * 22.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
 		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		if _spot_clear(p):
 			return p
-	return _base_pos + Vector3(randf_range(-15, 15), 0, randf_range(-15, 15))
+	return _base_pos + Vector3(cos(toward), 0, sin(toward)) * 16.0 + Vector3(randf_range(-6, 6), 0, randf_range(-6, 6))
 
 func _spot_clear(p: Vector3) -> bool:
 	for b in commander.buildings:
