@@ -1277,7 +1277,9 @@ func _build_top_bar() -> void:
 	mission_stack.add_theme_constant_override("separation", 3)
 	mission_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mission_row.add_child(mission_stack)
-	var battlefield_label := _mk_label(map_name.to_upper(), 15, COMMAND_GOLD)
+	# Campaign battles are titled by their chapter, not the map.
+	var saga_chapter := CampaignDefs.find(String(Match.get_config().get("campaign_chapter", "")))
+	var battlefield_label := _mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 15, COMMAND_GOLD)
 	battlefield_label.name = "MatchBattlefieldLabel"
 	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mission_stack.add_child(battlefield_label)
@@ -1291,6 +1293,7 @@ func _build_top_bar() -> void:
 	var objective_text := "CONQUEST · End enemy rebuild" if victory_kind == "conquest" else victory_kind.capitalize()
 	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
 	objective_label.name = "MatchObjectiveLabel"
+	_survival_label = objective_label
 	objective_label.tooltip_text = "Eliminate the enemy's rebuild capability." if victory_kind == "conquest" else objective_text
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1873,6 +1876,7 @@ func _process(delta: float) -> void:
 		_fit_to_viewport()
 		_last_viewport_size = viewport_size
 
+	_update_survival_label()
 	_map_accum += delta
 	if _map_accum >= (0.04 if not _map_pings.is_empty() else 0.15):
 		_map_accum = 0.0
@@ -3527,6 +3531,17 @@ func _build_alert_feed() -> void:
 
 var _map_pings: Array = []
 var last_alert_position := Vector3.INF
+
+var _survival_label: Label
+
+func _update_survival_label() -> void:
+	if not is_instance_valid(_survival_label) or not is_instance_valid(world) or not world.has_method("survival_remaining"):
+		return
+	var left: float = world.survival_remaining()
+	if left < 0.0:
+		return
+	_survival_label.text = "SURVIVE · Hold for %d:%02d" % [int(left) / 60, int(left) % 60]
+	_survival_label.tooltip_text = "Keep your base standing until the timer runs out."
 
 func _on_alert(message: String, _pos: Vector3) -> void:
 	_refresh_opponent_count()

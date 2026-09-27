@@ -99,6 +99,16 @@ func saga() -> Dictionary:
 	var c := campaign()
 	if not c.has("saga") or typeof(c["saga"]) != TYPE_DICTIONARY:
 		c["saga"] = {"unlocked": ["1-1"], "cleared": [], "jars": [], "choice": ""}
+		# Carry old Border Marches progress over: each battle won there clears
+		# the matching main-road chapter of Act I.
+		var migrated: Dictionary = c["saga"]
+		var main_road := ["1-1", "1-2", "1-3", "1-4", "1-5", "1-6"]
+		for i in mini(int(c.get("node", 0)), main_road.size()):
+			var id: String = main_road[i]
+			migrated["cleared"].append(id)
+			for next in CampaignDefs.find(id).get("unlocks", []):
+				if not (String(next) in migrated["unlocked"]):
+					migrated["unlocked"].append(String(next))
 	var s: Dictionary = c["saga"]
 	for key in ["unlocked", "cleared", "jars"]:
 		if not s.has(key) or typeof(s[key]) != TYPE_ARRAY:

@@ -51,7 +51,7 @@ const CHAPTERS := [
 		"opening": "The water here is warm. Water should not be warm.",
 		"taunts": ["Malrec: \"You see it now? This is what drowned memory becomes.\"", "A Veil Warlock: \"We were a village once. Ask the Dominion what happened.\""],
 		"victory": "Among the burned ash-glass you found a child's shoe, fused into the glass. The Vorthak were not born monsters."},
-	{"id": "1-S2", "act": 0, "title": "The Night of the Witches", "map": "ashen_vale", "side": true, "jar": true,
+	{"id": "1-S2", "survive": 360, "act": 0, "title": "The Night of the Witches", "map": "ashen_vale", "side": true, "jar": true,
 		"opponents": [{"race": "vorthak", "difficulty": "normal"}], "difficulty": "Normal", "unlocks": [],
 		"briefing": "It is Friday the thirteenth, the Night of the Witches at Montalto castle. The whole valley gathers to burn the queimada and speak the esconjuro, the old charm against the dark.\n\nThe Cabal wants the charm unspoken. Keep the fire lit until Avó Brites finishes the words.",
 		"opening": "Owls and toads and witches... keep the fire burning.",
@@ -112,7 +112,7 @@ const CHAPTERS := [
 		"opening": "Ilduara: \"They were the most beautiful of us. They still are.\"",
 		"taunts": ["A silver Moura: \"Fading is a choice, sister. We chose not to.\"", "A silver Moura: \"The Jardas is dead, you know. Can you not smell it?\""],
 		"victory": "The Moura Court withdrew. One silver sister stayed behind, weeping, and left a fourth jar at Ilduara's feet. \"For when you need to remember everything,\" she said."},
-	{"id": "2-6", "act": 1, "title": "Rising Water", "map": "thornwild",
+	{"id": "2-6", "survive": 480, "act": 1, "title": "Rising Water", "map": "thornwild",
 		"opponents": [{"race": "sunspear", "difficulty": "hard"}, {"race": "sylvan", "difficulty": "normal"}], "difficulty": "Hard", "unlocks": ["3-1"],
 		"briefing": "The Dominion has opened the sluices. The water is rising towards the Grove of Seven Fountains, and if the grove drowns, the Lioraen die with it.\n\nHold the grove until the Dominion's engineers are dead or gone.",
 		"opening": "Ilduara: \"If the water reaches the roots, we sleep forever.\"",
@@ -149,7 +149,7 @@ const CHAPTERS := [
 		"opening": "I am dead. I am still walking. So are they.",
 		"taunts": ["The Compaña: \"Take the candle. It is so much lighter than the Lume.\"", "The Cross-Bearer: \"I have walked for nineteen years. Let me walk a little longer.\""],
 		"victory": "At the heart of the procession, under the hood, was a woman's face you had only seen in one faded painting over your grandmother's hearth."},
-	{"id": "3-S2", "act": 2, "title": "The Pilgrims' Bridge", "map": "hollowspan", "side": true, "jar": true,
+	{"id": "3-S2", "survive": 420, "act": 2, "title": "The Pilgrims' Bridge", "map": "hollowspan", "side": true, "jar": true,
 		"opponents": [{"race": "hollow", "difficulty": "hard"}, {"race": "sunspear", "difficulty": "normal"}], "difficulty": "Hard", "unlocks": [],
 		"briefing": "Some of the dead remember their names again and want to go home across the old stone bridge. The Dominion wants them to stay lost: remembered dead feed the Lume.\n\nEscort the pilgrims across.",
 		"opening": "Remember their names. Say them out loud as they cross.",
@@ -253,7 +253,7 @@ const CHAPTERS := [
 		"opening": "It has my face. Of course it has my face.",
 		"taunts": ["The Ascendant, in your voice: \"We were forgotten. You died forgotten. Why defend them?\"", "The Ascendant: \"Every one of your seventy-six ancestors said no. Every one of them is inside me.\""],
 		"victory": "The Ascendant knelt at the spring. It did not die; it waited. All seven mouths of the spring opened at once. The last battle was not against anyone. It was about what the highlands would become."},
-	{"id": "5-7", "act": 4, "title": "The Seventy-Seventh Oath", "map": "hollowspan",
+	{"id": "5-7", "survive": 600, "act": 4, "title": "The Seventy-Seventh Oath", "map": "hollowspan",
 		"opponents": [{"race": "sunspear", "difficulty": "brutal"}, {"race": "hollow", "difficulty": "brutal"}, {"race": "vorthak", "difficulty": "brutal"}], "difficulty": "Brutal", "unlocks": [],
 		"briefing": "Every realm comes to Salto for the end: the Dominion to drown it, the dead to claim it, the ash-glass to burn it. Hold the Spring of Seven Mouths until the Oath is spoken.\n\nWhat Oath you speak depends on everything you have done.",
 		"opening": "Avó Brites: \"Owls and toads and witches... and one more oath. Hold them, child.\"",
@@ -281,6 +281,10 @@ const ORIGINS := {
 		"3-3": "Beside your name, the ledger lists your line: Furna, drowned. The Lume in you and the ash-glass in the Vorthak are the same fire, one burning and one rotted.",
 	},
 }
+
+## Seconds to hold out in a survival chapter (0 = conquest).
+static func survive_seconds(id: String) -> int:
+	return int(find(id).get("survive", 0))
 
 static func briefing_for(id: String, race: String) -> String:
 	var text := String(find(id).get("briefing", ""))

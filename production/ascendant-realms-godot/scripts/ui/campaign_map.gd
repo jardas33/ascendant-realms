@@ -363,7 +363,9 @@ func _open_briefing(id: String) -> void:
 	var foes: Array = []
 	for o in c["opponents"]:
 		foes.append(String(GameData.get_race(String(o["race"])).get("name", o["race"])))
-	var meta := _label("Enemies: %s   ·   Difficulty: %s%s" % [", ".join(foes), String(c["difficulty"]), "   ·   A jar of Wine of the Dead lies here" if bool(c.get("jar", false)) else ""], 15, Color(0.85, 0.72, 0.45))
+	var meta := _label("Enemies: %s   ·   Difficulty: %s%s" % [", ".join(foes), String(c["difficulty"]), "   ·   A jar of Wine of the Dead lies here" if bool(c.get("jar", false)) else ""] + ("
+Objective: hold out for %d minutes." % (int(c.get("survive", 0)) / 60) if int(c.get("survive", 0)) > 0 else "
+Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(meta)
 	if c.has("branch"):

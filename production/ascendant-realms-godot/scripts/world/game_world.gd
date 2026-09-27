@@ -2518,6 +2518,7 @@ func _physics_process(delta: float) -> void:
 	if not game_running:
 		return
 	match_time += delta
+	_check_survival()
 	_visibility_timer += delta
 	if _visibility_timer >= VISIBILITY_UPDATE_INTERVAL:
 		_visibility_timer = 0.0
@@ -2550,6 +2551,21 @@ func _update_command_auras() -> void:
 					continue
 				if hero.global_position.distance_to(u.global_position) <= rng:
 					u.set_aura_bonus(hero.aura_dmg, hero.aura_armor)
+
+## Survival chapters (CampaignDefs "survive"): the player wins by holding
+## out for the chapter's time with their base standing.
+var _survive_seconds := -1
+
+func survival_remaining() -> float:
+	if _survive_seconds < 0:
+		var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
+		_survive_seconds = CampaignDefs.survive_seconds(chapter_id) if chapter_id != "" else 0
+	return maxf(0.0, float(_survive_seconds) - match_time) if _survive_seconds > 0 else -1.0
+
+func _check_survival() -> void:
+	var left := survival_remaining()
+	if left == 0.0 and not match_ended and is_instance_valid(player_commander) and not player_commander.defeated:
+		_end_game(true, "You held until dawn")
 
 func _check_victory() -> void:
 	# Conquest requires no HQ, no live rebuilding worker, and no live buildings.
