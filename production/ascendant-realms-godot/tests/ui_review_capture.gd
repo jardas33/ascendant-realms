@@ -179,6 +179,14 @@ func _run() -> void:
 				break
 		for index in 2:
 			await process_frame
+	if OS.get_environment("ASCENDANT_UI_CLEAN_POINTER") == "1" and OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") != "1":
+		# A physical desktop pointer left over a card should not insert its hover
+		# tooltip into a neutral comparison capture. Exercise tooltip separately.
+		var safe_pointer := root.get_viewport().get_visible_rect().size * Vector2(0.5, 0.34)
+		Input.warp_mouse(root.get_viewport().get_screen_transform() * safe_pointer)
+		instance.hud._hide_command_tooltip()
+		for index in 2:
+			await process_frame
 	await RenderingServer.frame_post_draw
 	var validation_errors: Array[String] = []
 	var expected_art := OS.get_environment("ASCENDANT_UI_EXPECT_ART")
@@ -325,6 +333,13 @@ func _run() -> void:
 					var selected_portrait_parent: Node = selected_portrait_view.get_parent() if is_instance_valid(selected_portrait_view) else null
 					if not is_instance_valid(selected_portrait_parent) or not selected_portrait_parent.has_method("get_active_portrait_path") or String(selected_portrait_parent.get_active_portrait_path()) != expected_vorthak_art:
 						validation_errors.append("vorthak_%s_selected_art_missing" % selected_kind)
+				if selected_kind == "hero":
+					var binder_footer := false
+					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+						if portrait_label.text == "BINDER":
+							binder_footer = true
+					if not binder_footer:
+						validation_errors.append("vorthak_binder_role_caption_missing")
 			if selected_kind == "military" and player_race == "lioraen" and not instance.rts.selected.is_empty() and String(instance.rts.selected[0].unit_id) == "lioraen_thorn_ranger":
 				var thornrunner_portrait := ""
 				for portrait_view in hud._selection_portrait.find_children("*", "Control", true, false):
@@ -348,6 +363,12 @@ func _run() -> void:
 				var warlock_portrait: Node = warlock_art.get_parent() if is_instance_valid(warlock_art) else null
 				if not is_instance_valid(warlock_portrait) or not warlock_portrait.has_method("get_active_portrait_path") or String(warlock_portrait.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/veil_warlock.png":
 					validation_errors.append("vorthak_veil_warlock_selected_art_missing")
+				var caster_footer := false
+				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
+					if portrait_label.text == "CASTER":
+						caster_footer = true
+				if not caster_footer:
+					validation_errors.append("vorthak_warlock_role_caption_missing")
 			if review_building_id == "vorthak_bone_barracks":
 				var expected_unit_art := {
 					"Ash Thrall": "ash_thrall.png",

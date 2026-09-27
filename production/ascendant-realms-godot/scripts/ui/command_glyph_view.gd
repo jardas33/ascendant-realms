@@ -11,6 +11,7 @@ const EMBLEMS := {
 const FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/astra_r1/field_orders_atlas.png"
 const LIORAEN_FIELD_ORDERS_ATLAS := "res://assets/ui/command_emblems/lioraen_r1/field_orders_atlas.png"
 const LIORAEN_RALLY_EMBLEM := "res://assets/ui/command_emblems/lioraen_r1/rallying_cry.png"
+const VORTHAK_RALLY_EMBLEM := "res://assets/ui/command_emblems/vorthak_r1/rallying_cry.png"
 const FIELD_ORDER_QUADRANTS := {
 	"attack": Vector2i(0, 0),
 	"stop": Vector2i(1, 0),
@@ -44,7 +45,11 @@ func _draw() -> void:
 			draw_texture_rect_region(atlas, Rect2(Vector2.ZERO, size), source)
 			return
 	if EMBLEMS.has(icon_kind):
-		var emblem_path: String = LIORAEN_RALLY_EMBLEM if icon_kind == "rally" and visual_faction == "lioraen" else EMBLEMS[icon_kind]
+		var emblem_path: String = EMBLEMS[icon_kind]
+		if icon_kind == "rally":
+			match visual_faction:
+				"lioraen": emblem_path = LIORAEN_RALLY_EMBLEM
+				"vorthak": emblem_path = VORTHAK_RALLY_EMBLEM
 		var emblem: Texture2D = _load_emblem(emblem_path)
 		if emblem:
 			draw_texture_rect(emblem, Rect2(Vector2.ZERO, size), false)
