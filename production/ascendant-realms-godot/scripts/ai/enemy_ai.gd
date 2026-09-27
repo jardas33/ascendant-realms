@@ -1041,6 +1041,11 @@ func _spot_clear(p: Vector3, footprint: float = 4.0) -> bool:
 		# and its food or gold walled the workers off for the whole match.
 		if r.global_position.distance_to(_base_pos) < 45.0 and _segment_distance_xz(p, _base_pos, r.global_position) < footprint + 3.0:
 			return false
+	# Keep the army's road out open: buildings dropped between the stronghold
+	# and the battlefield trapped a Barrosan army circling inside its own base.
+	var exit_end := _base_pos + (Vector3.ZERO - _base_pos).normalized() * 45.0
+	if _segment_distance_xz(p, _base_pos, exit_end) < footprint + 6.0:
+		return false
 	return true
 
 static func _segment_distance_xz(p: Vector3, a: Vector3, b: Vector3) -> float:

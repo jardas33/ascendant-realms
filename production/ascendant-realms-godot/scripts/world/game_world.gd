@@ -79,6 +79,31 @@ var _battle_loot: Array = []
 ## future online match (or a replay) makes the same choices.
 var match_seed := 0
 var _spawn_serial := 0
+## Elite enemies slain by the player this battle: each adds a better loot roll.
+var elites_slain := 0
+
+## About one enemy soldier in 25 is an Elite: tougher, larger, gold-edged and
+## worth extra loot. Chosen from the match seed and spawn order.
+func _maybe_make_elite(u, team: int) -> void:
+	if team == player_team or u.is_worker or u.is_hero or u.is_siege:
+		return
+	if absi(sim_seed_for(u.spawn_serial) % 100) >= 4:
+		return
+	u.set_meta("elite", true)
+	u.max_hp *= 1.8
+	u.hp = u.max_hp
+	u.base_dmg *= 1.5
+	if is_instance_valid(u.model_root):
+		u.model_root.scale *= 1.18
+		for mi in u.model_root.find_children("*", "GeometryInstance3D", true, false):
+			var glow := StandardMaterial3D.new()
+			glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			glow.albedo_color = Color(1.0, 0.78, 0.3, 0.22)
+			glow.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			glow.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+			glow.grow = true
+			glow.grow_amount = 0.02
+			mi.material_overlay = glow
 
 func sim_seed_for(salt: int) -> int:
 	if match_seed == 0:
@@ -1932,6 +1957,7 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	u.global_position = pos + Vector3(0, 0.1, 0)
 	u.reset_physics_interpolation()
 	u.configure(udef, team, commanders[team] if team < commanders.size() else null, self)
+	_maybe_make_elite(u, team)
 	u.died.connect(_on_unit_died)
 	if team < commanders.size():
 		commanders[team].units.append(u)
@@ -2568,6 +2594,9 @@ func _roll_battle_loot(victory: bool) -> Array:
 	var fortune := int(hero.get("attributes", {}).get("fortune", 0))
 	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
 	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
+	# Every Elite the player slew adds a roll with better odds.
+	for e in elites_slain:
+		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 100 + e, ilvl + 3, fortune + 5, true, "brutal").slice(0, 1))
 	# Endless Road "Rich spoils" twist: a second roll.
 	if "spoils" in cfg.get("twists", []):
 		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 1, ilvl, fortune, victory, hardest))
@@ -3004,6 +3033,9 @@ func _on_unit_died(unit) -> void:
 	_award_hero_field_xp(unit, source_team)
 	if unit.is_hero:
 		_saga_react(int(unit.team), "hero")
+	if unit.has_meta("elite") and source_team == player_team:
+		elites_slain += 1
+		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
 	# hero down handling
 	for cmd in commanders:
 		if cmd.hero_ref == unit:

@@ -193,7 +193,7 @@ static func get_all() -> Dictionary:
 		"race": "sylvan", "name": "Mirror Hall", "kind": "barracks", "model": _b("lioraen_thornhall"),
 		"hp": 860, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 55}, "build_time": 30, "grants_pop": 0,
-		"produces": ["sylvan_bladesinger", "sylvan_warden", "sylvan_longbow", "sylvan_windrunner"],
+		"produces": ["sylvan_bladesinger", "sylvan_warden", "sylvan_longbow", "sylvan_windrunner", "sylvan_silver_colossus"],
 		"desc": "Gleaming war-hall where the Court's singers, wardens, archers and lancers are honed.",
 	},
 	"sylvan_loreforge": {
@@ -236,7 +236,7 @@ static func get_all() -> Dictionary:
 		"race": "karak", "name": "Castro Forge", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 980, "armor_class": "fortified", "armor": 6, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 70}, "build_time": 32, "grants_pop": 0,
-		"produces": ["karak_warrior", "karak_ironbreaker", "karak_quarreler", "karak_hammerer", "karak_cannon"],
+		"produces": ["karak_warrior", "karak_ironbreaker", "karak_quarreler", "karak_castro_rider", "karak_hammerer", "karak_cannon"],
 		"desc": "Deep forge-hall that produces Karak's warriors, ironbreakers, quarrelers, hammerers, and cannon.",
 	},
 	"karak_anvil": {
@@ -272,7 +272,7 @@ static func get_all() -> Dictionary:
 		"race": "sunspear", "name": "Legion Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
-		"produces": ["sunspear_legion", "sunspear_phalanx", "sunspear_bowman", "sunspear_charioteer"],
+		"produces": ["sunspear_legion", "sunspear_phalanx", "sunspear_bowman", "sunspear_charioteer", "sunspear_scorpion"],
 		"desc": "Grand martial hall where the Dominion's legionaries, phalanx, archers and charioteers train.",
 	},
 	"sunspear_bazaar": {
@@ -315,7 +315,7 @@ static func get_all() -> Dictionary:
 		"race": "wyldkin", "name": "Hunt Lodge", "kind": "barracks", "model": _b("lioraen_thornhall"),
 		"hp": 850, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 50}, "build_time": 30, "grants_pop": 0,
-		"produces": ["wyldkin_clawwarrior", "wyldkin_packguard", "wyldkin_spinethrower", "wyldkin_direwolf"],
+		"produces": ["wyldkin_clawwarrior", "wyldkin_packguard", "wyldkin_spinethrower", "wyldkin_direwolf", "wyldkin_moon_bear"],
 		"desc": "Claw-marked lodge where the pack's warriors, guards, spinethrowers and direwolves gather.",
 	},
 	"wyldkin_totem_forge": {

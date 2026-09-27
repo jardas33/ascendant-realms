@@ -317,6 +317,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 90, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "sylvan_bladehall",
 		"desc": "A blur of silver that crosses a battlefield like water.",
 	},
+	"sylvan_silver_colossus": {
+		"race": "sylvan", "name": "Silver Colossus", "role": "antiarmor", "tier": 3,
+		"model": _char("barrosan_anvil_breaker"), "height": 2.2,
+		"hp": 260, "dmg": 30, "dmg_type": "arcane", "armor_class": "heavy", "armor": 4,
+		"range": 0.0, "attack_cd": 1.7, "speed": 2.7, "vision": 22.0,
+		"cost": {"food": 110, "stone": 40, "gold": 50}, "build_time": 28, "pop": 3, "produced_by": "sylvan_bladehall",
+		"desc": "A Moura's guardian woken from a silver-veined rock. It walks slowly and never forgets an insult.",
+	},
 	"sylvan_lightweaver": {
 		"race": "sylvan", "name": "Silver Chorister", "role": "healer", "tier": 2,
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
@@ -366,6 +374,14 @@ static func get_all() -> Dictionary:
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "bolt",
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "karak_warforge",
 		"desc": "A stone-skinned crossbowman whose bolts crack armour like slate.",
+	},
+	"karak_castro_rider": {
+		"race": "karak", "name": "Castro Rider", "role": "flanker", "tier": 2,
+		"model": _char("barrosan_outrider"), "height": 1.8,
+		"hp": 150, "dmg": 17, "dmg_type": "blunt", "armor_class": "medium", "armor": 2,
+		"range": 0.0, "attack_cd": 1.0, "speed": 5.0, "vision": 26.0,
+		"cost": {"food": 85, "stone": 15, "gold": 20}, "build_time": 20, "pop": 2, "produced_by": "karak_warforge",
+		"desc": "Granitborn outriders on shaggy garranos, riding the old castro roads that only stone remembers.",
 	},
 	"karak_hammerer": {
 		"race": "karak", "name": "Hammerer", "role": "antiarmor", "tier": 3,
@@ -432,6 +448,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 80, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "sunspear_legion_hall",
 		"desc": "Bronze chariots that cut through open ground like a scythe.",
 	},
+	"sunspear_scorpion": {
+		"race": "sunspear", "name": "Sun Scorpion", "role": "siege", "tier": 3,
+		"model": _char("barrosan_ballista"), "height": 1.6,
+		"hp": 170, "dmg": 56, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
+		"range": 22.0, "attack_cd": 2.7, "speed": 2.4, "vision": 26.0, "projectile": "bolt", "is_siege": true,
+		"cost": {"timber": 120, "gold": 60}, "build_time": 30, "pop": 3, "produced_by": "sunspear_legion_hall",
+		"desc": "The Dominion's bronze bolt-thrower. Built to break walls; the Rabagão was its first test.",
+	},
 	"sunspear_sunpriest": {
 		"race": "sunspear", "name": "Sun Priest", "role": "healer", "tier": 2,
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
@@ -489,6 +513,14 @@ static func get_all() -> Dictionary:
 		"range": 0.0, "attack_cd": 0.8, "speed": 6.3, "vision": 30.0,
 		"cost": {"food": 70, "gold": 15}, "build_time": 14, "pop": 1, "produced_by": "wyldkin_hunt_lodge",
 		"desc": "A highland wolf the size of a garrano pony. Nothing outruns it.",
+	},
+	"wyldkin_moon_bear": {
+		"race": "wyldkin", "name": "Moon Bear", "role": "antiarmor", "tier": 3,
+		"model": _char("grimtusk_ogre_r709b"), "height": 2.3,
+		"hp": 280, "dmg": 31, "dmg_type": "slash", "armor_class": "medium", "armor": 3,
+		"range": 0.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0,
+		"cost": {"food": 120, "gold": 50}, "build_time": 26, "pop": 3, "produced_by": "wyldkin_hunt_lodge",
+		"desc": "Once in a lifetime the full moon wakes a bear the size of a hut. The pack follows it.",
 	},
 	"wyldkin_shaman": {
 		"race": "wyldkin", "name": "Moon-Singer", "role": "healer", "tier": 2,
