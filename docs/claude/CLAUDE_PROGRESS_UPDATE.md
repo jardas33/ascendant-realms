@@ -95,6 +95,7 @@ Last updated: 2026-09-27, 02:25 UTC. Claude updates this file after every pass.
 - **Placement preview:** it shows the real, textured building.
 - **Damaged buildings:** smoke rises from a building below 70% health, and flames break out below 40%. Both disappear when it is repaired.
 - **Destroyed buildings:** they list to one side and sink into a dust cloud with thrown debris and a short camera shake, leaving a rubble heap and scorched ground for the rest of the match. Before, they just shrank into the ground.
+- **Veterans:** when a unit is promoted after three kills, a golden flare marks it and your promotions get an alert. Before, promotion had no visible sign at all.
 - **New recruits:** a freshly trained unit arrives in a burst of team-coloured light with a small ring.
 - **Banners:** every building flies a waving banner in its owner's colour.
 - **Orders:** a soft ring shrinks onto the clicked spot. Attack orders also show inward chevrons.

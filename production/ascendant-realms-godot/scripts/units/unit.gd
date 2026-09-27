@@ -2874,6 +2874,12 @@ func gain_veterancy() -> void:
 		_veterancy += 1
 		max_hp += 15.0
 		hp += 15.0
+		# Promotion was invisible; now a golden flare marks the veteran.
+		if world and is_instance_valid(world.get("_fx_container")):
+			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.4)
+			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 2.2)
+		if world and team == world.player_team and world.has_signal("alert"):
+			world.emit_signal("alert", "%s promoted to veteran rank %d" % [String(def.get("name", "Unit")), _veterancy], global_position)
 
 func set_aura_bonus(d: float, a: float) -> void:
 	_aura_bonus_dmg = d
