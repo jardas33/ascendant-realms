@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-26, 23:15 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 00:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -99,6 +99,7 @@ Last updated: 2026-09-26, 23:15 UTC. Claude updates this file after every pass.
 
 ## Interface
 
+- **Main menu:** the painted background drifts slowly, gold motes rise across the realm, a vignette frames it, the title and buttons fade in, and buttons lift on hover.
 - **Minimap:** it shows a real top-down picture of the battlefield, taken at match start with units and fog left out. Unexplored areas are shaded lighter so the terrain still reads.
 - **Skirmish setup:** rebuilt as a war-council screen, with faction banner cards, a dossier and a tactical map preview.
 - **Other screens:** the hero forge preview, skill tree, War Chest and campaign map are reskinned to match.

@@ -1241,7 +1241,7 @@ func _update_damage_fires(ratio: float) -> void:
 		fire.light_energy = 2.8
 		fire.light_range = 9.0
 		add_child(fire)
-		fire.position = spots[_damage_fires.size()] - Vector3(0, 0.3, 0)
+		fire.position = spots[_damage_fires.size()] + Vector3(0, top * 0.08, 0)
 		fire.scale = Vector3.ONE * 2.4
 		_damage_fires.append(fire)
 	while _damage_fires.size() > want_fire:
