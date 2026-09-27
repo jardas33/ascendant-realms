@@ -962,6 +962,13 @@ func _try_build(kind: String) -> void:
 	if b:
 		b.set_meta("ai_placed_msec", Time.get_ticks_msec())
 		worker.command_build(b)
+		# Houses are the bottleneck when the population is capped: send a second
+		# builder (the Barrosan AI sat capped for minutes waiting on one).
+		if kind == "house" and commander.pop_used >= commander.pop_cap - 4:
+			for u in commander.units:
+				if is_instance_valid(u) and not u.is_dead and u.is_worker and u != worker and u.state != u.State.BUILDING:
+					u.command_build(b)
+					break
 		_build_cooldown = 3.0
 
 func _unbuilt_count() -> int:

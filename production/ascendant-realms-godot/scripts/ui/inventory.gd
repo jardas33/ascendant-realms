@@ -423,6 +423,12 @@ func _show_item_detail(item: Dictionary) -> void:
 	var slot: String = str(item.get("slot", ""))
 	var equipped = ProfileManager.hero().get("equipment", {}).get(slot, null)
 	_detail_box.add_child(_stats_block(item, equipped))
+	if String(item.get("set", "")) != "":
+		var worn := 0
+		for it in ProfileManager.hero().get("equipment", {}).values():
+			if String(it.get("set", "")) == String(item["set"]):
+				worn += 1
+		_detail_box.add_child(_wrap_label("Set pieces worn: %d of 4 (bonus at 2, power at 4)." % worn))
 	var eq := _button("Equip", func():
 		ProfileManager.equip_item(item)
 		_clear_after(_detail_box, 2)

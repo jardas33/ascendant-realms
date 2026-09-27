@@ -3791,6 +3791,13 @@ func _on_game_over(victory: bool) -> void:
 		loot_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		loot_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		box.add_child(loot_line)
+	# First loot ever: point the player at the War Chest once.
+	if not result.get("loot", []).is_empty() and not bool(ProfileManager.settings().get("seen_loot_tip", false)):
+		ProfileManager.update_setting("seen_loot_tip", true)
+		var tip := _mk_label("Tip: open the War Chest from the hero sheet to equip gear or salvage it into experience.", 14, Color(0.8, 0.9, 1.0))
+		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tip.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		box.add_child(tip)
 	var story_bits: Array = []
 	if int(result.get("hero_kills", 0)) > 0:
 		story_bits.append("Your hero slew %d" % int(result.get("hero_kills", 0)))

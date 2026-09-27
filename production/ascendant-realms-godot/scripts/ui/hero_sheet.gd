@@ -138,6 +138,21 @@ func _refresh() -> void:
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
 	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
+	var ret_names: Array = []
+	for entry in saga_state.get("retinue", []):
+		var label_name := String(entry.get("name", ""))
+		if label_name == "":
+			label_name = String(GameData.get_unit(String(entry.get("id", ""))).get("name", entry.get("id", "")))
+		ret_names.append("%s (rank %d)" % [label_name, int(entry.get("vet", 1))])
+	if not ret_names.is_empty():
+		var ret_line := Label.new()
+		ret_line.text = "RETINUE  " + "  ·  ".join(ret_names)
+		ret_line.add_theme_font_override("font", _body_font())
+		ret_line.add_theme_color_override("font_color", Color(0.78, 0.86, 0.66))
+		ret_line.add_theme_font_size_override("font_size", 14)
+		ret_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		ret_line.custom_minimum_size = Vector2(1000, 0)
+		identity.add_child(ret_line)
 	var st: Dictionary = ProfileManager.data.get("stats", {})
 	var record_line := Label.new()
 	record_line.text = "ENDLESS ROAD  STAGE %d    ·    BATTLES %d    ·    VICTORIES %d    ·    FOES SLAIN %d" % [ProfileManager.endless_best(), int(st.get("battles", 0)), int(st.get("victories", 0)), int(st.get("units_killed", 0))]
