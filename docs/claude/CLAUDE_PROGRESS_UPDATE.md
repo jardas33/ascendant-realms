@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 04:55 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 05:20 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -109,6 +109,11 @@ Last updated: 2026-09-27, 04:55 UTC. Claude updates this file after every pass.
 - **Banners:** every building flies a waving banner in its owner's colour.
 - **Orders:** a soft ring shrinks onto the clicked spot. Attack orders also show inward chevrons.
 
+## Sound
+
+- **Battle ambience:** matches used to have music and no ambience at all; the highland wind recording in the project was never played. Now every map has gusting wind, green maps add birdsong phrases, volcanic maps add fire crackle, and highland and verdant maps also play the wind recording. The sounds are synthesised once at match start (no downloads, about 70 ms) and sit on the Sound Effects slider.
+- **Combat feel (plan item 4):** checked: hits, flinches and impact sounds already line up, and the two combat-audio timing tests cover it. No change needed.
+
 ## Interface
 
 - **Rally points:** a selected building shows its rally point as a small banner in the owner's colour, with a dashed trail flowing to it from the building.
@@ -127,8 +132,8 @@ Last updated: 2026-09-27, 04:55 UTC. Claude updates this file after every pass.
 1. DONE. Full AI-vs-AI playtests on several maps and difficulties to catch gameplay bugs: stuck units, AI stalls, matches that never end.
 2. DONE. Hero progression in battle: the level-up alert exists but nothing ever fires it; wire in-match hero XP and level-ups.
 3. DONE. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
-4. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
-5. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
+4. CHECKED. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
+5. DONE. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
 6. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
 7. Tutorial and first-match onboarding review.
 8. Verify recent features in real play: Medium quality, Backspace jump, veteran flare.

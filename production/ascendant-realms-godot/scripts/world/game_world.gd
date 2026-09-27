@@ -609,6 +609,13 @@ func _scatter_environment() -> void:
 		add_child(weather)
 		weather.build(str(map.get("theme", "highland")))
 
+## Battlefield ambience (wind, birds, crackle, the highland recording).
+func _start_ambient_sound() -> void:
+	var amb: Node = load("res://scripts/world/ambient_sound.gd").new()
+	amb.name = "AmbientSound"
+	add_child(amb)
+	amb.build(str(map.get("theme", "highland")))
+
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
 	return String(ProfileManager.settings().get("graphics", "high"))
@@ -2431,6 +2438,7 @@ func _start_match() -> void:
 	game_running = true
 	_prewarm_combat_presentation()
 	_bake_overview_texture()
+	_start_ambient_sound()
 	_visibility_timer = VISIBILITY_UPDATE_INTERVAL
 	_update_player_visibility()
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
