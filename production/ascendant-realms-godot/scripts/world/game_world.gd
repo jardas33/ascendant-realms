@@ -596,6 +596,11 @@ func _scatter_environment() -> void:
 	_ground_cover = GroundCoverScript.new()
 	_ground_cover.name = "GroundCover"
 	add_child(_ground_cover)
+	# Merge the static base dressing into a few meshes per material.
+	var batcher = load("res://scripts/world/static_batcher.gd")
+	for layer in decor.find_children("*", "Node3D", true, false):
+		if String(layer.name) in ["BarrosanHamlet", "VorthakHoldfast", "LioraenGrove", "BarrosanEnvironmentR2Dressing", "AstraBarrosanSettlementFirstWave"]:
+			batcher.batch(layer)
 	var quality := graphics_quality()
 	if quality != "low":
 		_ground_cover.build(map, str(map.get("theme", "highland")), 0.5 if quality == "medium" else 1.0)

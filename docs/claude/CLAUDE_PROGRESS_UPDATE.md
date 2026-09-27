@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 04:30 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 04:55 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -41,6 +41,7 @@ Last updated: 2026-09-27, 04:30 UTC. Claude updates this file after every pass.
 - **Enemy AI deadlock:** the AI economy could stall. It now rebalances gatherers, rescues stuck gatherers and finishes abandoned construction. On Normal and above it builds an army and attacks.
 - **Large battles:** unit and building lists are snapshotted once per physics frame. Chase re-planning is throttled, and path solving has a per-frame budget. Big-battle physics time went from 19 ms to 9 ms, and 4x battle stalls dropped from 150–260 ms to under 100 ms.
 - **Edge scrolling:** it only happens while the game window is focused and the cursor is inside it.
+- **Static batching (plan item 3):** the hamlet, holdfast, grove and base dressing are merged into one mesh per material at match start (scripts/world/static_batcher.gd). The hamlet went from 191 draw surfaces to 22 and the holdfast from 55 to 19; total draw calls in the opening view fell from about 3,240 to about 2,690 with no visible change. The remaining cost is mostly the multi-part building models.
 - **Error sweep:** these all ran with zero script errors:
   - a 10-minute match at 4x
   - the tutorial
@@ -125,7 +126,7 @@ Last updated: 2026-09-27, 04:30 UTC. Claude updates this file after every pass.
 
 1. DONE. Full AI-vs-AI playtests on several maps and difficulties to catch gameplay bugs: stuck units, AI stalls, matches that never end.
 2. DONE. Hero progression in battle: the level-up alert exists but nothing ever fires it; wire in-match hero XP and level-ups.
-3. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
+3. DONE. Rendering cost: cut the ~2,800 draw calls in the opening by merging static base dressing.
 4. Combat feel audit: attack timing, hit reactions and impact sounds lining up.
 5. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
 6. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
