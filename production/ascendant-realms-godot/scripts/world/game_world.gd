@@ -402,7 +402,7 @@ func _setup_environment() -> void:
 		env.ambient_light_sky_contribution = float(_theme.get("ambient_sky_contribution", 1.0))
 	if bool(_theme.get("ssao", false)):
 		# Contact shadows seat props, units and building footings on the ground.
-		env.ssao_enabled = true
+		env.ssao_enabled = graphics_quality() != "low"
 		env.ssao_radius = 1.4
 		env.ssao_intensity = 1.8
 		env.ssao_power = 1.6
@@ -431,8 +431,9 @@ func _setup_environment() -> void:
 	sun.rotation_degrees = Vector3(float(_theme.get("sun_pitch", -52.0)), float(_theme.get("sun_yaw", 40.0)), 0)
 	sun.light_energy = float(_theme.get("sun_energy", 1.0))
 	sun.light_color = _theme.get("sun_color", Color(0.96, 0.94, 0.88))
-	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 200.0
+	var quality := graphics_quality()
+	sun.shadow_enabled = quality != "low"
+	sun.directional_shadow_max_distance = 200.0 if quality == "high" else 120.0
 	sun.directional_shadow_split_1 = 0.08
 	sun.directional_shadow_split_2 = 0.25
 	add_child(sun)
@@ -595,11 +596,17 @@ func _scatter_environment() -> void:
 	_ground_cover = GroundCoverScript.new()
 	_ground_cover.name = "GroundCover"
 	add_child(_ground_cover)
-	_ground_cover.build(map, str(map.get("theme", "highland")))
-	var weather: Node3D = load("res://scripts/world/ambient_weather.gd").new()
-	weather.name = "AmbientWeather"
-	add_child(weather)
-	weather.build(str(map.get("theme", "highland")))
+	var quality := graphics_quality()
+	if quality != "low":
+		_ground_cover.build(map, str(map.get("theme", "highland")), 0.5 if quality == "medium" else 1.0)
+		var weather: Node3D = load("res://scripts/world/ambient_weather.gd").new()
+		weather.name = "AmbientWeather"
+		add_child(weather)
+		weather.build(str(map.get("theme", "highland")))
+
+## The player's Graphics Quality setting: "low", "medium" or "high".
+func graphics_quality() -> String:
+	return String(ProfileManager.settings().get("graphics", "high"))
 
 ## Clears grass and flowers inside a circle, e.g. under a new building.
 func clear_ground_cover(pos: Vector3, radius: float) -> void:

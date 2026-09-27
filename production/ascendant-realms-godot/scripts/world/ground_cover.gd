@@ -36,9 +36,9 @@ var _mask_texture: ImageTexture
 var _half := 140.0
 var _material: ShaderMaterial
 
-func build(map: Dictionary, theme_name: String) -> void:
+func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> void:
 	var look: Dictionary = THEMES.get(theme_name, THEMES["highland"])
-	var density := float(look["density"])
+	var density := float(look["density"]) * density_scale
 	if density <= 0.0:
 		return
 	_half = float(map.get("size", 140.0))

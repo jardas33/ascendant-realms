@@ -69,7 +69,7 @@ func _build() -> void:
 	scroll.add_child(columns)
 	var left := VBoxContainer.new()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left.add_theme_constant_override("separation", 16)
+	left.add_theme_constant_override("separation", 8)
 	columns.add_child(left)
 
 	var s := ProfileManager.settings()
@@ -92,6 +92,11 @@ func _build() -> void:
 	display.add_child(_toggle_row("VSync", bool(s.get("vsync", true)), func(on):
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if on else DisplayServer.VSYNC_DISABLED)
 		ProfileManager.update_setting("vsync", on)))
+	# Low drops shadows, ambient occlusion, grass and weather for weaker PCs;
+	# Medium halves the grass and shortens shadows. Applies from the next match.
+	var quality_names := ["low", "medium", "high"]
+	display.add_child(_option_row("Graphics Quality", ["Low", "Medium", "High"], maxi(0, quality_names.find(String(s.get("graphics", "high")))), func(index):
+		ProfileManager.update_setting("graphics", quality_names[index])))
 
 	var camera := _group(left, "CAMERA")
 	camera.add_child(_toggle_row("Edge Scrolling", bool(s.get("edge_scroll", true)),
@@ -104,6 +109,8 @@ func _build() -> void:
 	var accessibility := _group(left, "ACCESSIBILITY")
 	accessibility.add_child(_toggle_row("Reduce Flashing", bool(s.get("reduce_flash", false)),
 		func(on): ProfileManager.update_setting("reduce_flash", on)))
+	accessibility.add_child(_toggle_row("Reduce Screen Shake", bool(s.get("reduce_shake", false)),
+		func(on): ProfileManager.update_setting("reduce_shake", on)))
 
 	var manual_plate := _plate()
 	manual_plate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -181,7 +188,7 @@ func _group(parent: VBoxContainer, title_text: String) -> VBoxContainer:
 	var panel := _plate()
 	parent.add_child(panel)
 	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
+	content.add_theme_constant_override("separation", 2)
 	panel.add_child(content)
 	content.add_child(_heading(title_text))
 	return content
