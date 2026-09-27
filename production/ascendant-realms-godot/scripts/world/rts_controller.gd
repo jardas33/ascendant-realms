@@ -351,6 +351,13 @@ func get_camera_pitch_degrees() -> float:
 # Input
 # --------------------------------------------------------------------------
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_BACKSPACE:
+		# Jump to the latest alert (base under attack, building lost, capture).
+		var hud = get_tree().get_first_node_in_group("battle_hud")
+		if hud and hud.get("last_alert_position") is Vector3 and hud.last_alert_position != Vector3.INF:
+			focus_on(hud.last_alert_position)
+			get_viewport().set_input_as_handled()
+			return
 	if world == null or not world.game_running:
 		return
 	if event is InputEventMouseButton:

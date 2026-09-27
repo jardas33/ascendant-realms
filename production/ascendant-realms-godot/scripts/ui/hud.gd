@@ -197,6 +197,7 @@ func _m20_end(token: Dictionary) -> void:
 
 
 func setup(p_world, p_rts) -> void:
+	add_to_group("battle_hud")
 	var stage := _m20_begin("HUD_SETUP")
 	world = p_world
 	rts = p_rts
@@ -1519,6 +1520,7 @@ func _draw_minimap() -> void:
 			_world_to_map(rts.cam_pivot.global_position + Vector3(half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
+		_draw_minimap_pings()
 		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
 		# The true footprint retains its quiet outline, while short corner sights
 		# make the currently framed region visible over dark explored terrain.
@@ -1532,6 +1534,21 @@ func _draw_minimap() -> void:
 				_minimap.draw_line(corner, corner + direction, Color(0.02, 0.03, 0.03, 0.88), 3.0, true)
 				_minimap.draw_line(corner, corner + direction, Color(0.98, 0.91, 0.59, 0.90), 1.6, true)
 
+
+func _draw_minimap_pings() -> void:
+	var now := Time.get_ticks_msec()
+	for ping in _map_pings.duplicate():
+		var age := float(now - int(ping["t"])) / 1000.0
+		if age > 6.0:
+			_map_pings.erase(ping)
+			continue
+		var p := _world_to_map(ping["pos"])
+		var col: Color = ping["col"]
+		for k in 2:
+			var phase := fmod(age * 1.3 + k * 0.5, 1.0)
+			var c := Color(col.r, col.g, col.b, (1.0 - phase) * (1.0 - age / 6.0))
+			_minimap.draw_arc(p, 4.0 + phase * 18.0, 0.0, TAU, 28, c, 2.0, true)
+		_minimap.draw_circle(p, 3.0, Color(col.r, col.g, col.b, 1.0 - age / 6.0))
 
 func _draw_minimap_visibility(size: Vector2) -> void:
 	if not is_instance_valid(world) or not world.has_method("visibility_grid_contract"):
@@ -1854,7 +1871,7 @@ func _process(delta: float) -> void:
 		_last_viewport_size = viewport_size
 
 	_map_accum += delta
-	if _map_accum >= 0.15:
+	if _map_accum >= (0.04 if not _map_pings.is_empty() else 0.15):
 		_map_accum = 0.0
 		if is_instance_valid(_minimap):
 			_minimap.queue_redraw()
@@ -3505,8 +3522,20 @@ func _build_alert_feed() -> void:
 	add_child(_alert_box)
 
 
+var _map_pings: Array = []
+var last_alert_position := Vector3.INF
+
 func _on_alert(message: String, _pos: Vector3) -> void:
 	_refresh_opponent_count()
+	# Alerts with a place (attacks, losses, captures) ping the minimap, and
+	# Backspace jumps the camera there.
+	if _pos != Vector3.ZERO:
+		var lower := message.to_lower()
+		var hostile := lower.contains("attack") or lower.contains("lost")
+		_map_pings.append({"pos": _pos, "t": Time.get_ticks_msec(), "col": Color(1.0, 0.3, 0.22) if hostile else Color(1.0, 0.84, 0.4)})
+		if _map_pings.size() > 6:
+			_map_pings.pop_front()
+		last_alert_position = _pos
 	_push_alert(message, Color(0.95, 0.9, 0.75))
 
 
