@@ -123,15 +123,20 @@ func _refresh() -> void:
 	var deeds: Dictionary = h.get("deeds", {})
 	var ach = load("res://scripts/game/achievement_defs.gd")
 	var parts: Array = []
+	var next_goals: Array = []
 	for t in ach.TRACKS:
 		var tier := int(deeds.get(t["id"], 0))
 		var nxt: int = ach.goal(t, tier + 1)
-		parts.append("%s %d  (next %d)" % [String(t["name"]).to_upper(), tier, nxt])
+		parts.append("%s %d" % [String(t["name"]).to_upper(), tier])
+		next_goals.append("%s: next tier at %d" % [String(t["name"]), nxt])
 	var deeds_line := Label.new()
 	deeds_line.text = ("%s    ·    " % String(h.get("title", "")).to_upper() if String(h.get("title", "")) != "" else "") + "DEEDS  " + "  ·  ".join(parts)
 	deeds_line.add_theme_font_override("font", _body_font())
 	deeds_line.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
 	deeds_line.add_theme_font_size_override("font_size", 14)
+	deeds_line.tooltip_text = "
+".join(next_goals)
+	deeds_line.mouse_filter = Control.MOUSE_FILTER_PASS
 	deeds_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	deeds_line.custom_minimum_size = Vector2(1000, 0)
 	identity.add_child(deeds_line)

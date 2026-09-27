@@ -126,6 +126,9 @@ func _build() -> void:
 	_grant_button = _button("Claim Starter Relics", _on_grant)
 	_style_primary(_grant_button)
 	footer.add_child(_grant_button)
+	footer.add_child(_button("Equip Best", func():
+		ProfileManager.equip_best()
+		_refresh()))
 	footer.add_child(_button("Salvage Commons", func():
 		ProfileManager.salvage_rarities(["common", "uncommon"])
 		_refresh()))

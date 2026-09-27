@@ -268,9 +268,11 @@ func _build() -> void:
 ## A book of the saga so far: each cleared chapter's briefing and the
 ## chronicle of its victory, act by act, in road order.
 ## The Endless Road: the next stage's battle, with no last stage.
-func _open_endless() -> void:
+func _open_endless(chosen_depth: int = -1) -> void:
 	Sfx.play("select")
-	var depth := ProfileManager.endless_best() + 1
+	# Any stage reached can be replayed (for loot and bounties); first clears
+	# still pay the milestones only once.
+	var depth := ProfileManager.endless_best() + 1 if chosen_depth < 1 else clampi(chosen_depth, 1, ProfileManager.endless_best() + 1)
 	var st := EndlessDefs.stage(depth, _hero_race())
 	var layer := Control.new()
 	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -324,7 +326,13 @@ func _open_endless() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 24)
 	box.add_child(row)
-	for spec in [["Back", func(): layer.queue_free()], ["March On", func(): _launch_endless(st)]]:
+	var picks: Array = [["Back", func(): layer.queue_free()]]
+	if depth > 1:
+		picks.append(["< Stage %d" % (depth - 1), func(): layer.queue_free(); _open_endless(depth - 1)])
+	if depth <= ProfileManager.endless_best():
+		picks.append(["Stage %d >" % (depth + 1), func(): layer.queue_free(); _open_endless(depth + 1)])
+	picks.append(["March On", func(): _launch_endless(st)])
+	for spec in picks:
 		var b := Button.new()
 		b.text = String(spec[0])
 		b.custom_minimum_size = Vector2(220, 54)

@@ -356,6 +356,36 @@ func salvage_rarities(rarities: Array) -> Dictionary:
 	save_game()
 	return {"count": n, "xp": xp}
 
+## Gear score for "Equip Best": item level times rarity power, plus a
+## legendary power or set piece counts a little extra.
+func item_score(item: Dictionary) -> float:
+	var power := {"common": 1.0, "uncommon": 1.3, "rare": 1.7, "epic": 2.2, "legendary": 3.0}
+	var lvl := float(item.get("item_level", 0))
+	if lvl <= 0.0:
+		lvl = 0.0
+		for k in item.get("stats", {}):
+			lvl += absf(float(item["stats"][k]))
+		lvl = lvl / 10.0
+	return lvl * float(power.get(String(item.get("rarity", "common")), 1.0)) * (1.15 if not (item.get("flags", {}) as Dictionary).is_empty() else 1.0)
+
+func equip_best() -> void:
+	if not has_hero():
+		return
+	var h = data["hero"]
+	var best := {}
+	for it in h.get("inventory", []):
+		var slot := String(it.get("slot", ""))
+		if slot == "":
+			continue
+		var cur = h.get("equipment", {}).get(slot, null)
+		var bar: float = item_score(cur) if cur != null else -1.0
+		if best.has(slot):
+			bar = maxf(bar, item_score(best[slot]))
+		if item_score(it) > bar:
+			best[slot] = it
+	for slot in best:
+		equip_item(best[slot])
+
 func equip_item(item: Dictionary) -> void:
 	if not has_hero():
 		return
