@@ -222,6 +222,11 @@ const TIPS := [
 	"Buildings smoke when damaged and burn below 40% health. Send workers to repair them.",
 	"Press F to jump to an idle worker, and Space to find your hero.",
 	"Scout early: the fog hides the enemy base until one of your units has seen it.",
+	"Lume is memory that burns. A village that bakes in one oven and remembers its dead keeps it strong.",
+	"Every seventy-seven years the Lume ascends and chooses a Jardas. Every Ascension has ended in war.",
+	"Seven jars of Wine of the Dead lie hidden on the campaign's side roads. Some say they change the ending.",
+	"Never take the candle the Compaña offers you. Everyone in the highlands knows that.",
+	"The Vorthak were a village once. Ask the Dominion what happened to Furna.",
 ]
 
 

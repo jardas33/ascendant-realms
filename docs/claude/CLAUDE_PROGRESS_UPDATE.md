@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 08:20 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 09:30 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -26,6 +26,15 @@ Last updated: 2026-09-27, 08:20 UTC. Claude updates this file after every pass.
   - navigation repair
   - combat-hit audio, in both modes
   - projectile-impact audio
+
+## The saga (lore overhaul, 2026-09-27)
+
+- **Story bible:** docs/lore/ASCENDANT_REALMS_SAGA.md, "The Saga of the Seventy-Seventh Ascension". It is set in the Terras Frias, a fictional highland drawn from Barroso: Salto, Montalegre's castle, the castros, the Larouco, drowned villages, the communal oven, the Chega de Bois, witch-nights, the Santa Compaña, Caretos, mouras encantadas, the wine of the dead. Lume is memory that burns. Every 77 years it ascends and chooses a Jardas, and every Ascension has ended in war, which finally explains the name Ascendant Realms. The hero died at the spring in the prologue and does not learn it until Act III.
+- **Campaign:** replaced the 6-battle Border Marches with 5 Acts and 39 battles (scripts/game/campaign_defs.gd): 31 on the main road, 7 optional side roads holding seven jars of Wine of the Dead, and a branching choice at the Rabagão Wall (break it or seize it) that seals the other road. There are three endings: The Oath Kept, The Ascendant Realm, and a true ending, The Chega, which needs all seven jars.
+- **Campaign screen:** Act tabs, main road plus side roads, a pulsing next battle, jar count and choice in the header, and a chronicle briefing page before every battle. Campaign battles return to the saga map.
+- **In battle:** an opening line, the enemy commander speaking at 3 and 8 minutes, and a victory chronicle on the result ledger that moves the story forward.
+- **Factions, units and buildings:** all 10 factions rewritten into the saga (Barrosan Clans, Lioraen Concord as the Mouras, Vorthak as drowned Furna, Aurean Dominion, the Compaña, Careto Host, Wolfveil Clans, Granitborn, Ironmaw Horde, Moura Court). 73 unit and 39 building names and descriptions were rewritten; the Barrosan hero is now the Jardas. Ids, stats and portraits are unchanged.
+- **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
 

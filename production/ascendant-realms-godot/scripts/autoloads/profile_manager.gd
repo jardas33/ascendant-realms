@@ -1,6 +1,7 @@
 extends Node
 ## ProfileManager — persistent hero, progression, settings and campaign state.
 ## Versioned save with migration. This is the RPG spine that survives between battles.
+const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 
 const SAVE_PATH := "user://ascendant_save.json"
 const SAVE_TEMP_PATH := "user://ascendant_save.json.tmp"
@@ -91,6 +92,51 @@ func campaign() -> Dictionary:
 		c["unlocked"].append(0)
 		save_game()
 	return c
+
+## Saga progress (CampaignDefs chapters by id): unlocked and cleared
+## chapters, jars of Wine of the Dead found, and the Rabagão Wall choice.
+func saga() -> Dictionary:
+	var c := campaign()
+	if not c.has("saga") or typeof(c["saga"]) != TYPE_DICTIONARY:
+		c["saga"] = {"unlocked": ["1-1"], "cleared": [], "jars": [], "choice": ""}
+	var s: Dictionary = c["saga"]
+	for key in ["unlocked", "cleared", "jars"]:
+		if not s.has(key) or typeof(s[key]) != TYPE_ARRAY:
+			s[key] = []
+	if not s.has("choice"):
+		s["choice"] = ""
+	if not ("1-1" in s["unlocked"]):
+		s["unlocked"].append("1-1")
+	return s
+
+func complete_chapter(id: String) -> void:
+	var s := saga()
+	var chapter := CampaignDefs.find(id)
+	if chapter.is_empty():
+		return
+	if not (id in s["cleared"]):
+		s["cleared"].append(id)
+	if bool(chapter.get("jar", false)) and not (id in s["jars"]):
+		s["jars"].append(id)
+	if chapter.has("branch"):
+		s["choice"] = String(chapter["branch"])
+	for next in chapter.get("unlocks", []):
+		if not (String(next) in s["unlocked"]):
+			s["unlocked"].append(String(next))
+	var c := campaign()
+	c["wins"] = int(c.get("wins", 0)) + 1
+	emit_signal("profile_changed")
+	save_game()
+
+## A chapter can be played if it is unlocked and not sealed by the choice.
+func chapter_available(id: String) -> bool:
+	var s := saga()
+	if not (id in s["unlocked"]):
+		return false
+	var chapter := CampaignDefs.find(id)
+	if chapter.has("branch") and String(s["choice"]) != "" and String(s["choice"]) != String(chapter["branch"]):
+		return false
+	return true
 
 # --- XP / leveling (endless) ----------------------------------------------
 func xp_for_level(level: int) -> float:

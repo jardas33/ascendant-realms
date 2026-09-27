@@ -2,6 +2,7 @@ extends Node3D
 ## GameWorld — the battle orchestrator. Builds terrain, navigation, environment,
 ## commanders, resource nodes, capture points; runs combat resolution, auras,
 ## fog-of-war bookkeeping, and victory/defeat. UI and input live in child nodes.
+const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 
 const Unit := preload("res://scripts/units/unit.gd")
 const Building := preload("res://scripts/buildings/building.gd")
@@ -2436,6 +2437,28 @@ func _bake_overview_texture() -> void:
 	img.generate_mipmaps()
 	overview_texture = ImageTexture.create_from_image(img)
 
+## Campaign battles speak: an opening line a few seconds in, then the enemy
+## commander at three and eight minutes of battle time (CampaignDefs).
+func _start_saga_voices() -> void:
+	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
+	if chapter_id == "":
+		return
+	var chapter := CampaignDefs.find(chapter_id)
+	if chapter.is_empty():
+		return
+	var lines: Array = [[4.0, String(chapter.get("opening", ""))]]
+	var taunts: Array = chapter.get("taunts", [])
+	if taunts.size() > 0:
+		lines.append([180.0, String(taunts[0])])
+	if taunts.size() > 1:
+		lines.append([480.0, String(taunts[1])])
+	for entry in lines:
+		if String(entry[1]) == "":
+			continue
+		get_tree().create_timer(float(entry[0]), false).timeout.connect(func():
+			if game_running:
+				emit_signal("alert", String(entry[1]), Vector3.ZERO))
+
 func _start_match() -> void:
 	game_running = true
 	_prewarm_combat_presentation()
@@ -2447,6 +2470,7 @@ func _start_match() -> void:
 	_battle_music = true
 	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
+	_start_saga_voices()
 
 func get_runtime_identity_snapshot() -> Dictionary:
 	var cfg := Match.get_identity_snapshot()

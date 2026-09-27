@@ -80,7 +80,7 @@ func _build() -> void:
 
 	# Footer note
 	var footer := Label.new()
-	footer.text = "A fantasy realm-forging strategy saga"
+	footer.text = "The Saga of the Seventy-Seventh Ascension"
 	footer.add_theme_color_override("font_color", Color(0.88, 0.85, 0.75, 0.9))
 	footer.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	footer.add_theme_constant_override("outline_size", 3)

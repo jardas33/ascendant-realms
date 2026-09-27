@@ -4,6 +4,7 @@ extends Control
 ## alert feed and the game-over screen. Reads from GameWorld / RTSController /
 ## Commander and connects to their signals; guards every handler against freed
 ## nodes because units and buildings free themselves on death.
+const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 
 signal pause_requested
 signal return_to_menu
@@ -3644,6 +3645,15 @@ func _on_game_over(victory: bool) -> void:
 	outcome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	outcome.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	box.add_child(outcome)
+	# Campaign victories continue the saga on the ledger.
+	var chapter_id := String(Match.get_config().get("campaign_chapter", "")) if Match else ""
+	if victory and chapter_id != "":
+		var chronicle := _mk_label(CampaignDefs.victory_text(chapter_id, ProfileManager.saga()), 17, Color(0.93, 0.88, 0.76))
+		chronicle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		chronicle.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		chronicle.custom_minimum_size = Vector2(620, 0)
+		chronicle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(chronicle)
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
 	rule.custom_minimum_size = Vector2(0, 1)

@@ -286,12 +286,17 @@ func _on_game_over(victory: bool) -> void:
 	# handled visually by HUD; campaign progression here
 	var cfg := Match.get_config()
 	if victory and cfg.get("mode", "") == "campaign":
-		ProfileManager.advance_campaign(int(cfg.get("campaign_node", 0)))
+		if String(cfg.get("campaign_chapter", "")) != "":
+			ProfileManager.complete_chapter(String(cfg["campaign_chapter"]))
+		else:
+			ProfileManager.advance_campaign(int(cfg.get("campaign_node", 0)))
 
 func _return_to_menu() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	# Campaign battles return to the saga map so the next chapter is one click away.
+	var back_to := "res://scenes/ui/campaign_map.tscn" if String(Match.get_config().get("mode", "")) == "campaign" else "res://scenes/ui/main_menu.tscn"
+	get_tree().change_scene_to_file(back_to)
 
 func _replay() -> void:
 	get_tree().paused = false
