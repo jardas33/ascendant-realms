@@ -306,8 +306,8 @@ func _open_endless() -> void:
 		foes.append("%s (%s)" % [GameData.get_race(String(o["race"])).get("name", o["race"]), String(o["difficulty"]).capitalize()])
 	var extra := "   ·   Enemy Lume swollen: +%d%% income" % int(float(st["might"]) * 100.0 / 3.0) if float(st["might"]) > 0.0 else ""
 	var twist_lines: Array = []
-	for t in st.get("twists", []):
-		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(t, t)))
+	for tw_id in st.get("twists", []):
+		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(tw_id, tw_id)))
 	if not twist_lines.is_empty():
 		var tw := _label("Twists: " + "  ·  ".join(twist_lines), 15, Color(0.95, 0.62, 0.42))
 		tw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

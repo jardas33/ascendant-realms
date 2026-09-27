@@ -251,3 +251,15 @@ The campaign map is divided into Acts. Each Act has a main road of battles and *
 - Highland warmth first: bread, fire, bulls, grandmothers. Then horror.
 - Plant every twist at least twice before it lands.
 - Keep lines short. The best line in the saga is five words long: *"The living are never this cold."*
+
+## Added side roads (2026-09-29)
+
+Five more optional chapters, one per Act, each with its own relic:
+
+- **Act I, The People's Bull (1-S3).** Raiders steal Trovão, Salto's boi do povo, the communal bull that fights for the village at the Chega. He comes home scarred with a violet flame. Relic: Trovão's Ribbon.
+- **Act II, The Smugglers' Path (2-S3).** The contrabandistas of Tourém carry the families of the drowned villages across the border by night. Relic: the Smuggler's Tin Compass, which always points home.
+- **Act III, The Castro of Lesenho (3-S3).** The Granitborn guardians of the old hill fort wake, still fighting a war that ended two thousand years ago. Carvalho finds names cut into the gate. Relic: Castro Gatestone.
+- **Act IV, The Monastery of the Júnias (4-S2).** The Dominion's archive in the ruins of Santa Maria das Júnias. Everything burns except the monks' own chronicle of the Ascensions, where the Jardas's name is already written. Relic: Chronicle of the Júnias.
+- **Act V, The Last Queimada (5-S1).** The witch-night fire must burn before the final oath; the Compaña and the Moura Court want it unlit. Leonor drinks the first cup and tells the Jardas, "Now you can go." Relic: Queimada Cup.
+
+The saga now has 44 chapters; the seven jars of Wine of the Dead are unchanged.

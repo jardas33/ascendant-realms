@@ -137,7 +137,7 @@ func _refresh() -> void:
 	identity.add_child(deeds_line)
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
-	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
+	saga_line.text = "THE SAGA   %d / %d CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), load("res://scripts/game/campaign_defs.gd").CHAPTERS.size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
 	var ret_names: Array = []
 	for entry in saga_state.get("retinue", []):
 		var label_name := String(entry.get("name", ""))
@@ -299,6 +299,13 @@ func _refresh() -> void:
 
 	# Mastery panel
 	right_panel.add_child(_heading("MASTERY CONSTELLATIONS"))
+	if not (h.get("mastery_spent", {}) as Dictionary).is_empty():
+		var reset := Button.new()
+		_label_button(reset, "Reset Mastery (free)", Color(0.9, 0.85, 0.7))
+		reset.custom_minimum_size = Vector2(220, 36)
+		reset.focus_mode = Control.FOCUS_NONE
+		reset.pressed.connect(func(): Sfx.play("select"); ProfileManager.respec_mastery())
+		right_panel.add_child(reset)
 	var m_pts := int(h.get("mastery_points", 0))
 	var spent: Dictionary = h.get("mastery_spent", {})
 	for con in HeroProgression.mastery_constellations():

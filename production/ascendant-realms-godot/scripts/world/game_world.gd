@@ -104,6 +104,17 @@ func _start_lume_surge() -> void:
 		return
 	_surge_hold.clear()
 	emit_signal("alert", "The Lume surges from the earth! Hold the light for its gift.", _surge_pos)
+	# The AI races for it too, with idle soldiers that are close enough.
+	for cmd in commanders:
+		if int(cmd.team) == player_team or cmd.defeated:
+			continue
+		var sent := 0
+		for u in cmd.units:
+			if sent >= 6:
+				break
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.state == u.State.IDLE and u.global_position.distance_to(_surge_pos) < 70.0:
+				u.command_move(_surge_pos, true)
+				sent += 1
 	_tick_lume_surge(0)
 
 func _tick_lume_surge(elapsed: int) -> void:

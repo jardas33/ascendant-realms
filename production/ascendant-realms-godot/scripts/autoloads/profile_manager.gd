@@ -249,6 +249,19 @@ func unlock_skill(node_id: String) -> bool:
 	save_game()
 	return true
 
+## Free mastery respec: every spent mastery point comes back to spend again.
+func respec_mastery() -> void:
+	if not has_hero():
+		return
+	var h = data["hero"]
+	var back := 0
+	for k in h.get("mastery_spent", {}):
+		back += int(h["mastery_spent"][k])
+	h["mastery_spent"] = {}
+	h["mastery_points"] = int(h.get("mastery_points", 0)) + back
+	emit_signal("profile_changed")
+	save_game()
+
 func respec_skills() -> void:
 	if not has_hero():
 		return

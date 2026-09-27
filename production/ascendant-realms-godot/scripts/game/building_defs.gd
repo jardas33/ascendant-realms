@@ -111,7 +111,7 @@ static func get_all() -> Dictionary:
 	"vorthak_thrall_pit": {
 		"race": "vorthak", "name": "Thrall Pit", "kind": "house", "model": _b("vorthak_ash_forge"),
 		"hp": 480, "armor_class": "medium", "armor": 1, "footprint": 3.4,
-		"cost": {"timber": 50, "stone": 20}, "build_time": 16, "grants_pop": 9,
+		"cost": {"timber": 50, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "Cramped warrens that pack in more thralls.",
 	},
 	"vorthak_bone_barracks": {
