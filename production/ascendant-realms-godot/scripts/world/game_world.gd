@@ -81,6 +81,37 @@ var match_seed := 0
 var _spawn_serial := 0
 ## Elite enemies slain by the player this battle: each adds a better loot roll.
 var elites_slain := 0
+## This battle's optional objective (picked from the match seed at the start).
+var bounty := {}
+var enemy_heroes_slain := 0
+
+func _pick_bounty() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sim_seed_for(4242)
+	var options := [
+		{"id": "hero", "text": "Bounty: slay an enemy hero."},
+		{"id": "swift", "minutes": 12 + rng.randi() % 7, "text": ""},
+		{"id": "thrift", "losses": 8 + rng.randi() % 8, "text": ""},
+		{"id": "raze", "count": 4 + rng.randi() % 5, "text": ""},
+	]
+	bounty = options[rng.randi() % options.size()]
+	match String(bounty["id"]):
+		"swift": bounty["text"] = "Bounty: win within %d minutes." % int(bounty["minutes"])
+		"thrift": bounty["text"] = "Bounty: win losing no more than %d units." % int(bounty["losses"])
+		"raze": bounty["text"] = "Bounty: raze %d enemy buildings." % int(bounty["count"])
+	get_tree().create_timer(6.0, false).timeout.connect(func():
+		if game_running:
+			emit_signal("alert", String(bounty["text"]) + " Reward: extra spoils.", Vector3.ZERO))
+
+func _bounty_met(victory: bool) -> bool:
+	if not victory or bounty.is_empty():
+		return false
+	match String(bounty["id"]):
+		"hero": return enemy_heroes_slain > 0
+		"swift": return match_time <= float(bounty["minutes"]) * 60.0
+		"thrift": return combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size() <= int(bounty["losses"])
+		"raze": return building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size() >= int(bounty["count"])
+	return false
 
 ## About one enemy soldier in 25 is an Elite: tougher, larger, gold-edged and
 ## worth extra loot. Chosen from the match seed and spawn order.
@@ -2594,6 +2625,8 @@ func _roll_battle_loot(victory: bool) -> Array:
 	var fortune := int(hero.get("attributes", {}).get("fortune", 0))
 	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
 	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
+	if _bounty_met(victory):
+		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 77, ilvl + 2, fortune + 3, true, "hard").slice(0, 1))
 	# Every Elite the player slew adds a roll with better odds.
 	for e in elites_slain:
 		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 100 + e, ilvl + 3, fortune + 5, true, "brutal").slice(0, 1))
@@ -2729,6 +2762,7 @@ func _start_match() -> void:
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()
 	_start_saga_events()
+	_pick_bounty()
 	if "warband" in Match.get_config().get("twists", []):
 		_schedule_warband()
 	if String(Match.get_config().get("mode", "")) == "endless":
@@ -2906,6 +2940,9 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.25
 	if victory:
 		xp *= 1.6
+	var bounty_won := _bounty_met(victory)
+	if bounty_won:
+		xp *= 1.2
 	if not _profile_recorded and ProfileManager.has_hero():
 		_profile_recorded = true
 		_record_retinue(victory)
@@ -2917,6 +2954,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
 		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
 		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
+		"bounty": String(bounty.get("text", "")), "bounty_won": bounty_won,
 		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
@@ -3033,6 +3071,8 @@ func _on_unit_died(unit) -> void:
 	_award_hero_field_xp(unit, source_team)
 	if unit.is_hero:
 		_saga_react(int(unit.team), "hero")
+		if int(unit.team) != player_team and source_team == player_team:
+			enemy_heroes_slain += 1
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 1
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
@@ -3155,10 +3195,13 @@ func on_building_destroyed(building) -> void:
 # Hero abilities
 # --------------------------------------------------------------------------
 func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> void:
+	# Spells grow with the hero forever: they scale with the hero's real
+	# damage (levels, gear, mastery) over the unit's base damage.
+	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30))))
 	var ab := SkillDefs.get_abilities().get(id, {})
 	match id:
 		"rally":
-			heal_allies_near(hero.global_position, ab.get("range", 14.0), 40.0 + hero.heal_power, hero.team)
+			heal_allies_near(hero.global_position, ab.get("range", 14.0), (40.0 + hero.heal_power) * power, hero.team)
 			for u in commander_for_team(hero.team).units:
 				if is_instance_valid(u) and not u.is_dead:
 					if u.global_position.distance_to(hero.global_position) <= ab.get("range", 14.0):
@@ -3166,7 +3209,7 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			spawn_ring_fx(hero.global_position, Color(1, 0.9, 0.4), ab.get("range", 14.0))
 			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(1.0, 0.82, 0.38))
 		"slam":
-			var dmg = ab.get("dmg", 60) * (1.5 if level >= 2 else 1.0)
+			var dmg = ab.get("dmg", 60) * (1.5 if level >= 2 else 1.0) * power
 			var rng = ab.get("range", 8.0) * (1.4 if level >= 2 else 1.0)
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
@@ -3181,7 +3224,7 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			dir.y = 0
 			var dist = min(dir.length(), ab.get("range", 18.0))
 			var dest = hero.global_position + dir.normalized() * dist
-			var dmg = ab.get("dmg", 50) * (1.4 if level >= 2 else 1.0)
+			var dmg = ab.get("dmg", 50) * (1.4 if level >= 2 else 1.0) * power
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
 					if _point_near_segment(u.global_position, hero.global_position, dest, 3.0):
@@ -3197,9 +3240,9 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 				var tgt = _nearest_enemy_to(target_pos, hero.team, hit)
 				if tgt:
 					hit.append(tgt)
-					spawn_projectile(hero.global_position + Vector3.UP * 1.5, tgt, ab.get("dmg", 70), "arcane", hero.team, "lume_bolt", 0.0, hero)
+					spawn_projectile(hero.global_position + Vector3.UP * 1.5, tgt, float(ab.get("dmg", 70)) * power, "arcane", hero.team, "lume_bolt", 0.0, hero)
 		"heal":
-			heal_allies_near(hero.global_position, ab.get("range", 14.0), ab.get("heal", 120) + hero.heal_power, hero.team)
+			heal_allies_near(hero.global_position, ab.get("range", 14.0), (float(ab.get("heal", 120)) + hero.heal_power) * power, hero.team)
 			spawn_ring_fx(hero.global_position, Color(0.4, 1.0, 0.6), ab.get("range", 14.0))
 			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(0.45, 1.0, 0.6))
 		"root":

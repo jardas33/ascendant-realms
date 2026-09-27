@@ -3775,6 +3775,11 @@ func _on_game_over(victory: bool) -> void:
 			var loot := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			loot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(loot)
+	if String(result.get("bounty", "")) != "":
+		var b_line := _mk_label(("%s  Done: extra spoils and +20%% experience." if bool(result.get("bounty_won", false)) else "%s  Not met.") % String(result["bounty"]), 15, Color(0.95, 0.8, 0.45) if bool(result.get("bounty_won", false)) else Color(0.7, 0.66, 0.6))
+		b_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		b_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		box.add_child(b_line)
 	for deed in result.get("deeds", []):
 		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
 		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
