@@ -3730,6 +3730,10 @@ func _on_game_over(victory: bool) -> void:
 		chronicle.custom_minimum_size = Vector2(620, 0)
 		chronicle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(chronicle)
+		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
+			var relic_line := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
+			relic_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			box.add_child(relic_line)
 		if victory and bool(CampaignDefs.find(chapter_id).get("jar", false)):
 			var jar_line := _mk_title_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
 			jar_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

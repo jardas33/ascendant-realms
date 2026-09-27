@@ -54,10 +54,24 @@ func setup(p_world, p_commander, p_difficulty: String) -> void:
 	commander = p_commander
 	difficulty = p_difficulty
 	_apply_difficulty()
+	_apply_personality()
 	_easy_mode = difficulty == "easy"
 	_easy_rng.seed = _easy_seed + int(commander.team) * 101
 	_base_pos = _find_hq_pos()
 	_rally = _base_pos.lerp(Vector3.ZERO, 0.35)
+
+## Faction personalities on top of difficulty: swarm factions attack early
+## with smaller waves; the disciplined ones mass a bigger army first.
+func _apply_personality() -> void:
+	match String(commander.race):
+		"vorthak", "hollow", "grimtusk", "wyldkin":
+			_army_attack_size = maxi(4, _army_attack_size - 3)
+			_think_interval *= 0.85
+		"sunspear", "karak", "sylvan":
+			_army_attack_size += 4
+			_worker_target += 2
+		"frostborn":
+			_army_attack_size += 1
 
 func _apply_difficulty() -> void:
 	match difficulty:

@@ -130,6 +130,15 @@ func complete_chapter(id: String) -> void:
 		s["jars"].append(id)
 	if chapter.has("branch"):
 		s["choice"] = String(chapter["branch"])
+	# A side road's relic, once.
+	if not s.has("relics"):
+		s["relics"] = []
+	if CampaignDefs.RELICS.has(id) and not (id in s["relics"]) and has_hero():
+		s["relics"].append(id)
+		add_item(CampaignDefs.RELICS[id].duplicate(true))
+		s["last_relic"] = String(CampaignDefs.RELICS[id]["name"])
+	else:
+		s["last_relic"] = ""
 	for next in chapter.get("unlocks", []):
 		if not (String(next) in s["unlocked"]):
 			s["unlocked"].append(String(next))

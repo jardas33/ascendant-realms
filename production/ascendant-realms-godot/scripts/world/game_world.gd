@@ -2451,6 +2451,51 @@ func _saga_react(team: int, kind: String) -> void:
 	if line != "":
 		emit_signal("alert", line, Vector3.ZERO)
 
+## Chapter events (CampaignDefs.EVENTS): allies join at the start, enemy
+## reinforcements arrive later and march on the player's base.
+func _start_saga_events() -> void:
+	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
+	var ev: Dictionary = CampaignDefs.EVENTS.get(chapter_id, {})
+	if ev.is_empty():
+		return
+	if ev.has("allies") and is_instance_valid(player_commander):
+		var hq_pos: Vector3 = map.get("start_positions", [Vector3.ZERO])[player_team]
+		var toward := (Vector3.ZERO - hq_pos).normalized()
+		var k := 0
+		for uid in ev["allies"]["units"]:
+			var side := Vector3(toward.z, 0, -toward.x) * (float(k) - 1.5) * 2.0
+			var u = spawn_unit(String(uid), player_team, hq_pos + toward * 14.0 + side)
+			if u:
+				u.set_meta("saga_ally", true)
+				player_commander.recompute_pop()
+			if u and u.has_method("play_production_arrival_cue"):
+				u.play_production_arrival_cue()
+			k += 1
+		get_tree().create_timer(8.0, false).timeout.connect(func():
+			if game_running:
+				emit_signal("alert", String(ev["allies"]["line"]), Vector3.ZERO))
+	for wave in ev.get("waves", []):
+		get_tree().create_timer(float(wave["at"]), false).timeout.connect(func(): _spawn_saga_wave(wave))
+
+func _spawn_saga_wave(wave: Dictionary) -> void:
+	if not game_running:
+		return
+	var team := int(wave.get("team", 1))
+	if team >= commanders.size():
+		team = commanders.size() - 1
+	if team == player_team or commanders[team].defeated:
+		return
+	var from: Vector3 = map.get("start_positions", [Vector3.ZERO, Vector3.ZERO])[team]
+	var target: Vector3 = map.get("start_positions", [Vector3.ZERO])[player_team]
+	var toward := (target - from).normalized()
+	var k := 0
+	for uid in wave["units"]:
+		var u = spawn_unit(String(uid), team, from + toward * 16.0 + Vector3(toward.z, 0, -toward.x) * (float(k) - 2.0) * 2.0)
+		if u:
+			u.command_move(target, true)
+		k += 1
+	emit_signal("alert", String(wave.get("line", "Enemy reinforcements arrive!")), from + toward * 16.0)
+
 func _start_saga_voices() -> void:
 	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))
 	if chapter_id == "":
@@ -2483,6 +2528,7 @@ func _start_match() -> void:
 	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()
+	_start_saga_events()
 
 func get_runtime_identity_snapshot() -> Dictionary:
 	var cfg := Match.get_identity_snapshot()
@@ -2643,6 +2689,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	var xp := 200.0 + float(kills_by_player) * 12.0 + match_time * 0.5
 	# Side roads are optional; they pay half again in experience.
 	if CampaignDefs.is_side(String(Match.get_config().get("campaign_chapter", ""))):
+		xp *= 1.5
+	if bool(Match.get_config().get("campaign_heroic", false)):
 		xp *= 1.5
 	if victory:
 		xp *= 1.6

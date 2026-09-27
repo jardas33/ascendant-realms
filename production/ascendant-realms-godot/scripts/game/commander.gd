@@ -89,7 +89,8 @@ func recompute_pop() -> void:
 	var used := 0
 	var cap := 0
 	for u in units:
-		if is_instance_valid(u) and not u.is_dead:
+		# Saga allies fight for you but do not take up your population.
+		if is_instance_valid(u) and not u.is_dead and not u.has_meta("saga_ally"):
 			used += int(u.def.get("pop", 1))
 	for b in buildings:
 		if is_instance_valid(b) and b.is_built:

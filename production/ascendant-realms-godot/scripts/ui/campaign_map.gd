@@ -423,7 +423,13 @@ Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 24)
 	box.add_child(row)
-	for spec in [["Back", func(): layer.queue_free()], ["March to War", func(): _on_node_pressed(id)]]:
+	var buttons: Array = [["Back", func(): layer.queue_free()], ["March to War", func(): _on_node_pressed(id)]]
+	if id in ProfileManager.saga()["cleared"]:
+		buttons.append(["Heroic Replay", func(): _on_node_pressed(id, true)])
+		var heroic := _label("Cleared. A Heroic Replay raises every enemy one difficulty step and pays half again in experience.", 14, Color(0.80, 0.70, 0.95))
+		heroic.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(heroic)
+	for spec in buttons:
 		var b := Button.new()
 		b.text = String(spec[0])
 		b.custom_minimum_size = Vector2(220, 54)
@@ -437,12 +443,17 @@ Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45
 	plate.modulate.a = 0.0
 	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.3)
 
-func _on_node_pressed(id: String) -> void:
+func _on_node_pressed(id: String, heroic: bool = false) -> void:
 	Sfx.play("select")
 	var c := CampaignDefs.find(id)
 	var cfg: Dictionary = Match.default_config()
 	cfg["player_race"] = _hero_race()
 	cfg["opponents"] = c["opponents"].duplicate(true)
+	cfg["campaign_heroic"] = heroic
+	if heroic:
+		var up := {"easy": "normal", "normal": "hard", "hard": "brutal", "brutal": "brutal"}
+		for o in cfg["opponents"]:
+			o["difficulty"] = up.get(String(o["difficulty"]), "brutal")
 	cfg["mode"] = "campaign"
 	cfg["campaign_node"] = CampaignDefs.index_of(id)
 	cfg["campaign_chapter"] = id

@@ -272,6 +272,34 @@ const ENDINGS := {
 ## lines join the prologue and the Act III reveal so a Lioraen or Vorthak
 ## hero has their own place in the same story.
 const ORIGINS := {
+	"grimtusk": {
+		"1-1": "You were born in the Dominion's iron pits and carried out of them as a child by a smuggler from Tourém. Avó Brites took you in without a question. The iron is still in your jaw.",
+		"3-3": "Beside your name, the ledger lists your line: born in chains, freed in Salto. The Ironmaw revolt will know your name before you know theirs.",
+	},
+	"sylvan": {
+		"1-1": "You are a Moura of the Court who refused eternity. You fled the silver halls and hid in Salto as a girl who bakes bread and never ages. Avó Brites keeps your secret.",
+		"3-3": "The ledger lists you twice: once among the Moura Court, crossed out, and once in Salto, in Avó Brites's hand: 'ours'.",
+	},
+	"karak": {
+		"1-1": "You are Granitborn: a castro child who would not turn to stone, sent down the mountain to live among the living. Salto raised you; the stone still calls.",
+		"3-3": "Carvalho reads your name slowly. 'You were meant to be one of us,' he says. 'Instead you chose to be mortal. And then you died anyway.'",
+	},
+	"sunspear": {
+		"1-1": "You were a Dominion surveyor's child, left behind in Salto when your family went south. You grew up in the village your people meant to drown.",
+		"3-3": "Beside your name, the ledger lists your line: Aurean, a surveyor's house. The Dominion measured this valley. You were born to measure it too.",
+	},
+	"wyldkin": {
+		"1-1": "You are a seventh child of a seventh child. The wolves came for you as a baby, and Avó Brites chased them off with a burning broom. The moon has never let you go.",
+		"3-3": "The ledger lists you as a seventh of a seventh. 'Those never stay dead,' Carvalho mutters. 'The moon will not allow it.'",
+	},
+	"hollow": {
+		"1-1": "You were born in the procession. Your mother gave birth walking behind the cross, and a Salto shepherd carried you out of the Compaña at dawn. You have always seen candles no one else can see.",
+		"3-3": "The ledger lists you twice: once among the dead of the procession, and once among the living of Salto. Now both entries are true.",
+	},
+	"frostborn": {
+		"1-1": "You were found on the Larouco after an Entrudo, a baby wrapped in a Careto's red-and-green fringes. The masks have visited Salto every winter since, to look at you.",
+		"3-3": "Beside your name, the ledger bears a Careto's mark: a mask with no face. O Velho, it seems, has been waiting a long time.",
+	},
 	"lioraen": {
 		"1-1": "You were a foundling. Avó Brites found you as a baby in the Spring of Seven Mouths, wrapped in bark, and raised you as her own. The Lioraen of the groves have always watched you from the trees.",
 		"3-3": "Carvalho turns one page back. Beside your name is a second entry: born of a Moura of the Seven Fountains, given to the spring to be remembered. The Mouras gave you to Salto. The spring gave you back.",
@@ -285,6 +313,35 @@ const ORIGINS := {
 ## Seconds to hold out in a survival chapter (0 = conquest).
 static func survive_seconds(id: String) -> int:
 	return int(find(id).get("survive", 0))
+
+## Battle events by chapter. "waves": enemy reinforcements at a battle time
+## (seconds), marching on the player's base. "allies": friendly troops that
+## join the player at the start. Unit ids from unit_defs.
+const EVENTS := {
+	"1-6": {"waves": [{"at": 300, "team": 1, "units": ["vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_gloom_hound", "vorthak_gloom_hound"], "line": "Malrec: \"Release the kennels!\""}]},
+	"2-6": {"waves": [{"at": 240, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_legion", "sunspear_bowman", "sunspear_bowman"], "line": "A Dominion engineer: \"Open the second sluice! Send the reserve!\""}]},
+	"3-6": {"allies": {"units": ["frostborn_reaver", "frostborn_reaver", "frostborn_reaver", "frostborn_shieldmaiden"], "line": "O Velho: \"The Caretos ride with you, cousin!\""}},
+	"4-3": {"allies": {"units": ["grimtusk_grunt", "grimtusk_grunt", "grimtusk_berserker", "grimtusk_bowcrusha"], "line": "Warboss Brasa: \"The Ironmaw keep their word. Point us at the bronze.\""},
+		"waves": [{"at": 420, "team": 1, "units": ["sunspear_phalanx", "sunspear_phalanx", "sunspear_charioteer", "sunspear_charioteer"], "line": "A legate: \"The Wall's garrison marches!\""}]},
+	"4-S1": {"allies": {"units": ["barrosan_clan_levy", "barrosan_clan_levy"], "line": "Covelo's young men cheer for your bull."}},
+	"5-5": {"allies": {"units": ["frostborn_reaver", "frostborn_reaver", "frostborn_berserker"], "line": "O Velho: \"Last dance, cousin. We dance it together.\""}},
+	"5-7": {"allies": {"units": ["wyldkin_clawwarrior", "wyldkin_clawwarrior", "wyldkin_direwolf", "wyldkin_direwolf"], "line": "Sétimo: \"The wolves remember who freed them.\""},
+		"waves": [{"at": 180, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_charioteer"], "line": "The Dominion's last legion comes up the road."},
+			{"at": 360, "team": 2, "units": ["hollow_skeleton", "hollow_skeleton", "hollow_skeleton", "hollow_wraith", "hollow_wraith"], "line": "The Compaña: \"Remember us... remember us...\""},
+			{"at": 480, "team": 3, "units": ["vorthak_rift_blade", "vorthak_rift_blade", "vorthak_veil_warlock"], "line": "The Glass Choir sings from the ruins of Furna."}]},
+}
+
+## A relic from each side road, given the first time it is won. Items use
+## the War Chest format (hero_progression reads "stats").
+const RELICS := {
+	"1-S1": {"name": "Fojo Hunter's Cloak", "slot": "cloak", "rarity": "rare", "stats": {"speed": 0.4, "armor": 2}, "flags": {}, "desc": "Wolf-grey wool from the trap walls. The pack does not hunt whoever wears it."},
+	"1-S2": {"name": "Esconjuro Bowl", "slot": "relic", "rarity": "rare", "stats": {"mana": 40, "mana_regen": 1.5}, "flags": {}, "desc": "The clay bowl of the witch-night. The blue flame still flickers in it."},
+	"2-S1": {"name": "Unlit Candle", "slot": "amulet", "rarity": "epic", "stats": {"hp": 90, "heal_power": 10}, "flags": {}, "desc": "Never light it. Never give it away."},
+	"2-S2": {"name": "Silver Tear", "slot": "ring1", "rarity": "epic", "stats": {"dmg": 8, "mana": 30}, "flags": {}, "desc": "A Moura's tear, turned to silver. It is always cold."},
+	"3-S1": {"name": "Seventh Son's Fang", "slot": "main_hand", "rarity": "epic", "stats": {"dmg": 16, "attack_speed": 0.1}, "flags": {}, "desc": "Sétimo's gift. It hums under the full moon."},
+	"3-S2": {"name": "Pilgrim's Roll of Names", "slot": "relic", "rarity": "epic", "stats": {"aura_dmg": 3, "heal_power": 12}, "flags": {}, "desc": "Two hundred and eleven names, each said aloud at the bridge."},
+	"4-S1": {"name": "Horn of the Barrosã Bull", "slot": "off_hand", "rarity": "legendary", "stats": {"hp": 140, "armor": 4, "aura_dmg": 2}, "flags": {}, "desc": "The champion's horn from the Chega de Bois. The valley bows to whoever carries it."},
+}
 
 ## What an enemy commander says when their stronghold falls or their hero
 ## dies, by faction.
@@ -303,6 +360,13 @@ const REACTIONS := {
 
 ## The Jardas's first words, by faction, on the night of the Ascension.
 const ORIGIN_OPENINGS := {
+	"grimtusk": "Iron in my jaw and fire in my hands. Salto is mine to guard.",
+	"sylvan": "I left eternity for a village. Tonight I find out if it was worth it.",
+	"karak": "Stone forgets nothing. Neither will I.",
+	"sunspear": "My people came to drown this valley. I stayed to save it.",
+	"wyldkin": "The moon is full. The Lume is burning. The wolves are quiet. Good.",
+	"hollow": "I have walked with the dead before. Tonight, they walk with me.",
+	"frostborn": "Ring the bells. Chase out the winter. Tonight it starts with me.",
 	"lioraen": "The spring remembers me. It always has.",
 	"vorthak": "The ash in my veins is burning. For once, it is burning for Salto.",
 }

@@ -183,3 +183,27 @@ func _cycle_music() -> void:
 
 func set_shown(s: bool) -> void:
 	visible = s
+	_update_chapter_line()
+
+var _chapter_line: Label
+
+## In a campaign battle the pause menu names the chapter and its goal.
+func _update_chapter_line() -> void:
+	var defs = load("res://scripts/game/campaign_defs.gd")
+	var chapter: Dictionary = defs.find(String(Match.get_config().get("campaign_chapter", "")))
+	if chapter.is_empty():
+		if is_instance_valid(_chapter_line):
+			_chapter_line.visible = false
+		return
+	if not is_instance_valid(_chapter_line):
+		_chapter_line = Label.new()
+		_chapter_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_chapter_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_chapter_line.add_theme_font_size_override("font_size", 15)
+		_chapter_line.add_theme_color_override("font_color", Color(0.93, 0.80, 0.52))
+		var subtitle_parent: Node = _resume_button.get_parent()
+		subtitle_parent.add_child(_chapter_line)
+		subtitle_parent.move_child(_chapter_line, _resume_button.get_index())
+	var goal := "Hold out for %d minutes." % (int(chapter.get("survive", 0)) / 60) if int(chapter.get("survive", 0)) > 0 else "Destroy the enemy's ability to rebuild."
+	_chapter_line.text = "%s  ·  %s" % [String(chapter["title"]), goal]
+	_chapter_line.visible = true

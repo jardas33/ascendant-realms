@@ -396,7 +396,21 @@ func _refresh_race() -> void:
 	for rid in _race_buttons:
 		_race_buttons[rid].button_pressed = (rid == _race_id)
 	var rd: Dictionary = GameData.RACES.get(_race_id, {})
-	_race_desc.text = "%s\n\n%s" % [rd.get("blurb", ""), "Mechanic: " + str(rd.get("mechanic", ""))]
+	# The saga origin of a Jardas of this blood (see the campaign prologue).
+	var origins := {
+		"barrosan": "Your Jardas: born and raised in Salto, where the Lume first chose them.",
+		"lioraen": "Your Jardas: a foundling from the Spring of Seven Mouths, a Moura's child raised in Salto.",
+		"vorthak": "Your Jardas: grandchild of drowned Furna; ash-glass burns in their veins when they are angry.",
+		"grimtusk": "Your Jardas: born in the Dominion's iron pits, carried to Salto by a smuggler.",
+		"sylvan": "Your Jardas: a Moura of the Court who fled eternity to live in Salto.",
+		"karak": "Your Jardas: a castro child who would not turn to stone.",
+		"sunspear": "Your Jardas: a Dominion surveyor's child, left behind in the valley meant to drown.",
+		"wyldkin": "Your Jardas: a seventh child of a seventh child, whom the wolves came for.",
+		"hollow": "Your Jardas: born in the procession of the dead, carried out at dawn.",
+		"frostborn": "Your Jardas: a foundling of the Larouco, wrapped in a Careto's fringes.",
+	}
+	var origin := String(origins.get(_race_id, ""))
+	_race_desc.text = "%s\n\n%s%s" % [rd.get("blurb", ""), "Mechanic: " + str(rd.get("mechanic", "")), ("\n\n" + origin) if origin != "" else ""]
 	if is_instance_valid(_preview_title):
 		_preview_title.text = str(rd.get("name", "Hero Preview")).to_upper()
 
