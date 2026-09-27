@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29, 02:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-29, 05:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -238,6 +238,18 @@ Last updated: 2026-09-29, 02:00 UTC. Claude updates this file after every pass.
   - **Gear sets:** epic and legendary drops can belong to one of four sets (Oath of Salto, Furna's Ashglass, Moura Silver, Careto Masks). Two pieces give a stat that grows with the set's item level; four pieces grant a power (for example Careto Masks give Cleave).
   - **Festival stages:** every tenth Endless Road stage is a Barroso feast with its own foes, mood and rich spoils: Entrudo (Careto Host), the Chega de Bois (rival Barrosan clans, a mirror match), the Night of the Witches in Montalegre (the Compaña), Magusto (Wolfveil) and the Fires of São João (Vorthak).
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new. The 120-unit fight benchmark stays at about 36 to 46 fps.
+- **Plan 17 (done):**
+  - **Spells grow forever:** hero spells dealt fixed damage (Slam 60, Charge 50, Lume Bolt 70) and faded into nothing as heroes grew. Spell damage and healing now scale with the hero's real damage (levels, gear, mastery). Tested: the same Slam went from 98 to 160 damage when the hero hit harder.
+  - **Battle bounties:** every battle offers one optional objective, chosen from the match seed: slay an enemy hero, win within 12 to 18 minutes, lose no more than 8 to 15 units, or raze 4 to 8 buildings. It is announced at the start. Meeting it with a victory gives an extra loot roll and +20% experience, shown on the result screen.
+  - **Barrosan AI:**
+    - Houses were being blocked by other construction, so the AI sat at its population cap with hundreds of unused food.
+    - Houses now come first: nothing else starts while the army needs room, and an urgent house gets two builders.
+    - Barrosan no longer caps at minute 3 (21/28 and 23/36 in the checks).
+    - It still loses most AI-vs-AI games, but lasts longer (up to 17 minutes against Vorthak).
+  - **First-loot tip:** the first result screen with loot points players to the War Chest.
+  - **War Chest:** set items show how many pieces of their set are worn.
+  - **Hero sheet:** lists the retinue by name and rank.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
