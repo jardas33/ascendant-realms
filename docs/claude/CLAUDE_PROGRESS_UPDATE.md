@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 07:45 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 08:05 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -154,7 +154,7 @@ Last updated: 2026-09-27, 07:45 UTC. Claude updates this file after every pass.
    - Attack waves also stop growing after the third, so the AI keeps attacking.
    A Hard Vorthak AI now wins a 20-minute soak at about minute 18.
 2. DONE. A Vorthak player on Hollowspan now gets the scorched holdfast (Lioraen already had its grove). Noted for Codex: the Vorthak worker (Bondservant) selection portrait shows a T-posed model instead of portrait art.
-3. Units pushing against obstacles near their own base.
+3. DONE. Units walking in place: a unit pressing into a crowd of its own soldiers or an obstacle the pathfinder does not know about used to walk on the spot for the rest of the match. A stall watchdog now side-steps it (alternating sides) and requests a fresh route when it has not moved 35 cm in 1.5 s. Stuck units in a 10-minute AI soak fell from 4 to 1.
 4. DONE. Frame cost: a feature-by-feature GPU bisect showed the ground shader alone cost about 11 ms of GPU per frame at 1600x900, mostly the Vorthak/Lioraen zone noise and cracks being computed on every pixel of the map. Zones and the ford now skip that work outside their area, and the broad low-frequency fields use two noise octaves instead of four. GPU time for the whole frame dropped from about 16.7 ms to about 12 ms with no visible change.
 
 ## Still open

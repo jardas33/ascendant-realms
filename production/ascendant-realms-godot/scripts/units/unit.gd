@@ -2633,6 +2633,11 @@ func _healer_tick(delta: float) -> void:
 # --------------------------------------------------------------------------
 # Movement helpers
 # --------------------------------------------------------------------------
+var _stall_anchor := Vector3(INF, INF, INF)
+var _stall_clock := 0.0
+var _sidestep_time := 0.0
+var _sidestep_sign := 1.0
+
 func _move_along_path(delta: float) -> bool:
 	if not agent:
 		return true
@@ -2730,6 +2735,21 @@ func _move_along_path(delta: float) -> bool:
 	if dir.length() < 0.05:
 		return false
 	dir = dir.normalized()
+	# Stall watchdog: a unit pressing into a crowd or an unlisted obstacle kept
+	# walking in place for the rest of the match. If it has not moved 0.35 m in
+	# 1.5 s while trying to, side-step for a moment (alternating sides) and
+	# ask for a fresh route.
+	_stall_clock += delta
+	if _stall_clock >= 1.5:
+		if _stall_anchor.x != INF and global_position.distance_to(_stall_anchor) < 0.35:
+			_sidestep_time = 0.9
+			_sidestep_sign = -_sidestep_sign
+			_navigation_last_requested = Vector3(INF, INF, INF)
+		_stall_anchor = global_position
+		_stall_clock = 0.0
+	if _sidestep_time > 0.0:
+		_sidestep_time -= delta
+		dir = (dir * 0.35 + Vector3(-dir.z, 0.0, dir.x) * _sidestep_sign).normalized()
 	var spd := move_speed
 	if _slow > 0.0: spd *= 0.5
 	if _rooted > 0.0: spd = 0.0
