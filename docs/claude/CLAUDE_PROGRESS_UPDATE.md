@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 06:10 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 06:35 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -127,6 +127,7 @@ Last updated: 2026-09-27, 06:10 UTC. Claude updates this file after every pass.
 - **Skirmish setup:** rebuilt as a war-council screen, with faction banner cards, a dossier and a tactical map preview.
 - **Other screens:** the hero forge preview, skill tree, War Chest and campaign map are reskinned to match.
 - **Victory and defeat:** a result ledger on the ornate plate.
+- **Campaign map:** the briefing now opens on your next battle with a "Click to march" hint (it used to show whichever region the cursor last crossed), the next battle gently pulses, and sealed regions recede so the path forward stands out.
 - **Buttons:** every button uses a forged-bronze frame. The pause menu sits on the ornate plate, and its control list is easier to read.
 
 ## Top-10 plan (started 2026-09-27)
@@ -140,7 +141,7 @@ Last updated: 2026-09-27, 06:10 UTC. Claude updates this file after every pass.
 7. DONE. Tutorial and first-match onboarding review.
 8. DONE (all working). Verify recent features in real play: Medium quality, Backspace jump, veteran flare.
 9. DONE. Polish known weak spots: collapse dust at normal zoom and pale grain on the food site.
-10. Campaign map screen polish with what is available now; the painted map still needs the token.
+10. DONE. Campaign map screen polish with what is available now; the painted map still needs the token.
 
 - **Lioraen and Vorthak units (plan item 6):** reviewed up close; they read clearly at play zoom with team colours and silhouettes. A worthwhile upgrade needs the model rebuild, which still waits on the Hugging Face token run.
 

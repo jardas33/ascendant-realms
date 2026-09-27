@@ -194,6 +194,8 @@ func _build() -> void:
 	_desc_label.offset_right = -12.0
 	_desc_label.text = "Select a region to read its story."
 	desc_panel.add_child(_desc_label)
+	# Brief the next battle by default; hovering another region previews it.
+	_show_desc(_next_battle)
 
 	# Back button
 	var back := Button.new()
@@ -217,6 +219,7 @@ func _build() -> void:
 func _build_node(i: int, camp: Dictionary) -> void:
 	var unlocked_arr: Array = camp.get("unlocked", [0])
 	var current_node: int = int(camp.get("node", 0))
+	_next_battle = clampi(current_node, 0, NODE_NAMES.size() - 1)
 
 	# Node 0 is always unlocked regardless of save state
 	var is_unlocked: bool = (i == 0) or (i in unlocked_arr)
@@ -303,10 +306,20 @@ func _build_node(i: int, camp: Dictionary) -> void:
 	btn.add_child(vb)
 
 	btn.mouse_entered.connect(_show_desc.bind(i))
+	btn.mouse_exited.connect(func(): _show_desc(_next_battle))
 	if is_unlocked:
 		btn.pressed.connect(_on_node_pressed.bind(i))
+	else:
+		# Sealed regions recede so the path forward stands out.
+		btn.modulate = Color(0.78, 0.78, 0.8, 0.88)
 
 	add_child(btn)
+	if i == current_node and is_unlocked and not is_cleared:
+		# The next battle breathes gently to draw the eye.
+		btn.pivot_offset = NODE_SIZE * 0.5
+		var pulse := btn.create_tween().set_loops()
+		pulse.tween_property(btn, "scale", Vector2.ONE * 1.05, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		pulse.tween_property(btn, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 # --------------------------------------------------------------------------
 func _draw_path() -> void:
@@ -341,9 +354,14 @@ func _draw_path() -> void:
 		_canvas.draw_circle(_node_positions[last], 10.0, last_col)
 
 # --------------------------------------------------------------------------
+var _next_battle := 0
+
 func _show_desc(i: int) -> void:
+	if not is_instance_valid(_desc_label):
+		return
 	var diff_str: String = NODE_DIFFICULTY[i]
-	_desc_label.text = "%s  [%s]\n%s" % [NODE_NAMES[i], diff_str, NODE_DESC[i]]
+	var hint := "   ·   Click to march" if i == _next_battle else ""
+	_desc_label.text = "%s  [%s]%s\n%s" % [NODE_NAMES[i], diff_str, hint, NODE_DESC[i]]
 
 func _on_node_pressed(i: int) -> void:
 	Sfx.play("select")
