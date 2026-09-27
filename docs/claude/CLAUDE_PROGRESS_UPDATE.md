@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29, 05:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-29, 08:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -249,6 +249,15 @@ Last updated: 2026-09-29, 05:00 UTC. Claude updates this file after every pass.
   - **First-loot tip:** the first result screen with loot points players to the War Chest.
   - **War Chest:** set items show how many pieces of their set are worn.
   - **Hero sheet:** lists the retinue by name and rank.
+  - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 18 (done):**
+  - **Smarter AI armies:** every AI now favours units whose damage type counters the most common armour in the enemy army (for example slashing troops against Vorthak's unarmoured swarm). Barrosan won 1 of 4 soak matches (it beat Lioraen).
+  - **Lorecraft:** a new endless mastery constellation that raises spell power with no ceiling.
+  - **Lume Surge (world event):** once per battle, at a seeded time between minutes 4 and 10, the Lume rises at a spot near the middle of the field. The first side to hold it alone for 8 seconds gets 200 gold and 200 food; for the player it also gives hero experience.
+  - **War Chest:** items can be locked so "Salvage Commons" never melts them. Comparison with equipped gear already existed.
+  - **Endless Road milestones:** every 25th stage also guarantees a legendary item, forged at that depth.
+  - **Save check:** a 3,000-item War Chest saves in 42 ms and loads in 36 ms (about 1 MB).
+  - **Performance:** the 120-unit fight benchmark holds at about 42 fps.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
