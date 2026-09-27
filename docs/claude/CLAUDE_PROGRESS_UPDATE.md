@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 07:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 07:15 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -153,7 +153,7 @@ Last updated: 2026-09-27, 07:00 UTC. Claude updates this file after every pass.
    - **A lone construction site kept a beaten side alive**, because attackers ignored unbuilt sites. The AI now targets them too.
    - Attack waves also stop growing after the third, so the AI keeps attacking.
    A Hard Vorthak AI now wins a 20-minute soak at about minute 18.
-2. Player-side Vorthak and Lioraen starts on Hollowspan lack their own base dressing.
+2. DONE. A Vorthak player on Hollowspan now gets the scorched holdfast (Lioraen already had its grove). Noted for Codex: the Vorthak worker (Bondservant) selection portrait shows a T-posed model instead of portrait art.
 3. Units pushing against obstacles near their own base.
 4. Frame time rose from about 17 ms to about 21 ms in today's perf probe; find out why.
 

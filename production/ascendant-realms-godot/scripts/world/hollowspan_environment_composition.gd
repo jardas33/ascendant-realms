@@ -169,6 +169,10 @@ func build(parent: Node3D, origin: Vector3, map_data: Dictionary, start_race: St
 		_place_asset(layer, String(spec["asset"]), position, float(spec.get("yaw", 0.0)))
 	if start_race == "lioraen":
 		build_lioraen_grove(layer, origin)
+	elif start_race == "vorthak":
+		# A Vorthak player used to start on bare grass here; opponents already
+		# got their holdfast.
+		build_vorthak_holdfast(layer, origin)
 	if barrosan_start:
 		_build_barrosan_settlement(layer, origin + BARROSAN_SETTLEMENT_ANCHOR_OFFSET)
 		_build_barrosan_r2_dressing(layer, origin)
