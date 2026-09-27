@@ -62,10 +62,10 @@ static func relic(depth: int) -> Dictionary:
 	var tier := float(depth) / 5.0
 	var stats := {}
 	match slot:
-		"main_hand": stats = {"dmg": roundi(3 + tier * 2.5), "attack_speed": snappedf(0.02 + tier * 0.005, 0.001)}
+		"main_hand": stats = {"dmg": roundi(3 + tier * 2.5), "attack_speed": snappedf(0.02 + sqrt(tier) * 0.01, 0.001)}
 		"off_hand", "body": stats = {"armor": roundi(1 + tier * 0.9), "hp": roundi(30 + tier * 25)}
 		"head", "hands": stats = {"hp": roundi(20 + tier * 18), "dmg": roundi(1 + tier * 1.2)}
-		"feet": stats = {"speed": snappedf(0.15 + tier * 0.05, 0.01), "armor": roundi(tier * 0.5)}
+		"feet": stats = {"speed": snappedf(0.15 + sqrt(tier) * 0.08, 0.01), "armor": roundi(tier * 0.5)}
 		"amulet", "relic": stats = {"mana": roundi(20 + tier * 15), "mana_regen": snappedf(0.5 + tier * 0.3, 0.1)}
 		_: stats = {"dmg": roundi(2 + tier * 1.5), "hp": roundi(15 + tier * 12)}
 	var rarity := "rare" if depth < 15 else ("epic" if depth < 35 else "legendary")

@@ -126,6 +126,9 @@ func _build() -> void:
 	_grant_button = _button("Claim Starter Relics", _on_grant)
 	_style_primary(_grant_button)
 	footer.add_child(_grant_button)
+	footer.add_child(_button("Salvage Commons", func():
+		ProfileManager.salvage_rarities(["common", "uncommon"])
+		_refresh()))
 	footer.add_child(_button("Back", func(): _goto("res://scenes/ui/hero_sheet.tscn")))
 
 func _column(header: String, assign: Callable) -> Control:
@@ -337,7 +340,16 @@ func _rebuild_items() -> void:
 	count_label.add_theme_font_size_override("font_size", 13)
 	count_label.add_theme_color_override("font_color", Color(0.72, 0.67, 0.55))
 	_items_box.add_child(count_label)
-	for item in inv:
+	# Best first: rarity, then item level.
+	var order := ["legendary", "epic", "rare", "uncommon", "common"]
+	var sorted := inv.duplicate()
+	sorted.sort_custom(func(a, b):
+		var ra := order.find(String(a.get("rarity", "common")))
+		var rb := order.find(String(b.get("rarity", "common")))
+		if ra != rb:
+			return ra < rb
+		return int(a.get("item_level", 0)) > int(b.get("item_level", 0)))
+	for item in sorted:
 		_items_box.add_child(_item_card(item))
 
 func _item_card(item: Dictionary) -> Button:
@@ -417,6 +429,12 @@ func _show_item_detail(item: Dictionary) -> void:
 		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
 	_style_primary(eq)
 	_detail_box.add_child(eq)
+	var sv := _button("Salvage  (+%d XP)" % int(load("res://scripts/game/loot_defs.gd").salvage_xp(item)), func():
+		ProfileManager.salvage_item(item)
+		_refresh()
+		_clear_after(_detail_box, 2)
+		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
+	_detail_box.add_child(sv)
 
 func _show_equipped_detail(slot: String, item: Dictionary) -> void:
 	Sfx.play("select")

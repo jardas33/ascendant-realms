@@ -300,6 +300,43 @@ func add_item(item: Dictionary) -> void:
 	emit_signal("profile_changed")
 	save_game()
 
+## Melt an item from the chest into hero experience (LootDefs.salvage_xp).
+func salvage_item(item: Dictionary) -> float:
+	if not has_hero():
+		return 0.0
+	var inv: Array = data["hero"]["inventory"]
+	var idx := inv.find(item)
+	if idx < 0:
+		return 0.0
+	inv.remove_at(idx)
+	var xp: float = load("res://scripts/game/loot_defs.gd").salvage_xp(item)
+	add_xp(xp)
+	emit_signal("profile_changed")
+	save_game()
+	return xp
+
+## Salvage every chest item of the given rarities in one go.
+func salvage_rarities(rarities: Array) -> Dictionary:
+	if not has_hero():
+		return {"count": 0, "xp": 0.0}
+	var inv: Array = data["hero"]["inventory"]
+	var keep: Array = []
+	var xp := 0.0
+	var n := 0
+	var loot = load("res://scripts/game/loot_defs.gd")
+	for it in inv:
+		if String(it.get("rarity", "common")) in rarities:
+			xp += loot.salvage_xp(it)
+			n += 1
+		else:
+			keep.append(it)
+	data["hero"]["inventory"] = keep
+	if xp > 0.0:
+		add_xp(xp)
+	emit_signal("profile_changed")
+	save_game()
+	return {"count": n, "xp": xp}
+
 func equip_item(item: Dictionary) -> void:
 	if not has_hero():
 		return

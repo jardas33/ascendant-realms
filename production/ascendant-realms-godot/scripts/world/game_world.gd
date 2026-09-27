@@ -74,6 +74,7 @@ const BASE_ATTACK_ALERT_COOLDOWN_SEC := 6.0
 var _base_attack_alert_until_msec := 0
 var match_time := 0.0
 var kills_by_player := 0
+var _battle_loot: Array = []
 # Battle story for the result ledger.
 var hero_kills := 0
 var veterans_made := 0
@@ -2525,6 +2526,27 @@ func _spawn_retinue() -> void:
 
 ## After a campaign battle the best living veterans join the retinue. After a
 ## defeat only the retinue members who survived stay with the Jardas.
+## Every battle rolls gear for the hero (LootDefs). Item level follows the
+## hero, deepened by campaign chapter and Endless Road stage; the roll is
+## seeded from the battle's own numbers.
+func _roll_battle_loot(victory: bool) -> Array:
+	var cfg := Match.get_config()
+	var hero := ProfileManager.hero()
+	var hardest := "easy"
+	var order := ["easy", "normal", "hard", "brutal"]
+	for o in cfg.get("opponents", []):
+		if order.find(String(o.get("difficulty", "normal"))) > order.find(hardest):
+			hardest = String(o.get("difficulty", "normal"))
+	var ilvl := int(hero.get("level", 1)) + int(cfg.get("endless_depth", 0)) + maxi(0, CampaignDefs.index_of(String(cfg.get("campaign_chapter", "")))) / 2
+	var fortune := int(hero.get("attributes", {}).get("fortune", 0))
+	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
+	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
+	var shown: Array = []
+	for it in items:
+		ProfileManager.add_item(it)
+		shown.append({"name": String(it["name"]), "rarity": String(it["rarity"])})
+	return shown
+
 func _record_retinue(victory: bool) -> void:
 	if String(Match.get_config().get("campaign_chapter", "")) == "" or not ProfileManager.has_hero():
 		return
@@ -2797,11 +2819,12 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		_record_retinue(victory)
 		profile_record_count += 1
 		ProfileManager.record_battle(victory, kills_by_player, xp)
+		_battle_loot = _roll_battle_loot(victory)
 	result_snapshot = {"victory": victory, "reason": reason, "mode": Match.get_config().get("mode", "skirmish"),
 		"victory_kind": _victory_kind, "player_team": player_team, "kills": kills_by_player,
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
 		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
-		"hero_kills": hero_kills, "veterans_made": veterans_made,
+		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)
