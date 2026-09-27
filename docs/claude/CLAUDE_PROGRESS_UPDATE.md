@@ -302,6 +302,7 @@ Last updated: 2026-09-27, 23:00 UTC. Claude updates this file after every pass. 
   - **Multiplayer groundwork:** every player order (move, attack, attack-move, gather, build, repair, stop, hold, patrol) now travels through a command bus as plain data with network ids, and survives a JSON round trip. This is the seam a host-authoritative online mode needs.
   - **Checked windowed:** about 40 fps in the 120-unit fight, no regression from the Codex merges. Volcanic maps show Codex's new ash-and-basalt ground.
   - Regression passed: compile check, menu smoke tour, all 9 tests, the saga data check, plus new checks for save round trip, talents, command bus and twists.
+  - Merged Codex's carved slate waystones for Lioraen starts (1e70d881); compile check and conquest test pass, screenshot checked. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
