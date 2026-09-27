@@ -289,7 +289,8 @@ Last updated: 2026-09-27, 21:30 UTC. Claude updates this file after every pass. 
   - **AI build stalls:** the first house of a match froze the game for about 0.25 s because its collision was not prepared at load. It now is, and the AI's worst decision time fell from about 300 ms to about 40 ms.
   - **Movement:** units crowding the same route corner now count it as reached and move on, and AI bases keep a walking gap between buildings.
   - **Convergence audit** for the director: `docs/claude/CONVERGENCE_AUDIT.md` lists the exact commits and confirms every current Codex tip, including 05d9f857, is already in this branch. Emanuel pushed the branch to GitHub as a backup; Claude will push it after each batch from now on.
-  - Regression passed: compile check, menu smoke tour, all 9 tests and the saga data check.
+  - **Merged Codex's work from 27 September:** the HUD order rack, Vorthak portraits, field-order atlas and Nighthold colours, authored ash-and-basalt ground on volcanic maps, tactical hero range dashes, the Groveheart base and quieter building selection halos (2fad7cf1 and a552e10e). One conflict in the ground shader was resolved by keeping both sides.
+  - Regression passed on the merged build: compile check, menu smoke tour, all 9 tests and the saga data check. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
