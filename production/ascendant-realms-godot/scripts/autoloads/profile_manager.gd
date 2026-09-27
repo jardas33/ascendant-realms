@@ -300,6 +300,8 @@ func _find_node(node_id: String) -> Dictionary:
 func add_item(item: Dictionary) -> void:
 	if not has_hero():
 		return
+	if String(item.get("rarity", "")) == "legendary":
+		data["stats"]["legendary_found"] = int(data["stats"].get("legendary_found", 0)) + 1
 	data["hero"]["inventory"].append(item)
 	emit_signal("profile_changed")
 	save_game()
@@ -367,6 +369,37 @@ func unequip_slot(slot: String) -> void:
 		save_game()
 
 # --- campaign / stats -----------------------------------------------------
+## Deeds (AchievementDefs): checks every track, grants new tiers (a mastery
+## point each) and returns them for the result ledger.
+func check_achievements() -> Array:
+	if not has_hero():
+		return []
+	var h: Dictionary = data["hero"]
+	if not h.has("deeds") or typeof(h["deeds"]) != TYPE_DICTIONARY:
+		h["deeds"] = {}
+	var st: Dictionary = data.get("stats", {})
+	var sg := saga()
+	var values := {
+		"victories": int(st.get("victories", 0)), "units_killed": int(st.get("units_killed", 0)),
+		"endless_best": int(sg.get("endless_best", 0)), "saga_cleared": sg["cleared"].size(),
+		"heroic_laurels": sg.get("heroic", []).size(), "legendary_found": int(st.get("legendary_found", 0)),
+	}
+	var defs = load("res://scripts/game/achievement_defs.gd")
+	var earned: Array = []
+	for t in defs.TRACKS:
+		var tier := int(h["deeds"].get(t["id"], 0))
+		while int(values.get(t["stat"], 0)) >= defs.goal(t, tier + 1):
+			tier += 1
+			h["mastery"] = int(h.get("mastery", 0)) + 1
+			h["mastery_points"] = int(h.get("mastery_points", 0)) + 1
+			earned.append({"track": String(t["name"]), "title": defs.title(t, tier)})
+		h["deeds"][t["id"]] = tier
+	if not earned.is_empty():
+		h["title"] = String(earned[earned.size() - 1]["title"])
+		emit_signal("profile_changed")
+		save_game()
+	return earned
+
 func record_battle(won: bool, kills: int, xp: float) -> void:
 	data["stats"]["battles"] = int(data["stats"].get("battles", 0)) + 1
 	data["stats"]["units_killed"] = int(data["stats"].get("units_killed", 0)) + kills

@@ -119,6 +119,22 @@ func _refresh() -> void:
 	sub.add_theme_color_override("font_color", Color(0.85, 0.85, 0.78))
 	sub.add_theme_font_size_override("font_size", 20)
 	identity.add_child(sub)
+	# Deeds: the hero's title and every track's tier (AchievementDefs).
+	var deeds: Dictionary = h.get("deeds", {})
+	var ach = load("res://scripts/game/achievement_defs.gd")
+	var parts: Array = []
+	for t in ach.TRACKS:
+		var tier := int(deeds.get(t["id"], 0))
+		var nxt: int = ach.goal(t, tier + 1)
+		parts.append("%s %d  (next %d)" % [String(t["name"]).to_upper(), tier, nxt])
+	var deeds_line := Label.new()
+	deeds_line.text = ("%s    ·    " % String(h.get("title", "")).to_upper() if String(h.get("title", "")) != "" else "") + "DEEDS  " + "  ·  ".join(parts)
+	deeds_line.add_theme_font_override("font", _body_font())
+	deeds_line.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
+	deeds_line.add_theme_font_size_override("font_size", 14)
+	deeds_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	deeds_line.custom_minimum_size = Vector2(1000, 0)
+	identity.add_child(deeds_line)
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
 	saga_line.text = "THE SAGA   %d / 39 CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]

@@ -2877,6 +2877,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
 		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
 		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
+		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)

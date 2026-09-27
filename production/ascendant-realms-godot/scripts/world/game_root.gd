@@ -288,9 +288,11 @@ func _on_game_over(victory: bool) -> void:
 	var cfg := Match.get_config()
 	if victory and cfg.get("mode", "") == "endless":
 		ProfileManager.endless_won(int(cfg.get("endless_depth", 1)))
+		ProfileManager.check_achievements()
 	if victory and cfg.get("mode", "") == "campaign":
 		if String(cfg.get("campaign_chapter", "")) != "":
 			ProfileManager.complete_chapter(String(cfg["campaign_chapter"]))
+			ProfileManager.check_achievements()
 		else:
 			ProfileManager.advance_campaign(int(cfg.get("campaign_node", 0)))
 

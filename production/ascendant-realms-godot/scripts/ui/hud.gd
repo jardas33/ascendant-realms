@@ -3771,6 +3771,10 @@ func _on_game_over(victory: bool) -> void:
 			var loot := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			loot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(loot)
+	for deed in result.get("deeds", []):
+		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
+		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(deed_line)
 	# Gear taken from the field, in rarity colour.
 	var loot_colors := {"common": Color(0.8, 0.8, 0.8), "uncommon": Color(0.45, 0.9, 0.45), "rare": Color(0.45, 0.65, 1.0), "epic": Color(0.75, 0.5, 1.0), "legendary": Color(1.0, 0.75, 0.3)}
 	for it in result.get("loot", []):
