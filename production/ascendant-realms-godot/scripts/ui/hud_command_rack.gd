@@ -62,9 +62,14 @@ func _draw() -> void:
 			[Rect2(w - 17.0, h - 17.0, 17.0, 17.0), Rect2(tex.x - corner_w, tex.y - corner_h, corner_w, corner_h)],
 		]:
 			draw_texture_rect_region(_forged_trim, segment[0], segment[1])
-	# Cross-cut grooves visually connect the four controls as a single machine.
-	draw_line(Vector2(w * 0.5, 10), Vector2(w * 0.5, h - 10), Color(0.41, 0.43, 0.38, 0.25), 1.4, true)
-	draw_line(Vector2(10, h * 0.5), Vector2(w - 10, h * 0.5), Color(0.42, 0.43, 0.37, 0.22), 1.2, true)
+	# One recessed cross-joint defines four controls. The dark cut provides
+	# separation while its hairline catches light without becoming four frames.
+	draw_line(Vector2(w * 0.5, 11), Vector2(w * 0.5, h - 11), Color(0.008, 0.015, 0.017, 0.83), 3.0, true)
+	draw_line(Vector2(w * 0.5 - 1.0, 12), Vector2(w * 0.5 - 1.0, h - 12), Color(accent.r, accent.g, accent.b, 0.25), 1.0, true)
+	draw_line(Vector2(11, h * 0.5), Vector2(w - 11, h * 0.5), Color(0.008, 0.015, 0.017, 0.83), 3.0, true)
+	draw_line(Vector2(12, h * 0.5 - 1.0), Vector2(w - 12, h * 0.5 - 1.0), Color(accent.r, accent.g, accent.b, 0.23), 1.0, true)
+	draw_circle(Vector2(w * 0.5, h * 0.5), 3.1, Color(0.025, 0.029, 0.027, 0.94))
+	draw_circle(Vector2(w * 0.5, h * 0.5), 1.4, Color(accent.r, accent.g, accent.b, 0.48))
 	for pin in [Vector2(10, 13), Vector2(w - 11, 13), Vector2(11, h - 11), Vector2(w - 11, h - 11)]:
 		draw_circle(pin, 2.0, Color(0.73, 0.58, 0.35, 0.46))
 		draw_circle(pin, 0.9, Color(0.03, 0.04, 0.04, 0.96))

@@ -11,11 +11,14 @@ uniform sampler2D tex_meadow : source_color, filter_linear_mipmap, repeat_enable
 uniform sampler2D tex_dirt : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_rock : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_snow : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D tex_volcanic : source_color, filter_linear_mipmap, repeat_enable;
 
 uniform float tile_grass = 0.14;
 uniform float tile_dirt = 0.10;
 uniform float tile_rock = 0.09;
 uniform float tile_snow = 0.016;
+uniform float tile_volcanic = 0.032;
+uniform float volcanic_surface = 0.0;
 
 // R19 tactical readability grade.  These controls deliberately change only
 // the material presentation of the existing flat ground mesh; the playable
@@ -137,6 +140,12 @@ float crack_dist(vec2 p) {
 	return d2 - d1;
 }
 
+// Mirror an authored tile at each edge so no source-image seam appears on
+// large volcanic fields; the second rotated sample hides the reflection.
+vec2 mirrored_uv(vec2 uv) {
+	return 1.0 - abs(fract(uv) * 2.0 - 1.0);
+}
+
 // distance from point p to segment a-b (all in XZ)
 float seg_dist(vec2 p, vec2 a, vec2 b) {
 	vec2 ab = b - a;
@@ -170,21 +179,32 @@ void fragment() {
 	// a visible grid across the battlefield.
 	float tile_mix = smoothstep(0.3, 0.7, fbm2(wxz * 0.021 + 7.0));
 	mat2 rot = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
-	vec3 grass_a = mix(texture(tex_grass, wxz * tile_grass * 0.42).rgb,
-		texture(tex_grass, rot * wxz * tile_grass * 0.29 + 0.37).rgb, tile_mix);
-	vec3 grass_b = mix(texture(tex_meadow, wxz * tile_grass * 0.35).rgb,
-		texture(tex_meadow, rot * wxz * tile_grass * 0.23 + 0.61).rgb, 1.0 - tile_mix);
-	float meadow_m = smoothstep(0.35, 0.65, fbm2(wxz * 0.012));
-	vec3 ground = mix(grass_a, grass_b, meadow_m);
+	vec3 ground;
+	if (volcanic_surface > 0.5) {
+		vec3 basalt_a = texture(tex_volcanic, mirrored_uv(wxz * tile_volcanic)).rgb;
+		vec3 basalt_b = texture(tex_volcanic, mirrored_uv(rot * wxz * tile_volcanic * 0.73 + 0.37)).rgb;
+		ground = mix(basalt_a, basalt_b, 0.10 + 0.12 * tile_mix);
+	} else {
+		vec3 grass_a = mix(texture(tex_grass, wxz * tile_grass * 0.42).rgb,
+			texture(tex_grass, rot * wxz * tile_grass * 0.29 + 0.37).rgb, tile_mix);
+		vec3 grass_b = mix(texture(tex_meadow, wxz * tile_grass * 0.35).rgb,
+			texture(tex_meadow, rot * wxz * tile_grass * 0.23 + 0.61).rgb, 1.0 - tile_mix);
+		float meadow_m = smoothstep(0.35, 0.65, fbm2(wxz * 0.012));
+		ground = mix(grass_a, grass_b, meadow_m);
+	}
 	ground = mix(ground_base, ground, clamp(surface_detail, 0.0, 1.0));
 
 	// dry-earth clearings (dirt_bias pushes toward a sandy/parched biome)
-	vec3 dirt = texture(tex_dirt, wxz * tile_dirt * 0.55).rgb;
+	vec3 dirt = volcanic_surface > 0.5
+		? texture(tex_volcanic, mirrored_uv(wxz * tile_volcanic * 0.62 + 0.23)).rgb * vec3(1.28, 1.04, 0.86)
+		: texture(tex_dirt, wxz * tile_dirt * 0.55).rgb;
 	float dirt_m = clamp(smoothstep(0.66, 0.82, fbm(wxz * 0.017 + 60.0)) + dirt_bias, 0.0, 1.0);
 	ground = mix(ground, dirt, dirt_m * 0.85);
 
 	// scattered rocky ground where a second noise field peaks (rock_bias -> stony biome)
-	vec3 rock = texture(tex_rock, wxz * tile_rock * 0.52).rgb;
+	vec3 rock = volcanic_surface > 0.5
+		? texture(tex_volcanic, mirrored_uv(rot * wxz * tile_volcanic * 1.09 + 0.61)).rgb * vec3(0.89, 0.94, 1.02)
+		: texture(tex_rock, wxz * tile_rock * 0.52).rgb;
 	float rock_m = clamp(smoothstep(0.62, 0.80, fbm(wxz * 0.02 + 21.0)) + rock_bias, 0.0, 1.0);
 	ground = mix(ground, rock, rock_m);
 
@@ -196,7 +216,7 @@ void fragment() {
 	// wobble the road edge with noise so it isn't a clean stripe
 	float wob = (fbm(wxz * 0.08) - 0.5) * 3.0;
 	float road = 1.0 - smoothstep(path_width - path_feather, path_width + wob, pd);
-	vec3 road_col = mix(road_base, texture(tex_dirt, wxz * tile_dirt * 0.62).rgb, clamp(road_detail, 0.0, 1.0));
+	vec3 road_col = mix(road_base, volcanic_surface > 0.5 ? dirt : texture(tex_dirt, wxz * tile_dirt * 0.62).rgb, clamp(road_detail, 0.0, 1.0));
 	ground = mix(ground, road_col, clamp(road, 0.0, 1.0));
 	// A low-contrast worn edge makes routes legible without creating a
 	// gameplay-zone outline or a floating strip.

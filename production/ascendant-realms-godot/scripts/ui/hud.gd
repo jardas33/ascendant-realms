@@ -88,6 +88,12 @@ const LIORAEN_BUILD_ART := {
 	"lioraen_bloom_spire": "res://assets/ui/construction_art/lioraen_r1/bloom_spire.png",
 }
 const TIER_NAMES := {1: "Age I", 2: "Age II", 3: "Age III"}
+const UNIT_ROLE_FOOTERS := {
+	"caster": "CASTER",
+	"flanker": "FLANKER",
+	"ranged": "RANGED",
+	"siege": "SIEGE",
+}
 
 # --- refs ---
 var world = null
@@ -2210,12 +2216,12 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	else:
 		portrait = _mk_icon(FRAME_PORTRAIT, 150)
 		portrait_stack.add_child(portrait)
-	var role_word := "WORKER" if u.is_worker else "WARRIOR"
+	var role_word := "WORKER" if u.is_worker else String(UNIT_ROLE_FOOTERS.get(String(u.def.get("role", "")), "WARRIOR"))
 	if String(u.unit_id) == "lioraen_thorn_ranger":
 		role_word = "RANGER"
 	if u.is_hero:
 		var hero_race := String(u.def.get("race", ""))
-		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else "HERO")
+		role_word = "THANE" if hero_race == "barrosan" else ("WARDEN" if hero_race == "lioraen" else ("BINDER" if hero_race == "vorthak" else "HERO"))
 	var portrait_footer := _mk_title_label(role_word, 12, Color(0.96, 0.83, 0.58))
 	portrait_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_footer)

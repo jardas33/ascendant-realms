@@ -995,20 +995,33 @@ func _build_attack_range_ring() -> void:
 		return
 	_attack_range_ring = MeshInstance3D.new()
 	_attack_range_ring.name = "UnitAttackRange"
-	var torus := TorusMesh.new()
-	torus.inner_radius = atk_range * 0.985
-	torus.outer_radius = atk_range * 1.015
-	torus.rings = 64
-	torus.ring_segments = 8
-	_attack_range_ring.mesh = torus
+	# A selected unit needs to reveal its exact reach, but the former emissive
+	# half-metre-wide torus dominated the entire RTS view at hero range. A thin
+	# engraved dash track keeps the radius truthful without fencing in the map.
+	var dash_count := clampi(int(ceil(atk_range * 2.8)), 20, 56)
+	var line_width := clampf(atk_range * 0.010, 0.05, 0.15)
+	var inner_radius := atk_range - line_width * 0.5
+	var outer_radius := atk_range + line_width * 0.5
+	var mesh_builder := SurfaceTool.new()
+	mesh_builder.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for dash in dash_count:
+		var start_angle := TAU * float(dash) / float(dash_count)
+		var end_angle := TAU * (float(dash) + 0.55) / float(dash_count)
+		var inner_start := Vector3(cos(start_angle) * inner_radius, 0.0, sin(start_angle) * inner_radius)
+		var inner_end := Vector3(cos(end_angle) * inner_radius, 0.0, sin(end_angle) * inner_radius)
+		var outer_start := Vector3(cos(start_angle) * outer_radius, 0.0, sin(start_angle) * outer_radius)
+		var outer_end := Vector3(cos(end_angle) * outer_radius, 0.0, sin(end_angle) * outer_radius)
+		for vertex in [inner_start, inner_end, outer_end, inner_start, outer_end, outer_start]:
+			mesh_builder.set_normal(Vector3.UP)
+			mesh_builder.add_vertex(vertex)
+	_attack_range_ring.mesh = mesh_builder.commit()
 	var mat := StandardMaterial3D.new()
 	var team_color: Color = commander.color if commander else Color.WHITE
-	mat.albedo_color = Color(team_color.r, team_color.g, team_color.b, 0.26)
-	mat.emission_enabled = true
-	mat.emission = team_color
-	mat.emission_energy_multiplier = 1.25
+	var muted_color := team_color.lerp(Color(0.72, 0.76, 0.72), 0.48)
+	mat.albedo_color = Color(muted_color.r, muted_color.g, muted_color.b, 0.58)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_attack_range_ring.material_override = mat
 	_attack_range_ring.position.y = 0.08
 	_attack_range_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

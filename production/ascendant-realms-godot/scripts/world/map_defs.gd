@@ -251,7 +251,7 @@ static func theme(name: String) -> Dictionary:
 		"volcanic": {
 			# Presentation-only contrast grade: retain volcanic warmth while
 			# separating terrain, structures, units, and resource silhouettes.
-			"ground_tint": Color(0.68, 0.52, 0.50), "dirt_bias": 0.14, "rock_bias": 0.42, "snow": 0.0,
+			"ground_tint": Color(1.25, 1.23, 1.24), "dirt_bias": 0.08, "rock_bias": 0.28, "snow": 0.0,
 			"rock_tint": Color(0.38, 0.34, 0.34),
 			"fog_color": Color(0.44, 0.34, 0.34), "fog_density": 0.00094,
 			"sun_color": Color(1.0, 0.78, 0.66), "sun_energy": 1.05, "ambient_energy": 0.55,
