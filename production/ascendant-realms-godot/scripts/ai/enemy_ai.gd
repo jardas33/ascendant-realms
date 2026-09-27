@@ -724,8 +724,11 @@ func _army_size() -> int:
 	return n
 
 func _manage_offense() -> void:
+	_press_the_siege()
 	var size := _army_size()
-	var needed := _army_attack_size + _wave_number * 2
+	# Waves grow a little, but not without bound: the old +2 per wave soon
+	# asked for more troops than the AI could keep alive, so it stopped attacking.
+	var needed := _army_attack_size + mini(_wave_number, 3) * 2
 	if size >= needed and _attack_timer > 8.0:
 		_attack_timer = 0.0
 		_wave_number += 1
@@ -736,6 +739,33 @@ func _manage_offense() -> void:
 			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
 				if u.state == u.State.IDLE and u.global_position.distance_to(_rally) > 12.0:
 					u.command_move(_rally)
+
+## Soldiers that attack-moved to an enemy base went idle on arrival and
+## stood beside buildings without hitting them, so matches never ended.
+## Idle soldiers near a hostile building now attack the nearest one.
+func _press_the_siege() -> void:
+	var buildings: Array = []
+	for b in world.all_buildings():
+		# Unbuilt sites count too: a lone construction site kept a beaten
+		# opponent alive under conquest while the attackers ignored it.
+		if is_instance_valid(b) and not b.is_dead and b.team != commander.team:
+			buildings.append(b)
+	if buildings.is_empty():
+		return
+	for u in commander.units:
+		if not is_instance_valid(u) or u.is_dead or u.is_worker or u.state != u.State.IDLE:
+			continue
+		if u.global_position.distance_to(_base_pos) < 35.0:
+			continue
+		var best = null
+		var best_d := 30.0
+		for b in buildings:
+			var d: float = u.global_position.distance_to(b.global_position)
+			if d < best_d:
+				best_d = d
+				best = b
+		if best:
+			u.command_attack(best)
 
 func _launch_attack() -> void:
 	var target := _pick_attack_target()
@@ -757,7 +787,7 @@ func _pick_attack_target() -> Vector3:
 	var best := Vector3.ZERO
 	var best_d := INF
 	for b in world.all_buildings():
-		if not is_instance_valid(b) or b.is_dead or not b.is_built or b.team == commander.team:
+		if not is_instance_valid(b) or b.is_dead or b.team == commander.team:
 			continue
 		var d = _base_pos.distance_squared_to(b.global_position)
 		if d < best_d:

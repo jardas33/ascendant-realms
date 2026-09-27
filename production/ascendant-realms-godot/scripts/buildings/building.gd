@@ -1153,6 +1153,18 @@ func set_rally(pos: Vector3) -> void:
 # --------------------------------------------------------------------------
 # Combat / tower / aura
 # --------------------------------------------------------------------------
+## Dwellings keep a garden plot: each finished house adds 2 food every 4
+## seconds. Food nodes are finite and every unit costs food, so without this
+## every match ran out of food around minute eight and stalled.
+var _house_food_timer := 0.0
+
+func _house_food_tick(delta: float) -> void:
+	_house_food_timer += delta
+	if _house_food_timer >= 4.0:
+		_house_food_timer -= 4.0
+		if commander and commander.has_method("add_resources"):
+			commander.add_resources("food", 2)
+
 func _physics_process(delta: float) -> void:
 	if is_dead or (commander and commander.defeated):
 		return
@@ -1164,6 +1176,8 @@ func _physics_process(delta: float) -> void:
 			return
 		if def.has("tower_dmg"):
 			_tower_tick(delta)
+		if String(def.get("kind", "")) == "house":
+			_house_food_tick(delta)
 		if def.has("heal_aura"):
 			_aura_tick(delta)
 

@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 06:35 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 07:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -144,6 +144,18 @@ Last updated: 2026-09-27, 06:35 UTC. Claude updates this file after every pass.
 10. DONE. Campaign map screen polish with what is available now; the painted map still needs the token.
 
 - **Lioraen and Vorthak units (plan item 6):** reviewed up close; they read clearly at play zoom with team colours and silhouettes. A worthwhile upgrade needs the model rebuild, which still waits on the Hugging Face token run.
+
+## Second plan (started 2026-09-27)
+
+1. DONE. Matches now reach a result. AI-vs-AI games ran 20 minutes with no winner. Three causes, all fixed:
+   - **Food ran out for good around minute 8.** Each base had one 600-food node and every unit costs food. Food nodes now hold 1,200, and every finished house adds 2 food every 4 seconds. This applies to the player too.
+   - **Soldiers reaching an enemy base stood idle beside buildings.** Idle AI soldiers near a hostile building now attack the nearest one.
+   - **A lone construction site kept a beaten side alive**, because attackers ignored unbuilt sites. The AI now targets them too.
+   - Attack waves also stop growing after the third, so the AI keeps attacking.
+   A Hard Vorthak AI now wins a 20-minute soak at about minute 18.
+2. Player-side Vorthak and Lioraen starts on Hollowspan lack their own base dressing.
+3. Units pushing against obstacles near their own base.
+4. Frame time rose from about 17 ms to about 21 ms in today's perf probe; find out why.
 
 ## Still open
 

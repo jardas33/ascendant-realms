@@ -2259,7 +2259,9 @@ func _spawn_resources() -> void:
 		# Food had reused the timber pile; it is now a grain patch with sheaves.
 		"food": "res://assets/props/misc/resource_harvest_grain.glb",
 	}
-	var amounts := {"timber": 800, "stone": 700, "gold": 900, "food": 600}
+	# Food nodes hold more than before (600) so the opening is not starved;
+	# houses add a steady food trickle for the long game.
+	var amounts := {"timber": 800, "stone": 700, "gold": 900, "food": 1200}
 	var heights := {"timber": 1.6, "stone": 2.2, "gold": 2.6, "food": 1.5}
 	for r in map.get("resources", []):
 		var kind: String = r["kind"]
