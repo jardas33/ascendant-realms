@@ -363,8 +363,8 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	_ensure()
 	for k in 3:
 		var off := Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)) * footprint * 0.4
-		var dust := _emitter(parent, Vector3(pos.x, 0.4, pos.z) + off, _dust_process, _dust_mesh, _dust_mat, 30, 2.6)
-		dust.scale = Vector3.ONE * clampf(footprint * 0.7, 1.8, 4.0)
+		var dust := _emitter(parent, Vector3(pos.x, 0.4, pos.z) + off, _dust_process, _dust_mesh, _dust_mat, 60, 3.2)
+		dust.scale = Vector3.ONE * clampf(footprint * 1.1, 2.5, 5.5)
 		dust.visibility_aabb = AABB(Vector3(-15, -1, -15), Vector3(30, 14, 30))
 	_emitter(parent, Vector3(pos.x, 0.8, pos.z), _clod_process, _clod_mesh, null, 30, 1.2).scale = Vector3.ONE * 2.6
 	# Scorched footprint that does not fade.

@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 05:50 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-27, 06:10 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -102,6 +102,7 @@ Last updated: 2026-09-27, 05:50 UTC. Claude updates this file after every pass.
 - **Construction:** a building rises behind a moving work line, with its walls and floors going up, instead of a see-through fade.
 - **Placement preview:** it shows the real, textured building.
 - **Damaged buildings:** smoke rises from a building below 70% health, and flames break out below 40%. Both disappear when it is repaired.
+- **Collapse dust and grain (plan item 9):** the collapse dust cloud is twice as dense and larger so it reads at normal zoom, and the food site grain is a richer gold.
 - **Destroyed buildings:** they list to one side and sink into a dust cloud with thrown debris and a short camera shake, leaving a rubble heap and scorched ground for the rest of the match. Before, they just shrank into the ground.
 - **Hero battle levels:** heroes now level up during a match from kills made within 18 m of them (soldiers 12 XP, workers 6, enemy heroes 60), up to level 5 at 60/150/280/450 XP. Each level adds 10% health, heals a quarter, adds 8% damage, bursts with golden light and fires the "Hero reached level N" alert, which existed but never fired before.
 - **Veterans:** when a unit is promoted after three kills, a golden flare marks it and your promotions get an alert. Before, promotion had no visible sign at all.
@@ -137,8 +138,8 @@ Last updated: 2026-09-27, 05:50 UTC. Claude updates this file after every pass.
 5. DONE. Audio atmosphere: per-map ambience and missing sound cues, using only free or generated sound.
 6. REVIEWED. Lioraen and Vorthak units: a free material and silhouette pass. The full model rebuild still needs the Hugging Face token run.
 7. DONE. Tutorial and first-match onboarding review.
-8. Verify recent features in real play: Medium quality, Backspace jump, veteran flare.
-9. Polish known weak spots: collapse dust at normal zoom and pale grain on the food site.
+8. DONE (all working). Verify recent features in real play: Medium quality, Backspace jump, veteran flare.
+9. DONE. Polish known weak spots: collapse dust at normal zoom and pale grain on the food site.
 10. Campaign map screen polish with what is available now; the painted map still needs the token.
 
 - **Lioraen and Vorthak units (plan item 6):** reviewed up close; they read clearly at play zoom with team colours and silhouettes. A worthwhile upgrade needs the model rebuild, which still waits on the Hugging Face token run.

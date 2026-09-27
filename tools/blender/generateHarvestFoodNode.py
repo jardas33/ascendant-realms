@@ -32,8 +32,8 @@ def mat(name, col, rough=0.9):
 
 
 SOIL = mat("TilledSoil", (0.36, 0.25, 0.16))
-GRAIN = mat("RipeGrain", (0.80, 0.62, 0.28), 0.8)
-GRAIN_DARK = mat("GrainShade", (0.66, 0.48, 0.20), 0.85)
+GRAIN = mat("RipeGrain", (0.88, 0.64, 0.22), 0.8)
+GRAIN_DARK = mat("GrainShade", (0.74, 0.50, 0.16), 0.85)
 TWINE = mat("Twine", (0.45, 0.30, 0.16))
 SACK = mat("Sackcloth", (0.72, 0.62, 0.46), 0.95)
 
