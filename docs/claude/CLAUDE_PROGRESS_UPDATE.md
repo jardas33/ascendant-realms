@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29, 08:00 UTC. Claude updates this file after every pass.
+Last updated: 2026-09-29, 11:00 UTC. Claude updates this file after every pass.
 
 ## Where the work is
 
@@ -259,6 +259,14 @@ Last updated: 2026-09-29, 08:00 UTC. Claude updates this file after every pass.
   - **Save check:** a 3,000-item War Chest saves in 42 ms and loads in 36 ms (about 1 MB).
   - **Performance:** the 120-unit fight benchmark holds at about 42 fps.
   - Regression passed: all 9 tests and the saga data check. Codex had nothing new.
+- **Plan 19 (done):**
+  - **Five new side roads**, one per Act, each with a Barroso story and an epic relic: The People's Bull (the village's communal bull, stolen), The Smugglers' Path (the contrabandistas of Tourém), The Castro of Lesenho (Granitborn guardians wake), The Monastery of the Júnias (the Dominion's archive) and The Last Queimada (the witch-night fire before the final oath). The saga now has 44 chapters. The saga data check passes (44 chapters, 7 jars, 0 problems), and the story bible has a section on them.
+  - **Chapter counts** in the interface now come from the data instead of a hard-coded 39, and the saga and laurel deeds were extended to 44.
+  - **Bug fixed:** the campaign map script did not compile after plan 15 (a variable name used twice in the Endless Road window), so the campaign map could not open. No existing test opens the map. A new check (tests/claude_compileall.gd) now compiles every script and loads every menu scene, and it is part of the regression.
+  - **AI and the Lume Surge:** AI armies now race for the surge with nearby idle soldiers.
+  - **Vorthak economy trim:** the Thrall Pit gives 8 population like every other house (was 9).
+  - **Mastery respec:** a free "Reset Mastery" button on the hero sheet (skill respec already existed).
+  - Regression passed: the compile check, all 9 tests and the saga data check. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
