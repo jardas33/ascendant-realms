@@ -83,6 +83,14 @@ static func compute(hero: Dictionary) -> Dictionary:
 		for tid in tal:
 			_apply_talent(out, String(tid), int(tal[tid]))
 
+	if tal is Dictionary:
+		for syn in load("res://scripts/game/talent_defs.gd").active_synergies(tal):
+			match String(syn["id"]):
+				"undying": out["flags"]["lifesteal"] = float(out["flags"].get("lifesteal", 0.0)) + 0.05
+				"headsman": out["dmg_mult"] = float(out.get("dmg_mult", 0.0)) + 0.10
+				"warband": out["aura_dmg"] += 1.0; out["aura_armor"] += 1.0
+				"lume_tide": out["spell_power"] += 0.10
+
 	# --- Mastery (endless, no ceiling) ---
 	var ms: Dictionary = hero.get("mastery_spent", {})
 	for con in ms:
@@ -171,7 +179,7 @@ static func _apply_talent(out: Dictionary, id: String, ranks: int) -> void:
 static func power(hero: Dictionary) -> int:
 	var b := compute(hero)
 	var hero_def: Dictionary = GameData.get_unit(String(GameData.get_race(String(hero.get("race", "barrosan"))).get("hero", "")))
-	var dmg := float(hero_def.get("dmg", 30)) + float(b.get("bonus_dmg", 0))
+	var dmg := (float(hero_def.get("dmg", 30)) + float(b.get("bonus_dmg", 0))) * (1.0 + float(b.get("dmg_mult", 0.0)))
 	var hp := (float(hero_def.get("hp", 400)) + float(b.get("bonus_hp", 0))) * (1.0 + float(b.get("hp_mult", 0.0)))
 	var armor := float(hero_def.get("armor", 3)) + float(b.get("bonus_armor", 0))
 	var dps := dmg * (1.0 + float(b.get("attack_speed", 0))) / maxf(0.35, float(hero_def.get("attack_cd", 1.1)))

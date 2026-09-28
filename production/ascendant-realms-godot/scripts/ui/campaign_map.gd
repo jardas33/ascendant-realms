@@ -268,12 +268,15 @@ func _build() -> void:
 ## A book of the saga so far: each cleared chapter's briefing and the
 ## chronicle of its victory, act by act, in road order.
 ## The Endless Road: the next stage's battle, with no last stage.
-func _open_endless(chosen_depth: int = -1) -> void:
+func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
 	Sfx.play("select")
 	# Any stage reached can be replayed (for loot and bounties); first clears
 	# still pay the milestones only once.
 	var depth := ProfileManager.endless_best() + 1 if chosen_depth < 1 else clampi(chosen_depth, 1, ProfileManager.endless_best() + 1)
 	var st := EndlessDefs.stage(depth, _hero_race())
+	if weekly:
+		st = EndlessDefs.weekly(_hero_race())
+		depth = int(st["depth"])
 	var layer := Control.new()
 	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -362,6 +365,7 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	ahead.append("new enemy mutation at %d" % next_mut)
 	var road := _label("The road ahead: " + "  ·  ".join(ahead), 14, Color(0.78, 0.74, 0.62))
 	road.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	road.visible = not weekly
 	box.add_child(road)
 	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d%s" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best(), records], 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -371,10 +375,18 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	row.add_theme_constant_override("separation", 24)
 	box.add_child(row)
 	var picks: Array = [["Back", func(): layer.queue_free()]]
-	if depth > 1:
-		picks.append(["< Stage %d" % (depth - 1), func(): layer.queue_free(); _open_endless(depth - 1)])
-	if depth <= ProfileManager.endless_best():
-		picks.append(["Stage %d >" % (depth + 1), func(): layer.queue_free(); _open_endless(depth + 1)])
+	if weekly:
+		var wk := ProfileManager.endless_fastest_key("w%d" % int(st["weekly"]))
+		var wl := _label("A new road every week, the same for every player. Your fastest clear this week: %s" % ("%d:%02d" % [int(wk) / 60, int(wk) % 60] if wk > 0.0 else "none yet"), 14, Color(0.95, 0.8, 0.5))
+		wl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(wl)
+		box.move_child(wl, row.get_index())
+	else:
+		if depth > 1:
+			picks.append(["< Stage %d" % (depth - 1), func(): layer.queue_free(); _open_endless(depth - 1)])
+		if depth <= ProfileManager.endless_best():
+			picks.append(["Stage %d >" % (depth + 1), func(): layer.queue_free(); _open_endless(depth + 1)])
+		picks.append(["Road of the Week", func(): layer.queue_free(); _open_endless(-1, true)])
 	picks.append(["March On", func(): _launch_endless(st)])
 	for spec in picks:
 		var b := Button.new()
@@ -402,6 +414,8 @@ func _launch_endless(st: Dictionary) -> void:
 	cfg["endless_xp_mult"] = float(st["xp_mult"])
 	cfg["twists"] = st.get("twists", []).duplicate()
 	cfg["mood"] = String(st.get("mood", ""))
+	if st.has("weekly"):
+		cfg["endless_weekly"] = int(st["weekly"])
 	Match.set_config(cfg)
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
 

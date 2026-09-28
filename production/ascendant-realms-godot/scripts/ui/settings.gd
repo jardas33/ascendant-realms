@@ -101,6 +101,9 @@ func _build() -> void:
 	var salvage_names := ["none", "common", "uncommon", "rare"]
 	display.add_child(_option_row("Auto-salvage Loot", ["Off", "Common", "Up to Uncommon", "Up to Rare"], maxi(0, salvage_names.find(String(s.get("auto_salvage", "none")))), func(index):
 		ProfileManager.update_setting("auto_salvage", salvage_names[index])))
+	# Floating damage numbers can crowd a big melee; some players prefer them off.
+	display.add_child(_toggle_row("Show Damage Numbers", bool(s.get("damage_numbers", true)), func(on):
+		ProfileManager.update_setting("damage_numbers", on)))
 
 	var camera := _group(left, "CAMERA")
 	camera.add_child(_toggle_row("Edge Scrolling", bool(s.get("edge_scroll", true)),

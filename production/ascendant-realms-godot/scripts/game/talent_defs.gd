@@ -25,6 +25,26 @@ const TALENTS := [
 	{"id": "mentor", "name": "Mentor", "desc": "+5% battle experience per rank."},
 ]
 
+## Synergies: when both talents of a pair reach rank 3, a bonus wakes.
+const SYNERGIES := [
+	{"id": "undying", "name": "Undying Jardas", "needs": ["bloodthirst", "giants_blood"], "desc": "+5% more life drained from every blow."},
+	{"id": "headsman", "name": "Headsman", "needs": ["executioner", "swift_blade"], "desc": "+10% damage."},
+	{"id": "warband", "name": "Warband of Salto", "needs": ["warlord", "rallying_cry"], "desc": "+1 command aura damage and armour."},
+	{"id": "lume_tide", "name": "Lume Tide", "needs": ["stormcaller", "lume_well"], "desc": "+10% spell power."},
+	{"id": "watchful", "name": "Watchful Hunter", "needs": ["keen_eye", "treasure_hunter"], "desc": "+3 Fortune for battle loot."},
+]
+
+static func active_synergies(talents: Dictionary) -> Array:
+	var out: Array = []
+	for syn in SYNERGIES:
+		var ok := true
+		for need in syn["needs"]:
+			if int(talents.get(need, 0)) < 3:
+				ok = false
+		if ok:
+			out.append(syn)
+	return out
+
 static func find(id: String) -> Dictionary:
 	for t in TALENTS:
 		if String(t["id"]) == id:

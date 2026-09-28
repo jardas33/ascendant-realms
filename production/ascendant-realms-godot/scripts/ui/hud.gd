@@ -3642,6 +3642,9 @@ func _on_alert(message: String, _pos: Vector3) -> void:
 		if _map_pings.size() > 6:
 			_map_pings.pop_front()
 		last_alert_position = _pos
+	# A place with no words is a silent minimap ping.
+	if message == "":
+		return
 	_push_alert(message, Color(0.95, 0.9, 0.75))
 
 

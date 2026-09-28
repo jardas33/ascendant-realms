@@ -286,7 +286,8 @@ func _toggle_pause() -> void:
 func _on_game_over(victory: bool) -> void:
 	# handled visually by HUD; campaign progression here
 	var cfg := Match.get_config()
-	if victory and cfg.get("mode", "") == "endless":
+	# The Road of the Week pays like any stage but does not move the road on.
+	if victory and cfg.get("mode", "") == "endless" and not cfg.has("endless_weekly"):
 		ProfileManager.endless_won(int(cfg.get("endless_depth", 1)))
 		ProfileManager.check_achievements()
 	if victory and cfg.get("mode", "") == "campaign":

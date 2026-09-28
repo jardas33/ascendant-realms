@@ -440,6 +440,7 @@ func _apply_hero_stats() -> void:
 	execute_bonus = float(hs.get("execute_bonus", 0.0))
 	thorns = float(hs.get("thorns", 0.0))
 	base_dmg += float(hs.get("bonus_dmg", 0.0))
+	base_dmg *= 1.0 + float(hs.get("dmg_mult", 0.0))
 	base_armor += float(hs.get("bonus_armor", 0.0))
 	move_speed += float(hs.get("bonus_speed", 0.0))
 	vision += float(hs.get("bonus_vision", 0.0))
@@ -456,6 +457,7 @@ func _apply_hero_stats() -> void:
 	spell_power = float(hs.get("spell_power", 0.0))
 	abilities = hs.get("abilities", {}).duplicate()
 	hero_flags = hs.get("flags", {}).duplicate()
+	_show_hero_title()
 	for id in abilities:
 		ability_cd[id] = 0.0
 
@@ -1328,8 +1330,10 @@ func _update_r15_combat_presentation(delta: float) -> void:
 			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + progress * 0.80
 			_r15_damage_label.modulate.a = 1.0 - progress
 
+static var damage_numbers_on := true
+
 func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
-	if applied <= 0.0 or not is_instance_valid(_r15_damage_label):
+	if applied <= 0.0 or not is_instance_valid(_r15_damage_label) or not damage_numbers_on:
 		return
 	_r15_damage_label.text = "-%d" % maxi(1, roundi(applied))
 	_r15_damage_label.modulate = Color(1.0, 0.34, 0.24, 1.0) if killing_blow else Color(1.0, 0.82, 0.34, 1.0)
@@ -3182,6 +3186,27 @@ func set_veterancy(rank: int) -> void:
 
 ## Gold stars over a veteran's head: one per rank, a number past five.
 var _rank_badge: Label3D
+
+## The player's hero carries the title its deeds earned, over its head.
+func _show_hero_title() -> void:
+	if not is_hero or world == null or team != int(world.get("player_team")) or not ProfileManager.has_hero():
+		return
+	var title := String(ProfileManager.hero().get("title", ""))
+	if title == "":
+		return
+	var tl := Label3D.new()
+	tl.name = "HeroTitle"
+	tl.text = "%s, %s" % [String(ProfileManager.hero().get("name", "")), title]
+	tl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	tl.no_depth_test = true
+	tl.fixed_size = true
+	tl.pixel_size = 0.0008
+	tl.font_size = 20
+	tl.outline_size = 6
+	tl.modulate = Color(1.0, 0.86, 0.5)
+	tl.outline_modulate = Color(0.08, 0.04, 0.0, 0.9)
+	add_child(tl)
+	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
 
 func _update_rank_badge() -> void:
 	if _veterancy <= 0 or is_hero or is_worker:

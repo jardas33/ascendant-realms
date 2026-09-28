@@ -34,9 +34,9 @@ const EPITHETS := ["of Ash", "of Candles", "of the Wolf Moon", "of Bronze", "of 
 	"of Seven Springs", "of the Drowned Bells", "of Masks", "of Iron", "of Silver Tears"]
 
 ## A stage's full description. Depth starts at 1 and never ends.
-static func stage(depth: int, player_race: String) -> Dictionary:
+static func stage(depth: int, player_race: String, salt: int = 0) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 77_000_077 + depth * 7_919
+	rng.seed = 77_000_077 + depth * 7_919 + salt * 104_729
 	var maps: Array = []
 	for info in MapDefs.list_infos():
 		maps.append(info)
@@ -142,6 +142,20 @@ static func boss(depth: int) -> Dictionary:
 const RELIC_SLOTS := ["main_hand", "body", "head", "amulet", "ring1", "cloak", "off_hand", "feet", "hands", "ring2", "relic"]
 const RELIC_NOUNS := {"main_hand": "Blade", "body": "Mail", "head": "Helm", "amulet": "Amulet", "ring1": "Ring",
 	"cloak": "Cloak", "off_hand": "Shield", "feet": "Boots", "hands": "Gauntlets", "ring2": "Signet", "relic": "Reliquary"}
+
+## Road of the Week: one special stage per calendar week, the same for every
+## player (seeded by the week number), with its own fastest-clear record.
+## It pays like a normal stage but does not move the road forward.
+static func week_number() -> int:
+	return int(Time.get_unix_time_from_system() / 604800.0)
+
+static func weekly(player_race: String) -> Dictionary:
+	var week := week_number()
+	var depth := 10 + week % 15
+	var st := stage(depth, player_race, week)
+	st["weekly"] = week
+	st["title"] = "Road of the Week: " + String(st["title"])
+	return st
 
 ## Every fifth stage forges a relic. Its power grows with the stage forever,
 ## so the road always has something better further on.

@@ -374,11 +374,17 @@ func playable_bounds_contract() -> Dictionary:
 func visibility_grid_contract() -> Dictionary:
 	return {"cell_size": VISIBILITY_CELL_SIZE, "columns": _visibility_columns, "rows": _visibility_rows, "minimum_x": playable_min.x, "maximum_x": playable_max.x, "minimum_z": playable_min.z, "maximum_z": playable_max.z, "states": _visibility_states.duplicate()}
 
+var _no_fog_cached := -1
+
 func _player_visibility_scope_active() -> bool:
 	# Fog of war was scoped to Hollowspan while it was proven there; every
 	# battlefield uses it now, so scouting matters on all twenty maps.
 	# AI-versus-AI balance tests switch it off so both seats see alike.
-	return player_team == 0 and not bool(Match.get_config().get("no_fog", false))
+	# Read once per match: Match.get_config() copies the whole config, and
+	# this check runs for every unit every tick (it cost ~4 ms a frame).
+	if _no_fog_cached < 0:
+		_no_fog_cached = 1 if bool(Match.get_config().get("no_fog", false)) else 0
+	return player_team == 0 and _no_fog_cached == 0
 
 func _setup_player_visibility() -> void:
 	_visibility_columns = maxi(1, int(ceil((playable_max.x - playable_min.x) / VISIBILITY_CELL_SIZE)))
@@ -1975,6 +1981,7 @@ func _setup_commanders() -> void:
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
 	_apply_start_twists()
+	Unit.damage_numbers_on = bool(ProfileManager.settings().get("damage_numbers", true))
 	_m20_end(stage)
 
 ## Enemy heroes used to be bare stat blocks with no spells. They now get a
@@ -2723,6 +2730,9 @@ func _roll_battle_loot(victory: bool) -> Array:
 			hardest = String(o.get("difficulty", "normal"))
 	var ilvl := int(hero.get("level", 1)) + int(cfg.get("endless_depth", 0)) + maxi(0, CampaignDefs.index_of(String(cfg.get("campaign_chapter", "")))) / 2
 	var fortune := int(hero.get("attributes", {}).get("fortune", 0)) + 2 * int((hero.get("talents", {}) as Dictionary).get("treasure_hunter", 0))
+	for syn in load("res://scripts/game/talent_defs.gd").active_synergies(hero.get("talents", {})):
+		if String(syn["id"]) == "watchful":
+			fortune += 3
 	var seed_value := int(ProfileManager.data.get("stats", {}).get("battles", 0)) * 7919 + kills_by_player * 131 + int(match_time)
 	var items: Array = load("res://scripts/game/loot_defs.gd").roll(seed_value, ilvl, fortune, victory, hardest)
 	if _bounty_met(victory):
@@ -3154,7 +3164,39 @@ func _physics_process(delta: float) -> void:
 	if _aura_timer >= 0.4:
 		_update_command_auras()
 		_aura_timer = 0.0
+	_last_stand_timer += delta
+	if _last_stand_timer >= 20.0:
+		_last_stand_timer = 0.0
+		_point_at_last_buildings()
 	_check_victory()
+
+## Hunting the last buildings: once an enemy has no fighters left, its
+## remaining buildings are pinged on the minimap (and briefly revealed) every
+## 20 s, so a won battle never turns into a search through the fog.
+var _last_stand_timer := 0.0
+
+func _point_at_last_buildings() -> void:
+	for cmd in commanders:
+		if cmd.team == player_team or cmd.defeated:
+			continue
+		var fighters := 0
+		for u in cmd.units:
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker:
+				fighters += 1
+		if fighters > 0:
+			continue
+		var left: Array = []
+		for b in cmd.buildings:
+			if is_instance_valid(b) and not b.is_dead:
+				left.append(b)
+		if left.is_empty() or left.size() > 4:
+			continue
+		for b in left:
+			if _player_visibility_scope_active():
+				_mark_visibility_radius(b.global_position, float(b.footprint) + 4.0)
+		emit_signal("alert", "The enemy's army is broken. %d building%s still stand%s: see the minimap." % [left.size(), "" if left.size() == 1 else "s", "s" if left.size() == 1 else ""], left[0].global_position)
+		for b in left.slice(1):
+			emit_signal("alert", "", b.global_position)
 
 func _update_command_auras() -> void:
 	# reset then apply hero command auras
@@ -3285,7 +3327,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"bounty": String(bounty.get("text", "")), "bounty_won": bounty_won,
 		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
 		"talent_points": ProfileManager.talent_points() if ProfileManager.has_hero() else 0,
-		"records": ProfileManager.endless_record(int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("player_race", "")), match_time) if victory and String(Match.get_config().get("mode", "")) == "endless" else {},
+		"records": ProfileManager.endless_record(int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("player_race", "")), match_time, ("w%d" % int(Match.get_config()["endless_weekly"])) if Match.get_config().has("endless_weekly") else "") if victory and String(Match.get_config().get("mode", "")) == "endless" else {},
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)
