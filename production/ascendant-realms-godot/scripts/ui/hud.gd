@@ -288,7 +288,9 @@ func _fit_to_viewport() -> void:
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
 	# actual context while retaining a ceiling for denser production surfaces.
 	var fixed_height := _cmd_fixed.get_combined_minimum_size().y if is_instance_valid(_cmd_fixed) else 0.0
-	var command_height := minf(430.0, maxf(280.0, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0))
+	# Tall screens give the hall's train, age and caravan rows room to show.
+	var command_ceiling := clampf(viewport_size.y * 0.45, 430.0, 500.0)
+	var command_height := minf(command_ceiling, maxf(280.0, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0))
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
@@ -3499,7 +3501,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 		for kind in ["food", "timber", "stone"]:
 			var tb := Button.new()
 			tb.text = "+%d %s" % [_commander.TRADE_BATCH, String(kind).capitalize()]
-			tb.custom_minimum_size = Vector2(0, 40)
+			tb.custom_minimum_size = Vector2(0, 36)
 			tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			tb.focus_mode = Control.FOCUS_NONE
 			tb.add_theme_font_size_override("font_size", 15)
