@@ -3497,7 +3497,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 	# Caravan trade: spend a gold hoard on what the nodes no longer give.
 	if is_hq and _commander.has_method("trade_gold_for"):
 		var price: int = _commander.trade_price()
-		_add_command_section("Caravan", "BUY %d FOR %d GOLD · SELL %d FOR %d" % [_commander.TRADE_BATCH, price, _commander.SELL_BATCH, _commander.SELL_GOLD])
+		_add_command_section("Caravan", "%d GOLD PER %d" % [price, _commander.TRADE_BATCH])
 		var trade_row := HBoxContainer.new()
 		trade_row.add_theme_constant_override("separation", 6)
 		_cmd_body.add_child(trade_row)
