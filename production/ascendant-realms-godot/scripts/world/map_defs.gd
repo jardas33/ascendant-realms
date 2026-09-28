@@ -109,7 +109,27 @@ static func _assemble(s: Dictionary) -> Dictionary:
 	}
 	if s.get("bridge", false) and m["water"].get("enabled", false):
 		m["bridge"] = {"pos": Vector3(0, 0, 52), "model": BRIDGE}
+	if m["water"].get("enabled", false):
+		m["veins"] = _veins_off_water(m["veins"], m["overview"])
 	return m
+
+## Keep veins on dry ground: a vein in the river or the bay could never hold
+## an outpost. Crossing rivers push them to the nearer bank; the bay pushes
+## them south onto the shore.
+static func _veins_off_water(veins: Array, ov: Dictionary) -> Array:
+	var wz := float(ov.get("water_center_z", 52.0))
+	var ww := float(ov.get("water_width", 22.0))
+	for v in veins:
+		var p: Vector3 = v["pos"]
+		if str(ov.get("water_axis", "")) == "crossing":
+			var edge := ww * 0.5 + 9.0
+			if absf(p.z - wz) < edge:
+				p.z = wz - edge if p.z < wz else wz + edge
+		else:
+			# The bay is the northern shore strip beyond wz - ww/2.
+			p.z = minf(p.z, wz - ww * 0.5 - 9.0)
+		v["pos"] = p
+	return veins
 
 static func _overview_roads(starts: Array, layout: String) -> Array:
 	# Presentation-only polylines derived from the same starts used by the
