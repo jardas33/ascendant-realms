@@ -305,6 +305,16 @@ func _refresh() -> void:
 	build_panel.add_child(_stat_line("Max Mana", "%d" % int(b.get("max_mana", 0))))
 	build_panel.add_child(_stat_line("Abilities Unlocked", str((b.get("abilities", {}) as Dictionary).size())))
 	# One number to watch grow: damage output times survivability.
+	# The forge choices, which now carry real effects.
+	var forge_bits: Array = [String(h.get("archetype", "Warrior"))]
+	if String(h.get("strength", "")) != "":
+		forge_bits.append("strong: " + String(h["strength"]))
+	if String(h.get("weakness", "")) != "":
+		forge_bits.append("weak: " + String(h["weakness"]))
+	var forge_line := _stat_line("Forged as", ", ".join(forge_bits))
+	forge_line.tooltip_text = "Warrior +60 health, +3 damage · Commander stronger, wider aura · Ranger attack speed, sight, speed · Mage +40 mana, +10% spell power · Summoner healing, mana regeneration.
+Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour · Frail -8% health · Slow -0.2 speed · Impatient -15% mana regeneration · Reckless -1 armour."
+	build_panel.add_child(forge_line)
 	var power := HeroProgression.power(h)
 	build_panel.add_child(_stat_line("Hero Power", str(power)))
 	# Talent and power effects that have no stat line of their own.

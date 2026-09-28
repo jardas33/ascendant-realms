@@ -71,8 +71,30 @@ func setup() -> void:
 
 	_resume_button = _make_btn("Resume", func(): emit_signal("resume_requested"))
 	vb.add_child(_resume_button)
-	_music_button = _make_btn("Music  ·  + / -", func(): _cycle_music())
-	vb.add_child(_music_button)
+	# Real volume sliders (the old button cycled the music in blind steps).
+	for spec in [["Music", "music_vol", "Music", 0.3], ["Sound", "sfx_vol", "SFX", 0.8]]:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 12)
+		var lab := Label.new()
+		lab.text = String(spec[0])
+		lab.custom_minimum_size = Vector2(90, 0)
+		lab.add_theme_color_override("font_color", Color(0.9, 0.86, 0.76))
+		row.add_child(lab)
+		var sl := HSlider.new()
+		sl.min_value = 0.0
+		sl.max_value = 1.0
+		sl.step = 0.05
+		sl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		sl.custom_minimum_size = Vector2(260, 24)
+		sl.focus_mode = Control.FOCUS_NONE
+		sl.value = float(ProfileManager.settings().get(String(spec[1]), float(spec[3])))
+		var key := String(spec[1])
+		var bus := String(spec[2])
+		sl.value_changed.connect(func(v):
+			ProfileManager.update_setting(key, v)
+			AudioManager.set_bus_volume(bus, v))
+		row.add_child(sl)
+		vb.add_child(row)
 
 	vb.add_child(_make_section_header("CONTROLS"))
 	var controls_panel := PanelContainer.new()
@@ -191,6 +213,9 @@ var _chapter_line: Label
 func _update_chapter_line() -> void:
 	var defs = load("res://scripts/game/campaign_defs.gd")
 	var chapter: Dictionary = defs.find(String(Match.get_config().get("campaign_chapter", "")))
+	# Endless Road stages name their stage and title the same way.
+	if chapter.is_empty() and String(Match.get_config().get("mode", "")) == "endless":
+		chapter = {"title": "Endless Road, stage %d: %s" % [int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("endless_title", ""))], "survive": 0}
 	if chapter.is_empty():
 		if is_instance_valid(_chapter_line):
 			_chapter_line.visible = false

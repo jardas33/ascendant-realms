@@ -494,6 +494,11 @@ func _apply_race_passive() -> void:
 			hp = max_hp
 		"vorthak":                        # Rift Toll — thralls move a touch faster
 			move_speed *= 1.06
+		"lioraen":                        # Grove-blessed — sturdier than they look
+			# 2-7 in the vein-economy round robin; the Groveheart aura alone
+			# did not carry them away from home.
+			max_hp *= 1.07
+			hp = max_hp
 		_:
 			pass
 

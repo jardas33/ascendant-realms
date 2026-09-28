@@ -139,6 +139,7 @@ func _build_steps() -> void:
 		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a glowing resource pile (timber, stone or gold) to send them gathering.", "success": "A worker extracts a real resource from the node.", "check": "gather"},
 		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "The placed structure finishes construction.", "check": "build"},
 		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "A newly queued military unit completes training.", "check": "train"},
+		{"id": "vein", "title": "Claim a Vein", "text": "Veins glow between the bases. Select Workers and right-click a vein's ring to raise an outpost. When it is built, right-click it with Workers: they go inside and gather in safety.", "success": "You claimed a vein.", "check": "vein"},
 		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and unlock abilities on the Hero screen between fights.", "success": "Your selected hero receives a real move order and changes position.", "check": "hero"},
 		{"id": "combat", "title": "Attack the Enemy", "text": "Press J, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
 		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Your units enter the site, capture progress completes, and the Lume becomes yours.", "check": "final"},
@@ -243,6 +244,11 @@ func _check_condition(cond: String) -> bool:
 			return _hero_command_seen
 		"combat":
 			return world.combat_damage_events.size() > _combat_damage_baseline
+		"vein":
+			for b in world.player_commander.buildings:
+				if is_instance_valid(b) and bool(b.def.get("vein_outpost", false)):
+					return true
+			return false
 		"final":
 			return is_instance_valid(_lume_point) and int(_lume_point.owner_team) == int(world.player_commander.team)
 	return false

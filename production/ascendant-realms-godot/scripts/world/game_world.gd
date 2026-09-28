@@ -3033,6 +3033,7 @@ func _apply_mutations(u) -> void:
 var twist_damage_mult := 1.0
 var twist_veteran_foes := false
 var twist_gloom := false
+var twist_vein_mult := 1.0
 
 func _apply_start_twists() -> void:
 	var twists: Array = Match.get_config().get("twists", [])
@@ -3048,6 +3049,7 @@ func _apply_start_twists() -> void:
 		twist_damage_mult = 1.25
 	twist_veteran_foes = "veterans" in twists
 	twist_gloom = "gloom" in twists
+	twist_vein_mult = 1.5 if "rich_veins" in twists else 1.0
 	if twist_gloom:
 		for u in all_units():
 			if is_instance_valid(u) and u.team == player_team:

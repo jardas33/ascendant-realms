@@ -1311,7 +1311,8 @@ func outpost_output_mult() -> float:
 func outpost_rate_per_minute() -> float:
 	var vein = get_meta("vein") if has_meta("vein") else null
 	var rich := 2.0 if is_instance_valid(vein) and world and float(world.get("match_time")) < float(vein.rich_until) else 1.0
-	return float(garrison.size()) * OUTPOST_RATE * outpost_output_mult() * rich * 60.0
+	var twist := float(world.get("twist_vein_mult")) if world and world.get("twist_vein_mult") != null else 1.0
+	return float(garrison.size()) * OUTPOST_RATE * outpost_output_mult() * rich * twist * 60.0
 
 func outpost_expand_cost() -> Dictionary:
 	return {"timber": 120 * outpost_level, "stone": 80 * outpost_level, "gold": 40 * outpost_level}

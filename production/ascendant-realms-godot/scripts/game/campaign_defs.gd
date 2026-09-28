@@ -23,7 +23,7 @@ const CHAPTERS := [
 	# ------------------------------------------------------------------ ACT I
 	{"id": "1-1", "act": 0, "title": "The Spring of Seven Mouths", "map": "hollowspan",
 		"opponents": [{"race": "vorthak", "difficulty": "easy"}], "difficulty": "Easy", "unlocks": ["1-2"],
-		"briefing": "Salto, on the night of the Ascension. The Vorthak came over the pass with violet fire and chains, and you fell at the Spring of Seven Mouths with a raider's blade in your side.\n\nThen the spring blazed. You stood up with fire in your eyes, and the Lume, the living memory of the highlands, burned in your hands.\n\nThe village calls you Jardas now. Avó Brites calls you nothing at all; she only watches. Drive the raiders out of Salto before dawn.",
+		"briefing": "Salto, on the night of the Ascension. The Vorthak came over the pass with violet fire and chains, and you fell at the Spring of Seven Mouths with a raider's blade in your side.\n\nThen the spring blazed. You stood up with fire in your eyes, and the Lume, the living memory of the highlands, burned in your hands.\n\nThe village calls you Jardas now. Avó Brites calls you nothing at all; she only watches. Drive the raiders out of Salto before dawn.\n\nBeyond the walls the old veins of the valley still run with gold and grain. Raise a mine on one, send the village in to work it, and Salto will feed your war.",
 		"opening": "The spring chose you. Now show the raiders what that means.",
 		"taunts": ["Malrec: \"A farmhand? The Lume chose a farmhand?\"", "Malrec: \"Keep burning, Jardas. I know how this ends.\""],
 		"victory": "The raiders fled up the pass. By the spring, your grandmother stood very still, staring at the water where your reflection should have been."},
