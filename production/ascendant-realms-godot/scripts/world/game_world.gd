@@ -3206,7 +3206,7 @@ func _start_match() -> void:
 		var ecfg := Match.get_config()
 		get_tree().create_timer(3.0, false).timeout.connect(func():
 			if game_running:
-				emit_signal("alert", "The Endless Road, stage %d: %s" % [int(ecfg.get("endless_depth", 1)), String(ecfg.get("endless_title", ""))], Vector3.ZERO))
+				emit_signal("alert", ("The Endless Road, stage %d" % int(ecfg.get("endless_depth", 1))) + ((": " + String(ecfg.get("endless_title", ""))) if String(ecfg.get("endless_title", "")) != "" else ""), Vector3.ZERO))
 	_spawn_retinue()
 
 func get_runtime_identity_snapshot() -> Dictionary:

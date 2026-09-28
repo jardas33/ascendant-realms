@@ -215,7 +215,7 @@ func _update_chapter_line() -> void:
 	var chapter: Dictionary = defs.find(String(Match.get_config().get("campaign_chapter", "")))
 	# Endless Road stages name their stage and title the same way.
 	if chapter.is_empty() and String(Match.get_config().get("mode", "")) == "endless":
-		chapter = {"title": "Endless Road, stage %d: %s" % [int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("endless_title", ""))], "survive": 0}
+		chapter = {"title": ("Endless Road, stage %d" % int(Match.get_config().get("endless_depth", 1))) + ((": " + String(Match.get_config().get("endless_title", ""))) if String(Match.get_config().get("endless_title", "")) != "" else ""), "survive": 0}
 	if chapter.is_empty():
 		if is_instance_valid(_chapter_line):
 			_chapter_line.visible = false

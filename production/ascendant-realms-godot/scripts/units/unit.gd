@@ -469,7 +469,8 @@ func _apply_race_passive() -> void:
 		return
 	match commander.race:
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
-			base_dmg *= 1.12
+			# Was +12%: 7-1-1 in the plan 39 round robin.
+			base_dmg *= 1.08
 		"sylvan":                         # Precision — keener sight and reach
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
@@ -496,6 +497,9 @@ func _apply_race_passive() -> void:
 			hp = max_hp
 		"vorthak":                        # Rift Toll — thralls move a touch faster
 			move_speed *= 1.06
+			# 2-5-2 in the plan 39 round robin: a little more staying power.
+			max_hp *= 1.05
+			hp = max_hp
 		"lioraen":                        # Grove-blessed — sturdier than they look
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
