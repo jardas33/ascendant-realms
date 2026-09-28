@@ -66,10 +66,9 @@ class Glyph extends Control:
 		var center := Vector2(22.0, 28.0)
 		draw_circle(center, 17.0, Color(c, 0.12))
 		draw_arc(center, 17.0, 0.0, TAU, 20, Color(c, 0.7), 1.5, true)
-		if locked:
-			draw_rect(Rect2(16.0, 25.0, 12.0, 10.0), c, false, 2.0)
-			draw_arc(Vector2(22.0, 25.0), 5.0, PI, TAU, 12, c, 2.0, true)
-		elif kind == "active":
+		# Locked stars keep their kind symbol (dimmed) so the path stays readable
+		# at a glance; a small padlock badge carries the locked state.
+		if kind == "active":
 			draw_circle(center, 6.0, Color(c, 0.82))
 			draw_line(Vector2(22, 10), Vector2(22, 18), c, 2.0, true)
 			draw_line(Vector2(22, 38), Vector2(22, 46), c, 2.0, true)
@@ -83,6 +82,10 @@ class Glyph extends Control:
 		else:
 			draw_circle(center, 6.0, Color(c, 0.75))
 			draw_arc(center, 11.0, -0.6, 2.4, 12, c, 2.0, true)
+		if locked:
+			draw_circle(Vector2(36.0, 42.0), 8.0, Color(INK, 0.95))
+			draw_rect(Rect2(32.0, 42.0, 8.0, 7.0), LOCKED, false, 1.5)
+			draw_arc(Vector2(36.0, 42.0), 3.5, PI, TAU, 10, LOCKED, 1.5, true)
 
 class ConstellationCanvas extends Control:
 	var presenter: Object
@@ -346,7 +349,7 @@ func _add_node_button(n: Dictionary) -> void:
 	name_label.add_theme_font_size_override("font_size", name_size)
 	b.add_child(name_label)
 	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 15, MUTED)
-	cost_label.position = Vector2(60.0, 71.0)
+	cost_label.position = Vector2(60.0, 66.0)
 	cost_label.size = Vector2(134.0, 18.0)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(cost_label)

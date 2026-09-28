@@ -78,7 +78,7 @@ const CHAPTERS := [
 	# ----------------------------------------------------------------- ACT II
 	{"id": "2-1", "act": 1, "title": "The First Dam", "map": "sunspire_delta",
 		"opponents": [{"race": "sunspear", "difficulty": "normal"}], "difficulty": "Normal", "unlocks": ["2-2"],
-		"briefing": "Dominion engineers are surveying the river gorge below Salto. Stakes and ropes mark where the water will rise, right up to the church door.\n\nThe Aurean Dominion won the last Ascension war and never left. Scatter their surveyors before the stakes become a wall.",
+		"briefing": "Dominion engineers are surveying the river gorge below Salto. Stakes and ropes mark where the water will rise, right up to the church door.\n\nThe Aurean Dominion won the last Ascension war and never left. Scatter their surveyors before the stakes become a wall.\n\nThe Dominion wants the gorge for its mines. Every vein you hold is one their engineers cannot drown.",
 		"opening": "They are measuring our valley for a grave.",
 		"taunts": ["An engineer: \"Nothing personal. The water has to go somewhere.\"", "A centurion: \"The Regent builds for a thousand years. You will not stop it.\""],
 		"victory": "The surveyors fled, but their plans were already sealed and sent south. The first dam would be built. The question was where the water would go."},
@@ -133,7 +133,7 @@ const CHAPTERS := [
 	# ---------------------------------------------------------------- ACT III
 	{"id": "3-1", "act": 2, "title": "Boticas Cellars", "map": "ruins_of_vael",
 		"opponents": [{"race": "hollow", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-2", "3-S3"],
-		"briefing": "In the last war, the elders of Boticas buried their Lume in clay jars under the cellar floors to hide it from the invaders. They called it the Wine of the Dead.\n\nThe jars are still down there. So are the dead who guard them.",
+		"briefing": "In the last war, the elders of Boticas buried their Lume in clay jars under the cellar floors to hide it from the invaders. They called it the Wine of the Dead.\n\nThe jars are still down there. So are the dead who guard them.\n\nBoticas sits on old granite. Raise outposts on its veins and the valley's stone will pay for the digging.",
 		"opening": "Wine buried for a war nobody alive remembers.",
 		"taunts": ["The Compaña sings. This time you can hear the words, and they are your name.", "The Cross-Bearer: \"Go home. Please. Go home before you understand.\""],
 		"victory": "The cellars were empty but for broken clay and one message scratched into the wall: SEVEN JARS. ONE FOR EACH MOUTH OF THE SPRING. The jars had been scattered across the highlands, as if someone knew you would come looking."},
@@ -188,7 +188,7 @@ const CHAPTERS := [
 	# ----------------------------------------------------------------- ACT IV
 	{"id": "4-1", "act": 3, "title": "The Geira Road", "map": "highland_gauntlet",
 		"opponents": [{"race": "sunspear", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["4-2"],
-		"briefing": "The ancient road south, the Geira, is lined with milestones older than the Dominion. Each stone is a sleeping piece of Lume.\n\nWake them as you march. The Dominion will try to smash them first.",
+		"briefing": "The ancient road south, the Geira, is lined with milestones older than the Dominion. Each stone is a sleeping piece of Lume.\n\nWake them as you march. The Dominion will try to smash them first.\n\nThe Geira was built to carry gold up from the southern veins. Hold them and your war feeds itself. Lose them, and it feeds the Dominion's.",
 		"opening": "Every milestone is a memory. Wake them.",
 		"taunts": ["A legate: \"Break the stones! Every one!\"", "Leonor (far behind, on the road): \"I am still walking. I am right behind you.\""],
 		"victory": "Forty milestones burned with Lume light all the way to the horizon. The Dominion saw the road glowing from its capital."},
@@ -243,7 +243,7 @@ const CHAPTERS := [
 	# ------------------------------------------------------------------ ACT V
 	{"id": "5-1", "act": 4, "title": "The Burning Geira", "map": "emberfall_rift",
 		"opponents": [{"race": "hollow", "difficulty": "brutal"}], "difficulty": "Brutal", "unlocks": ["5-2"],
-		"briefing": "The milestones of the Geira flare like torches, and the dead walk in daylight.\n\nThe Granitborn were right. Stone forgets nothing, and the Lume is not a power. It is every person the highlands ever lost, and it wants to ascend: to become a realm, and pull the living into memory with it.\n\nThe seventy-six Jardas before you each stopped it, and each died doing it. The Ascension wars were only the living fighting over who would carry the thing that kills its carrier.",
+		"briefing": "The milestones of the Geira flare like torches, and the dead walk in daylight.\n\nThe Granitborn were right. Stone forgets nothing, and the Lume is not a power. It is every person the highlands ever lost, and it wants to ascend: to become a realm, and pull the living into memory with it.\n\nThe seventy-six Jardas before you each stopped it, and each died doing it. The Ascension wars were only the living fighting over who would carry the thing that kills its carrier.\n\nEven the veins burn violet now. When the Lume flares through them they run twice as rich, and every army on the field will come for them.",
 		"opening": "The dead are walking in the sun. It has begun.",
 		"taunts": ["The Compaña, all at once: \"Come home. Come home. Come home.\"", "Leonor: \"I am still here. I am still holding the cross.\""],
 		"victory": "The Geira burned out behind you. Every milestone pointed the same way: north, to Salto."},

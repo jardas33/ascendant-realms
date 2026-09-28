@@ -80,6 +80,14 @@ func _draw() -> void:
 	for r in map_data.get("resources", []):
 		var c: Color = KIND_COLORS.get(str(r.get("kind", "")), Color.WHITE)
 		draw_circle(to_px.call(r["pos"]), maxf(2.5, side * 0.011), c)
+	# Veins: a ringed mark in the resource's colour, where outposts can rise.
+	for v in map_data.get("veins", []):
+		var vp: Vector2 = to_px.call(v["pos"])
+		var vc: Color = KIND_COLORS.get(str(v.get("kind", "")), Color.WHITE)
+		var vr := maxf(4.0, side * 0.02)
+		draw_circle(vp, vr, Color(0.05, 0.05, 0.05, 0.55))
+		draw_arc(vp, vr, 0.0, TAU, 20, vc, maxf(1.5, side * 0.006), true)
+		draw_circle(vp, vr * 0.4, vc)
 	for cp in map_data.get("capture_points", []):
 		var p: Vector2 = to_px.call(cp["pos"])
 		var s := side * 0.022

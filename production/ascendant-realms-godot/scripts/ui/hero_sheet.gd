@@ -8,6 +8,8 @@ const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 const HERO_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 var _body: VBoxContainer
+var _scroll: ScrollContainer
+var _talent_heading: Label
 
 func _ready() -> void:
 	if ResourceLoader.exists(PRESENTATION_THEME):
@@ -43,6 +45,7 @@ func _build_static() -> void:
 	scroll.offset_bottom = -126.0
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
+	_scroll = scroll
 
 	_body = VBoxContainer.new()
 	_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -226,6 +229,16 @@ func _refresh() -> void:
 	var constellation_button := _nav_button("Skill Constellation", func(): _goto("res://scenes/ui/skill_tree.tscn"))
 	constellation_button.custom_minimum_size = Vector2(250, 46)
 	progression_row.add_child(constellation_button)
+	# Waiting talent picks sit low on the page; a header button jumps to them.
+	var picks: int = ProfileManager.talent_points()
+	if picks > 0:
+		var talent_jump := _nav_button("Choose Talent (%d)" % picks, func():
+			if is_instance_valid(_talent_heading) and is_instance_valid(_scroll):
+				_scroll.ensure_control_visible(_talent_heading)
+				_scroll.scroll_vertical += 260)
+		talent_jump.custom_minimum_size = Vector2(230, 46)
+		talent_jump.add_theme_color_override("font_color", Color(0.98, 0.84, 0.42))
+		progression_row.add_child(talent_jump)
 	identity.add_child(progression_row)
 
 	# Two progression leaves: spend attributes on the left, inspect the
@@ -351,7 +364,8 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour �
 	if tal is Dictionary:
 		for tid in tal:
 			owned.append("%s %d" % [String(TalentDefs.find(String(tid)).get("name", tid)), int(tal[tid])])
-	right_panel.add_child(_heading("TALENTS"))
+	_talent_heading = _heading("TALENTS")
+	right_panel.add_child(_talent_heading)
 	if not owned.is_empty():
 		var t_reset := Button.new()
 		_label_button(t_reset, "Reset Talents (free)", Color(0.9, 0.85, 0.7))

@@ -258,20 +258,60 @@ func _rebuild_slots() -> void:
 	open_grid.add_theme_constant_override("h_separation", 16)
 	open_grid.add_theme_constant_override("v_separation", 5)
 	_slots_box.add_child(open_grid)
+	var inv: Array = ProfileManager.hero().get("inventory", [])
 	for slot in open_slots:
-		var slot_label := Label.new()
-		slot_label.text = _pretty(slot).to_upper()
-		slot_label.custom_minimum_size = Vector2(0, 34)
-		slot_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		slot_label.add_theme_font_size_override("font_size", 16)
-		slot_label.add_theme_color_override("font_color", Color(0.80, 0.84, 0.82) if _barrosan_vault_active else Color(0.65, 0.70, 0.70))
-		if _barrosan_vault_active:
-			slot_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.94))
-			slot_label.add_theme_constant_override("outline_size", 2)
-		slot_label.tooltip_text = "%s slot is empty" % _pretty(slot)
-		open_grid.add_child(slot_label)
+		open_grid.add_child(_open_slot_tile(slot, inv))
+
+## An empty equipment slot as a framed tile: the slot name, and how many
+## relics in the chest could fill it. Clicking it filters the list to them.
+func _open_slot_tile(slot: String, inv: Array) -> Button:
+	var fits := 0
+	for it in inv:
+		var sl := String(it.get("slot", ""))
+		if sl == slot or (slot.begins_with("ring") and sl.begins_with("ring")):
+			fits += 1
+	var tile := Button.new()
+	tile.name = "OpenSlot_%s" % slot
+	tile.focus_mode = Control.FOCUS_NONE
+	tile.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	tile.custom_minimum_size = Vector2(0, 52)
+	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var ready_col := Color(0.92, 0.74, 0.40)
+	for state in ["normal", "hover", "pressed"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.05, 0.07, 0.09, 0.78) if state == "normal" else Color(0.12, 0.13, 0.13, 0.9)
+		style.border_color = Color(ready_col, 0.62 if state != "normal" else (0.42 if fits > 0 else 0.16))
+		style.set_border_width_all(1)
+		style.set_corner_radius_all(3)
+		style.content_margin_left = 12
+		tile.add_theme_stylebox_override(state, style)
+	var stack := VBoxContainer.new()
+	stack.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stack.offset_left = 12
+	stack.alignment = BoxContainer.ALIGNMENT_CENTER
+	stack.add_theme_constant_override("separation", 0)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tile.add_child(stack)
+	var name_label := Label.new()
+	name_label.text = _pretty(slot).to_upper()
+	name_label.add_theme_font_size_override("font_size", 15)
+	name_label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.84) if fits > 0 else Color(0.62, 0.66, 0.66))
+	name_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.9))
+	name_label.add_theme_constant_override("outline_size", 2)
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(name_label)
+	var hint := Label.new()
+	hint.text = ("%d in the chest" % fits) if fits > 0 else "Empty"
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", ready_col if fits > 0 else Color(0.5, 0.52, 0.52))
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(hint)
+	tile.tooltip_text = ("Show the %d relics that fit the %s slot" % [fits, _pretty(slot)]) if fits > 0 else "%s slot is empty. Win battles to find relics for it." % _pretty(slot)
+	tile.pressed.connect(func():
+		Sfx.play("select")
+		_filter_slot = slot if fits > 0 and not slot.begins_with("ring") else ("ring1" if slot.begins_with("ring") and fits > 0 else "all")
+		_rebuild_items())
+	return tile
 
 func _equipped_card(slot: String, item: Dictionary) -> Button:
 	var accent: Color = RARITY_COLORS.get(str(item.get("rarity", "common")), Color.WHITE)
@@ -438,6 +478,22 @@ func _item_card(item: Dictionary) -> Button:
 	meta_label.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
 	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	labels.add_child(meta_label)
+	# The relic's strongest stats at a glance, so the list can be scanned
+	# without opening every card. An empty matching slot is called out.
+	var stat_bits: Array = []
+	var stats: Dictionary = item.get("stats", {})
+	for k in stats:
+		if stat_bits.size() >= 3:
+			break
+		stat_bits.append(_short_stat(str(k), float(stats[k])))
+	if not stat_bits.is_empty():
+		var stat_label := Label.new()
+		stat_label.text = "  ·  ".join(stat_bits)
+		stat_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		stat_label.add_theme_font_size_override("font_size", 13)
+		stat_label.add_theme_color_override("font_color", Color(0.62, 0.86, 0.6))
+		stat_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		labels.add_child(stat_label)
 	var inspect_label := Label.new()
 	inspect_label.text = "INSPECT  ›"
 	inspect_label.add_theme_font_size_override("font_size", 13)
@@ -447,6 +503,16 @@ func _item_card(item: Dictionary) -> Button:
 	content.add_child(inspect_label)
 	card.pressed.connect(_show_item_detail.bind(item))
 	return card
+
+## "+19 Dmg", "+7% Attack Speed", "+3.1 Mana Regen": whole numbers stay
+## whole, small fractions of a multiplier read as percentages.
+func _short_stat(key: String, value: float) -> String:
+	var name := _pretty(key)
+	if absf(value) < 1.0 and key.contains("speed"):
+		return "+%d%% %s" % [int(round(value * 100.0)), name]
+	if is_equal_approx(value, round(value)):
+		return "+%d %s" % [int(round(value)), name]
+	return "+%.1f %s" % [value, name]
 
 func _show_item_detail(item: Dictionary) -> void:
 	Sfx.play("select")

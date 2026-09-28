@@ -477,7 +477,9 @@ func _apply_race_passive() -> void:
 			if atk_range > 0.0:
 				atk_range += 1.2
 		"karak":                          # Stone Resolve — armored and hardy
+			# 2 wins in the plan 34 round robin: a touch more bite.
 			base_armor += 1.0
+			base_dmg *= 1.04
 			max_hp *= 1.08
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
@@ -487,7 +489,7 @@ func _apply_race_passive() -> void:
 			move_speed *= 1.08
 			base_dmg *= 1.05
 		"hollow":                         # Undying — every warrior drains life on hit
-			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.08)
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.11)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			base_dmg *= 1.12
 			max_hp *= 1.10
@@ -497,7 +499,7 @@ func _apply_race_passive() -> void:
 		"lioraen":                        # Grove-blessed — sturdier than they look
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
-			max_hp *= 1.07
+			max_hp *= 1.10
 			hp = max_hp
 		_:
 			pass

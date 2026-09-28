@@ -85,7 +85,9 @@ func _apply_personality() -> void:
 			_army_attack_size += 2
 			_worker_target += 2
 		"frostborn":
+			# Costly revellers: a fuller economy keeps the big hitters coming.
 			_army_attack_size += 1
+			_worker_target += 2
 		"barrosan":
 			# The clans strike early with cheap levies before the enemy masses.
 			_army_attack_size = maxi(5, _army_attack_size - 2)
