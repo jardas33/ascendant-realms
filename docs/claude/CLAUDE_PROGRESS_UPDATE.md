@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 08:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 10:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -373,6 +373,14 @@ Last updated: 2026-09-28, 08:30 UTC. Claude updates this file after every pass. 
   - **Campaign map:** each Act's subtitle shows chapters cleared, Wine of the Dead jars found and side roads done.
   - **Benchmark:** the five-run median is 22.4 ms in the 120-unit fight (about 45 fps).
   - Two list items were dropped: the War Chest's compare-to-equipped (with Hero Power) already covers item comparison, and the Endless Road already opens on the next stage.
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 32 (done):**
+  - **AI stalemates:** after 15 minutes the home guard joins the all-in, so long even games end.
+  - **Balance matrix (45 matches):** eight factions now sit between 3 and 6 wins (Vorthak 6-1-2, Frostborn/Sylvan/Sunspear/Wyldkin/Grimtusk 5 wins, Lioraen 4, Hollow 3). Karak (1-7) and Barrosan (0-5-4) still trail. More tuning waits for the resource redesign below, which changes every faction's economy.
+  - **Endless Road milestone crowns:** the player's banners gain a crown: silver from stage 50, gold from 100, Lume-violet from 200.
+  - **Hero sheet record line** adds Elites slain, Road Tyrants slain and this week's Road of the Week best.
+  - **Main menu:** once the Seventy-Seventh Oath is won, the saga button reads "The Saga Is Told · Revisit".
+  - **Resource redesign (answering Emanuel's review ask):** `docs/claude/RESOURCE_DESIGN.md`. Today every start has identical fields next to the hall, so nothing pulls players across the map, food alone decides many matches, and raids only kill helpless workers. The plan, in the spirit of Warlords Battlecry: claimable veins between the bases (gold, granite, grove and terraced farm). A worker raises an outpost, workers inside gather safely, and outposts upgrade twice (more slots, more output, a watch-fire). Outposts can be raided and taken, rich veins flare mid-battle, income shows as "+N" popups and per-minute rates, and the AI claims and fights over veins too. Building it starts in plan 33.
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
