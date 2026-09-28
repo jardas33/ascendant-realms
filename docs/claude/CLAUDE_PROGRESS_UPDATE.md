@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 04:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 06:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -350,6 +350,15 @@ Last updated: 2026-09-28, 04:00 UTC. Claude updates this file after every pass. 
   - **Two new deed tracks:** Road Tyrants slain and Elites slain, with titles and endless tiers.
   - **Endless Road window:** a "Know your foe" line with each enemy faction's way of war.
   - **Testing:** AI-versus-AI balance tests switch fog off so both seats are equal (fog now covers every map).
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 29 (done):**
+  - **Hunting the last buildings:** once an enemy has no fighters left, its remaining buildings (up to four) are pinged on the minimap and briefly revealed every 20 s, so a won battle never becomes a search through the fog.
+  - **Road of the Week:** one special Endless Road stage per calendar week, the same for every player (seeded by the week number), with its own fastest-clear record. It pays like a normal stage but does not move the road forward. It opens from a new button in the Endless Road window.
+  - **Hero title:** the player's hero shows the title its deeds earned over its head in battle (for example, "Aster, Thousand-Slayer").
+  - **Talent synergies:** five pairs each wake a bonus when both talents reach rank 3. Undying Jardas (Bloodthirst + Giant's Blood), Headsman (Executioner + Swift Blade), Warband of Salto (Warlord + Rallying Cry), Lume Tide (Stormcaller + Lume Well) and Watchful Hunter (Keen Eye + Treasure Hunter). They're shown on the hero sheet.
+  - **Settings:** a Show Damage Numbers toggle.
+  - **Benchmark:** a new five-run median benchmark shows no slowdown since plan 27 (26.0 ms against 26.2 ms). An earlier scare was a first-run-after-import effect.
+  - **Campaign check:** an AI stand-in playing Barrosan loses Act I chapters 3 to 6 even without fog, which matches Barrosan's weak AI record rather than a campaign bug. Barrosan balance continues in plan 30.
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
