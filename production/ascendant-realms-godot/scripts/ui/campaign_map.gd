@@ -525,6 +525,39 @@ func _act_reached(a: int) -> bool:
 	return false
 
 # --------------------------------------------------------------------------
+## "Cleared 3/9 · jars 1/2 · side roads 1/3" for an Act, from the saga state.
+func _act_progress_text(a: int) -> String:
+	var sg := ProfileManager.saga()
+	var total := 0
+	var cleared := 0
+	var jars := 0
+	var jars_found := 0
+	var sides := 0
+	var sides_done := 0
+	for ch in CampaignDefs.CHAPTERS:
+		if int(ch.get("act", -1)) != a:
+			continue
+		total += 1
+		var done: bool = String(ch["id"]) in sg.get("cleared", [])
+		if done:
+			cleared += 1
+		if bool(ch.get("jar", false)):
+			jars += 1
+			if String(ch["id"]) in sg.get("jars", []):
+				jars_found += 1
+		if bool(ch.get("side", false)):
+			sides += 1
+			if done:
+				sides_done += 1
+	if total == 0:
+		return ""
+	var bits: Array = ["cleared %d/%d" % [cleared, total]]
+	if jars > 0:
+		bits.append("jars %d/%d" % [jars_found, jars])
+	if sides > 0:
+		bits.append("side roads %d/%d" % [sides_done, sides])
+	return "   ·   " + "  ·  ".join(bits)
+
 func _show_act(a: int) -> void:
 	_act = a
 	if is_instance_valid(_mood):
@@ -533,7 +566,7 @@ func _show_act(a: int) -> void:
 		child.queue_free()
 	_positions.clear()
 	_act_title.text = String(CampaignDefs.ACTS[a]["title"])
-	_act_subtitle.text = String(CampaignDefs.ACTS[a]["subtitle"])
+	_act_subtitle.text = String(CampaignDefs.ACTS[a]["subtitle"]) + _act_progress_text(a)
 	var vp: Vector2 = get_viewport_rect().size
 	if vp == Vector2.ZERO:
 		vp = Vector2(1280, 720)

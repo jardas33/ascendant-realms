@@ -3313,6 +3313,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	var bounty_won := _bounty_met(victory)
 	if bounty_won:
 		xp *= 1.2
+	var level_before := int(ProfileManager.hero().get("level", 1)) if ProfileManager.has_hero() else 0
 	if not _profile_recorded and ProfileManager.has_hero():
 		_profile_recorded = true
 		_record_retinue(victory)
@@ -3329,6 +3330,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"talent_points": ProfileManager.talent_points() if ProfileManager.has_hero() else 0,
 		"records": ProfileManager.endless_record(int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("player_race", "")), match_time, ("w%d" % int(Match.get_config()["endless_weekly"])) if Match.get_config().has("endless_weekly") else "") if victory and String(Match.get_config().get("mode", "")) == "endless" else {},
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
+		"level_before": level_before, "level_after": int(ProfileManager.hero().get("level", 1)) if ProfileManager.has_hero() else 0,
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)
 	emit_signal("game_over", victory)

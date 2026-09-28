@@ -3811,6 +3811,12 @@ func _on_game_over(victory: bool) -> void:
 		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
 		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(deed_line)
+	if int(result.get("level_after", 0)) > int(result.get("level_before", 0)) and int(result.get("level_before", 0)) > 0:
+		var gained := int(result["level_after"]) - int(result["level_before"])
+		var lv_line := _mk_title_label("Level up! Your hero is now level %d%s" % [int(result["level_after"]), (" (+%d)" % gained) if gained > 1 else ""], 18, Color(1.0, 0.88, 0.45))
+		lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(lv_line)
+		Sfx.play("levelup", -6.0)
 	var recs: Dictionary = result.get("records", {})
 	if bool(recs.get("new_fastest", false)) or bool(recs.get("new_race_best", false)):
 		var parts: Array = []

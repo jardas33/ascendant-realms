@@ -983,8 +983,26 @@ func _launch_attack() -> void:
 	for u in commander.units:
 		if is_instance_valid(u) and not u.is_dead and not u.is_worker:
 			soldiers.append(u)
-	for u in soldiers:
-		u.command_move(target, true)
+	# A home guard stays behind: raiders killed 30 or more workers a match
+	# while every soldier marched off. The ranged soldiers nearest home (a
+	# fifth of the army, at least two once it is big enough) hold the fields.
+	var guard_n := 0 if soldiers.size() < 6 else maxi(2, soldiers.size() / 5)
+	soldiers.sort_custom(func(a, b):
+		var ra: int = 0 if float(a.atk_range) > 0.0 else 1
+		var rb: int = 0 if float(b.atk_range) > 0.0 else 1
+		if ra != rb:
+			return ra < rb
+		return a.global_position.distance_squared_to(_base_pos) < b.global_position.distance_squared_to(_base_pos))
+	var guard_post := _base_pos.lerp(Vector3.ZERO, 0.12)
+	for i in soldiers.size():
+		var u = soldiers[i]
+		if i < guard_n:
+			u.set_meta("ai_home_guard", true)
+			if u.global_position.distance_to(guard_post) > 10.0:
+				u.command_move(guard_post, true)
+		else:
+			u.set_meta("ai_home_guard", false)
+			u.command_move(target, true)
 	# hero joins the push
 	if is_instance_valid(commander.hero_ref) and not commander.hero_ref.is_dead:
 		commander.hero_ref.command_move(target, true)
