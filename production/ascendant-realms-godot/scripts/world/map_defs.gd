@@ -92,6 +92,7 @@ static func _assemble(s: Dictionary) -> Dictionary:
 		"start_positions": starts,
 		"resources": res,
 		"capture_points": _captures(s["cap"]),
+		"veins": _veins(starts, float(s["rich"])),
 	}
 	var th := theme(s["theme"])
 	m["water"] = th.get("water", {"enabled": false})
@@ -155,6 +156,26 @@ static func _cluster(c: Vector3, rich: float) -> Array:
 		# Preserve the minimum food spawn from the standard cluster contract;
 		# scarcity removes one timber node, not the only food source.
 		out.remove_at(4)
+	return out
+
+## Veins between the bases (docs/claude/RESOURCE_DESIGN.md): each start gets a
+## gold vein and a terraced farm about halfway to the centre, and a granite
+## quarry and a grove further out on its flanks. Rich maps add two central veins.
+static func _veins(starts: Array, rich: float) -> Array:
+	var out := []
+	for c in starts:
+		var toward: Vector3 = (Vector3.ZERO - c)
+		toward.y = 0.0
+		var dist := toward.length()
+		toward = toward.normalized()
+		var side := Vector3(-toward.z, 0, toward.x)
+		out.append({"kind": "gold", "pos": c + toward * dist * 0.42 + side * 20.0})
+		out.append({"kind": "food", "pos": c + toward * dist * 0.42 - side * 20.0})
+		out.append({"kind": "stone", "pos": c + toward * dist * 0.3 + side * 36.0})
+		out.append({"kind": "timber", "pos": c + toward * dist * 0.3 - side * 36.0})
+	if rich >= 1.4:
+		out.append({"kind": "gold", "pos": Vector3(14, 0, -40)})
+		out.append({"kind": "gold", "pos": Vector3(-14, 0, 40)})
 	return out
 
 static func _contested(rich: float) -> Array:

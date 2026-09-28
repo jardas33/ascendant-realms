@@ -810,6 +810,29 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 		_issue({"type": "gather", "units": units.filter(func(u): return u.is_worker), "target": hit})
 		_emit_command_feedback(COMMAND_GATHER, "GATHER", hit.global_position, hit)
 		return
+	# Right-click a built vein outpost with workers: they go inside and work it.
+	if hit is Building and hit.team == player_team and bool(hit.def.get("vein_outpost", false)) and hit.is_built \
+			and hit.hp >= hit.max_hp * 0.999:
+		var diggers: Array = units.filter(func(u): return u.is_worker)
+		if not diggers.is_empty():
+			_issue({"type": "garrison", "units": diggers, "target": hit})
+			_emit_command_feedback(COMMAND_GATHER, "WORK THE VEIN", hit.global_position, hit)
+			return
+	# Right-click a free vein with workers: claim it (raise an outpost there).
+	if ground != null and world.has_method("vein_near"):
+		var vein = world.vein_near(ground, 5.0)
+		var claimers: Array = units.filter(func(u): return u.is_worker)
+		if vein != null and vein.is_free() and not claimers.is_empty():
+			var oid := "%s_outpost" % String(world.commanders[player_team].race)
+			var reason: String = world.get_building_placement_reason(oid, player_team, vein.global_position, true)
+			if reason == "":
+				var ob = _issue({"type": "place", "id": oid, "team": player_team, "pos": vein.global_position, "units": [claimers[0]]})
+				if ob:
+					_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "CLAIM VEIN", vein.global_position, ob)
+					return
+			else:
+				world.emit_signal("alert", reason, Vector3.ZERO)
+				return
 	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team:
 		var repair_issued := false
 		var construction_issued := false

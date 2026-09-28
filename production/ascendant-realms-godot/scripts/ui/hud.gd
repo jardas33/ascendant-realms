@@ -106,6 +106,7 @@ var _body_font: Font = null
 
 # --- top bar labels ---
 var _res_labels := {}                  # kind -> Label
+var _res_rate_labels := {}             # kind -> Label (income a minute)
 var _pop_label: Label = null
 var _opponent_count_label: Label = null
 var _idle_worker_label: Label = null
@@ -1125,6 +1126,11 @@ func _build_top_bar() -> void:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
 		cell.add_child(l)
+		# Income over the last minute, small beside the stockpile.
+		var rate := _mk_label("", 12, Color(0.62, 0.92, 0.66))
+		rate.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		_res_rate_labels[k] = rate
+		cell.add_child(rate)
 		economy_metrics.add_child(metric["surface"])
 	panel.add_child(economy_metrics)
 
@@ -1345,7 +1351,10 @@ func _on_resources_changed(res: Dictionary) -> void:
 			var label := _res_labels[k] as Label
 			_set_top_metric_text(label, _format_top_resource_amount(amount), 28)
 			var metric_surface := label.get_parent().get_parent() as Control
-			var exact_readout := "%s: %d" % [k.capitalize(), amount]
+			var per_min: int = _commander.income_per_minute(k) if is_instance_valid(_commander) and _commander.has_method("income_per_minute") else 0
+			if _res_rate_labels.has(k) and is_instance_valid(_res_rate_labels[k]):
+				(_res_rate_labels[k] as Label).text = ("+%d/m" % per_min) if per_min > 0 else ""
+			var exact_readout := "%s: %d  ·  +%d in the last minute" % [k.capitalize(), amount, per_min]
 			if metric_surface.tooltip_text != exact_readout:
 				metric_surface.tooltip_text = exact_readout
 				(metric_surface.get_parent() as Control).tooltip_text = exact_readout
@@ -2948,8 +2957,14 @@ func _rebuild_command_card(single, selection: Array) -> void:
 		return
 	_add_command_context(single, selection)
 
-	# WORKER -> build menu
-	if single != null and single is Unit and single.is_worker:
+	# WORKER -> build menu. A group of workers gets it too: selecting three
+	# workers used to show no command card at all.
+	var all_workers := not selection.is_empty()
+	for item in selection:
+		if not (item is Unit) or not item.is_worker or item.is_dead:
+			all_workers = false
+			break
+	if (single != null and single is Unit and single.is_worker) or all_workers:
 		_build_worker_card()
 		_cmd_panel.visible = _cmd_body.get_child_count() > 0
 		_fit_command_panel_next_frame()
@@ -2999,13 +3014,17 @@ func _add_command_context(single, selection: Array) -> void:
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
 		role = "BUILDING" if single.is_built else "BUILD SITE"
-		subtitle = "Production and research" if single.is_built else "Construction underway"
+		subtitle = ("Workers inside gather in safety" if bool(single.def.get("vein_outpost", false)) else "Production and research") if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
 		title = "%d UNITS SELECTED" % selection.size()
 		role = "SQUAD"
 		subtitle = "RMB move/attack · shared orders"
 		accent = COMMAND_FLAME
+		if selection.all(func(x): return x is Unit and x.is_worker):
+			role = "WORKFORCE"
+			subtitle = "RMB move/gather · click to build"
+			accent = COMMAND_MINT
 	var header := PanelContainer.new()
 	header.name = "CommandDeckHeader"
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3309,11 +3328,62 @@ func _build_building_card(b) -> void:
 					cap_stage.text = _construction_phase(float(cap_b.build_progress))
 		)
 		return
-	_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var def: Dictionary = b.def
+	if bool(def.get("vein_outpost", false)):
+		_add_context_hints(["RMB WORKERS  SEND IN", "EXPAND  MORE OUTPUT"])
+	else:
+		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var produces: Array = def.get("produces", [])
 	var research: Array = def.get("research", [])
 	var is_hq: bool = def.get("is_hq", false) or def.get("kind", "") == "main"
+
+	# Vein outpost: who works inside, what it pays, and how to grow it.
+	if bool(def.get("vein_outpost", false)):
+		_add_command_section("Vein", "RMB WITH WORKERS · SEND THEM IN")
+		var vein = b.get_meta("vein") if b.has_meta("vein") else null
+		var info := _mk_label("", 15, FONT_COLOR)
+		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.custom_minimum_size = Vector2(380, 70)
+		info.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		_cmd_body.add_child(info)
+		var cap_ob = b
+		var refresh := func():
+			if not is_instance_valid(cap_ob) or not is_instance_valid(info):
+				return
+			var v = cap_ob.get_meta("vein") if cap_ob.has_meta("vein") else null
+			info.text = "%s  ·  level %d
+Workers inside %d / %d  ·  +%d %s a minute
+%s left in the vein" % [
+				v.display_name() if is_instance_valid(v) else "Vein", cap_ob.outpost_level, cap_ob.garrison.size(), cap_ob.outpost_slots(),
+				int(round(cap_ob.outpost_rate_per_minute())), String(v.kind) if is_instance_valid(v) else "", str(int(v.amount)) if is_instance_valid(v) else "0"]
+		refresh.call()
+		var rt := Timer.new()
+		rt.wait_time = 1.0
+		rt.autostart = true
+		info.add_child(rt)
+		rt.timeout.connect(refresh)
+		var og := _mk_command_grid()
+		og.columns = 1
+		_cmd_body.add_child(og)
+		if b.outpost_level < b.OUTPOST_MAX_LEVEL:
+			var ecost: Dictionary = b.outpost_expand_cost()
+			var ereason: String = "" if _commander.can_afford(ecost) else _commander.missing_resource_summary(ecost)
+			var next_desc := "Level %d: %d worker slots, +%d%% output%s." % [b.outpost_level + 1, b.outpost_slots() + 2, int(25 * b.outpost_level), ", and a watch-fire that shoots raiders" if b.outpost_level + 1 >= b.OUTPOST_MAX_LEVEL else ""]
+			var eb := _mk_command_button("Expand Outpost", _cost_string(ecost).trim_prefix("  (").trim_suffix(")"), next_desc, ereason, "LOCKED" if ereason != "" else "READY", {}, next_desc, "Next", "", "EXPAND")
+			eb.disabled = ereason != ""
+			eb.pressed.connect(func():
+				var res = _issue_order({"type": "expand", "target": cap_ob})
+				if res is Dictionary and not bool(res.get("ok", false)):
+					_flash_notice(String(res.get("reason", "Cannot expand")))
+				_rebuild_command_card(cap_ob, [cap_ob]))
+			og.add_child(eb)
+		var rb := _mk_command_button("Release Workers", "Send everyone inside back out", "The workers step out beside the outpost.", "" if not b.garrison.is_empty() else "Nobody inside", "READY" if not b.garrison.is_empty() else "LOCKED", {}, "", "Effect", "", "ORDER")
+		rb.disabled = b.garrison.is_empty()
+		rb.pressed.connect(func():
+			_issue_order({"type": "release", "target": cap_ob})
+			_rebuild_command_card(cap_ob, [cap_ob]))
+		og.add_child(rb)
+		return
 
 	# production units
 	if not produces.is_empty():

@@ -81,7 +81,23 @@ func refund(cost: Dictionary, ratio: float = 1.0) -> void:
 		resources[k] = int(resources.get(k, 0)) + int(round(float(cost[k]) * ratio))
 	emit_signal("resources_changed", resources)
 
+## Income over the last minute of simulation time, for the top bar.
+var _income_log: Array = []
+
+func income_per_minute(kind: String) -> int:
+	var now := float(Engine.get_physics_frames()) / float(Engine.physics_ticks_per_second)
+	var total := 0
+	for e in _income_log:
+		if now - float(e[0]) <= 60.0 and String(e[1]) == kind:
+			total += int(e[2])
+	return total
+
 func add_resources(kind: String, amount: int) -> void:
+	if amount > 0:
+		var now := float(Engine.get_physics_frames()) / float(Engine.physics_ticks_per_second)
+		_income_log.append([now, kind, amount])
+		while not _income_log.is_empty() and now - float(_income_log[0][0]) > 60.0:
+			_income_log.pop_front()
 	resources[kind] = int(resources.get(kind, 0)) + amount
 	emit_signal("resources_changed", resources)
 
@@ -90,7 +106,9 @@ func recompute_pop() -> void:
 	var cap := 0
 	for u in units:
 		# Saga allies fight for you but do not take up your population.
-		if is_instance_valid(u) and not u.is_dead and not u.has_meta("saga_ally") and not u.has_meta("retinue"):
+		# Workers inside a vein outpost live at the mine: they free their
+		# population, so expanding across the map also grows the army.
+		if is_instance_valid(u) and not u.is_dead and not u.has_meta("saga_ally") and not u.has_meta("retinue") and not u.has_meta("garrisoned_in"):
 			used += int(u.def.get("pop", 1))
 	for b in buildings:
 		if is_instance_valid(b) and b.is_built:

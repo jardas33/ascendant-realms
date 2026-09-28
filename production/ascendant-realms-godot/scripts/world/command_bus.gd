@@ -77,6 +77,26 @@ func execute(order: Dictionary):
 			if is_instance_valid(target):
 				target.set_rally(pos)
 			return null
+		"garrison":
+			# Workers walk to their outpost and step inside on arrival.
+			for w in units:
+				if is_instance_valid(w) and not w.is_dead and w.is_worker and is_instance_valid(target):
+					w.set_meta("garrison_target", target)
+					# Walk to the doorstep, not the centre: a point inside the
+					# building's footprint is unreachable and made the route
+					# solver re-plan every tick.
+					var away: Vector3 = w.global_position - target.global_position
+					away.y = 0.0
+					if away.length() < 0.1:
+						away = Vector3(1, 0, 0)
+					w.command_move(target.global_position + away.normalized() * (float(target.footprint) + 1.6))
+			return null
+		"release":
+			if is_instance_valid(target) and target.has_method("release_garrison"):
+				target.release_garrison()
+			return null
+		"expand":
+			return target.expand_outpost() if is_instance_valid(target) and target.has_method("expand_outpost") else {"ok": false, "reason": "Outpost lost"}
 		"cast":
 			for h in units:
 				if is_instance_valid(h) and not h.is_dead:

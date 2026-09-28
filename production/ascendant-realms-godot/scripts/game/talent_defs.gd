@@ -9,7 +9,7 @@ const EVERY_LEVELS := 10
 
 const TALENTS := [
 	{"id": "bloodthirst", "name": "Bloodthirst", "desc": "Heal for 2% of damage dealt per rank."},
-	{"id": "executioner", "name": "Executioner", "desc": "+12% damage per rank against foes below 30% health."},
+	{"id": "executioner", "name": "Headhunter", "desc": "+12% damage per rank against foes below 30% health."},
 	{"id": "thorns", "name": "Thornhide", "desc": "Melee attackers take 6% of their blow back per rank."},
 	{"id": "giants_blood", "name": "Giant's Blood", "desc": "+6% maximum health per rank."},
 	{"id": "swift_blade", "name": "Swift Blade", "desc": "+3% attack speed per rank."},
@@ -17,10 +17,10 @@ const TALENTS := [
 	{"id": "stormcaller", "name": "Stormcaller", "desc": "+8% spell power per rank."},
 	{"id": "quartermaster", "name": "Quartermaster", "desc": "+1 veteran in the retinue per rank."},
 	{"id": "treasure_hunter", "name": "Treasure Hunter", "desc": "+2 Fortune per rank for battle loot."},
-	{"id": "iron_will", "name": "Iron Will", "desc": "+1 armour per rank."},
+	{"id": "iron_will", "name": "Granite Skin", "desc": "+1 armour per rank."},
 	{"id": "lume_well", "name": "Lume Well", "desc": "+20 mana and +0.5 mana regeneration per rank."},
-	{"id": "rallying_cry", "name": "Rallying Cry", "desc": "+2 m command aura reach per rank."},
-	{"id": "second_wind", "name": "Second Wind", "desc": "The hero regenerates 1.5 health a second per rank."},
+	{"id": "rallying_cry", "name": "Salto's Horn", "desc": "+2 m command aura reach per rank."},
+	{"id": "second_wind", "name": "Hearthblood", "desc": "The hero regenerates 1.5 health a second per rank."},
 	{"id": "keen_eye", "name": "Keen Eye", "desc": "+3 sight per rank: see raiders coming."},
 	{"id": "mentor", "name": "Mentor", "desc": "+5% battle experience per rank."},
 ]

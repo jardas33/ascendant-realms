@@ -9,7 +9,7 @@ static func _b(id: String) -> String:
 	return "res://assets/environment/buildings/%s.glb" % id
 
 static func get_all() -> Dictionary:
-	return {
+	var defs := {
 	# ---------------- BARROSAN ----------------
 	"barrosan_clanhold": {
 		"race": "barrosan", "name": "Clanhold", "kind": "main", "model": "res://assets/environment/buildings/barrosan_civic_keep_a01.glb",
@@ -168,7 +168,7 @@ static func get_all() -> Dictionary:
 		"desc": "Brutal orc smithy that hammers bones and scrap iron into cruder-but-deadlier weapons and armor.",
 	},
 	"grimtusk_spike_tower": {
-		"race": "grimtusk", "name": "Overseer Tower (taken)", "kind": "tower", "model": _b("vorthak_rift_obelisk"),
+		"race": "grimtusk", "name": "Taken Overseer Tower", "kind": "tower", "model": _b("vorthak_rift_obelisk"),
 		"hp": 660, "armor_class": "medium", "armor": 3, "footprint": 3.0,
 		"cost": {"timber": 60, "stone": 80}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 22, "tower_range": 19.0, "tower_cd": 1.2, "tower_type": "pierce", "projectile": "bolt",
@@ -419,3 +419,28 @@ static func get_all() -> Dictionary:
 		"produces": [], "desc": "Ice-crusted watchtower that fires heavy bolts at anything approaching the mead hall.",
 	},
 	}
+	_add_outposts(defs)
+	return defs
+
+## Vein outposts (docs/claude/RESOURCE_DESIGN.md): every faction can raise one
+## on a vein between the bases. Workers sent inside gather in safety; the
+## outpost upgrades twice (more slots, more output, a watch-fire at the top).
+const OUTPOST_NAMES := {
+	"barrosan": "Clan Mine", "lioraen": "Spring Terrace", "vorthak": "Rift Pit", "grimtusk": "Freed Mine",
+	"sylvan": "Moura Grotto", "karak": "Castro Quarry-Works", "sunspear": "Dominion Works", "wyldkin": "Hunters' Camp",
+	"hollow": "Candle Diggings", "frostborn": "Careto Camp",
+}
+
+static func _add_outposts(defs: Dictionary) -> void:
+	for race in OUTPOST_NAMES:
+		var model := ""
+		for id in defs:
+			if String(defs[id].get("race", "")) == race and String(defs[id].get("kind", "")) == "tower":
+				model = String(defs[id].get("model", ""))
+		defs["%s_outpost" % race] = {
+			"race": race, "name": String(OUTPOST_NAMES[race]), "kind": "outpost", "model": model,
+			"hp": 480, "armor_class": "fortified", "armor": 5, "footprint": 2.6,
+			"cost": {"timber": 80, "stone": 40}, "build_time": 16, "grants_pop": 0,
+			"produces": [], "vein_outpost": true,
+			"desc": "Raised on a vein between the bases. Send workers inside: they gather safely, with no walking. Expand it for more workers, more output and, at the top, a watch-fire.",
+		}

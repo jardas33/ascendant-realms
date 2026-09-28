@@ -9,6 +9,7 @@ const Building := preload("res://scripts/buildings/building.gd")
 const ProjectileScript := preload("res://scripts/units/projectile.gd")
 const ResourceNodeScript := preload("res://scripts/world/resource_node.gd")
 const CommandBusScript := preload("res://scripts/world/command_bus.gd")
+const VeinScript := preload("res://scripts/world/vein.gd")
 ## Player orders as serialisable data (the seam for online play).
 var command_bus = CommandBusScript.new(self)
 const CapturePointScript := preload("res://scripts/world/capture_point.gd")
@@ -334,6 +335,7 @@ func _ready() -> void:
 	_m20_end(resources_stage)
 	var capture_stage := _m20_begin("GAMEWORLD_CAPTURE_POINTS", "GAMEWORLD_READY", 1)
 	_spawn_capture_points()
+	_spawn_veins()
 	_m20_end(capture_stage)
 	call_deferred("_start_match")
 	_m20_end(ready_stage)
@@ -2122,6 +2124,16 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	if not can_place_building(building_id, team, pos, true):
 		return null
 	var cmd = commanders[team]
+	if bool(bdef.get("vein_outpost", false)):
+		var vein = vein_near(pos, 6.0)
+		if vein == null or not cmd.can_afford(bdef.get("cost", {})) or not cmd.spend(bdef.get("cost", {}).duplicate()):
+			return null
+		var ob = _create_building(bdef, team, Vector3(vein.global_position.x, 0.0, vein.global_position.z), false)
+		if ob:
+			vein.outpost = ob
+			ob.set_meta("vein", vein)
+			emit_signal("alert", "%s claimed." % vein.display_name(), vein.global_position)
+		return ob
 	var is_v0431_target := building_id == "barrosan_clan_croft" and team == 0
 	# One live transaction per confirmed placement. Preview and invalid clicks
 	# never reach this function; the guard also makes repeated input idempotent.
@@ -2195,6 +2207,19 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 				break
 	if not has_worker:
 		return "No available Worker"
+	# Vein outposts stand on a free vein (the spot snaps to it); nothing else
+	# may be built on a vein.
+	if bool(bdef.get("vein_outpost", false)):
+		var vein = vein_near(pos, 6.0)
+		if vein == null:
+			return "Must be built on a vein"
+		if not vein.is_free():
+			return "This vein is already claimed"
+		pos = Vector3(vein.global_position.x, pos.y, vein.global_position.z)
+	else:
+		for v in get_tree().get_nodes_in_group("veins"):
+			if Vector2(v.global_position.x - pos.x, v.global_position.z - pos.z).length() < fp + 4.0:
+				return "Blocked by a vein (build an outpost there)"
 	# Entire radial footprint must clear every friendly and enemy building,
 	# including unfinished buildings, and resource nodes.
 	for b in all_buildings():
@@ -2508,6 +2533,31 @@ func _spawn_resources() -> void:
 	if recorder:
 		recorder.record_population("resource_nodes", map.get("resources", []).size(), 0.0, 0.0, "game_world._spawn_resources")
 	_m20_end(stage)
+
+func _spawn_veins() -> void:
+	if bool(Match.get_config().get("no_veins", false)):
+		return
+	var clear := float(map.get("size", MapDefs.MAP_SIZE)) - 8.0
+	for v in map.get("veins", []):
+		var p: Vector3 = v["pos"]
+		if absf(p.x) > clear or absf(p.z) > clear:
+			continue
+		var vein = VeinScript.new()
+		add_child(vein)
+		vein.global_position = p
+		vein.configure(String(v["kind"]), 4000)
+		clear_ground_cover(p, 5.0)
+
+## The free vein nearest a point, within `radius`.
+func vein_near(pos: Vector3, radius: float = 5.0):
+	var best = null
+	var best_d := radius
+	for v in get_tree().get_nodes_in_group("veins"):
+		var d: float = Vector2(v.global_position.x - pos.x, v.global_position.z - pos.z).length()
+		if d < best_d:
+			best_d = d
+			best = v
+	return best
 
 func _spawn_capture_points() -> void:
 	var stage := _m20_begin("GAMEWORLD_CAPTURE_NODE_SETUP", "GAMEWORLD_CAPTURE_POINTS", 2)
@@ -3680,6 +3730,28 @@ func _point_near_segment(p: Vector3, a: Vector3, b: Vector3, tol: float) -> bool
 # --------------------------------------------------------------------------
 # FX (lightweight procedural)
 # --------------------------------------------------------------------------
+## A "+12 gold" that rises and fades over a paying outpost.
+const INCOME_COLORS := {"gold": Color(1.0, 0.84, 0.35), "stone": Color(0.82, 0.85, 0.9), "timber": Color(0.62, 0.9, 0.45), "food": Color(1.0, 0.9, 0.55)}
+func spawn_income_popup(pos: Vector3, amount: int, kind: String) -> void:
+	if not is_instance_valid(_fx_container):
+		return
+	var l := Label3D.new()
+	l.text = "+%d %s" % [amount, kind]
+	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	l.no_depth_test = true
+	l.fixed_size = true
+	l.pixel_size = 0.0009
+	l.font_size = 22
+	l.outline_size = 6
+	l.modulate = INCOME_COLORS.get(kind, Color.WHITE)
+	l.outline_modulate = Color(0.05, 0.03, 0.0, 0.9)
+	_fx_container.add_child(l)
+	l.global_position = pos
+	var t := l.create_tween().set_parallel(true)
+	t.tween_property(l, "global_position:y", pos.y + 2.2, 1.6)
+	t.tween_property(l, "modulate:a", 0.0, 1.6).set_delay(0.6)
+	t.chain().tween_callback(l.queue_free)
+
 func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 	var col := Color(1, 0.8, 0.4)
 	match kind:

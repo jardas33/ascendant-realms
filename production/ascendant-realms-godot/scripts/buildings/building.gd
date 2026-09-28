@@ -74,6 +74,13 @@ var _tower_cd := 0.0
 
 # aura
 var _aura_timer := 0.0
+# Vein outposts (docs/claude/RESOURCE_DESIGN.md).
+var garrison: Array = []
+var outpost_level := 1
+var _outpost_timer := 0.0
+var _outpost_pay_timer := 0.0
+const OUTPOST_RATE := 0.5          # per worker per second at level 1 (about a walking worker's pace, with no walking)
+const OUTPOST_MAX_LEVEL := 3
 
 var model_root: Node3D
 var selection_ring: MeshInstance3D
@@ -1255,6 +1262,107 @@ func _physics_process(delta: float) -> void:
 			_house_food_tick(delta)
 		if def.has("heal_aura"):
 			_aura_tick(delta)
+		if bool(def.get("vein_outpost", false)):
+			_outpost_tick(delta)
+
+func outpost_slots() -> int:
+	return 3 + 2 * (outpost_level - 1)
+
+func outpost_output_mult() -> float:
+	return 1.0 + 0.25 * float(outpost_level - 1)
+
+func outpost_rate_per_minute() -> float:
+	var vein = get_meta("vein") if has_meta("vein") else null
+	var rich := 2.0 if is_instance_valid(vein) and world and float(world.get("match_time")) < float(vein.rich_until) else 1.0
+	return float(garrison.size()) * OUTPOST_RATE * outpost_output_mult() * rich * 60.0
+
+func outpost_expand_cost() -> Dictionary:
+	return {"timber": 120 * outpost_level, "stone": 80 * outpost_level, "gold": 40 * outpost_level}
+
+## Expand the outpost: two more worker slots and a quarter more output per
+## level; the top level adds a watch-fire that shoots at raiders.
+func expand_outpost() -> Dictionary:
+	if outpost_level >= OUTPOST_MAX_LEVEL:
+		return {"ok": false, "reason": "Fully expanded"}
+	if not is_built:
+		return {"ok": false, "reason": "Still being built"}
+	var cost := outpost_expand_cost()
+	if commander == null or not commander.can_afford(cost):
+		return {"ok": false, "reason": "Not enough resources"}
+	commander.spend(cost)
+	outpost_level += 1
+	if outpost_level >= OUTPOST_MAX_LEVEL:
+		def = def.duplicate()
+		def["tower_dmg"] = 18
+		def["tower_range"] = 16.0
+		def["tower_cd"] = 1.3
+		def["tower_type"] = "pierce"
+		def["projectile"] = "bolt"
+	max_hp *= 1.3
+	hp = minf(max_hp, hp + max_hp * 0.3)
+	if world:
+		world.emit_signal("alert", "%s expanded to level %d." % [String(def.get("name", "Outpost")), outpost_level], global_position)
+	return {"ok": true}
+
+## Workers told to garrison walk up and step inside once close enough.
+func _outpost_tick(delta: float) -> void:
+	_outpost_timer += delta
+	if _outpost_timer >= 0.5:
+		_outpost_timer = 0.0
+		garrison = garrison.filter(func(w): return is_instance_valid(w) and not w.is_dead)
+		if garrison.size() < outpost_slots() and commander:
+			for u in commander.units:
+				if garrison.size() >= outpost_slots():
+					break
+				if is_instance_valid(u) and not u.is_dead and u.is_worker and (u.get_meta("garrison_target") if u.has_meta("garrison_target") else null) == self \
+						and u.global_position.distance_to(global_position) < footprint + 3.5:
+					_take_in(u)
+	_outpost_pay_timer += delta
+	if _outpost_pay_timer >= 5.0:
+		_outpost_pay_timer = 0.0
+		var vein = get_meta("vein") if has_meta("vein") else null
+		if garrison.is_empty() or not is_instance_valid(vein) or commander == null:
+			return
+		var want := int(round(outpost_rate_per_minute() / 12.0))
+		var got: int = vein.draw(want)
+		if got > 0:
+			commander.add_resources(String(vein.kind), got)
+			if world and world.has_method("spawn_income_popup") and team == int(world.get("player_team")):
+				world.spawn_income_popup(global_position + Vector3.UP * (footprint + 2.0), got, String(vein.kind))
+		elif world and team == int(world.get("player_team")):
+			world.emit_signal("alert", "The %s is exhausted." % vein.display_name().to_lower(), global_position)
+
+func _take_in(u) -> void:
+	u.set_meta("garrison_target", null)
+	u.set_meta("garrisoned_in", self)
+	u.command_stop()
+	# Marked as busy the way a builder is, so no order-giver (player helper,
+	# AI economy, placement checks) pulls a worker out of the outpost.
+	u.state = u.State.BUILDING
+	u.visible = false
+	u.process_mode = Node.PROCESS_MODE_DISABLED
+	u.collision_layer = 0
+	garrison.append(u)
+	if commander:
+		commander.recompute_pop()
+
+## Send every worker inside back out around the outpost.
+func release_garrison() -> void:
+	var i := 0
+	for u in garrison:
+		if not is_instance_valid(u) or u.is_dead:
+			continue
+		u.process_mode = Node.PROCESS_MODE_INHERIT
+		u.visible = true
+		u.collision_layer = WorldBlockerContract.UNIT_LAYER
+		u.remove_meta("garrisoned_in")
+		var ang := float(i) * 1.3
+		u.global_position = global_position + Vector3(cos(ang), 0, sin(ang)) * (footprint + 1.8)
+		u.command_stop()
+		i += 1
+	garrison.clear()
+	if commander:
+		commander.recompute_pop()
 
 func _tower_tick(delta: float) -> void:
 	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
@@ -1392,6 +1500,8 @@ func _update_damage_visual() -> void:
 func _destroy(from = null) -> void:
 	if is_dead:
 		return
+	if not garrison.is_empty():
+		release_garrison()
 	# Clear queued production/research while the building is still eligible for
 	# cancel_queue_item(). That method intentionally rejects already-dead
 	# buildings; setting is_dead first silently left destroyed producers with

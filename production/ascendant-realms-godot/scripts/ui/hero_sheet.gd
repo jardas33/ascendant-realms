@@ -127,10 +127,16 @@ func _refresh() -> void:
 	for t in ach.TRACKS:
 		var tier := int(deeds.get(t["id"], 0))
 		var nxt: int = ach.goal(t, tier + 1)
-		parts.append("%s %d" % [String(t["name"]).to_upper(), tier])
-		next_goals.append("%s: next tier at %d" % [String(t["name"]), nxt])
+		parts.append(tier)
+		next_goals.append("%s: tier %d%s, next at %d" % [String(t["name"]), tier, (" (" + String(ach.title(t, tier)) + ")") if tier > 0 else "", nxt])
 	var deeds_line := Label.new()
-	deeds_line.text = ("%s    ·    " % String(h.get("title", "")).to_upper() if String(h.get("title", "")) != "" else "") + "DEEDS  " + "  ·  ".join(parts)
+	# One clear line: the title and the tiers earned. Per-track tiers sat next
+	# to lifetime totals and read as contradictory numbers; they live in the
+	# tooltip now.
+	var tiers_total := 0
+	for n in parts:
+		tiers_total += int(n)
+	deeds_line.text = ("%s    ·    " % String(h.get("title", "")).to_upper() if String(h.get("title", "")) != "" else "") + "DEEDS  %d TIERS EARNED ACROSS %d TRACKS  (HOVER FOR EACH)" % [tiers_total, parts.size()]
 	deeds_line.add_theme_font_override("font", _body_font())
 	deeds_line.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
 	deeds_line.add_theme_font_size_override("font_size", 14)
@@ -189,6 +195,18 @@ func _refresh() -> void:
 	xp_bar.value = clamp(xp, 0.0, need)
 	xp_bar.custom_minimum_size = Vector2(0, 19)
 	xp_bar.show_percentage = false
+	var xp_fill := StyleBoxFlat.new()
+	xp_fill.bg_color = Color(0.93, 0.72, 0.3)
+	xp_fill.set_corner_radius_all(4)
+	xp_fill.shadow_color = Color(1.0, 0.8, 0.35, 0.35)
+	xp_fill.shadow_size = 3
+	var xp_back := StyleBoxFlat.new()
+	xp_back.bg_color = Color(0.08, 0.07, 0.06, 0.9)
+	xp_back.border_color = Color(0.6, 0.48, 0.28, 0.8)
+	xp_back.set_border_width_all(1)
+	xp_back.set_corner_radius_all(4)
+	xp_bar.add_theme_stylebox_override("fill", xp_fill)
+	xp_bar.add_theme_stylebox_override("background", xp_back)
 	identity.add_child(xp_bar)
 
 	var pts := Label.new()
@@ -468,7 +486,7 @@ func _stat_line(name: String, val: String) -> HBoxContainer:
 const STAT_HELP := {
 	"Bonus Health": "Extra health from Endurance, Might, gear, sets, Fortitude mastery and talents.",
 	"Bonus Damage": "Extra damage per blow from Might, Intellect, gear, sets and Warfare mastery. Spells scale with it too.",
-	"Bonus Armor": "Flat armour from Willpower, gear and Iron Will. Each point blunts every blow.",
+	"Bonus Armor": "Flat armour from Willpower, gear and Granite Skin. Each point blunts every blow.",
 	"Attack Speed": "Faster attacks from Agility, gear, Celerity mastery and Swift Blade.",
 	"Max Mana": "Mana for spells: Intellect, gear, Attunement mastery and Lume Well.",
 	"Abilities Unlocked": "Spells learned on the skill constellation. Cast them with Y, U and V in battle.",

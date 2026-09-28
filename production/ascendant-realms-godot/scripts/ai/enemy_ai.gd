@@ -166,6 +166,88 @@ func _think() -> void:
 	_manage_offense()
 	_cast_hero_spells()
 	_manage_capture()
+	_manage_veins()
+
+## Veins (docs/claude/RESOURCE_DESIGN.md): from minute two and a half the AI
+## claims the free veins on its side of the map, staffs its outposts from the
+## gatherers it can spare (always keeping six at home), and expands them when
+## stores pile up. Enemy outposts are buildings, so its waves raid them too.
+var _vein_timer := 0.0
+
+func _manage_veins() -> void:
+	_vein_timer += _think_interval
+	if _vein_timer < 3.0:
+		return
+	_vein_timer = 0.0
+	if float(world.get("match_time")) < 150.0 or not world.has_method("vein_near"):
+		return
+	var oid := "%s_outpost" % String(commander.race)
+	if GameData.get_building(oid).is_empty():
+		return
+	var outposts: Array = []
+	var building_one := false
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and bool(b.def.get("vein_outpost", false)):
+			if b.is_built:
+				outposts.append(b)
+			else:
+				building_one = true
+	# Claim: the nearest free vein that is closer to us than to any enemy start.
+	var home_workers := _worker_count()
+	var max_outposts := 1 + int(float(world.get("match_time")) / 300.0)
+	# Only open another outpost once the last ones are mostly staffed.
+	var empty_slots := 0
+	for ob in outposts:
+		empty_slots += ob.outpost_slots() - ob.garrison.size()
+	if not building_one and empty_slots <= 1 and outposts.size() < max_outposts and home_workers >= 8 and commander.can_afford(GameData.get_building(oid).get("cost", {})):
+		var best = null
+		var best_d := INF
+		for v in get_tree().get_nodes_in_group("veins"):
+			if not v.is_free() or int(v.amount) <= 0:
+				continue
+			var d: float = v.global_position.distance_to(_base_pos)
+			var nearer_enemy := false
+			for i in world.commanders.size():
+				if i == commander.team:
+					continue
+				var es: Vector3 = world.map.get("start_positions", [])[i] if i < world.map.get("start_positions", []).size() else Vector3.INF
+				if v.global_position.distance_to(es) < d:
+					nearer_enemy = true
+			# Prefer the vein of whatever the stores are shortest of (a
+			# Barrosan AI claimed stone and gold while starving on food).
+			var score := d - (60.0 if String(v.kind) == _needed_resource() else 0.0)
+			if not nearer_enemy and score < best_d:
+				best_d = score
+				best = v
+		var w = _free_worker()
+		if best and w:
+			var ob = world.place_building(oid, commander.team, best.global_position)
+			if ob:
+				w.command_build(ob)
+	# Staff: fill outposts from spare gatherers, keeping six at home.
+	for ob in outposts:
+		# Expand once it is full and the stores allow it.
+		if ob.garrison.size() >= ob.outpost_slots() and ob.outpost_level < ob.OUTPOST_MAX_LEVEL and commander.can_afford(ob.outpost_expand_cost()):
+			ob.expand_outpost()
+		var free_slots: int = ob.outpost_slots() - ob.garrison.size()
+		var heading := 0
+		for u in commander.units:
+			if is_instance_valid(u) and (u.get_meta("garrison_target") if u.has_meta("garrison_target") else null) == ob:
+				heading += 1
+		free_slots -= heading
+		if free_slots <= 0:
+			continue
+		var spare: Array = []
+		var gatherers := 0
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and (u.get_meta("garrison_target") if u.has_meta("garrison_target") else null) == null:
+				gatherers += 1
+				spare.append(u)
+		var can_send := mini(free_slots, gatherers - 6)
+		if can_send <= 0:
+			continue
+		spare.sort_custom(func(a, b): return a.global_position.distance_squared_to(ob.global_position) < b.global_position.distance_squared_to(ob.global_position))
+		world.command_bus.execute({"type": "garrison", "units": spare.slice(0, can_send), "target": ob})
 
 # --------------------------------------------------------------------------
 # v0.435 bounded Easy opponent
@@ -766,7 +848,12 @@ func _worker_count() -> int:
 func _manage_economy() -> void:
 	# train workers from HQ up to target
 	var hq = _get_building_of_kind("main")
-	if hq and _worker_count() < _worker_target:
+	# Workers inside vein outposts do not count against the home crew.
+	var inside := 0
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and bool(b.def.get("vein_outpost", false)):
+			inside += b.garrison.size()
+	if hq and _worker_count() < _worker_target + inside:
 		if hq.queue.size() < 2:
 			var wid = GameData.get_race(commander.race).get("worker", "")
 			hq.queue_unit(wid)

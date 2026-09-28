@@ -644,7 +644,7 @@ func _build_node(c: Dictionary) -> void:
 	if available:
 		btn.pressed.connect(_open_briefing.bind(id))
 	else:
-		btn.modulate = Color(0.78, 0.78, 0.8, 0.85)
+		btn.modulate = Color(0.88, 0.88, 0.9, 0.93)
 	_act_layer.add_child(btn)
 	# Both roads of the Rabagão choice pulse while the choice is still open.
 	var choice_open: bool = c.has("branch") and String(s["choice"]) == "" and available and not cleared

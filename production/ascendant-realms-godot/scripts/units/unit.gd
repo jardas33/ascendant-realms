@@ -1001,7 +1001,8 @@ func set_hovered(active: bool) -> void:
 
 func set_player_visibility_visible(is_visible: bool) -> void:
 	_player_visibility_visible = is_visible
-	visible = is_visible
+	# Workers inside a vein outpost stay out of sight whatever the fog says.
+	visible = is_visible and not has_meta("garrisoned_in")
 
 func _build_attack_range_ring() -> void:
 	if atk_range <= 0.0:
@@ -3191,6 +3192,12 @@ var _rank_badge: Label3D
 func _show_hero_title() -> void:
 	if not is_hero or world == null or team != int(world.get("player_team")) or not ProfileManager.has_hero():
 		return
+	# The player's own hero goes by its own name in every panel, not the
+	# generic "Jardas" of the unit list.
+	var hero_name := String(ProfileManager.hero().get("name", ""))
+	if hero_name != "":
+		def = def.duplicate()
+		def["name"] = hero_name
 	var title := String(ProfileManager.hero().get("title", ""))
 	if title == "":
 		return
