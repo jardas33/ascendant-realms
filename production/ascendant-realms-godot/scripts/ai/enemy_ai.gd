@@ -85,9 +85,7 @@ func _apply_personality() -> void:
 			_army_attack_size += 2
 			_worker_target += 2
 		"frostborn":
-			# Costly revellers: a fuller economy keeps the big hitters coming.
 			_army_attack_size += 1
-			_worker_target += 2
 		"barrosan":
 			# The clans strike early with cheap levies before the enemy masses.
 			_army_attack_size = maxi(5, _army_attack_size - 2)
@@ -247,7 +245,9 @@ func _manage_veins() -> void:
 					nearer_enemy = true
 			# Prefer the vein of whatever the stores are shortest of (a
 			# Barrosan AI claimed stone and gold while starving on food).
-			var score := d - (60.0 if String(v.kind) == _needed_resource() else 0.0)
+			# Weight by what the faction spends too: every army eats food, and
+			# a Frostborn AI claimed stone and gold veins while food sat at 12.
+			var score := d - (60.0 if String(v.kind) == _needed_resource() else 0.0) - 140.0 * float(_gather_share.get(String(v.kind), 0.2)) - (90.0 if String(v.kind) == "food" else 0.0)
 			if not nearer_enemy and score < best_d:
 				best_d = score
 				best = v
@@ -257,7 +257,20 @@ func _manage_veins() -> void:
 			if ob:
 				w.command_build(ob)
 	# Staff: fill outposts from spare gatherers, keeping six at home.
+	var starving := false
+	for k in commander.resources:
+		if int(commander.resources[k]) < 80:
+			starving = true
 	for ob in outposts:
+		# A Frostborn AI starved on 2 food with 1,900 stone banked: its stone
+		# outpost kept four workers busy on a glut. While some store is empty,
+		# a glutted vein's workers come home to gather what is short.
+		var ob_vein = ob.get_meta("vein") if ob.has_meta("vein") else null
+		var glut: bool = ob_vein != null and is_instance_valid(ob_vein) and int(commander.resources.get(String(ob_vein.kind), 0)) > 700
+		if glut:
+			if starving and not ob.garrison.is_empty():
+				ob.release_garrison()
+			continue
 		# Expand once it is full and the stores allow it.
 		if ob.garrison.size() >= ob.outpost_slots() and ob.outpost_level < ob.OUTPOST_MAX_LEVEL and commander.can_afford(ob.outpost_expand_cost()):
 			ob.expand_outpost()

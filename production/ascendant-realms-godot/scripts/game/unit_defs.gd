@@ -89,7 +89,7 @@ static func get_all() -> Dictionary:
 		"hp": 115, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 0.95, "speed": 4.2, "vision": 20.0,
 		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "barracks",
-		"desc": "A Moura blade-dancer who strikes and is gone like light on water.",
+		"desc": "A spring-dancer of the Concord who strikes and is gone like light on water.",
 	},
 	"lioraen_rootwarden_guard": {
 		"race": "lioraen", "name": "Rootwarden", "role": "defender", "tier": 1,

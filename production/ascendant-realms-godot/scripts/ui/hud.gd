@@ -3354,7 +3354,7 @@ func _build_building_card(b) -> void:
 
 	# Vein outpost: who works inside, what it pays, and how to grow it.
 	if bool(def.get("vein_outpost", false)):
-		_add_command_section("Vein", "RMB WITH WORKERS · SEND THEM IN")
+		_add_command_section("Vein", "WHAT IT PAYS")
 		var vein = b.get_meta("vein") if b.has_meta("vein") else null
 		var info := _mk_label("", 15, FONT_COLOR)
 		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -3392,7 +3392,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 					_flash_notice(String(res.get("reason", "Cannot expand")))
 				_rebuild_command_card(cap_ob, [cap_ob]))
 			og.add_child(eb)
-		var rb := _mk_command_button("Release Workers", "Send everyone inside back out", "The workers step out beside the outpost.", "" if not b.garrison.is_empty() else "Nobody inside", "READY" if not b.garrison.is_empty() else "LOCKED", {}, "", "Effect", "", "ORDER")
+		var rb := _mk_command_button("Release", "Send everyone inside back out", "The workers step out beside the outpost.", "" if not b.garrison.is_empty() else "Nobody inside", "READY" if not b.garrison.is_empty() else "LOCKED", {}, "", "Effect", "", "ORDER")
 		rb.disabled = b.garrison.is_empty()
 		rb.pressed.connect(func():
 			_issue_order({"type": "release", "target": cap_ob})

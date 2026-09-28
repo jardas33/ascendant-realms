@@ -249,7 +249,7 @@ func _build() -> void:
 	sw_row.add_theme_constant_override("separation", 20)
 	main.add_child(sw_row)
 	_str_option = OptionButton.new()
-	_str_option.custom_minimum_size = Vector2(220, 40)
+	_str_option.custom_minimum_size = Vector2(380, 40)
 	_str_option.add_theme_font_override("font", ThemeDB.fallback_font)
 	_str_option.add_theme_font_size_override("font_size", 19)
 	for i in STRENGTHS.size():
@@ -257,7 +257,7 @@ func _build() -> void:
 	_str_option.item_selected.connect(func(idx): _strength = STRENGTHS[idx]; Sfx.play("select"))
 	sw_row.add_child(_str_option)
 	_weak_option = OptionButton.new()
-	_weak_option.custom_minimum_size = Vector2(220, 40)
+	_weak_option.custom_minimum_size = Vector2(380, 40)
 	_weak_option.add_theme_font_override("font", ThemeDB.fallback_font)
 	_weak_option.add_theme_font_size_override("font_size", 19)
 	for i in WEAKNESSES.size():
@@ -319,6 +319,10 @@ func _build() -> void:
 	var preview_v := VBoxContainer.new()
 	preview_v.add_theme_constant_override("separation", 8)
 	preview_panel.add_child(preview_v)
+	# Clear the frame's top crest so the faction name sits inside the frame.
+	var crest_gap := Control.new()
+	crest_gap.custom_minimum_size = Vector2(0, 30)
+	preview_v.add_child(crest_gap)
 
 	_preview_title = Label.new()
 	_preview_title.text = "HERO PREVIEW"
