@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 20:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -429,6 +429,18 @@ Last updated: 2026-09-28, 20:30 UTC. Claude updates this file after every pass. 
   - **Benchmark:** the five-run median is 19.9 ms in the 120-unit fight (about 50 fps), faster than before.
   - Moved to plan 37: the skill constellation and War Chest slot polish, and vein mentions in later saga chapters.
   - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 37 (done): UI page review, vein lore, balance**
+  - **Page-by-page UI tour:** I took screenshots of all eight menu screens and fixed the weakest spots.
+  - **Skill constellation:** locked stars used to show only a padlock. They now show their own symbol, dimmed, with a small lock badge, so you can read the path at a glance. The cost line no longer touches the card border.
+  - **War Chest:** empty slots were bare text. They are now framed tiles that show how many relics in the chest fit each slot; clicking a tile filters the list. Each relic card now shows its top three stats (for example "+19 Dmg · +342 Hp · +7% Attack Speed").
+  - **Hero sheet:** waiting talent picks were below the fold. A gold "Choose Talent (N)" button in the header jumps to them.
+  - **Skirmish map preview:** veins now appear as ringed marks in their resource colour, and the legend explains them.
+  - **Field manual (Settings):** a new VEINS line explains right-clicking a vein with workers.
+  - **Bug found by the preview:** on river maps (Hollowspan, Duskwater, Emerald Isles) some veins sat in the ford. Veins now move to the nearer bank, or south of the bay.
+  - **Lore:** veins are now part of the story in each later act (the Dominion's mines in Act 2, Boticas granite in Act 3, the Geira's gold road in Act 4, and violet Lume flares in Act 5).
+  - **Balance:** Karak got +4% damage, Hollow's lifesteal went from 8% to 11%, Lioraen's health bonus went from 7% to 10%, and the Frostborn AI trains 2 more workers.
+  - **45-match round robin:** Barrosan 5-4, Wyldkin 5-3-1, Grimtusk 5-2-2, Vorthak 4-5, Lioraen 4-5 (was 2 wins), Karak 4-4-1 (was 2), Sylvan 4-2-3, Sunspear 4-2-3, Hollow 2-4-3, Frostborn 1-7-1. The spread is the flattest so far (the top was 6 wins before, now 5). Frostborn is next.
+  - Regression passed (17 checks). No new Codex work. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
