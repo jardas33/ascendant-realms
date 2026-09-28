@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 10:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -382,6 +382,26 @@ Last updated: 2026-09-28, 10:00 UTC. Claude updates this file after every pass. 
   - **Main menu:** once the Seventy-Seventh Oath is won, the saga button reads "The Saga Is Told · Revisit".
   - **Resource redesign (answering Emanuel's review ask):** `docs/claude/RESOURCE_DESIGN.md`. Today every start has identical fields next to the hall, so nothing pulls players across the map, food alone decides many matches, and raids only kill helpless workers. The plan, in the spirit of Warlords Battlecry: claimable veins between the bases (gold, granite, grove and terraced farm). A worker raises an outpost, workers inside gather safely, and outposts upgrade twice (more slots, more output, a watch-fire). Outposts can be raided and taken, rich veins flare mid-battle, income shows as "+N" popups and per-minute rates, and the AI claims and fights over veins too. Building it starts in plan 33.
   - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 33 (done): Emanuel's three reviews and the new economy**
+  - **UI audit, page by page:** every menu screen (main menu, campaign map, hero sheet, War Chest, settings, skirmish, constellation, hero creation) plus the battle HUD (group, workers, hero, hall, pause, result) was screenshotted and reviewed. Fixed:
+    - A **real bug**: selecting several workers showed no command card at all, so there was no build menu. Worker groups now get it, with the right header.
+    - The player's hero showed the generic "Jardas" in its panels; it now shows your hero's own name.
+    - The hero sheet deeds line mixed per-track tiers with lifetime totals and read as contradictory numbers. It now reads "N tiers earned across 8 tracks", with details on hover.
+    - The plain grey XP bar is now a gold bar.
+    - Sealed chapters on the campaign map are easier to read.
+    - Four talent names clashed with skill-tree names and were renamed: Headhunter, Granite Skin, Salto's Horn and Hearthblood.
+  - **Lore and visual review:** all 70 unit names and 55 building names fit their factions' Barroso-folklore identities (one awkward name fixed). The main visual gap: several factions reuse other factions' building models (the Careto Host lives in Barrosan houses). Faction palettes for borrowed models are planned; new models are Codex's lane.
+  - **New economy: Veins of the Highland** (design in `docs/claude/RESOURCE_DESIGN.md`):
+    - Every map now has veins between the bases: a gold vein and a terraced farm about halfway to the centre, and a granite quarry and an old-growth grove on each start's flanks (16 on a four-player map).
+    - Right-click a vein with workers to claim it: a worker raises your faction's outpost (Clan Mine, Rift Pit, Candle Diggings, Careto Camp and so on).
+    - Right-click the outpost with workers: they step inside and gather in safety, with no walking, and they free their population.
+    - Expand an outpost twice (3, 5 and then 7 worker slots, +25% output each level); the top level adds a watch-fire that shoots raiders.
+    - Destroying an outpost spills the workers out and frees the vein.
+    - Income shows as "+N" popups over outposts and as income per minute on the resource tiles.
+    - The AI claims the veins it needs most, staffs them before opening more, expands them, and raids enemy outposts.
+  - **Balance with the new economy (45 matches):** much flatter. Barrosan went from 0 to 2 wins (2-4-3), Vorthak fell to 1-3-5, and Sylvan (7-1) is now the one to watch. 12 of 45 games ran to the 22-minute cap, since outposts make defence stronger.
+  - **Performance bug found and fixed:** a metadata read with a null default raised hidden engine errors about 6 ms apiece and made matches with outposts run 4x slower.
+  - Regression passed (17 checks, now including veins and outposts). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
