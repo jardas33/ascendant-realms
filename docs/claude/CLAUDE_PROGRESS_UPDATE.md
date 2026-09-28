@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 00:40 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 01:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -325,6 +325,14 @@ Last updated: 2026-09-28, 00:40 UTC. Claude updates this file after every pass. 
   - **Loading tips** for Road Tyrants, records and legendary powers.
   - **Frame spikes:** the 50 to 100 ms hitches come from the first clash of 120 units, when two heavy physics steps (about 24 ms each) land in one frame. It isn't a single bug; a deeper optimisation is planned.
   - Regression passed (16 checks). Pushed to GitHub. Codex had nothing new.
+- **Plan 26 (done):**
+  - **Six new talents:** Iron Will (armour), Lume Well (mana), Rallying Cry (aura reach), Second Wind (health regeneration), Keen Eye (sight) and Mentor (+5% battle experience per rank). That makes 15 talents, all stacking forever.
+  - **Free talent reset** on the hero sheet.
+  - **The road ahead:** the Endless Road window lists the next relic, festival, Road Tyrant and enemy mutation, so there is always a goal in view.
+  - **Deep-road enemy heroes** learn an extra spell from stage 20, and their spells reach their strongest forms deeper on the road.
+  - **Performance:** a profile of the 120-unit clash shows unit scripts cost about 8 ms per physics step, spread over attacking, avoidance and presentation with no single hotspot. Health bars no longer rewrite materials every tick. Bigger gains need a deeper refactor, which is kept for later.
+  - **Scouting tips** now that fog of war covers every map. The minimap fog was checked on snow and desert maps.
+  - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
