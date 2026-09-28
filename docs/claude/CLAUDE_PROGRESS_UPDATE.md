@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 07:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 08:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -366,6 +366,13 @@ Last updated: 2026-09-28, 07:30 UTC. Claude updates this file after every pass. 
   - **Loading screen:** under the tip, the hero's next goals (next talent-pick level, next Endless Road relic stage).
   - **Barrosan AI:** a kill log again shows its workers dying to ranged raiders (30 to Sylvan longbows in one match). The cause is how its AI plays, not its units, so deeper AI work is parked for now. The balance changes made so far stay.
   - Road of the Week stays one click from the Endless Road window; the main menu has no room for an eighth button.
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 31 (done):**
+  - **AI home guard:** when an AI attacks, a fifth of its army (ranged soldiers first, at least two once the army has six) stays by its fields instead of marching off. Raiders had been killing 30 or more workers a match. Barrosan now has 1 win, 2 losses and 5 long draws in its eight test matches (was 2 wins, 4 losses, 2 draws), so fewer quick collapses.
+  - **Result screen:** a "Level up!" line (with the level-up sound) when the battle raised the hero's level.
+  - **Campaign map:** each Act's subtitle shows chapters cleared, Wine of the Dead jars found and side roads done.
+  - **Benchmark:** the five-run median is 22.4 ms in the 120-unit fight (about 45 fps).
+  - Two list items were dropped: the War Chest's compare-to-equipped (with Hero Power) already covers item comparison, and the Endless Road already opens on the next stage.
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
