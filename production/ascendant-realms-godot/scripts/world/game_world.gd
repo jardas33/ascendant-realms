@@ -1997,6 +1997,13 @@ func battle_mood() -> String:
 func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var count := int({"easy": 0, "normal": 1, "hard": 2, "brutal": 3}.get(difficulty, 1))
 	var level := 2 if difficulty in ["hard", "brutal"] else 1
+	# Deep on the Endless Road enemy heroes learn more and cast stronger:
+	# one more spell from stage 20, and a spell level every 25 stages up to
+	# each spell's strongest form (their power keeps growing with depth).
+	var depth_now := int(Match.get_config().get("endless_depth", 0))
+	if depth_now >= 20:
+		count += 1
+	level += depth_now / 25
 	var abilities := {}
 	var kit: Array = AI_HERO_KITS.get(race, ["bolt", "charge", "rally"])
 	for i in mini(count, kit.size()):
@@ -3233,6 +3240,11 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.25
 	if victory:
 		xp *= 1.6
+	# Mentor talent: +5% battle experience per rank (sub-linear, never capped).
+	if ProfileManager.has_hero():
+		var mentor := int((ProfileManager.hero().get("talents", {}) as Dictionary).get("mentor", 0))
+		if mentor > 0:
+			xp *= 1.0 + 0.05 * pow(float(mentor), 0.9)
 	var bounty_won := _bounty_met(victory)
 	if bounty_won:
 		xp *= 1.2

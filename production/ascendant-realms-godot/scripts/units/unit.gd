@@ -149,6 +149,7 @@ var _haste_time := 0.0
 var execute_bonus := 0.0
 var thorns := 0.0
 var _reflecting := false
+var _hb_last_ratio := -1.0
 var _progress_clock := 0.0
 var _progress_best := INF
 var _progress_target := Vector3.INF
@@ -1147,6 +1148,12 @@ func _update_health_bar() -> void:
 	var recently_hit: bool = ratio < 0.999 and Time.get_ticks_msec() - _last_damaged_msec < 5000
 	var show_bar: bool = ratio <= P1R24_LOW_HEALTH_RATIO or recently_hit or (is_instance_valid(selection_ring) and selection_ring.visible)
 	_health_bar_root.visible = show_bar
+	# Writing the bar's scale and two material colours on every unit every
+	# tick dirtied 240 materials per frame in a big fight. Only touch them
+	# when the health actually changed.
+	if absf(ratio - _hb_last_ratio) < 0.002:
+		return
+	_hb_last_ratio = ratio
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)
 		_health_bar_fill.position.x = -0.7 * (1.0 - ratio)

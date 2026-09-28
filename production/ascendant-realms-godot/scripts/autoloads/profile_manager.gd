@@ -335,6 +335,15 @@ func talent_points() -> int:
 func talent_offer() -> Array:
 	return TalentDefs.offer(talents_taken())
 
+## Free talent reset: picks are derived from the level, so they all return.
+## The offers start again from the first pick.
+func respec_talents() -> void:
+	if not has_hero():
+		return
+	data["hero"]["talents"] = {}
+	emit_signal("profile_changed")
+	save_game()
+
 func pick_talent(id: String) -> bool:
 	if talent_points() <= 0 or not (id in talent_offer()):
 		return false

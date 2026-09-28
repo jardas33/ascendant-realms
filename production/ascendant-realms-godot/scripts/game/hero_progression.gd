@@ -152,6 +152,11 @@ static func _apply_talent(out: Dictionary, id: String, ranks: int) -> void:
 		"swift_blade": out["attack_speed"] += eff * 0.03
 		"warlord": out["aura_dmg"] += eff * 0.8; out["aura_armor"] += eff * 0.4
 		"stormcaller": out["spell_power"] += eff * 0.08
+		"iron_will": out["bonus_armor"] += eff * 1.0
+		"lume_well": out["max_mana"] += eff * 20.0; out["mana_regen"] += eff * 0.5
+		"rallying_cry": out["aura_range"] += eff * 2.0
+		"second_wind": out["regen"] += eff * 1.5
+		"keen_eye": out["bonus_vision"] += eff * 3.0
 		# quartermaster (retinue) and treasure_hunter (loot) are read where
 		# those systems live.
 

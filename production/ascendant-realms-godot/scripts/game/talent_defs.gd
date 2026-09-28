@@ -17,6 +17,12 @@ const TALENTS := [
 	{"id": "stormcaller", "name": "Stormcaller", "desc": "+8% spell power per rank."},
 	{"id": "quartermaster", "name": "Quartermaster", "desc": "+1 veteran in the retinue per rank."},
 	{"id": "treasure_hunter", "name": "Treasure Hunter", "desc": "+2 Fortune per rank for battle loot."},
+	{"id": "iron_will", "name": "Iron Will", "desc": "+1 armour per rank."},
+	{"id": "lume_well", "name": "Lume Well", "desc": "+20 mana and +0.5 mana regeneration per rank."},
+	{"id": "rallying_cry", "name": "Rallying Cry", "desc": "+2 m command aura reach per rank."},
+	{"id": "second_wind", "name": "Second Wind", "desc": "The hero regenerates 1.5 health a second per rank."},
+	{"id": "keen_eye", "name": "Keen Eye", "desc": "+3 sight per rank: see raiders coming."},
+	{"id": "mentor", "name": "Mentor", "desc": "+5% battle experience per rank."},
 ]
 
 static func find(id: String) -> Dictionary:

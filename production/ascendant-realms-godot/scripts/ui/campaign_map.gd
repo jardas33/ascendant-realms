@@ -332,6 +332,22 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	var records := "   ·   Best with %s: %d" % [GameData.get_race(race_now).get("name", race_now), ProfileManager.endless_best_for(race_now)] if race_now != "" else ""
 	if fastest > 0.0:
 		records += "   ·   Fastest clear: %d:%02d" % [int(fastest) / 60, int(fastest) % 60]
+	# The road ahead: the next milestones, so there is always something to reach for.
+	var ahead: Array = []
+	var best_now := ProfileManager.endless_best()
+	var next_tyrant := (depth / 25 + 1) * 25 if depth % 25 != 0 else depth
+	var next_fest := (depth / 10 + 1) * 10 if depth % 10 != 0 else depth
+	var next_relic := maxi(depth, (best_now / 5 + 1) * 5)
+	if next_relic % 5 != 0:
+		next_relic = (next_relic / 5 + 1) * 5
+	ahead.append("relic at stage %d" % next_relic)
+	ahead.append("festival at %d (%s)" % [next_fest, String(EndlessDefs.FESTIVALS[(next_fest / 10 - 1) % EndlessDefs.FESTIVALS.size()]["title"])])
+	ahead.append("Road Tyrant at %d (%s)" % [next_tyrant, String(EndlessDefs.boss(next_tyrant).get("name", "?"))])
+	var next_mut := maxi(30, (depth / 30 + 1) * 30)
+	ahead.append("new enemy mutation at %d" % next_mut)
+	var road := _label("The road ahead: " + "  ·  ".join(ahead), 14, Color(0.78, 0.74, 0.62))
+	road.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(road)
 	var meta := _label("Enemies: %s%s\nExperience: x%.2f   ·   Deepest stage won: %d%s" % [", ".join(foes), extra, float(st["xp_mult"]), ProfileManager.endless_best(), records], 15, Color(0.85, 0.72, 0.45))
 	meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(meta)

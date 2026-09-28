@@ -318,6 +318,13 @@ func _refresh() -> void:
 		for tid in tal:
 			owned.append("%s %d" % [String(TalentDefs.find(String(tid)).get("name", tid)), int(tal[tid])])
 	right_panel.add_child(_heading("TALENTS"))
+	if not owned.is_empty():
+		var t_reset := Button.new()
+		_label_button(t_reset, "Reset Talents (free)", Color(0.9, 0.85, 0.7))
+		t_reset.custom_minimum_size = Vector2(220, 36)
+		t_reset.focus_mode = Control.FOCUS_NONE
+		t_reset.pressed.connect(func(): Sfx.play("select"); ProfileManager.respec_talents())
+		right_panel.add_child(t_reset)
 	var next_at: int = (int(h.get("level", 1)) / TalentDefs.EVERY_LEVELS + 1) * TalentDefs.EVERY_LEVELS
 	right_panel.add_child(_stat_line("Taken", ", ".join(owned) if not owned.is_empty() else "None yet. A choice every %d levels." % TalentDefs.EVERY_LEVELS))
 	if t_pts > 0:
