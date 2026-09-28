@@ -62,6 +62,10 @@ static func compute(hero: Dictionary) -> Dictionary:
 				"furna_ashglass": out["bonus_dmg"] += 3.0 + lvl * 0.6
 				"moura_silver": out["max_mana"] += 30.0 + lvl * 4.0; out["mana_regen"] += 1.0 + lvl * 0.05
 				"careto_masks": out["bonus_speed"] += 0.2 + sqrt(lvl) * 0.03; out["attack_speed"] += 0.03 + sqrt(lvl) * 0.004
+				"tarasca_scale": out["bonus_armor"] += 2.0 + lvl * 0.08
+				"old_wolf_pelt": out["bonus_speed"] += 0.2 + sqrt(lvl) * 0.03; out["bonus_dmg"] += 2.0 + lvl * 0.4
+				"iron_abbot": out["regen"] += 2.0 + lvl * 0.1
+				"moura_crown": out["spell_power"] += 0.1 + lvl * 0.004
 		if int(set_count[sid]) >= 4:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
 			out["flags"][four[0]] = four[1]

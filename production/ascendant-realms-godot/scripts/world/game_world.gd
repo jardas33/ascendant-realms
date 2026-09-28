@@ -2076,6 +2076,9 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	# Endless Road "Veteran foes" twist: enemy soldiers arrive already ranked.
 	if team != player_team and twist_veteran_foes and not u.is_worker and not u.is_hero:
 		u.set_veterancy(1)
+	# Endless Road "Gloom" twist: the fog closes in on the player's side.
+	if team == player_team and twist_gloom:
+		u.vision *= 0.6
 	# Endless Road mutations (EndlessDefs.mutations_for): deep-road enemies.
 	if team != player_team and not u.is_worker and not _stage_mutations.is_empty():
 		_apply_mutations(u)
@@ -2726,6 +2729,10 @@ func _roll_battle_loot(victory: bool) -> Array:
 	# Every Elite the player slew adds a roll with better odds.
 	for e in elites_slain:
 		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 100 + e, ilvl + 3, fortune + 5, true, "brutal").slice(0, 1))
+	if tyrant_slain != "":
+		var piece: Dictionary = load("res://scripts/game/loot_defs.gd").tyrant_piece(seed_value + 991, ilvl, tyrant_slain)
+		if not piece.is_empty():
+			items.append(piece)
 	# Endless Road "Rich spoils" twist: a second roll.
 	if "spoils" in cfg.get("twists", []):
 		items.append_array(load("res://scripts/game/loot_defs.gd").roll(seed_value + 1, ilvl, fortune, victory, hardest))
@@ -2824,6 +2831,7 @@ func _spawn_champion(depth: int) -> void:
 ## Road Tyrants (EndlessDefs.BOSSES): a named giant on every 25th stage, with
 ## a mechanic of its own, run from a once-a-second tick while it lives.
 var road_boss = null
+var tyrant_slain := ""
 var _boss_kind := ""
 var _boss_clock := 0.0
 
@@ -2932,6 +2940,7 @@ func _apply_mutations(u) -> void:
 ## Endless Road stage twists that shape the start of a battle.
 var twist_damage_mult := 1.0
 var twist_veteran_foes := false
+var twist_gloom := false
 
 func _apply_start_twists() -> void:
 	var twists: Array = Match.get_config().get("twists", [])
@@ -2946,6 +2955,11 @@ func _apply_start_twists() -> void:
 	if "blood_moon" in twists:
 		twist_damage_mult = 1.25
 	twist_veteran_foes = "veterans" in twists
+	twist_gloom = "gloom" in twists
+	if twist_gloom:
+		for u in all_units():
+			if is_instance_valid(u) and u.team == player_team:
+				u.vision *= 0.6
 	# Lean Season: everyone starts with half the stores.
 	if "lean" in twists:
 		for cmd in commanders:
@@ -3381,8 +3395,10 @@ func _on_unit_died(unit) -> void:
 		if int(unit.team) != player_team and source_team == player_team:
 			enemy_heroes_slain += 1
 	if unit.has_meta("road_boss") and source_team == player_team:
-		# A Road Tyrant pays like ten Elites (on top of the milestone legendary).
+		# A Road Tyrant pays like ten Elites (on top of the milestone legendary),
+		# and always drops a piece of its own set.
 		elites_slain += 7
+		tyrant_slain = String(load("res://scripts/game/endless_defs.gd").boss(int(Match.get_config().get("endless_depth", 0))).get("id", ""))
 		emit_signal("alert", "%s is slain! The road will remember this." % String(unit.def.get("name", "The Tyrant")), unit.global_position)
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 3 if unit.has_meta("champion") else 1

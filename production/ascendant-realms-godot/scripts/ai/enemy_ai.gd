@@ -848,6 +848,19 @@ func _choose_unit(choices: Array) -> String:
 		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1)))
 		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1)))
 		return sa > sb)
+	# Keep about a third of the army at range. All-melee armies (Barrosan,
+	# Karak, Frostborn picks) could not answer archers raiding their workers.
+	var ranged_now := 0
+	var army_now := 0
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
+			army_now += 1
+			if float(u.atk_range) > 0.0:
+				ranged_now += 1
+	if army_now >= 3 and float(ranged_now) / float(army_now) < 0.35:
+		var ranged_picks := legal.filter(func(c): return float(GameData.get_unit(c).get("range", 0.0)) > 0.0)
+		if not ranged_picks.is_empty() and _rng.randf() < 0.75:
+			return ranged_picks[0]
 	if _rng.randf() < 0.6:
 		return legal[0]
 	return legal[_rng.randi() % legal.size()]

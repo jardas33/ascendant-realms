@@ -9,7 +9,8 @@ const SAVE_TEMP_PATH := "user://ascendant_save.json.tmp"
 ## to a blank profile and overwrite the file, losing the hero for good.
 const SAVE_BACKUP_PATH := "user://ascendant_save.backup.json"
 var _last_backup_msec := -1000000
-const SAVE_VERSION := 1
+## 2: talents, Endless Road records, Tyrant sets (2026-09-28).
+const SAVE_VERSION := 2
 
 signal profile_changed
 signal hero_created
@@ -565,6 +566,13 @@ func load_game() -> void:
 		# left only in memory after a usable-but-wrong JSON root is encountered.
 		save_game()
 		return
+	# Before a save written by an older version is migrated, keep a copy of
+	# it exactly as it was, so an upgrade can never cost a hero.
+	var old_version := int(parsed.get("version", 0))
+	if old_version < SAVE_VERSION:
+		var keep := "user://ascendant_save.v%d.backup.json" % old_version
+		if not FileAccess.file_exists(keep):
+			DirAccess.copy_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(keep))
 	data = _normalize_profile(_migrate(parsed))
 	emit_signal("profile_changed")
 

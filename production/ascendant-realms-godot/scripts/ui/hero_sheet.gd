@@ -437,7 +437,26 @@ func _stat_line(name: String, val: String) -> HBoxContainer:
 	b.add_theme_color_override("font_color", Color(0.6, 0.95, 0.7))
 	b.add_theme_font_size_override("font_size", 19)
 	row.add_child(b)
+	# Every number explains itself on hover.
+	if STAT_HELP.has(name):
+		row.tooltip_text = String(STAT_HELP[name])
+		row.mouse_filter = Control.MOUSE_FILTER_PASS
+		a.mouse_filter = Control.MOUSE_FILTER_PASS
+		a.tooltip_text = row.tooltip_text
 	return row
+
+const STAT_HELP := {
+	"Bonus Health": "Extra health from Endurance, Might, gear, sets, Fortitude mastery and talents.",
+	"Bonus Damage": "Extra damage per blow from Might, Intellect, gear, sets and Warfare mastery. Spells scale with it too.",
+	"Bonus Armor": "Flat armour from Willpower, gear and Iron Will. Each point blunts every blow.",
+	"Attack Speed": "Faster attacks from Agility, gear, Celerity mastery and Swift Blade.",
+	"Max Mana": "Mana for spells: Intellect, gear, Attunement mastery and Lume Well.",
+	"Abilities Unlocked": "Spells learned on the skill constellation. Cast them with Y, U and V in battle.",
+	"Hero Power": "One number to watch grow: damage output times survivability, with every bonus counted.",
+	"Talents": "Effects from talents picked every tenth level. They stack without end.",
+	"Powers": "Legendary powers from equipped items.",
+	"Taken": "Talents already picked, with their ranks.",
+}
 
 func _hsep() -> HSeparator:
 	return HSeparator.new()

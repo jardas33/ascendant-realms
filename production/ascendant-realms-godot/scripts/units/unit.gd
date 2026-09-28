@@ -144,6 +144,7 @@ var _navigation_last_target_ready := false
 var _navigation_retry_elapsed := 0.0
 var _navigation_repath_cooldown := 0.0
 var _navigation_waypoints: Array = []
+var _settled_zero_sent := false
 var _power_hits := 0
 var _haste_time := 0.0
 var execute_bonus := 0.0
@@ -479,8 +480,9 @@ func _apply_race_passive() -> void:
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
 			regen += 2.0
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
-			move_speed *= 1.15
-			base_dmg *= 1.10
+			# Was +15% speed and +10% damage: 9-0 in the AI round robin.
+			move_speed *= 1.08
+			base_dmg *= 1.05
 		"hollow":                         # Undying — every warrior drains life on hit
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.08)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
@@ -2341,8 +2343,12 @@ func _state_attack(delta: float) -> void:
 		# every unit standing in a fight.
 		if agent and agent.target_position.distance_squared_to(global_position) > 0.04:
 			agent.target_position = global_position
-		if agent:
+		# A settled fighter submitted a zero velocity to avoidance every tick,
+		# and each submission ran the avoidance callback again. Once is enough
+		# until it moves.
+		if agent and not _settled_zero_sent:
 			agent.set_velocity(Vector3.ZERO)
+			_settled_zero_sent = true
 		_face(_target.global_position)
 		if _attack_timer <= 0.0:
 			_do_attack()
@@ -2955,6 +2961,7 @@ func _move_along_path(delta: float) -> bool:
 		move_and_slide()
 	elif agent.avoidance_enabled:
 		agent.set_velocity(desired)
+		_settled_zero_sent = false
 	else:
 		velocity.x = desired.x
 		velocity.z = desired.z

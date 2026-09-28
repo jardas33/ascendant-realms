@@ -37,9 +37,16 @@ const SETS := {
 	"furna_ashglass": {"name": "Furna's Ashglass", "two": "damage", "four": ["lifesteal", 0.1, "10% lifesteal"]},
 	"moura_silver": {"name": "Moura Silver", "two": "mana", "four": ["execute", true, "execute wounded foes"]},
 	"careto_masks": {"name": "Careto Masks", "two": "speed", "four": ["cleave", true, "cleave"]},
+	# Road Tyrant sets: they only drop when a Tyrant falls (never from ordinary battles).
+	"tarasca_scale": {"name": "Tarasca Scale", "two": "armour", "four": ["thornmail", 0.25, "25% thorns"]},
+	"old_wolf_pelt": {"name": "Pelt of the Old Wolf", "two": "speed and damage", "four": ["haste_on_kill", true, "quicker blows after each kill"]},
+	"iron_abbot": {"name": "Iron of the Abbot", "two": "health regeneration", "four": ["last_stand", true, "survive one lethal blow"]},
+	"moura_crown": {"name": "Crown of the Moura Queen", "two": "spell power", "four": ["chain_lightning", true, "every fourth blow arcs lightning"]},
 }
+const TYRANT_SETS := {"tarasca": "tarasca_scale", "old_wolf": "old_wolf_pelt", "iron_abbot": "iron_abbot", "moura_queen": "moura_crown"}
 
-const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ashglass", "moura_silver": "Moura-silver", "careto_masks": "Careto"}
+const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ashglass", "moura_silver": "Moura-silver", "careto_masks": "Careto",
+	"tarasca_scale": "Tarasca-scale", "old_wolf_pelt": "Old Wolf's", "iron_abbot": "Abbot's Iron", "moura_crown": "Moura Queen's"}
 
 ## [flag, value, description] - powers the hero already understands.
 const LEGENDARY_POWERS := [
@@ -105,7 +112,8 @@ static func make_item(rng: RandomNumberGenerator, item_level: int, shift: float)
 		power_desc = " " + String(power[2])
 	var set_id := ""
 	if rarity in ["epic", "legendary"] and rng.randf() < 0.5:
-		set_id = String(SETS.keys()[rng.randi() % SETS.size()])
+		var common_sets: Array = SETS.keys().filter(func(k): return not TYRANT_SETS.values().has(k))
+		set_id = String(common_sets[rng.randi() % common_sets.size()])
 		var st: Dictionary = SETS[set_id]
 		power_desc += " Set: %s (2 pieces: +%s, 4 pieces: %s)." % [st["name"], st["two"], st["four"][2]]
 	var name := "%s %s" % [PREFIXES[rng.randi() % PREFIXES.size()], base[0]]
@@ -115,6 +123,28 @@ static func make_item(rng: RandomNumberGenerator, item_level: int, shift: float)
 		name = "%s %s" % [SET_PREFIX[set_id], base[0]]
 	return {"name": name, "slot": slot, "rarity": rarity, "stats": stats, "flags": flags, "set": set_id,
 		"item_level": item_level, "desc": "Taken from the field. Item level %d.%s" % [item_level, power_desc]}
+
+## A piece of a Road Tyrant's set: epic or better, always part of the set.
+static func tyrant_piece(seed_value: int, item_level: int, boss_id: String) -> Dictionary:
+	var sid := String(TYRANT_SETS.get(boss_id, ""))
+	if sid == "":
+		return {}
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var it: Dictionary = {}
+	for attempt in 40:
+		it = make_item(rng, item_level + 5, 3.0)
+		if String(it["rarity"]) in ["epic", "legendary"]:
+			break
+	if not (String(it["rarity"]) in ["epic", "legendary"]):
+		it["rarity"] = "epic"
+	var st: Dictionary = SETS[sid]
+	var nouns := {"main_hand": "Blade", "body": "Mail", "head": "Helm", "amulet": "Amulet", "ring1": "Ring",
+		"cloak": "Cloak", "off_hand": "Shield", "feet": "Boots", "hands": "Gauntlets", "ring2": "Signet", "relic": "Reliquary"}
+	it["set"] = sid
+	it["name"] = "%s %s" % [SET_PREFIX[sid], String(nouns.get(String(it["slot"]), "Relic"))]
+	it["desc"] = "Torn from a Road Tyrant. Item level %d. Set: %s (2 pieces: +%s, 4 pieces: %s)." % [int(it["item_level"]), st["name"], st["two"], st["four"][2]]
+	return it
 
 static func _add_stat(stats: Dictionary, key: String, points: float) -> void:
 	var v := points * float(STAT_SCALE.get(key, 1.0))
