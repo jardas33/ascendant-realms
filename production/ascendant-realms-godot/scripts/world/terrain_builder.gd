@@ -9,7 +9,7 @@ extends Node3D
 const GROUND_TEX := {
 	"grass": "res://assets/textures/nature/highland_grass.png",
 	"meadow": "res://assets/textures/nature/highland_meadow_grass_r5.png",
-	"dirt": "res://assets/textures/nature/highland_dirt_path.png",
+	"dirt": "res://assets/textures/nature/highland_dirt_path_r3.png",
 	"rock": "res://assets/textures/stone/highland_rock.png",
 	"snow": "res://assets/textures/nature/frostmere_windswept_snow_r1.png",
 	"volcanic": "res://assets/textures/ground/vorthak_volcanic_ash_r1.png",
@@ -237,11 +237,11 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		"verdant":
 			# Keep Bloomvale's inviting green mids after replacing the repeated
 			# plant stamps with a finer, more natural meadow texture.
-			return {"ground_base": Color(0.29, 0.43, 0.25), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.52, "surface_macro": 0.23, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.88, "field_strength": 0.42, "relief_strength": 1.0}
+			return {"ground_base": Color(0.29, 0.43, 0.25), "road_base": Color(0.43, 0.39, 0.31), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.52, "surface_macro": 0.23, "road_detail": 0.57, "road_edge_strength": 0.29, "surface_saturation": 0.88, "field_strength": 0.42, "relief_strength": 1.0}
 		_:
 			# WORLD-03 highland grade: broader value variation and a clearer
 			# road verge, while keeping the grass palette restrained for units.
-			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.48, 0.37, 0.24), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.48, "road_edge_strength": 0.29, "surface_saturation": 0.82, "field_strength": 0.5, "relief_strength": 1.0}
+			return {"ground_base": Color(0.31, 0.39, 0.26), "road_base": Color(0.43, 0.39, 0.31), "road_edge_color": Color(0.19, 0.22, 0.16), "surface_detail": 0.46, "surface_macro": 0.27, "road_detail": 0.57, "road_edge_strength": 0.29, "surface_saturation": 0.82, "field_strength": 0.5, "relief_strength": 1.0}
 
 
 # ---------------------------------------------------------------------------

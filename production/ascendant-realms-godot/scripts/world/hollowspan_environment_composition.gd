@@ -109,7 +109,7 @@ const ASSET_PATHS := {
 	"lume_bloom": ASSET_ROOT + "lioraen_lume_bloom.glb",
 }
 
-const SLICE_DIRT_TEXTURE := "res://assets/textures/nature/highland_dirt_path.png"
+const SLICE_DIRT_TEXTURE := "res://assets/textures/nature/highland_dirt_path_r3.png"
 const SLICE_ROCK_TEXTURE := "res://assets/textures/stone/highland_rock.png"
 
 const PLACEMENTS := [
