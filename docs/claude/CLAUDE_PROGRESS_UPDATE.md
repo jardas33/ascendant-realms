@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 01:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -332,6 +332,15 @@ Last updated: 2026-09-28, 01:30 UTC. Claude updates this file after every pass. 
   - **Deep-road enemy heroes** learn an extra spell from stage 20, and their spells reach their strongest forms deeper on the road.
   - **Performance:** a profile of the 120-unit clash shows unit scripts cost about 8 ms per physics step, spread over attacking, avoidance and presentation with no single hotspot. Health bars no longer rewrite materials every tick. Bigger gains need a deeper refactor, which is kept for later.
   - **Scouting tips** now that fog of war covers every map. The minimap fog was checked on snow and desert maps.
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 27 (done):**
+  - **AI army mix:** the AI keeps about a third of its army ranged, so all-melee factions can answer archers raiding their workers. In the 45-match rerun, Barrosan now draws most games (0-4-5) instead of losing by minute 9. Wyldkin rose to 9-0, so its faction bonus is halved (+8% speed, +5% damage).
+  - **Road Tyrant gear sets:** each Tyrant always drops a piece of its own four-piece set, found nowhere else. Tarasca Scale gives armour and 25% thorns. The Pelt of the Old Wolf gives speed and damage, plus Bloodrush. The Iron of the Abbot gives regeneration and Last Stand. The Crown of the Moura Queen gives spell power and Stormcall.
+  - **New Gloom twist:** the fog closes in and your soldiers see 40% less far.
+  - **Hero sheet:** every stat explains itself on hover.
+  - **Save safety:** before a save from an older version is upgraded, an untouched copy is kept (for example, ascendant_save.v1.backup.json). The save version is now 2.
+  - **Engine:** settled fighters stop re-sending a zero velocity to avoidance every tick. The benchmark swings 23 to 30 ms between identical runs on this machine, so the gain is too small to measure.
+  - **Campaign check:** an AI playing Act I as Barrosan lost chapter 3 at minute 8 and did not finish chapters 1 and 2 in 20 minutes (8 units stuck on chapter 1). Plan 28 looks closer.
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
