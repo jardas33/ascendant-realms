@@ -473,6 +473,18 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - A faction swings by 2 to 4 wins between runs with no change at all (Barrosan went from 2 to 7). One 45-match run can't separate small balance changes from noise, so plan 41 pools two runs before tuning again.
   - **Pause and result screens (1920x1080):** both read well. The Endless stage line showed "stage 25:" with nothing after it when a stage had no title; it now drops the colon.
   - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 41 (done): balance from 90 pooled matches**
+  - **Before tuning (two 45-match runs pooled):** Ironmaw 14-3-1 was the clear outlier. Its Breakers cost only 40 food and trained in 9 s, which made them the cheapest army once food runs short. Karak was 4-12-2 and Lioraen 5-13.
+  - **Changes:**
+    - Ironmaw Breakers now cost 50 food and train in 10 s.
+    - Chainbreaker damage went from 26 to 23.
+    - The Lioraen hero has 380 health (was 340) and 30 damage (was 26).
+    - The Granitborn AI no longer trains 2 extra workers; they were extra mouths once the home food ran dry.
+  - **After tuning (90 new matches):** Hollow 11-6-1, Sylvan 10-6-2, Ironmaw 10-5-3, Wyldkin 9-7-2, Vorthak 8-9-1, Sunspear 7-9-2, Karak 7-9-2, Barrosan 7-6-5, Frostborn 6-10-2, Lioraen 5-13.
+    - The spread went from 4-14 wins to 5-11 wins, the flattest yet.
+    - Lioraen is the one faction still clearly behind, so it is first in plan 42.
+  - **Screens reviewed:** the campaign map (all five Acts) and the loading screen at 1920 both read well.
+  - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
