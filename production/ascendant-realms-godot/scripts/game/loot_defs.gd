@@ -57,6 +57,8 @@ const LEGENDARY_POWERS := [
 	["thornmail", 0.15, "Power: melee attackers take 15% of their blow back."],
 	["chain_lightning", true, "Power: every fourth blow arcs lightning into the enemies around the target."],
 	["haste_on_kill", true, "Power: each kill quickens the hero's attacks by 40% for 4 seconds."],
+	["quickcast", true, "Power: every spell recharges 25% faster."],
+	["mana_font", true, "Power: mana returns half again as fast."],
 ]
 const AFFIX_POOL := ["dmg", "hp", "armor", "speed", "attack_speed", "mana", "mana_regen", "heal_power", "aura_dmg"]
 

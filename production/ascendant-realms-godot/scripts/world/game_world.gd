@@ -377,7 +377,8 @@ func visibility_grid_contract() -> Dictionary:
 func _player_visibility_scope_active() -> bool:
 	# Fog of war was scoped to Hollowspan while it was proven there; every
 	# battlefield uses it now, so scouting matters on all twenty maps.
-	return player_team == 0
+	# AI-versus-AI balance tests switch it off so both seats see alike.
+	return player_team == 0 and not bool(Match.get_config().get("no_fog", false))
 
 func _setup_player_visibility() -> void:
 	_visibility_columns = maxi(1, int(ceil((playable_max.x - playable_min.x) / VISIBILITY_CELL_SIZE)))
@@ -2832,6 +2833,14 @@ func _spawn_champion(depth: int) -> void:
 ## a mechanic of its own, run from a once-a-second tick while it lives.
 var road_boss = null
 var tyrant_slain := ""
+
+## Lifetime counters for deeds (AchievementDefs), kept in the profile stats.
+func _bump_profile_stat(key: String) -> void:
+	if not ProfileManager.has_hero():
+		return
+	var st: Dictionary = ProfileManager.data.get("stats", {})
+	st[key] = int(st.get(key, 0)) + 1
+	ProfileManager.data["stats"] = st
 var _boss_kind := ""
 var _boss_clock := 0.0
 
@@ -3399,9 +3408,11 @@ func _on_unit_died(unit) -> void:
 		# and always drops a piece of its own set.
 		elites_slain += 7
 		tyrant_slain = String(load("res://scripts/game/endless_defs.gd").boss(int(Match.get_config().get("endless_depth", 0))).get("id", ""))
+		_bump_profile_stat("tyrants_slain")
 		emit_signal("alert", "%s is slain! The road will remember this." % String(unit.def.get("name", "The Tyrant")), unit.global_position)
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 3 if unit.has_meta("champion") else 1
+		_bump_profile_stat("elites_slain")
 		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
 		Sfx.play("levelup", -8.0)
 		if is_instance_valid(_fx_container):

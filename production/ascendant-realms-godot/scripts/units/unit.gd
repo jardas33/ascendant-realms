@@ -1502,8 +1502,9 @@ func _can_attack_target(tgt) -> bool:
 		return false
 	if world and team == world.player_team and world.has_method("is_player_visible") and not world.is_player_visible(tgt):
 		return false
-	if tgt is Building and not tgt.is_built:
-		return false
+	# Unfinished enemy sites used to be untouchable, yet they still count for
+	# conquest: a campaign battle could never end while one stood half-built.
+	# They can be attacked like any building now.
 	return tgt.has_method("take_damage") and tgt.has_method("get_hp_ratio")
 
 func command_patrol(pos: Vector3) -> void:
@@ -3343,7 +3344,7 @@ func cast_ability(id: String, target_pos: Vector3) -> bool:
 		return false
 	var ab := SkillDefs.get_abilities().get(id, {})
 	mana -= float(ab.get("mana", 0))
-	ability_cd[id] = float(ab.get("cd", 10.0))
+	ability_cd[id] = float(ab.get("cd", 10.0)) * (0.75 if bool(hero_flags.get("quickcast", false)) else 1.0)
 	_play_sfx("spell", -4.0)
 	if world:
 		world.execute_hero_ability(self, id, target_pos, abilities.get(id, 1))

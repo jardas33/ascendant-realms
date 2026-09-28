@@ -25,7 +25,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_clan_levy"), "height": 1.8,
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 50, "timber": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 40, "timber": 10, "gold": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
 		"desc": "Farmers who fight in family blocks under the village banner. Cheap and stubborn; good against unarmoured foes.",
 	},
 	"barrosan_spear_guard": {
@@ -34,7 +34,7 @@ static func get_all() -> Dictionary:
 		"model": "res://assets/characters/barrosan_stoneward_spears_r696_compat/barrosan_stoneward_spears_r696_compat.glb", "height": 1.85,
 		"hp": 180, "dmg": 17, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
-		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "barracks",
+		"cost": {"food": 55, "timber": 20, "stone": 10, "gold": 15}, "build_time": 18, "pop": 2, "produced_by": "barracks",
 		"desc": "Granite-steady pikemen who have held the mountain passes for three hundred years. Anchor the line and shred cavalry.",
 	},
 	"barrosan_crag_archer": {
@@ -43,7 +43,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_crag_archer"), "height": 1.8,
 		"hp": 90, "dmg": 19, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "arrow",
-		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 40, "timber": 30, "gold": 10}, "build_time": 16, "pop": 1, "produced_by": "barracks",
 		"desc": "Wolf-hunters of the high crags, who learned their aim on the fojo walls. Deadly from the heights, fragile up close.",
 	},
 	"barrosan_outrider": {
@@ -52,7 +52,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_outrider"), "height": 1.8,
 		"hp": 150, "dmg": 17, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 5.4, "vision": 26.0,
-		"cost": {"food": 80, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "barracks",
+		"cost": {"food": 65, "gold": 35}, "build_time": 18, "pop": 2, "produced_by": "barracks",
 		"desc": "Riders on the small, sure-footed wild ponies of the Gerês. Run down archers and harry the enemy's workers.",
 	},
 	"barrosan_anvil_breaker": {
@@ -61,7 +61,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_anvil_breaker"), "height": 1.95,
 		"hp": 240, "dmg": 30, "dmg_type": "blunt", "armor_class": "heavy", "armor": 5,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
-		"cost": {"food": 110, "stone": 40, "gold": 40}, "build_time": 26, "pop": 3, "produced_by": "barracks",
+		"cost": {"food": 90, "stone": 40, "gold": 60}, "build_time": 26, "pop": 3, "produced_by": "barracks",
 		"desc": "The village smiths, marching with the sledgehammers that shaped every plough in the valley. Crush heavy armour and walls.",
 	},
 	"barrosan_ballista": {

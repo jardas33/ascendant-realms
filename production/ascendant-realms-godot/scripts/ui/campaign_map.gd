@@ -332,6 +332,21 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	var records := "   ·   Best with %s: %d" % [GameData.get_race(race_now).get("name", race_now), ProfileManager.endless_best_for(race_now)] if race_now != "" else ""
 	if fastest > 0.0:
 		records += "   ·   Fastest clear: %d:%02d" % [int(fastest) / 60, int(fastest) % 60]
+	# Know your foe: each enemy faction's way of war, from its race entry.
+	var foe_lines: Array = []
+	var seen_races: Array = []
+	for o in st["opponents"]:
+		var r := String(o["race"])
+		if seen_races.has(r):
+			continue
+		seen_races.append(r)
+		var mech := String(GameData.get_race(r).get("mechanic", ""))
+		if mech != "":
+			foe_lines.append("%s: %s" % [GameData.get_race(r).get("name", r), mech])
+	if not foe_lines.is_empty():
+		var foe := _label("Know your foe: " + "  ·  ".join(foe_lines), 14, Color(0.86, 0.66, 0.6))
+		foe.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(foe)
 	# The road ahead: the next milestones, so there is always something to reach for.
 	var ahead: Array = []
 	var best_now := ProfileManager.endless_best()

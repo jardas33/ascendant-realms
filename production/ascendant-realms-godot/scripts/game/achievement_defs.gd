@@ -16,6 +16,10 @@ const TRACKS := [
 		"titles": ["Laurelled", "Twice-tested", "Hard as Granite", "Heroic Jardas", "Crown of Laurels"]},
 	{"id": "legendary", "name": "Legendary finds", "stat": "legendary_found", "first": [1, 5, 15, 40],
 		"titles": ["Lucky", "Gold-finder", "Moura's Favourite", "Treasure of the Highlands"]},
+	{"id": "tyrants", "name": "Road Tyrants slain", "stat": "tyrants_slain", "first": [1, 4, 10, 25],
+		"titles": ["Tyrant-breaker", "Bane of the Tarasca", "Wolf-slayer of Larouco", "Ender of Tyrants"]},
+	{"id": "elites", "name": "Elites and champions slain", "stat": "elites_slain", "first": [5, 25, 100, 400],
+		"titles": ["Giant-feller", "Champion's Doom", "Scourge of Elites", "Hunter of the Great"]},
 ]
 
 static func track(id: String) -> Dictionary:

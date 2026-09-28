@@ -70,6 +70,9 @@ static func compute(hero: Dictionary) -> Dictionary:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
 			out["flags"][four[0]] = four[1]
 
+	# Mana Font (legendary power): mana returns half again as fast.
+	if out["flags"].has("mana_font"):
+		out["mana_regen"] *= 1.5
 	# Thornmail (legendary power) feeds the same reflection as Thornhide.
 	if out["flags"].has("thornmail"):
 		out["thorns"] = float(out.get("thorns", 0.0)) + float(out["flags"]["thornmail"])

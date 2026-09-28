@@ -331,6 +331,9 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	card.pressed.connect(_show_equipped_detail.bind(slot, item))
 	return card
 
+var _filter_slot := "all"
+var _filter_set := "all"
+
 func _rebuild_items() -> void:
 	_clear_after(_items_box, 2)
 	_item_group = ButtonGroup.new()
@@ -343,6 +346,36 @@ func _rebuild_items() -> void:
 	count_label.add_theme_font_size_override("font_size", 13)
 	count_label.add_theme_color_override("font_color", Color(0.72, 0.67, 0.55))
 	_items_box.add_child(count_label)
+	# Filters: by slot and by gear set, so a long run's chest stays usable.
+	var slots: Array = ["all"]
+	var sets: Array = ["all"]
+	for it in inv:
+		var sl := String(it.get("slot", ""))
+		if sl != "" and not slots.has(sl):
+			slots.append(sl)
+		var st := String(it.get("set", ""))
+		if st != "" and not sets.has(st):
+			sets.append(st)
+	var frow := HBoxContainer.new()
+	frow.add_theme_constant_override("separation", 8)
+	var slot_pick := OptionButton.new()
+	for i in slots.size():
+		slot_pick.add_item("Every slot" if slots[i] == "all" else _pretty(String(slots[i])), i)
+		if String(slots[i]) == _filter_slot:
+			slot_pick.select(i)
+	slot_pick.item_selected.connect(func(i): _filter_slot = String(slots[i]); _rebuild_items())
+	frow.add_child(slot_pick)
+	if sets.size() > 1:
+		var set_pick := OptionButton.new()
+		var LD = load("res://scripts/game/loot_defs.gd")
+		for i in sets.size():
+			set_pick.add_item("Any set" if sets[i] == "all" else String(LD.SETS.get(sets[i], {}).get("name", sets[i])), i)
+			if String(sets[i]) == _filter_set:
+				set_pick.select(i)
+		set_pick.item_selected.connect(func(i): _filter_set = String(sets[i]); _rebuild_items())
+		frow.add_child(set_pick)
+	_items_box.add_child(frow)
+	inv = inv.filter(func(it): return (_filter_slot == "all" or String(it.get("slot", "")) == _filter_slot) and (_filter_set == "all" or String(it.get("set", "")) == _filter_set))
 	# Best first: rarity, then item level.
 	var order := ["legendary", "epic", "rare", "uncommon", "common"]
 	var sorted := inv.duplicate()

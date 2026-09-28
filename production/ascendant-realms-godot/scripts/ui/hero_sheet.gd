@@ -298,7 +298,7 @@ func _refresh() -> void:
 		extras.append("+%d%% spell power" % int(float(b["spell_power"]) * 100.0))
 	if not extras.is_empty():
 		build_panel.add_child(_stat_line("Talents", ", ".join(extras)))
-	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable", "thornmail": "Thornmail", "chain_lightning": "Stormcall", "haste_on_kill": "Bloodrush"}
+	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable", "thornmail": "Thornmail", "chain_lightning": "Stormcall", "haste_on_kill": "Bloodrush", "quickcast": "Quickcast", "mana_font": "Mana Font"}
 	var powers: Array = []
 	for f in b.get("flags", {}):
 		if flag_names.has(f):
