@@ -441,6 +441,22 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Balance:** Karak got +4% damage, Hollow's lifesteal went from 8% to 11%, Lioraen's health bonus went from 7% to 10%, and the Frostborn AI trains 2 more workers.
   - **45-match round robin:** Barrosan 5-4, Wyldkin 5-3-1, Grimtusk 5-2-2, Vorthak 4-5, Lioraen 4-5 (was 2 wins), Karak 4-4-1 (was 2), Sylvan 4-2-3, Sunspear 4-2-3, Hollow 2-4-3, Frostborn 1-7-1. The spread is the flattest so far (the top was 6 wins before, now 5). Frostborn is next.
   - Regression passed (17 checks). No new Codex work. Pushed to GitHub.
+- **Plan 38 (done): Frostborn, battle screens, lore match**
+  - **Why Frostborn lost:** a per-minute economy log showed it starving on 2 to 12 food while 1,900 stone and 5,000 gold sat unspent. Every base has one food node, and it runs dry around minute 5 or 6. After that, food comes only from houses and food veins, and the AI was claiming stone, timber and gold veins instead.
+  - **AI vein fix (all factions):** the AI now weighs veins by what its army eats and strongly prefers food veins. When a store runs empty, an outpost on a resource the AI already has more than 700 of sends its workers home to gather what is short. I also removed plan 37's extra Frostborn workers, because they only ate more food.
+  - **Round robin:** Hollow 6-3, Grimtusk 6-1-2, Lioraen 5-4, Sunspear 5-3-1, Vorthak 4-5, Sylvan 4-4-1, Barrosan 4-4-1, Frostborn 3-6 (was 1-7-1), Wyldkin 3-4-2, Karak 1-7-1 (was 4-4-1). Karak's drop is within the swing we see between runs, but it is first in plan 39.
+  - **Lore match:** 34 building descriptions still described orcs, elves, dwarves, a desert sun-god, an undead Legion and Norse jarls, from before the factions were re-themed. They now match each faction:
+    - Ironmaw: the freed mine slaves' taken pithead.
+    - Moura Court: the court under the fountain, with coal spun into gold.
+    - Granitborn: castro hillforts and a ledger stone.
+    - Aurean Dominion: the regent's palace and survey obelisks.
+    - Wolfveil: dens and broken wolf-traps.
+    - Compaña: the candle chapel and crossroads graves.
+    - Careto Host: Careto Hall, the Mask House and the Bell Forge.
+    - Barracks descriptions now list the units they actually train. The Lioraen Bloomdancer no longer calls itself a Moura.
+  - **Battle screens:** the outpost card's "Release Workers" button no longer wraps onto two lines, and the vein section has a clear heading.
+  - **Hero creation:** the faction name no longer overlaps the frame's crest, and the strength and weakness menus are the same width.
+  - Regression passed (17 checks). The benchmark median was 22.1 ms, and the best run matched plan 37's 18.8 ms, so the difference is run-to-run noise. No new Codex work. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
