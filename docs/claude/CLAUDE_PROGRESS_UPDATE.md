@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 04:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -341,6 +341,15 @@ Last updated: 2026-09-28, 02:30 UTC. Claude updates this file after every pass. 
   - **Save safety:** before a save from an older version is upgraded, an untouched copy is kept (for example, ascendant_save.v1.backup.json). The save version is now 2.
   - **Engine:** settled fighters stop re-sending a zero velocity to avoidance every tick. The benchmark swings 23 to 30 ms between identical runs on this machine, so the gain is too small to measure.
   - **Campaign check:** an AI playing Act I as Barrosan lost chapter 3 at minute 8 and did not finish chapters 1 and 2 in 20 minutes (8 units stuck on chapter 1). Plan 28 looks closer.
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 28 (done):**
+  - **Bug fixed: battles that could never end.** Unfinished enemy buildings could not be attacked, yet they still counted for conquest. An army could wipe out the enemy and then stand beside a half-built barracks forever. They can be attacked now. In an AI playthrough, campaign chapters 1 and 2 now finish in 7 to 8 minutes, where before they ran past 20 unfinished. This also explained most of Barrosan's AI "draws".
+  - **Balance:** the 45-match matrix is much flatter, with every faction on 3 to 7 wins except Barrosan. Barrosan starved on food (one food field per start, like everyone) while gold piled up to 3,000, because its soldiers cost almost only food. They now cost a little gold and less food (Clan Levy 40 food, 10 timber, 10 gold). Barrosan went from 0 to 2 wins in its eight test matches, with 2 draws.
+  - **Two new legendary powers:** Quickcast (spells recharge 25% faster) and Mana Font (mana returns 50% faster).
+  - **War Chest:** filter by slot and by gear set.
+  - **Two new deed tracks:** Road Tyrants slain and Elites slain, with titles and endless tiers.
+  - **Endless Road window:** a "Know your foe" line with each enemy faction's way of war.
+  - **Testing:** AI-versus-AI balance tests switch fog off so both seats are equal (fog now covers every map).
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
