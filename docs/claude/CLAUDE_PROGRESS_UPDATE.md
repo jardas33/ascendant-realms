@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 19:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 20:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -420,6 +420,14 @@ Last updated: 2026-09-28, 19:00 UTC. Claude updates this file after every pass. 
   - **Hero sheet:** a "Forged as" line shows the archetype, strength and weakness, with their effects on hover.
   - **New Endless Road twist, Rich Highlands:** every vein pays half again as much.
   - **Lioraen:** units are 7% sturdier. They still trail (2 wins, 5 losses and 1 draw in eight matchups), so they get a deeper look next.
+  - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 36 (done):**
+  - **Heroes fight fighters first:** a kill log showed the Wolfveil AI hero cutting down 26 Lioraen workers in one match (AI heroes on attack-move hit whatever was nearest). Heroes, including yours, now pick soldiers before workers and only fall back to workers when no soldier is in reach. Lioraen went from 2 to 3 wins in its eight matchups.
+  - **Staffed outposts glow:** a lantern lights up and brightens with every worker inside.
+  - **AI raids veins:** from minute 5, every 90 s the AI sends its fastest idle soldiers at the nearest enemy outpost, so veins have to be guarded.
+  - **Save check:** outposts, veins and garrisons exist only during a battle; nothing leaks into the save (the save round-trip test passes).
+  - **Benchmark:** the five-run median is 19.9 ms in the 120-unit fight (about 50 fps), faster than before.
+  - Moved to plan 37: the skill constellation and War Chest slot polish, and vein mentions in later saga chapters.
   - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
