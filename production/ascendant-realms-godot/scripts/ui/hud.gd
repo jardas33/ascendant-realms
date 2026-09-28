@@ -28,9 +28,11 @@ const RESOURCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1
 const FORCE_OBJECT_ATLAS := preload("res://assets/ui/hud_instruments/astra_r1/force_objects_atlas_r2.png")
 const BARROSAN_COMMAND_CREST := "res://assets/ui/barrosan_command_crest_i2.png"
 const LIORAEN_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+const VORTHAK_COMMAND_CREST := "res://assets/ui/faction_crests/astra_r1/vorthak.png"
 const COMMAND_CRESTS := {
 	"barrosan": BARROSAN_COMMAND_CREST,
 	"lioraen": LIORAEN_COMMAND_CREST,
+	"vorthak": VORTHAK_COMMAND_CREST,
 }
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.

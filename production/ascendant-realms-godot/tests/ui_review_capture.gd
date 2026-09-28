@@ -290,8 +290,13 @@ func _run() -> void:
 									validation_errors.append("top_metric_value_clipped:" + metric_label.text)
 			if not is_instance_valid(objective) or not safe_rect.encloses(objective.get_global_rect()):
 				validation_errors.append("objective_outside_viewport")
-			if player_race in ["barrosan", "lioraen"]:
-				var expected_crest_path := "res://assets/ui/barrosan_command_crest_i2.png" if player_race == "barrosan" else "res://assets/ui/faction_crests/astra_r1/lioraen.png"
+			if player_race in ["barrosan", "lioraen", "vorthak"]:
+				var expected_crest_paths := {
+					"barrosan": "res://assets/ui/barrosan_command_crest_i2.png",
+					"lioraen": "res://assets/ui/faction_crests/astra_r1/lioraen.png",
+					"vorthak": "res://assets/ui/faction_crests/astra_r1/vorthak.png",
+				}
+				var expected_crest_path: String = expected_crest_paths[player_race]
 				var match_crest := hud.find_child("MatchFactionCrest", true, false) as TextureRect
 				if not is_instance_valid(match_crest) or not is_instance_valid(match_crest.texture) or match_crest.texture.resource_path != expected_crest_path:
 					validation_errors.append("match_faction_crest_missing:" + player_race)
