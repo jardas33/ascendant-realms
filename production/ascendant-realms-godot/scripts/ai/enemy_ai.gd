@@ -1030,6 +1030,18 @@ func _choose_unit(choices: Array) -> String:
 		var ranged_picks := legal.filter(func(c): return float(GameData.get_unit(c).get("range", 0.0)) > 0.0)
 		if not ranged_picks.is_empty() and _rng.randf() < 0.75:
 			return ranged_picks[0]
+	# Bring a couple of siege engines once the war drags on. A Barrosan AI
+	# out-numbered Vorthak three to one from minute 8 but kept breaking its
+	# army on towers and never finished the match (6-12-9 over 135 matches).
+	if float(world.get("match_time")) > 480.0:
+		var siege_now := 0
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and String(u.def.get("role", "")) == "siege":
+				siege_now += 1
+		if siege_now < 2:
+			var siege_picks := legal.filter(func(c): return String(GameData.get_unit(c).get("role", "")) == "siege")
+			if not siege_picks.is_empty() and _rng.randf() < 0.5:
+				return siege_picks[0]
 	if _rng.randf() < 0.6:
 		return legal[0]
 	return legal[_rng.randi() % legal.size()]
