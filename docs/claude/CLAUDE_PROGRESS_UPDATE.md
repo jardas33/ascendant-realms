@@ -457,6 +457,15 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Battle screens:** the outpost card's "Release Workers" button no longer wraps onto two lines, and the vein section has a clear heading.
   - **Hero creation:** the faction name no longer overlaps the frame's crest, and the strength and weakness menus are the same width.
   - Regression passed (17 checks). The benchmark median was 22.1 ms, and the best run matched plan 37's 18.8 ms, so the difference is run-to-run noise. No new Codex work. Pushed to GitHub.
+- **Plan 39 (done): caravan trade, food feedback, star lore**
+  - **Why Karak slipped:** it won the early war, then stalled on 1 stone and 20 timber while 4,400 gold sat unspent. Every faction hits the same wall once the nodes near its base run dry.
+  - **Caravan trade (new resource feature):** select your main hall and trade gold for 50 food, timber or stone. The price starts at 100 gold, rises by 6 with each trade and eases back by 1 gold every 4 seconds, so a gold hoard becomes an army but can't be dumped all at once. The hall card grows on tall screens so the caravan row fits.
+    - The AI trades when it has 250 gold to spare and a store is below 150.
+    - The trade goes through the command bus, so it is ready for online play.
+  - **Food cliff made readable:** when the food node by your hall runs dry, an alert says what feeds an army next (houses, a food vein, the caravan). There are two new loading tips and a CARAVAN line in the field manual.
+  - **Lore:** 30 faction constellation stars were renamed and reworded to match their faction. For example, "Elven Archery" is now "Coal-Gold Aim", "Deepforge Master" is now "Master of the Castro", and "Blizzard Sovereign" is now "Lord of the Entrudo". Star text now uses the display names (Ironmaw, Moura Court, Granitborn, Aurean Dominion, Wolfveil, Compaña, Careto Host).
+  - **Round robin:** Grimtusk 7-1-1, Sunspear 5-4, Karak 4-5 (was 1-7-1), Sylvan 4-4-1, Wyldkin 4-2-3, Lioraen 3-6, Hollow 3-4-2, Frostborn 3-3-3, Vorthak 2-5-2, Barrosan 2-3-4. Ironmaw is now the outlier, so it is first in plan 40.
+  - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
