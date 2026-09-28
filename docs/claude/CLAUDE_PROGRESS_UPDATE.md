@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 06:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 07:30 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -359,6 +359,13 @@ Last updated: 2026-09-28, 06:00 UTC. Claude updates this file after every pass. 
   - **Settings:** a Show Damage Numbers toggle.
   - **Benchmark:** a new five-run median benchmark shows no slowdown since plan 27 (26.0 ms against 26.2 ms). An earlier scare was a first-run-after-import effect.
   - **Campaign check:** an AI stand-in playing Barrosan loses Act I chapters 3 to 6 even without fog, which matches Barrosan's weak AI record rather than a campaign bug. Barrosan balance continues in plan 30.
+  - Regression passed (16 checks). Pushed to GitHub.
+- **Plan 30 (done):**
+  - **Result screen on a 1366x768 laptop:** a rich Endless Road win listed 11 loot lines and pushed the buttons off the screen. It now shows the best finds first (five, or three on short screens) plus "...and N more in the War Chest", long lines wrap instead of being cut off, and short screens get a tighter layout. Checked with a screenshot at 1366x768.
+  - **Hero sheet:** shows the synergies within reach (for example "Headsman (Executioner 3/3, Swift Blade 1/3)"), and every synergy pair is explained on hover.
+  - **Loading screen:** under the tip, the hero's next goals (next talent-pick level, next Endless Road relic stage).
+  - **Barrosan AI:** a kill log again shows its workers dying to ranged raiders (30 to Sylvan longbows in one match). The cause is how its AI plays, not its units, so deeper AI work is parked for now. The balance changes made so far stay.
+  - Road of the Week stays one click from the Endless Road window; the main menu has no room for an eighth button.
   - Regression passed (16 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
