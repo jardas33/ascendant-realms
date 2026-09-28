@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 17:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 19:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -412,6 +412,14 @@ Last updated: 2026-09-28, 17:00 UTC. Claude updates this file after every pass. 
     - Strengths and weaknesses: Mighty +8% damage, Swift +0.3 speed, Arcane +30 mana, Stalwart +2 armour; Frail −8% health, Slow −0.2 speed, Impatient −15% mana regeneration, Reckless −1 armour.
   - **Balance:** Sylvan trimmed (+4% damage and +1.2 reach, was +7% and +2). Past 20 minutes the AI marches with any four soldiers. Endless Road veins run richer the deeper you go.
   - **45-match matrix (28-minute games):** the flattest yet. Every faction won between 2 and 6. Barrosan went 4 wins, 2 losses and 3 draws (it had lost almost everything before the vein economy). Draws fell from 12 to 7.
+  - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 35 (done):**
+  - **Pause menu:** real Music and Sound sliders replace the old button that cycled the music in blind steps. Endless Road stages now show their stage number and title there, as campaign chapters already did.
+  - **Tutorial:** a new "Claim a Vein" step teaches raising an outpost and sending workers inside.
+  - **Campaign:** the first chapter's briefing introduces the veins of Salto.
+  - **Hero sheet:** a "Forged as" line shows the archetype, strength and weakness, with their effects on hover.
+  - **New Endless Road twist, Rich Highlands:** every vein pays half again as much.
+  - **Lioraen:** units are 7% sturdier. They still trail (2 wins, 5 losses and 1 draw in eight matchups), so they get a deeper look next.
   - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
