@@ -197,6 +197,42 @@ func prewarm_model(p_def: Dictionary) -> void:
 	footprint = float(p_def.get("footprint", 4.0))
 	_build_model()
 
+## Several factions still borrow another faction's building models (the
+## Careto Host lives in Barrosan houses). Until each has its own, a borrowed
+## model takes its owner's palette so a base reads as that faction at a glance.
+const FACTION_PALETTES := {
+	"frostborn": Color(1.08, 0.86, 0.84),   # Careto red-and-green revel
+	"karak": Color(0.86, 0.88, 0.95),       # Granitborn castro stone
+	"sunspear": Color(1.1, 0.95, 0.72),     # Aurean bronze and sun
+	"grimtusk": Color(0.92, 0.78, 0.7),     # Ironmaw rust and chain
+	"sylvan": Color(0.88, 0.94, 1.1),       # Moura silver
+	"wyldkin": Color(0.84, 0.92, 0.78),     # Wolfveil moss and moon
+	"hollow": Color(0.74, 0.72, 0.82),      # Compaña candle-dark
+	"lioraen": Color(0.9, 1.05, 0.88),
+	"vorthak": Color(0.9, 0.82, 1.0),
+}
+static var _palette_materials: Dictionary = {}
+
+func _apply_faction_palette(m: Node, path: String) -> void:
+	var race := String(def.get("race", ""))
+	if race == "" or path.get_file().begins_with(race) or not FACTION_PALETTES.has(race):
+		return
+	var tint: Color = FACTION_PALETTES[race]
+	for mi in m.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mi as MeshInstance3D
+		if mesh_instance.mesh == null:
+			continue
+		for i in mesh_instance.mesh.get_surface_count():
+			var mat = mesh_instance.get_active_material(i)
+			if not (mat is BaseMaterial3D):
+				continue
+			var key := "%s|%d" % [race, mat.get_instance_id()]
+			if not _palette_materials.has(key):
+				var tinted := (mat as BaseMaterial3D).duplicate() as BaseMaterial3D
+				tinted.albedo_color = Color(tinted.albedo_color.r * tint.r, tinted.albedo_color.g * tint.g, tinted.albedo_color.b * tint.b, tinted.albedo_color.a)
+				_palette_materials[key] = tinted
+			mesh_instance.set_surface_override_material(i, _palette_materials[key])
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -221,6 +257,7 @@ func _build_model() -> void:
 			ModelUtils.isolate_a03_house_a(m)
 		_normalize_a02_imported_materials(m, path)
 		_apply_slice7_barrosan_surface_material(m, path)
+		_apply_faction_palette(m, path)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size

@@ -2545,8 +2545,31 @@ func _spawn_veins() -> void:
 		var vein = VeinScript.new()
 		add_child(vein)
 		vein.global_position = p
-		vein.configure(String(v["kind"]), 4000)
+		# Deeper on the Endless Road the veins run richer.
+		vein.configure(String(v["kind"]), 4000 + 120 * int(Match.get_config().get("endless_depth", 0)))
 		clear_ground_cover(p, 5.0)
+
+## Lume flares: from minute six, every four minutes one vein burns with Lume
+## for 90 seconds and pays double to whoever works it. Worth fighting over.
+var _flare_timer := 0.0
+
+func _tick_vein_flares(delta: float) -> void:
+	if match_time < 360.0:
+		return
+	_flare_timer += delta
+	if _flare_timer < 240.0:
+		return
+	_flare_timer = 0.0
+	var veins: Array = get_tree().get_nodes_in_group("veins").filter(func(v): return int(v.amount) > 0)
+	if veins.is_empty():
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sim_seed_for(7700 + int(match_time)) if has_method("sim_seed_for") else int(match_time)
+	var v = veins[rng.randi() % veins.size()]
+	v.rich_until = match_time + 90.0
+	emit_signal("alert", "A Lume flare lights the %s: double output for 90 seconds." % v.display_name().to_lower(), v.global_position)
+	if is_instance_valid(_fx_container):
+		CombatVfx.lume_pillar(_fx_container, v.global_position, Color(1.0, 0.85, 0.35))
 
 ## The free vein nearest a point, within `radius`.
 func vein_near(pos: Vector3, radius: float = 5.0):
@@ -3214,6 +3237,7 @@ func _physics_process(delta: float) -> void:
 	if _aura_timer >= 0.4:
 		_update_command_auras()
 		_aura_timer = 0.0
+	_tick_vein_flares(delta)
 	_last_stand_timer += delta
 	if _last_stand_timer >= 20.0:
 		_last_stand_timer = 0.0

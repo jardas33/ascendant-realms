@@ -6,6 +6,18 @@ const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 
 const ARCHETYPES := ["Warrior", "Commander", "Ranger", "Mage", "Summoner"]
+## Strengths and weaknesses are real, small trade-offs (HeroProgression).
+const TRAIT_DESC := {
+	"Mighty": "+8% damage", "Swift": "+0.3 speed", "Arcane": "+30 mana", "Stalwart": "+2 armour",
+	"Frail": "-8% health", "Slow": "-0.2 speed", "Impatient": "-15% mana regeneration", "Reckless": "-1 armour",
+}
+const ARCH_DESC := {
+	"Warrior": "Warrior: first into the line. +60 health and +3 damage.",
+	"Commander": "Commander: soldiers fight harder near you. +1.5 command aura damage and +3 m aura reach.",
+	"Ranger": "Ranger: quick and far-seeing. +8% attack speed, +3 sight and a little more speed.",
+	"Mage": "Mage: the Lume answers you first. +40 mana and +10% spell power.",
+	"Summoner": "Summoner: keeper of the host. +20 healing power and +1 mana regeneration.",
+}
 const STRENGTHS := ["Mighty", "Swift", "Arcane", "Stalwart"]
 const WEAKNESSES := ["Frail", "Slow", "Impatient", "Reckless"]
 const START_ATTR := 3
@@ -159,14 +171,43 @@ func _build() -> void:
 
 	# Archetype
 	main.add_child(_section_label("Archetype"))
-	_arch_option = OptionButton.new()
-	_arch_option.custom_minimum_size = Vector2(280, 40)
-	_arch_option.add_theme_font_override("font", ThemeDB.fallback_font)
-	_arch_option.add_theme_font_size_override("font_size", 19)
+	# Five paths, each a real starting bonus (HeroProgression), picked like
+	# the races rather than from a bare dropdown.
+	var arch_row := HBoxContainer.new()
+	arch_row.add_theme_constant_override("separation", 10)
+	main.add_child(arch_row)
+	var arch_desc := Label.new()
+	arch_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	arch_desc.custom_minimum_size = Vector2(500, 0)
+	arch_desc.add_theme_font_override("font", ThemeDB.fallback_font)
+	arch_desc.add_theme_color_override("font_color", Color(0.88, 0.88, 0.82))
+	arch_desc.add_theme_font_size_override("font_size", 17)
+	var arch_group := ButtonGroup.new()
 	for i in ARCHETYPES.size():
-		_arch_option.add_item(ARCHETYPES[i], i)
-	_arch_option.item_selected.connect(func(idx): _archetype = ARCHETYPES[idx]; Sfx.play("select"))
-	main.add_child(_arch_option)
+		var ab := Button.new()
+		ab.toggle_mode = true
+		ab.button_group = arch_group
+		ab.custom_minimum_size = Vector2(170, 44)
+		ab.focus_mode = Control.FOCUS_NONE
+		ab.text = ARCHETYPES[i]
+		ab.add_theme_font_override("font", ThemeDB.fallback_font)
+		ab.add_theme_font_size_override("font_size", 18)
+		ab.add_theme_color_override("font_pressed_color", Color(1.0, 0.91, 0.69))
+		var sel := StyleBoxFlat.new()
+		sel.bg_color = Color(0.27, 0.21, 0.11, 0.96)
+		sel.border_color = Color(0.98, 0.78, 0.42)
+		sel.set_border_width_all(2)
+		sel.set_corner_radius_all(4)
+		ab.add_theme_stylebox_override("pressed", sel)
+		ab.button_pressed = ARCHETYPES[i] == _archetype
+		var cap := String(ARCHETYPES[i])
+		ab.pressed.connect(func():
+			_archetype = cap
+			arch_desc.text = String(ARCH_DESC.get(cap, ""))
+			Sfx.play("select"))
+		arch_row.add_child(ab)
+	arch_desc.text = String(ARCH_DESC.get(_archetype, ""))
+	main.add_child(arch_desc)
 
 	# Appearance
 	main.add_child(_section_label("Appearance"))
@@ -212,7 +253,7 @@ func _build() -> void:
 	_str_option.add_theme_font_override("font", ThemeDB.fallback_font)
 	_str_option.add_theme_font_size_override("font_size", 19)
 	for i in STRENGTHS.size():
-		_str_option.add_item("Strength: " + STRENGTHS[i], i)
+		_str_option.add_item("Strength: %s (%s)" % [STRENGTHS[i], TRAIT_DESC.get(STRENGTHS[i], "")], i)
 	_str_option.item_selected.connect(func(idx): _strength = STRENGTHS[idx]; Sfx.play("select"))
 	sw_row.add_child(_str_option)
 	_weak_option = OptionButton.new()
@@ -220,7 +261,7 @@ func _build() -> void:
 	_weak_option.add_theme_font_override("font", ThemeDB.fallback_font)
 	_weak_option.add_theme_font_size_override("font_size", 19)
 	for i in WEAKNESSES.size():
-		_weak_option.add_item("Weakness: " + WEAKNESSES[i], i)
+		_weak_option.add_item("Weakness: %s (%s)" % [WEAKNESSES[i], TRAIT_DESC.get(WEAKNESSES[i], "")], i)
 	_weak_option.item_selected.connect(func(idx): _weakness = WEAKNESSES[idx]; Sfx.play("select"))
 	sw_row.add_child(_weak_option)
 

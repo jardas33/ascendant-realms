@@ -57,7 +57,12 @@ func is_free() -> bool:
 func _process(delta: float) -> void:
 	if is_instance_valid(_ring):
 		_ring.rotation.y += delta * 0.25
-		_ring.visible = is_free() and amount > 0
+		var flaring := false
+		var w = get_parent()
+		if w and w.get("match_time") != null:
+			flaring = float(w.get("match_time")) < rich_until
+		_ring.visible = (is_free() or flaring) and amount > 0
+		_ring_mat.albedo_color = Color(1.0, 0.85, 0.35, 0.9) if flaring else Color(KIND_COLORS.get(kind, Color.WHITE), 0.55)
 
 ## Take up to `want` from the vein (it runs dry eventually).
 func draw(want: int) -> int:

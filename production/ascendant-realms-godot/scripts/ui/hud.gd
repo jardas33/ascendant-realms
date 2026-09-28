@@ -1520,6 +1520,21 @@ func _draw_minimap() -> void:
 			continue
 		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)))
 
+	# Veins: a ring in the resource's colour, filled when someone holds it,
+	# pulsing gold during a Lume flare.
+	for vein in world.get_tree().get_nodes_in_group("veins"):
+		if not is_instance_valid(vein) or int(vein.amount) <= 0:
+			continue
+		var vp := _world_to_map(vein.global_position)
+		var vcol := _minimap_resource_color(String(vein.kind))
+		var flaring: bool = float(world.get("match_time")) < float(vein.rich_until)
+		if flaring:
+			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 180.0)
+			_minimap.draw_arc(vp, 8.0 + pulse * 3.0, 0.0, TAU, 20, Color(1.0, 0.85, 0.35, 0.9), 2.0, true)
+		_minimap.draw_arc(vp, 5.5, 0.0, TAU, 16, Color(vcol, 0.95), 1.6, true)
+		if not vein.is_free():
+			_minimap.draw_circle(vp, 3.4, GameData.TEAM_COLORS.get(int(vein.outpost.team), Color.WHITE))
+
 	# Units use role hierarchy while retaining team color as the ownership channel.
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead or (world.has_method("is_player_visible") and not world.is_player_visible(u)):

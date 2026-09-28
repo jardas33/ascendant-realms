@@ -1023,6 +1023,10 @@ func _manage_offense() -> void:
 	# minutes every AI commits whatever army it has.
 	if float(world.get("match_time")) > 900.0:
 		needed = mini(needed, 8)
+	# Past twenty minutes, any four soldiers march: vein economies made both
+	# sides defend so well that a quarter of AI matches never ended.
+	if float(world.get("match_time")) > 1200.0:
+		needed = mini(needed, 4)
 	if size >= needed and _attack_timer > 8.0:
 		_attack_timer = 0.0
 		_wave_number += 1

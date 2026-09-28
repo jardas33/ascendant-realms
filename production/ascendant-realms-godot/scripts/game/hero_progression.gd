@@ -17,6 +17,26 @@ static func compute(hero: Dictionary) -> Dictionary:
 	if hero.is_empty():
 		return out
 
+	# --- Archetype: the path chosen at the forge (it was only a label) ---
+	match String(hero.get("archetype", "Warrior")):
+		"Warrior": out["bonus_hp"] += 60.0; out["bonus_dmg"] += 3.0
+		"Commander": out["aura_dmg"] += 1.5; out["aura_range"] += 3.0
+		"Ranger": out["attack_speed"] += 0.08; out["bonus_vision"] += 3.0; out["bonus_speed"] += 0.2
+		"Mage": out["max_mana"] += 40.0; out["spell_power"] += 0.1
+		"Summoner": out["heal_power"] += 20.0; out["mana_regen"] += 1.0
+
+	# --- Strength and weakness picked at the forge: a small real trade-off ---
+	match String(hero.get("strength", "")):
+		"Mighty": out["dmg_mult"] = float(out.get("dmg_mult", 0.0)) + 0.08
+		"Swift": out["bonus_speed"] += 0.3
+		"Arcane": out["max_mana"] += 30.0
+		"Stalwart": out["bonus_armor"] += 2.0
+	match String(hero.get("weakness", "")):
+		"Frail": out["hp_mult"] = float(out.get("hp_mult", 0.0)) - 0.08
+		"Slow": out["bonus_speed"] -= 0.2
+		"Impatient": out["mana_regen_mult"] = 0.85
+		"Reckless": out["bonus_armor"] -= 1.0
+
 	# --- Attributes ---
 	var a: Dictionary = hero.get("attributes", {})
 	out["bonus_hp"] += int(a.get("endurance", 0)) * 25.0
@@ -70,6 +90,7 @@ static func compute(hero: Dictionary) -> Dictionary:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
 			out["flags"][four[0]] = four[1]
 
+	out["mana_regen"] *= float(out.get("mana_regen_mult", 1.0))
 	# Mana Font (legendary power): mana returns half again as fast.
 	if out["flags"].has("mana_font"):
 		out["mana_regen"] *= 1.5

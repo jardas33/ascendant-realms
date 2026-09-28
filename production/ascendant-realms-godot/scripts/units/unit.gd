@@ -471,10 +471,11 @@ func _apply_race_passive() -> void:
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			base_dmg *= 1.12
 		"sylvan":                         # Precision — keener sight and reach
+			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
-			base_dmg *= 1.07
+			base_dmg *= 1.04
 			if atk_range > 0.0:
-				atk_range += 2.0
+				atk_range += 1.2
 		"karak":                          # Stone Resolve — armored and hardy
 			base_armor += 1.0
 			max_hp *= 1.08
@@ -3190,7 +3191,7 @@ var _rank_badge: Label3D
 
 ## The player's hero carries the title its deeds earned, over its head.
 func _show_hero_title() -> void:
-	if not is_hero or world == null or team != int(world.get("player_team")) or not ProfileManager.has_hero():
+	if not is_hero or world == null or team != int(world.get("player_team")) or not ProfileManager.has_hero() or commander == null or String(ProfileManager.hero().get("race", "")) != String(commander.race):
 		return
 	# The player's own hero goes by its own name in every panel, not the
 	# generic "Jardas" of the unit list.
