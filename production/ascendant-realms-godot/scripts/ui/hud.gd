@@ -3733,10 +3733,16 @@ func _on_game_over(victory: bool) -> void:
 	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.5).set_delay(0.25)
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 14)
+	# Short screens (1366x768 laptops) get a tighter ledger so the buttons
+	# always stay on screen, however rich the spoils.
+	var compact: bool = get_viewport().get_visible_rect().size.y < 900.0
+	box.add_theme_constant_override("separation", 6 if compact else 14)
 	plate.add_child(box)
+	if compact:
+		plate_style.content_margin_top = 16.0
+		plate_style.content_margin_bottom = 16.0
 
-	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 64, accent)
+	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 44 if compact else 64, accent)
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(heading)
 
@@ -3770,6 +3776,8 @@ func _on_game_over(victory: bool) -> void:
 		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
 			var relic_line := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			relic_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			relic_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+			relic_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			box.add_child(relic_line)
 		if victory and bool(CampaignDefs.find(chapter_id).get("jar", false)):
 			var jar_line := _mk_title_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
@@ -3791,6 +3799,8 @@ func _on_game_over(victory: bool) -> void:
 		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
 			var loot := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			loot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			loot.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+			loot.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			box.add_child(loot)
 	if String(result.get("bounty", "")) != "":
 		var b_line := _mk_label(("%s  Done: extra spoils and +20%% experience." if bool(result.get("bounty_won", false)) else "%s  Not met.") % String(result["bounty"]), 15, Color(0.95, 0.8, 0.45) if bool(result.get("bounty_won", false)) else Color(0.7, 0.66, 0.6))
@@ -3810,6 +3820,8 @@ func _on_game_over(victory: bool) -> void:
 			parts.append("fastest clear of this stage (%d:%02d)" % [int(result.get("time", 0)) / 60, int(result.get("time", 0)) % 60])
 		var rec_line := _mk_title_label("New record: " + " and ".join(parts), 16, Color(0.98, 0.78, 0.40))
 		rec_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		rec_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		rec_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(rec_line)
 	if int(result.get("talent_points", 0)) > 0:
 		var tal_line := _mk_title_label("A talent choice awaits on the Hero sheet (%d to pick)" % int(result["talent_points"]), 16, Color(1.0, 0.86, 0.5))
@@ -3817,11 +3829,21 @@ func _on_game_over(victory: bool) -> void:
 		box.add_child(tal_line)
 	# Gear taken from the field, in rarity colour.
 	var loot_colors := {"common": Color(0.8, 0.8, 0.8), "uncommon": Color(0.45, 0.9, 0.45), "rare": Color(0.45, 0.65, 1.0), "epic": Color(0.75, 0.5, 1.0), "legendary": Color(1.0, 0.75, 0.3)}
-	for it in result.get("loot", []):
+	# Best finds first, at most five lines: a rich Endless Road win dropped a
+	# dozen items and pushed the buttons off a 1366x768 screen.
+	var loot_order := ["legendary", "epic", "rare", "uncommon", "common"]
+	var loot_sorted: Array = (result.get("loot", []) as Array).duplicate()
+	loot_sorted.sort_custom(func(a, b): return loot_order.find(String(a.get("rarity", "common"))) < loot_order.find(String(b.get("rarity", "common"))))
+	var loot_cap := 3 if compact else 5
+	for it in loot_sorted.slice(0, loot_cap):
 		var loot_line := _mk_label("Loot: %s  (%s)" % [String(it.get("name", "")), String(it.get("rarity", "common"))], 16, loot_colors.get(String(it.get("rarity", "common")), Color.WHITE))
 		loot_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		loot_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		box.add_child(loot_line)
+	if loot_sorted.size() > loot_cap:
+		var more := _mk_label("...and %d more in the War Chest" % (loot_sorted.size() - loot_cap), 15, Color(0.8, 0.76, 0.66))
+		more.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(more)
 	# First loot ever: point the player at the War Chest once.
 	if not result.get("loot", []).is_empty() and not bool(ProfileManager.settings().get("seen_loot_tip", false)):
 		ProfileManager.update_setting("seen_loot_tip", true)

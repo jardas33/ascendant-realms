@@ -390,8 +390,23 @@ func _build_ui() -> void:
 func _show() -> void:
 	visible = true
 	if _tip:
-		_tip.text = "TIP  ·  " + String(TIPS[randi() % TIPS.size()])
+		_tip.text = "TIP  ·  " + String(TIPS[randi() % TIPS.size()]) + _next_goal_line()
 	set_progress(0.0)
+
+## One line about what the hero is closest to next, so every load shows a goal.
+func _next_goal_line() -> String:
+	var pm = get_node_or_null("/root/ProfileManager")
+	if pm == null or not pm.has_hero():
+		return ""
+	var h: Dictionary = pm.hero()
+	var level := int(h.get("level", 1))
+	var goals: Array = []
+	goals.append("talent pick at level %d" % ((level / 10 + 1) * 10))
+	var best: int = pm.endless_best()
+	if best > 0:
+		goals.append("next Endless relic at stage %d" % ((best / 5 + 1) * 5))
+	return "
+NEXT  ·  " + "  ·  ".join(goals)
 
 
 func _hide() -> void:

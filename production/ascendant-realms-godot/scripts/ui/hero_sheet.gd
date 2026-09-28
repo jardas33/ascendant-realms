@@ -330,6 +330,20 @@ func _refresh() -> void:
 		right_panel.add_child(t_reset)
 	var next_at: int = (int(h.get("level", 1)) / TalentDefs.EVERY_LEVELS + 1) * TalentDefs.EVERY_LEVELS
 	right_panel.add_child(_stat_line("Taken", ", ".join(owned) if not owned.is_empty() else "None yet. A choice every %d levels." % TalentDefs.EVERY_LEVELS))
+	# Synergies within reach: pairs where one of the two talents is at rank 1+.
+	var near_syn: Array = []
+	var tl: Dictionary = tal if tal is Dictionary else {}
+	for syn in TalentDefs.SYNERGIES:
+		var a := int(tl.get(syn["needs"][0], 0))
+		var b2 := int(tl.get(syn["needs"][1], 0))
+		if (a >= 3 and b2 >= 3) or (a == 0 and b2 == 0):
+			continue
+		near_syn.append("%s (%s %d/3, %s %d/3)" % [String(syn["name"]), String(TalentDefs.find(syn["needs"][0]).get("name", "")), mini(a, 3), String(TalentDefs.find(syn["needs"][1]).get("name", "")), mini(b2, 3)])
+	if not near_syn.is_empty():
+		var ns := _stat_line("Synergies ahead", ", ".join(near_syn.slice(0, 2)))
+		ns.tooltip_text = "
+".join(TalentDefs.SYNERGIES.map(func(x): return "%s: %s + %s at rank 3. %s" % [x["name"], TalentDefs.find(x["needs"][0]).get("name", ""), TalentDefs.find(x["needs"][1]).get("name", ""), x["desc"]]))
+		right_panel.add_child(ns)
 	if t_pts > 0:
 		right_panel.add_child(_stat_line("Choose one", "%d pick%s waiting" % [t_pts, "" if t_pts == 1 else "s"]))
 		var trow := HBoxContainer.new()
