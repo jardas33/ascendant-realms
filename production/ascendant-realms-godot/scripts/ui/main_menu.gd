@@ -101,6 +101,10 @@ func _campaign_label() -> String:
 	var s: Dictionary = ProfileManager.saga()
 	if s["cleared"].is_empty():
 		return "Begin the Saga"
+	# After the Seventy-Seventh Oath the saga is told; the map stays open for
+	# heroic replays, side roads and the jars still missing.
+	if "5-7" in s["cleared"]:
+		return "The Saga Is Told · Revisit"
 	var act := 0
 	for id in s["unlocked"]:
 		act = maxi(act, int(String(id).substr(0, 1)))

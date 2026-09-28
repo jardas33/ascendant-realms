@@ -101,6 +101,7 @@ static var _visual_identity_box_mesh: BoxMesh
 static var _visual_identity_cylinder_mesh: CylinderMesh
 static var _slice7_barrosan_surface_materials: Dictionary = {}
 static var _building_selection_materials: Dictionary = {}
+static var _finial_materials: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("buildings")
@@ -272,6 +273,28 @@ func _build_team_banner() -> void:
 	pole.material_override = _banner_wood
 	pole.position.y = pole_h * 0.5
 	root.add_child(pole)
+	# Endless Road milestones crown the player's banners: silver from stage
+	# 50, gold from 100, Lume-violet from 200. Cosmetic only.
+	if world and team == int(world.get("player_team")) and ProfileManager.has_hero():
+		var best: int = ProfileManager.endless_best()
+		if best >= 50:
+			var tint := Color(0.78, 0.8, 0.86) if best < 100 else (Color(1.0, 0.8, 0.3) if best < 200 else Color(0.72, 0.45, 1.0))
+			if _finial_materials.get(tint.to_html(), null) == null:
+				var fm := StandardMaterial3D.new()
+				fm.albedo_color = tint
+				fm.metallic = 0.8
+				fm.roughness = 0.3
+				fm.emission_enabled = true
+				fm.emission = tint * 0.6
+				_finial_materials[tint.to_html()] = fm
+			var finial := MeshInstance3D.new()
+			var fmesh := SphereMesh.new()
+			fmesh.radius = 0.2
+			fmesh.height = 0.4
+			finial.mesh = fmesh
+			finial.material_override = _finial_materials[tint.to_html()]
+			finial.position.y = pole_h + 0.12
+			root.add_child(finial)
 	var bar := MeshInstance3D.new()
 	var bar_mesh := BoxMesh.new()
 	bar_mesh.size = Vector3(1.05, 0.06, 0.06)

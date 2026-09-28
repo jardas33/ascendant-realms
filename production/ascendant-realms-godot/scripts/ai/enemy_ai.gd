@@ -987,6 +987,10 @@ func _launch_attack() -> void:
 	# while every soldier marched off. The ranged soldiers nearest home (a
 	# fifth of the army, at least two once it is big enough) hold the fields.
 	var guard_n := 0 if soldiers.size() < 6 else maxi(2, soldiers.size() / 5)
+	# After fifteen minutes every AI commits everything (evenly matched sides
+	# otherwise traded waves until the clock ran out).
+	if float(world.get("match_time")) > 900.0:
+		guard_n = 0
 	soldiers.sort_custom(func(a, b):
 		var ra: int = 0 if float(a.atk_range) > 0.0 else 1
 		var rb: int = 0 if float(b.atk_range) > 0.0 else 1
