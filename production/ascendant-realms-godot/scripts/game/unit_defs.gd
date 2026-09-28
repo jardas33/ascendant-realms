@@ -25,7 +25,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_clan_levy"), "height": 1.8,
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 40, "timber": 10, "gold": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 45, "timber": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
 		"desc": "Farmers who fight in family blocks under the village banner. Cheap and stubborn; good against unarmoured foes.",
 	},
 	"barrosan_spear_guard": {
@@ -43,7 +43,7 @@ static func get_all() -> Dictionary:
 		"model": _char("barrosan_crag_archer"), "height": 1.8,
 		"hp": 90, "dmg": 19, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "arrow",
-		"cost": {"food": 40, "timber": 30, "gold": 10}, "build_time": 16, "pop": 1, "produced_by": "barracks",
+		"cost": {"food": 45, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "barracks",
 		"desc": "Wolf-hunters of the high crags, who learned their aim on the fojo walls. Deadly from the heights, fragile up close.",
 	},
 	"barrosan_outrider": {

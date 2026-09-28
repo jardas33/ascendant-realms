@@ -311,6 +311,12 @@ func _caravan_trade() -> void:
 			break
 	if hq == null:
 		return
+	# Short on gold but sitting on a pile of something else: sell the pile.
+	if int(commander.resources.get("gold", 0)) < 120:
+		for k in ["stone", "timber", "food"]:
+			if int(commander.resources.get(k, 0)) > 900:
+				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + k})
+				return
 	for i in 2:
 		var price: int = commander.trade_price()
 		if int(commander.resources.get("gold", 0)) < price + 250:

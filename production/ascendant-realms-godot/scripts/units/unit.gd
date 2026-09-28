@@ -484,7 +484,10 @@ func _apply_race_passive() -> void:
 			max_hp *= 1.08
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
-			regen += 2.0
+			# 7-14-6 over 135 matches: steadier healing and a little more health.
+			regen += 3.0
+			max_hp *= 1.05
+			hp = max_hp
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
 			# Was +15% speed and +10% damage: 9-0 in the AI round robin.
 			move_speed *= 1.08

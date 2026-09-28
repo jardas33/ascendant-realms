@@ -98,7 +98,24 @@ func trade_price() -> int:
 	_trade_stamp = now
 	return int(round(_trade_price))
 
+## The caravan also buys surplus: 100 food, timber or stone for 30 gold, at
+## a flat rate (buying back costs far more, so there is no loop to exploit).
+const SELL_BATCH := 100
+const SELL_GOLD := 30
+
+func sell_for_gold(kind: String) -> Dictionary:
+	if not ["food", "timber", "stone"].has(kind):
+		return {"ok": false, "reason": "Nothing to sell"}
+	if int(resources.get(kind, 0)) < SELL_BATCH:
+		return {"ok": false, "reason": "Need %d %s" % [SELL_BATCH, kind]}
+	resources[kind] = int(resources[kind]) - SELL_BATCH
+	resources["gold"] = int(resources.get("gold", 0)) + SELL_GOLD
+	emit_signal("resources_changed", resources)
+	return {"ok": true}
+
 func trade_gold_for(kind: String) -> Dictionary:
+	if kind.begins_with("sell_"):
+		return sell_for_gold(kind.trim_prefix("sell_"))
 	if not ["food", "timber", "stone"].has(kind):
 		return {"ok": false, "reason": "Nothing to trade for"}
 	var price := trade_price()

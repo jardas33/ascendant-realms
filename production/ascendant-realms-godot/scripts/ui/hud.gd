@@ -3373,6 +3373,9 @@ Workers inside %d / %d  ·  +%d %s a minute
 %s left in the vein" % [
 				v.display_name() if is_instance_valid(v) else "Vein", cap_ob.outpost_level, cap_ob.garrison.size(), cap_ob.outpost_slots(),
 				int(round(cap_ob.outpost_rate_per_minute())), String(v.kind) if is_instance_valid(v) else "", str(int(v.amount)) if is_instance_valid(v) else "0"]
+			var flare_left := (float(v.rich_until) - float(world.match_time)) if is_instance_valid(v) and is_instance_valid(world) else 0.0
+			if flare_left > 0.0:
+				info.text += "\nLume flare: double output for %d more seconds" % int(ceil(flare_left))
 		refresh.call()
 		var rt := Timer.new()
 		rt.wait_time = 1.0
@@ -3484,7 +3487,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
 			var tech_emblem := String(tid) if String(tid) in ["advance_tier_2", "advance_tier_3"] else ""
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
+			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
@@ -3494,7 +3497,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 	# Caravan trade: spend a gold hoard on what the nodes no longer give.
 	if is_hq and _commander.has_method("trade_gold_for"):
 		var price: int = _commander.trade_price()
-		_add_command_section("Caravan", "%d GOLD FOR %d" % [price, _commander.TRADE_BATCH])
+		_add_command_section("Caravan", "BUY %d FOR %d GOLD · SELL %d FOR %d" % [_commander.TRADE_BATCH, price, _commander.SELL_BATCH, _commander.SELL_GOLD])
 		var trade_row := HBoxContainer.new()
 		trade_row.add_theme_constant_override("separation", 6)
 		_cmd_body.add_child(trade_row)
@@ -3517,7 +3520,43 @@ Workers inside %d / %d  ·  +%d %s a minute
 					Sfx.play("select")
 				_rebuild_command_card(cap_hq, [cap_hq]))
 			trade_row.add_child(tb)
+		# Second row: sell a surplus for gold.
+		var sell_row := HBoxContainer.new()
+		sell_row.add_theme_constant_override("separation", 6)
+		_cmd_body.add_child(sell_row)
+		for kind in ["food", "timber", "stone"]:
+			var sb := Button.new()
+			sb.text = "Sell %d %s" % [_commander.SELL_BATCH, String(kind).capitalize()]
+			sb.custom_minimum_size = Vector2(0, 32)
+			sb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			sb.focus_mode = Control.FOCUS_NONE
+			sb.add_theme_font_size_override("font_size", 13)
+			sb.disabled = int(_commander.resources.get(kind, 0)) < _commander.SELL_BATCH
+			sb.tooltip_text = "Sell %d %s to the caravan for %d gold." % [_commander.SELL_BATCH, kind, _commander.SELL_GOLD]
+			var cap_hq2 = b
+			var cap_sell := "sell_" + String(kind)
+			sb.pressed.connect(func():
+				var res = _issue_order({"type": "trade", "target": cap_hq2, "id": cap_sell})
+				if res is Dictionary and not bool(res.get("ok", false)):
+					_flash_notice(String(res.get("reason", "Cannot sell")))
+				else:
+					Sfx.play("select")
+				_rebuild_command_card(cap_hq2, [cap_hq2]))
+			sell_row.add_child(sb)
 
+
+## The two army upgrades, named in each faction's own words.
+const TECH_FLAVOR := {
+	"tech_weapons": {"barrosan": "Smithed Sledges", "lioraen": "Thorn-Hardened Blades", "vorthak": "Ash-Glass Edges", "grimtusk": "Chain-Iron Blades",
+		"sylvan": "Coal-Gold Edges", "karak": "Castro Steel", "sunspear": "Bronze Temper", "wyldkin": "Trap-Iron Claws", "hollow": "Candle-Iron Blades", "frostborn": "Bell-Iron Blades"},
+	"tech_armor": {"barrosan": "Granite-Wool Coats", "lioraen": "Bark Mail", "vorthak": "Glass Plate", "grimtusk": "Overseer Plate",
+		"sylvan": "Silver Mail", "karak": "Stone Skin", "sunspear": "Bronze Scale", "wyldkin": "Thick Pelts", "hollow": "Bone Mail", "frostborn": "Winter Fringes"},
+}
+
+func _tech_display_name(tid: String, fallback: String) -> String:
+	if _commander != null and TECH_FLAVOR.has(tid):
+		return String(TECH_FLAVOR[tid].get(String(_commander.race), fallback))
+	return fallback
 
 ## Production orders travel through the world's command bus (online seam).
 func _issue_order(order: Dictionary):
