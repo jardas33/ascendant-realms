@@ -888,13 +888,17 @@ func _manage_defense() -> void:
 				threat = world.find_enemy_near(b.global_position, 14.0, commander.team)
 				if threat:
 					break
-	if threat == null:
-		var now := Time.get_ticks_msec()
-		for u in commander.units:
-			if is_instance_valid(u) and not u.is_dead and u.is_worker and now - int(u.get("_last_damaged_msec")) < int(2500.0 / maxf(0.01, Engine.time_scale)):
-				threat = world.find_enemy_near(u.global_position, 12.0, commander.team)
-				if threat:
-					break
+	# Workers under fire run home instead of dying at the field: raiders
+	# killed 36 of one Barrosan AI's workers in a single match.
+	var now := Time.get_ticks_msec()
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and now - int(u.get("_last_damaged_msec")) < int(2500.0 / maxf(0.01, Engine.time_scale)):
+			var raider = world.find_enemy_near(u.global_position, 14.0, commander.team)
+			if raider:
+				if threat == null:
+					threat = raider
+				if u.global_position.distance_to(_base_pos) > 12.0:
+					u.command_move(_base_pos + (u.global_position - _base_pos).normalized() * 6.0)
 	if threat:
 		for u in commander.units:
 			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
@@ -1253,8 +1257,12 @@ func _cast_hero_spells() -> void:
 	if near_enemies.is_empty():
 		return
 	var close := near_enemies.filter(func(e): return e.global_position.distance_to(hero.global_position) <= 7.0)
-	var nearest = near_enemies[0]
-	for e in near_enemies:
+	# Spells go at soldiers first: an AI hero that bolted the nearest target
+	# spent the match one-shotting workers (25 of one side's in a single game).
+	var soldiers := near_enemies.filter(func(e): return not bool(e.get("is_worker")))
+	var pool: Array = soldiers if not soldiers.is_empty() else near_enemies
+	var nearest = pool[0]
+	for e in pool:
 		if e.global_position.distance_to(hero.global_position) < nearest.global_position.distance_to(hero.global_position):
 			nearest = e
 	var hurt: bool = hero.hp < hero.max_hp * 0.6

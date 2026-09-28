@@ -375,7 +375,9 @@ func visibility_grid_contract() -> Dictionary:
 	return {"cell_size": VISIBILITY_CELL_SIZE, "columns": _visibility_columns, "rows": _visibility_rows, "minimum_x": playable_min.x, "maximum_x": playable_max.x, "minimum_z": playable_min.z, "maximum_z": playable_max.z, "states": _visibility_states.duplicate()}
 
 func _player_visibility_scope_active() -> bool:
-	return String(map.get("id", "")) == "hollowspan" and player_team == 0
+	# Fog of war was scoped to Hollowspan while it was proven there; every
+	# battlefield uses it now, so scouting matters on all twenty maps.
+	return player_team == 0
 
 func _setup_player_visibility() -> void:
 	_visibility_columns = maxi(1, int(ceil((playable_max.x - playable_min.x) / VISIBILITY_CELL_SIZE)))
@@ -2067,6 +2069,9 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	# Endless Road "Veteran foes" twist: enemy soldiers arrive already ranked.
 	if team != player_team and twist_veteran_foes and not u.is_worker and not u.is_hero:
 		u.set_veterancy(1)
+	# Endless Road mutations (EndlessDefs.mutations_for): deep-road enemies.
+	if team != player_team and not u.is_worker and not _stage_mutations.is_empty():
+		_apply_mutations(u)
 	u.died.connect(_on_unit_died)
 	if team < commanders.size():
 		commanders[team].units.append(u)
@@ -2903,12 +2908,33 @@ func boss_damage_scale(unit) -> float:
 			return 0.5
 	return 1.0
 
+var _stage_mutations: Dictionary = {}
+
+func _apply_mutations(u) -> void:
+	for k in _stage_mutations:
+		var r := float(_stage_mutations[k])
+		match String(k):
+			"ironhide": u.base_armor += 2.0 * r
+			"frenzy": u.attack_cd = maxf(0.35, u.attack_cd / (1.0 + 0.12 * r))
+			"leeching": u.hero_flags["lifesteal"] = float(u.hero_flags.get("lifesteal", 0.0)) + 0.05 * r
+			"titan":
+				u.max_hp *= 1.0 + 0.25 * r
+				u.hp = u.max_hp
+			"swift": u.move_speed *= 1.0 + 0.10 * r
+
 ## Endless Road stage twists that shape the start of a battle.
 var twist_damage_mult := 1.0
 var twist_veteran_foes := false
 
 func _apply_start_twists() -> void:
 	var twists: Array = Match.get_config().get("twists", [])
+	if String(Match.get_config().get("mode", "")) == "endless":
+		_stage_mutations = load("res://scripts/game/endless_defs.gd").mutations_for(int(Match.get_config().get("endless_depth", 0)))
+		# Soldiers already on the field at the start mutate too.
+		if not _stage_mutations.is_empty():
+			for u in all_units():
+				if is_instance_valid(u) and u.team != player_team and not u.is_worker:
+					_apply_mutations(u)
 	# Blood Moon: every blow on the field lands harder, for both sides.
 	if "blood_moon" in twists:
 		twist_damage_mult = 1.25
@@ -3224,6 +3250,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"bounty": String(bounty.get("text", "")), "bounty_won": bounty_won,
 		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
 		"talent_points": ProfileManager.talent_points() if ProfileManager.has_hero() else 0,
+		"records": ProfileManager.endless_record(int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("player_race", "")), match_time) if victory and String(Match.get_config().get("mode", "")) == "endless" else {},
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
 	Match.last_result = result_snapshot.duplicate(true)

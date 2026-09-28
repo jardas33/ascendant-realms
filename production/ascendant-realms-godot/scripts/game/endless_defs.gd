@@ -81,6 +81,7 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 	# Past the ladder, the enemy's Lume swells: bonus income that keeps rising.
 	var might := maxf(0.0, float(depth - 12)) * 0.35
 	var title := "%s %s" % [PLACES[rng.randi() % PLACES.size()], EPITHETS[rng.randi() % EPITHETS.size()]]
+	var mutations := mutations_for(depth)
 	if not festival.is_empty():
 		title = String(festival["title"])
 	return {
@@ -93,7 +94,31 @@ static func stage(depth: int, player_race: String) -> Dictionary:
 		"xp_mult": 1.0 + float(depth) * 0.08,
 		"twists": twists,
 		"mood": mood,
+		"mutations": mutations,
 	}
+
+## Deep on the road the enemy itself changes. From stage 30 every enemy
+## soldier carries mutations: one more every 30 stages, forever, and a
+## mutation drawn twice stacks. Seeded by the stage, like everything else.
+const MUTATIONS := {
+	"ironhide": "Ironhide: +2 armour per rank",
+	"frenzy": "Frenzy: +12% attack speed per rank",
+	"leeching": "Leeching: heal 5% of damage dealt per rank",
+	"titan": "Titan: +25% health per rank",
+	"swift": "Swift: +10% speed per rank",
+}
+
+static func mutations_for(depth: int) -> Dictionary:
+	var out := {}
+	if depth < 30:
+		return out
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3_141_593 + depth * 6_607
+	var keys: Array = MUTATIONS.keys()
+	for i in depth / 30:
+		var k: String = keys[rng.randi() % keys.size()]
+		out[k] = int(out.get(k, 0)) + 1
+	return out
 
 ## Every 25th stage a Road Tyrant holds the enemy stronghold: a named giant
 ## with a mechanic of its own. They return, stronger, every hundred stages.

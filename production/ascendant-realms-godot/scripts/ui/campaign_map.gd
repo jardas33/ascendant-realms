@@ -315,6 +315,9 @@ func _open_endless(chosen_depth: int = -1) -> void:
 	var twist_lines: Array = []
 	for tw_id in st.get("twists", []):
 		twist_lines.append(String(EndlessDefs.TWIST_TEXT.get(tw_id, tw_id)))
+	var muts: Dictionary = st.get("mutations", {})
+	for mk in muts:
+		twist_lines.append("%s (x%d)" % [String(EndlessDefs.MUTATIONS.get(mk, mk)), int(muts[mk])])
 	var road_boss: Dictionary = EndlessDefs.boss(depth)
 	if not road_boss.is_empty():
 		twist_lines.append("Road Tyrant: %s. %s" % [String(road_boss["name"]), String(road_boss["text"])])

@@ -217,8 +217,8 @@ static func get_all() -> Dictionary:
 		"race": "vorthak", "name": "Rift Binder", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("vorthak_hero_binder"), "height": 2.0,
 		"portrait": "res://assets/ui/portraits/vorthak/astra_r1/rift_binder.png",
-		"hp": 300, "dmg": 44, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
-		"range": 17.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
+		"hp": 300, "dmg": 32, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
+		"range": 13.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
 		"desc": "An ash-glass sorcerer of drowned Furna who binds rotten Lume into violet fire. Enormous burst magic, fragile if caught.",
 	},
 
@@ -234,7 +234,7 @@ static func get_all() -> Dictionary:
 	"grimtusk_grunt": {
 		"race": "grimtusk", "name": "Ironmaw Breaker", "role": "melee", "tier": 1,
 		"model": _char("orc_grunt"), "height": 1.9,
-		"hp": 110, "dmg": 11, "dmg_type": "slash", "armor_class": "light", "armor": 1,
+		"hp": 100, "dmg": 11, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.0, "vision": 20.0,
 		"cost": {"food": 40, "gold": 5}, "build_time": 9, "pop": 1, "produced_by": "grimtusk_warcamp",
 		"desc": "Iron in the jaw, chains wrapped round the fists. Cheap, fearless and everywhere.",
@@ -594,8 +594,8 @@ static func get_all() -> Dictionary:
 	"hollow_hero_lich": {
 		"race": "hollow", "name": "Candle-King", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("hollow_hero_lich"), "height": 2.1,
-		"hp": 300, "dmg": 44, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
-		"range": 17.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
+		"hp": 300, "dmg": 32, "dmg_type": "arcane", "armor_class": "light", "armor": 2,
+		"range": 13.0, "attack_cd": 1.3, "speed": 4.0, "vision": 30.0, "projectile": "void_bolt", "splash": 3.0, "pop": 0,
 		"desc": "The oldest of the forgotten dead, who leads the procession by candlelight. A living soul is always made to carry the cross before him.",
 	},
 

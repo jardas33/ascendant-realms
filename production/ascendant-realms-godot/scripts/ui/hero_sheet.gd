@@ -286,6 +286,18 @@ func _refresh() -> void:
 	# One number to watch grow: damage output times survivability.
 	var power := HeroProgression.power(h)
 	build_panel.add_child(_stat_line("Hero Power", str(power)))
+	# Talent and power effects that have no stat line of their own.
+	var extras: Array = []
+	if float(b.get("hp_mult", 0.0)) > 0.0:
+		extras.append("+%d%% health" % int(float(b["hp_mult"]) * 100.0))
+	if float(b.get("execute_bonus", 0.0)) > 0.0:
+		extras.append("+%d%% vs wounded" % int(float(b["execute_bonus"]) * 100.0))
+	if float(b.get("thorns", 0.0)) > 0.0:
+		extras.append("%d%% thorns" % int(float(b["thorns"]) * 100.0))
+	if float(b.get("spell_power", 0.0)) > 0.0:
+		extras.append("+%d%% spell power" % int(float(b["spell_power"]) * 100.0))
+	if not extras.is_empty():
+		build_panel.add_child(_stat_line("Talents", ", ".join(extras)))
 	var flag_names := {"cleave": "Cleave", "lifesteal": "Lifesteal", "execute": "Execute", "last_stand": "Last Stand", "unstoppable": "Unstoppable", "thornmail": "Thornmail", "chain_lightning": "Stormcall", "haste_on_kill": "Bloodrush"}
 	var powers: Array = []
 	for f in b.get("flags", {}):

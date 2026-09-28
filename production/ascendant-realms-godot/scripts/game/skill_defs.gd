@@ -387,7 +387,7 @@ static func get_abilities() -> Dictionary:
 		"rally":  {"name": "Rallying Cry", "mana": 40, "cd": 18.0, "range": 14.0, "desc": "Heal and hasten nearby allies."},
 		"slam":   {"name": "Ground Slam", "mana": 45, "cd": 14.0, "range": 8.0, "dmg": 60, "desc": "Area damage and stun."},
 		"charge": {"name": "War Charge", "mana": 30, "cd": 10.0, "range": 18.0, "dmg": 50, "desc": "Dash forward, damaging enemies hit."},
-		"bolt":   {"name": "Lume Bolt", "mana": 25, "cd": 3.0, "range": 20.0, "dmg": 70, "desc": "Blast a target with Lume energy."},
+		"bolt":   {"name": "Lume Bolt", "mana": 35, "cd": 6.0, "range": 20.0, "dmg": 70, "desc": "Blast a target with Lume energy."},
 		"heal":   {"name": "Heal Wave", "mana": 50, "cd": 16.0, "range": 14.0, "heal": 120, "desc": "Restore health to nearby allies."},
 		"root":   {"name": "Entangling Roots", "mana": 40, "cd": 15.0, "range": 16.0, "desc": "Root enemies in an area."},
 		"avatar": {"name": "Avatar of War", "mana": 100, "cd": 60.0, "range": 0.0, "desc": "Transform into an unstoppable champion."},

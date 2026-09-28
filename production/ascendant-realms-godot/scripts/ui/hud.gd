@@ -3796,6 +3796,16 @@ func _on_game_over(victory: bool) -> void:
 		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
 		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(deed_line)
+	var recs: Dictionary = result.get("records", {})
+	if bool(recs.get("new_fastest", false)) or bool(recs.get("new_race_best", false)):
+		var parts: Array = []
+		if bool(recs.get("new_race_best", false)):
+			parts.append("deepest stage with this faction")
+		if bool(recs.get("new_fastest", false)):
+			parts.append("fastest clear of this stage (%d:%02d)" % [int(result.get("time", 0)) / 60, int(result.get("time", 0)) % 60])
+		var rec_line := _mk_title_label("New record: " + " and ".join(parts), 16, Color(0.98, 0.78, 0.40))
+		rec_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(rec_line)
 	if int(result.get("talent_points", 0)) > 0:
 		var tal_line := _mk_title_label("A talent choice awaits on the Hero sheet (%d to pick)" % int(result["talent_points"]), 16, Color(1.0, 0.86, 0.5))
 		tal_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
