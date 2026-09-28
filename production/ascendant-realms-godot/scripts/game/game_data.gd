@@ -38,7 +38,7 @@ const RACES := {
 		"color": Color(0.35, 0.72, 0.55),
 		"hero": "lioraen_hero_warden",
 		"hero_name": "Grove Warden",
-		"mechanic": "Bloomfields: your Groveheart slowly heals nearby friendly units.",
+		"mechanic": "Bloomfields: your Groveheart slowly heals nearby friendly units, and Seedkeepers are spring-sheltered (+35% health).",
 		"main_building": "lioraen_groveheart",
 		"worker": "lioraen_worker",
 		"start_units": ["lioraen_worker", "lioraen_worker", "lioraen_worker", "lioraen_thorns"],

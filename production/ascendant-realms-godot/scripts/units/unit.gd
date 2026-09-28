@@ -504,6 +504,10 @@ func _apply_race_passive() -> void:
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
 			max_hp *= 1.10
+			# Seedkeepers are spring-sheltered: a kill log showed 26 Lioraen
+			# workers cut down by Dominion archers in one match.
+			if is_worker:
+				max_hp *= 1.35
 			hp = max_hp
 		_:
 			pass
