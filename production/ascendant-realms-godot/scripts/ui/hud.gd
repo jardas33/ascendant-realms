@@ -3489,6 +3489,33 @@ Workers inside %d / %d  ·  +%d %s a minute
 			btn.pressed.connect(func(): _try_queue_tech(cap_b, cap_tid))
 			research_grid.add_child(btn)
 
+	# Caravan trade: spend a gold hoard on what the nodes no longer give.
+	if is_hq and _commander.has_method("trade_gold_for"):
+		var price: int = _commander.trade_price()
+		_add_command_section("Caravan", "%d GOLD FOR %d" % [price, _commander.TRADE_BATCH])
+		var trade_row := HBoxContainer.new()
+		trade_row.add_theme_constant_override("separation", 6)
+		_cmd_body.add_child(trade_row)
+		for kind in ["food", "timber", "stone"]:
+			var tb := Button.new()
+			tb.text = "+%d %s" % [_commander.TRADE_BATCH, String(kind).capitalize()]
+			tb.custom_minimum_size = Vector2(0, 40)
+			tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			tb.focus_mode = Control.FOCUS_NONE
+			tb.add_theme_font_size_override("font_size", 15)
+			tb.disabled = int(_commander.resources.get("gold", 0)) < price
+			tb.tooltip_text = "Trade %d gold for %d %s. Each trade raises the price by a few gold; it eases back over time." % [price, _commander.TRADE_BATCH, kind]
+			var cap_hq = b
+			var cap_kind := String(kind)
+			tb.pressed.connect(func():
+				var res = _issue_order({"type": "trade", "target": cap_hq, "id": cap_kind})
+				if res is Dictionary and not bool(res.get("ok", false)):
+					_flash_notice(String(res.get("reason", "Cannot trade")))
+				else:
+					Sfx.play("select")
+				_rebuild_command_card(cap_hq, [cap_hq]))
+			trade_row.add_child(tb)
+
 
 ## Production orders travel through the world's command bus (online seam).
 func _issue_order(order: Dictionary):

@@ -211,6 +211,7 @@ func _manage_veins() -> void:
 	_vein_timer = 0.0
 	if float(world.get("match_time")) < 150.0 or not world.has_method("vein_near"):
 		return
+	_caravan_trade()
 	var oid := "%s_outpost" % String(commander.race)
 	if GameData.get_building(oid).is_empty():
 		return
@@ -293,6 +294,33 @@ func _manage_veins() -> void:
 			continue
 		spare.sort_custom(func(a, b): return a.global_position.distance_squared_to(ob.global_position) < b.global_position.distance_squared_to(ob.global_position))
 		world.command_bus.execute({"type": "garrison", "units": spare.slice(0, can_send), "target": ob})
+
+## Spend a gold hoard at the caravan on whatever store is running dry. A
+## Karak AI won the early war, then stalled on 1 stone and 20 timber with
+## 4,400 gold banked.
+func _caravan_trade() -> void:
+	if not commander.has_method("trade_gold_for"):
+		return
+	var hq = null
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and b.is_built and bool(b.def.get("is_hq", false)):
+			hq = b
+			break
+	if hq == null:
+		return
+	for i in 2:
+		var price: int = commander.trade_price()
+		if int(commander.resources.get("gold", 0)) < price + 250:
+			return
+		var low := ""
+		var low_amt := 150
+		for k in ["food", "timber", "stone"]:
+			if int(commander.resources.get(k, 0)) < low_amt:
+				low = k
+				low_amt = int(commander.resources.get(k, 0))
+		if low == "":
+			return
+		world.command_bus.execute({"type": "trade", "target": hq, "id": low})
 
 # --------------------------------------------------------------------------
 # v0.435 bounded Easy opponent

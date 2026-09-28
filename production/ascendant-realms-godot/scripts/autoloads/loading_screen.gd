@@ -244,6 +244,8 @@ const TIPS := [
 	"Expand an outpost twice for more workers and more output. The third level lights a watch-fire that shoots raiders.",
 	"A Lume flare doubles a vein's output for 90 seconds. Take it, or take it from them.",
 	"Raid the enemy's outposts: the workers inside spill out and the vein goes free.",
+	"The food by your hall runs dry in a few minutes. Houses keep a garden, and a food vein keeps an army fed.",
+	"Gold piling up? Select your main hall and trade it at the caravan for food, timber or stone.",
 	"Fog of war hides every battlefield. Send a fast rider ahead to find the enemy before their army finds you.",
 	"Explored fields stay on your map: workers can be sent to any resource you have seen.",
 	"Every 25th stage of the Endless Road, a Road Tyrant holds the enemy stronghold. Each fights in its own way.",

@@ -15,6 +15,7 @@ const CONTROLS := [
 	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it. Tab selects the army."],
 	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
+	["CARAVAN", "Select your main hall to trade gold for food, timber or stone. Each trade raises the price; it eases back over time."],
 	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
 	["CAMERA", "Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
 	["SYSTEM", "F3 toggles debug information. Esc pauses the battle."],

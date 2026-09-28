@@ -81,6 +81,36 @@ func refund(cost: Dictionary, ratio: float = 1.0) -> void:
 		resources[k] = int(resources.get(k, 0)) + int(round(float(cost[k]) * ratio))
 	emit_signal("resources_changed", resources)
 
+## Caravan trade at the main hall: gold buys a batch of food, timber or stone.
+## Every trade raises the price a little; it eases back to the base over time.
+## Late matches banked thousands of gold while armies starved on empty food
+## and stone nodes; this turns a hoard into an army.
+const TRADE_BATCH := 50
+const TRADE_BASE_PRICE := 100.0
+const TRADE_PRICE_STEP := 6.0
+var _trade_price := TRADE_BASE_PRICE
+var _trade_stamp := 0.0
+
+func trade_price() -> int:
+	var now := float(Engine.get_physics_frames()) / float(Engine.physics_ticks_per_second)
+	# The market cools by one gold every four seconds.
+	_trade_price = maxf(TRADE_BASE_PRICE, _trade_price - (now - _trade_stamp) / 4.0)
+	_trade_stamp = now
+	return int(round(_trade_price))
+
+func trade_gold_for(kind: String) -> Dictionary:
+	if not ["food", "timber", "stone"].has(kind):
+		return {"ok": false, "reason": "Nothing to trade for"}
+	var price := trade_price()
+	if int(resources.get("gold", 0)) < price:
+		return {"ok": false, "reason": "Need %d gold" % price}
+	resources["gold"] = int(resources["gold"]) - price
+	# Not income: kept out of the per-minute rate on the top bar.
+	resources[kind] = int(resources.get(kind, 0)) + TRADE_BATCH
+	emit_signal("resources_changed", resources)
+	_trade_price += TRADE_PRICE_STEP
+	return {"ok": true, "price": price}
+
 ## Income over the last minute of simulation time, for the top bar.
 var _income_log: Array = []
 

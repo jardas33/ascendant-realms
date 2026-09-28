@@ -95,6 +95,11 @@ func execute(order: Dictionary):
 			if is_instance_valid(target) and target.has_method("release_garrison"):
 				target.release_garrison()
 			return null
+		"trade":
+			# Gold for a batch of `id` (food, timber or stone) at the main hall.
+			if is_instance_valid(target) and target.get("commander") != null:
+				return target.commander.trade_gold_for(id)
+			return {"ok": false, "reason": "Hall lost"}
 		"expand":
 			return target.expand_outpost() if is_instance_valid(target) and target.has_method("expand_outpost") else {"ok": false, "reason": "Outpost lost"}
 		"cast":

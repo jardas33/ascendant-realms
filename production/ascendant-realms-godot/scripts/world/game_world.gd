@@ -1025,7 +1025,22 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 	node.add_child(core_shape)
 	_register_navigation_obstacle(node, "resource_core", center, core_half, 2.0, "RESOURCE_NODE", "resource_core", WorldBlockerContract.RESOURCE_BLOCKER_LAYER, false, core_shape)
 	node.depleted_once.connect(_on_resource_depleted_navigation_blocker)
+	node.depleted_once.connect(_on_resource_depleted_notice)
 
+## The home food node running dry is the economy's turning point (every unit
+## eats), so tell the player once what feeds an army after it.
+var _told_food_dry := false
+
+func _on_resource_depleted_notice(node: ResourceNode) -> void:
+	if _told_food_dry or node.resource_kind != "food" or bool(Match.get_config().get("no_veins", false)):
+		return
+	var starts: Array = map.get("start_positions", [])
+	if player_team < 0 or player_team >= starts.size():
+		return
+	if node.global_position.distance_to(starts[player_team]) > 45.0:
+		return
+	_told_food_dry = true
+	emit_signal("alert", "The food by your hall is gone. Houses keep a garden; claim a food vein or trade gold at the caravan.", node.global_position)
 
 func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
 	var changed := false
