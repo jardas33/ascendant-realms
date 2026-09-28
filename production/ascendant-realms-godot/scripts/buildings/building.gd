@@ -1383,6 +1383,24 @@ func _take_in(u) -> void:
 	garrison.append(u)
 	if commander:
 		commander.recompute_pop()
+	_update_outpost_lamp()
+
+## A lantern glows at a staffed outpost so a working mine reads at a glance.
+var _outpost_lamp: OmniLight3D
+
+func _update_outpost_lamp() -> void:
+	var staffed := not garrison.is_empty()
+	if staffed and not is_instance_valid(_outpost_lamp):
+		_outpost_lamp = OmniLight3D.new()
+		_outpost_lamp.light_color = Color(1.0, 0.72, 0.4)
+		_outpost_lamp.light_energy = 1.6
+		_outpost_lamp.omni_range = 7.0
+		_outpost_lamp.shadow_enabled = false
+		_outpost_lamp.position = Vector3(0, footprint + 0.8, 0)
+		add_child(_outpost_lamp)
+	if is_instance_valid(_outpost_lamp):
+		_outpost_lamp.visible = staffed
+		_outpost_lamp.light_energy = 1.2 + 0.25 * float(garrison.size())
 
 ## Send every worker inside back out around the outpost.
 func release_garrison() -> void:
@@ -1401,6 +1419,7 @@ func release_garrison() -> void:
 	garrison.clear()
 	if commander:
 		commander.recompute_pop()
+	_update_outpost_lamp()
 
 func _tower_tick(delta: float) -> void:
 	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):

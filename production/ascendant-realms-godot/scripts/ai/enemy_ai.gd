@@ -167,6 +167,36 @@ func _think() -> void:
 	_cast_hero_spells()
 	_manage_capture()
 	_manage_veins()
+	_send_vein_raid()
+
+## Raids: from minute five, every 90 s a handful of the fastest idle soldiers
+## hits the nearest enemy outpost, so veins have to be defended.
+var _raid_timer := 0.0
+
+func _send_vein_raid() -> void:
+	_raid_timer += _think_interval
+	if _raid_timer < 90.0 or float(world.get("match_time")) < 300.0:
+		return
+	_raid_timer = 0.0
+	var target = null
+	var best_d := INF
+	for b in world.all_buildings():
+		if is_instance_valid(b) and not b.is_dead and b.team != commander.team and bool(b.def.get("vein_outpost", false)):
+			var d: float = b.global_position.distance_to(_base_pos)
+			if d < best_d:
+				best_d = d
+				target = b
+	if target == null:
+		return
+	var soldiers: Array = []
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.state == u.State.IDLE:
+			soldiers.append(u)
+	if soldiers.size() < 6:
+		return
+	soldiers.sort_custom(func(a, b): return float(a.move_speed) > float(b.move_speed))
+	for u in soldiers.slice(0, 3 + int(float(world.get("match_time")) / 600.0)):
+		u.command_attack(target)
 
 ## Veins (docs/claude/RESOURCE_DESIGN.md): from minute two and a half the AI
 ## claims the free veins on its side of the map, staffs its outposts from the

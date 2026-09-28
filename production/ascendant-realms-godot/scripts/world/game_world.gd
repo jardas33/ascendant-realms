@@ -2339,8 +2339,19 @@ func find_enemy_in_range(unit, rng: float):
 	var best = null
 	var best_d := rng * rng
 	var p: Vector3 = unit.global_position
+	# Heroes pick fighters before workers: AI heroes on attack-move spent whole
+	# matches cutting down 25-30 workers while the armies fought elsewhere.
+	var hero_prefers_fighters: bool = bool(unit.get("is_hero"))
+	var worker_fallback = null
+	var worker_d := rng * rng
 	for u in all_units():
 		if not is_instance_valid(u) or u.is_dead or u.team == unit.team:
+			continue
+		if hero_prefers_fighters and u.is_worker:
+			var wd = p.distance_squared_to(u.global_position)
+			if wd < worker_d and (unit.team != player_team or is_player_visible(u)):
+				worker_d = wd
+				worker_fallback = u
 			continue
 		var d = p.distance_squared_to(u.global_position)
 		if d >= best_d:
@@ -2350,6 +2361,9 @@ func find_enemy_in_range(unit, rng: float):
 			continue
 		best_d = d
 		best = u
+	if best == null and worker_fallback != null:
+		best = worker_fallback
+		best_d = worker_d
 	# also consider buildings if no unit and unit is combat
 	if best == null and not unit.is_worker:
 		for b in all_buildings():
