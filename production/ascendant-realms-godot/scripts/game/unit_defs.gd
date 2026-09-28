@@ -209,7 +209,7 @@ static func get_all() -> Dictionary:
 	"lioraen_hero_warden": {
 		"race": "lioraen", "name": "Grove Warden", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("lioraen_hero_warden"), "height": 1.95,
-		"hp": 340, "dmg": 26, "dmg_type": "arcane", "armor_class": "medium", "armor": 3,
+		"hp": 380, "dmg": 30, "dmg_type": "arcane", "armor_class": "medium", "armor": 3,
 		"range": 15.0, "attack_cd": 1.2, "speed": 4.3, "vision": 30.0, "projectile": "lume_bolt", "pop": 0,
 		"desc": "Ilduara's line of spring-wardens: heals allies and roots the enemy where they stand.",
 	},
@@ -236,7 +236,7 @@ static func get_all() -> Dictionary:
 		"model": _char("orc_grunt"), "height": 1.9,
 		"hp": 100, "dmg": 11, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.0, "vision": 20.0,
-		"cost": {"food": 40, "gold": 5}, "build_time": 9, "pop": 1, "produced_by": "grimtusk_warcamp",
+		"cost": {"food": 50, "gold": 5}, "build_time": 10, "pop": 1, "produced_by": "grimtusk_warcamp",
 		"desc": "Iron in the jaw, chains wrapped round the fists. Cheap, fearless and everywhere.",
 	},
 	"grimtusk_bowcrusha": {
@@ -258,7 +258,7 @@ static func get_all() -> Dictionary:
 	"grimtusk_berserker": {
 		"race": "grimtusk", "name": "Chainbreaker", "role": "melee", "tier": 2,
 		"model": _char("orc_grunt"), "height": 2.0,
-		"hp": 165, "dmg": 26, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
+		"hp": 165, "dmg": 23, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 0.9, "speed": 4.5, "vision": 22.0,
 		"cost": {"food": 90, "gold": 40}, "build_time": 18, "pop": 2, "produced_by": "grimtusk_warcamp",
 		"desc": "Fights with the chain that held him. Blood-drunk, nearly impossible to bring down.",

@@ -83,7 +83,10 @@ func _apply_personality() -> void:
 			# Massing four extra soldiers lost the first fights to swarm
 			# factions before the big army ever marched (1-7 records).
 			_army_attack_size += 2
-			_worker_target += 2
+			# Extra mouths hurt once the home food runs dry (Karak 4-12-2 over
+			# 90 matches); the Granitborn keep a standard workforce.
+			if String(commander.race) != "karak":
+				_worker_target += 2
 		"frostborn":
 			_army_attack_size += 1
 		"barrosan":
