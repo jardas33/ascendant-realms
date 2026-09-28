@@ -485,6 +485,17 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
     - Lioraen is the one faction still clearly behind, so it is first in plan 42.
   - **Screens reviewed:** the campaign map (all five Acts) and the loading screen at 1920 both read well.
   - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 42 (done): Lioraen, a new working method, faster tests**
+  - **New working method (Emanuel, 28 Sept):** Opus plans and reviews. It writes each top-10 list, makes the design, lore and story calls, and handles hard architecture. Routine execution goes to Sonnet workers: balance runs, audits, mechanical fixes, tests and merges. Opus checks each worker's result before accepting it and redoes any step that falls short. The first Sonnet worker ran this plan's regression and 90 balance matches; I re-tallied its numbers and they matched.
+  - **Why Lioraen trailed:** a kill log showed Dominion archers cutting down 26 Lioraen workers in one match. Seedkeepers are now spring-sheltered (+35% health), and the race card says so.
+    - Lioraen went from 5-13 to 9-9 over 90 matches, and 10-14-3 over 135.
+  - **Pooled 135 matches:** Ironmaw 17-8-2, Wyldkin 15-8-4, Sylvan 14-10-3, Frostborn 13-12-2, Vorthak 12-8-7, Lioraen 10-14-3, Hollow 10-13-4, Karak 8-13-6, Sunspear 7-14-6, Barrosan 6-12-9. Barrosan and Sunspear are next.
+  - **Faster tests (Emanuel asked):**
+    - The full 17-check regression now runs its checks in parallel across the 12 CPU cores: 66 s instead of 158 s. The two checks that write the save file still run one at a time.
+    - A new quick mode (compile, saga, core unit tests, veins) takes 39 s, for small changes between pushes.
+    - Balance runs now play 6 matches at once instead of 4. A 45-match round takes about 25 minutes instead of about 40.
+    - I tried two faster settings and rejected both because they skewed the results. At 16x game speed a round took 11.5 min, but draws jumped from 6 to 22. Running 8 matches at once also raised draws.
+  - Regression passed. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
