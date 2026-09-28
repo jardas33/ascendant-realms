@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 17:00 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -402,6 +402,17 @@ Last updated: 2026-09-28, 14:00 UTC. Claude updates this file after every pass. 
   - **Balance with the new economy (45 matches):** much flatter. Barrosan went from 0 to 2 wins (2-4-3), Vorthak fell to 1-3-5, and Sylvan (7-1) is now the one to watch. 12 of 45 games ran to the 22-minute cap, since outposts make defence stronger.
   - **Performance bug found and fixed:** a metadata read with a null default raised hidden engine errors about 6 ms apiece and made matches with outposts run 4x slower.
   - Regression passed (17 checks, now including veins and outposts). Pushed to GitHub.
+- **Plan 34 (done):**
+  - **Faction palettes:** a building model borrowed from another faction now takes its owner's palette (Careto red, Granitborn castro grey-blue, Aurean bronze, Ironmaw rust, Moura silver, Wolfveil moss, Compaña candle-dark), so a base reads as its faction at a glance. New models for those factions remain Codex's lane.
+  - **Lume flares:** from minute 6, every 4 minutes one vein burns gold and pays double for 90 seconds, with an alert and a pillar of light.
+  - **Minimap:** veins show as rings in their resource's colour, filled with the holder's colour, pulsing while flaring.
+  - **Five loading tips** for veins and outposts.
+  - **Hero forge:** archetype, strength and weakness were only labels. Each is now a real effect, and the forge shows it where you pick it.
+    - Archetypes: Warrior (+60 health, +3 damage), Commander (stronger, wider aura), Ranger (attack speed, sight, speed), Mage (+40 mana, +10% spell power) and Summoner (healing power, mana regeneration). They're picked with buttons and a description instead of a bare dropdown.
+    - Strengths and weaknesses: Mighty +8% damage, Swift +0.3 speed, Arcane +30 mana, Stalwart +2 armour; Frail −8% health, Slow −0.2 speed, Impatient −15% mana regeneration, Reckless −1 armour.
+  - **Balance:** Sylvan trimmed (+4% damage and +1.2 reach, was +7% and +2). Past 20 minutes the AI marches with any four soldiers. Endless Road veins run richer the deeper you go.
+  - **45-match matrix (28-minute games):** the flattest yet. Every faction won between 2 and 6. Barrosan went 4 wins, 2 losses and 3 draws (it had lost almost everything before the vein economy). Draws fell from 12 to 7.
+  - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
