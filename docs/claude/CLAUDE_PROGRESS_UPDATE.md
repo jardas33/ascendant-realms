@@ -466,6 +466,13 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Lore:** 30 faction constellation stars were renamed and reworded to match their faction. For example, "Elven Archery" is now "Coal-Gold Aim", "Deepforge Master" is now "Master of the Castro", and "Blizzard Sovereign" is now "Lord of the Entrudo". Star text now uses the display names (Ironmaw, Moura Court, Granitborn, Aurean Dominion, Wolfveil, Compaña, Careto Host).
   - **Round robin:** Grimtusk 7-1-1, Sunspear 5-4, Karak 4-5 (was 1-7-1), Sylvan 4-4-1, Wyldkin 4-2-3, Lioraen 3-6, Hollow 3-4-2, Frostborn 3-3-3, Vorthak 2-5-2, Barrosan 2-3-4. Ironmaw is now the outlier, so it is first in plan 40.
   - Regression passed (17 checks). Pushed to GitHub.
+- **Plan 40 (done): balance and battle-screen review**
+  - **Balance:** Ironmaw's damage bonus went from 12% to 8%, and Vorthak got +5% health.
+  - **Round robin:** Grimtusk 7-2, Barrosan 7-2 (was 2-3-4), Frostborn 5-4, Sylvan 5-3-1, Wyldkin 4-4-1, Vorthak 4-4-1, Sunspear 4-4-1, Hollow 3-6, Lioraen 2-7, Karak 2-7.
+  - Only 3 of 45 matches were draws (8 before), so the caravan helps matches reach an end.
+  - A faction swings by 2 to 4 wins between runs with no change at all (Barrosan went from 2 to 7). One 45-match run can't separate small balance changes from noise, so plan 41 pools two runs before tuning again.
+  - **Pause and result screens (1920x1080):** both read well. The Endless stage line showed "stage 25:" with nothing after it when a stage had no title; it now drops the colon.
+  - Regression passed (17 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
