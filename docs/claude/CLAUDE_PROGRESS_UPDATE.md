@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-27, 23:59 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-28, 00:40 UTC. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -314,6 +314,17 @@ Last updated: 2026-09-27, 23:59 UTC. Claude updates this file after every pass. 
   - **Open finding:** equal-cost fights show Barrosan and Karak units win comfortably (Barrosan beat Vorthak and Hollow with 6 survivors), but their AI still loses most AI-versus-AI matches. The cause is in how their AI plays, not in unit strength, and plan 25 traces it.
   - **Long-match check (windowed, 4x speed):** node count is steady (no leak). Frames run 35 to 60 ms at 4x, with a few 90 to 120 ms spikes in big fights.
   - Regression passed (16 checks, now including the bosses). Merged Codex's Lioraen moonbell ferns. Pushed to GitHub.
+- **Plan 25 (done):**
+  - **Why some factions' AI kept losing:** a kill count showed the Vorthak and Hollow AI heroes killed most of the enemy's workers (26 Karak miners in one match) with Lume Bolt, which dealt 70 damage every 3 s and arced to a second target. Lume Bolt now has a 6 s cooldown and costs 35 mana (was 3 s and 25). AI spells aim at soldiers before workers. The Binder and Lich hit for 32 at 13 m (was 44 at 17 m).
+  - **AI workers flee raiders** back to their hall instead of dying at the field (one Barrosan AI lost 36 workers to Wyldkin archers in a match).
+  - **Rerun of the 45-match matrix:** Hollow dropped from 9-0 to 6-3. Grimtusk led at 8-0, so the Grunt now has 100 health (was 110). After the worker fixes, Barrosan and Karak games last much longer and draw with Vorthak instead of losing by minute 9. The melee factions (Barrosan, Karak, Frostborn) are still at the bottom of AI-versus-AI play, even though they win equal-cost fights.
+  - **Fog of war on every map:** it used to work only on Hollowspan. All twenty battlefields now have it (checked on snow, desert and autumn maps).
+  - **Deep-road mutations:** from Endless Road stage 30, enemy soldiers carry mutations (Ironhide, Frenzy, Leeching, Titan, Swift), one more every 30 stages, forever. They're shown in the stage window.
+  - **Hero sheet** lists talent effects (bonus health, damage against the wounded, thorns, spell power).
+  - **Result screen** announces new Endless Road records.
+  - **Loading tips** for Road Tyrants, records and legendary powers.
+  - **Frame spikes:** the 50 to 100 ms hitches come from the first clash of 120 units, when two heavy physics steps (about 24 ms each) land in one frame. It isn't a single bug; a deeper optimisation is planned.
+  - Regression passed (16 checks). Pushed to GitHub. Codex had nothing new.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
