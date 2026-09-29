@@ -175,7 +175,10 @@ func setup() -> void:
 	_add_key_row(system, "F1", "Every hotkey (field manual)", font)
 	_add_key_row(system, "WHEEL / Z C", "Zoom / rotate camera", font)
 
-	_quit_button = _make_btn("Quit to Menu", func(): emit_signal("quit_requested"))
+	# Leaving a battle forfeits it, so ask first on the same gilt plate.
+	_quit_button = _make_btn("Quit to Menu", func():
+		var dlg: Control = load("res://scripts/ui/gilt_confirm.gd").ask(self, "Leave the Battle", "Quit to the menu? This battle ends here and earns no spoils.", "Quit Battle", true)
+		dlg.confirmed.connect(func(): emit_signal("quit_requested")))
 	vb.add_child(_quit_button)
 
 func _make_btn(text: String, cb: Callable) -> Button:

@@ -3902,7 +3902,10 @@ func _schedule_hero_revival(cmd, hero_id: String) -> void:
 	if cmd.is_human and ProfileManager.has_hero():
 		delay += minf(45.0, float(ProfileManager.hero().get("level", 1)))
 	if cmd.team == player_team:
-		emit_signal("alert", "Your hero has fallen. The Lume will raise them at your stronghold in %d seconds." % int(delay), Vector3.ZERO)
+		# The hero's last words before the Lume takes them home.
+		var last_words: String = load("res://scripts/game/bark_defs.gd").pick(String(cmd.race), "fall")
+		var words := ("“%s”  " % last_words) if last_words != "" else ""
+		emit_signal("alert", words + "Your hero has fallen. The Lume will raise them at your stronghold in %d seconds." % int(delay), Vector3.ZERO)
 	get_tree().create_timer(delay, false).timeout.connect(_try_hero_revival.bind(cmd, hero_id))
 
 func _try_hero_revival(cmd, hero_id: String) -> void:
@@ -3933,6 +3936,10 @@ func _try_hero_revival(cmd, hero_id: String) -> void:
 		hero.model_root.create_tween().tween_property(hero.model_root, "scale", full, 0.7).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	if cmd.team == player_team:
 		emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
+		# Back on their feet, they call the host again.
+		get_tree().create_timer(1.0, false).timeout.connect(func():
+			if is_instance_valid(hero) and hero.has_method("say"):
+				hero.say(load("res://scripts/game/bark_defs.gd").pick(String(cmd.race), "start")))
 
 func _on_building_died(building) -> void:
 	_unregister_world_blocker(building)
