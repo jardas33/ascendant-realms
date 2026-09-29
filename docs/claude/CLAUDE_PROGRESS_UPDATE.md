@@ -614,6 +614,12 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Result screen:** epic and legendary finds pop in with a chime.
   - **Endless:** the Road of the Week wears a violet ribbon showing the days until the next road.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 53 (done): the game now sounds alive**
+  - Six new sounds, all made from code by tools/synth_sfx.py, so there are no asset costs or licences: a hover tick, a coin chime, a wax-seal stamp, a page turn, a war horn and a soft order knock.
+  - **Menus:** buttons tick on hover. Briefings and the Chronicle open with a page turn. A freshly won region is stamped with its seal.
+  - **Battle:** a war horn opens every battle. Every accepted order gets a soft knock. Placing a building lands with a stamp. Jars and caravan trades ring the coin chime.
+  - **Result screen:** new deeds pop in with a chime, like epic loot.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
