@@ -12,6 +12,11 @@ const FESTIVALS := [
 	{"title": "The Night of the Witches", "race": "hollow", "mood": "night", "text": "Friday the thirteenth in Montalegre. The queimada burns blue, and the candles on the road are not all held by the living."},
 	{"title": "Magusto", "race": "wyldkin", "mood": "dusk", "text": "Chestnuts roast in the ash and the new wine is opened. The wolves smell the feast from the Larouco."},
 	{"title": "The Fires of São João", "race": "vorthak", "mood": "ember", "text": "Midsummer bonfires on every hill. Across the valley, drowned Furna lights fires of its own."},
+	{"title": "The Matança", "race": "grimtusk", "mood": "storm", "text": "January, and every village kills its pig. The smoke of the fumeiro fills the valley, and the Ironmaw smell iron in the blood."},
+	{"title": "The Blessing of the Springs", "race": "lioraen", "mood": "", "text": "On the first of May the fountains are dressed in broom and flowers. The springs answer, and not every answer is kind."},
+	{"title": "The Dawn of the Mouras", "race": "sylvan", "mood": "dusk", "text": "On São João's morning the Mouras comb their golden hair by the water. Whoever sees them is offered a choice, and must choose."},
+	{"title": "The Climb to the Castro", "race": "karak", "mood": "", "text": "Pilgrims carry candles up the old hillfort for the Senhora da Graça. This year the stones carry something back down."},
+	{"title": "The Parade of Bronze", "race": "sunspear", "mood": "", "text": "The Dominion marks the seventy-fifth Ascension with a parade of bronze. This year it parades through the highlands."},
 ]
 const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils", "blood_moon", "lean", "fortified", "veterans", "allies", "gloom", "rich_veins", "jar_season", "forced_march", "lume_tide", "gold_rush"]
 const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",
