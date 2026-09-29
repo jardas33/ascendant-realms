@@ -442,6 +442,11 @@ func _rebuild_opponents() -> void:
 		marker.color = OPPONENT_COLORS[i % OPPONENT_COLORS.size()]
 		marker.custom_minimum_size = Vector2(6, 34)
 		row.add_child(marker)
+		# The rival's shield, redrawn as the chosen faction changes.
+		var opp_shield := Control.new()
+		opp_shield.custom_minimum_size = Vector2(30, 34)
+		opp_shield.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(opp_shield)
 		var race_opt := OptionButton.new()
 		race_opt.custom_minimum_size = Vector2(0, 34)
 		race_opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -450,7 +455,25 @@ func _rebuild_opponents() -> void:
 			race_opt.add_item(GameData.RACES[rid].get("name", rid), j)
 		var def_idx: int = opp_race_ids.find(defaults[i]) if i < defaults.size() else -1
 		race_opt.select(max(0, def_idx))
-		race_opt.item_selected.connect(func(_idx): Sfx.play("select"))
+		var ids_ref: Array = opp_race_ids
+		opp_shield.draw.connect(func():
+			var rid2 := String(ids_ref[clampi(race_opt.selected, 0, ids_ref.size() - 1)])
+			var col: Color = GameData.RACES.get(rid2, {}).get("color", Color(0.6, 0.6, 0.6))
+			var w := opp_shield.size.x
+			var h := opp_shield.size.y
+			var shield := PackedVector2Array([Vector2(1, 1), Vector2(w - 1, 1), Vector2(w - 1, h * 0.55), Vector2(w * 0.5, h - 1), Vector2(1, h * 0.55)])
+			opp_shield.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.95))
+			var c := Vector2(w * 0.5, h * 0.45)
+			var inner := PackedVector2Array()
+			for pnt in shield:
+				inner.append(c + (pnt - c) * 0.84)
+			opp_shield.draw_colored_polygon(inner, col.darkened(0.2))
+			shield.append(shield[0])
+			opp_shield.draw_polyline(shield, GOLD, 1.4, true)
+			FACTION_SIGILS.draw(opp_shield, rid2, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+		race_opt.item_selected.connect(func(_idx):
+			Sfx.play("select")
+			opp_shield.queue_redraw())
 		row.add_child(race_opt)
 		var diff_opt := OptionButton.new()
 		diff_opt.custom_minimum_size = Vector2(118, 34)
