@@ -80,7 +80,7 @@ func _draw() -> void:
 	for r in map_data.get("resources", []):
 		var c: Color = KIND_COLORS.get(str(r.get("kind", "")), Color.WHITE)
 		draw_circle(to_px.call(r["pos"]), maxf(2.5, side * 0.011), c)
-	# Veins: a ringed mark in the resource's colour, where outposts can rise.
+	# Veins: a dark-edged dot in the resource's colour, where outposts can rise.
 	for v in map_data.get("veins", []):
 		var vp: Vector2 = to_px.call(v["pos"])
 		var vc: Color = KIND_COLORS.get(str(v.get("kind", "")), Color.WHITE)
@@ -88,7 +88,6 @@ func _draw() -> void:
 		# A small ringed pip: big rings crowded the preview.
 		draw_circle(vp, vr * 0.55, Color(0.02, 0.02, 0.03, 0.8))
 		draw_circle(vp, vr * 0.38, vc)
-		draw_circle(vp, vr * 0.4, vc)
 	for cp in map_data.get("capture_points", []):
 		var p: Vector2 = to_px.call(cp["pos"])
 		var s := side * 0.022
