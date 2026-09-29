@@ -58,6 +58,25 @@ func _build_static() -> void:
 	scroll.add_child(gutter)
 	gutter.add_child(_body)
 
+	# Content scrolling under the footer fades out instead of being cut by a
+	# hard line, so a long page reads as "more below", not as a broken frame.
+	var fade := TextureRect.new()
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.015, 0.022, 0.032, 0.0))
+	grad.set_color(1, Color(0.015, 0.022, 0.032, 0.92))
+	var gtex := GradientTexture2D.new()
+	gtex.gradient = grad
+	gtex.fill_from = Vector2(0, 0)
+	gtex.fill_to = Vector2(0, 1)
+	gtex.width = 4
+	gtex.height = 64
+	fade.texture = gtex
+	fade.stretch_mode = TextureRect.STRETCH_SCALE
+	fade.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	fade.offset_top = -176.0
+	fade.offset_bottom = -112.0
+	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(fade)
 	var footer_back := ColorRect.new()
 	footer_back.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	footer_back.offset_top = -112.0
@@ -295,6 +314,7 @@ func _refresh() -> void:
 			var plus := Button.new()
 			_label_button(plus, "+", Color(0.7, 1.0, 0.7))
 			plus.custom_minimum_size = Vector2(46, 40)
+			plus.add_theme_font_size_override("font_size", 24)
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_attribute(a))
 			row.add_child(plus)
@@ -456,6 +476,7 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour �
 			var plus := Button.new()
 			_label_button(plus, "+", Color(0.7, 1.0, 0.7))
 			plus.custom_minimum_size = Vector2(46, 40)
+			plus.add_theme_font_size_override("font_size", 24)
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_mastery(con.get("id", "")))
 			row.add_child(plus)

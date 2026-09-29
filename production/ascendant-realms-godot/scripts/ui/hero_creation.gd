@@ -282,11 +282,13 @@ func _build() -> void:
 		name_lbl.custom_minimum_size = Vector2(140, 36)
 		name_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 		name_lbl.add_theme_font_size_override("font_size", 17)
+		name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		attr_grid.add_child(name_lbl)
 		var minus := Button.new()
 		minus.text = "-"
 		minus.clip_text = false
 		minus.custom_minimum_size = Vector2(44, 36)
+		minus.add_theme_font_size_override("font_size", 24)
 		minus.focus_mode = Control.FOCUS_NONE
 		minus.add_theme_color_override("font_color", Color.WHITE)
 		minus.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
@@ -297,12 +299,13 @@ func _build() -> void:
 		val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		val.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		val.add_theme_color_override("font_color", Color.WHITE)
-		val.add_theme_font_size_override("font_size", 17)
+		val.add_theme_font_size_override("font_size", 21)
 		attr_grid.add_child(val)
 		var plus := Button.new()
 		plus.text = "+"
 		plus.clip_text = false
 		plus.custom_minimum_size = Vector2(44, 36)
+		plus.add_theme_font_size_override("font_size", 24)
 		plus.focus_mode = Control.FOCUS_NONE
 		plus.add_theme_color_override("font_color", Color.WHITE)
 		plus.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))

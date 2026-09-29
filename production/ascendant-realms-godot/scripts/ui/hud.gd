@@ -1263,7 +1263,10 @@ func _build_top_bar() -> void:
 	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
 	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
 	var objective_crest_path := String(COMMAND_CRESTS.get(player_race, ""))
-	var objective_has_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
+	var objective_has_painted_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
+	# Every faction shows a crest: painted art where it exists, a drawn
+	# heraldic shield in the faction colour otherwise.
+	var objective_has_crest := true
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
 	_objective_panel.set("objective_has_crest", objective_has_crest)
@@ -1281,7 +1284,11 @@ func _build_top_bar() -> void:
 	mission_row.add_theme_constant_override("separation", 9)
 	mission_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_objective_panel.add_child(mission_row)
-	if objective_has_crest:
+	if not objective_has_painted_crest:
+		var drawn_crest := _drawn_faction_crest(player_race, Vector2(61, 69))
+		drawn_crest.name = "MatchFactionCrest"
+		mission_row.add_child(drawn_crest)
+	else:
 		var campaign_crest := TextureRect.new()
 		campaign_crest.name = "MatchFactionCrest"
 		campaign_crest.texture = load(objective_crest_path)
@@ -3566,6 +3573,41 @@ const TECH_FLAVOR := {
 	"tech_armor": {"barrosan": "Granite-Wool Coats", "lioraen": "Bark Mail", "vorthak": "Glass Plate", "grimtusk": "Overseer Plate",
 		"sylvan": "Silver Mail", "karak": "Stone Skin", "sunspear": "Bronze Scale", "wyldkin": "Thick Pelts", "hollow": "Bone Mail", "frostborn": "Winter Fringes"},
 }
+
+## A heraldic shield in the faction's colour, gilt-rimmed, with its initial:
+## the crest for factions that do not have painted crest art yet.
+func _drawn_faction_crest(race_id: String, crest_size: Vector2) -> Control:
+	var race: Dictionary = GameData.RACES.get(race_id, {})
+	var col: Color = race.get("color", Color(0.6, 0.6, 0.6))
+	var initial := String(race.get("name", "?")).trim_prefix("The ").substr(0, 1)
+	var holder := Control.new()
+	holder.custom_minimum_size = crest_size
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	holder.draw.connect(func():
+		var w := holder.size.x
+		var h := holder.size.y
+		var m := 4.0
+		var shield := PackedVector2Array([
+			Vector2(m, m), Vector2(w - m, m), Vector2(w - m, h * 0.55),
+			Vector2(w * 0.5, h - m), Vector2(m, h * 0.55)])
+		holder.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.9))
+		var inner := PackedVector2Array()
+		var c := Vector2(w * 0.5, h * 0.45)
+		for p in shield:
+			inner.append(c + (p - c) * 0.84)
+		holder.draw_colored_polygon(inner, col.darkened(0.25))
+		# A lighter chief across the top of the field.
+		holder.draw_rect(Rect2(inner[0], Vector2(inner[1].x - inner[0].x, (h - m * 2.0) * 0.18)), Color(col.lightened(0.15), 0.55))
+		shield.append(shield[0])
+		holder.draw_polyline(shield, COMMAND_GOLD, 2.0, true)
+		inner.append(inner[0])
+		holder.draw_polyline(inner, Color(COMMAND_GOLD, 0.45), 1.0, true)
+		var font: Font = get_theme_default_font()
+		var fs := int(h * 0.42)
+		var tw := font.get_string_size(initial, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
+		holder.draw_string(font, Vector2(w * 0.5 - tw.x * 0.5, h * 0.5 + fs * 0.32), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.98, 0.9, 0.7)))
+	return holder
 
 func _tech_display_name(tid: String, fallback: String) -> String:
 	if _commander != null and TECH_FLAVOR.has(tid):
