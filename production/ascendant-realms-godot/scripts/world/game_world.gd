@@ -2496,6 +2496,41 @@ func record_resource_deposit(worker, drop, kind: String, carried: int, multiplie
 		"dropoff_definition_name": String(drop.def.get("name", "")) if drop_valid else "",
 		"next_target": snap.get("target", "None")
 	})
+	if drop_valid and deposited > 0 and int(worker.team) == player_team:
+		_deposit_float(drop, kind, deposited)
+
+var _deposit_float_stack := {}
+const DEPOSIT_FLOAT_COLORS := {
+	"food": Color(1.0, 0.62, 0.45), "timber": Color(0.92, 0.72, 0.45),
+	"stone": Color(0.82, 0.86, 0.9), "gold": Color(1.0, 0.86, 0.38),
+}
+
+## A delivery rises off the hall as "+12" in the resource's colour, so a busy
+## economy is something you can see, not just a number in the top bar.
+func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
+	var l := Label3D.new()
+	l.text = "+%d %s" % [amount, kind]
+	l.font_size = 64
+	l.outline_size = 16
+	l.outline_modulate = Color(0.05, 0.03, 0.02, 0.9)
+	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	l.no_depth_test = true
+	l.pixel_size = 0.012
+	l.modulate = DEPOSIT_FLOAT_COLORS.get(kind, Color(0.95, 0.9, 0.75))
+	add_child(l)
+	# Deliveries landing close together fan out sideways instead of overlapping.
+	var key := drop.get_instance_id()
+	var now := Time.get_ticks_msec()
+	var prev: Dictionary = _deposit_float_stack.get(key, {"t": 0, "n": 0})
+	var slot := int(prev["n"]) + 1 if now - int(prev["t"]) < 600 else 0
+	_deposit_float_stack[key] = {"t": now, "n": slot % 4}
+	var spread: Array[float] = [0.0, 2.6, -2.6, 5.2]
+	var start := drop.global_position + Vector3(spread[slot % 4], 7.0, 0.0)
+	l.global_position = start
+	var tw := l.create_tween().set_parallel(true)
+	tw.tween_property(l, "global_position", start + Vector3(0, 1.6, 0), 1.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tw.tween_property(l, "modulate:a", 0.0, 0.5).set_delay(0.7)
+	tw.chain().tween_callback(l.queue_free)
 
 func find_nearest_dropoff(pos: Vector3, team: int):
 	var best = null
