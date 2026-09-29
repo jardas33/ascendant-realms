@@ -237,6 +237,14 @@ func _build() -> void:
 		ab.add_theme_stylebox_override("pressed", sel)
 		ab.button_pressed = ARCHETYPES[i] == _archetype
 		var cap := String(ARCHETYPES[i])
+		# A small emblem of the calling: sword, banner, bow, star, skull-candle.
+		var em := Control.new()
+		em.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		em.position = Vector2(8, 8)
+		em.size = Vector2(28, 28)
+		em.draw.connect(_draw_archetype_emblem.bind(em, cap))
+		ab.add_child(em)
+		ab.text = "     " + ab.text
 		ab.pressed.connect(func():
 			_archetype = cap
 			arch_desc.text = String(ARCH_DESC.get(cap, ""))
@@ -648,3 +656,24 @@ func _on_forge() -> void:
 			get_tree().change_scene_to_file("res://scenes/ui/skirmish_setup.tscn")
 		_:
 			get_tree().change_scene_to_file("res://scenes/ui/hero_sheet.tscn")
+
+func _draw_archetype_emblem(em: Control, cap: String) -> void:
+	var c := Vector2(14, 14)
+	var g := Color(0.95, 0.8, 0.5)
+	if cap == "Warrior":
+		em.draw_line(c + Vector2(-8, 8), c + Vector2(8, -8), g, 2.6, true)
+		em.draw_line(c + Vector2(-9, 3), c + Vector2(-3, 9), g, 2.2, true)
+	elif cap == "Commander":
+		em.draw_line(c + Vector2(-7, 10), c + Vector2(-7, -10), g, 2.0, true)
+		em.draw_colored_polygon(PackedVector2Array([c + Vector2(-6, -10), c + Vector2(9, -6), c + Vector2(-6, -1)]), g)
+	elif cap == "Ranger":
+		em.draw_arc(c + Vector2(-4, 0), 10.0, -1.2, 1.2, 12, g, 2.0, true)
+		em.draw_line(c + Vector2(-8, 0), c + Vector2(10, 0), g, 1.6, true)
+		em.draw_colored_polygon(PackedVector2Array([c + Vector2(10, 0), c + Vector2(5, -3), c + Vector2(5, 3)]), g)
+	elif cap == "Mage":
+		for q in 8:
+			var a := q * TAU / 8.0
+			em.draw_line(c, c + Vector2(cos(a), sin(a)) * (10.0 if q % 2 == 0 else 5.0), g, 1.8, true)
+	else:
+		em.draw_rect(Rect2(c + Vector2(-3, -2), Vector2(6, 11)), g)
+		em.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -11), c + Vector2(3, -4), c + Vector2(-3, -4)]), Color(1.0, 0.9, 0.55))
