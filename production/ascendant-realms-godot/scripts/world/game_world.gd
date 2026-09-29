@@ -2608,6 +2608,7 @@ var _jar_spawn_timer := 90.0
 var _jar_claim_timer := 0.0
 var _jars_spawned := 0
 var jars_dug_by_player := 0
+var jars_opened_by_team := {}
 
 func _tick_lume_jars(delta: float) -> void:
 	if bool(Match.get_config().get("no_veins", false)) or match_time < 240.0:
@@ -2669,6 +2670,7 @@ func _open_lume_jar(jar, team: int) -> void:
 	if team < 0 or team >= commanders.size():
 		return
 	var cmd = commanders[team]
+	jars_opened_by_team[team] = int(jars_opened_by_team.get(team, 0)) + 1
 	# Gold, plus a share of whatever that side is shortest of.
 	var low := "food"
 	for k in ["food", "timber", "stone"]:

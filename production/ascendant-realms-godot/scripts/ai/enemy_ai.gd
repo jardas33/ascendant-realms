@@ -77,8 +77,13 @@ var _second_barracks_army := 6
 
 func _apply_personality() -> void:
 	match String(commander.race):
-		"vorthak", "hollow", "grimtusk", "wyldkin":
+		"vorthak", "hollow", "wyldkin":
 			_army_attack_size = maxi(4, _army_attack_size - 3)
+		"grimtusk":
+			# Early swarms win AI wars (the swarm factions took 42 of 72 pooled
+			# games); Ironmaw, with the cheapest army, led every run (13-17 wins).
+			# It now masses one soldier more before marching.
+			_army_attack_size = maxi(4, _army_attack_size - 2)
 		"sunspear", "karak", "sylvan":
 			# Massing four extra soldiers lost the first fights to swarm
 			# factions before the big army ever marched (1-7 records).
@@ -88,7 +93,9 @@ func _apply_personality() -> void:
 			if String(commander.race) != "karak":
 				_worker_target += 2
 		"frostborn":
-			_army_attack_size += 1
+			# The Careto chase winter out of the villages: they strike early too
+			# (3-11-4 over 90 matches while waiting to mass).
+			_army_attack_size = maxi(4, _army_attack_size - 2)
 		"barrosan":
 			# The clans strike early with cheap levies before the enemy masses.
 			_army_attack_size = maxi(5, _army_attack_size - 2)
