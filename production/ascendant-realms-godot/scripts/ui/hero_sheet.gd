@@ -132,6 +132,34 @@ func _refresh() -> void:
 		portrait.custom_minimum_size = Vector2(196, 196)
 		portrait.configure_definition(hero_definition, false)
 		identity_row.add_child(portrait)
+		# The faction's shield pinned to the portrait's lower corner.
+		var badge := Control.new()
+		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# Centre-relative: the portrait art is square and centred in a taller box.
+		badge.anchor_left = 0.5
+		badge.anchor_right = 0.5
+		badge.anchor_top = 0.5
+		badge.anchor_bottom = 0.5
+		badge.offset_left = 50.0
+		badge.offset_right = 96.0
+		badge.offset_top = 40.0
+		badge.offset_bottom = 94.0
+		var badge_race := String(h.get("race", ""))
+		var badge_col: Color = GameData.RACES.get(badge_race, {}).get("color", Color(0.7, 0.6, 0.4))
+		badge.draw.connect(func():
+			var w := badge.size.x
+			var bh := badge.size.y
+			var shield := PackedVector2Array([Vector2(2, 2), Vector2(w - 2, 2), Vector2(w - 2, bh * 0.55), Vector2(w * 0.5, bh - 2), Vector2(2, bh * 0.55)])
+			badge.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.97))
+			var c := Vector2(w * 0.5, bh * 0.45)
+			var inner := PackedVector2Array()
+			for p in shield:
+				inner.append(c + (p - c) * 0.84)
+			badge.draw_colored_polygon(inner, badge_col.darkened(0.2))
+			shield.append(shield[0])
+			badge.draw_polyline(shield, Color(0.95, 0.78, 0.42), 2.0, true)
+			load("res://scripts/ui/faction_sigils.gd").draw(badge, badge_race, Vector2(w * 0.5, bh * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+		portrait.add_child(badge)
 	var identity := VBoxContainer.new()
 	identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity.add_theme_constant_override("separation", 8)
