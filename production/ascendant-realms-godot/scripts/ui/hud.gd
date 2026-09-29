@@ -4167,6 +4167,10 @@ func _on_game_over(victory: bool) -> void:
 		story_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		story_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		box.add_child(story_line)
+	# The battle at a glance: each side's soldiers over time, in team colours.
+	var timeline: Array = result.get("army_timeline", [])
+	if not compact and timeline.size() >= 3:
+		box.add_child(_army_chart(timeline))
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
 	rule.custom_minimum_size = Vector2(0, 2)
@@ -4298,3 +4302,38 @@ func _loot_row(it: Dictionary, col: Color) -> HBoxContainer:
 	tag.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	row.add_child(tag)
 	return row
+
+
+## A small line chart of soldiers per side across the battle, your host in
+## your colour and each rival in theirs, over faint minute ticks.
+func _army_chart(timeline: Array) -> Control:
+	var chart := Control.new()
+	chart.custom_minimum_size = Vector2(460, 74)
+	chart.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	chart.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var peak := 1
+	for row in timeline:
+		for v in row:
+			peak = maxi(peak, int(v))
+	chart.draw.connect(func():
+		var w := chart.size.x
+		var h := chart.size.y - 14.0
+		chart.draw_line(Vector2(0, h), Vector2(w, h), Color(0.8, 0.7, 0.5, 0.35), 1.0)
+		var steps := timeline.size() - 1
+		# Minute ticks (a sample every ten seconds).
+		for k in range(0, timeline.size(), 6):
+			var tx := w * float(k) / float(steps)
+			chart.draw_line(Vector2(tx, h - 3.0), Vector2(tx, h + 3.0), Color(0.8, 0.7, 0.5, 0.35), 1.0)
+		var sides := (timeline[0] as Array).size()
+		for team in range(sides - 1, -1, -1):
+			var pts := PackedVector2Array()
+			for k in timeline.size():
+				var row: Array = timeline[k]
+				var v := int(row[team]) if team < row.size() else 0
+				pts.append(Vector2(w * float(k) / float(steps), h - (h - 4.0) * float(v) / float(peak)))
+			var col: Color = GameData.TEAM_COLORS.get(team, Color.WHITE)
+			chart.draw_polyline(pts, Color(col, 0.25), 5.0 if team == 0 else 3.0, true)
+			chart.draw_polyline(pts, col, 2.0 if team == 0 else 1.4, true)
+		var font := _body_font if _body_font else ThemeDB.fallback_font
+		chart.draw_string(font, Vector2(0, chart.size.y), "YOUR HOST AND THEIRS, SOLDIERS OVER THE BATTLE", HORIZONTAL_ALIGNMENT_CENTER, w, 11, Color(0.8, 0.74, 0.6, 0.8)))
+	return chart

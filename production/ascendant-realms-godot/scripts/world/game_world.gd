@@ -2674,6 +2674,23 @@ var jars_dug_by_player := 0
 var jars_opened_by_team := {}
 
 var _enemy_cry_timer := 0.0
+## Soldiers per side every ten seconds, drawn as a chart on the result screen.
+var army_timeline: Array = []
+var _timeline_accum := 10.0
+
+func _sample_army_timeline(delta: float) -> void:
+	_timeline_accum += delta
+	if _timeline_accum < 10.0:
+		return
+	_timeline_accum = 0.0
+	var counts: Array = []
+	for cmd in commanders:
+		var n := 0
+		for u in cmd.units:
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker:
+				n += 1
+		counts.append(n)
+	army_timeline.append(counts)
 
 ## Enemy heroes you can see in a fight call out too, now and then.
 func _tick_enemy_cries(delta: float) -> void:
@@ -3453,6 +3470,7 @@ func _physics_process(delta: float) -> void:
 	if not game_running:
 		return
 	match_time += delta
+	_sample_army_timeline(delta)
 	_check_survival()
 	_visibility_timer += delta
 	if _visibility_timer >= VISIBILITY_UPDATE_INTERVAL:
@@ -3638,7 +3656,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"records": ProfileManager.endless_record(int(Match.get_config().get("endless_depth", 1)), String(Match.get_config().get("player_race", "")), match_time, ("w%d" % int(Match.get_config()["endless_weekly"])) if Match.get_config().has("endless_weekly") else "") if victory and String(Match.get_config().get("mode", "")) == "endless" else {},
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"level_before": level_before, "level_after": int(ProfileManager.hero().get("level", 1)) if ProfileManager.has_hero() else 0,
-		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
+		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team),
+		"army_timeline": army_timeline.duplicate(true)}
 	Match.last_result = result_snapshot.duplicate(true)
 	emit_signal("game_over", victory)
 
