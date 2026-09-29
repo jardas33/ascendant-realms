@@ -1358,6 +1358,81 @@ func _update_r15_combat_presentation(delta: float) -> void:
 
 static var damage_numbers_on := true
 
+# What a worker is carrying rides on its shoulder: a log, a stone, a gold
+# nugget or a food sack. Meshes and materials are shared by every worker.
+static var _bundle_meshes := {}
+static var _bundle_mats := {}
+var _carry_bundle: MeshInstance3D
+
+static func _bundle_mesh(kind: String) -> Mesh:
+	if _bundle_meshes.has(kind):
+		return _bundle_meshes[kind]
+	var m: Mesh
+	match kind:
+		"timber":
+			var cyl := CylinderMesh.new()
+			cyl.top_radius = 0.09
+			cyl.bottom_radius = 0.1
+			cyl.height = 0.75
+			cyl.radial_segments = 8
+			m = cyl
+		"stone":
+			var box := BoxMesh.new()
+			box.size = Vector3(0.26, 0.2, 0.24)
+			m = box
+		"gold":
+			var nug := SphereMesh.new()
+			nug.radius = 0.12
+			nug.height = 0.2
+			nug.radial_segments = 8
+			nug.rings = 4
+			m = nug
+		_:
+			var sack := SphereMesh.new()
+			sack.radius = 0.16
+			sack.height = 0.3
+			sack.radial_segments = 10
+			sack.rings = 5
+			m = sack
+	_bundle_meshes[kind] = m
+	return m
+
+static func _bundle_mat(kind: String) -> Material:
+	if _bundle_mats.has(kind):
+		return _bundle_mats[kind]
+	var mat := StandardMaterial3D.new()
+	mat.roughness = 0.8
+	match kind:
+		"timber": mat.albedo_color = Color(0.45, 0.3, 0.17)
+		"stone": mat.albedo_color = Color(0.58, 0.6, 0.62)
+		"gold":
+			mat.albedo_color = Color(1.0, 0.8, 0.3)
+			mat.metallic = 0.8
+			mat.roughness = 0.3
+			mat.emission_enabled = true
+			mat.emission = Color(0.5, 0.35, 0.05)
+		_: mat.albedo_color = Color(0.72, 0.6, 0.4)
+	_bundle_mats[kind] = mat
+	return mat
+
+func _show_carry_bundle(kind: String) -> void:
+	if kind == "":
+		if is_instance_valid(_carry_bundle):
+			_carry_bundle.visible = false
+		return
+	if not is_instance_valid(_carry_bundle):
+		_carry_bundle = MeshInstance3D.new()
+		_carry_bundle.name = "CarryBundle"
+		_carry_bundle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(_carry_bundle)
+	var h := maxf(1.0, _visual_height)
+	_carry_bundle.mesh = _bundle_mesh(kind)
+	_carry_bundle.material_override = _bundle_mat(kind)
+	_carry_bundle.position = Vector3(0.0, h * 0.82, 0.0)
+	# A log lies across the shoulders; everything else sits on top.
+	_carry_bundle.rotation = Vector3(0.0, 0.0, PI * 0.5) if kind == "timber" else Vector3.ZERO
+	_carry_bundle.visible = true
+
 func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	if applied <= 0.0 or not is_instance_valid(_r15_damage_label) or not damage_numbers_on:
 		return
@@ -2554,6 +2629,7 @@ func _state_gather(delta: float) -> void:
 			if got > 0:
 				_carry_kind = _gather_node.resource_kind
 				_carry += got
+				_show_carry_bundle(_carry_kind)
 				_last_source_node_id = str(_gather_node.get_instance_id())
 				_last_source_amount_before = before_amount
 				_last_source_amount_after = _gather_node.amount
@@ -2610,6 +2686,7 @@ func _state_return(delta: float) -> void:
 				world.record_resource_deposit(self, drop, kind_before, carried_before, multiplier, deposited, bank_before, commander.resources.duplicate())
 			_carry = 0
 			_carry_kind = ""
+			_show_carry_bundle("")
 		_carry_hold = false
 		_dropoff_retry = 0.0
 		if is_instance_valid(_pending_gather_node) and not _pending_gather_node.depleted:
