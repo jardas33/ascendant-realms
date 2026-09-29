@@ -16,6 +16,10 @@ static func compute(hero: Dictionary) -> Dictionary:
 	}
 	if hero.is_empty():
 		return out
+	# Every hero knows its people's signature spell from the start.
+	var sig := String(SkillDefs.SIGNATURE.get(String(hero.get("race", "")), ""))
+	if sig != "":
+		out["abilities"][sig] = SkillDefs.signature_level(int(hero.get("level", 1)))
 
 	# --- Archetype: the path chosen at the forge (it was only a label) ---
 	match String(hero.get("archetype", "Warrior")):

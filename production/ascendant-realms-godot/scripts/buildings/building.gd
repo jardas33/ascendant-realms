@@ -133,6 +133,9 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	# fall (Karak lost twice to minute-nine rushes over 90 matches).
 	if commander and String(commander.race) == "karak":
 		max_hp *= 1.25
+	# Masonry-type research raises every building's health, new ones included.
+	if commander and commander.build_flags.has("building_hp"):
+		max_hp *= 1.0 + float(commander.build_flags["building_hp"])
 	armor_class = p_def.get("armor_class", "fortified")
 	base_armor = float(p_def.get("armor", 0))
 	footprint = float(p_def.get("footprint", 4.0))
@@ -1200,7 +1203,7 @@ func queue_tech(tech_id: String) -> Dictionary:
 	if t.get("kind", "") == "tier":
 		if not def.get("is_hq", false) and def.get("kind", "") != "main":
 			return {"ok": false, "reason": "Unavailable"}
-	elif tech_id not in def.get("research", []):
+	elif tech_id not in GameData.research_for(def, String(commander.race) if commander else ""):
 		return {"ok": false, "reason": "Unavailable"}
 	if not commander.can_research(tech_id):
 		return {"ok": false, "reason": "Unavailable"}
@@ -1487,7 +1490,7 @@ func _tower_tick(delta: float) -> void:
 	if e:
 		_tower_cd = float(def.get("tower_cd", 1.2))
 		world.spawn_projectile(global_position + Vector3.UP * footprint,
-			e, float(def.get("tower_dmg", 20)), def.get("tower_type", "pierce"),
+			e, float(def.get("tower_dmg", 20)) * (1.0 + (float(commander.build_flags.get("tower_dmg", 0.0)) if commander else 0.0)), def.get("tower_type", "pierce"),
 			team, def.get("projectile", "bolt"), 0.0, self)
 
 func _aura_tick(delta: float) -> void:
@@ -1511,6 +1514,12 @@ func cur_armor() -> float:
 
 func get_hp_ratio() -> float:
 	return hp / max_hp if max_hp > 0 else 0.0
+
+## Masonry research finished: standing buildings grow sturdier at once.
+func apply_hp_upgrade(mult: float) -> void:
+	var ratio := hp / maxf(1.0, max_hp)
+	max_hp *= mult
+	hp = max_hp * ratio
 
 func take_damage(amount: float, from = null) -> void:
 	if is_dead or (world and not world.game_running):

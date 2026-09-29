@@ -168,6 +168,24 @@ func get_building(id: String) -> Dictionary:
 func get_tech(id: String) -> Dictionary:
 	return _tech.get(id, {})
 
+## Everything a building of this people can research: its authored list,
+## plus the ranked army upgrades and this people's own upgrades at the forge,
+## and the economy upgrades at the main hall. Tier advances are listed apart.
+func research_for(bdef: Dictionary, race: String) -> Array:
+	var out: Array = Array(bdef.get("research", [])).duplicate()
+	var is_main := bool(bdef.get("is_hq", false)) or String(bdef.get("kind", "")) == "main"
+	var at := "main" if is_main else ("economy" if out.has("tech_weapons") else "")
+	if at == "":
+		return out
+	for tid in _tech:
+		var t: Dictionary = _tech[tid]
+		if String(t.get("kind", "")) == "tier" or String(t.get("at", "")) != at or out.has(tid):
+			continue
+		if t.has("race") and String(t["race"]) != race:
+			continue
+		out.append(tid)
+	return out
+
 func units_for_race(race: String) -> Array:
 	var out := []
 	for id in _units:

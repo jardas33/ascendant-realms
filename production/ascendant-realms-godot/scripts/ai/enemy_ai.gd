@@ -1009,12 +1009,21 @@ func _manage_tech() -> void:
 	elif commander.tier == 2 and _army_size() >= 6:
 		if commander.can_research("advance_tier_3") and hq.queue.is_empty():
 			hq.queue_tech("advance_tier_3")
-	# army upgrades at economy building
+	# army upgrades at the economy building, economy ones at the hall, the
+	# people's own among them; one at a time, and only with money to spare
+	# beyond the army's needs.
 	var eco = _get_building_of_kind("economy")
 	if eco and eco.queue.is_empty():
-		for t in ["tech_weapons", "tech_armor"]:
+		for t in GameData.research_for(eco.def, String(commander.race)):
 			if commander.can_research(t) and commander.can_afford(GameData.get_tech(t).get("cost", {})):
 				eco.queue_tech(t)
+				break
+	if hq.queue.is_empty() and _army_size() >= 4:
+		for t in GameData.research_for(hq.def, String(commander.race)):
+			if String(GameData.get_tech(t).get("kind", "")) == "tier":
+				continue
+			if commander.can_research(t) and commander.can_afford(GameData.get_tech(t).get("cost", {})):
+				hq.queue_tech(t)
 				break
 
 # --- production / construction --------------------------------------------
@@ -1542,6 +1551,27 @@ func _cast_hero_spells() -> void:
 		if e.global_position.distance_to(hero.global_position) < nearest.global_position.distance_to(hero.global_position):
 			nearest = e
 	var hurt: bool = hero.hp < hero.max_hp * 0.6
+	# The people's signature spell comes first when the moment is right.
+	for sid in hero.abilities:
+		if not String(sid).begins_with("sig_") or not hero.can_cast(String(sid)):
+			continue
+		var sok := false
+		var sat: Vector3 = hero.global_position
+		match String(sid):
+			"sig_spring":
+				sok = hurt or near_allies >= 4
+			"sig_chains", "sig_stoneskin":
+				sok = near_allies >= 3 and near_enemies.size() >= 2
+			"sig_pack", "sig_candles":
+				sok = near_enemies.size() >= 2
+				sat = nearest.global_position
+			"sig_entrudo":
+				sok = close.size() >= 3
+			_:
+				sok = near_enemies.size() >= 3
+				sat = nearest.global_position
+		if sok and hero.cast_ability(String(sid), sat):
+			return
 	for id in ["heal", "slam", "root", "charge", "rally", "bolt"]:
 		if not hero.can_cast(id):
 			continue

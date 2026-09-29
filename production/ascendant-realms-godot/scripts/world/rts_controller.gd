@@ -85,7 +85,7 @@ const DIRECT_ATTACK_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascenda
 const ATTACK_MOVE_CURSOR: Texture2D = preload("res://assets/ui/cursors/ascendant_attack_move_cursor.svg")
 
 ## Heal Wave, Entangling Roots and Avatar of War had buttons but no keys.
-const EXTRA_ABILITY_KEYS := {"ability_5": KEY_Y, "ability_6": KEY_U, "ability_7": KEY_V}
+const EXTRA_ABILITY_KEYS := {"ability_5": KEY_Y, "ability_6": KEY_U, "ability_7": KEY_V, "ability_sig": KEY_G}
 
 func _register_extra_ability_keys() -> void:
 	for action in EXTRA_ABILITY_KEYS:
@@ -470,6 +470,7 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("ability_5"): _queue_ability("heal")
 	elif Input.is_action_just_pressed("ability_6"): _queue_ability("root")
 	elif Input.is_action_just_pressed("ability_7"): _queue_ability("avatar")
+	elif Input.is_action_just_pressed("ability_sig"): _queue_signature()
 
 # --------------------------------------------------------------------------
 # Selection
@@ -1095,6 +1096,18 @@ func _selected_units() -> Array:
 # --------------------------------------------------------------------------
 # Abilities
 # --------------------------------------------------------------------------
+## G casts the hero's signature spell, whichever people they belong to.
+func _queue_signature() -> void:
+	var hero = _selected_hero()
+	if not hero:
+		hero = world.player_commander.hero_ref
+	if not is_instance_valid(hero):
+		return
+	for id in hero.abilities:
+		if bool(SkillDefs.get_abilities().get(String(id), {}).get("sig", false)):
+			_queue_ability(String(id))
+			return
+
 func _queue_ability(id: String) -> void:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()

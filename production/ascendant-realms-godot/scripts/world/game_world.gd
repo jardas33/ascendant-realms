@@ -2083,6 +2083,9 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var kit: Array = AI_HERO_KITS.get(race, ["bolt", "charge", "rally"])
 	for i in mini(count, kit.size()):
 		abilities[String(kit[i])] = level
+	# Enemy heroes above Easy wield their people's signature spell too.
+	if difficulty != "easy" and SkillDefs.SIGNATURE.has(race):
+		abilities[String(SkillDefs.SIGNATURE[race])] = mini(3, level)
 	var chapter_index := CampaignDefs.index_of(String(Match.get_config().get("campaign_chapter", "")))
 	var growth := float(maxi(chapter_index, 0))
 	# Endless Road "Champions" twist: enemy heroes half again as tough.
@@ -4038,6 +4041,9 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 	# damage (levels, gear, mastery) over the unit's base damage.
 	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30)))) * (1.0 + float(hero.get("spell_power") if hero.get("spell_power") != null else 0.0))
 	var ab := SkillDefs.get_abilities().get(id, {})
+	if bool(ab.get("sig", false)):
+		_cast_signature(hero, id, target_pos, level, power, ab)
+		return
 	match id:
 		"rally":
 			heal_allies_near(hero.global_position, ab.get("range", 14.0), (40.0 + hero.heal_power) * power, hero.team)
@@ -4109,6 +4115,143 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 						var t2 = hero.create_tween()
 						t2.tween_property(hero.model_root, "scale", hero.model_root.scale / 1.4, 0.4)
 			)
+
+## The ten signature spells, one per people (SkillDefs.SIGNATURE). Each
+## grows with the spell's level (x1.35 per level) and the hero's power.
+func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: float, ab: Dictionary) -> void:
+	var m := (1.0 + 0.35 * float(level - 1)) * power
+	var team: int = int(hero.team)
+	var from: Vector3 = hero.global_position
+	var to := target_pos
+	var reach := float(ab.get("range", 18.0))
+	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+	if reach > 0.0 and flat.length() > reach:
+		to = from + flat.normalized() * reach
+	match id:
+		"sig_bull":
+			# A spectral bull tramples the line from the hero to the target.
+			var dmg := float(ab.get("dmg", 90)) * m
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != team and _point_near_segment(u.global_position, from, to, 3.5):
+					u.take_damage(GameData.compute_damage(dmg, "blunt", u.armor_class, u.cur_armor()), hero)
+					u.apply_stun(1.2)
+			for k in 6:
+				var p := from.lerp(to, float(k + 1) / 6.0)
+				get_tree().create_timer(0.07 * k, false).timeout.connect(func():
+					if is_instance_valid(_fx_container):
+						CombatVfx.shockwave(_fx_container, p, Color(0.95, 0.75, 0.4), 2.6))
+			emit_signal("camera_shake", 0.6, to)
+		"sig_spring":
+			# A healing spring at the target for 8 seconds.
+			var heal: float = (float(ab.get("heal", 30)) + float(hero.heal_power) * 0.25) * m
+			for k in 8:
+				get_tree().create_timer(float(k), false).timeout.connect(func():
+					if not game_running:
+						return
+					heal_allies_near(to, 7.0, heal, team)
+					spawn_ring_fx(to, Color(0.4, 0.95, 0.85), 7.0))
+			CombatVfx.lume_pillar(_fx_container, to, Color(0.45, 1.0, 0.85))
+		"sig_ashglass":
+			# Violet fire on the ground for 6 seconds.
+			var burn := float(ab.get("dmg", 22)) * m
+			for k in 6:
+				get_tree().create_timer(float(k) + 0.2, false).timeout.connect(func():
+					if not game_running:
+						return
+					for u in all_units():
+						if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(to) <= 6.0:
+							u.take_damage(GameData.compute_damage(burn, "magic", u.armor_class, u.cur_armor()), hero)
+					if is_instance_valid(_fx_container) and player_visibility_state_at(to) == VISIBILITY_CURRENTLY_VISIBLE:
+						CombatVfx.hit(_fx_container, to + Vector3(randf_range(-3, 3), 0.5, randf_range(-3, 3)), Color(0.75, 0.3, 1.0), true)
+						spawn_ring_fx(to, Color(0.7, 0.3, 1.0), 6.0))
+		"sig_chains":
+			var fury := 1.25 + 0.05 * float(level - 1)
+			for u in commander_for_team(team).units:
+				if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(from) <= reach:
+					u.apply_spell_buff(fury, 0.0, 1.35, 8.0)
+			spawn_ring_fx(from, Color(1.0, 0.35, 0.2), reach)
+			_ability_motes_on_allies(hero, reach, Color(1.0, 0.4, 0.25))
+			emit_signal("camera_shake", 0.4, from)
+		"sig_moura":
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(to) <= 7.0 + float(level - 1):
+					u.apply_stun(3.0)
+					u.apply_vulnerable(6.0)
+			spawn_ring_fx(to, Color(1.0, 0.85, 0.35), 7.0)
+			CombatVfx.motes(_fx_container, to, Color(1.0, 0.86, 0.4), 2.2)
+		"sig_stoneskin":
+			var skin := 6.0 + 2.0 * float(level - 1)
+			for u in commander_for_team(team).units:
+				if is_instance_valid(u) and not u.is_dead and u.global_position.distance_to(from) <= reach:
+					u.apply_spell_buff(1.0, skin + (4.0 if u == hero else 0.0), 1.0, 10.0)
+			spawn_ring_fx(from, Color(0.8, 0.82, 0.88), reach)
+			_ability_motes_on_allies(hero, reach, Color(0.85, 0.86, 0.9))
+		"sig_sunfire":
+			# A warning ring, then after a second the lance of light.
+			spawn_ring_fx(to, Color(1.0, 0.85, 0.3), 5.0)
+			var lance := float(ab.get("dmg", 160)) * m
+			get_tree().create_timer(1.0, false).timeout.connect(func():
+				if not game_running:
+					return
+				for u in all_units():
+					if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(to) <= 5.0:
+						u.take_damage(GameData.compute_damage(lance, "magic", u.armor_class, u.cur_armor()), hero)
+				for b in all_buildings():
+					if is_instance_valid(b) and not b.is_dead and int(b.team) != team and b.global_position.distance_to(to) <= 5.0 + float(b.footprint) * 0.5:
+						b.take_damage(lance * 0.5, hero)
+				CombatVfx.lume_pillar(_fx_container, to, Color(1.0, 0.85, 0.35))
+				CombatVfx.shockwave(_fx_container, to, Color(1.0, 0.8, 0.3), 5.0)
+				emit_signal("camera_shake", 0.8, to))
+		"sig_pack", "sig_candles":
+			# Summons that fight for a while and then fade back into the Lume.
+			var summon_id := "hollow_skeleton" if id == "sig_candles" else _race_first_melee(String(hero.commander.race))
+			if summon_id == "":
+				return
+			var count := (4 if id == "sig_candles" else 3) + (level - 1)
+			var at := to if id == "sig_candles" else from
+			for k in count:
+				var ang := TAU * float(k) / float(count)
+				var su = spawn_unit(summon_id, team, at + Vector3(cos(ang), 0.0, sin(ang)) * 2.5)
+				if su == null:
+					continue
+				su.set_meta("summoned", true)
+				su.base_dmg *= 1.0 + 0.2 * float(level - 1)
+				var ref = su
+				get_tree().create_timer(25.0, false).timeout.connect(func():
+					if is_instance_valid(ref) and not ref.is_dead:
+						_dismiss_summon(ref))
+			CombatVfx.lume_pillar(_fx_container, at, Color(0.75, 0.85, 1.0) if id == "sig_pack" else Color(1.0, 0.8, 0.45))
+		"sig_entrudo":
+			var fright := float(ab.get("dmg", 40)) * m
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(from) <= reach:
+					u.take_damage(GameData.compute_damage(fright, "magic", u.armor_class, u.cur_armor()), hero)
+					var away: Vector3 = u.global_position - from
+					away.y = 0.0
+					if away.length_squared() < 0.01:
+						away = Vector3(1, 0, 0)
+					u.command_move(u.global_position + away.normalized() * 9.0)
+			spawn_ring_fx(from, Color(1.0, 0.3, 0.2), reach)
+			CombatVfx.motes(_fx_container, from, Color(1.0, 0.35, 0.25), 2.4)
+			emit_signal("camera_shake", 0.5, from)
+
+## The first tier-one melee soldier of a people (a wolf for the Wolfveil).
+func _race_first_melee(race: String) -> String:
+	for uid in UnitDefs.get_all():
+		var d: Dictionary = UnitDefs.get_all()[uid]
+		if String(d.get("race", "")) == race and int(d.get("tier", 1)) == 1 and String(d.get("role", "")) == "melee":
+			return String(uid)
+	return ""
+
+## A summon's time is up: it fades out without counting as a death.
+func _dismiss_summon(u) -> void:
+	var cmd = commander_for_team(int(u.team))
+	if cmd:
+		cmd.units.erase(u)
+		cmd.recompute_pop()
+	if is_instance_valid(_fx_container) and player_visibility_state_at(u.global_position) == VISIBILITY_CURRENTLY_VISIBLE:
+		CombatVfx.motes(_fx_container, u.global_position, Color(0.8, 0.85, 1.0), 1.0)
+	u.queue_free()
 
 func _nearest_enemy_to(pos: Vector3, team: int, exclude: Array):
 	var best = null

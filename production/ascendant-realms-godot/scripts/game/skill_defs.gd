@@ -391,4 +391,35 @@ static func get_abilities() -> Dictionary:
 		"heal":   {"name": "Heal Wave", "mana": 50, "cd": 16.0, "range": 14.0, "heal": 120, "desc": "Restore health to nearby allies."},
 		"root":   {"name": "Entangling Roots", "mana": 40, "cd": 15.0, "range": 16.0, "desc": "Root enemies in an area."},
 		"avatar": {"name": "Avatar of War", "mana": 100, "cd": 60.0, "range": 0.0, "desc": "Transform into an unstoppable champion."},
+		# Signature spells: one per people, known from the start (key G), a
+		# level stronger at hero level 15 and again at 35.
+		"sig_bull": {"name": "Chega de Bois", "mana": 55, "cd": 20.0, "range": 22.0, "dmg": 90, "sig": true,
+			"desc": "A great spectral bull charges from your hero to the target, goring and stunning every enemy in its path."},
+		"sig_spring": {"name": "Spring of Seven Mouths", "mana": 60, "cd": 24.0, "range": 18.0, "heal": 30, "sig": true,
+			"desc": "A Moura's spring bursts from the ground: for 8 seconds it heals every ally standing in it."},
+		"sig_ashglass": {"name": "Ash-glass Storm", "mana": 60, "cd": 22.0, "range": 20.0, "dmg": 22, "sig": true,
+			"desc": "Violet fire rains on the target for 6 seconds, burning every enemy caught in it."},
+		"sig_chains": {"name": "Break the Chains", "mana": 50, "cd": 26.0, "range": 14.0, "sig": true,
+			"desc": "The horde remembers the pits: nearby allies strike 35% faster and 25% harder for 8 seconds."},
+		"sig_moura": {"name": "Moura's Enchantment", "mana": 60, "cd": 24.0, "range": 18.0, "sig": true,
+			"desc": "Enemies near the target are dazzled by Moura gold: they stand still for 3 seconds and take 30% more damage for 6."},
+		"sig_stoneskin": {"name": "Stone Skin", "mana": 50, "cd": 26.0, "range": 14.0, "sig": true,
+			"desc": "The castro's stone rises through the skin: nearby allies gain +6 armor for 10 seconds, the hero +10."},
+		"sig_sunfire": {"name": "Sunfire Lance", "mana": 70, "cd": 22.0, "range": 26.0, "dmg": 160, "sig": true,
+			"desc": "After a second's warning, a lance of sunlight strikes the target, burning everything within 5 metres."},
+		"sig_pack": {"name": "Call of the Pack", "mana": 60, "cd": 35.0, "range": 0.0, "sig": true,
+			"desc": "The seventh son howls and the wolves answer: three spectral wolves fight beside your hero for 25 seconds."},
+		"sig_candles": {"name": "Procession of Candles", "mana": 65, "cd": 35.0, "range": 18.0, "sig": true,
+			"desc": "The dead walk with candles: four skeletons rise at the target and fight for you for 25 seconds."},
+		"sig_entrudo": {"name": "Entrudo", "mana": 55, "cd": 24.0, "range": 12.0, "dmg": 40, "sig": true,
+			"desc": "Masks, bells and fire: every enemy near your hero takes damage and flees in terror for 3 seconds."},
 	}
+
+const SIGNATURE := {"barrosan": "sig_bull", "lioraen": "sig_spring", "vorthak": "sig_ashglass", "grimtusk": "sig_chains",
+	"sylvan": "sig_moura", "karak": "sig_stoneskin", "sunspear": "sig_sunfire", "wyldkin": "sig_pack",
+	"hollow": "sig_candles", "frostborn": "sig_entrudo"}
+
+## The signature spell's level for a hero of this level: 1, then 2 from
+## level 15 and 3 from level 35.
+static func signature_level(hero_level: int) -> int:
+	return 1 + (1 if hero_level >= 15 else 0) + (1 if hero_level >= 35 else 0)

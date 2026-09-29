@@ -2407,6 +2407,8 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 
 func _ability_key_label(id: String) -> String:
 	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R", "heal": "Y", "root": "U", "avatar": "V"}
+	if id.begins_with("sig_"):
+		return "G"
 	return String(hotkeys.get(id, ""))
 
 
@@ -3434,7 +3436,7 @@ func _build_building_card(b) -> void:
 	else:
 		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var produces: Array = def.get("produces", [])
-	var research: Array = def.get("research", [])
+	var research: Array = GameData.research_for(def, String(_commander.race)) if is_instance_valid(_commander) else def.get("research", [])
 	var is_hq: bool = def.get("is_hq", false) or def.get("kind", "") == "main"
 
 	# Vein outpost: who works inside, what it pays, and how to grow it.
@@ -3563,8 +3565,15 @@ Workers inside %d / %d  ·  +%d %s a minute
 					var required_age_name := String(required_age.get("name", "Age %d" % required_tier))
 					required_age_name = required_age_name.trim_prefix("Advance to ")
 					reason = "Requires %s" % required_age_name
+				elif _commander.tier < int(tdef.get("min_tier", 1)):
+					reason = "Requires %s" % String(GameData.get_tech("advance_tier_%d" % int(tdef.get("min_tier", 1))).get("name", "a later Age")).trim_prefix("Advance to ")
 				else:
-					reason = "Already researched or unavailable"
+					var missing := ""
+					for r in tdef.get("req", []):
+						if not _commander.completed_tech.has(r):
+							missing = String(GameData.get_tech(String(r)).get("name", r))
+							break
+					reason = ("Requires %s" % missing) if missing != "" else "Unavailable"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable

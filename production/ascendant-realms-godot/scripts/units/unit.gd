@@ -86,6 +86,7 @@ var _desired_gather_kind := ""
 var _carry := 0
 var _carry_kind := ""
 const CARRY_MAX := 10
+var _carry_cap := CARRY_MAX
 var _gather_timer := 0.0
 var _dropoff_retry := 0.0
 var _carry_hold := false
@@ -1518,16 +1519,63 @@ func _show_combat_hit_reaction(from) -> void:
 	_combat_reaction_tween.tween_property(model_root, "scale", settled_scale, COMBAT_HIT_REACTION_DURATION)
 	_combat_reaction_tween.tween_property(model_root, "rotation:z", settled_rotation_z, COMBAT_HIT_REACTION_DURATION)
 
+## Research bonuses already folded into this unit, so each refresh applies
+## only the difference.
+var _upg_applied := {}
+
 func refresh_upgrade_bonuses() -> void:
 	if commander:
 		_upg_dmg = commander.dmg_bonus
 		_upg_armor = commander.armor_bonus
+		if not commander.has_method("upgrade_bonus_for"):
+			return
+		var bonus: Dictionary = commander.upgrade_bonus_for(String(def.get("role", "")), is_worker, is_hero)
+		_upg_dmg += float(bonus.get("dmg", 0.0))
+		_upg_armor += float(bonus.get("armor", 0.0))
+		var old_hp := float(_upg_applied.get("hp_mult", 0.0))
+		var new_hp := float(bonus.get("hp_mult", 0.0))
+		if not is_equal_approx(old_hp, new_hp):
+			var ratio := (1.0 + new_hp) / (1.0 + old_hp)
+			max_hp *= ratio
+			hp *= ratio
+		var old_spd := float(_upg_applied.get("speed_mult", 0.0))
+		var new_spd := float(bonus.get("speed_mult", 0.0))
+		if not is_equal_approx(old_spd, new_spd):
+			move_speed *= (1.0 + new_spd) / (1.0 + old_spd)
+			if is_instance_valid(agent):
+				agent.max_speed = move_speed
+		if atk_range > 3.0:
+			atk_range += float(bonus.get("range", 0.0)) - float(_upg_applied.get("range", 0.0))
+		vision += float(bonus.get("vision", 0.0)) - float(_upg_applied.get("vision", 0.0))
+		var ls_delta := float(bonus.get("lifesteal", 0.0)) - float(_upg_applied.get("lifesteal", 0.0))
+		if not is_zero_approx(ls_delta):
+			hero_flags["lifesteal"] = float(hero_flags.get("lifesteal", 0.0)) + ls_delta
+		_upg_applied = bonus.duplicate()
+		# Workers carry more with Wider Baskets.
+		_carry_cap = CARRY_MAX + int(float(commander.build_flags.get("carry_bonus", 0.0)))
 
 # --------------------------------------------------------------------------
 # Stat accessors (with upgrades, veterancy, auras, fortify)
 # --------------------------------------------------------------------------
+## Signature-spell buffs (Break the Chains, Stone Skin) and the Moura's
+## dazzle, each with its own timer.
+var _spell_dmg_mult := 1.0
+var _spell_armor := 0.0
+var _spell_haste := 1.0
+var _spell_buff_time := 0.0
+var _vulnerable_time := 0.0
+
+func apply_spell_buff(dmg_mult: float, armor: float, haste: float, secs: float) -> void:
+	_spell_dmg_mult = maxf(_spell_dmg_mult, dmg_mult)
+	_spell_armor = maxf(_spell_armor, armor)
+	_spell_haste = maxf(_spell_haste, haste)
+	_spell_buff_time = maxf(_spell_buff_time, secs)
+
+func apply_vulnerable(secs: float) -> void:
+	_vulnerable_time = maxf(_vulnerable_time, secs)
+
 func cur_dmg() -> float:
-	var d := base_dmg + _upg_dmg + _aura_bonus_dmg + float(_veterancy) * 2.0
+	var d := (base_dmg + _upg_dmg + _aura_bonus_dmg + float(_veterancy) * 2.0) * _spell_dmg_mult
 	if world:
 		var twist_mult = world.get("twist_damage_mult")
 		if twist_mult != null:
@@ -1538,7 +1586,7 @@ func cur_dmg() -> float:
 	return d
 
 func cur_armor() -> float:
-	var a := base_armor + _upg_armor + _aura_bonus_armor + float(_veterancy) * 0.5
+	var a := base_armor + _upg_armor + _aura_bonus_armor + float(_veterancy) * 0.5 + _spell_armor
 	# Barrosan fortify: bonus near own HQ
 	if commander and commander.race == "barrosan":
 		if world and world.near_friendly_hq(global_position, team, 22.0):
@@ -1713,7 +1761,7 @@ func command_gather(node) -> void:
 	_pending_gather_node = null
 	_gather_node = node
 	_move_target = _gather_interaction_target(node)
-	if _carry >= CARRY_MAX:
+	if _carry >= _carry_cap:
 		state = State.RETURNING
 		return
 	state = State.GATHERING
@@ -2218,6 +2266,13 @@ func _physics_process(delta: float) -> void:
 	# suppresses movement. Keep their expiry independent of the stun early exit.
 	if _rooted > 0.0: _rooted -= delta
 	if _slow > 0.0: _slow -= delta
+	if _spell_buff_time > 0.0:
+		_spell_buff_time -= delta
+		if _spell_buff_time <= 0.0:
+			_spell_dmg_mult = 1.0
+			_spell_armor = 0.0
+			_spell_haste = 1.0
+	if _vulnerable_time > 0.0: _vulnerable_time -= delta
 	if _stun > 0.0:
 		_stun -= delta
 		velocity = Vector3.ZERO
@@ -2530,7 +2585,7 @@ func _attack_position_for_target(target) -> Vector3:
 func _do_attack() -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
-	_attack_timer = attack_cd
+	_attack_timer = attack_cd / _spell_haste
 	_play("attack", true)
 	var r1j_recorder = _v0436_r1j_recorder()
 	var attack_event_id := ""
@@ -2627,7 +2682,7 @@ func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_e
 func _state_gather(delta: float) -> void:
 	if world and not world.game_running:
 		return
-	if _carry >= CARRY_MAX:
+	if _carry >= _carry_cap:
 		state = State.RETURNING
 		return
 	if not is_instance_valid(_gather_node) or _gather_node.depleted:
@@ -2671,7 +2726,7 @@ func _state_gather(delta: float) -> void:
 		_gather_timer += delta
 		if _gather_timer >= 1.0:
 			_gather_timer = 0.0
-			var remaining_capacity := CARRY_MAX - _carry
+			var remaining_capacity := _carry_cap - _carry
 			if remaining_capacity <= 0:
 				state = State.RETURNING
 				return
@@ -2686,7 +2741,7 @@ func _state_gather(delta: float) -> void:
 				_last_source_amount_after = _gather_node.amount
 				if world and world.has_method("record_resource_extraction"):
 					world.record_resource_extraction(self, _gather_node, before_amount, _gather_node.amount, got)
-			if _carry >= CARRY_MAX or _gather_node.depleted:
+			if _carry >= _carry_cap or _gather_node.depleted:
 				state = State.RETURNING
 			elif got == 0:
 				state = State.RETURNING if _carry > 0 else State.IDLE
@@ -2775,7 +2830,7 @@ func get_economy_snapshot() -> Dictionary:
 		"activity": activity,
 		"carry_kind": _carry_kind.capitalize() if _carry_kind != "" else "None",
 		"carry": _carry,
-		"capacity": CARRY_MAX,
+		"capacity": _carry_cap,
 		"target": target_text if target_text != "" else "None",
 		"pending_target": _pending_gather_node.resource_kind.capitalize() if is_instance_valid(_pending_gather_node) else "",
 		"source_node_id": _last_source_node_id,
@@ -3210,6 +3265,9 @@ func take_damage(amount: float, from = null) -> void:
 		return
 	var hp_before := hp
 	var applied := maxf(0.0, amount)
+	# Moura's Enchantment: a dazzled unit takes more from every blow.
+	if _vulnerable_time > 0.0:
+		applied *= 1.3
 	if has_meta("road_boss") and world and world.has_method("boss_damage_scale"):
 		applied *= world.boss_damage_scale(self)
 	hp = maxf(0.0, hp - applied)

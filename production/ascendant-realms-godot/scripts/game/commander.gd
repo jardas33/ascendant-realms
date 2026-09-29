@@ -21,6 +21,27 @@ const POP_HARD_CAP := 80
 var tier: int = 1
 var researching := {}          # tech_id -> time_left
 var completed_tech := {}       # tech_id -> true
+## Upgrade bonuses by unit role ("all", "melee", ...): stat -> total.
+var role_bonus := {}
+
+## What every upgrade gives a unit of this role, summed over "all" and the role.
+func upgrade_bonus_for(role: String, is_worker: bool, is_hero: bool) -> Dictionary:
+	var out := {}
+	var keys: Array = []
+	if is_worker:
+		keys = ["worker"]
+	elif is_hero:
+		keys = ["hero"]
+	else:
+		keys = ["all", role]
+		if role == "healer":
+			keys.append("caster")
+		if role == "antiarmor":
+			keys.append("melee")
+	for k in keys:
+		for s in role_bonus.get(k, {}):
+			out[s] = float(out.get(s, 0.0)) + float(role_bonus[k][s])
+	return out
 
 # Global army stat bonuses from upgrades
 var dmg_bonus: float = 0.0
@@ -207,6 +228,24 @@ func apply_tech(tech_id: String) -> void:
 				dmg_bonus += float(t.get("add", 0))
 			elif t.get("stat") == "armor":
 				armor_bonus += float(t.get("add", 0))
+			for e in t.get("effects", []):
+				var who := String(e.get("who", "all"))
+				var bucket: Dictionary = role_bonus.get(who, {})
+				for k in e:
+					if k != "who":
+						bucket[k] = float(bucket.get(k, 0.0)) + float(e[k])
+				role_bonus[who] = bucket
+			var flags: Dictionary = t.get("flags", {})
+			for k in flags:
+				var v = flags[k]
+				if v is bool:
+					build_flags[k] = v
+				else:
+					build_flags[k] = float(build_flags.get(k, 0.0)) + float(v)
+			if flags.has("building_hp"):
+				for b in buildings:
+					if is_instance_valid(b) and not b.is_dead and b.has_method("apply_hp_upgrade"):
+						b.apply_hp_upgrade(1.0 + float(flags["building_hp"]))
 			_refresh_unit_stats()
 
 func _refresh_unit_stats() -> void:
@@ -220,6 +259,13 @@ func can_research(tech_id: String) -> bool:
 	var t := GameData.get_tech(tech_id)
 	if t.is_empty():
 		return false
+	if t.has("race") and String(t["race"]) != String(race):
+		return false
+	if tier < int(t.get("min_tier", 1)):
+		return false
+	for r in t.get("req", []):
+		if not completed_tech.has(r):
+			return false
 	if t.get("kind") == "tier":
 		var need_tier := int(t.get("tier", 2)) - 1
 		if tier != need_tier:
