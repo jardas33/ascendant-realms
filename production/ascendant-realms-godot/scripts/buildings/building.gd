@@ -1374,6 +1374,7 @@ func _landmark_tick(delta: float) -> void:
 		return
 	if not has_node("LandmarkCrown"):
 		_add_landmark_crown()
+		_add_landmark_centrepiece()
 	_landmark_timer += delta
 	if _landmark_timer < 1.0:
 		return
@@ -1817,3 +1818,139 @@ func _destroy(from = null) -> void:
 		t.tween_property(model_root, "scale", model_root.scale * Vector3(1.05, 0.75, 1.05), 1.6).set_delay(0.15)
 	await t.finished
 	queue_free()
+
+
+## Each landmark gets its own centrepiece so it reads as a monument, not a
+## workshop: a flagstone plaza plus a signature piece (stones, dial, drum...).
+## Presentation only; no collision.
+func _add_landmark_centrepiece() -> void:
+	var kind := String(def.get("landmark", ""))
+	var tint: Color = LANDMARK_TINT.get(kind, Color(1, 0.85, 0.4))
+	var root := Node3D.new()
+	root.name = "LandmarkCentrepiece"
+	add_child(root)
+	var r := footprint
+	var stone := Color(0.56, 0.54, 0.50)
+	# Plaza: a low flagstone disc with a tinted inlay ring.
+	_lm_piece(root, _lm_cyl(r * 1.25, r * 1.25, 0.16), stone.darkened(0.15), Vector3(0, 0.06, 0))
+	var inlay := TorusMesh.new()
+	inlay.inner_radius = r * 1.17
+	inlay.outer_radius = r * 1.2
+	inlay.rings = 48
+	inlay.ring_segments = 4
+	_lm_piece(root, inlay, tint.darkened(0.55), Vector3(0, 0.15, 0), Vector3(1, 0.25, 1))
+	var front := Vector3(0, 0, r * 0.95)
+	match kind:
+		"stones":
+			for i in 9:
+				var a := TAU * float(i) / 9.0
+				var h := 2.6 + 0.8 * float(i % 3)
+				var slab := _lm_piece(root, _lm_box(Vector3(0.9, h, 0.45)), stone, Vector3(cos(a) * r * 1.15, h * 0.5, sin(a) * r * 1.15))
+				slab.rotation.y = -a + PI * 0.5
+				slab.rotation.z = 0.06 * float((i % 3) - 1)
+			var lintel := _lm_piece(root, _lm_box(Vector3(2.6, 0.45, 0.5)), stone.darkened(0.1), Vector3(r * 1.15, 3.85, 0.0))
+			lintel.rotation.y = PI * 0.5
+		"sundial":
+			_lm_piece(root, _lm_cyl(2.2, 2.3, 0.3), Color(0.85, 0.68, 0.32), front + Vector3(0, 0.3, 0), Vector3.ONE, 0.6)
+			for i in 12:
+				var a := TAU * float(i) / 12.0
+				_lm_piece(root, _lm_box(Vector3(0.12, 0.08, 0.5)), Color(0.35, 0.22, 0.10), front + Vector3(cos(a) * 1.85, 0.48, sin(a) * 1.85)).rotation.y = -a + PI * 0.5
+			var gnomon := _lm_piece(root, _lm_box(Vector3(0.18, 2.6, 1.1)), Color(0.72, 0.52, 0.22), front + Vector3(0, 1.4, -0.3), Vector3.ONE, 0.7)
+			gnomon.rotation.x = -0.55
+		"bonfire":
+			for i in 8:
+				var a := TAU * float(i) / 8.0
+				var lg := _lm_piece(root, _lm_cyl(0.22, 0.28, 3.8), Color(0.30, 0.19, 0.10), front + Vector3(cos(a) * 0.8, 1.5, sin(a) * 0.8))
+				lg.rotation = Vector3(0.0, -a, 0.0)
+				lg.rotate(Vector3(sin(a), 0, -cos(a)).normalized(), -0.38)
+			var fire := BrazierFire.new()
+			fire.flame_scale = 4.2
+			fire.light_range = 11.0
+			fire.light_energy = 3.0
+			fire.position = front + Vector3(0, 1.6, 0)
+			root.add_child(fire)
+		"drum":
+			var drum := _lm_piece(root, _lm_cyl(1.5, 1.5, 1.4), Color(0.45, 0.20, 0.12), front + Vector3(0, 1.0, 0))
+			drum.rotation.x = PI * 0.5
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_cyl(1.52, 1.52, 0.08), Color(0.86, 0.78, 0.62), front + Vector3(0, 1.0, 0.72 * s)).rotation.x = PI * 0.5
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.3, 0.5, 1.6)), Color(0.25, 0.15, 0.08), front + Vector3(1.1 * s, 0.25, 0))
+		"bell":
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.35, 3.6, 0.35)), Color(0.82, 0.80, 0.72), front + Vector3(1.4 * s, 1.8, 0))
+			_lm_piece(root, _lm_box(Vector3(3.3, 0.35, 0.4)), Color(0.82, 0.80, 0.72), front + Vector3(0, 3.6, 0))
+			var bell := CylinderMesh.new()
+			bell.top_radius = 0.45
+			bell.bottom_radius = 1.0
+			bell.height = 1.4
+			_lm_piece(root, bell, Color(0.45, 0.33, 0.18), front + Vector3(0, 2.7, 0))
+		"loom":
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.3, 3.2, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(1.5 * s, 1.6, 0))
+			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 3.2, 0))
+			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 0.5, 0))
+			for i in 9:
+				_lm_piece(root, _lm_box(Vector3(0.05, 2.6, 0.05)), Color(1.0, 0.82, 0.3), front + Vector3(-1.2 + 0.3 * float(i), 1.85, 0), Vector3.ONE, 1.5)
+		"howl":
+			var menhir := _lm_piece(root, _lm_box(Vector3(1.7, 6.0, 1.2)), Color(0.46, 0.48, 0.55), front + Vector3(0, 3.0, 0))
+			menhir.rotation = Vector3(0.08, 0.4, -0.06)
+			var moon := SphereMesh.new()
+			moon.radius = 0.35
+			moon.height = 0.7
+			_lm_piece(root, moon, Color(0.7, 0.8, 1.0), front + Vector3(0, 6.4, 0), Vector3.ONE * 1.6, 2.0)
+		"rift":
+			var ring := TorusMesh.new()
+			ring.inner_radius = 1.3
+			ring.outer_radius = 1.6
+			var gate := _lm_piece(root, ring, Color(0.55, 0.25, 0.85), front + Vector3(0, 1.8, 0), Vector3.ONE, 1.8)
+			gate.rotation.x = PI * 0.5
+			var veil := _lm_piece(root, _lm_cyl(1.3, 1.3, 0.05), Color(0.12, 0.02, 0.2), front + Vector3(0, 1.8, 0), Vector3.ONE, 0.5)
+			veil.rotation.x = PI * 0.5
+		"fountain":
+			_lm_piece(root, _lm_cyl(1.9, 2.0, 0.6), stone, front + Vector3(0, 0.3, 0))
+			_lm_piece(root, _lm_cyl(1.6, 1.6, 0.1), Color(0.35, 0.65, 0.85), front + Vector3(0, 0.58, 0), Vector3.ONE, 0.6)
+			_lm_piece(root, _lm_cyl(0.25, 0.35, 1.8), stone, front + Vector3(0, 1.2, 0))
+		"oven":
+			var dome := SphereMesh.new()
+			dome.radius = 1.6
+			dome.height = 1.8
+			dome.is_hemisphere = true
+			_lm_piece(root, dome, Color(0.72, 0.50, 0.36), front + Vector3(0, 0.1, 0))
+			var glow := BrazierFire.new()
+			glow.flame_scale = 0.8
+			glow.light_range = 6.0
+			glow.position = front + Vector3(0, 0.4, 1.3)
+			root.add_child(glow)
+
+
+func _lm_cyl(top: float, bottom: float, h: float) -> CylinderMesh:
+	var c := CylinderMesh.new()
+	c.top_radius = top
+	c.bottom_radius = bottom
+	c.height = h
+	c.radial_segments = 24
+	return c
+
+
+func _lm_box(s: Vector3) -> BoxMesh:
+	var b := BoxMesh.new()
+	b.size = s
+	return b
+
+
+func _lm_piece(parent: Node3D, mesh: Mesh, col: Color, pos: Vector3, scl: Vector3 = Vector3.ONE, glow: float = 0.0) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = col
+	mat.roughness = 0.85
+	if glow > 0.0:
+		mat.emission_enabled = true
+		mat.emission = col
+		mat.emission_energy_multiplier = glow
+	mi.material_override = mat
+	mi.position = pos
+	mi.scale = scl
+	parent.add_child(mi)
+	return mi
