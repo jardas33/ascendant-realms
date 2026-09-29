@@ -3891,6 +3891,7 @@ func _show_saga_title_card() -> void:
 
 var _bounty_label: Label
 var _bounty_accum := 1.0
+var _bounty_announced := false
 
 func _update_bounty_label(delta: float) -> void:
 	_bounty_accum += delta
@@ -3902,6 +3903,11 @@ func _update_bounty_label(delta: float) -> void:
 	if bp.is_empty():
 		return
 	_bounty_label.text = String(bp["text"])
+	# The moment a bounty is secured, a chime and an alert say so, once.
+	if bool(bp["done"]) and not _bounty_announced:
+		_bounty_announced = true
+		Sfx.play("coin", -6.0)
+		_push_alert("Bounty secured! Win the battle to claim extra spoils.", Color(0.72, 0.95, 0.66))
 	_bounty_label.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6) if bool(bp["done"]) else (Color(0.95, 0.82, 0.5) if bool(bp["ok"]) else Color(0.75, 0.6, 0.55)))
 
 func _update_survival_label() -> void:
