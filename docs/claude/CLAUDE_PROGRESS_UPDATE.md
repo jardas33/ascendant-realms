@@ -648,6 +648,10 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **New Ages:** reaching the Age of Iron or the Age of Lume sounds the war horn and raises a column of Lume over the hall. Other research lands with a seal stamp.
   - **Buildings falling:** a new collapse sound (a deep rumble with timber and stone crackle, made in code like the other sounds) plays when a building falls. It only plays for your own buildings or ones you can currently see, so it never gives away a fight hidden in the fog.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 59 (done): screens outside the menu tour**
+  - **Tutorial:** the lesson panel was a plain dark box. It now sits on the same gilt plate as the menus, with the step diamonds along its bottom edge.
+  - **Loading screen:** checked; no issues.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
