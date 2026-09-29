@@ -4023,6 +4023,37 @@ func _on_game_over(victory: bool) -> void:
 		lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(lv_line)
 		Sfx.play("levelup", -6.0)
+	# The hero's experience bar fills with this battle's reward.
+	if ProfileManager.has_hero() and xp > 0:
+		var hh: Dictionary = ProfileManager.hero()
+		var need := maxf(1.0, ProfileManager.xp_for_level(int(hh.get("level", 1))))
+		var now_xp := float(hh.get("xp", 0.0))
+		var leveled := int(result.get("level_after", 0)) > int(result.get("level_before", 0)) and int(result.get("level_before", 0)) > 0
+		var start_xp := 0.0 if leveled else maxf(0.0, now_xp - float(xp))
+		var xp_row := VBoxContainer.new()
+		xp_row.add_theme_constant_override("separation", 2)
+		var xp_cap := _mk_label("Level %d  ·  %d / %d experience" % [int(hh.get("level", 1)), int(now_xp), int(need)], 13, Color(0.8, 0.74, 0.6))
+		xp_cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		xp_row.add_child(xp_cap)
+		var xbar := ProgressBar.new()
+		xbar.show_percentage = false
+		xbar.custom_minimum_size = Vector2(420, 12)
+		xbar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		xbar.max_value = need
+		xbar.value = start_xp
+		var xfill := StyleBoxFlat.new()
+		xfill.bg_color = Color(0.95, 0.74, 0.3)
+		xfill.set_corner_radius_all(3)
+		var xback := StyleBoxFlat.new()
+		xback.bg_color = Color(0.04, 0.04, 0.05, 0.95)
+		xback.border_color = Color(0.7, 0.55, 0.3, 0.8)
+		xback.set_border_width_all(1)
+		xback.set_corner_radius_all(3)
+		xbar.add_theme_stylebox_override("fill", xfill)
+		xbar.add_theme_stylebox_override("background", xback)
+		xp_row.add_child(xbar)
+		box.add_child(xp_row)
+		xbar.create_tween().tween_property(xbar, "value", now_xp, 1.4).set_delay(1.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	var recs: Dictionary = result.get("records", {})
 	if bool(recs.get("new_fastest", false)) or bool(recs.get("new_race_best", false)):
 		var parts: Array = []
