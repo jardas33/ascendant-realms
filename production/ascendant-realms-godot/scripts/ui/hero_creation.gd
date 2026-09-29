@@ -540,7 +540,10 @@ func _refresh_race() -> void:
 		"frostborn": "Your Jardas: a foundling of the Larouco, wrapped in a Careto's fringes.",
 	}
 	var origin := String(origins.get(_race_id, ""))
-	_race_desc.text = "%s\n\n%s%s" % [rd.get("blurb", ""), "Mechanic: " + str(rd.get("mechanic", "")), ("\n\n" + origin) if origin != "" else ""]
+	# The first battle cry of this people, as your hero will call it.
+	var cries: Array = load("res://scripts/game/bark_defs.gd").LINES.get(_race_id, {}).get("start", [])
+	var cry := ("\n\nBattle cry: “%s”" % String(cries[0])) if not cries.is_empty() else ""
+	_race_desc.text = "%s\n\n%s%s%s" % [rd.get("blurb", ""), "Mechanic: " + str(rd.get("mechanic", "")), ("\n\n" + origin) if origin != "" else "", cry]
 	if is_instance_valid(_preview_title):
 		_preview_title.text = str(rd.get("name", "Hero Preview")).to_upper()
 
