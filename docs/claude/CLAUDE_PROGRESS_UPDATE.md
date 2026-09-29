@@ -562,6 +562,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Loading screen:** a dark wash at the bottom keeps the tip and the progress bar readable over bright paintings.
   - **Barrosan sigil:** redrawn as the Barrosã bull with its great lyre horns.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 48 (done): polish on every remaining page**
+  - **Tooltips:** every tooltip in the game is now a dark panel with a gold top edge and a soft shadow (tooltip_theme.tres, set as the project theme). Before, they used the plain engine default.
+  - **Endless Road page:** a marching road now shows your stage and the next milestones as waypoints: a relic chest, a festival bonfire, a Tyrant skull and a mutation eye, each spaced by distance.
+  - **Chronicle:** it is now a book-width page, so lines run about 90 characters instead of the whole screen. Each chapter has a seal (gold for Heroic) and an ornament between chapters.
+  - **Campaign Act tabs:** they are round wax seals now, and the open Act glows.
+  - **Battle HUD:** a light glint sweeps once across a command button when you hover it.
+  - **Tutorial:** the panel has a gold rule, and a row of step diamonds shows how far through the lesson you are.
+  - **Hero sheet:**
+    - Talent picks are tall cards showing the name, the rank they'd reach and what they do, and they lift on hover.
+    - A seven-point star chart of your attributes, in your faction's colour, fills the empty space under the attribute list.
+  - **Performance:** the battle benchmark median was 23.2 ms. The plan 36 code on the same machine today measured 22.7 ms, so the new visuals add no measurable cost; the machine itself is slower today.
+  - **Balance (45 matches):** Sunspear 7-0-2, Wyldkin 6-2-1, Lioraen 5-3-1, Frostborn 5-2-2, Vorthak 4-5, Hollow 4-2-3, Sylvan 3-5-1, Ironmaw 2-6-1, Barrosan 2-5-2, Karak 0-8-1. Karak is first in plan 49.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
