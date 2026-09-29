@@ -736,6 +736,11 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Resource tooltip:** says how many of your workers are on that pile.
   - **Five new loading tips.** The field manual fits a 1366x768 screen.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 71 (done): bounties you can follow, a fairer fog, living backgrounds**
+  - **Bounty on the banner:** the battle's bounty no longer shows only as one alert that fades. It stays on the battle banner with live progress, such as "Raze 5 buildings · 3 / 5" or "Win within 14 min · 6:20 left". It turns green when secured, with a chime and an alert, and there is an alert if it can no longer be met.
+  - **Fog fixes (bugs):** a building collapsing out of sight shook your camera and threw up dust, telling you where a hidden fight was decided. Deaths, hit sparks and arrows in the fog were also drawn above it. None of these show now unless you can see the spot.
+  - **Living backgrounds:** the loading screen painting drifts slowly in while the realm loads, and the hero creation, hero sheet, War Chest, settings and skirmish backgrounds breathe with a slow drift in and out.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
