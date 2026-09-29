@@ -482,6 +482,11 @@ func _apply_race_passive() -> void:
 			base_armor += 1.0
 			base_dmg *= 1.04
 			max_hp *= 1.08
+			# Castro quarriers are half stone too: ranged raiders killed 30+ of
+			# them a match (2-23-2 over three rounds).
+			if is_worker:
+				max_hp *= 1.35
+				base_armor += 1.0
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
 			# 7-14-6 over 135 matches: steadier healing and a little more health.
