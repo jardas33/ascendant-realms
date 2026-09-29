@@ -4243,6 +4243,8 @@ func _on_game_over(victory: bool) -> void:
 		story_bits.append("Your hero slew %d" % int(result.get("hero_kills", 0)))
 	if int(result.get("veterans_made", 0)) > 0:
 		story_bits.append("%d veteran promotion%s" % [int(result.get("veterans_made", 0)), "" if int(result.get("veterans_made", 0)) == 1 else "s"])
+	if int(result.get("spells_cast", 0)) > 0:
+		story_bits.append("%d spell%s cast" % [int(result.get("spells_cast", 0)), "" if int(result.get("spells_cast", 0)) == 1 else "s"])
 	if int(result.get("jars_dug", 0)) > 0:
 		story_bits.append("%d Lume jar%s dug up" % [int(result.get("jars_dug", 0)), "" if int(result.get("jars_dug", 0)) == 1 else "s"])
 	if int(result.get("veins_held", 0)) > 0:

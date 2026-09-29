@@ -2574,6 +2574,7 @@ func record_resource_deposit(worker, drop, kind: String, carried: int, multiplie
 
 var _deposit_float_stack := {}
 var last_fallen_position := Vector3.ZERO
+var spells_cast_by_player := 0
 const DEPOSIT_FLOAT_COLORS := {
 	"food": Color(1.0, 0.62, 0.45), "timber": Color(0.92, 0.72, 0.45),
 	"stone": Color(0.82, 0.86, 0.9), "gold": Color(1.0, 0.86, 0.38),
@@ -3763,7 +3764,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
 		"level_before": level_before, "level_after": int(ProfileManager.hero().get("level", 1)) if ProfileManager.has_hero() else 0,
 		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team),
-		"army_timeline": army_timeline.duplicate(true)}
+		"army_timeline": army_timeline.duplicate(true),
+		"spells_cast": spells_cast_by_player}
 	Match.last_result = result_snapshot.duplicate(true)
 	emit_signal("game_over", victory)
 
@@ -4060,6 +4062,8 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 	# damage (levels, gear, mastery) over the unit's base damage.
 	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30)))) * (1.0 + float(hero.get("spell_power") if hero.get("spell_power") != null else 0.0))
 	var ab := SkillDefs.get_abilities().get(id, {})
+	if int(hero.team) == player_team:
+		spells_cast_by_player += 1
 	if bool(ab.get("sig", false)):
 		_cast_signature(hero, id, target_pos, level, power, ab)
 		return

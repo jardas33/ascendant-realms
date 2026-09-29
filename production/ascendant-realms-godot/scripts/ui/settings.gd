@@ -18,6 +18,8 @@ const CONTROLS := [
 	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
 	["CARAVAN", "Select your main hall to buy food, timber or stone with gold, or sell a surplus for gold. Buying raises the price; it eases back over time."],
+	["LANDMARKS", "In the Age of Iron each people can raise one landmark with a power of its own: an oven that feeds, a gate that summons, a dial that strikes. Look for it in your workers' build list."],
+	["UPGRADES", "The forge researches three ranks of weapons and armour and your people's own upgrades; the main hall researches economy and defence."],
 	["REACH RINGS", "Select a Barrosan Clanhold, a healing grove or your hero to see its reach on the ground: gold Fortify, green healing, blue command aura."],
 	["CAMERA","Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
 	["SYSTEM", "F1 shows this manual in battle. F3 toggles debug information. Esc pauses the battle."],

@@ -261,6 +261,11 @@ const TIPS := [
 	"Press a control group's number twice to bring the camera to it.",
 	"Veterans earn a name from the army at rank three. Select one to read it.",
 	"Stone builds every hall and tower. An economy with no quarrymen stalls, however much food it hoards.",
+	"Press B for your people's signature spell. N and M are learned at hero levels 10 and 25.",
+	"Every people raises its own landmark in the Age of Iron. The Village Oven feeds; the Rift Gate summons; the Great Sun Dial strikes.",
+	"Spell-summoned soldiers are spectral: they take no population and their fall is not counted against you.",
+	"Weapons and armour have three ranks each, and every people has two upgrades found nowhere else.",
+	"The Moura Court's Fool's Gold pays twenty gold for every enemy it catches.",
 	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
 	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
 ]
