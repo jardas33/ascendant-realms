@@ -168,6 +168,26 @@ func get_building(id: String) -> Dictionary:
 func get_tech(id: String) -> Dictionary:
 	return _tech.get(id, {})
 
+## "Spells: A, B, C  ·  Landmark: L" for a people, for the faction pages.
+func people_summary(race: String) -> String:
+	var ab: Dictionary = SkillDefs.get_abilities()
+	var names: Array = []
+	var sig := String(SkillDefs.SIGNATURE.get(race, ""))
+	if sig != "":
+		names.append(String(ab.get(sig, {}).get("name", sig)))
+	for pid in SkillDefs.PEOPLE_SPELLS.get(race, []):
+		names.append(String(ab.get(String(pid), {}).get("name", pid)))
+	var landmark := ""
+	for bid in buildings_for_race(race):
+		if String(get_building(bid).get("kind", "")) == "landmark":
+			landmark = String(get_building(bid).get("name", bid))
+	var bits: Array = []
+	if not names.is_empty():
+		bits.append("Spells: " + ", ".join(names))
+	if landmark != "":
+		bits.append("Landmark: " + landmark)
+	return "  ·  ".join(bits)
+
 ## Everything a building of this people can research: its authored list,
 ## plus the ranked army upgrades and this people's own upgrades at the forge,
 ## and the economy upgrades at the main hall. Tier advances are listed apart.

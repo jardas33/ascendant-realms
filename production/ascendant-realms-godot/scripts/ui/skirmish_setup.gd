@@ -445,7 +445,7 @@ func _select_race(rid: String, play_sound: bool) -> void:
 	var race: Dictionary = GameData.RACES.get(rid, {})
 	_race_detail_name.text = str(race.get("name", rid))
 	_race_detail_body.text = str(race.get("blurb", ""))
-	_race_detail_mechanic.text = str(race.get("mechanic", ""))
+	_race_detail_mechanic.text = str(race.get("mechanic", "")) + "\n" + GameData.people_summary(rid)
 	_race_detail_swatch.color = race.get("color", GOLD)
 	_update_identity_note()
 	_refresh_map_preview()
