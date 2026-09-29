@@ -643,6 +643,11 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - All eight menus were shot at four screen shapes (1920x1080, 1728x1080, 1920x823 and 1440x1080): 32 screenshots. Nothing is stretched, clipped or crowded after the recent changes.
   - **Skill constellation:** the selected star's turning rings crossed its own name. They are now drawn beneath the name plate.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 58 (done): big moments now land**
+  - **Shrines:** capturing one plays a seal stamp and raises a column of Lume light over it. If the enemy takes one of yours, an alert says "You lost ... to the enemy!".
+  - **New Ages:** reaching the Age of Iron or the Age of Lume sounds the war horn and raises a column of Lume over the hall. Other research lands with a seal stamp.
+  - **Buildings falling:** a new collapse sound (a deep rumble with timber and stone crackle, made in code like the other sounds) plays when a building falls. It only plays for your own buildings or ones you can currently see, so it never gives away a fight hidden in the fog.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
