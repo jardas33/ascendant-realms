@@ -1142,6 +1142,9 @@ func _assign_group(n: int) -> void:
 	if not g.is_empty():
 		_emit_control_group_feedback(n, "SET", g.size())
 
+var _last_group_key := -1
+var _last_group_ms := -100000
+
 func _recall_group(n: int) -> void:
 	if not _groups.has(n):
 		return
@@ -1151,9 +1154,17 @@ func _recall_group(n: int) -> void:
 		if is_instance_valid(u) and not u.is_dead and not u._is_defeated_remnant():
 			_add_to_selection(u)
 	emit_signal("selection_changed", selected)
-	# center camera on group
 	if not selected.is_empty():
-		focus_on(selected[0].global_position)
+		# One press selects the group; a second press soon after brings the
+		# camera to the middle of it, as in the classics.
+		var now := Time.get_ticks_msec()
+		if n == _last_group_key and now - _last_group_ms < 450:
+			var mid := Vector3.ZERO
+			for u in selected:
+				mid += u.global_position
+			focus_on(mid / float(selected.size()))
+		_last_group_key = n
+		_last_group_ms = now
 		_emit_control_group_feedback(n, "SELECTED", selected.size())
 
 func _emit_control_group_feedback(n: int, action: String, member_count: int) -> void:

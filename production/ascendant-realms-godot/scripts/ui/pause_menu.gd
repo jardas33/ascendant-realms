@@ -166,7 +166,7 @@ func setup() -> void:
 	_add_key_row(movement, "RMB VEIN", "Workers claim / work it", font)
 	_add_key_row(movement, "RMB MINIMAP", "Send the selection there", font)
 	_add_key_row(system, "CTRL + 1–5", "Set control group", font)
-	_add_key_row(system, "1–5", "Select control group", font)
+	_add_key_row(system, "1–5  (TWICE)", "Select group  (and find it)", font)
 	_add_key_row(system, "F", "Select idle worker", font)
 	_add_key_row(system, "SPACE", "Focus hero", font)
 	_add_key_row(system, "BACKSPACE", "Jump to latest alert", font)

@@ -12,7 +12,7 @@ const CONTROLS := [
 	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map."],
 	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
 	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). Aim at the cursor."],
-	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it. Tab selects the army."],
+	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it; press twice to bring the camera to it. Tab selects the army."],
 	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
 	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
