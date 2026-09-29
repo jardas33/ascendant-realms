@@ -3987,7 +3987,11 @@ func _on_game_over(victory: bool) -> void:
 	var reason := String(result.get("reason", "Conquest"))
 	# The result keeps machine reasons for tests; the ledger shows words.
 	reason = String({"hq_destroyed": "Your stronghold was razed", "no_live_buildings": "Your last hall burned"}.get(reason, reason))
-	var outcome := _mk_label(("The field is yours  ·  " if victory else "Your host has fallen  ·  ") + reason, 20, Color(0.9, 0.86, 0.76))
+	var outcome_text := "The field is yours" if victory else "Your host has fallen"
+	# A bare "Victory" or "Defeat" reason only repeats the title above.
+	if not reason.to_lower() in ["victory", "defeat", ""]:
+		outcome_text += "  ·  " + reason
+	var outcome := _mk_label(outcome_text, 20, Color(0.9, 0.86, 0.76))
 	outcome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	outcome.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	box.add_child(outcome)
@@ -4106,9 +4110,7 @@ func _on_game_over(victory: bool) -> void:
 	loot_sorted.sort_custom(func(a, b): return loot_order.find(String(a.get("rarity", "common"))) < loot_order.find(String(b.get("rarity", "common"))))
 	var loot_cap := 3 if compact else 5
 	for it in loot_sorted.slice(0, loot_cap):
-		var loot_line := _mk_label("Loot: %s  (%s)" % [String(it.get("name", "")), String(it.get("rarity", "common"))], 16, loot_colors.get(String(it.get("rarity", "common")), Color.WHITE))
-		loot_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		loot_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		var loot_line := _loot_row(it, loot_colors.get(String(it.get("rarity", "common")), Color.WHITE))
 		if String(it.get("rarity", "")) in ["epic", "legendary"]:
 			loot_line.set_meta("rare_pop", true)
 		box.add_child(loot_line)
@@ -4235,3 +4237,36 @@ func _on_game_over(victory: bool) -> void:
 		var prefix := "+" if final_text.begins_with("+") else ""
 		value_label.text = prefix + "0"
 		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(0.9 + order * 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
+## One find on the result screen: a faceted gem in the rarity's colour, the
+## item's name, and its rarity in small letters.
+func _loot_row(it: Dictionary, col: Color) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 10)
+	var rarity := String(it.get("rarity", "common"))
+	var gem := Control.new()
+	gem.custom_minimum_size = Vector2(22, 22)
+	gem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	gem.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	gem.draw.connect(func():
+		var c := gem.size * 0.5
+		if rarity in ["epic", "legendary"]:
+			gem.draw_circle(c, 11.0, Color(col, 0.22))
+		var r := 8.0
+		var outer := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
+		gem.draw_colored_polygon(outer, col.darkened(0.35))
+		gem.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c]), col.lightened(0.25))
+		gem.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(-r, 0), c]), col)
+		outer.append(outer[0])
+		gem.draw_polyline(outer, Color(0.97, 0.86, 0.6, 0.9), 1.2, true))
+	row.add_child(gem)
+	var name_lbl := _mk_label(String(it.get("name", "")), 16, col)
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	row.add_child(name_lbl)
+	var tag := _mk_label(rarity.to_upper(), 11, Color(col, 0.75))
+	tag.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	tag.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	row.add_child(tag)
+	return row
