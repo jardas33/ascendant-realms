@@ -496,6 +496,26 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
     - Balance runs now play 6 matches at once instead of 4. A 45-match round takes about 25 minutes instead of about 40.
     - I tried two faster settings and rejected both because they skewed the results. At 16x game speed a round took 11.5 min, but draws jumped from 6 to 22. Running 8 matches at once also raised draws.
   - Regression passed. Pushed to GitHub.
+- **Plan 43 (done): resource fun, weak factions, polish**
+  - **New feature: buried Lume jars.** From minute 4, every 2.5 minutes a jar surfaces between the bases (at most 2 at a time).
+    - Troops of one side standing over it alone for 6 s dig it up: 150 gold plus 100 of whatever that side is shortest of.
+    - If both sides stand over it, nobody digs. It's a small contested objective that pulls armies out of their bases.
+    - Lore tie: these are the elders' buried Lume jars, the "Wine of the Dead". The Act 3 opening briefing now says the Ascension is pushing them up again.
+    - Readability: a big wax-sealed amphora in a mound of fresh earth, with a violet Lume shaft and a claim ring that turns the digger's colour. The minimap shows a pulsing violet diamond with a dig-progress ring, and the player hears a chime when they open one.
+    - The AI sends its nearest idle soldiers after jars. A new Endless twist, "Jar Season", makes jars surface twice as often.
+    - The result screen lists jars dug and veins held. A new deeds track, "Lume jars dug up", has 4 titles.
+    - A new regression check confirms a jar opens for 150 gold and that a contested jar stalls.
+    - Fixed during review: a jar claim used to ignore enemy units hidden in the player's fog. The simulation must never depend on what the player can see.
+  - **Caravan sells too:** 100 food, timber or stone for 30 gold at a flat rate, so there is no buy-and-sell loop. The AI sells a pile over 900 when its gold runs short.
+  - **Lume flares:** the outpost card shows how many seconds of double output are left.
+  - **Army upgrades named per faction:** Castro Steel, Bark Mail, Chain-Iron Blades, Winter Fringes and so on.
+  - **Balance:**
+    - Barrosan Levies and Crag Archers no longer cost gold.
+    - The Dominion regenerates 3 health a second (was 2) and has 5% more health.
+    - Every AI now brings two siege engines once a war passes minute 8. A log showed Barrosan out-numbering Vorthak 3 to 1 but breaking its army on towers and never finishing the match.
+  - **90-match check:** Ironmaw 15-3, Hollow 10-4-4, Vorthak 9-6-3, Wyldkin 8-7-3, Lioraen 8-9-1, Sunspear 7-9-2, Karak 7-9-2, Sylvan 6-7-5, Frostborn 3-11-4, Barrosan 3-11-4. The siege change did not lift Barrosan. Ironmaw has led every pooled run (13 to 17 wins), so plan 44 goes after its root cause rather than small nudges. (The second 45 matches already included the jars.)
+  - The pause-menu controls list the vein right-click.
+  - Regression passed (18 checks with the new jar check). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
