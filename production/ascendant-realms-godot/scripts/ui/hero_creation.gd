@@ -502,6 +502,11 @@ func _build() -> void:
 	forge.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 	forge.pressed.connect(_on_forge)
 	footer.add_child(forge)
+	# The one action this page leads to breathes a slow warm light, like
+	# Begin Battle and the saga button.
+	var breathe := forge.create_tween().set_loops()
+	breathe.tween_property(forge, "self_modulate", Color(1.18, 1.08, 0.9), 1.4).set_trans(Tween.TRANS_SINE)
+	breathe.tween_property(forge, "self_modulate", Color.WHITE, 1.4).set_trans(Tween.TRANS_SINE)
 
 func _section_label(text: String) -> Label:
 	var l := Label.new()
