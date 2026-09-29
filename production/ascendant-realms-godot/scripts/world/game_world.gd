@@ -122,8 +122,28 @@ func _start_lume_surge() -> void:
 				sent += 1
 	_tick_lume_surge(0)
 
+func _quicken(u) -> void:
+	u.move_speed *= 1.2
+	if "agent" in u and is_instance_valid(u.agent):
+		u.agent.max_speed = u.move_speed
+
+## Lume Tide twist: after a surge ends, another rises elsewhere a few minutes on.
+func _schedule_next_surge() -> void:
+	if not twist_lume_tide or not game_running:
+		return
+	# Seeded like the first surge, so a stage plays out the same way twice.
+	_surge_count += 1
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sim_seed_for(9090 + _surge_count)
+	var ang := rng.randf() * TAU
+	_surge_pos = Vector3(cos(ang), 0.0, sin(ang)) * rng.randf_range(10.0, 45.0)
+	get_tree().create_timer(rng.randf_range(150.0, 240.0), false).timeout.connect(_start_lume_surge)
+
 func _tick_lume_surge(elapsed: int) -> void:
-	if not game_running or elapsed > 90:
+	if not game_running:
+		return
+	if elapsed > 90:
+		_schedule_next_surge()
 		return
 	if elapsed % 2 == 0 and is_instance_valid(_fx_container):
 		CombatVfx.lume_pillar(_fx_container, _surge_pos, Color(0.7, 0.85, 1.0))
@@ -144,6 +164,7 @@ func _tick_lume_surge(elapsed: int) -> void:
 				Sfx.play("levelup", -4.0)
 			else:
 				emit_signal("alert", "The enemy seized the Lume's gift.", _surge_pos)
+			_schedule_next_surge()
 			return
 	get_tree().create_timer(1.0, false).timeout.connect(_tick_lume_surge.bind(elapsed + 1))
 
@@ -2104,6 +2125,8 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 	# Endless Road "Gloom" twist: the fog closes in on the player's side.
 	if team == player_team and twist_gloom:
 		u.vision *= 0.6
+	if twist_forced_march:
+		_quicken(u)
 	# Endless Road mutations (EndlessDefs.mutations_for): deep-road enemies.
 	if team != player_team and not u.is_worker and not _stage_mutations.is_empty():
 		_apply_mutations(u)
@@ -2591,7 +2614,11 @@ func _spawn_resources() -> void:
 		var node = ResourceNodeScript.new()
 		add_child(node)
 		node.global_position = r["pos"]
-		node.configure(kind, amounts.get(kind, 800), models.get(kind, ""), heights.get(kind, 2.0))
+		# Gold Rush twist: every gold mine holds twice as much.
+		var amt := int(amounts.get(kind, 800))
+		if kind == "gold" and "gold_rush" in Match.get_config().get("twists", []):
+			amt *= 2
+		node.configure(kind, amt, models.get(kind, ""), heights.get(kind, 2.0))
 		clear_ground_cover(node.global_position, 3.8)
 		_register_resource_navigation_blocker(node)
 	var recorder = _m20_recorder()
@@ -3199,6 +3226,9 @@ var twist_veteran_foes := false
 var twist_gloom := false
 var twist_vein_mult := 1.0
 var twist_jar_season := false
+var twist_forced_march := false
+var twist_lume_tide := false
+var _surge_count := 0
 
 func _apply_start_twists() -> void:
 	var twists: Array = Match.get_config().get("twists", [])
@@ -3216,6 +3246,14 @@ func _apply_start_twists() -> void:
 	twist_gloom = "gloom" in twists
 	twist_vein_mult = 1.5 if "rich_veins" in twists else 1.0
 	twist_jar_season = "jar_season" in twists
+	# Forced March: everyone on the field moves a fifth faster.
+	twist_forced_march = "forced_march" in twists
+	if twist_forced_march:
+		for u in all_units():
+			if is_instance_valid(u):
+				_quicken(u)
+	# Lume Tide: the surge comes back after each one ends.
+	twist_lume_tide = "lume_tide" in twists
 	if twist_gloom:
 		for u in all_units():
 			if is_instance_valid(u) and u.team == player_team:

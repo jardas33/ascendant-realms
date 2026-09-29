@@ -13,7 +13,7 @@ const FESTIVALS := [
 	{"title": "Magusto", "race": "wyldkin", "mood": "dusk", "text": "Chestnuts roast in the ash and the new wine is opened. The wolves smell the feast from the Larouco."},
 	{"title": "The Fires of São João", "race": "vorthak", "mood": "ember", "text": "Midsummer bonfires on every hill. Across the valley, drowned Furna lights fires of its own."},
 ]
-const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils", "blood_moon", "lean", "fortified", "veterans", "allies", "gloom", "rich_veins", "jar_season"]
+const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils", "blood_moon", "lean", "fortified", "veterans", "allies", "gloom", "rich_veins", "jar_season", "forced_march", "lume_tide", "gold_rush"]
 const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",
 	"champions": "Champions: enemy heroes far tougher", "warband": "Warband: enemy reinforcements at 3 minutes",
 	"spoils": "Rich spoils: extra loot and +25% experience",
@@ -24,7 +24,10 @@ const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire o
 	"allies": "Allies: four of your own soldiers join at the start",
 	"gloom": "Gloom: the fog closes in, your soldiers see 40% less far",
 	"rich_veins": "Rich Highlands: every vein pays half again as much",
-	"jar_season": "Jar Season: buried Lume jars surface twice as often"}
+	"jar_season": "Jar Season: buried Lume jars surface twice as often",
+	"forced_march": "Forced March: every soldier moves a fifth faster, on both sides",
+	"lume_tide": "Lume Tide: the Lume surges from the earth again and again",
+	"gold_rush": "Gold Rush: every gold mine holds twice as much"}
 const DIFFICULTY_STEPS := ["easy", "normal", "normal", "hard", "hard", "brutal"]
 const PLACES := [
 	"Pitões das Júnias", "Tourém Ford", "Cabril Gorge", "Paredes do Rio", "Sirvozelo",

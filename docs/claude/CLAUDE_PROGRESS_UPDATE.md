@@ -657,6 +657,12 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - Now the camera glides for about a second to the last building that fell: the enemy stronghold on a win, your own hall on a loss. A column of Lume light rises there on a win.
   - The ledger's darkening, rays, title and lines wait for the glide to finish, then play their reveal as before.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 61 (done): three new Endless Road twists** (18 in total now)
+  - **Forced March:** every soldier on both sides moves a fifth faster.
+  - **Lume Tide:** the Lume surge returns a few minutes after each one ends, somewhere new, instead of once per battle.
+  - **Gold Rush:** every gold mine holds twice as much.
+  - A test match confirmed each one applies: worker speed 3.6 became 4.32, total gold 9,000 became 18,000, and the tide flag was on.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
