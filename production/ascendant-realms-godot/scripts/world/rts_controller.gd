@@ -964,6 +964,8 @@ func _emit_command_feedback(intent: String, feedback_type: String, position: Vec
 		return
 	if not show_ring:
 		return
+	# A soft knock acknowledges every accepted order.
+	Sfx.play("knock", -16.0)
 	var color: Color = world.player_commander.color if is_instance_valid(world.player_commander) else Color(0.35, 0.75, 1.0)
 	match intent:
 		COMMAND_ATTACK:
@@ -1429,7 +1431,7 @@ func _try_place_building_at(g: Vector3) -> bool:
 	var placed := false
 	if b:
 		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)
-		Sfx.play("select", -6.0)
+		Sfx.play("stamp", -10.0)
 		placed = true
 	else:
 		_record_command_feedback(false, COMMAND_BUILD_OR_REPAIR, "REJECTED", null, g, "transaction_rejected")

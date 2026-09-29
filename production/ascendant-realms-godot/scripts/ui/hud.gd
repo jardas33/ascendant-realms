@@ -4042,6 +4042,7 @@ func _on_game_over(victory: bool) -> void:
 	for deed in result.get("deeds", []):
 		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
 		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		deed_line.set_meta("rare_pop", true)
 		box.add_child(deed_line)
 	if int(result.get("level_after", 0)) > int(result.get("level_before", 0)) and int(result.get("level_before", 0)) > 0:
 		var gained := int(result["level_after"]) - int(result["level_before"])
