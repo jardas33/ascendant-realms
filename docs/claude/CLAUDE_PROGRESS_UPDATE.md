@@ -575,6 +575,20 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Performance:** the battle benchmark median was 23.2 ms. The plan 36 code on the same machine today measured 22.7 ms, so the new visuals add no measurable cost; the machine itself is slower today.
   - **Balance (45 matches):** Sunspear 7-0-2, Wyldkin 6-2-1, Lioraen 5-3-1, Frostborn 5-2-2, Vorthak 4-5, Hollow 4-2-3, Sylvan 3-5-1, Ironmaw 2-6-1, Barrosan 2-5-2, Karak 0-8-1. Karak is first in plan 49.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 49 (done): defending workers, Karak, reward moments**
+  - **AI defence bug (all factions):** a kill log showed Karak losing about 45 miners in a match, 25 of them to Dominion archers. The AI only looked for raiders within 14 m of a worker under fire, and archers shoot from 16 m or more, so nothing answered them.
+    - Units now remember their last attacker. A worker under fire flees and calls the army against whoever actually hit it.
+    - Miners lost to archers in the same matchup dropped from 25 to 13.
+  - **Karak (Granitborn), castro walls:** Karak went 0-8-1 and 1-7-1 in two rounds, losing twice to Hollow rushes around minute 9.
+    - Karak buildings now have 25% more health, and the race card says so.
+    - The Karak AI marches at the usual army size instead of massing two extra soldiers.
+  - **Reward moments:**
+    - When you return to the campaign map after winning a chapter, its seal slams onto the map with a ring of dust, a flash and a chime.
+    - A hero who levels up on the battlefield is lit by a golden column of Lume.
+    - The result screen has an experience bar that fills with the battle's reward. After a level-up it starts from empty.
+  - **Settings:** each section heading has a drawn emblem (sound, screen, camera, accessibility).
+  - **45-match check after the Karak change:** the castro-walls change alone did not lift Karak (1-8 over 45 matches, 2-23-2 over three rounds). Kill logs of the fog-free harness showed its quarriers dying to Wolfveil spear-throwers (33 in one match), so the quarriers are now half stone too: +35% health and +1 armor. Another 45-match round is checking it.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
