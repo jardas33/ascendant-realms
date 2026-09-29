@@ -404,7 +404,7 @@ func play_production_arrival_cue() -> void:
 		settled_shadow_scale = _p1r22_contact_shadow.scale
 		_p1r22_contact_shadow.scale = settled_shadow_scale * PRODUCTION_ARRIVAL_SHADOW_START
 	# A burst of team-coloured light marks the new recruit joining the host.
-	if world and is_instance_valid(world.get("_fx_container")):
+	if world and is_instance_valid(world.get("_fx_container")) and _seen_by_player():
 		var col: Color = commander.color if commander else Color.WHITE
 		CombatVfx.motes(world._fx_container, global_position, col, 1.2)
 		CombatVfx.shockwave(world._fx_container, global_position, col, 1.6)
@@ -942,10 +942,15 @@ func _update_p1r21_animation_speed() -> void:
 	var normalized := clampf(planar_speed / maxf(move_speed, 0.01), 0.0, 1.0)
 	anim.speed_scale = lerpf(P1R21_MIN_WALK_ANIMATION_SCALE, P1R21_MAX_WALK_ANIMATION_SCALE, normalized)
 
+## Light bursts float above the fog, so they would give away what happens
+## in it; effects and sounds only play for what the player can see.
+func _seen_by_player() -> bool:
+	return world == null or not world.has_method("is_player_visible") or world.is_player_visible(self)
+
 func _play_sfx(key: String, volume_db: float) -> void:
 	# Sounds are not positional, so a fight hidden in the fog would otherwise
 	# be heard from anywhere on the map. Only what the player can see is heard.
-	if world and world.has_method("is_player_visible") and not world.is_player_visible(self):
+	if not _seen_by_player():
 		return
 	var sfx = get_node_or_null("/root/Sfx")
 	if sfx and sfx.has_method("play"):
@@ -3241,7 +3246,7 @@ func gain_field_xp(amount: int) -> bool:
 		max_hp += gain
 		hp = minf(max_hp, hp + gain + max_hp * 0.25)
 		base_dmg *= 1.08
-		if world and is_instance_valid(world.get("_fx_container")):
+		if world and is_instance_valid(world.get("_fx_container")) and _seen_by_player():
 			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.8)
 			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 4.0)
 	return levelled
@@ -3257,7 +3262,7 @@ func gain_veterancy() -> void:
 		max_hp += 15.0
 		hp += 15.0
 		# Promotion was invisible; now a golden flare marks the veteran.
-		if world and is_instance_valid(world.get("_fx_container")):
+		if world and is_instance_valid(world.get("_fx_container")) and _seen_by_player():
 			CombatVfx.motes(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 1.4)
 			CombatVfx.shockwave(world._fx_container, global_position, Color(1.0, 0.82, 0.35), 2.2)
 		if _veterancy >= 3 and veteran_name == "":
