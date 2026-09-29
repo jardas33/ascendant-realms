@@ -3188,6 +3188,15 @@ func _spawn_road_boss(depth: int) -> void:
 		boss.model_root.scale *= 2.0
 	road_boss = boss
 	_boss_kind = String(bdef["kind"])
+	# Each Tyrant carries a light of its own colour, so it is known on sight.
+	var aura := OmniLight3D.new()
+	aura.name = "TyrantAura"
+	aura.light_color = Color(TYRANT_AURA.get(_boss_kind, Color(1.0, 0.8, 0.4)))
+	aura.light_energy = 2.2
+	aura.omni_range = 8.0
+	aura.shadow_enabled = false
+	boss.add_child(aura)
+	aura.position = Vector3(0.0, 2.5, 0.0)
 	if _boss_kind == "ward":
 		for k in 4:
 			var guard = spawn_unit(pick, 1, boss.global_position + Vector3(cos(k * 1.57), 0, sin(k * 1.57)) * 4.0)
@@ -3197,6 +3206,9 @@ func _spawn_road_boss(depth: int) -> void:
 		if game_running and is_instance_valid(boss):
 			emit_signal("alert", "%s holds the enemy stronghold. %s" % [String(bdef["name"]), String(bdef["text"])], boss.global_position))
 	_boss_tick()
+
+const TYRANT_AURA := {"pulse": Color(1.0, 0.5, 0.2), "summon": Color(0.75, 0.85, 1.0), "regen": Color(1.0, 0.85, 0.45),
+	"ward": Color(0.4, 0.95, 0.85), "frenzy": Color(0.95, 0.65, 0.5), "drain": Color(0.7, 0.35, 1.0)}
 
 func _boss_tick() -> void:
 	if not game_running or not is_instance_valid(road_boss) or road_boss.is_dead:
@@ -3231,6 +3243,11 @@ func _boss_tick() -> void:
 			# Below half health the beast takes over, once: faster and fiercer.
 			if not b.has_meta("frenzied") and b.hp < b.max_hp * 0.5:
 				b.set_meta("frenzied", true)
+				var fl := b.get_node_or_null("TyrantAura") as OmniLight3D
+				if fl:
+					fl.light_color = Color(1.0, 0.15, 0.1)
+					fl.light_energy = 4.0
+					fl.omni_range = 11.0
 				b.base_dmg *= 1.5
 				b.move_speed *= 1.3
 				if is_instance_valid(b.agent):
