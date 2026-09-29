@@ -186,6 +186,33 @@ func _pick_bounty() -> void:
 		if game_running:
 			emit_signal("alert", String(bounty["text"]) + " Reward: extra spoils.", Vector3.ZERO))
 
+## The bounty and how it stands right now, for the battle banner.
+func bounty_progress() -> Dictionary:
+	if bounty.is_empty():
+		return {}
+	var id := String(bounty["id"])
+	var text := ""
+	var ok := true
+	match id:
+		"hero":
+			var slain := enemy_heroes_slain > 0
+			text = "Slay an enemy hero  ·  " + ("done" if slain else "not yet")
+			return {"text": "BOUNTY  ·  " + text, "ok": true, "done": slain}
+		"swift":
+			var limit := float(bounty["minutes"]) * 60.0
+			ok = match_time <= limit
+			var left := maxi(0, int(limit - match_time))
+			text = "Win within %d min  ·  %s" % [int(bounty["minutes"]), ("%d:%02d left" % [left / 60, left % 60]) if ok else "too late"]
+		"thrift":
+			var lost := combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size()
+			ok = lost <= int(bounty["losses"])
+			text = "Lose no more than %d  ·  %d lost" % [int(bounty["losses"]), lost]
+		"raze":
+			var razed := building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size()
+			ok = razed >= int(bounty["count"])
+			text = "Raze %d buildings  ·  %d / %d" % [int(bounty["count"]), mini(razed, int(bounty["count"])), int(bounty["count"])]
+	return {"text": "BOUNTY  ·  " + text, "ok": ok, "done": ok and id in ["hero", "raze"]}
+
 func _bounty_met(victory: bool) -> bool:
 	if not victory or bounty.is_empty():
 		return false

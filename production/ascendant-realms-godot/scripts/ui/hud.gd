@@ -274,7 +274,8 @@ func _fit_to_viewport() -> void:
 		_objective_panel.offset_left = -530.0
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
-		_objective_panel.offset_bottom = 100.0
+		# Room for a fourth line: the bounty and how it stands.
+		_objective_panel.offset_bottom = 120.0
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
@@ -1286,7 +1287,7 @@ func _build_top_bar() -> void:
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
 	_objective_panel.set("objective_has_crest", objective_has_crest)
-	_objective_panel.custom_minimum_size = Vector2(360, 92)
+	_objective_panel.custom_minimum_size = Vector2(360, 112)
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	var objective_inset := StyleBoxFlat.new()
 	objective_inset.bg_color = Color.TRANSPARENT
@@ -1338,6 +1339,13 @@ func _build_top_bar() -> void:
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(objective_label)
+	# The bounty stays on the banner with how it stands, not just one alert.
+	_bounty_label = _mk_label("", 13, Color(0.95, 0.82, 0.5))
+	_bounty_label.name = "MatchBountyLabel"
+	_bounty_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_bounty_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	_bounty_label.tooltip_text = "Meet the bounty and win for extra spoils and +20% experience."
+	mission_stack.add_child(_bounty_label)
 
 
 func _format_top_resource_amount(amount: int) -> String:
@@ -1984,6 +1992,7 @@ func _process(delta: float) -> void:
 		_last_viewport_size = viewport_size
 
 	_update_survival_label()
+	_update_bounty_label(delta)
 	_map_accum += delta
 	if _map_accum >= (0.04 if not _map_pings.is_empty() else 0.15):
 		_map_accum = 0.0
@@ -3812,7 +3821,7 @@ func _build_alert_feed() -> void:
 	_alert_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	_alert_box.offset_left = -466
 	_alert_box.offset_right = -106
-	_alert_box.offset_top = 108
+	_alert_box.offset_top = 128
 	_alert_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_alert_box.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_alert_box.add_theme_constant_override("separation", 4)
@@ -3879,6 +3888,21 @@ func _show_saga_title_card() -> void:
 	t.tween_interval(5.0)
 	t.tween_property(holder, "modulate:a", 0.0, 1.2)
 	t.tween_callback(holder.queue_free)
+
+var _bounty_label: Label
+var _bounty_accum := 1.0
+
+func _update_bounty_label(delta: float) -> void:
+	_bounty_accum += delta
+	if _bounty_accum < 0.5 or not is_instance_valid(_bounty_label) or not is_instance_valid(world) or not world.has_method("bounty_progress"):
+		return
+	_bounty_accum = 0.0
+	var bp: Dictionary = world.bounty_progress()
+	_bounty_label.visible = not bp.is_empty()
+	if bp.is_empty():
+		return
+	_bounty_label.text = String(bp["text"])
+	_bounty_label.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6) if bool(bp["done"]) else (Color(0.95, 0.82, 0.5) if bool(bp["ok"]) else Color(0.75, 0.6, 0.55)))
 
 func _update_survival_label() -> void:
 	if not is_instance_valid(_survival_label) or not is_instance_valid(world) or not world.has_method("survival_remaining"):
