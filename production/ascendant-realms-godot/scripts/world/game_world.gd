@@ -3305,6 +3305,11 @@ func _apply_mutations(u) -> void:
 				u.max_hp *= 1.0 + 0.25 * r
 				u.hp = u.max_hp
 			"swift": u.move_speed *= 1.0 + 0.10 * r
+			"thorned": u.thorns += 0.10 * r
+			"keen":
+				u.vision += 3.0 * r
+				if u.atk_range > 3.0:
+					u.atk_range += 1.0 * r
 
 ## Endless Road stage twists that shape the start of a battle.
 var twist_damage_mult := 1.0

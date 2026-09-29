@@ -117,6 +117,8 @@ const MUTATIONS := {
 	"leeching": "Leeching: heal 5% of damage dealt per rank",
 	"titan": "Titan: +25% health per rank",
 	"swift": "Swift: +10% speed per rank",
+	"thorned": "Thorned: melee attackers take 10% of their blow back per rank",
+	"keen": "Keen: ranged soldiers reach a metre further and see further, per rank",
 }
 
 static func mutations_for(depth: int) -> Dictionary:
