@@ -84,6 +84,11 @@ func _build() -> void:
 	if ResourceLoader.exists(BG):
 		bg.texture = load(BG)
 	add_child(bg)
+	# The painting breathes: a slow drift in and out, so the page never feels frozen.
+	bg.resized.connect(func(): bg.pivot_offset = bg.size * 0.5)
+	var drift := bg.create_tween().set_loops()
+	drift.tween_property(bg, "scale", Vector2.ONE * 1.04, 30.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	drift.tween_property(bg, "scale", Vector2.ONE, 30.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	var scrim := ColorRect.new()
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scrim.color = Color(0.02, 0.03, 0.05, 0.7)
