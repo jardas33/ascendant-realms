@@ -497,7 +497,7 @@ func _apply_race_passive() -> void:
 			move_speed *= 1.08
 			base_dmg *= 1.05
 		"hollow":                         # Undying — every warrior drains life on hit
-			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.11)
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			base_dmg *= 1.12
 			max_hp *= 1.10

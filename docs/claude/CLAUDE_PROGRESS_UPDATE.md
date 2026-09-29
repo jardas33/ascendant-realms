@@ -589,6 +589,21 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Settings:** each section heading has a drawn emblem (sound, screen, camera, accessibility).
   - **45-match check after the Karak change:** the castro-walls change alone did not lift Karak (1-8 over 45 matches, 2-23-2 over three rounds). Kill logs of the fog-free harness showed its quarriers dying to Wolfveil spear-throwers (33 in one match), so the quarriers are now half stone too: +35% health and +1 armor. Another 45-match round is checking it.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 50 (done): fixing balance at the root, more heraldry**
+  - **Root cause behind most of the balance swings:** pooling 180 AI matches showed that the side losing 30 or more workers to ranged raiders lost the match, whatever its faction.
+    - Karak had lost 33 quarriers to Wolfveil spear-throwers in one match, Barrosan 29 workers to Compaña necromancers, and Lioraen 26 to Dominion archers.
+    - Patching one faction at a time only moved the problem to the next one.
+  - **Fix:** every worker now has 40% more health, so a raid costs a few workers instead of an economy. The earlier Lioraen and Karak worker patches are folded into it; Karak quarriers keep +1 armor ("stone-skinned").
+  - **Karak before the fix:** castro walls (buildings +25% health) moved Karak from 1-8 to 2-4-3.
+  - **90-match check after the fix:** Hollow 12-3-3, Ironmaw 10-7-1, Vorthak 8-9-1, Lioraen 8-10, Frostborn 8-8-2, Wyldkin 7-7-4, Sylvan 6-5-7, Sunspear 5-7-6, Karak 5-9-4, Barrosan 3-7-8. Karak climbed from 4-27 over the previous 180 matches. Matches run longer now (18 draws in 90), and Hollow's life drain is the new outlier, so its lifesteal goes from 11% back to 9% for plan 51.
+  - **Hero creation:** each calling has its own emblem (sword, banner, bow, star, candle).
+  - **Campaign map:**
+    - The story strip sits on the gilt plate like every other panel.
+    - Its hint used to say a click opens the chronicle. It now says your next battle's seal opens the briefing, which is what a click does.
+  - **Skirmish:** each rival row shows the chosen faction's shield.
+  - **Hero sheet:** the faction shield is pinned to the portrait frame.
+  - **Main menu:** the saga button breathes a slow warm light.
+  - Regression passed (18 checks). No new Codex work. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
