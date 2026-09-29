@@ -393,7 +393,14 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		_hovered_resource = hovered
 		var kind := String(hovered.get("resource_kind")).capitalize()
 		var amount := maxi(0, int(hovered.get("amount")))
-		_resource_tooltip_label.text = "%s\n%d remaining" % [kind, amount]
+		# How many of your own workers are on it, so a crowded pile is seen.
+		var crew := 0
+		if is_instance_valid(_commander):
+			for u in _commander.units:
+				if is_instance_valid(u) and u.is_worker and not u.is_dead and u.get("_gather_node") == hovered:
+					crew += 1
+		var crew_line := ("\n%d of your workers here" % crew) if crew > 1 else ("\n1 of your workers here" if crew == 1 else "")
+		_resource_tooltip_label.text = "%s\n%d remaining%s" % [kind, amount, crew_line]
 	elif hovered is Unit or hovered is Building:
 		_hovered_resource = null
 		var fallback_name := "Unit" if hovered is Unit else "Building"
