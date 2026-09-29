@@ -63,7 +63,13 @@ func _build() -> void:
 	col.offset_bottom = 360.0
 	add_child(col)
 
-	col.add_child(_make_button(_campaign_label(), _on_campaign))
+	var primary := _make_button(_campaign_label(), _on_campaign)
+	col.add_child(primary)
+	# The saga is the main road: its button breathes a slow warm light.
+	primary.add_theme_color_override("font_color", Color(1.0, 0.9, 0.6))
+	var breathe := primary.create_tween().set_loops()
+	breathe.tween_property(primary, "self_modulate", Color(1.25, 1.12, 0.9), 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	breathe.tween_property(primary, "self_modulate", Color(1, 1, 1), 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	# The Endless Road, straight from the menu once the first chapter is won.
 	if ProfileManager.has_hero() and not ProfileManager.saga()["cleared"].is_empty():
 		col.add_child(_make_button("Endless Road  ·  Stage %d" % (ProfileManager.endless_best() + 1), _on_endless))
