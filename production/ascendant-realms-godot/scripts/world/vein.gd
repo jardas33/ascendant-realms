@@ -34,15 +34,15 @@ func configure(p_kind: String, p_amount: int) -> void:
 	# A slowly turning rune ring marks an unclaimed vein in its resource's colour.
 	_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = 3.4
-	torus.outer_radius = 3.7
+	torus.inner_radius = 3.45
+	torus.outer_radius = 3.6
 	torus.rings = 32
 	torus.ring_segments = 4
 	_ring.mesh = torus
 	_ring_mat = StandardMaterial3D.new()
 	_ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_ring_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_ring_mat.albedo_color = Color(KIND_COLORS.get(kind, Color.WHITE), 0.55)
+	_ring_mat.albedo_color = Color(KIND_COLORS.get(kind, Color.WHITE), 0.35)
 	_ring.material_override = _ring_mat
 	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_ring.position.y = 0.08
@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 		if w and w.get("match_time") != null:
 			flaring = float(w.get("match_time")) < rich_until
 		_ring.visible = (is_free() or flaring) and amount > 0
-		_ring_mat.albedo_color = Color(1.0, 0.85, 0.35, 0.9) if flaring else Color(KIND_COLORS.get(kind, Color.WHITE), 0.55)
+		_ring_mat.albedo_color = Color(1.0, 0.85, 0.35, 0.9) if flaring else Color(KIND_COLORS.get(kind, Color.WHITE), 0.35)
 
 ## Take up to `want` from the vein (it runs dry eventually).
 func draw(want: int) -> int:

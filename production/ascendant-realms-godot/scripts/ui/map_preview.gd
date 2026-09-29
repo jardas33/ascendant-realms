@@ -85,8 +85,9 @@ func _draw() -> void:
 		var vp: Vector2 = to_px.call(v["pos"])
 		var vc: Color = KIND_COLORS.get(str(v.get("kind", "")), Color.WHITE)
 		var vr := maxf(4.0, side * 0.02)
-		draw_circle(vp, vr, Color(0.05, 0.05, 0.05, 0.55))
-		draw_arc(vp, vr, 0.0, TAU, 20, vc, maxf(1.5, side * 0.006), true)
+		# A small ringed pip: big rings crowded the preview.
+		draw_circle(vp, vr * 0.55, Color(0.02, 0.02, 0.03, 0.8))
+		draw_circle(vp, vr * 0.38, vc)
 		draw_circle(vp, vr * 0.4, vc)
 	for cp in map_data.get("capture_points", []):
 		var p: Vector2 = to_px.call(cp["pos"])

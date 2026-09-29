@@ -555,7 +555,7 @@ func _refresh_map_preview() -> void:
 	for m in _map_infos:
 		if str(m["id"]) == _map_id:
 			info = m
-	_map_caption.text = "%s\n\nYour banner is ringed in gold. Violet marks are shrines; coloured dots are gold, stone, timber and food. Ringed marks are veins, where a worker can raise an outpost for steady income." % str(info.get("desc", ""))
+	_map_caption.text = "%s\n\nYour banner is ringed in gold. Violet marks are shrines; coloured dots are gold, stone, timber and food. Dark-edged dots are veins, where a worker can raise an outpost for steady income." % str(info.get("desc", ""))
 
 func _pick_map() -> String:
 	if _map_id == "__random__":

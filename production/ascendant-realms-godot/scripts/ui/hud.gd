@@ -1598,9 +1598,11 @@ func _draw_minimap() -> void:
 		if flaring:
 			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 180.0)
 			_minimap.draw_arc(vp, 8.0 + pulse * 3.0, 0.0, TAU, 20, Color(1.0, 0.85, 0.35, 0.9), 2.0, true)
-		_minimap.draw_arc(vp, 5.5, 0.0, TAU, 16, Color(vcol, 0.95), 1.6, true)
+		# A small pip, not a big ring: twelve rings crowded the whole field.
+		_minimap.draw_circle(vp, 3.6, Color(0.02, 0.02, 0.03, 0.85))
+		_minimap.draw_circle(vp, 2.6, Color(vcol, 0.9))
 		if not vein.is_free():
-			_minimap.draw_circle(vp, 3.4, GameData.TEAM_COLORS.get(int(vein.outpost.team), Color.WHITE))
+			_minimap.draw_arc(vp, 4.6, 0.0, TAU, 12, GameData.TEAM_COLORS.get(int(vein.outpost.team), Color.WHITE), 1.4, true)
 
 	# Buried Lume jars: a pulsing violet diamond, always shown (the Lume glow
 	# is seen from afar), with a ring filling as someone digs.
