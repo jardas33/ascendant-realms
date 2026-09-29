@@ -3322,6 +3322,33 @@ func _show_hero_title() -> void:
 	add_child(tl)
 	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
 
+## A short call over the unit's head (a hero's battle cry), fading out.
+var _bark: Label3D
+
+func say(text: String) -> void:
+	if text == "" or is_dead:
+		return
+	if is_instance_valid(_bark):
+		_bark.queue_free()
+	_bark = Label3D.new()
+	_bark.name = "Bark"
+	_bark.text = "“%s”" % text
+	_bark.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_bark.no_depth_test = true
+	_bark.fixed_size = true
+	_bark.pixel_size = 0.0008
+	_bark.font_size = 24
+	_bark.outline_size = 8
+	_bark.modulate = Color(1.0, 0.95, 0.82)
+	_bark.outline_modulate = Color(0.06, 0.03, 0.0, 0.95)
+	add_child(_bark)
+	_bark.position = Vector3(0.0, _visual_height + 1.6, 0.0)
+	var b := _bark
+	var tw := b.create_tween()
+	tw.tween_property(b, "position:y", _visual_height + 2.0, 2.6)
+	tw.parallel().tween_property(b, "modulate:a", 0.0, 0.6).set_delay(2.0)
+	tw.tween_callback(b.queue_free)
+
 func _update_rank_badge() -> void:
 	if _veterancy <= 0 or is_hero or is_worker:
 		return

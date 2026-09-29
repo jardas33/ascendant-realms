@@ -3366,6 +3366,11 @@ func _start_match() -> void:
 	_battle_music = true
 	# A war horn opens every battle.
 	Sfx.play("horn", -6.0)
+	# As the horn sounds, the hero calls the host forward.
+	get_tree().create_timer(1.2, false).timeout.connect(func():
+		var hero = player_commander.hero_ref if is_instance_valid(player_commander) else null
+		if is_instance_valid(hero) and hero.has_method("say"):
+			hero.say(load("res://scripts/game/bark_defs.gd").pick(String(player_commander.race), "start")))
 	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()

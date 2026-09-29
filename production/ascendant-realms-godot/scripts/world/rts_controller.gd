@@ -971,6 +971,7 @@ func _emit_command_feedback(intent: String, feedback_type: String, position: Vec
 		return
 	# A soft knock acknowledges every accepted order.
 	Sfx.play("knock", -16.0)
+	_maybe_hero_bark(intent)
 	var color: Color = world.player_commander.color if is_instance_valid(world.player_commander) else Color(0.35, 0.75, 1.0)
 	match intent:
 		COMMAND_ATTACK:
@@ -986,6 +987,26 @@ func _emit_command_feedback(intent: String, feedback_type: String, position: Vec
 		world.spawn_order_marker(position, color, 1.2 if intent != COMMAND_RALLY else 1.5, intent == COMMAND_ATTACK or intent == COMMAND_ATTACK_MOVE)
 	else:
 		world.spawn_ring_fx(position, color, 1.2 if intent != COMMAND_RALLY else 1.5)
+
+const BARK_DEFS := preload("res://scripts/game/bark_defs.gd")
+var _last_bark_ms := -100000
+
+## Now and then, a hero you order into battle shouts a cry of its people.
+func _maybe_hero_bark(intent: String) -> void:
+	var moment := ""
+	if intent == COMMAND_ATTACK or intent == COMMAND_ATTACK_MOVE:
+		moment = "attack"
+	elif intent == COMMAND_MOVE or intent == COMMAND_DEFAULT:
+		moment = "move"
+	if moment == "" or Time.get_ticks_msec() - _last_bark_ms < 12000:
+		return
+	if randf() > (0.6 if moment == "attack" else 0.25):
+		return
+	for u in selected:
+		if is_instance_valid(u) and u is Unit and u.is_hero and not u.is_dead and u.has_method("say"):
+			_last_bark_ms = Time.get_ticks_msec()
+			u.say(BARK_DEFS.pick(String(u.commander.race) if u.commander else "", moment))
+			return
 
 func _cmd_stop() -> void:
 	issue_stop()

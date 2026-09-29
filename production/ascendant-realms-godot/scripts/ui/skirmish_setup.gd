@@ -40,6 +40,7 @@ var _game_speed := 1.0
 var _speed_label: Label
 var _map_id := "hollowspan"
 var _map_infos := []
+var _saved_opps: Array = []   # validated {race, diff} from the last skirmish
 var _map_preview: Control
 var _map_caption: Label
 
@@ -55,7 +56,36 @@ func _ready() -> void:
 	var ids := _race_ids()
 	if not ids.has(_player_race) and not ids.is_empty():
 		_player_race = str(ids[0])
+	_restore_last(h.has("race"))
 	_build()
+
+func _restore_last(hero_sets_race: bool) -> void:
+	var saved = ProfileManager.settings().get("last_skirmish", {})
+	if not (saved is Dictionary):
+		return
+	var ids := _race_ids()
+	if not hero_sets_race and ids.has(str(saved.get("race", ""))):
+		_player_race = str(saved["race"])
+	var opps = saved.get("opponents", [])
+	if opps is Array and opps.size() >= 1 and opps.size() <= 3:
+		var valid: Array = []
+		for o in opps:
+			if o is Dictionary and ids.has(str(o.get("race", ""))) and DIFFICULTIES.has(str(o.get("diff", ""))):
+				valid.append({"race": str(o["race"]), "diff": str(o["diff"])})
+			else:
+				valid.clear()
+				break
+		if not valid.is_empty():
+			_saved_opps = valid
+			_num_opponents = valid.size()
+	if RES_KINDS.has(str(saved.get("res_kind", ""))):
+		_res_kind = str(saved["res_kind"])
+	if VICTORY_KINDS.has(str(saved.get("victory", ""))):
+		_victory = str(saved["victory"])
+	if typeof(saved.get("game_speed")) in [TYPE_FLOAT, TYPE_INT]:
+		_game_speed = snappedf(clampf(float(saved["game_speed"]), 0.5, 2.0), 0.1)
+	if saved.get("map") is String:
+		_map_id = str(saved["map"])
 
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
@@ -311,6 +341,12 @@ func _build_battle_panel() -> Control:
 	for i in _map_infos.size():
 		map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
 	var default_index := 0
+	var map_known: bool = _map_id == "__random__"
+	for i in _map_infos.size():
+		if str(_map_infos[i]["id"]) == _map_id:
+			map_known = true
+	if not map_known:
+		_map_id = "hollowspan"
 	for i in _map_infos.size():
 		if str(_map_infos[i]["id"]) == _map_id:
 			default_index = i + 1
@@ -458,6 +494,8 @@ func _rebuild_opponents() -> void:
 			var rid: String = str(opp_race_ids[j])
 			race_opt.add_item(GameData.RACES[rid].get("name", rid), j)
 		var def_idx: int = opp_race_ids.find(defaults[i]) if i < defaults.size() else -1
+		if i < _saved_opps.size():
+			def_idx = opp_race_ids.find(_saved_opps[i]["race"])
 		race_opt.select(max(0, def_idx))
 		var ids_ref: Array = opp_race_ids
 		opp_shield.draw.connect(func():
@@ -483,7 +521,7 @@ func _rebuild_opponents() -> void:
 		diff_opt.custom_minimum_size = Vector2(118, 34)
 		for j in DIFF_LABELS.size():
 			diff_opt.add_item(DIFF_LABELS[j], j)
-		diff_opt.select(1)
+		diff_opt.select(1 if i >= _saved_opps.size() else DIFFICULTIES.find(_saved_opps[i]["diff"]))
 		diff_opt.item_selected.connect(func(_idx): Sfx.play("select"))
 		row.add_child(diff_opt)
 		_opp_container.add_child(row)
@@ -522,11 +560,13 @@ func _on_begin() -> void:
 	Sfx.play("select")
 	var opp_race_ids := _race_ids()
 	var opponents := []
+	var saved_opps := []
 	for r in _opp_rows:
 		var sel_idx: int = r["race"].get_selected_id()
 		var race: String = str(opp_race_ids[sel_idx]) if sel_idx >= 0 and sel_idx < opp_race_ids.size() else "barrosan"
 		var diff: String = DIFFICULTIES[r["diff"].get_selected_id()]
 		opponents.append({"race": race, "difficulty": diff})
+		saved_opps.append({"race": race, "diff": diff})
 	var cfg := Match.default_config()
 	cfg["player_race"] = _player_race
 	cfg["opponents"] = opponents
@@ -535,6 +575,7 @@ func _on_begin() -> void:
 	cfg["mode"] = "skirmish"
 	cfg["game_speed"] = _game_speed
 	cfg["map"] = _pick_map()
+	ProfileManager.update_setting("last_skirmish", {"race": _player_race, "opponents": saved_opps, "res_kind": _res_kind, "victory": _victory, "game_speed": _game_speed, "map": _map_id})
 	Match.set_config(cfg)
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
 
