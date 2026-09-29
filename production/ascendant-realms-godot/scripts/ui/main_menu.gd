@@ -238,6 +238,20 @@ func _make_hero_card() -> Control:
 	hint.add_theme_font_size_override("font_size", 14)
 	hint.add_theme_color_override("font_color", Color(0.98, 0.82, 0.42) if (pts > 0 or tp > 0) else Color(0.6, 0.85, 0.62))
 	col.add_child(hint)
+	# Where the saga goes next: the first open main chapter not yet won.
+	var saga := ProfileManager.saga()
+	var next_title := ""
+	for c in preload("res://scripts/game/campaign_defs.gd").all():
+		var cid := String(c["id"])
+		if ProfileManager.chapter_available(cid) and not cid in saga["cleared"] and not bool(c.get("side", false)):
+			next_title = String(c.get("title", ""))
+			break
+	if next_title != "":
+		var next_l := Label.new()
+		next_l.text = "Next in the saga: %s" % next_title
+		next_l.add_theme_font_size_override("font_size", 13)
+		next_l.add_theme_color_override("font_color", Color(0.86, 0.78, 0.62))
+		col.add_child(next_l)
 	card.modulate.a = 0.0
 	card.create_tween().tween_property(card, "modulate:a", 1.0, 0.7).set_delay(0.9)
 	return card
