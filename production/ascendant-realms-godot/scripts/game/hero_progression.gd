@@ -20,6 +20,10 @@ static func compute(hero: Dictionary) -> Dictionary:
 	var sig := String(SkillDefs.SIGNATURE.get(String(hero.get("race", "")), ""))
 	if sig != "":
 		out["abilities"][sig] = SkillDefs.signature_level(int(hero.get("level", 1)))
+	# ...and learns two more of its people's spells at levels 10 and 25.
+	var people: Dictionary = SkillDefs.people_spell_levels(String(hero.get("race", "")), int(hero.get("level", 1)))
+	for pid in people:
+		out["abilities"][pid] = people[pid]
 
 	# --- Archetype: the path chosen at the forge (it was only a label) ---
 	match String(hero.get("archetype", "Warrior")):

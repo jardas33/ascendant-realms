@@ -2408,7 +2408,10 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 func _ability_key_label(id: String) -> String:
 	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R", "heal": "Y", "root": "U", "avatar": "V"}
 	if id.begins_with("sig_"):
-		return "G"
+		return "B"
+	var slot := int(SkillDefs.get_abilities().get(id, {}).get("slot", 0))
+	if slot > 0:
+		return "N" if slot == 1 else "M"
 	return String(hotkeys.get(id, ""))
 
 

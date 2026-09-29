@@ -2091,6 +2091,13 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	# Enemy heroes above Easy wield their people's signature spell too.
 	if difficulty != "easy" and SkillDefs.SIGNATURE.has(race):
 		abilities[String(SkillDefs.SIGNATURE[race])] = mini(3, level)
+	# Hard and Brutal heroes know their people's first spell; deep on the
+	# Endless Road (stage 30 and beyond) the second as well.
+	var people_ids: Array = SkillDefs.PEOPLE_SPELLS.get(race, [])
+	if difficulty in ["hard", "brutal"] and people_ids.size() >= 1:
+		abilities[String(people_ids[0])] = mini(3, level)
+	if depth_now >= 30 and people_ids.size() >= 2:
+		abilities[String(people_ids[1])] = mini(3, level)
 	var chapter_index := CampaignDefs.index_of(String(Match.get_config().get("campaign_chapter", "")))
 	var growth := float(maxi(chapter_index, 0))
 	# Endless Road "Champions" twist: enemy heroes half again as tough.
@@ -4056,6 +4063,9 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 	if bool(ab.get("sig", false)):
 		_cast_signature(hero, id, target_pos, level, power, ab)
 		return
+	if ab.has("fx"):
+		_run_spell_fx(hero, ab, target_pos, level, power)
+		return
 	match id:
 		"rally":
 			heal_allies_near(hero.global_position, ab.get("range", 14.0), (40.0 + hero.heal_power) * power, hero.team)
@@ -4246,6 +4256,125 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 			spawn_ring_fx(from, Color(1.0, 0.3, 0.2), reach)
 			CombatVfx.motes(_fx_container, from, Color(1.0, 0.35, 0.25), 2.4)
 			emit_signal("camera_shake", 0.5, from)
+
+## Runs a data spell's "fx" steps (SkillDefs.people_spells). Damage and
+## healing grow x1.35 per spell level and with the hero's power.
+func _run_spell_fx(hero, ab: Dictionary, target_pos: Vector3, level: int, power: float) -> void:
+	var m := (1.0 + 0.35 * float(level - 1)) * power
+	var team: int = int(hero.team)
+	var from: Vector3 = hero.global_position
+	var to := target_pos
+	var reach := float(ab.get("range", 18.0))
+	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+	if reach > 0.0 and flat.length() > reach:
+		to = from + flat.normalized() * reach
+	var tint: Color = ab.get("tint", Color(1, 0.85, 0.4))
+	for step in ab.get("fx", []):
+		match String(step.get("op", "")):
+			"dash":
+				hero.command_move(to)
+				hero.global_position = Vector3(to.x, hero.global_position.y, to.z)
+				from = hero.global_position
+			"damage":
+				var waves := int(step.get("waves", 1))
+				for w in waves:
+					var delay := float(step.get("every", 0.0)) * float(w)
+					var st: Dictionary = step
+					if delay <= 0.0:
+						_spell_damage_wave(hero, st, from, to, m, tint, w == 0)
+					else:
+						get_tree().create_timer(delay, false).timeout.connect(func():
+							if game_running and is_instance_valid(hero):
+								_spell_damage_wave(hero, st, hero.global_position if String(st.get("at", "")) == "hero" else from, to, m, tint, false))
+			"heal":
+				var at: Vector3 = to if String(step.get("at", "hero")) == "target" else from
+				heal_allies_near(at, float(step.get("r", 14.0)), (float(step.get("amt", 60)) + float(hero.heal_power) * 0.5) * m, team)
+				_ability_motes_on_allies(hero, float(step.get("r", 14.0)), tint)
+			"buff":
+				var secs := float(step.get("secs", 8.0))
+				var dm := 1.0 + (float(step.get("dmg", 1.0)) - 1.0) * (1.0 + 0.25 * float(level - 1))
+				var arm := float(step.get("armor", 0.0)) * (1.0 + 0.25 * float(level - 1))
+				var hs := 1.0 + (float(step.get("haste", 1.0)) - 1.0) * (1.0 + 0.25 * float(level - 1))
+				if bool(step.get("hero_only", false)):
+					hero.apply_spell_buff(dm, arm, hs, secs)
+				else:
+					for u in commander_for_team(team).units:
+						if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(from) <= float(step.get("r", 16.0)):
+							u.apply_spell_buff(dm, arm, hs, secs)
+					_ability_motes_on_allies(hero, float(step.get("r", 16.0)), tint)
+			"summon":
+				var at2: Vector3 = to if String(step.get("at", "hero")) == "target" else from
+				var n := int(step.get("n", 3)) + (level - 1)
+				for k in n:
+					var ang := TAU * float(k) / float(n)
+					var su = spawn_unit(String(step.get("unit", "")), team, at2 + Vector3(cos(ang), 0.0, sin(ang)) * 2.5)
+					if su == null:
+						continue
+					su.set_meta("summoned", true)
+					var ref = su
+					get_tree().create_timer(float(step.get("secs", 30.0)), false).timeout.connect(func():
+						if is_instance_valid(ref) and not ref.is_dead:
+							_dismiss_summon(ref))
+				if is_instance_valid(_fx_container):
+					CombatVfx.lume_pillar(_fx_container, at2, tint)
+			"flee":
+				for u in all_units():
+					if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(from) <= float(step.get("r", 12.0)):
+						var away: Vector3 = u.global_position - from
+						away.y = 0.0
+						if away.length_squared() < 0.01:
+							away = Vector3(1, 0, 0)
+						u.command_move(u.global_position + away.normalized() * 9.0)
+			"repair":
+				for b in commander_for_team(team).buildings:
+					if is_instance_valid(b) and not b.is_dead and b.is_built and b.global_position.distance_to(from) <= float(step.get("r", 20.0)):
+						b.hp = minf(b.max_hp, b.hp + b.max_hp * float(step.get("frac", 0.3)))
+	spawn_ring_fx(to if reach > 0.0 else from, tint, minf(maxf(reach, 6.0), 12.0))
+
+func _spell_damage_wave(hero, st: Dictionary, from: Vector3, to: Vector3, m: float, tint: Color, first: bool) -> void:
+	var team: int = int(hero.team)
+	var at := String(st.get("at", "target"))
+	var r := float(st.get("r", 6.0))
+	var centre: Vector3 = from if at == "hero" else to
+	var dmg := float(st.get("dmg", 0)) * m
+	var drained := 0.0
+	var hit := 0
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == team:
+			continue
+		var inside: bool = _point_near_segment(u.global_position, from, to, r) if at == "line" else u.global_position.distance_to(centre) <= r
+		if not inside:
+			continue
+		hit += 1
+		if dmg > 0.0:
+			var before: float = u.hp
+			u.take_damage(GameData.compute_damage(dmg, "magic", u.armor_class, u.cur_armor()), hero)
+			drained += maxf(0.0, before - u.hp)
+		if first:
+			if st.has("stun"): u.apply_stun(float(st["stun"]))
+			if st.has("root"): u.apply_root(float(st["root"]))
+			if st.has("slow"): u.apply_slow(float(st["slow"]))
+			if st.has("vuln"): u.apply_vulnerable(float(st["vuln"]))
+	if bool(st.get("buildings", false)) and dmg > 0.0:
+		for b in all_buildings():
+			if is_instance_valid(b) and not b.is_dead and int(b.team) != team and b.global_position.distance_to(centre) <= r + float(b.footprint) * 0.5:
+				b.take_damage(dmg * 0.5, hero)
+	if bool(st.get("drain", false)) and drained > 0.0:
+		heal_allies_near(from, r + 6.0, drained, team)
+	if first and int(st.get("gold", 0)) > 0 and hit > 0:
+		var cmd = commander_for_team(team)
+		if cmd:
+			cmd.add_resources("gold", int(st["gold"]) * hit)
+			if team == player_team:
+				spawn_income_popup(from + Vector3.UP * 3.0, int(st["gold"]) * hit, "gold")
+	if is_instance_valid(_fx_container) and player_visibility_state_at(centre) == VISIBILITY_CURRENTLY_VISIBLE:
+		CombatVfx.shockwave(_fx_container, centre, tint, r)
+		if first and at != "line":
+			emit_signal("camera_shake", 0.35, centre)
+	if at == "line" and is_instance_valid(_fx_container):
+		for k in 6:
+			var p := from.lerp(to, float(k + 1) / 6.0)
+			CombatVfx.shockwave(_fx_container, p, tint, r * 0.8)
 
 ## The first tier-one melee soldier of a people (a wolf for the Wolfveil).
 func _race_first_melee(race: String) -> String:

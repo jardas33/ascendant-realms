@@ -11,7 +11,7 @@ const CONTROLS := [
 	["SELECTION", "Left-click selects. Drag selects a group. Hold Shift to add to selection."],
 	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map."],
 	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
-	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). Aim at the cursor."],
+	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). B is your people's signature spell; N and M are its spells learned at levels 10 and 25. Aim at the cursor."],
 	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it; press twice to bring the camera to it. Tab selects the army."],
 	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],

@@ -1575,6 +1575,14 @@ func _cast_hero_spells() -> void:
 				sat = nearest.global_position
 		if sok and hero.cast_ability(String(sid), sat):
 			return
+	# People spells: helping ones when allies stand close, hurting ones on a crowd.
+	for pid in hero.abilities:
+		var pdef: Dictionary = SkillDefs.get_abilities().get(String(pid), {})
+		if not pdef.has("fx") or not hero.can_cast(String(pid)):
+			continue
+		var pok: bool = (near_allies >= 3 and near_enemies.size() >= 2) if String(pdef.get("use", "enemy")) == "ally" else near_enemies.size() >= 3
+		if pok and hero.cast_ability(String(pid), nearest.global_position):
+			return
 	for id in ["heal", "slam", "root", "charge", "rally", "bolt"]:
 		if not hero.can_cast(id):
 			continue

@@ -383,6 +383,11 @@ static func get_tree() -> Array:
 
 ## Active ability data (referenced by ability id from nodes).
 static func get_abilities() -> Dictionary:
+	var all := _base_abilities()
+	all.merge(people_spells())
+	return all
+
+static func _base_abilities() -> Dictionary:
 	return {
 		"rally":  {"name": "Rallying Cry", "mana": 40, "cd": 18.0, "range": 14.0, "desc": "Heal and hasten nearby allies."},
 		"slam":   {"name": "Ground Slam", "mana": 45, "cd": 14.0, "range": 8.0, "dmg": 60, "desc": "Area damage and stun."},
@@ -423,3 +428,98 @@ const SIGNATURE := {"barrosan": "sig_bull", "lioraen": "sig_spring", "vorthak": 
 ## level 15 and 3 from level 35.
 static func signature_level(hero_level: int) -> int:
 	return 1 + (1 if hero_level >= 15 else 0) + (1 if hero_level >= 35 else 0)
+
+## People spells (plan 74): two more per people, learned at hero levels 10
+## (key N) and 25 (key M), on top of the signature spell (key B). Each is
+## data: a list of "fx" steps run by GameWorld._run_spell_fx.
+##   damage: {at: target|hero|line, r, dmg, stun, root, slow, vuln, waves, every, buildings}
+##   heal:   {at, r, amt}         buff: {r, dmg, armor, haste, secs, hero_only}
+##   summon: {unit, n, secs, at}  flee: {r}  dash: {}  gold_per_hit: {gold}
+##   repair: {r, frac}
+const PEOPLE_SPELLS := {
+	"barrosan": ["bar_levy", "bar_horn"],
+	"lioraen": ["lio_thorns", "lio_bloom"],
+	"vorthak": ["vor_chains", "vor_nova"],
+	"grimtusk": ["grim_quake", "grim_rage"],
+	"sylvan": ["syl_gold", "syl_mirror"],
+	"karak": ["kar_avalanche", "kar_bastion"],
+	"sunspear": ["sun_rain", "sun_testudo"],
+	"wyldkin": ["wyl_leap", "wyl_frenzy"],
+	"hollow": ["hol_curse", "hol_drain"],
+	"frostborn": ["fro_breath", "fro_masks"],
+}
+
+static func people_spells() -> Dictionary:
+	return {
+		"bar_levy": {"name": "Call the Levy", "mana": 60, "cd": 40.0, "range": 0.0, "slot": 1, "use": "enemy", "tint": Color(0.95, 0.75, 0.45),
+			"desc": "The village answers: four clan levies run to the hero's side and fight for 30 seconds.",
+			"fx": [{"op": "summon", "unit": "barrosan_clan_levy", "n": 4, "secs": 30.0, "at": "hero"}]},
+		"bar_horn": {"name": "Horn of Salto", "mana": 70, "cd": 35.0, "range": 20.0, "slot": 2, "use": "ally", "tint": Color(1.0, 0.8, 0.4),
+			"desc": "The old horn sounds over the valley: allies nearby are healed and fight 20% harder and faster for 10 seconds.",
+			"fx": [{"op": "heal", "at": "hero", "r": 20.0, "amt": 60}, {"op": "buff", "r": 20.0, "dmg": 1.2, "haste": 1.2, "secs": 10.0}]},
+		"lio_thorns": {"name": "Thornfield", "mana": 50, "cd": 20.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(0.45, 0.85, 0.4),
+			"desc": "Brambles tear out of the ground at the target: enemies are held fast for 5 seconds and cut every second.",
+			"fx": [{"op": "damage", "at": "target", "r": 7.0, "dmg": 18, "root": 5.0, "waves": 5, "every": 1.0}]},
+		"lio_bloom": {"name": "Bloom of the Springs", "mana": 80, "cd": 40.0, "range": 26.0, "slot": 2, "use": "ally", "tint": Color(0.5, 1.0, 0.7),
+			"desc": "Every flower in the valley opens at once: all allies nearby are healed greatly and gain +4 armor for 10 seconds.",
+			"fx": [{"op": "heal", "at": "hero", "r": 26.0, "amt": 180}, {"op": "buff", "r": 26.0, "armor": 4.0, "secs": 10.0}]},
+		"vor_chains": {"name": "Rift Chains", "mana": 55, "cd": 22.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(0.65, 0.3, 1.0),
+			"desc": "Chains from the rift bind the target area: enemies are stunned for 2.5 seconds and take 30% more damage for 6.",
+			"fx": [{"op": "damage", "at": "target", "r": 6.0, "dmg": 30, "stun": 2.5, "vuln": 6.0}]},
+		"vor_nova": {"name": "Glass Nova", "mana": 80, "cd": 30.0, "range": 10.0, "slot": 2, "use": "enemy", "tint": Color(0.8, 0.35, 1.0),
+			"desc": "Ash-glass bursts from the hero in every direction, shredding everything around them.",
+			"fx": [{"op": "damage", "at": "hero", "r": 10.0, "dmg": 150, "buildings": true}]},
+		"grim_quake": {"name": "Earthshaker", "mana": 60, "cd": 22.0, "range": 11.0, "slot": 1, "use": "enemy", "tint": Color(0.85, 0.6, 0.3),
+			"desc": "A stamp that cracks the mountain: heavy damage and a 2-second stun all around the hero.",
+			"fx": [{"op": "damage", "at": "hero", "r": 11.0, "dmg": 90, "stun": 2.0, "buildings": true}]},
+		"grim_rage": {"name": "Blood Rage", "mana": 60, "cd": 35.0, "range": 0.0, "slot": 2, "use": "enemy", "tint": Color(1.0, 0.25, 0.2),
+			"desc": "The hero remembers the pits: for 12 seconds they hit 60% harder and 40% faster.",
+			"fx": [{"op": "buff", "r": 0.0, "dmg": 1.6, "haste": 1.4, "secs": 12.0, "hero_only": true}]},
+		"syl_gold": {"name": "Fool's Gold", "mana": 55, "cd": 26.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(1.0, 0.85, 0.35),
+			"desc": "Moura gold falls at the target: enemies stop to stare for 2.5 seconds, and every one of them pays you 20 gold.",
+			"fx": [{"op": "damage", "at": "target", "r": 7.0, "dmg": 20, "stun": 2.5, "gold": 20}]},
+		"syl_mirror": {"name": "Court of Mirrors", "mana": 75, "cd": 40.0, "range": 0.0, "slot": 2, "use": "enemy", "tint": Color(0.7, 0.95, 1.0),
+			"desc": "Three bladesingers step out of the hero's reflection and fight for 30 seconds.",
+			"fx": [{"op": "summon", "unit": "sylvan_bladesinger", "n": 3, "secs": 30.0, "at": "hero"}]},
+		"kar_avalanche": {"name": "Avalanche", "mana": 60, "cd": 24.0, "range": 22.0, "slot": 1, "use": "enemy", "tint": Color(0.75, 0.75, 0.8),
+			"desc": "The hillside comes down in a line from the hero to the target, crushing and stunning everything in its path.",
+			"fx": [{"op": "damage", "at": "line", "r": 3.5, "dmg": 110, "stun": 1.5}]},
+		"kar_bastion": {"name": "Bastion", "mana": 70, "cd": 45.0, "range": 22.0, "slot": 2, "use": "ally", "tint": Color(0.85, 0.85, 0.9),
+			"desc": "The castro remembers its shape: buildings nearby mend 30% of their health and allies gain +6 armor for 12 seconds.",
+			"fx": [{"op": "repair", "r": 22.0, "frac": 0.3}, {"op": "buff", "r": 22.0, "armor": 6.0, "secs": 12.0}]},
+		"sun_rain": {"name": "Rain of Spears", "mana": 65, "cd": 24.0, "range": 24.0, "slot": 1, "use": "enemy", "tint": Color(1.0, 0.85, 0.45),
+			"desc": "The legion throws as one: five volleys of spears fall on the target over five seconds.",
+			"fx": [{"op": "damage", "at": "target", "r": 7.0, "dmg": 40, "waves": 5, "every": 1.0}]},
+		"sun_testudo": {"name": "Testudo", "mana": 60, "cd": 35.0, "range": 18.0, "slot": 2, "use": "ally", "tint": Color(1.0, 0.8, 0.3),
+			"desc": "Shields lock into a shell of bronze: allies nearby gain +8 armor and hit 10% harder for 10 seconds.",
+			"fx": [{"op": "buff", "r": 18.0, "dmg": 1.1, "armor": 8.0, "secs": 10.0}]},
+		"wyl_leap": {"name": "Moon Leap", "mana": 50, "cd": 18.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(0.75, 0.8, 1.0),
+			"desc": "The hero bounds to the target like a wolf, slamming and stunning everything where they land.",
+			"fx": [{"op": "dash"}, {"op": "damage", "at": "target", "r": 6.0, "dmg": 80, "stun": 1.5}]},
+		"wyl_frenzy": {"name": "Blood Moon Frenzy", "mana": 70, "cd": 35.0, "range": 18.0, "slot": 2, "use": "ally", "tint": Color(1.0, 0.3, 0.3),
+			"desc": "The moon turns red: allies nearby strike 40% faster and 15% harder for 10 seconds.",
+			"fx": [{"op": "buff", "r": 18.0, "dmg": 1.15, "haste": 1.4, "secs": 10.0}]},
+		"hol_curse": {"name": "Candle Curse", "mana": 55, "cd": 24.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(0.95, 0.8, 0.45),
+			"desc": "A candle is lit for each of them: enemies at the target take 30% more damage for 8 seconds and burn for 6.",
+			"fx": [{"op": "damage", "at": "target", "r": 7.0, "dmg": 16, "vuln": 8.0, "waves": 6, "every": 1.0}]},
+		"hol_drain": {"name": "Soul Drain", "mana": 75, "cd": 30.0, "range": 12.0, "slot": 2, "use": "enemy", "tint": Color(0.6, 0.9, 0.7),
+			"desc": "The procession drinks: enemies around the hero lose life, and your allies nearby are healed by all of it.",
+			"fx": [{"op": "damage", "at": "hero", "r": 12.0, "dmg": 60, "drain": true}]},
+		"fro_breath": {"name": "Winter's Breath", "mana": 55, "cd": 22.0, "range": 20.0, "slot": 1, "use": "enemy", "tint": Color(0.7, 0.9, 1.0),
+			"desc": "The Larouco exhales: enemies at the target are frozen in place for 4 seconds and chilled.",
+			"fx": [{"op": "damage", "at": "target", "r": 7.0, "dmg": 45, "root": 4.0, "slow": 6.0}]},
+		"fro_masks": {"name": "Dance of the Masks", "mana": 70, "cd": 35.0, "range": 16.0, "slot": 2, "use": "ally", "tint": Color(1.0, 0.35, 0.25),
+			"desc": "The Caretos dance: allies nearby hit 25% harder for 10 seconds and enemies near the hero flee.",
+			"fx": [{"op": "buff", "r": 16.0, "dmg": 1.25, "secs": 10.0}, {"op": "flee", "r": 12.0}]},
+	}
+
+## The people spells a hero of this level knows: the first from level 10,
+## the second from level 25, each a level stronger every 20 levels after.
+static func people_spell_levels(race: String, hero_level: int) -> Dictionary:
+	var out := {}
+	var ids: Array = PEOPLE_SPELLS.get(race, [])
+	if ids.size() >= 1 and hero_level >= 10:
+		out[ids[0]] = mini(3, 1 + (hero_level - 10) / 20)
+	if ids.size() >= 2 and hero_level >= 25:
+		out[ids[1]] = mini(3, 1 + (hero_level - 25) / 20)
+	return out
