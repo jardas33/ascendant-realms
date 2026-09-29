@@ -527,6 +527,37 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour �
 	if tal is Dictionary:
 		for tid in tal:
 			owned.append("%s %d" % [String(TalentDefs.find(String(tid)).get("name", tid)), int(tal[tid])])
+	# The people's own spells: the signature known from the start, two more
+	# learned at levels 10 and 25, each growing with the hero.
+	var race_id := String(h.get("race", ""))
+	var hero_lvl := int(h.get("level", 1))
+	var all_ab: Dictionary = SkillDefs.get_abilities()
+	var spell_rows: Array = []
+	var sig_id := String(SkillDefs.SIGNATURE.get(race_id, ""))
+	if sig_id != "":
+		spell_rows.append([sig_id, 1, "B", SkillDefs.signature_level(hero_lvl)])
+	var pids: Array = SkillDefs.PEOPLE_SPELLS.get(race_id, [])
+	var learned: Dictionary = SkillDefs.people_spell_levels(race_id, hero_lvl)
+	for k in pids.size():
+		spell_rows.append([String(pids[k]), 10 if k == 0 else 25, "N" if k == 0 else "M", int(learned.get(pids[k], 0))])
+	if not spell_rows.is_empty():
+		build_panel.add_child(_heading("SPELLS OF YOUR PEOPLE"))
+		for row in spell_rows:
+			var sdef: Dictionary = all_ab.get(String(row[0]), {})
+			var spell_rank := int(row[3])
+			var line := _stat_line("%s  (%s)" % [String(sdef.get("name", row[0])), String(row[2])], ("Rank %d" % spell_rank) if spell_rank > 0 else "Learned at level %d" % int(row[1]))
+			line.tooltip_text = String(sdef.get("desc", ""))
+			line.mouse_filter = Control.MOUSE_FILTER_STOP
+			if spell_rank <= 0:
+				line.modulate = Color(0.7, 0.7, 0.7, 0.85)
+			build_panel.add_child(line)
+			var desc := Label.new()
+			desc.text = String(sdef.get("desc", ""))
+			desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			desc.add_theme_font_override("font", _body_font())
+			desc.add_theme_font_size_override("font_size", 14)
+			desc.add_theme_color_override("font_color", Color(0.74, 0.7, 0.6) if spell_rank > 0 else Color(0.55, 0.53, 0.5))
+			build_panel.add_child(desc)
 	_talent_heading = _heading("TALENTS")
 	right_panel.add_child(_talent_heading)
 	if not owned.is_empty():
@@ -715,7 +746,7 @@ const STAT_HELP := {
 	"Bonus Armor": "Flat armour from Willpower, gear and Granite Skin. Each point blunts every blow.",
 	"Attack Speed": "Faster attacks from Agility, gear, Celerity mastery and Swift Blade.",
 	"Max Mana": "Mana for spells: Intellect, gear, Attunement mastery and Lume Well.",
-	"Abilities Unlocked": "Spells learned on the skill constellation. Cast them with Y, U and V in battle.",
+	"Abilities Unlocked": "Spells from the skill constellation (Q, T, E, R, Y, U, V) and your people (B, N, M).",
 	"Hero Power": "One number to watch grow: damage output times survivability, with every bonus counted.",
 	"Talents": "Effects from talents picked every tenth level. They stack without end.",
 	"Powers": "Legendary powers from equipped items.",
