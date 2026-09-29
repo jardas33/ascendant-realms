@@ -531,6 +531,12 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
     - **Skirmish:** faction cards grow to fill the panel and show the faction's full line instead of a cut-off fragment in an empty space.
     - **Battle HUD:** checked at 4:3 and 21:9 and it holds together, including the caravan rows.
   - Regression passed. Pushed to GitHub.
+- **Plan 45 (done): UI polish, part 2**
+  - **Faction crests:** every faction now has a crest in the battle HUD. Only 3 of 10 had painted crest art. The other 7 get a drawn heraldic shield in the faction colour, with a gilt rim and the faction's initial.
+  - **Scrolling pages:** long pages fade out above the footer instead of being cut by a hard line through a panel. At 4:3 the settings page now fits entirely.
+  - **Attribute steppers:** the +/- buttons in hero creation and on the hero sheet have bigger glyphs and centred values.
+  - **Pause and result screens:** checked at 4:3 and 21:9. Both hold together with the new closed frames.
+  - Regression passed. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
