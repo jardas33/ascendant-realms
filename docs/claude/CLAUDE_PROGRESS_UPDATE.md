@@ -634,6 +634,11 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Alerts:** a one-line alert sits in the middle of its dispatch box, with the marker beside it, instead of hugging the top.
   - **Selected group:** small unit cards were cutting names off ("Stonewar...", "Crag Arc..."). They now show the name's last word ("Spears", "Archer"), and the full name is on the tooltip.
   - Regression passed (18 checks). No new Codex work. Pushed to GitHub.
+- **Plan 56 (done): an economy you can see**
+  - **Deliveries:** when your workers drop off resources, the amount rises off the hall as floating text in the resource's colour, for example "+12 food" or "+10 gold". Deliveries that land together fan out side by side instead of overlapping.
+  - **Carrying:** workers now visibly carry what they gather on their shoulders: a log, a grey stone, a gleaming gold nugget or a food sack. It disappears when they drop it off.
+  - **Performance:** the frame-time benchmark is 22.4 ms, the same as before these additions.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
