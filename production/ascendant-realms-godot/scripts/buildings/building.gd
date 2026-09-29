@@ -1372,6 +1372,8 @@ var _landmark_cd := 0.0
 func _landmark_tick(delta: float) -> void:
 	if not is_built or is_dead or not world or not commander or commander.defeated or not world.game_running:
 		return
+	if not has_node("LandmarkCrown"):
+		_add_landmark_crown()
 	_landmark_timer += delta
 	if _landmark_timer < 1.0:
 		return
@@ -1460,6 +1462,43 @@ func _landmark_tick(delta: float) -> void:
 	# _show_fortify_ring) and its power pulses with a small ring.
 	if _landmark_clock % 4 == 0 and team == world.player_team and world.has_method("spawn_ring_fx"):
 		world.spawn_ring_fx(here, LANDMARK_TINT.get(String(def.get("landmark", "")), Color(1, 0.85, 0.4)), minf(reach, 8.0))
+
+## A landmark wears a turning Lume crystal above it and a glow in its
+## people's colour, so it reads as something no other hall is.
+func _add_landmark_crown() -> void:
+	var tint: Color = LANDMARK_TINT.get(String(def.get("landmark", "")), Color(1, 0.85, 0.4))
+	var crown := Node3D.new()
+	crown.name = "LandmarkCrown"
+	add_child(crown)
+	crown.position = Vector3(0.0, footprint * 1.35 + 3.0, 0.0)
+	var gem := MeshInstance3D.new()
+	var prism := PrismMesh.new()
+	prism.size = Vector3(1.0, 1.4, 1.0)
+	gem.mesh = prism
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = tint
+	mat.emission_enabled = true
+	mat.emission = tint
+	mat.emission_energy_multiplier = 2.2
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	gem.material_override = mat
+	gem.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	crown.add_child(gem)
+	var under := gem.duplicate() as MeshInstance3D
+	under.rotation.x = PI
+	under.position.y = -1.4
+	crown.add_child(under)
+	var light := OmniLight3D.new()
+	light.light_color = tint
+	light.light_energy = 2.0
+	light.omni_range = footprint * 2.4
+	light.shadow_enabled = false
+	crown.add_child(light)
+	var spin := crown.create_tween().set_loops()
+	spin.tween_property(crown, "rotation:y", TAU, 6.0).from(0.0)
+	var bob := gem.create_tween().set_loops()
+	bob.tween_property(crown, "position:y", crown.position.y + 0.5, 1.6).set_trans(Tween.TRANS_SINE)
+	bob.tween_property(crown, "position:y", crown.position.y, 1.6).set_trans(Tween.TRANS_SINE)
 
 const LANDMARK_TINT := {"oven": Color(1.0, 0.6, 0.3), "fountain": Color(0.45, 1.0, 0.85), "rift": Color(0.7, 0.3, 1.0),
 	"drum": Color(1.0, 0.4, 0.25), "loom": Color(1.0, 0.85, 0.35), "stones": Color(0.82, 0.84, 0.9),
