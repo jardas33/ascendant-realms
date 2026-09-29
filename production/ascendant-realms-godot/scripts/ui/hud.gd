@@ -1563,6 +1563,22 @@ func _draw_minimap() -> void:
 		var is_major := bool(building_def.get("is_hq", false)) or str(building_def.get("kind", "")) == "main"
 		var is_enemy: bool = is_instance_valid(_commander) and b.team != _commander.team
 		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE), is_major, is_enemy)
+		# Landmarks: a star in their people's colour; an enemy's is announced
+		# the first time it is seen.
+		if building_def.has("landmark") and b.is_built:
+			var lp := _world_to_map(b.global_position)
+			var lt: Color = b.LANDMARK_TINT.get(String(building_def["landmark"]), Color(1, 0.85, 0.4))
+			var star := PackedVector2Array()
+			for k in 10:
+				var ang := -PI * 0.5 + k * TAU / 10.0
+				star.append(lp + Vector2(cos(ang), sin(ang)) * (9.5 if k % 2 == 0 else 4.0))
+			_minimap.draw_colored_polygon(star, lt)
+			star.append(star[0])
+			_minimap.draw_polyline(star, Color(0.02, 0.02, 0.03, 0.9), 1.0, true)
+			if is_enemy and not b.has_meta("landmark_seen"):
+				b.set_meta("landmark_seen", true)
+				_push_alert("The enemy has raised %s." % String(building_def.get("name", "a landmark")), Color(1.0, 0.7, 0.5))
+				last_alert_position = b.global_position
 
 	# Live resource landmarks make the miniature useful without inventing a
 	# second simulation. Depleted nodes remain absent, matching the world.
