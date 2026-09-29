@@ -682,6 +682,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Balance (90 matches, two Sonnet runs):** Lioraen's 1-7 in the first run was noise; they went 6-1-2 in the second. Pooled: Vorthak 12-5-1, Karak 10-6-2, Ironmaw 9-8-1, Hollow 8-8-2, Wyldkin 8-7-3, Sunspear 8-5-5, Lioraen 7-8-3, Sylvan 6-8-4, Careto Host 5-11-2, Barrosan 4-11-3.
   - Barrosan and the Careto Host were also bottom in the older 135 matches (225 pooled: 11-23-11 and 13-25-7). Barrosan soldiers now have +6% health everywhere (Fortify only helps near home), and the Careto Host +15% instead of +10%. A 90-match check of this is running.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plans 65 and 66 (done): polish, and more Endless Road**
+  - **War Chest:** the inspected relic's art was so large that Lock needed scrolling. It is smaller now and every action fits. Hero Power reads "202 → 218".
+  - **Hero sheet:** the attribute star chart grows into the empty space below it. Talent cards say "click to take".
+  - **Settings:** volumes read as percentages (30%), camera speeds as multipliers (0.9×).
+  - **Battlefield:** units hidden behind a building show as a faint rimmed silhouette instead of a solid blue or red blob.
+  - **Two new Road Tyrants** (the Endless Road now has six, one every 25 stages):
+    - The Lobisomem of Montalegre: wound it past half and it frenzies, hitting half again as hard and moving faster.
+    - The Bruxa of the Crossroads: every ten seconds, after a violet warning ring, she drinks 8% of the life of everyone within nine metres and heals from it.
+    - Each drops its own gear set: Hide of the Lobisomem (damage and attack speed; four pieces give 12% lifesteal) and Charms of the Bruxa (mana and regeneration; four pieces make spells recharge 25% faster).
+    - A test stage confirmed both mechanics fire.
+  - **Five new festival stages**, so every faction now has one: the Matança (Ironmaw), the Blessing of the Springs (Lioraen), the Dawn of the Mouras (Moura Court), the Climb to the Castro (Granitborn) and the Parade of Bronze (Aurean Dominion).
+  - **Deeds:** a new title, Moonbane of Montalegre, at six Road Tyrants slain.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
