@@ -2500,6 +2500,7 @@ func record_resource_deposit(worker, drop, kind: String, carried: int, multiplie
 		_deposit_float(drop, kind, deposited)
 
 var _deposit_float_stack := {}
+var last_fallen_position := Vector3.ZERO
 const DEPOSIT_FLOAT_COLORS := {
 	"food": Color(1.0, 0.62, 0.45), "timber": Color(0.92, 0.72, 0.45),
 	"stone": Color(0.82, 0.86, 0.9), "gold": Color(1.0, 0.86, 0.38),
@@ -3792,6 +3793,9 @@ func get_v0431_construction_audit() -> Dictionary:
 		"completed_count": construction_events.size()}
 
 func on_building_destroyed(building) -> void:
+	# The last building to fall is where the battle was decided; the camera
+	# glides there when the match ends.
+	last_fallen_position = building.global_position
 	if bool(building.def.get("is_hq", false)) or String(building.def.get("kind", "")) == "main":
 		_saga_react(int(building.team), "hq")
 	_unregister_world_blocker(building)

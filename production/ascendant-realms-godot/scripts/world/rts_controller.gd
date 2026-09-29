@@ -314,6 +314,11 @@ func _apply_camera_shake(delta: float) -> void:
 func focus_on(pos: Vector3) -> void:
 	cam_pivot.global_position = _clamp_camera_focus(pos)
 
+## A slow camera glide, used when a battle ends to look at where it was decided.
+func glide_to(pos: Vector3, duration: float) -> void:
+	var target := _clamp_camera_focus(pos)
+	cam_pivot.create_tween().tween_property(cam_pivot, "global_position", target, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
 func _camera_safe_bounds() -> Dictionary:
 	var minimum_x: float = -float(MapDefs.MAP_SIZE)
 	var maximum_x: float = float(MapDefs.MAP_SIZE)

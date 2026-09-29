@@ -101,6 +101,7 @@ const UNIT_ROLE_FOOTERS := {
 # --- refs ---
 var world = null
 var rts = null
+var _result_hold := 0.0
 var _commander = null                  # player_commander shortcut
 var _font: FontFile = null
 var _body_font: Font = null
@@ -3943,6 +3944,15 @@ func _push_alert(message: String, col: Color) -> void:
 func _on_game_over(victory: bool) -> void:
 	if is_instance_valid(_gameover_layer):
 		return
+	# Before the ledger, the camera glides to the last building that fell and
+	# the field holds for a breath: the win or the loss is seen, not just read.
+	_result_hold = 0.0
+	var fallen: Vector3 = world.get("last_fallen_position") if world else Vector3.ZERO
+	if rts and rts.has_method("glide_to") and fallen != Vector3.ZERO:
+		rts.glide_to(fallen, 1.2)
+		_result_hold = 1.6
+		if victory and world.has_method("celebrate_at"):
+			world.celebrate_at(fallen, Color(1.0, 0.85, 0.4))
 	_gameover_layer = Control.new()
 	_gameover_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_gameover_layer.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -3954,7 +3964,7 @@ func _on_game_over(victory: bool) -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_gameover_layer.add_child(dim)
 	var dim_tw := dim.create_tween()
-	dim_tw.tween_property(dim, "color:a", 0.78, 0.6)
+	dim_tw.tween_property(dim, "color:a", 0.78, 0.6).set_delay(_result_hold)
 
 	# Result ledger on the forged vellum plate used by the hero screens: a
 	# crest title, the outcome line, a stat ledger and the two actions. The old
@@ -3974,7 +3984,7 @@ func _on_game_over(victory: bool) -> void:
 	plate.custom_minimum_size = Vector2(620, 0)
 	plate.modulate.a = 0.0
 	_gameover_layer.add_child(plate)
-	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.5).set_delay(0.25)
+	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.5).set_delay(_result_hold + 0.25)
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	# Short screens (1366x768 laptops) get a tighter ledger so the buttons
@@ -4096,7 +4106,7 @@ func _on_game_over(victory: bool) -> void:
 		xbar.add_theme_stylebox_override("background", xback)
 		xp_row.add_child(xbar)
 		box.add_child(xp_row)
-		xbar.create_tween().tween_property(xbar, "value", now_xp, 1.4).set_delay(1.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		xbar.create_tween().tween_property(xbar, "value", now_xp, 1.4).set_delay(_result_hold + 1.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	var recs: Dictionary = result.get("records", {})
 	if bool(recs.get("new_fastest", false)) or bool(recs.get("new_race_best", false)):
 		var parts: Array = []
@@ -4209,7 +4219,7 @@ func _on_game_over(victory: bool) -> void:
 		for q in 8:
 			rays.draw_circle(c, 200.0 + q * 60.0, Color(ray_col, 0.025)))
 	rays.modulate.a = 0.0
-	rays.create_tween().tween_property(rays, "modulate:a", 1.0, 1.0)
+	rays.create_tween().tween_property(rays, "modulate:a", 1.0, 1.0).set_delay(_result_hold)
 	var spin_tw := rays.create_tween().set_loops()
 	spin_tw.tween_method(func(v: float):
 		rays.set_meta("spin", v)
@@ -4219,20 +4229,20 @@ func _on_game_over(victory: bool) -> void:
 	heading.scale = Vector2.ONE * 1.6
 	heading.modulate.a = 0.0
 	var h_tw := heading.create_tween().set_parallel(true)
-	h_tw.tween_property(heading, "scale", Vector2.ONE, 0.55).set_delay(0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	h_tw.tween_property(heading, "modulate:a", 1.0, 0.3).set_delay(0.35)
+	h_tw.tween_property(heading, "scale", Vector2.ONE, 0.55).set_delay(_result_hold + 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	h_tw.tween_property(heading, "modulate:a", 1.0, 0.3).set_delay(_result_hold + 0.35)
 	# The ledger lines reveal one after another, then the numbers count up.
 	var order := 0
 	for child in box.get_children():
 		if child == heading:
 			continue
 		child.modulate.a = 0.0
-		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(0.8 + order * 0.12)
+		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(_result_hold + 0.8 + order * 0.12)
 		# Epic and legendary finds land with a pop and a chime.
 		if child.has_meta("rare_pop") and child is Control:
 			var rc: Control = child
 			var pop := rc.create_tween()
-			pop.tween_interval(0.8 + order * 0.12)
+			pop.tween_interval(_result_hold + 0.8 + order * 0.12)
 			pop.tween_callback(func():
 				rc.pivot_offset = rc.size * 0.5
 				rc.scale = Vector2(1.25, 1.25)
@@ -4248,7 +4258,7 @@ func _on_game_over(victory: bool) -> void:
 		var target := int(digits)
 		var prefix := "+" if final_text.begins_with("+") else ""
 		value_label.text = prefix + "0"
-		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(0.9 + order * 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(_result_hold + 0.9 + order * 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 ## One find on the result screen: a faceted gem in the rarity's colour, the
