@@ -363,6 +363,44 @@ func _refresh() -> void:
 		rule.color = Color(0.78, 0.68, 0.48, 0.16)
 		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		attr_list.add_child(rule)
+	# The hero's shape at a glance: a seven-pointed star chart of the
+	# attributes, filled in the faction's colour, over faint guide rings.
+	var chart := Control.new()
+	chart.custom_minimum_size = Vector2(0, 330)
+	chart.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var chart_col: Color = GameData.RACES.get(String(h.get("race", "")), {}).get("color", Color(0.9, 0.7, 0.4))
+	var attr_names: Array = ProfileManager.ATTRIBUTES
+	chart.draw.connect(func():
+		var c := Vector2(chart.size.x * 0.5, chart.size.y * 0.52)
+		var r := minf(chart.size.x, chart.size.y) * 0.36
+		var n := attr_names.size()
+		var top := 1.0
+		for a2 in attr_names:
+			top = maxf(top, float(attrs.get(a2, 0)))
+		top = maxf(top, 10.0)
+		for ring in 4:
+			var ring_pts := PackedVector2Array()
+			for k in n + 1:
+				var ang := -PI * 0.5 + (k % n) * TAU / n
+				ring_pts.append(c + Vector2(cos(ang), sin(ang)) * r * (ring + 1) / 4.0)
+			chart.draw_polyline(ring_pts, Color(0.86, 0.68, 0.36, 0.12 + 0.05 * ring), 1.0, true)
+		var shape := PackedVector2Array()
+		for k in n:
+			var ang2 := -PI * 0.5 + k * TAU / n
+			var v := clampf(float(attrs.get(attr_names[k], 0)) / top, 0.06, 1.0)
+			shape.append(c + Vector2(cos(ang2), sin(ang2)) * r * v)
+			chart.draw_line(c, c + Vector2(cos(ang2), sin(ang2)) * r, Color(0.86, 0.68, 0.36, 0.14), 1.0, true)
+			var lp := c + Vector2(cos(ang2), sin(ang2)) * (r + 26.0)
+			var txt := String(attr_names[k]).capitalize()
+			var tw := _body_font().get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+			chart.draw_string(_body_font(), lp + Vector2(-tw * 0.5, 5), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(0.85, 0.8, 0.68))
+		chart.draw_colored_polygon(shape, Color(chart_col, 0.32))
+		var outline := PackedVector2Array(shape)
+		outline.append(shape[0])
+		chart.draw_polyline(outline, chart_col.lightened(0.3), 2.0, true)
+		for p in shape:
+			chart.draw_circle(p, 3.5, Color(1.0, 0.9, 0.6)))
+	attr_panel.add_child(chart)
 
 	var right_plate := _plate()
 	right_plate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -457,29 +495,67 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour �
 		right_panel.add_child(ns)
 	if t_pts > 0:
 		right_panel.add_child(_stat_line("Choose one", "%d pick%s waiting" % [t_pts, "" if t_pts == 1 else "s"]))
+		# Three talent cards: pick one. Each shows its name, the rank it would
+		# reach and what it does; the card lifts and glows under the pointer.
 		var trow := HBoxContainer.new()
-		trow.add_theme_constant_override("separation", 10)
+		trow.add_theme_constant_override("separation", 12)
 		for tid in ProfileManager.talent_offer():
 			var td: Dictionary = TalentDefs.find(String(tid))
-			var tb := Button.new()
-			_label_button(tb, String(td.get("name", tid)), Color(1.0, 0.86, 0.5))
-			tb.tooltip_text = String(td.get("desc", ""))
-			tb.custom_minimum_size = Vector2(190, 40)
-			tb.focus_mode = Control.FOCUS_NONE
-			tb.pressed.connect(func(): Sfx.play("levelup"); ProfileManager.pick_talent(String(tid)))
-			trow.add_child(tb)
+			var rank_now := int(tl.get(String(tid), 0))
+			var card := Button.new()
+			card.custom_minimum_size = Vector2(0, 150)
+			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			card.focus_mode = Control.FOCUS_NONE
+			card.clip_contents = true
+			for st_name in ["normal", "hover", "pressed"]:
+				var cs := StyleBoxFlat.new()
+				cs.bg_color = Color(0.06, 0.07, 0.09, 0.95) if st_name == "normal" else Color(0.12, 0.1, 0.07, 0.98)
+				cs.border_color = Color(0.86, 0.68, 0.36, 0.55 if st_name == "normal" else 1.0)
+				cs.set_border_width_all(1)
+				cs.border_width_top = 3
+				cs.set_corner_radius_all(4)
+				if st_name != "normal":
+					cs.shadow_color = Color(1.0, 0.75, 0.35, 0.35)
+					cs.shadow_size = 10
+				card.add_theme_stylebox_override(st_name, cs)
+			var cv := VBoxContainer.new()
+			cv.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			cv.offset_left = 14
+			cv.offset_right = -14
+			cv.offset_top = 12
+			cv.offset_bottom = -10
+			cv.add_theme_constant_override("separation", 4)
+			cv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			card.add_child(cv)
+			var nm := Label.new()
+			nm.text = String(td.get("name", tid))
+			nm.add_theme_font_override("font", _title_font())
+			nm.add_theme_font_size_override("font_size", 20)
+			nm.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
+			nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			cv.add_child(nm)
+			var rk := Label.new()
+			rk.text = ("New talent" if rank_now == 0 else "Rank %d  ›  %d" % [rank_now, rank_now + 1])
+			rk.add_theme_font_size_override("font_size", 13)
+			rk.add_theme_color_override("font_color", Color(0.62, 0.85, 0.62))
+			rk.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			cv.add_child(rk)
+			var ds := Label.new()
+			ds.text = String(td.get("desc", ""))
+			ds.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			ds.add_theme_font_override("font", _body_font())
+			ds.add_theme_font_size_override("font_size", 15)
+			ds.add_theme_color_override("font_color", Color(0.86, 0.84, 0.78))
+			ds.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			cv.add_child(ds)
+			card.pivot_offset = Vector2(120, 75)
+			card.mouse_entered.connect(func():
+				card.pivot_offset = card.size * 0.5
+				card.create_tween().tween_property(card, "scale", Vector2.ONE * 1.04, 0.12))
+			card.mouse_exited.connect(func(): card.create_tween().tween_property(card, "scale", Vector2.ONE, 0.12))
+			card.pressed.connect(func(): Sfx.play("levelup"); ProfileManager.pick_talent(String(tid)))
+			trow.add_child(card)
 		right_panel.add_child(trow)
-		var descs: Array = []
-		for tid in ProfileManager.talent_offer():
-			var td2: Dictionary = TalentDefs.find(String(tid))
-			descs.append("%s: %s" % [String(td2.get("name", tid)), String(td2.get("desc", ""))])
-		var dl := Label.new()
-		dl.text = "
-".join(descs)
-		dl.add_theme_font_override("font", _body_font())
-		dl.add_theme_font_size_override("font_size", 15)
-		dl.add_theme_color_override("font_color", Color(0.8, 0.78, 0.7))
-		right_panel.add_child(dl)
 	else:
 		right_panel.add_child(_stat_line("Next choice", "Level %d" % next_at))
 	right_panel.add_child(_hsep())
