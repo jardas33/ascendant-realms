@@ -169,7 +169,7 @@ func _refresh() -> void:
 		identity.add_child(ret_line)
 	var st: Dictionary = ProfileManager.data.get("stats", {})
 	var record_line := Label.new()
-	record_line.text = "ENDLESS ROAD  STAGE %d    ·    BATTLES %d    ·    VICTORIES %d    ·    FOES SLAIN %d    ·    ELITES %d    ·    TYRANTS %d" % [ProfileManager.endless_best(), int(st.get("battles", 0)), int(st.get("victories", 0)), int(st.get("units_killed", 0)), int(st.get("elites_slain", 0)), int(st.get("tyrants_slain", 0))]
+	record_line.text = "ENDLESS ROAD  STAGE %d    ·    BATTLES %d    ·    VICTORIES %d    ·    FOES SLAIN %d    ·    ELITES %d    ·    TYRANTS %d    ·    JARS %d" % [ProfileManager.endless_best(), int(st.get("battles", 0)), int(st.get("victories", 0)), int(st.get("units_killed", 0)), int(st.get("elites_slain", 0)), int(st.get("tyrants_slain", 0)), int(st.get("jars_dug", 0))]
 	var wk_best := ProfileManager.endless_fastest_key("w%d" % load("res://scripts/game/endless_defs.gd").week_number())
 	if wk_best > 0.0:
 		record_line.text += "    ·    ROAD OF THE WEEK %d:%02d" % [int(wk_best) / 60, int(wk_best) % 60]
