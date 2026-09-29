@@ -1188,6 +1188,7 @@ func _build_top_bar() -> void:
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
 	force_metrics.add_child(worker_metric["surface"])
+	_make_metric_clickable(worker_metric["surface"], "_select_idle_worker", "Workers without an active order. Click (or press F) to find the next one.")
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
@@ -1199,6 +1200,7 @@ func _build_top_bar() -> void:
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
 	force_metrics.add_child(army_metric["surface"])
+	_make_metric_clickable(army_metric["surface"], "select_idle_army", "Military units without an active order. Click to select them all.")
 	_force_panel.add_child(force_metrics)
 
 	_age_panel = _mk_hud_panel("age", COMMAND_GOLD)
@@ -4397,3 +4399,15 @@ func toggle_key_card() -> void:
 	box.add_child(foot)
 	plate.modulate.a = 0.0
 	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.15)
+
+
+## A top-bar counter that acts when clicked (idle workers, idle army).
+func _make_metric_clickable(surface: Control, method: String, tip: String) -> void:
+	surface.mouse_filter = Control.MOUSE_FILTER_STOP
+	surface.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	surface.tooltip_text = tip
+	surface.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT and is_instance_valid(rts) and rts.has_method(method):
+			Sfx.play("select", -6.0)
+			rts.call(method)
+			accept_event())

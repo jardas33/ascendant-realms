@@ -1206,6 +1206,19 @@ func _cycle_hero() -> void:
 		focus_on(hero.global_position)
 		emit_signal("selection_changed", selected)
 
+## Every soldier standing without an order, from the top bar's Idle Army.
+func select_idle_army() -> void:
+	cancel_attack_move_mode()
+	cancel_patrol_mode()
+	_set_inspection_target(null)
+	_clear_selection()
+	for u in world.commanders[player_team].units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.state == u.State.IDLE and not u._is_defeated_remnant():
+			_add_to_selection(u)
+	if not selected.is_empty():
+		focus_on(selected[0].global_position)
+	emit_signal("selection_changed", selected)
+
 func _select_army() -> void:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
