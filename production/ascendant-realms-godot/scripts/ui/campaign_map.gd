@@ -398,7 +398,7 @@ func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
 		seen_races.append(r)
 		var mech := String(GameData.get_race(r).get("mechanic", ""))
 		if mech != "":
-			foe_lines.append("%s: %s" % [GameData.get_race(r).get("name", r), mech])
+			foe_lines.append("%s. %s" % [GameData.get_race(r).get("name", r), mech])
 	if not foe_lines.is_empty():
 		var foe := _label("Know your foe: " + "  ·  ".join(foe_lines), 14, Color(0.86, 0.66, 0.6))
 		foe.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
