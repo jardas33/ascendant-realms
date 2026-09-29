@@ -19,7 +19,7 @@ const CONTROLS := [
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
 	["CARAVAN", "Select your main hall to buy food, timber or stone with gold, or sell a surplus for gold. Buying raises the price; it eases back over time."],
 	["CAMERA", "Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
-	["SYSTEM", "F3 toggles debug information. Esc pauses the battle."],
+	["SYSTEM", "F1 shows this manual in battle. F3 toggles debug information. Esc pauses the battle."],
 ]
 
 func _ready() -> void:

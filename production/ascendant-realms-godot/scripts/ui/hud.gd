@@ -4337,3 +4337,54 @@ func _army_chart(timeline: Array) -> Control:
 		var font := _body_font if _body_font else ThemeDB.fallback_font
 		chart.draw_string(font, Vector2(0, chart.size.y), "YOUR HOST AND THEIRS, SOLDIERS OVER THE BATTLE", HORIZONTAL_ALIGNMENT_CENTER, w, 11, Color(0.8, 0.74, 0.6, 0.8)))
 	return chart
+
+
+var _key_card: Control
+
+## Every hotkey on one gilt card (F1), from the same field manual as Settings.
+func toggle_key_card() -> void:
+	if is_instance_valid(_key_card):
+		_key_card.queue_free()
+		_key_card = null
+		return
+	Sfx.play("page", -8.0)
+	var plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
+	plate.surface_alpha = 0.95
+	plate.surface_alpha_bottom = 0.92
+	var pad := StyleBoxEmpty.new()
+	pad.content_margin_left = 36.0
+	pad.content_margin_right = 36.0
+	pad.content_margin_top = 26.0
+	pad.content_margin_bottom = 26.0
+	plate.add_theme_stylebox_override("panel", pad)
+	plate.mouse_filter = Control.MOUSE_FILTER_STOP
+	plate.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	plate.grow_vertical = Control.GROW_DIRECTION_BOTH
+	add_child(plate)
+	_key_card = plate
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	plate.add_child(box)
+	var head := _mk_title_label("FIELD MANUAL", 26, COMMAND_GOLD)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(head)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 22)
+	grid.add_theme_constant_override("v_separation", 7)
+	box.add_child(grid)
+	for row in load("res://scripts/ui/settings.gd").CONTROLS:
+		var k := _mk_label(String(row[0]), 14, COMMAND_GOLD)
+		k.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		grid.add_child(k)
+		var d := _mk_label(String(row[1]), 15, Color(0.92, 0.9, 0.84))
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		d.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		d.custom_minimum_size = Vector2(560, 0)
+		grid.add_child(d)
+	var foot := _mk_label("F1 closes this card  ·  Backspace jumps to the latest alert", 13, Color(0.72, 0.68, 0.58))
+	foot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(foot)
+	plate.modulate.a = 0.0
+	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.15)
