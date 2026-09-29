@@ -482,10 +482,9 @@ func _apply_race_passive() -> void:
 			base_armor += 1.0
 			base_dmg *= 1.04
 			max_hp *= 1.08
-			# Castro quarriers are half stone too: ranged raiders killed 30+ of
-			# them a match (2-23-2 over three rounds).
+			# Castro quarriers are half stone too (+1 armor on top of the
+			# sturdier workers every faction now has).
 			if is_worker:
-				max_hp *= 1.35
 				base_armor += 1.0
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
@@ -512,13 +511,15 @@ func _apply_race_passive() -> void:
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
 			max_hp *= 1.10
-			# Seedkeepers are spring-sheltered: a kill log showed 26 Lioraen
-			# workers cut down by Dominion archers in one match.
-			if is_worker:
-				max_hp *= 1.35
 			hp = max_hp
 		_:
 			pass
+	# Every worker is sturdier. Kill logs from 180 AI matches showed the side
+	# that lost 30+ workers to ranged raiders lost the match, whatever its
+	# faction; one-shot fields made raiding the only strategy that mattered.
+	if is_worker:
+		max_hp *= 1.4
+		hp = max_hp
 
 func _setup_nav() -> void:
 	agent = NavigationAgent3D.new()
