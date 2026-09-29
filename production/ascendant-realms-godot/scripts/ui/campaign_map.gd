@@ -932,7 +932,10 @@ Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45
 		seen[race_id] = true
 		var rd: Dictionary = GameData.get_race(race_id)
 		var blurb := String(rd.get("blurb", "")).split(". ")[0].trim_suffix(".")
-		var intro := _label("New enemy: %s. %s." % [rd.get("name", race_id), blurb], 15, Color(0.95, 0.62, 0.42))
+		# A new enemy is announced with the cry their heroes charge with.
+		var foe_cries: Array = load("res://scripts/game/bark_defs.gd").LINES.get(race_id, {}).get("attack", [])
+		var foe_cry := (" They charge crying “%s”" % String(foe_cries[0])) if not foe_cries.is_empty() else ""
+		var intro := _label("New enemy: %s. %s.%s" % [rd.get("name", race_id), blurb, foe_cry], 15, Color(0.95, 0.62, 0.42))
 		intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(intro)
 	if c.has("branch"):
