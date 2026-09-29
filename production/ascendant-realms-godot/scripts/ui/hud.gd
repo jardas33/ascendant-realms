@@ -2566,7 +2566,12 @@ func _build_multi(units: Array) -> void:
 			details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			details.add_theme_constant_override("separation", 4)
 			cell.add_child(details)
-		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + str(u.def.get("name", "Unit")), 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
+		# Small cards keep the name's last word ("Crag Archer" reads "Archer")
+		# rather than cutting it off; the full name is on the tooltip.
+		var full_name := str(u.def.get("name", "Unit"))
+		var card_name := full_name if expanded_pair or bool(u.is_hero) else full_name.split(" ")[-1]
+		cell.tooltip_text = full_name
+		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + card_name, 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		details.add_child(nm)

@@ -627,6 +627,13 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Result screen:** loot shows as rows with a gem in the rarity's colour and a small rarity tag, instead of "Loot: name (rare)" text. The line under the title no longer repeats "Victory".
   - **War Chest:** each open slot tile shows its slot emblem, brighter when the chest holds something that fits.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 55 (done): cleaner battlefield and HUD**
+  - **Shrines:** an unclaimed shrine's ring was a stark white dashed circle. It now glows a soft Lume gold, and takes the owner's colour once captured.
+  - **Command deck:** section hints such as "Queue a unit." no longer touch the gilt edge.
+  - **Sound:** every button in the game now gives a soft hover tick. Before, only the main menu did.
+  - **Alerts:** a one-line alert sits in the middle of its dispatch box, with the marker beside it, instead of hugging the top.
+  - **Selected group:** small unit cards were cutting names off ("Stonewar...", "Crag Arc..."). They now show the name's last word ("Spears", "Archer"), and the full name is on the tooltip.
+  - Regression passed (18 checks). No new Codex work. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
