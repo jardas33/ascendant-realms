@@ -10,6 +10,7 @@ var rts = null
 var _steps := []
 var _step := 0
 var _panel: Panel
+var _dots: Control
 var _label: Label
 var _title: Label
 var _skip_button: Button
@@ -45,32 +46,37 @@ func setup(p_world, p_rts) -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	_panel = Panel.new()
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.05, 0.06, 0.085, 0.94)
-	sb.set_border_width_all(1)
-	sb.border_width_top = 3
-	sb.border_color = Color(0.86, 0.68, 0.36, 0.95)
-	sb.set_corner_radius_all(3)
-	sb.shadow_color = Color(0, 0, 0, 0.45)
-	sb.shadow_size = 6
-	_panel.add_theme_stylebox_override("panel", sb)
+	_panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# The lesson sits on the same gilt plate as the menus.
+	var plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
+	plate.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	plate.surface_alpha = 0.95
+	plate.surface_alpha_bottom = 0.9
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_panel.add_child(plate)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# Progress along the lesson: a row of diamonds along the bottom edge,
 	# gold for steps done, a glowing one for the step at hand.
-	_panel.draw.connect(func():
+	_dots = Control.new()
+	_dots.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dots.draw.connect(func():
 		if _steps.is_empty():
 			return
 		var n := _steps.size()
 		var gap := 18.0
-		var x0 := _panel.size.x * 0.5 - (n - 1) * gap * 0.5
-		var y := _panel.size.y - 1.0
+		var x0 := _dots.size.x * 0.5 - (n - 1) * gap * 0.5
+		var y := _dots.size.y - 1.0
 		for k in n:
 			var c := Vector2(x0 + k * gap, y)
 			var d := 6.0 if k == _step else 4.5
 			var col := Color(0.98, 0.84, 0.46) if k < _step else (Color(1.0, 0.92, 0.6) if k == _step else Color(0.3, 0.32, 0.36))
-			_panel.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0)]), col)
+			_dots.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0)]), col)
 			if k == _step:
-				_panel.draw_arc(c, d + 4.0, 0.0, TAU, 16, Color(1.0, 0.9, 0.55, 0.5), 1.2, true))
+				_dots.draw_arc(c, d + 4.0, 0.0, TAU, 16, Color(1.0, 0.9, 0.55, 0.5), 1.2, true))
+	_panel.add_child(_dots)
+	_dots.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_panel.resized.connect(_dots.queue_redraw)
 	add_child(_panel)
 	# top-center band, explicit anchors + offsets (never a hand position on an anchored node)
 	_panel.anchor_left = 0.5
@@ -170,6 +176,8 @@ func _show_step() -> void:
 		_fit_panel.call_deferred()
 		_skip_button.text = "Return to Main Menu"
 		return
+	if is_instance_valid(_dots):
+		_dots.queue_redraw()
 	var s = _steps[_step]
 	_title.text = "Step %d/%d: %s" % [_step + 1, _steps.size(), s["title"]]
 	_label.text = String(s["text"])
