@@ -414,6 +414,12 @@ func extract(per_tick: int) -> int:
 	_update_depletion_visual()
 	if got > 0 and not depleted:
 		_gather_visual_cue()
+		# Chips fly where the player can see the work being done.
+		var scene: Node = get_tree().current_scene if is_inside_tree() else null
+		if _player_visibility_visible and visible and scene != null:
+			var fx = scene.get("world")
+			if fx and is_instance_valid(fx.get("_fx_container")):
+				CombatVfx.gather_chips(fx._fx_container, global_position + Vector3(randf_range(-0.6, 0.6), 0.8, randf_range(-0.6, 0.6)), resource_kind)
 	if amount <= 0:
 		amount = 0
 		depleted = true

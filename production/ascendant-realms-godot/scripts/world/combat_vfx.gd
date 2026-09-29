@@ -44,6 +44,32 @@ static func hit(parent: Node3D, pos: Vector3, col: Color, heavy: bool = false) -
 	_emitter(parent, Vector3(pos.x, 0.15, pos.z), _dust_process, _dust_mesh, _dust_mat, 5 if heavy else 3, 0.9)
 
 
+## A few chips flying off a resource being worked: wood splinters, stone
+## grit, gold glints or chaff, in the resource's own colour.
+static var _chip_mats := {}
+static var _chip_mesh: BoxMesh
+
+static func gather_chips(parent: Node3D, pos: Vector3, kind: String) -> void:
+	_ensure()
+	if _chip_mesh == null:
+		_chip_mesh = BoxMesh.new()
+		_chip_mesh.size = Vector3(0.07, 0.04, 0.1)
+	if not _chip_mats.has(kind):
+		var m := StandardMaterial3D.new()
+		m.roughness = 0.9
+		match kind:
+			"timber": m.albedo_color = Color(0.72, 0.52, 0.3)
+			"stone": m.albedo_color = Color(0.66, 0.66, 0.64)
+			"gold":
+				m.albedo_color = Color(1.0, 0.82, 0.3)
+				m.emission_enabled = true
+				m.emission = Color(0.9, 0.65, 0.15)
+				m.emission_energy_multiplier = 1.6
+			_: m.albedo_color = Color(0.78, 0.7, 0.36)
+		_chip_mats[kind] = m
+	var p := _emitter(parent, pos, _clod_process, _chip_mesh, _chip_mats[kind], 4, 0.7)
+	p.scale = Vector3.ONE * 0.8
+
 static func death(parent: Node3D, pos: Vector3) -> void:
 	_ensure()
 	_emitter(parent, Vector3(pos.x, 0.2, pos.z), _dust_process, _dust_mesh, _dust_mat, 12, 1.4).scale = Vector3.ONE * 1.6
