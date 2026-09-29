@@ -1456,6 +1456,15 @@ func _on_minimap_input(event: InputEvent) -> void:
 		_focus_from_minimap(event.position)
 	elif event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_LEFT):
 		_focus_from_minimap(event.position)
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		# Right-click orders the selection across the map, as in the field.
+		var size := _minimap.size
+		if is_instance_valid(rts) and rts.has_method("issue_minimap_order") and size.x > 0 and size.y > 0:
+			var wx: float = (event.position.x / size.x) * (MAP_HALF * 2.0) - MAP_HALF
+			var wz: float = (event.position.y / size.y) * (MAP_HALF * 2.0) - MAP_HALF
+			rts.issue_minimap_order(Vector3(wx, 0.0, wz))
+			_map_pings.append({"pos": Vector3(wx, 0.0, wz), "t": Time.get_ticks_msec(), "col": Color(0.55, 0.9, 1.0)})
+			accept_event()
 
 
 func _focus_from_minimap(local_pos: Vector2) -> void:

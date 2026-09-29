@@ -863,6 +863,11 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 		_formation_move(units, ground)
 		_emit_command_feedback(COMMAND_MOVE, "MOVE", ground, null)
 
+## Right-click on the minimap: the selection marches there, or a selected
+## building sets its rally point there.
+func issue_minimap_order(ground: Vector3) -> void:
+	_issue_context_command_from_context(Input.is_key_pressed(KEY_SHIFT), null, ground)
+
 ## Orders go through the world's command bus as data (see command_bus.gd),
 ## falling back to direct calls if a test world has no bus.
 func _issue(order: Dictionary):
