@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-29. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -761,6 +761,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Balance:** the first check with the new spells had Ironmaw at 7-1-1, so Break the Chains was toned down from +35% attack speed and +25% damage to +25% and +20%. A second check is running.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
+- **Plan 77 (done): spells feel like events**
+  - **Balance:** Karak and Lioraen were at the bottom (2-5 and 1-6), so their people passives went up: Karak +8% damage, Lioraen +6%.
+  - **Result screen:** a line names any spell the hero learned during the match, beside the count of spells cast.
+  - **Sound and glow:** signature spells sound a war horn and summons a drum stamp. Spell buttons glow when ready.
+  - **Tutorial:** the hero step now mentions the signature spell on B.
+- **Plan 78 (in progress): resources and the "big circles"**
+  - **The big circles were the vein markers.** On the minimap and the Skirmish preview they are now small dots in the resource's colour. On the ground the rings are thinner and fainter.
+  - **Stone:** the dark disc under quarries is gone.
+  - **Hover:** with the cursor over a resource, a clear ring in its colour appears (gold, grey, green or amber), sized to the model.
+  - **Gather order:** the ring flashes once, so you see where the workers are going.
+  - **Veins:** under the cursor the ring brightens and a tooltip gives the kind, the amount left and who holds it.
+  - **Checked:** no resource overlaps a building on three maps. Regression passed (18 checks) after every change. Pushed to GitHub.
+  - **Next:** a clean 45-match balance check is running; tuning follows from it.
 
 ## Performance and stability
 
