@@ -370,11 +370,16 @@ func _resource_tooltip_stylebox() -> StyleBoxFlat:
 	return sb
 
 
+func _set_resource_hover(on: bool) -> void:
+	if is_instance_valid(_hovered_resource) and _hovered_resource.has_method("set_pointer_hover"):
+		_hovered_resource.set_pointer_hover(on)
+
 func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -> void:
 	if not is_instance_valid(_resource_tooltip) or not is_instance_valid(rts):
 		return
 	var hovered_control := get_viewport().gui_get_hovered_control()
 	if is_instance_valid(hovered_control):
+		_set_resource_hover(false)
 		_hovered_resource = null
 		_resource_tooltip.visible = false
 		return
@@ -383,15 +388,20 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		pointer = pointer_override
 	var hovered = rts.raycast_selection_at(pointer)
 	if not is_instance_valid(hovered):
+		_set_resource_hover(false)
 		_hovered_resource = null
 		_resource_tooltip.visible = false
 		return
 	if hovered is ResourceNode:
 		if bool(hovered.get("depleted")):
+			_set_resource_hover(false)
 			_hovered_resource = null
 			_resource_tooltip.visible = false
 			return
+		if _hovered_resource != hovered:
+			_set_resource_hover(false)
 		_hovered_resource = hovered
+		_set_resource_hover(true)
 		var kind := String(hovered.get("resource_kind")).capitalize()
 		var amount := maxi(0, int(hovered.get("amount")))
 		# How many of your own workers are on it, so a crowded pile is seen.
@@ -403,12 +413,14 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		var crew_line := ("\n%d of your workers here" % crew) if crew > 1 else ("\n1 of your workers here" if crew == 1 else "")
 		_resource_tooltip_label.text = "%s\n%d remaining%s" % [kind, amount, crew_line]
 	elif hovered is Unit or hovered is Building:
+		_set_resource_hover(false)
 		_hovered_resource = null
 		var fallback_name := "Unit" if hovered is Unit else "Building"
 		var public_name := String(hovered.def.get("name", fallback_name))
 		var hostile: bool = "team" in hovered and int(hovered.team) != int(rts.player_team)
 		_resource_tooltip_label.text = "%s\nHostile" % public_name if hostile else public_name
 	else:
+		_set_resource_hover(false)
 		_hovered_resource = null
 		_resource_tooltip.visible = false
 		return

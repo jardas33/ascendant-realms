@@ -306,7 +306,9 @@ func _add_stone_quarry_dressing() -> void:
 	apron_mat.albedo_color = Color(0.18, 0.20, 0.20, 0.92)
 	apron_mat.roughness = 0.94
 	apron.material_override = apron_mat
-	model_root.add_child(apron)
+	# The flat dark octagon read as a hard black disc from the camera; the
+	# fragments alone ground the deposit.
+	apron.free()
 	var fragments := Node3D.new()
 	fragments.name = "StoneQuarryFragments"
 	model_root.add_child(fragments)
@@ -330,6 +332,35 @@ func _add_stone_quarry_dressing() -> void:
 		fragment_mat.roughness = 0.92
 		fragment.material_override = fragment_mat
 		fragments.add_child(fragment)
+
+## The pointer is over this resource: a soft ring in its colour around its
+## base, so what a right-click will gather is clear.
+var _hover_ring: MeshInstance3D
+
+func set_pointer_hover(on: bool) -> void:
+	if on and not is_instance_valid(_hover_ring) and is_instance_valid(model_root):
+		_hover_ring = MeshInstance3D.new()
+		_hover_ring.name = "ResourceHoverRing"
+		var torus := TorusMesh.new()
+		# The food patch spreads wider than its footprint; ring outside it.
+		torus.inner_radius = maxf(2.9 if resource_kind == "food" else 1.7, footprint * 0.8)
+		torus.outer_radius = torus.inner_radius + 0.16
+		torus.rings = 40
+		torus.ring_segments = 6
+		_hover_ring.mesh = torus
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		var hover_col: Color = {"timber": Color(0.95, 0.68, 0.35), "stone": Color(0.82, 0.87, 0.95), "gold": Color(1.0, 0.84, 0.3), "food": Color(1.0, 0.62, 0.42)}.get(resource_kind, Color(1, 0.9, 0.6))
+		mat.albedo_color = Color(hover_col, 0.9)
+		mat.emission_enabled = true
+		mat.emission = hover_col
+		_hover_ring.material_override = mat
+		_hover_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_hover_ring.position.y = 0.14
+		add_child(_hover_ring)
+	if is_instance_valid(_hover_ring):
+		_hover_ring.visible = on
 
 func _p1r14_resource_color() -> Color:
 	match resource_kind:
