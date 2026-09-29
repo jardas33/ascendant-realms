@@ -1110,7 +1110,43 @@ func set_selected(sel: bool) -> void:
 	if _attack_range_ring:
 		_attack_range_ring.visible = false
 		call_deferred("_sync_attack_range_ring")
+	_show_aura_ring(sel)
 	_update_health_bar()
+
+## A selected hero with a command aura shows how far it reaches: your
+## soldiers inside the sky-blue ring fight harder.
+var _aura_ring: MeshInstance3D
+
+func _show_aura_ring(sel: bool) -> void:
+	if not is_hero or (aura_dmg <= 0.0 and aura_armor <= 0.0):
+		if is_instance_valid(_aura_ring):
+			_aura_ring.visible = false
+		return
+	var reach := 12.0 + aura_range
+	if not is_instance_valid(_aura_ring):
+		if not sel:
+			return
+		_aura_ring = MeshInstance3D.new()
+		_aura_ring.name = "CommandAuraReach"
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.55, 0.8, 1.0, 0.45)
+		mat.emission_enabled = true
+		mat.emission = Color(0.5, 0.78, 1.0)
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_aura_ring.material_override = mat
+		_aura_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(_aura_ring)
+		_aura_ring.position.y = 0.1
+	var torus := _aura_ring.mesh as TorusMesh
+	if torus == null or not is_equal_approx(torus.outer_radius, reach + 0.15):
+		torus = TorusMesh.new()
+		torus.inner_radius = reach - 0.15
+		torus.outer_radius = reach + 0.15
+		torus.rings = 80
+		torus.ring_segments = 6
+		_aura_ring.mesh = torus
+	_aura_ring.visible = sel and not is_dead
 
 func _is_defeated_remnant() -> bool:
 	return is_instance_valid(commander) and commander.defeated and not is_dead
