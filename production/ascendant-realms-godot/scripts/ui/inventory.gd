@@ -561,7 +561,7 @@ func _show_item_detail(item: Dictionary) -> void:
 	trial["equipment"] = trial_eq
 	var now_power := HeroProgression.power(ProfileManager.hero())
 	var then_power := HeroProgression.power(trial)
-	var pw := _wrap_label("Hero Power: %d -> %d (%+d)" % [now_power, then_power, then_power - now_power])
+	var pw := _wrap_label("Hero Power: %d → %d (%+d)" % [now_power, then_power, then_power - now_power])
 	pw.add_theme_color_override("font_color", Color(0.58, 0.86, 0.64) if then_power >= now_power else Color(0.96, 0.67, 0.58))
 	_detail_box.add_child(pw)
 	if String(item.get("set", "")) != "":
@@ -694,10 +694,11 @@ func _draw_slot_emblem(ci: CanvasItem, c: Vector2, r: float, slot: String, col: 
 			ci.draw_circle(c, r * 0.25, col)
 
 func _add_detail_art(item: Dictionary) -> void:
-	var art := _item_art(item, 295, "InspectedRelicArt")
+	# Sized so Equip, Salvage and Lock stay on screen without scrolling.
+	var art := _item_art(item, 190, "InspectedRelicArt")
 	if art == null:
 		return
-	art.custom_minimum_size = Vector2(0, 295)
+	art.custom_minimum_size = Vector2(0, 190)
 	art.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_detail_box.add_child(art)
 
