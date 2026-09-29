@@ -824,6 +824,8 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 	if intent == COMMAND_GATHER and hit is ResourceNode:
 		_issue({"type": "gather", "units": units.filter(func(u): return u.is_worker), "target": hit})
 		_emit_command_feedback(COMMAND_GATHER, "GATHER", hit.global_position, hit)
+		if hit.has_method("flash_ordered"):
+			hit.flash_ordered()
 		return
 	# Right-click a built vein outpost with workers: they go inside and work it.
 	if hit is Building and hit.team == player_team and bool(hit.def.get("vein_outpost", false)) and hit.is_built \

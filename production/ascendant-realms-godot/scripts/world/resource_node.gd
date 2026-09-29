@@ -338,6 +338,7 @@ func _add_stone_quarry_dressing() -> void:
 var _hover_ring: MeshInstance3D
 
 func set_pointer_hover(on: bool) -> void:
+	_hover_on = on
 	if on and not is_instance_valid(_hover_ring) and is_instance_valid(model_root):
 		_hover_ring = MeshInstance3D.new()
 		_hover_ring.name = "ResourceHoverRing"
@@ -361,6 +362,27 @@ func set_pointer_hover(on: bool) -> void:
 		add_child(_hover_ring)
 	if is_instance_valid(_hover_ring):
 		_hover_ring.visible = on
+
+## Workers were ordered here: the ring flashes out and settles, then fades,
+## so the order is seen on the pile itself (the ground marker shrinks inside it).
+var _hover_on := false
+
+func flash_ordered() -> void:
+	var was_hovered := _hover_on
+	set_pointer_hover(true)
+	_hover_on = was_hovered
+	_hover_on_flash()
+
+func _hover_on_flash() -> void:
+	if not is_instance_valid(_hover_ring):
+		return
+	_hover_ring.scale = Vector3.ONE * 1.35
+	var t := _hover_ring.create_tween()
+	t.tween_property(_hover_ring, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_interval(0.6)
+	t.tween_callback(func():
+		if is_instance_valid(_hover_ring) and not _hover_on:
+			_hover_ring.visible = false)
 
 func _p1r14_resource_color() -> Color:
 	match resource_kind:
