@@ -652,6 +652,11 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Tutorial:** the lesson panel was a plain dark box. It now sits on the same gilt plate as the menus, with the step diamonds along its bottom edge.
   - **Loading screen:** checked; no issues.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 60 (done): you see the battle end**
+  - Before, the result ledger covered the field the instant a battle ended.
+  - Now the camera glides for about a second to the last building that fell: the enemy stronghold on a win, your own hall on a loss. A column of Lume light rises there on a win.
+  - The ledger's darkening, rays, title and lines wait for the glide to finish, then play their reveal as before.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
