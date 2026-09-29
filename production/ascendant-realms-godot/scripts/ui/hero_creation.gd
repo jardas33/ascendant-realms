@@ -4,6 +4,7 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 
 const ARCHETYPES := ["Warrior", "Commander", "Ranger", "Mage", "Summoner"]
 ## Strengths and weaknesses are real, small trade-offs (HeroProgression).
@@ -54,6 +55,8 @@ var _preview_container: SubViewportContainer
 var _preview_pivot: Node3D
 var _preview_model: Node3D
 var _preview_cam: Camera3D
+var _dais_ring: MeshInstance3D
+var _dais_ring_mat: StandardMaterial3D
 var _preview_anim: AnimationPlayer
 var _preview_title: Label
 
@@ -174,6 +177,22 @@ func _build() -> void:
 		selected_style.set_corner_radius_all(4)
 		rb.add_theme_stylebox_override("pressed", selected_style)
 		rb.pressed.connect(_on_race.bind(rid))
+		# The faction's sigil on the left of its button.
+		var race_col: Color = rd.get("color", Color(0.8, 0.7, 0.5))
+		var sig := Control.new()
+		sig.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sig.position = Vector2(8, 6)
+		sig.size = Vector2(36, 36)
+		var sig_race := String(rid)
+		sig.draw.connect(func():
+			sig.draw_circle(Vector2(18, 18), 16.0, Color(0.04, 0.035, 0.03, 0.9))
+			sig.draw_circle(Vector2(18, 18), 14.0, race_col.darkened(0.3))
+			sig.draw_arc(Vector2(18, 18), 16.0, 0.0, TAU, 28, Color(0.95, 0.78, 0.42), 1.4, true)
+			FACTION_SIGILS.draw(sig, sig_race, Vector2(18, 18), 10.0, Color(0.99, 0.93, 0.75)))
+		rb.add_child(sig)
+		rb.add_theme_constant_override("h_separation", 0)
+		rb.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		rb.text = "      " + rb.text
 		_race_buttons[rid] = rb
 		race_grid.add_child(rb)
 	_race_desc = Label.new()
@@ -407,6 +426,41 @@ func _build() -> void:
 	_preview_pivot = Node3D.new()
 	_preview_viewport.add_child(_preview_pivot)
 
+	# A stone dais under the hero, ringed with a glowing band of Lume in the
+	# faction's colour, and a warm rim light from behind.
+	var dais := MeshInstance3D.new()
+	var dm := CylinderMesh.new()
+	dm.top_radius = 0.56
+	dm.bottom_radius = 0.64
+	dm.height = 0.16
+	dm.radial_segments = 40
+	dais.mesh = dm
+	var stone := StandardMaterial3D.new()
+	stone.albedo_color = Color(0.09, 0.085, 0.08)
+	stone.roughness = 0.9
+	dais.material_override = stone
+	dais.position = Vector3(0, -0.08, 0)
+	_preview_viewport.add_child(dais)
+	_dais_ring = MeshInstance3D.new()
+	var rm := TorusMesh.new()
+	rm.inner_radius = 0.57
+	rm.outer_radius = 0.61
+	rm.rings = 48
+	rm.ring_segments = 6
+	_dais_ring.mesh = rm
+	_dais_ring_mat = StandardMaterial3D.new()
+	_dais_ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_dais_ring_mat.albedo_color = Color(1.0, 0.8, 0.4)
+	_dais_ring.material_override = _dais_ring_mat
+	_dais_ring.position = Vector3(0, 0.01, 0)
+	_preview_viewport.add_child(_dais_ring)
+	var rim := OmniLight3D.new()
+	rim.light_color = Color(1.0, 0.8, 0.5)
+	rim.light_energy = 1.4
+	rim.omni_range = 4.0
+	rim.position = Vector3(0, 1.6, -1.2)
+	_preview_viewport.add_child(rim)
+
 	# Footer buttons
 	var footer := HBoxContainer.new()
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -458,6 +512,9 @@ func _on_race(rid: String) -> void:
 	_load_hero_model()
 
 func _refresh_race() -> void:
+	# The dais ring takes the chosen faction's colour.
+	if _dais_ring_mat != null:
+		_dais_ring_mat.albedo_color = Color(GameData.RACES.get(_race_id, {}).get("color", Color(1.0, 0.8, 0.4))).lightened(0.25)
 	for rid in _race_buttons:
 		_race_buttons[rid].button_pressed = (rid == _race_id)
 	var rd: Dictionary = GameData.RACES.get(_race_id, {})
