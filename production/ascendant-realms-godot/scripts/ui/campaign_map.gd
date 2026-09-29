@@ -605,6 +605,13 @@ func _open_chronicle() -> void:
 			brief.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			brief.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			book.add_child(brief)
+			# What came after the battle, set apart in green under a
+			# small "And after" heading, so it reads as its own passage.
+			var after := _label("AND AFTER", 12, Color(0.62, 0.78, 0.60, 0.85), true)
+			var after_gap := Control.new()
+			after_gap.custom_minimum_size = Vector2(0, 6)
+			book.add_child(after_gap)
+			book.add_child(after)
 			var won := _label(CampaignDefs.victory_text(id, s), 16, Color(0.72, 0.88, 0.70))
 			won.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			won.size_flags_horizontal = Control.SIZE_EXPAND_FILL
