@@ -12,6 +12,7 @@ const BG   := "res://assets/textures/backgrounds/main_menu_bg.png"
 const THEME_PATH := "res://assets/ui/theme.tres"
 const REGION_BUTTON_SCRIPT := preload("res://scripts/ui/campaign_region_button.gd")
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
+const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 
 const NODE_SIZE := Vector2(236, 142)
 const DIFF_COLORS := {
@@ -733,6 +734,38 @@ func _open_briefing(id: String) -> void:
 	var t := _label(String(c["title"]), 34, Color(0.98, 0.84, 0.46), true)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(t)
+	# The matchup: your shield facing the enemy's across crossed blades, and
+	# the chapter's difficulty as skull pips.
+	var foe_ids: Array = []
+	for o in c["opponents"]:
+		if not foe_ids.has(String(o["race"])):
+			foe_ids.append(String(o["race"]))
+	var matchup := Control.new()
+	matchup.custom_minimum_size = Vector2(0, 96)
+	matchup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var diff_steps := {"easy": 1, "normal": 2, "hard": 3, "brutal": 4}
+	var pips: int = int(diff_steps.get(String(c["difficulty"]).to_lower(), 2))
+	var me := _hero_race()
+	matchup.draw.connect(func():
+		var cx := matchup.size.x * 0.5
+		var cy := 44.0
+		_draw_shield(matchup, Vector2(cx - 120.0, cy), 30.0, me)
+		for k in foe_ids.size():
+			_draw_shield(matchup, Vector2(cx + 120.0 + k * 70.0 - (foe_ids.size() - 1) * 35.0, cy), 30.0, String(foe_ids[k]))
+		# Crossed blades between the shields.
+		var gold := Color(0.95, 0.78, 0.42)
+		for side in [-1.0, 1.0]:
+			var a0 := Vector2(cx - 26.0 * float(side), cy - 26.0)
+			var b0 := Vector2(cx + 26.0 * float(side), cy + 26.0)
+			matchup.draw_line(a0, b0, gold, 3.0, true)
+			matchup.draw_line(b0 + Vector2(-7.0 * float(side), -1.0), b0 + Vector2(1.0 * float(side), -9.0), gold, 3.0, true)
+		# Difficulty pips.
+		for k in 4:
+			var pc := Vector2(cx - 33.0 + k * 22.0, cy + 42.0)
+			var on: bool = k < pips
+			matchup.draw_circle(pc, 6.0, Color(0.92, 0.36, 0.28) if on else Color(0.3, 0.3, 0.32))
+			matchup.draw_arc(pc, 6.0, 0.0, TAU, 16, Color(0.95, 0.78, 0.42, 0.8), 1.0, true))
+	box.add_child(matchup)
 	var rule := ColorRect.new()
 	rule.color = Color(0.98, 0.84, 0.46, 0.4)
 	rule.custom_minimum_size = Vector2(0, 2)
@@ -794,7 +827,27 @@ Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45
 		b.pressed.connect(spec[1])
 		row.add_child(b)
 	plate.modulate.a = 0.0
-	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.3)
+	plate.pivot_offset = plate.size * 0.5
+	plate.scale = Vector2.ONE * 0.94
+	var pop := plate.create_tween().set_parallel(true)
+	pop.tween_property(plate, "modulate:a", 1.0, 0.25)
+	pop.tween_property(plate, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	plate.resized.connect(func(): plate.pivot_offset = plate.size * 0.5)
+
+func _draw_shield(ci: CanvasItem, c: Vector2, r: float, race_id: String) -> void:
+	var col: Color = GameData.RACES.get(race_id, {}).get("color", Color(0.6, 0.6, 0.6))
+	var w := r * 1.7
+	var h := r * 2.0
+	var o := c - Vector2(w * 0.5, h * 0.5)
+	var shield := PackedVector2Array([o, o + Vector2(w, 0), o + Vector2(w, h * 0.55), o + Vector2(w * 0.5, h), o + Vector2(0, h * 0.55)])
+	ci.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.95))
+	var inner := PackedVector2Array()
+	for p in shield:
+		inner.append(c + (p - c) * 0.86)
+	ci.draw_colored_polygon(inner, col.darkened(0.2))
+	shield.append(shield[0])
+	ci.draw_polyline(shield, Color(0.95, 0.78, 0.42), 2.0, true)
+	FACTION_SIGILS.draw(ci, race_id, c + Vector2(0, -r * 0.08), r * 0.6, Color(0.99, 0.93, 0.75))
 
 func _on_node_pressed(id: String, heroic: bool = false) -> void:
 	Sfx.play("select")
