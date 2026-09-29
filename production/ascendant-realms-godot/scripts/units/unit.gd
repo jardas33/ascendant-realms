@@ -468,6 +468,11 @@ func _apply_race_passive() -> void:
 	if commander == null:
 		return
 	match commander.race:
+		"barrosan":                       # Stout infantry — granite-born
+			# Fortify only helps at home; 11-23-11 over 225 pooled matches
+			# (plans 50 to 63) away from it. A little more health everywhere.
+			max_hp *= 1.06
+			hp = max_hp
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin.
 			base_dmg *= 1.08
@@ -500,7 +505,8 @@ func _apply_race_passive() -> void:
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			base_dmg *= 1.12
-			max_hp *= 1.10
+			# 13-25-7 over 225 pooled matches (plans 50 to 63): a little tougher.
+			max_hp *= 1.15
 			hp = max_hp
 		"vorthak":                        # Rift Toll — thralls move a touch faster
 			move_speed *= 1.06
