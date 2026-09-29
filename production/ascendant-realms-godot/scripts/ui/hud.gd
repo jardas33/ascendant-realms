@@ -3908,6 +3908,9 @@ func _update_bounty_label(delta: float) -> void:
 		_bounty_announced = true
 		Sfx.play("coin", -6.0)
 		_push_alert("Bounty secured! Win the battle to claim extra spoils.", Color(0.72, 0.95, 0.66))
+	elif not bool(bp["ok"]) and not _bounty_announced:
+		_bounty_announced = true
+		_push_alert("The bounty is lost. Win anyway.", Color(0.85, 0.66, 0.58))
 	_bounty_label.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6) if bool(bp["done"]) else (Color(0.95, 0.82, 0.5) if bool(bp["ok"]) else Color(0.75, 0.6, 0.55)))
 
 func _update_survival_label() -> void:
