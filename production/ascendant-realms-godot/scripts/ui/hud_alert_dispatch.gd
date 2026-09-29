@@ -36,7 +36,7 @@ func _draw() -> void:
 	draw_line(Vector2(6, 12), Vector2(6, h - 12), Color(accent.r, accent.g, accent.b, 0.18), 1.0, true)
 	draw_line(Vector2(w - 3, 12), Vector2(w - 3, h - 11), Color(accent.r, accent.g, accent.b, 0.50), 1.0, true)
 	# The dispatch pip is a small carved signal, not a competing action icon.
-	var pip := Vector2(12, minf(22.0, h * 0.5))
+	var pip := Vector2(12, h * 0.5)
 	draw_colored_polygon(PackedVector2Array([
 		pip + Vector2(0, -5), pip + Vector2(5, 0),
 		pip + Vector2(0, 5), pip + Vector2(-5, 0)]),

@@ -3910,6 +3910,8 @@ func _push_alert(message: String, col: Color) -> void:
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	l.custom_minimum_size = Vector2(318, 42)
+	# One-line alerts sit in the middle of the dispatch, not at its top.
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
 	l.add_theme_constant_override("outline_size", 2)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
