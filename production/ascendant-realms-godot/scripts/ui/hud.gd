@@ -1354,11 +1354,20 @@ func _set_top_metric_text(label: Label, value: String, base_size: int) -> void:
 	label.text = value
 
 
+## Last shown amount per resource, so a change can flash the number.
+var _res_last := {}
+
 func _on_resources_changed(res: Dictionary) -> void:
 	for k in RES_ORDER:
 		if _res_labels.has(k) and is_instance_valid(_res_labels[k]):
 			var amount := int(res.get(k, 0))
 			var label := _res_labels[k] as Label
+			# A gain flashes the number green, a spend flashes it amber.
+			if _res_last.has(k) and int(_res_last[k]) != amount:
+				var flash := Color(0.6, 1.0, 0.6) if amount > int(_res_last[k]) else Color(1.0, 0.75, 0.45)
+				label.self_modulate = flash
+				label.create_tween().tween_property(label, "self_modulate", Color.WHITE, 0.45)
+			_res_last[k] = amount
 			_set_top_metric_text(label, _format_top_resource_amount(amount), 28)
 			var metric_surface := label.get_parent().get_parent() as Control
 			var per_min: int = _commander.income_per_minute(k) if is_instance_valid(_commander) and _commander.has_method("income_per_minute") else 0
