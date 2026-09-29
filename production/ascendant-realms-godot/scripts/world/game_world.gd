@@ -3227,6 +3227,33 @@ func _boss_tick() -> void:
 						if w:
 							w.command_move(map.get("start_positions", [Vector3.ZERO])[player_team], true)
 					emit_signal("alert", "The pack answers the howl.", b.global_position)
+		"frenzy":
+			# Below half health the beast takes over, once: faster and fiercer.
+			if not b.has_meta("frenzied") and b.hp < b.max_hp * 0.5:
+				b.set_meta("frenzied", true)
+				b.base_dmg *= 1.5
+				b.move_speed *= 1.3
+				if is_instance_valid(b.agent):
+					b.agent.max_speed = b.move_speed
+				celebrate_at(b.global_position, Color(0.9, 0.2, 0.15))
+				Sfx.play("horn", -6.0)
+				emit_signal("alert", "The Lobisomem's blood is up! It moves and strikes far harder now.", b.global_position)
+		"drain":
+			# Every 10 seconds she drinks the life of everyone within 9 metres,
+			# after a second's violet warning ring.
+			if int(_boss_clock) % 10 == 9:
+				spawn_ring_fx(b.global_position, Color(0.7, 0.3, 1.0), 4.5)
+			elif int(_boss_clock) % 10 == 0:
+				var drunk := 0.0
+				for u in all_units():
+					if is_instance_valid(u) and not u.is_dead and u.team != b.team and u.global_position.distance_to(b.global_position) <= 9.0:
+						var sip: float = minf(u.hp - 1.0, u.max_hp * 0.08)
+						if sip > 0.0:
+							u.hp -= sip
+							drunk += sip
+				if drunk > 0.0:
+					b.hp = minf(b.max_hp, b.hp + drunk * 3.0)
+					CombatVfx.lume_pillar(_fx_container, b.global_position, Color(0.6, 0.2, 0.9))
 		"regen":
 			# Heals 3% a second once it has gone 3 seconds without being hit.
 			if Time.get_ticks_msec() - int(b.get("_last_damaged_msec")) > int(3000.0 / maxf(0.01, Engine.time_scale)):

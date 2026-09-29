@@ -127,7 +127,8 @@ static func mutations_for(depth: int) -> Dictionary:
 	return out
 
 ## Every 25th stage a Road Tyrant holds the enemy stronghold: a named giant
-## with a mechanic of its own. They return, stronger, every hundred stages.
+## with a mechanic of its own. They return, stronger, once the six have all
+## been met.
 const BOSSES := [
 	{"id": "tarasca", "name": "The Tarasca of the Cávado", "kind": "pulse",
 		"text": "The river-dragon of the old tales. Every few seconds it breathes fire in a ring around itself: fight it from range, or step back when it rears."},
@@ -137,6 +138,10 @@ const BOSSES := [
 		"text": "The monastery's last guardian, bound in iron and prayer. It heals quickly whenever it is left alone for a breath: never stop striking."},
 	{"id": "moura_queen", "name": "The Moura Queen", "kind": "ward",
 		"text": "Queen of the enchanted Mouras, beautiful and terrible. While her court stands around her, she takes half damage: break the court first."},
+	{"id": "lobisomem", "name": "The Lobisomem of Montalegre", "kind": "frenzy",
+		"text": "The seventh son who runs on the full moon. Wound it past half and the beast takes over: it moves and strikes far harder. Finish it fast."},
+	{"id": "bruxa", "name": "The Bruxa of the Crossroads", "kind": "drain",
+		"text": "She waits where three roads meet, with a pot of oil and a rosary of teeth. Every few seconds she drinks the life of everyone close to her: keep your distance or kill her quickly."},
 ]
 
 static func boss(depth: int) -> Dictionary:

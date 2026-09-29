@@ -86,6 +86,8 @@ static func compute(hero: Dictionary) -> Dictionary:
 				"old_wolf_pelt": out["bonus_speed"] += 0.2 + sqrt(lvl) * 0.03; out["bonus_dmg"] += 2.0 + lvl * 0.4
 				"iron_abbot": out["regen"] += 2.0 + lvl * 0.1
 				"moura_crown": out["spell_power"] += 0.1 + lvl * 0.004
+				"lobisomem_hide": out["bonus_dmg"] += 2.0 + lvl * 0.5; out["attack_speed"] += 0.03 + sqrt(lvl) * 0.004
+				"bruxa_charms": out["max_mana"] += 30.0 + lvl * 4.0; out["regen"] += 1.5 + lvl * 0.08
 		if int(set_count[sid]) >= 4:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
 			out["flags"][four[0]] = four[1]

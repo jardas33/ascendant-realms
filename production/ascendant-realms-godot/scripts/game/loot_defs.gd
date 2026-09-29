@@ -42,11 +42,13 @@ const SETS := {
 	"old_wolf_pelt": {"name": "Pelt of the Old Wolf", "two": "speed and damage", "four": ["haste_on_kill", true, "quicker blows after each kill"]},
 	"iron_abbot": {"name": "Iron of the Abbot", "two": "health regeneration", "four": ["last_stand", true, "survive one lethal blow"]},
 	"moura_crown": {"name": "Crown of the Moura Queen", "two": "spell power", "four": ["chain_lightning", true, "every fourth blow arcs lightning"]},
+	"lobisomem_hide": {"name": "Hide of the Lobisomem", "two": "damage and attack speed", "four": ["lifesteal", 0.12, "12% lifesteal"]},
+	"bruxa_charms": {"name": "Charms of the Bruxa", "two": "mana and regeneration", "four": ["quickcast", true, "spells recharge 25% faster"]},
 }
-const TYRANT_SETS := {"tarasca": "tarasca_scale", "old_wolf": "old_wolf_pelt", "iron_abbot": "iron_abbot", "moura_queen": "moura_crown"}
+const TYRANT_SETS := {"tarasca": "tarasca_scale", "old_wolf": "old_wolf_pelt", "iron_abbot": "iron_abbot", "moura_queen": "moura_crown", "lobisomem": "lobisomem_hide", "bruxa": "bruxa_charms"}
 
 const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ashglass", "moura_silver": "Moura-silver", "careto_masks": "Careto",
-	"tarasca_scale": "Tarasca-scale", "old_wolf_pelt": "Old Wolf's", "iron_abbot": "Abbot's Iron", "moura_crown": "Moura Queen's"}
+	"tarasca_scale": "Tarasca-scale", "old_wolf_pelt": "Old Wolf's", "iron_abbot": "Abbot's Iron", "moura_crown": "Moura Queen's", "lobisomem_hide": "Lobisomem's", "bruxa_charms": "Bruxa's"}
 
 ## [flag, value, description] - powers the hero already understands.
 const LEGENDARY_POWERS := [
