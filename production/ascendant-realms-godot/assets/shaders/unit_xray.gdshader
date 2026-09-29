@@ -20,5 +20,6 @@ void fragment() {
 	}
 	float rim = 1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0);
 	ALBEDO = xray_color.rgb;
-	ALPHA = 0.28 + 0.5 * rim * rim;
+	// A faint body with a brighter rim reads as a silhouette, not a paint blob.
+	ALPHA = 0.12 + 0.62 * rim * rim;
 }
