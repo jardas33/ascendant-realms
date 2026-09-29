@@ -3851,7 +3851,15 @@ func _on_alert(message: String, _pos: Vector3) -> void:
 	# A place with no words is a silent minimap ping.
 	if message == "":
 		return
-	_push_alert(message, Color(0.95, 0.9, 0.75))
+	var low_msg := message.to_lower()
+	var alert_col := Color(0.95, 0.9, 0.75)
+	if low_msg.contains("attack") or low_msg.contains("lost") or low_msg.contains("destroyed") or low_msg.contains("fell"):
+		alert_col = Color(1.0, 0.55, 0.45)
+	elif low_msg.contains("jar") or low_msg.contains("flare") or low_msg.contains("lume"):
+		alert_col = Color(0.85, 0.72, 1.0)
+	elif low_msg.contains("complete") or low_msg.contains("ready") or low_msg.contains("dug up") or low_msg.contains("captured"):
+		alert_col = Color(0.72, 0.95, 0.66)
+	_push_alert(message, alert_col)
 
 
 func _on_hero_leveled(level: int) -> void:
@@ -3871,7 +3879,9 @@ func _push_alert(message: String, col: Color) -> void:
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
 	var dispatch: PanelContainer = HUD_ALERT_DISPATCH_SCRIPT.new()
-	dispatch.accent = COMMAND_GOLD
+	# The dispatch's rail takes the alert's own colour: red for attacks and
+	# losses, gold for gains, and so on.
+	dispatch.accent = col if col.v > 0.3 else COMMAND_GOLD
 	dispatch.custom_minimum_size = Vector2(360, 60)
 	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var padding := StyleBoxFlat.new()
@@ -3891,6 +3901,13 @@ func _push_alert(message: String, col: Color) -> void:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dispatch.add_child(l)
 	_alert_box.add_child(dispatch)
+	# Arrives with a short pop so it is noticed without a sound for every line.
+	dispatch.modulate.a = 0.0
+	dispatch.pivot_offset = Vector2(180, 30)
+	dispatch.scale = Vector2(1.06, 1.06)
+	var arrive := dispatch.create_tween().set_parallel(true)
+	arrive.tween_property(dispatch, "modulate:a", 1.0, 0.18)
+	arrive.tween_property(dispatch, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	var tw := dispatch.create_tween()
 	tw.tween_interval(3.2)
 	tw.tween_property(dispatch, "modulate:a", 0.0, 0.8)
