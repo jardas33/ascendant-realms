@@ -370,6 +370,15 @@ func _resource_tooltip_stylebox() -> StyleBoxFlat:
 	return sb
 
 
+var _hovered_vein = null
+
+func _set_vein_hover(v) -> void:
+	if is_instance_valid(_hovered_vein) and _hovered_vein != v:
+		_hovered_vein.pointer_hover = false
+	_hovered_vein = v
+	if is_instance_valid(v):
+		v.pointer_hover = true
+
 func _set_resource_hover(on: bool) -> void:
 	if is_instance_valid(_hovered_resource) and _hovered_resource.has_method("set_pointer_hover"):
 		_hovered_resource.set_pointer_hover(on)
@@ -387,9 +396,20 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 	if pointer_override.x >= 0.0 and pointer_override.y >= 0.0:
 		pointer = pointer_override
 	var hovered = rts.raycast_selection_at(pointer)
+	_set_vein_hover(null)
 	if not is_instance_valid(hovered):
 		_set_resource_hover(false)
 		_hovered_resource = null
+		# Over a vein: say what it is and whether it can be claimed.
+		var ground = rts._raycast_ground() if rts.has_method("_raycast_ground") and pointer_override.x < 0.0 else null
+		var vein = world.vein_near(ground, 4.5) if ground != null and is_instance_valid(world) and world.has_method("vein_near") else null
+		if vein != null and (not world.has_method("player_visibility_state_at") or world.player_visibility_state_at(vein.global_position) != 0):
+			_set_vein_hover(vein)
+			var owner_txt := "Free: build your outpost on it" if vein.is_free() else ("Your outpost" if int(vein.outpost.team) == int(rts.player_team) else "Held by the enemy")
+			_resource_tooltip_label.text = "%s
+%d left  ·  %s" % [vein.display_name(), int(vein.amount), owner_txt]
+			_place_resource_tooltip(pointer)
+			return
 		_resource_tooltip.visible = false
 		return
 	if hovered is ResourceNode:
@@ -424,6 +444,10 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		_hovered_resource = null
 		_resource_tooltip.visible = false
 		return
+	_place_resource_tooltip(pointer)
+
+
+func _place_resource_tooltip(pointer: Vector2) -> void:
 	_resource_tooltip.reset_size()
 	var viewport_size := get_viewport_rect().size
 	var tooltip_size := _resource_tooltip.size
