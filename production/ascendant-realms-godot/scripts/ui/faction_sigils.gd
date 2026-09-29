@@ -11,11 +11,17 @@ static func draw(ci: CanvasItem, race: String, c: Vector2, r: float, col: Color)
 	var dark := Color(0.04, 0.03, 0.02, 0.9)
 	match race:
 		"barrosan":
-			# Bull's head: a broad brow and two sweeping horns.
-			ci.draw_arc(c + Vector2(0, r * 0.35), r * 0.85, PI * 1.12, PI * 1.88, 20, col, r * 0.2, true)
-			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.35, -r * 0.05), c + Vector2(r * 0.35, -r * 0.05), c + Vector2(r * 0.22, r * 0.7), c + Vector2(-r * 0.22, r * 0.7)]), col)
-			ci.draw_circle(c + Vector2(-r * 0.12, r * 0.18), r * 0.07, dark)
-			ci.draw_circle(c + Vector2(r * 0.12, r * 0.18), r * 0.07, dark)
+			# The Barrosã bull: a long head and two great lyre horns sweeping
+			# out and up, the breed's mark.
+			for side in [-1.0, 1.0]:
+				var horn := PackedVector2Array()
+				for k in 9:
+					var t := float(k) / 8.0
+					horn.append(c + Vector2(float(side) * (r * 0.22 + t * r * 0.72), -r * 0.2 - sin(t * PI * 0.85) * r * 0.55 + t * t * r * 0.1))
+				ci.draw_polyline(horn, col, maxf(2.0, r * 0.16), true)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.32, -r * 0.3), c + Vector2(r * 0.32, -r * 0.3), c + Vector2(r * 0.24, r * 0.45), c + Vector2(0, r * 0.8), c + Vector2(-r * 0.24, r * 0.45)]), col)
+			ci.draw_circle(c + Vector2(-r * 0.13, -r * 0.05), r * 0.07, dark)
+			ci.draw_circle(c + Vector2(r * 0.13, -r * 0.05), r * 0.07, dark)
 		"lioraen":
 			# A spring leaf with its vein.
 			var leaf := PackedVector2Array()

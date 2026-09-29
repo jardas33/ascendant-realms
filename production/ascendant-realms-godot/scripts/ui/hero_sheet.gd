@@ -174,6 +174,40 @@ func _refresh() -> void:
 	deeds_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	deeds_line.custom_minimum_size = Vector2(1000, 0)
 	identity.add_child(deeds_line)
+	# A medal for every deeds track: dark iron until earned, then bronze,
+	# silver, gold and finally Lume. Hover one for its track and next goal.
+	var medals := HBoxContainer.new()
+	medals.add_theme_constant_override("separation", 8)
+	identity.add_child(medals)
+	var tiers_col := [Color(0.3, 0.31, 0.33), Color(0.72, 0.45, 0.24), Color(0.78, 0.8, 0.84), Color(0.98, 0.8, 0.36), Color(0.78, 0.6, 1.0)]
+	for k in ach.TRACKS.size():
+		var tr: Dictionary = ach.TRACKS[k]
+		var tier_k := int(parts[k])
+		var medal := Control.new()
+		medal.custom_minimum_size = Vector2(34, 34)
+		medal.tooltip_text = String(next_goals[k])
+		medal.mouse_filter = Control.MOUSE_FILTER_PASS
+		var mc: Color = tiers_col[clampi(tier_k, 0, tiers_col.size() - 1)]
+		medal.draw.connect(func():
+			var c := medal.size * 0.5
+			medal.draw_colored_polygon(PackedVector2Array([c + Vector2(-7, -16), c + Vector2(-1, -16), c + Vector2(-4, -6)]), Color(0.55, 0.12, 0.1))
+			medal.draw_colored_polygon(PackedVector2Array([c + Vector2(7, -16), c + Vector2(1, -16), c + Vector2(4, -6)]), Color(0.12, 0.2, 0.5))
+			medal.draw_circle(c + Vector2(0, 3), 12.0, mc.darkened(0.35))
+			medal.draw_circle(c + Vector2(0, 3), 10.0, mc)
+			medal.draw_arc(c + Vector2(0, 3), 12.0, 0.0, TAU, 24, mc.lightened(0.3), 1.2, true)
+			if tier_k > 0:
+				var s := 5.0
+				medal.draw_colored_polygon(PackedVector2Array([c + Vector2(0, 3 - s), c + Vector2(s * 0.3, 3 - s * 0.3), c + Vector2(s, 3), c + Vector2(s * 0.3, 3 + s * 0.3),
+					c + Vector2(0, 3 + s), c + Vector2(-s * 0.3, 3 + s * 0.3), c + Vector2(-s, 3), c + Vector2(-s * 0.3, 3 - s * 0.3)]), mc.darkened(0.55)))
+		medals.add_child(medal)
+		var ml := Label.new()
+		ml.text = String(tr["name"]).get_slice(" ", 0) if tier_k == 0 else String(ach.title(tr, tier_k))
+		ml.add_theme_font_size_override("font_size", 12)
+		ml.add_theme_color_override("font_color", mc.lightened(0.2) if tier_k > 0 else Color(0.55, 0.56, 0.58))
+		ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ml.tooltip_text = String(next_goals[k])
+		ml.mouse_filter = Control.MOUSE_FILTER_PASS
+		medals.add_child(ml)
 	var saga_state: Dictionary = ProfileManager.saga()
 	var saga_line := Label.new()
 	saga_line.text = "THE SAGA   %d / %d CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), load("res://scripts/game/campaign_defs.gd").CHAPTERS.size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
