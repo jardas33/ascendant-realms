@@ -486,7 +486,9 @@ func _apply_race_passive() -> void:
 		"karak":                          # Stone Resolve — armored and hardy
 			# 2 wins in the plan 34 round robin: a touch more bite.
 			base_armor += 1.0
-			base_dmg *= 1.04
+			# 2-6 and 2-5 in both checks with the new spells, whose Stone Skin
+			# only defends: a little more bite.
+			base_dmg *= 1.08
 			max_hp *= 1.08
 			# Castro quarriers are half stone too (+1 armor on top of the
 			# sturdier workers every faction now has).
@@ -518,6 +520,9 @@ func _apply_race_passive() -> void:
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
 			max_hp *= 1.10
+			# 2-7 and 1-6 in both checks with the new spells (their signature
+			# only heals): a little more bite.
+			base_dmg *= 1.06
 			hp = max_hp
 		_:
 			pass

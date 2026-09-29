@@ -4064,6 +4064,14 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 	var ab := SkillDefs.get_abilities().get(id, {})
 	if int(hero.team) == player_team:
 		spells_cast_by_player += 1
+	# A signature spell sounds its people's horn; summons stamp the ground.
+	if player_visibility_state_at(hero.global_position) == VISIBILITY_CURRENTLY_VISIBLE:
+		if bool(ab.get("sig", false)):
+			Sfx.play("horn", -12.0)
+		for st in ab.get("fx", []):
+			if String(st.get("op", "")) == "summon":
+				Sfx.play("stamp", -6.0)
+				break
 	if bool(ab.get("sig", false)):
 		_cast_signature(hero, id, target_pos, level, power, ab)
 		return

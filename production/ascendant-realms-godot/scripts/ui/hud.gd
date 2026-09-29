@@ -2525,6 +2525,14 @@ func _refresh_single_live() -> void:
 			btn.set_command_state("READY" if mana_ok else "LOCKED")
 			if is_instance_valid(overlay):
 				overlay.text = "READY" if mana_ok else "MANA"
+		# A people spell that is ready glows softly on its card.
+		var emblem := btn.get_node_or_null("SpellEmblem") as Control
+		if is_instance_valid(emblem):
+			if cd <= 0.05 and mana_ok:
+				var glow := 0.85 + 0.25 * (0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0))
+				emblem.modulate = Color(glow, glow, glow)
+			else:
+				emblem.modulate = Color(0.55, 0.55, 0.6)
 
 
 func _selection_type_summary(units: Array) -> String:
@@ -4183,6 +4191,18 @@ func _on_game_over(victory: bool) -> void:
 		lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(lv_line)
 		Sfx.play("levelup", -6.0)
+		# Crossing level 10 or 25 teaches the hero a new spell of their people.
+		var race_now := String(ProfileManager.hero().get("race", "")) if ProfileManager.has_hero() else ""
+		var before_sp: Dictionary = SkillDefs.people_spell_levels(race_now, int(result["level_before"]))
+		var after_sp: Dictionary = SkillDefs.people_spell_levels(race_now, int(result["level_after"]))
+		for new_id in after_sp:
+			if not before_sp.has(new_id):
+				var sdef: Dictionary = SkillDefs.get_abilities().get(String(new_id), {})
+				var key := "N" if int(sdef.get("slot", 1)) == 1 else "M"
+				var sp_line := _mk_title_label("New spell learned: %s  (key %s)" % [String(sdef.get("name", new_id)), key], 17, Color(0.75, 0.9, 1.0))
+				sp_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				sp_line.set_meta("rare_pop", true)
+				box.add_child(sp_line)
 	# The hero's experience bar fills with this battle's reward.
 	if ProfileManager.has_hero() and xp > 0:
 		var hh: Dictionary = ProfileManager.hero()
