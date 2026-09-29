@@ -133,7 +133,9 @@ const CHAPTERS := [
 	# ---------------------------------------------------------------- ACT III
 	{"id": "3-1", "act": 2, "title": "Boticas Cellars", "map": "ruins_of_vael",
 		"opponents": [{"race": "hollow", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-2", "3-S3"],
-		"briefing": "In the last war, the elders of Boticas buried their Lume in clay jars under the cellar floors to hide it from the invaders. They called it the Wine of the Dead.\n\nThe jars are still down there. So are the dead who guard them.\n\nBoticas sits on old granite. Raise outposts on its veins and the valley's stone will pay for the digging.",
+		"briefing": "In the last war, the elders of Boticas buried their Lume in clay jars under the cellar floors to hide it from the invaders. They called it the Wine of the Dead.\n\nThe jars are still down there. So are the dead who guard them.\n\nBoticas sits on old granite. Raise outposts on its veins and the valley's stone will pay for the digging.
+
+The Ascension is pushing the old jars up out of the fields again. Where the Lume glows violet, hold the ground and dig, before the dead do.",
 		"opening": "Wine buried for a war nobody alive remembers.",
 		"taunts": ["The Compaña sings. This time you can hear the words, and they are your name.", "The Cross-Bearer: \"Go home. Please. Go home before you understand.\""],
 		"victory": "The cellars were empty but for broken clay and one message scratched into the wall: SEVEN JARS. ONE FOR EACH MOUTH OF THE SPRING. The jars had been scattered across the highlands, as if someone knew you would come looking."},

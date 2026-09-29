@@ -2600,6 +2600,93 @@ func _tick_vein_flares(delta: float) -> void:
 	if is_instance_valid(_fx_container):
 		CombatVfx.lume_pillar(_fx_container, v.global_position, Color(1.0, 0.85, 0.35))
 
+## Buried Lume jars (scripts/world/lume_jar.gd): from minute four, every two
+## and a half minutes a jar surfaces between the bases while fewer than two
+## are out. Troops of one side standing over it dig it up for gold and supplies.
+const LumeJarScript := preload("res://scripts/world/lume_jar.gd")
+var _jar_spawn_timer := 90.0
+var _jar_claim_timer := 0.0
+var _jars_spawned := 0
+var jars_dug_by_player := 0
+
+func _tick_lume_jars(delta: float) -> void:
+	if bool(Match.get_config().get("no_veins", false)) or match_time < 240.0:
+		return
+	_jar_spawn_timer += delta
+	if _jar_spawn_timer >= (75.0 if twist_jar_season else 150.0):
+		_jar_spawn_timer = 0.0
+		if get_tree().get_nodes_in_group("lume_jars").size() < (3 if twist_jar_season else 2):
+			_spawn_lume_jar()
+	_jar_claim_timer += delta
+	if _jar_claim_timer < 0.5:
+		return
+	var step := _jar_claim_timer
+	_jar_claim_timer = 0.0
+	var jars: Array = get_tree().get_nodes_in_group("lume_jars")
+	if jars.is_empty():
+		return
+	var units: Array = all_units()
+	for jar in jars:
+		if not is_instance_valid(jar):
+			continue
+		var teams: Array = []
+		for u in units:
+			# Not `visible`: fog hides enemy units from the player, and the sim must
+			# not depend on what the player can see. Garrisoned workers are out.
+			if not is_instance_valid(u) or u.is_dead or u.has_meta("garrisoned_in"):
+				continue
+			if u.global_position.distance_to(jar.global_position) <= jar.RADIUS and not teams.has(u.team):
+				teams.append(u.team)
+		var winner: int = jar.tick_claim(teams, step)
+		if winner >= 0:
+			_open_lume_jar(jar, winner)
+
+func _spawn_lume_jar() -> void:
+	var starts: Array = map.get("start_positions", [])
+	if starts.size() < 2:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sim_seed_for(9100 + _jars_spawned) if has_method("sim_seed_for") else _jars_spawned
+	_jars_spawned += 1
+	# Between two bases, pulled toward the middle of the map.
+	var a: Vector3 = starts[rng.randi() % starts.size()]
+	var b: Vector3 = starts[rng.randi() % starts.size()]
+	if a == b:
+		b = Vector3.ZERO
+	var p: Vector3 = a.lerp(b, 0.5).lerp(Vector3.ZERO, 0.35) + Vector3(rng.randf_range(-14.0, 14.0), 0.0, rng.randf_range(-14.0, 14.0))
+	if navigation_map_rid.is_valid():
+		p = NavigationServer3D.map_get_closest_point(navigation_map_rid, p)
+	p.y = 0.0
+	var jar = LumeJarScript.new()
+	add_child(jar)
+	jar.global_position = p
+	clear_ground_cover(p, 3.0)
+	emit_signal("alert", "A buried Lume jar has surfaced. Hold the ground over it to dig it up.", p)
+
+func _open_lume_jar(jar, team: int) -> void:
+	var pos: Vector3 = jar.global_position
+	jar.queue_free()
+	if team < 0 or team >= commanders.size():
+		return
+	var cmd = commanders[team]
+	# Gold, plus a share of whatever that side is shortest of.
+	var low := "food"
+	for k in ["food", "timber", "stone"]:
+		if int(cmd.resources.get(k, 0)) < int(cmd.resources.get(low, 0)):
+			low = k
+	cmd.add_resources("gold", jar.REWARD_GOLD)
+	cmd.add_resources(low, jar.REWARD_OTHER)
+	if is_instance_valid(_fx_container):
+		CombatVfx.lume_pillar(_fx_container, pos, Color(0.8, 0.6, 1.0))
+	if team == player_team:
+		spawn_income_popup(pos + Vector3.UP * 3.0, jar.REWARD_GOLD, "gold")
+		Sfx.play("levelup")
+		jars_dug_by_player += 1
+		_bump_profile_stat("jars_dug")
+		emit_signal("alert", "Your troops dug up a Lume jar: +%d gold, +%d %s." % [jar.REWARD_GOLD, jar.REWARD_OTHER, low], pos)
+	else:
+		emit_signal("alert", "The enemy dug up a Lume jar.", pos)
+
 ## The free vein nearest a point, within `radius`.
 func vein_near(pos: Vector3, radius: float = 5.0):
 	var best = null
@@ -3063,6 +3150,7 @@ var twist_damage_mult := 1.0
 var twist_veteran_foes := false
 var twist_gloom := false
 var twist_vein_mult := 1.0
+var twist_jar_season := false
 
 func _apply_start_twists() -> void:
 	var twists: Array = Match.get_config().get("twists", [])
@@ -3079,6 +3167,7 @@ func _apply_start_twists() -> void:
 	twist_veteran_foes = "veterans" in twists
 	twist_gloom = "gloom" in twists
 	twist_vein_mult = 1.5 if "rich_veins" in twists else 1.0
+	twist_jar_season = "jar_season" in twists
 	if twist_gloom:
 		for u in all_units():
 			if is_instance_valid(u) and u.team == player_team:
@@ -3269,6 +3358,7 @@ func _physics_process(delta: float) -> void:
 		_update_command_auras()
 		_aura_timer = 0.0
 	_tick_vein_flares(delta)
+	_tick_lume_jars(delta)
 	_last_stand_timer += delta
 	if _last_stand_timer >= 20.0:
 		_last_stand_timer = 0.0
@@ -3430,6 +3520,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
 		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
 		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
+		"jars_dug": jars_dug_by_player,
+		"veins_held": get_tree().get_nodes_in_group("veins").filter(func(v): return is_instance_valid(v) and not v.is_free() and int(v.outpost.team) == player_team).size(),
 		"bounty": String(bounty.get("text", "")), "bounty_won": bounty_won,
 		"deeds": ProfileManager.check_achievements() if ProfileManager.has_hero() else [],
 		"talent_points": ProfileManager.talent_points() if ProfileManager.has_hero() else 0,

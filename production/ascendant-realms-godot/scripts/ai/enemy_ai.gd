@@ -171,6 +171,41 @@ func _think() -> void:
 	_manage_capture()
 	_manage_veins()
 	_send_vein_raid()
+	_go_for_jars()
+
+## Buried Lume jars: send the nearest idle soldiers to dig up a jar nobody of
+## ours is working yet (only while at least six soldiers stand idle).
+var _jar_timer := 0.0
+
+func _go_for_jars() -> void:
+	_jar_timer += _think_interval
+	if _jar_timer < 5.0:
+		return
+	_jar_timer = 0.0
+	var jars: Array = get_tree().get_nodes_in_group("lume_jars")
+	if jars.is_empty():
+		return
+	var idle: Array = []
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.state == u.State.IDLE:
+			idle.append(u)
+	if idle.size() < 6:
+		return
+	for jar in jars:
+		if not is_instance_valid(jar):
+			continue
+		var jp: Vector3 = jar.global_position
+		# Already on it?
+		var near := 0
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(jp) < 12.0:
+				near += 1
+		if near >= 3:
+			continue
+		idle.sort_custom(func(a, b): return a.global_position.distance_squared_to(jp) < b.global_position.distance_squared_to(jp))
+		for u in idle.slice(0, 4):
+			u.command_move(jp + Vector3(_rng.randf_range(-2.0, 2.0), 0, _rng.randf_range(-2.0, 2.0)), true)
+		return
 
 ## Raids: from minute five, every 90 s a handful of the fastest idle soldiers
 ## hits the nearest enemy outpost, so veins have to be defended.

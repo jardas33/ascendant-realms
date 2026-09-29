@@ -246,6 +246,7 @@ const TIPS := [
 	"Raid the enemy's outposts: the workers inside spill out and the vein goes free.",
 	"The food by your hall runs dry in a few minutes. Houses keep a garden, and a food vein keeps an army fed.",
 	"Gold piling up? Select your main hall and trade it at the caravan for food, timber or stone.",
+	"Buried Lume jars surface between the bases. Hold the ground over one to dig up gold and supplies.",
 	"Fog of war hides every battlefield. Send a fast rider ahead to find the enemy before their army finds you.",
 	"Explored fields stay on your map: workers can be sent to any resource you have seen.",
 	"Every 25th stage of the Endless Road, a Road Tyrant holds the enemy stronghold. Each fights in its own way.",

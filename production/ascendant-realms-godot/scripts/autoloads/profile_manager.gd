@@ -481,7 +481,7 @@ func check_achievements() -> Array:
 		"victories": int(st.get("victories", 0)), "units_killed": int(st.get("units_killed", 0)),
 		"endless_best": int(sg.get("endless_best", 0)), "saga_cleared": sg["cleared"].size(),
 		"heroic_laurels": sg.get("heroic", []).size(), "legendary_found": int(st.get("legendary_found", 0)),
-		"tyrants_slain": int(st.get("tyrants_slain", 0)), "elites_slain": int(st.get("elites_slain", 0)),
+		"tyrants_slain": int(st.get("tyrants_slain", 0)), "elites_slain": int(st.get("elites_slain", 0)), "jars_dug": int(st.get("jars_dug", 0)),
 	}
 	var defs = load("res://scripts/game/achievement_defs.gd")
 	var earned: Array = []

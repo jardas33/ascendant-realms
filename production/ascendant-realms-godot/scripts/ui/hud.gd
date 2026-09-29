@@ -1537,6 +1537,20 @@ func _draw_minimap() -> void:
 		if not vein.is_free():
 			_minimap.draw_circle(vp, 3.4, GameData.TEAM_COLORS.get(int(vein.outpost.team), Color.WHITE))
 
+	# Buried Lume jars: a pulsing violet diamond, always shown (the Lume glow
+	# is seen from afar), with a ring filling as someone digs.
+	for jar in world.get_tree().get_nodes_in_group("lume_jars"):
+		if not is_instance_valid(jar):
+			continue
+		var jp := _world_to_map(jar.global_position)
+		var js := 5.0 + (0.5 + 0.5 * sin(Time.get_ticks_msec() / 220.0)) * 1.5
+		var jpts := PackedVector2Array([jp + Vector2(0, -js), jp + Vector2(js, 0), jp + Vector2(0, js), jp + Vector2(-js, 0)])
+		_minimap.draw_colored_polygon(jpts, Color(0.1, 0.05, 0.15, 0.8))
+		jpts.append(jpts[0])
+		_minimap.draw_polyline(jpts, Color(0.8, 0.6, 1.0, 0.95), 1.6, true)
+		if float(jar.progress) > 0.0:
+			_minimap.draw_arc(jp, js + 3.0, -PI * 0.5, -PI * 0.5 + TAU * clampf(float(jar.progress) / float(jar.OPEN_TIME), 0.0, 1.0), 20, GameData.TEAM_COLORS.get(int(jar.digging_team), Color.WHITE), 2.0, true)
+
 	# Units use role hierarchy while retaining team color as the ownership channel.
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead or (world.has_method("is_player_visible") and not world.is_player_visible(u)):
@@ -4015,6 +4029,10 @@ func _on_game_over(victory: bool) -> void:
 		story_bits.append("Your hero slew %d" % int(result.get("hero_kills", 0)))
 	if int(result.get("veterans_made", 0)) > 0:
 		story_bits.append("%d veteran promotion%s" % [int(result.get("veterans_made", 0)), "" if int(result.get("veterans_made", 0)) == 1 else "s"])
+	if int(result.get("jars_dug", 0)) > 0:
+		story_bits.append("%d Lume jar%s dug up" % [int(result.get("jars_dug", 0)), "" if int(result.get("jars_dug", 0)) == 1 else "s"])
+	if int(result.get("veins_held", 0)) > 0:
+		story_bits.append("%d vein%s held" % [int(result.get("veins_held", 0)), "" if int(result.get("veins_held", 0)) == 1 else "s"])
 	if not story_bits.is_empty():
 		var story_line := _mk_label("  ·  ".join(story_bits), 15, Color(0.86, 0.80, 0.62))
 		story_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
