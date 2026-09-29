@@ -2749,9 +2749,19 @@ func _spawn_capture_points() -> void:
 		recorder.record_population("capture_points", map.get("capture_points", []).size(), 0.0, 0.0, "game_world._spawn_capture_points")
 	_m20_end(stage)
 
-func on_point_captured(point, team: int) -> void:
+func on_point_captured(point, team: int, previous_owner: int = -1) -> void:
 	if team == player_team:
 		emit_signal("alert", "You captured %s!" % point.point_name, point.global_position)
+		# The claim lands: a seal stamp and a column of Lume over the shrine.
+		Sfx.play("stamp", -6.0)
+		celebrate_at(point.global_position, Color(1.0, 0.85, 0.4))
+	elif previous_owner == player_team:
+		emit_signal("alert", "You lost %s to the enemy!" % point.point_name, point.global_position)
+
+## A column of Lume light at a place worth marking: a capture, a new Age.
+func celebrate_at(pos: Vector3, col: Color) -> void:
+	if is_instance_valid(_fx_container):
+		CombatVfx.lume_pillar(_fx_container, pos, col)
 
 func _on_point_captured_signal(point, team: int) -> void:
 	pass

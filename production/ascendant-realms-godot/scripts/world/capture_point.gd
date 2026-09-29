@@ -217,13 +217,14 @@ func _apply_benefit() -> void:
 func _set_owner(team: int) -> void:
 	if not world or not world.game_running:
 		return
+	var previous_owner := owner_team
 	owner_team = team
 	_progress = 1.0
 	_contesting_team = -1
 	_tint(GameData.TEAM_COLORS.get(team, Color.WHITE), 1.0)
 	emit_signal("captured", self, team)
 	if world:
-		world.on_point_captured(self, team)
+		world.on_point_captured(self, team, previous_owner)
 
 func _tint(c: Color, strength: float) -> void:
 	var owned := owner_team >= 0 and strength >= 1.0

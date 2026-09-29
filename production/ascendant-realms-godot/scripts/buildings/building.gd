@@ -1212,6 +1212,14 @@ func _process_production(delta: float) -> void:
 			if world and team == world.player_team:
 				var completed_tech_name := String(GameData.get_tech(completed_tech_id).get("name", completed_tech_id))
 				world.emit_signal("alert", "Research complete: %s" % completed_tech_name, global_position)
+				# A new Age is announced with the war horn and a column of Lume
+				# over the hall; smaller research lands with a seal stamp.
+				if String(GameData.get_tech(completed_tech_id).get("kind", "")) == "tier":
+					Sfx.play("horn", -4.0)
+					if world.has_method("celebrate_at"):
+						world.celebrate_at(global_position, Color(1.0, 0.8, 0.35))
+				else:
+					Sfx.play("stamp", -10.0)
 		queue.remove_at(0)
 		emit_signal("production_updated")
 	else:
