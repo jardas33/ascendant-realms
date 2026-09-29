@@ -1399,7 +1399,7 @@ func _landmark_tick(delta: float) -> void:
 				for k in 2:
 					var su = world.spawn_unit("vorthak_ash_thrall", team, here + Vector3(4.0 - 8.0 * k, 0.0, 4.0))
 					if su:
-						su.set_meta("summoned", true)
+						world.mark_summoned(su)
 						var ref = su
 						get_tree().create_timer(60.0, false).timeout.connect(func():
 							if is_instance_valid(ref) and not ref.is_dead and is_instance_valid(world):
@@ -1441,7 +1441,7 @@ func _landmark_tick(delta: float) -> void:
 						for k in 2:
 							var su = world.spawn_unit(wolf, team, here + Vector3(3.0 - 6.0 * k, 0.0, -3.0))
 							if su:
-								su.set_meta("summoned", true)
+								world.mark_summoned(su)
 								su.command_move(u.global_position, true)
 								var ref = su
 								get_tree().create_timer(30.0, false).timeout.connect(func():

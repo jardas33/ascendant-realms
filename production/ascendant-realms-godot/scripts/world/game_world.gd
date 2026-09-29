@@ -204,7 +204,7 @@ func bounty_progress() -> Dictionary:
 			var left := maxi(0, int(limit - match_time))
 			text = "Win within %d min  ·  %s" % [int(bounty["minutes"]), ("%d:%02d left" % [left / 60, left % 60]) if ok else "too late"]
 		"thrift":
-			var lost := combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size()
+			var lost := combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team and not bool(e.get("summoned", false))).size()
 			ok = lost <= int(bounty["losses"])
 			text = "Lose no more than %d  ·  %d lost" % [int(bounty["losses"]), lost]
 		"raze":
@@ -219,7 +219,7 @@ func _bounty_met(victory: bool) -> bool:
 	match String(bounty["id"]):
 		"hero": return enemy_heroes_slain > 0
 		"swift": return match_time <= float(bounty["minutes"]) * 60.0
-		"thrift": return combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size() <= int(bounty["losses"])
+		"thrift": return combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team and not bool(e.get("summoned", false))).size() <= int(bounty["losses"])
 		"raze": return building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size() >= int(bounty["count"])
 	return false
 
@@ -3752,7 +3752,7 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	result_snapshot = {"victory": victory, "reason": reason, "mode": Match.get_config().get("mode", "skirmish"),
 		"victory_kind": _victory_kind, "player_team": player_team, "kills": kills_by_player,
 		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
-		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team).size(),
+		"units_lost": combat_death_events.filter(func(e): return int(e.get("victim_team", -1)) == player_team and not bool(e.get("summoned", false))).size(),
 		"hero_kills": hero_kills, "veterans_made": veterans_made, "loot": _battle_loot,
 		"jars_dug": jars_dug_by_player,
 		"veins_held": get_tree().get_nodes_in_group("veins").filter(func(v): return is_instance_valid(v) and not v.is_free() and int(v.outpost.team) == player_team).size(),
@@ -3871,7 +3871,7 @@ func _on_unit_died(unit) -> void:
 	if credited:
 		kills_by_player += 1
 		combat_kill_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "kill_index": kills_by_player})
-	combat_death_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "victim_team": unit.team, "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "credited_to_player": credited})
+	combat_death_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "victim_team": unit.team, "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "credited_to_player": credited, "summoned": unit.has_meta("summoned")})
 	var recorder = _v0436_r1j_recorder()
 	if recorder:
 		var final_damage_event_id := String(unit.get_meta("v0436_r1j_last_damage_event_id", "")) if unit.has_meta("v0436_r1j_last_damage_event_id") else ""
@@ -4236,7 +4236,7 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 				var su = spawn_unit(summon_id, team, at + Vector3(cos(ang), 0.0, sin(ang)) * 2.5)
 				if su == null:
 					continue
-				su.set_meta("summoned", true)
+				mark_summoned(su)
 				su.base_dmg *= 1.0 + 0.2 * float(level - 1)
 				var ref = su
 				get_tree().create_timer(25.0, false).timeout.connect(func():
@@ -4310,7 +4310,7 @@ func _run_spell_fx(hero, ab: Dictionary, target_pos: Vector3, level: int, power:
 					var su = spawn_unit(String(step.get("unit", "")), team, at2 + Vector3(cos(ang), 0.0, sin(ang)) * 2.5)
 					if su == null:
 						continue
-					su.set_meta("summoned", true)
+					mark_summoned(su)
 					var ref = su
 					get_tree().create_timer(float(step.get("secs", 30.0)), false).timeout.connect(func():
 						if is_instance_valid(ref) and not ref.is_dead:
@@ -4402,12 +4402,33 @@ func _ossuary_bell_rise(unit) -> void:
 					return
 				var su = spawn_unit("hollow_skeleton", int(cmd.team), pos)
 				if su:
-					su.set_meta("summoned", true)
+					mark_summoned(su)
 					var ref = su
 					get_tree().create_timer(40.0, false).timeout.connect(func():
 						if is_instance_valid(ref) and not ref.is_dead:
 							_dismiss_summon(ref)))
 			return
+
+## Spell-summoned soldiers look spectral: a pale Lume tint and a faint glow.
+func mark_summoned(u) -> void:
+	if not is_instance_valid(u):
+		return
+	u.set_meta("summoned", true)
+	# Summons fight beside the host without taking up its population.
+	var cmd = commander_for_team(int(u.team))
+	if cmd:
+		cmd.recompute_pop()
+	if is_instance_valid(u.model_root):
+		for mi in u.model_root.find_children("*", "MeshInstance3D", true, false):
+			var g := mi as GeometryInstance3D
+			g.transparency = 0.35
+		var glow := OmniLight3D.new()
+		glow.light_color = Color(0.6, 0.8, 1.0)
+		glow.light_energy = 0.8
+		glow.omni_range = 3.0
+		glow.shadow_enabled = false
+		u.add_child(glow)
+		glow.position = Vector3.UP * 1.2
 
 ## A summon's time is up: it fades out without counting as a death.
 func _dismiss_summon(u) -> void:

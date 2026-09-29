@@ -3326,13 +3326,18 @@ func _build_hero_command_card(u) -> void:
 			var ability_emblem := "rally" if cap_id == "rally" else ""
 			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
 			btn.disabled = not ready
+			# People and signature spells wear their own emblem: the people's
+			# sigil in the spell's colour, marked by what the spell does.
+			if ab.has("tint") or bool(ab.get("sig", false)):
+				btn.add_child(_spell_emblem(ab, String(u.commander.race) if u.commander else ""))
 			var cap_u = u
+			var aimed: bool = cap_id in ["root", "bolt", "charge"] or (float(ab.get("range", 0.0)) > 0.0 and String(ab.get("use", "enemy")) == "enemy" and (ab.has("fx") or bool(ab.get("sig", false))) and not cap_id in ["sig_chains", "sig_stoneskin", "sig_entrudo"])
 			btn.pressed.connect(func():
 				if is_instance_valid(cap_u) and not cap_u.is_dead and cap_u.has_method("cast_ability"):
 					# Aimed spells cast from the button target the nearest enemy
 					# instead of the hero's own feet.
 					var aim: Vector3 = cap_u.global_position
-					if cap_id in ["root", "bolt", "charge"] and world and world.has_method("_nearest_enemy_to"):
+					if aimed and world and world.has_method("_nearest_enemy_to"):
 						var foe = world._nearest_enemy_to(cap_u.global_position, cap_u.team, [])
 						if is_instance_valid(foe):
 							aim = foe.global_position
@@ -4480,3 +4485,50 @@ func _make_metric_clickable(surface: Control, method: String, tip: String) -> vo
 			Sfx.play("select", -6.0)
 			rts.call(method)
 			accept_event())
+
+
+## The emblem on a people or signature spell's card.
+func _spell_emblem(ab: Dictionary, race: String) -> Control:
+	var e := Control.new()
+	e.name = "SpellEmblem"
+	e.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	e.position = Vector2(4, 4)
+	e.size = Vector2(68, 68)
+	var tint: Color = ab.get("tint", GameData.RACES.get(race, {}).get("color", Color(1, 0.8, 0.4)))
+	var kind := "strike"
+	var fx: Array = ab.get("fx", [])
+	for st in fx:
+		match String(st.get("op", "")):
+			"summon": kind = "summon"
+			"heal": kind = "heal"
+			"buff", "repair": kind = "ward" if kind == "strike" else kind
+	if bool(ab.get("sig", false)):
+		kind = "sig"
+	e.draw.connect(_draw_spell_emblem.bind(e, kind, tint, race))
+	return e
+
+func _draw_spell_emblem(e: Control, kind: String, tint: Color, race: String) -> void:
+	var c := e.size * 0.5
+	e.draw_rect(Rect2(Vector2.ZERO, e.size), Color(0.03, 0.035, 0.05, 1.0))
+	e.draw_circle(c, 30.0, Color(tint, 0.22))
+	e.draw_arc(c, 29.0, 0.0, TAU, 40, Color(tint, 0.9), 2.0, true)
+	if kind == "sig":
+		e.draw_arc(c, 24.0, 0.0, TAU, 40, Color(1.0, 0.9, 0.6, 0.7), 1.2, true)
+	FACTION_SIGILS.draw(e, race, c + Vector2(0, -2), 15.0, Color(tint.lightened(0.35), 0.95))
+	# A small mark in the lower right says what the spell does.
+	var m := c + Vector2(19, 19)
+	e.draw_circle(m, 8.0, Color(0.03, 0.03, 0.04, 0.95))
+	match kind:
+		"heal":
+			e.draw_rect(Rect2(m + Vector2(-1.5, -5), Vector2(3, 10)), Color(0.5, 1.0, 0.6))
+			e.draw_rect(Rect2(m + Vector2(-5, -1.5), Vector2(10, 3)), Color(0.5, 1.0, 0.6))
+		"ward":
+			e.draw_colored_polygon(PackedVector2Array([m + Vector2(-5, -5), m + Vector2(5, -5), m + Vector2(5, 0), m + Vector2(0, 6), m + Vector2(-5, 0)]), Color(0.85, 0.88, 1.0))
+		"summon":
+			e.draw_circle(m + Vector2(-2.5, -1), 2.5, Color(0.75, 0.85, 1.0))
+			e.draw_circle(m + Vector2(3, -1), 2.5, Color(0.75, 0.85, 1.0))
+			e.draw_rect(Rect2(m + Vector2(-5, 2), Vector2(10, 3)), Color(0.75, 0.85, 1.0))
+		"sig":
+			e.draw_colored_polygon(PackedVector2Array([m + Vector2(0, -6), m + Vector2(6, 0), m + Vector2(0, 6), m + Vector2(-6, 0)]), Color(1.0, 0.85, 0.45))
+		_:
+			e.draw_colored_polygon(PackedVector2Array([m + Vector2(-1, -6), m + Vector2(4, -1), m + Vector2(0, 0), m + Vector2(2, 6), m + Vector2(-4, 0), m + Vector2(0, -1)]), Color(1.0, 0.6, 0.35))

@@ -176,7 +176,7 @@ func recompute_pop() -> void:
 		# Saga allies fight for you but do not take up your population.
 		# Workers inside a vein outpost live at the mine: they free their
 		# population, so expanding across the map also grows the army.
-		if is_instance_valid(u) and not u.is_dead and not u.has_meta("saga_ally") and not u.has_meta("retinue") and not u.has_meta("garrisoned_in"):
+		if is_instance_valid(u) and not u.is_dead and not u.has_meta("saga_ally") and not u.has_meta("retinue") and not u.has_meta("garrisoned_in") and not u.has_meta("summoned"):
 			used += int(u.def.get("pop", 1))
 	for b in buildings:
 		if is_instance_valid(b) and b.is_built:
