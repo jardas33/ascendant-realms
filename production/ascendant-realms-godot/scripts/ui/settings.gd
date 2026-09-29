@@ -9,7 +9,7 @@ const MENU_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 const CONTROLS := [
 	["SELECTION", "Left-click selects. Drag selects a group. Hold Shift to add to selection."],
-	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs."],
+	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map."],
 	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
 	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). Aim at the cursor."],
 	["CONTROL GROUPS", "Ctrl+1–5 assign a group. 1–5 recall it. Tab selects the army."],
