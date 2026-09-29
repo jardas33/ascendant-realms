@@ -708,6 +708,14 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Endless champions** (every fifth stage) now have names such as "Urraca Iron-hand", and their fall gets its own alert.
   - **Two new deep-road mutations:** Thorned (melee attackers take 10% of the blow back per rank) and Keen (ranged soldiers reach a metre further and see further per rank).
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 68 (done): nicer dialogs and act cards, a balance step**
+  - **Confirmations:** Delete Hero and Respec Constellation used the engine's plain grey dialog. They now use a gilt plate with a title, the question and two forged buttons. Destructive actions are tinted red ("Delete Forever"), and Esc cancels.
+  - **Act title card:** when a new act opens, the war horn sounds, a golden glow sits behind the title, a gilt rule separates it from the subtitle, and the lines arrive one after another.
+  - **Chronicle:** each chapter's aftermath sits under a small "And after" heading, so it reads as its own passage.
+  - **Balance (90 matches, Sonnet):** Vorthak 9-5-4, Careto Host 9-7-2, Sunspear 8-4-6, Ironmaw 8-6-4, Hollow 7-6-5, Wyldkin 6-6-6, Sylvan 6-6-6, Lioraen 4-6-8, Karak 3-9-6, Barrosan 1-6-11.
+    - The Careto Host buff worked: from 5 wins to 9.
+    - Barrosan drew 11 of 18: sturdy, but unable to finish a fight. Their +6% health is replaced by +7% damage. Another 90-match check is running.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
