@@ -4,7 +4,8 @@ render_mode unshaded, blend_mix, depth_draw_never, cull_disabled, shadows_disabl
 // rune circle of dashes, an inner ring, and a progress arc that fills
 // clockwise in the contesting team's colour. Presentation only.
 
-uniform vec4 owner_color : source_color = vec4(0.85, 0.85, 0.85, 1.0);
+// Unclaimed shrines glow a soft Lume gold rather than stark white.
+uniform vec4 owner_color : source_color = vec4(0.95, 0.78, 0.42, 1.0);
 uniform vec4 contest_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform float progress = 0.0;
 uniform float owned = 0.0;
@@ -27,6 +28,6 @@ void fragment() {
 	vec3 col = mix(base, contest_color.rgb, arc);
 	v = max(v, arc * 0.85);
 	float pulse = 0.85 + 0.15 * sin(TIME * 2.0);
-	ALBEDO = col * (1.2 + 0.6 * owned) * pulse;
-	ALPHA = clamp(v, 0.0, 0.9);
+	ALBEDO = col * (1.05 + 0.75 * owned) * pulse;
+	ALPHA = clamp(v * mix(0.75, 1.0, max(owned, arc)), 0.0, 0.9);
 }

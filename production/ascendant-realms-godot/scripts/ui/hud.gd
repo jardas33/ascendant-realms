@@ -1023,6 +1023,11 @@ func _add_command_section(title: String, hint: String = "", pinned: bool = false
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
+		# Keep the hint off the deck's gilt edge.
+		var pad := Control.new()
+		pad.custom_minimum_size = Vector2(6, 0)
+		pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(pad)
 	if pinned:
 		_cmd_fixed.add_child(row)
 	else:
