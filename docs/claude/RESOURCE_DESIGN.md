@@ -45,3 +45,10 @@ Warlords Battlecry, the game that inspired Ascendant Realms, made map control th
 4. AI: claim, staff, upgrade, defend and raid veins.
 5. Balance: home fields at about 70% of today's size, then AI-versus-AI soaks to tune output.
 6. Regression, including the existing economy test (home gathering must keep working exactly as before).
+
+## Added since (plans 39 to 50)
+
+- **Caravan trade** (main hall): buy 50 food, timber or stone for gold. The price starts at 100, rises 6 per trade and eases back 1 gold every 4 s. Sell 100 of a surplus for a flat 30 gold, so there is no buy-sell loop. The AI buys when a store drops under 150 and it has gold to spare, and sells piles over 900 when its gold runs short. Goes through the command bus (`trade`).
+- **Food cliff feedback:** when the food node by the hall runs dry, an alert says what feeds an army next (houses, a food vein, the caravan).
+- **Buried Lume jars** (`scripts/world/lume_jar.gd`): from minute 4, a jar surfaces between the bases every 150 s, with at most 2 out at a time. Troops of one side standing over it alone for 6 s dig it up: 150 gold plus 100 of that side's scarcest store. When both sides stand over it, nobody digs. Jars show on the minimap, the AI sends idle soldiers after them, and the Endless twist "Jar Season" doubles them. There is a deeds track for jars dug, and the result screen lists them. In live AI matches, all 45 matches of one round had jars dug, about 5.6 per match.
+- **Workers are sturdier** (+40% health): ranged raids were deciding matches on their own. See the plan 50 progress entry.
