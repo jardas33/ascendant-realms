@@ -322,6 +322,9 @@ func _build_ui() -> void:
 		img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_root.add_child(img)
 		img.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		# A slow drift into the painting while the realm loads.
+		img.resized.connect(func(): img.pivot_offset = img.size * Vector2(0.55, 0.45))
+		img.create_tween().tween_property(img, "scale", Vector2.ONE * 1.07, 24.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	# Subtle vignette so the wordmark and bar read against busy scenery.
 	var vignette := ColorRect.new()
