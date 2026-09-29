@@ -516,6 +516,21 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **90-match check:** Ironmaw 15-3, Hollow 10-4-4, Vorthak 9-6-3, Wyldkin 8-7-3, Lioraen 8-9-1, Sunspear 7-9-2, Karak 7-9-2, Sylvan 6-7-5, Frostborn 3-11-4, Barrosan 3-11-4. The siege change did not lift Barrosan. Ironmaw has led every pooled run (13 to 17 wins), so plan 44 goes after its root cause rather than small nudges. (The second 45 matches already included the jars.)
   - The pause-menu controls list the vein right-click.
   - Regression passed (18 checks with the new jar check). Pushed to GitHub.
+- **Plan 44 (done): Ironmaw's root cause, and a full UI frame pass (Emanuel asked)**
+  - **Balance root cause:** early-swarm AI personalities won 42 of 72 pooled games, and Ironmaw had the cheapest army of the swarm group.
+    - Changes: Ironmaw now masses one more soldier before marching, and its damage bonus drops from 8% to 5%. The Careto Host now strikes early, as its lore says.
+    - Result over 45 matches: Lioraen 7-2, Sunspear 5-1-3, Ironmaw 4-3-2, Barrosan 4-2-3, then everyone at 2 to 3 wins. The spread is 2 to 7 wins, the flattest yet (Ironmaw had 13 to 17 wins in every earlier run).
+  - **Lume jars in live AI matches:** all 45 matches had jars dug up, 254 in total (about 5.6 per match), so the AI goes for them.
+  - **UI audit:** I now screenshot every menu page at 4 window shapes: 16:9, 16:10, 21:9 and 4:3. A new review tool, claude_uitour.gd, does this.
+    - **Ornate gold frames (skirmish, hero creation):** the frame was a nine-patch, so its mid-edge gems and crests stretched into long smears on wide or tall panels. A new frame style (ornate_panel_style.gd) now draws the corners, crests and side gems at their painted size, centred on each edge, and stretches only the plain runs between them. Small panels draw the whole frame proportionally smaller.
+    - **Cut-corner plates (hero sheet, war chest, settings, pause and others):** the frame was missing its right edge and bottom bevels, so it looked broken. It is now closed on all 8 edges, lit from the top-left, with a faint inner rule and gilt studs at the cut corners.
+    - **Toggles:** new gilt pill switches replace a small switch boxed inside a button frame.
+    - **Hero sheet:** attribute names and values are centred on their rows. The row rules are now 2 px, because 1 px rules vanished on every other row when the 1920 layout was scaled down. The same fix applies to rules on 4 other pages.
+    - **Scroll pages:** a gutter keeps the scroll bar off the frame edges on the hero sheet and settings.
+    - **Campaign map:** chapter plates are larger, with padding, so titles no longer touch the edges. The locked Endless Road and Chronicle buttons have tooltips saying how to open them.
+    - **Skirmish:** faction cards grow to fill the panel and show the faction's full line instead of a cut-off fragment in an empty space.
+    - **Battle HUD:** checked at 4:3 and 21:9 and it holds together, including the caravan rows.
+  - Regression passed. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
