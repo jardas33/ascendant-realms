@@ -809,12 +809,20 @@ func set_selected(sel: bool) -> void:
 	_show_fortify_ring(sel)
 	_refresh_rally_marker(sel)
 
-## A selected Barrosan Clanhold shows how far its Fortify reaches (22 m):
-## everything of yours inside the gold ring gains armour.
+## A selected building with a reach shows it on the ground: a Barrosan
+## Clanhold's Fortify in gold (22 m, your units inside gain armour) and a
+## healing aura such as the Lioraen Groveheart's in green.
 var _fortify_ring: MeshInstance3D
 
 func _show_fortify_ring(sel: bool) -> void:
-	if not commander or String(commander.race) != "barrosan" or not bool(def.get("is_hq", false)):
+	var reach := 0.0
+	var tint := Color(1.0, 0.8, 0.38)
+	if commander and String(commander.race) == "barrosan" and bool(def.get("is_hq", false)):
+		reach = 22.0
+	elif def.has("heal_aura"):
+		reach = float(def.get("heal_aura_range", 16.0))
+		tint = Color(0.5, 1.0, 0.55)
+	if reach <= 0.0:
 		return
 	if not is_instance_valid(_fortify_ring):
 		if not sel:
@@ -822,15 +830,15 @@ func _show_fortify_ring(sel: bool) -> void:
 		_fortify_ring = MeshInstance3D.new()
 		_fortify_ring.name = "FortifyReach"
 		var torus := TorusMesh.new()
-		torus.inner_radius = 21.8
-		torus.outer_radius = 22.2
+		torus.inner_radius = reach - 0.2
+		torus.outer_radius = reach + 0.2
 		torus.rings = 96
 		torus.ring_segments = 6
 		_fortify_ring.mesh = torus
 		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(1.0, 0.82, 0.4, 0.55)
+		mat.albedo_color = Color(tint, 0.55)
 		mat.emission_enabled = true
-		mat.emission = Color(1.0, 0.78, 0.35)
+		mat.emission = tint
 		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		_fortify_ring.material_override = mat
