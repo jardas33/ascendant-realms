@@ -289,6 +289,8 @@ func _slider_row(name: String, mn: float, mx: float, step: float, val: float, cb
 	slider.step = step
 	slider.value = val
 	slider.custom_minimum_size = Vector2(320, 30)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(slider)
 	var val_lbl := Label.new()
 	val_lbl.custom_minimum_size = Vector2(70, 32)

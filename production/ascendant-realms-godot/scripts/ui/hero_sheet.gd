@@ -11,6 +11,17 @@ var _body: VBoxContainer
 var _scroll: ScrollContainer
 var _talent_heading: Label
 
+## What one attribute point grants, shown under each attribute's name.
+const ATTR_HINTS := {
+	"might": "+3 damage and +6 health per point",
+	"endurance": "+25 health per point",
+	"agility": "+3% attack speed and faster stride per point",
+	"intellect": "+15 mana and +2 damage per point",
+	"willpower": "+0.6 mana regen and +0.5 armor per point",
+	"command": "wider, stronger aura for nearby troops",
+	"fortune": "better loot after every battle",
+}
+
 func _ready() -> void:
 	if ResourceLoader.exists(PRESENTATION_THEME):
 		theme = load(PRESENTATION_THEME)
@@ -130,6 +141,7 @@ func _refresh() -> void:
 		var portrait := EntityPortraitView.new()
 		portrait.name = "HeroPortrait"
 		portrait.custom_minimum_size = Vector2(196, 196)
+		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		portrait.configure_definition(hero_definition, false)
 		identity_row.add_child(portrait)
 		# The faction's shield pinned to the portrait's lower corner.
@@ -360,8 +372,19 @@ func _refresh() -> void:
 		nl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 		nl.add_theme_font_size_override("font_size", 19)
 		nl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		nl.size_flags_vertical = Control.SIZE_FILL
-		row.add_child(nl)
+		# Name over a one-line reminder of what each point buys.
+		var name_col := VBoxContainer.new()
+		name_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_col.alignment = BoxContainer.ALIGNMENT_CENTER
+		name_col.add_theme_constant_override("separation", 0)
+		row.add_child(name_col)
+		name_col.add_child(nl)
+		var hint := Label.new()
+		hint.text = String(ATTR_HINTS.get(a, ""))
+		hint.add_theme_font_override("font", _body_font())
+		hint.add_theme_font_size_override("font_size", 13)
+		hint.add_theme_color_override("font_color", Color(0.72, 0.68, 0.58, 0.85))
+		name_col.add_child(hint)
 		var vl := Label.new()
 		vl.text = str(int(attrs.get(a, 0)))
 		vl.add_theme_font_override("font", _body_font())

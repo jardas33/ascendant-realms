@@ -2,7 +2,7 @@ extends PanelContainer
 ## Cut-corner vellum and forged-metal backing for the menu panels.
 ## A closed gilt frame on all eight edges (lit from the top-left, so the
 ## bottom and right edges sit a shade darker), a faint inner hairline, small
-## gilt studs at the four cut corners and a short title accent. Everything is
+## gilt studs at the four cut corners and a crest on the top edge. Everything is
 ## drawn from `size`, so the frame stays crisp at any window shape.
 
 var surface_alpha := 0.87
@@ -47,5 +47,15 @@ func _draw() -> void:
 	for c in [Vector2(cut * 0.5, cut * 0.5), Vector2(w - cut * 0.5, cut * 0.5), Vector2(w - cut * 0.5, h - cut * 0.5), Vector2(cut * 0.5, h - cut * 0.5)]:
 		var s := 2.6
 		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s, 0), c + Vector2(0, s), c + Vector2(-s, 0)]), Color(0.96, 0.81, 0.49, 0.7))
-	# Title accent.
-	draw_line(Vector2(33, 9), Vector2(minf(w - 33, 120), 9), Color(0.96, 0.81, 0.49, 0.56), 1.1, true)
+	# Crest on the top edge: a gilt diamond flanked by short rules, so the
+	# plate reads as finished metalwork rather than a bare box.
+	var mid := w * 0.5
+	var reach := minf(64.0, w * 0.18)
+	var bright := Color(0.96, 0.81, 0.49, 0.85)
+	for dir in [-1.0, 1.0]:
+		draw_line(Vector2(mid + dir * 9.0, 0), Vector2(mid + dir * reach, 0), Color(0.96, 0.81, 0.49, 0.9), 2.2, true)
+		draw_circle(Vector2(mid + dir * (reach + 3.0), 0), 1.6, Color(bright, 0.7))
+	var d := 6.0
+	draw_colored_polygon(PackedVector2Array([Vector2(mid, -d), Vector2(mid + d, 0), Vector2(mid, d), Vector2(mid - d, 0)]), Color(0.10, 0.08, 0.05, 0.95))
+	draw_polyline(PackedVector2Array([Vector2(mid, -d), Vector2(mid + d, 0), Vector2(mid, d), Vector2(mid - d, 0), Vector2(mid, -d)]), bright, 1.4, true)
+	draw_circle(Vector2(mid, 0), 1.8, bright)
