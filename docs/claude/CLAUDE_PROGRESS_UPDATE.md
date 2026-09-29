@@ -723,6 +723,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Idle workers (bug fix):** F always selected the same first idle worker, so the others could not be reached. Each press now moves on to the next one and wraps around (tested with three idle workers).
   - **Top bar:** click Idle Workers to find the next idle worker, or Idle Army to select every soldier standing without an order.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 70 (done): Barrosan's real problem found, and clearer battles**
+  - **Barrosan root cause:** Barrosan had been last in every balance run, and buffs only moved them from losses to draws.
+    - Stats were not the cause: their soldiers are the best value per cost in the game.
+    - Across 16 logged matches, Barrosan sat near zero stone 24% of the time (others 5 to 14%) and fielded half the army of other factions (8.7 soldiers on average against 18 to 22).
+    - The computer player split its workers by what its soldiers cost, ignoring buildings. Barrosan soldiers cost no stone, so almost nobody quarried it, yet every hall, tower and upgrade needs stone.
+    - Fix: the computer player now counts building costs too, for every faction.
+    - 45-match check afterwards: Hollow 5-3-1, Karak 5-3-1, Sylvan 5-2-2, Sunspear 4-4-1, Careto Host 4-4-1, Ironmaw 4-5-0, **Barrosan 4-3-2** (was 1 win in 18), Wyldkin 3-3-3, Vorthak 2-5-2, Lioraen 2-6-1. Every faction is between 2 and 5 wins, the tightest spread so far.
+  - **Gathering:** wood splinters, stone grit, gold glints and chaff fly off a resource while it is worked, where you can see it. Frame time unchanged (21.9 ms).
+  - **Reach rings:** a selected Barrosan Clanhold shows its Fortify reach as a gold ring, a healing grove such as the Lioraen Groveheart a green ring, and a hero with a command aura a sky-blue ring. The field manual explains them.
+  - **Unit card:** a veteran shows its rank stars and the name the army gave it.
+  - **Resource tooltip:** says how many of your workers are on that pile.
+  - **Five new loading tips.** The field manual fits a 1366x768 screen.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
