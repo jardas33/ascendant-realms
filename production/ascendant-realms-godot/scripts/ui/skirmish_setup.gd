@@ -356,7 +356,11 @@ func _build_battle_panel() -> Control:
 		_map_id = "__random__" if idx == 0 else str(_map_infos[idx - 1]["id"])
 		_refresh_map_preview())
 	v.add_child(map_opt)
-	var preview_row := HBoxContainer.new()
+	# Beside the map on wide screens; below it on 4:3 and 5:4 screens, where a
+	# side legend left the map small with empty space above and below.
+	var vp := get_viewport().get_visible_rect().size
+	var stacked := vp.x / maxf(1.0, vp.y) < 1.5
+	var preview_row: BoxContainer = VBoxContainer.new() if stacked else HBoxContainer.new()
 	preview_row.add_theme_constant_override("separation", 14)
 	preview_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview_row)
@@ -366,7 +370,9 @@ func _build_battle_panel() -> Control:
 	_map_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	preview_row.add_child(_map_preview)
 	_map_caption = _body_label(13, MUTED)
-	_map_caption.custom_minimum_size = Vector2(150, 0)
+	_map_caption.custom_minimum_size = Vector2(0, 0) if stacked else Vector2(150, 0)
+	if stacked:
+		_map_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_map_caption.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	preview_row.add_child(_map_caption)
 
