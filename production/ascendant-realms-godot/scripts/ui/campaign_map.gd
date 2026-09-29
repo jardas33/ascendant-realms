@@ -194,17 +194,18 @@ func _build() -> void:
 	_act_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_act_layer)
 
-	var desc_panel := Panel.new()
+	# The story strip under the map sits on the same gilt plate as every
+	# other panel in the game.
+	var desc_panel: PanelContainer = PLATE_SCRIPT.new()
+	desc_panel.set("surface_alpha", 0.9)
+	desc_panel.set("surface_alpha_bottom", 0.94)
 	desc_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	desc_panel.offset_top = -168.0
 	desc_panel.offset_bottom = -72.0
-	desc_panel.offset_left = 180.0
-	desc_panel.offset_right = -180.0
+	desc_panel.offset_left = 240.0
+	desc_panel.offset_right = -240.0
 	var story_style := StyleBoxFlat.new()
-	story_style.bg_color = Color(0.027, 0.035, 0.048, 0.92)
-	story_style.border_color = Color(0.70, 0.57, 0.35, 0.66)
-	story_style.border_width_top = 2
-	story_style.border_width_bottom = 1
+	story_style.bg_color = Color.TRANSPARENT
 	story_style.set_content_margin_all(12)
 	desc_panel.add_theme_stylebox_override("panel", story_style)
 	add_child(desc_panel)
@@ -809,7 +810,7 @@ func _show_desc(id: String) -> void:
 		_desc_label.text = "%s\nThis road is still sealed." % String(c["title"])
 		return
 	var first := String(c["briefing"]).split("\n")[0]
-	var hint := "   ·   Click to open the chronicle" if id == _next_id else ""
+	var hint := "   ·   Your next battle: click its seal to read the briefing" if id == _next_id else ""
 	_desc_label.text = "%s  [%s]%s\n%s" % [String(c["title"]), String(c["difficulty"]), hint, first]
 
 # --------------------------------------------------------------------------
