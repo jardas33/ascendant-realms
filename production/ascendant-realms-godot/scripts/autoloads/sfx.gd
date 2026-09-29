@@ -34,6 +34,27 @@ var music := {
 
 var ambient := A + "ambient_mountain_highland_with_distant_magical_a_highland_wind_lume.mp3"
 
+var _last_hover_ms := 0
+
+func _ready() -> void:
+	# Every button in the game answers the pointer with a soft tick.
+	get_tree().node_added.connect(_on_node_added)
+
+func _on_node_added(node: Node) -> void:
+	# The meta guard stops a button that leaves and re-enters the tree from
+	# collecting a second connection.
+	if node is BaseButton and not node.has_meta("silent_hover") and not node.has_meta("hover_sfx"):
+		var b: BaseButton = node
+		b.set_meta("hover_sfx", true)
+		b.mouse_entered.connect(func():
+			if b.disabled:
+				return
+			var now := Time.get_ticks_msec()
+			if now - _last_hover_ms < 60:
+				return
+			_last_hover_ms = now
+			play("hover", -16.0))
+
 func play(key: String, vol: float = -4.0) -> void:
 	if lib.has(key):
 		AudioManager.play_sfx_path(lib[key], vol)
