@@ -250,6 +250,7 @@ const TIPS := [
 	"Fog of war hides every battlefield. Send a fast rider ahead to find the enemy before their army finds you.",
 	"Explored fields stay on your map: workers can be sent to any resource you have seen.",
 	"Every 25th stage of the Endless Road, a Road Tyrant holds the enemy stronghold. Each fights in its own way.",
+	"Wound the Lobisomem of Montalegre past half and the beast takes over. Keep away from the Bruxa of the Crossroads: she drinks the life of all who stand close.",
 	"The Endless Road keeps your deepest stage with each faction and your fastest clear of every stage.",
 	"Legendary powers like Stormcall and Bloodrush can drop from any battle. Elites and Tyrants drop more.",
 	"Endless stages can turn on a twist: a Forced March, a Gold Rush, or a Lume Tide that keeps surging from the earth.",
