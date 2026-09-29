@@ -1180,13 +1180,20 @@ func _select_idle_worker() -> void:
 	cancel_attack_move_mode()
 	cancel_patrol_mode()
 	_set_inspection_target(null)
+	var idle: Array = []
 	for u in world.commanders[player_team].units:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE and not u._is_defeated_remnant():
-			_clear_selection()
-			_add_to_selection(u)
-			focus_on(u.global_position)
-			emit_signal("selection_changed", selected)
-			return
+			idle.append(u)
+	if idle.is_empty():
+		return
+	# Each press moves on to the next idle worker instead of the same first one.
+	var pick = idle[0]
+	if selected.size() == 1 and idle.has(selected[0]):
+		pick = idle[(idle.find(selected[0]) + 1) % idle.size()]
+	_clear_selection()
+	_add_to_selection(pick)
+	focus_on(pick.global_position)
+	emit_signal("selection_changed", selected)
 
 func _cycle_hero() -> void:
 	cancel_attack_move_mode()
