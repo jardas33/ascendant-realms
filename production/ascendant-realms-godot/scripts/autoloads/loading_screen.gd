@@ -252,6 +252,9 @@ const TIPS := [
 	"Every 25th stage of the Endless Road, a Road Tyrant holds the enemy stronghold. Each fights in its own way.",
 	"The Endless Road keeps your deepest stage with each faction and your fastest clear of every stage.",
 	"Legendary powers like Stormcall and Bloodrush can drop from any battle. Elites and Tyrants drop more.",
+	"Endless stages can turn on a twist: a Forced March, a Gold Rush, or a Lume Tide that keeps surging from the earth.",
+	"On a night battlefield, every finished building keeps a hearth burning at its door.",
+	"Slay the enemy's hero and the war horn sounds for you. Your own hero will have something to say about it.",
 	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
 	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
 ]
