@@ -716,6 +716,13 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
     - The Careto Host buff worked: from 5 wins to 9.
     - Barrosan drew 11 of 18: sturdy, but unable to finish a fight. Their +6% health is replaced by +7% damage. Another 90-match check is running.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 69 (done): battle controls**
+  - **F1 field manual:** pressing F1 in battle shows every hotkey on one gilt card; F1 again closes it. The pause menu and the Settings manual mention it.
+  - **Minimap orders:** right-click the minimap to send the selection across the map (or set a selected building's rally point there). A light-blue ping marks the spot.
+  - **Control groups:** one press of 1–5 selects the group; a quick second press brings the camera to the middle of it. Before, every press jumped the camera to the group's first unit.
+  - **Idle workers (bug fix):** F always selected the same first idle worker, so the others could not be reached. Each press now moves on to the next one and wraps around (tested with three idle workers).
+  - **Top bar:** click Idle Workers to find the next idle worker, or Idle Army to select every soldier standing without an order.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
