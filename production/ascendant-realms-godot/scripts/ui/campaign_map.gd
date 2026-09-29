@@ -641,7 +641,7 @@ func _open_chronicle() -> void:
 
 func _show_act_card(a: int) -> void:
 	var layer := ColorRect.new()
-	layer.color = Color(0, 0, 0, 0.82)
+	layer.color = Color(0.0, 0.0, 0.01, 0.93)
 	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(layer)
@@ -651,10 +651,51 @@ func _show_act_card(a: int) -> void:
 	box.add_theme_constant_override("separation", 14)
 	layer.add_child(box)
 	var parts: PackedStringArray = String(CampaignDefs.ACTS[a]["title"]).split(": ")
+	# A slow Lume glow behind the title, and gilt rules above and below it.
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1.0, 0.8, 0.45, 0.22))
+	grad.set_color(1, Color(1.0, 0.8, 0.45, 0.0))
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(0.5, 0.0)
+	tex.width = 256
+	tex.height = 256
+	var glow := TextureRect.new()
+	glow.texture = tex
+	glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	glow.stretch_mode = TextureRect.STRETCH_SCALE
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	glow.offset_left = -520.0
+	glow.offset_right = 520.0
+	glow.offset_top = -360.0
+	glow.offset_bottom = 360.0
+	layer.add_child(glow)
+	layer.move_child(glow, 0)
+	var lines: Array = []
 	for spec in [[parts[0].to_upper(), 22, Color(0.85, 0.74, 0.5), true], [parts[1] if parts.size() > 1 else parts[0], 54, Color(0.99, 0.86, 0.48), true], [String(CampaignDefs.ACTS[a]["subtitle"]), 20, Color(0.92, 0.88, 0.78), false], ["Click to continue", 14, Color(0.7, 0.66, 0.58), false]]:
 		var l := _label(String(spec[0]), int(spec[1]), spec[2], bool(spec[3]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(l)
+		lines.append(l)
+		if lines.size() == 2:
+			var rule := Control.new()
+			rule.custom_minimum_size = Vector2(0, 14)
+			rule.draw.connect(func():
+				var mid := rule.size.x * 0.5
+				var y := rule.size.y * 0.5
+				rule.draw_line(Vector2(mid - 220.0, y), Vector2(mid - 12.0, y), Color(0.95, 0.78, 0.42, 0.8), 1.5, true)
+				rule.draw_line(Vector2(mid + 12.0, y), Vector2(mid + 220.0, y), Color(0.95, 0.78, 0.42, 0.8), 1.5, true)
+				rule.draw_colored_polygon(PackedVector2Array([Vector2(mid, y - 6.0), Vector2(mid + 6.0, y), Vector2(mid, y + 6.0), Vector2(mid - 6.0, y)]), Color(0.98, 0.84, 0.46)))
+			box.add_child(rule)
+	# The lines arrive one after another, the act's name last and largest.
+	for i in lines.size():
+		var l: Label = lines[i]
+		l.modulate.a = 0.0
+		l.create_tween().tween_property(l, "modulate:a", 1.0, 0.6).set_delay(0.3 + i * 0.35)
+	Sfx.play("horn", -8.0)
 	layer.modulate.a = 0.0
 	layer.create_tween().tween_property(layer, "modulate:a", 1.0, 0.8)
 	layer.gui_input.connect(func(e):
