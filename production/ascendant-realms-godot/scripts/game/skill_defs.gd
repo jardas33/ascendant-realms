@@ -405,7 +405,7 @@ static func _base_abilities() -> Dictionary:
 		"sig_ashglass": {"name": "Ash-glass Storm", "mana": 60, "cd": 22.0, "range": 20.0, "dmg": 22, "sig": true,
 			"desc": "Violet fire rains on the target for 6 seconds, burning every enemy caught in it."},
 		"sig_chains": {"name": "Break the Chains", "mana": 50, "cd": 26.0, "range": 14.0, "sig": true,
-			"desc": "The horde remembers the pits: nearby allies strike 35% faster and 25% harder for 8 seconds."},
+			"desc": "The horde remembers the pits: nearby allies strike 25% faster and 20% harder for 8 seconds."},
 		"sig_moura": {"name": "Moura's Enchantment", "mana": 60, "cd": 24.0, "range": 18.0, "sig": true,
 			"desc": "Enemies near the target are dazzled by Moura gold: they stand still for 3 seconds and take 30% more damage for 6."},
 		"sig_stoneskin": {"name": "Stone Skin", "mana": 50, "cd": 26.0, "range": 14.0, "sig": true,

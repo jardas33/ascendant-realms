@@ -4191,10 +4191,11 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 						CombatVfx.hit(_fx_container, to + Vector3(randf_range(-3, 3), 0.5, randf_range(-3, 3)), Color(0.75, 0.3, 1.0), true)
 						spawn_ring_fx(to, Color(0.7, 0.3, 1.0), 6.0))
 		"sig_chains":
-			var fury := 1.25 + 0.05 * float(level - 1)
+			# 7-1-1 over 45 matches with the full 35%: toned down to 20% and 25%.
+			var fury := 1.2 + 0.05 * float(level - 1)
 			for u in commander_for_team(team).units:
 				if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(from) <= reach:
-					u.apply_spell_buff(fury, 0.0, 1.35, 8.0)
+					u.apply_spell_buff(fury, 0.0, 1.25, 8.0)
 			spawn_ring_fx(from, Color(1.0, 0.35, 0.2), reach)
 			_ability_motes_on_allies(hero, reach, Color(1.0, 0.4, 0.25))
 			emit_signal("camera_shake", 0.4, from)
