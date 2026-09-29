@@ -686,6 +686,16 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		sb.bg_color = Color(0.02, 0.025, 0.05, 0.72)
 		sb.set_corner_radius_all(8)
 		canvas.draw_style_box(sb, plate)
+	# The selected star wears two counter-turning gilt rings.
+	var sel := _find_node(_selected_id)
+	if not sel.is_empty() and _is_visible_node(sel):
+		var sc2 := _orb_center(sel)
+		var rr2 := ORB.x * 0.62
+		for q in 3:
+			var a4 := _sky_time * 0.9 + q * TAU / 3.0
+			canvas.draw_arc(sc2, rr2, a4, a4 + 1.3, 20, Color(GOLD_BRIGHT, 0.85), 2.2, true)
+			var a5 := -_sky_time * 0.6 + q * TAU / 3.0
+			canvas.draw_arc(sc2, rr2 + 7.0, a5, a5 + 0.8, 14, Color(GOLD_BRIGHT, 0.45), 1.4, true)
 	# Claim bursts: an expanding ring and sparks.
 	for b in _bursts:
 		var age := (_sky_time - float(b["t"])) / 1.2
@@ -806,7 +816,11 @@ func _refresh_nodes() -> void:
 		glyph.hovered = id == _hovered_id or id == _selected_id
 		glyph.accent = _branch_color(str(n.get("branch", "")))
 		glyph.queue_redraw()
-		b.scale = Vector2.ONE * (1.08 if id == _hovered_id else 1.0)
+		var want := Vector2.ONE * (1.12 if id == _hovered_id else 1.0)
+		var heading: Vector2 = b.get_meta("scaling_to") if b.has_meta("scaling_to") else Vector2.ONE
+		if heading != want:
+			b.set_meta("scaling_to", want)
+			b.create_tween().tween_property(b, "scale", want, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	var visible_count := 0
 	var owned_count := 0
 	for n in _nodes:

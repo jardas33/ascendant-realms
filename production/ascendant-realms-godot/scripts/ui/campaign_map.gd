@@ -595,6 +595,19 @@ func _show_act(a: int) -> void:
 			k += 1
 	for c in chapters:
 		_build_node(c)
+	# The Act unrolls: waypoints rise into place one after another.
+	var order := 0
+	for child in _act_layer.get_children():
+		if child.is_queued_for_deletion():
+			continue
+		var home: Vector2 = child.position
+		var target_mod: Color = child.modulate
+		child.position = home + Vector2(0, 24)
+		child.modulate = Color(target_mod, 0.0)
+		var tw := child.create_tween().set_parallel(true)
+		tw.tween_property(child, "position", home, 0.35).set_delay(order * 0.05).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tw.tween_property(child, "modulate", target_mod, 0.3).set_delay(order * 0.05)
+		order += 1
 	_canvas.queue_redraw()
 	var next := CampaignDefs.find(_next_id)
 	_show_desc(_next_id if int(next.get("act", -1)) == a else String(chapters[0]["id"]))
@@ -622,13 +635,19 @@ func _build_node(c: Dictionary) -> void:
 	btn.jar_found = id in s["jars"]
 	btn.is_next = id == _next_id
 	# The chapter's name rides the parchment ribbon under its seal.
-	var name_lbl := _label(String(c["title"]), 15, Color(0.20, 0.12, 0.05) if (available or cleared) else Color(0.20, 0.21, 0.24), true)
+	var name_lbl := _label(String(c["title"]), 17, Color(0.13, 0.07, 0.02) if (available or cleared) else Color(0.16, 0.17, 0.20), true)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.max_lines_visible = 2
+	# Long names that need two lines drop a size so both fit the ribbon.
+	if _title_font().get_string_size(String(c["title"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x > NODE_SIZE.x - 60.0:
+		name_lbl.add_theme_font_size_override("font_size", 14)
 	name_lbl.add_theme_constant_override("line_spacing", -4)
-	name_lbl.add_theme_constant_override("outline_size", 0)
+	# A hairline outline in the ink colour thickens the engraved letters so
+	# they stay legible when the page is scaled down.
+	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85))
+	name_lbl.add_theme_constant_override("outline_size", 1)
 	name_lbl.position = Vector2(26.0, btn.RIBBON_Y)
 	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.RIBBON_H)
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -637,7 +656,7 @@ func _build_node(c: Dictionary) -> void:
 	var status := "Sealed by your choice" if sealed_by_choice else (("Heroic laurel" if laurel else "Cleared") if cleared else (String(c["difficulty"]) if available else "Sealed"))
 	if bool(c.get("jar", false)):
 		status += ("  ·  jar found" if id in s["jars"] else "  ·  a jar lies here") if available or cleared else ""
-	var status_lbl := _label(kind + status, 13, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
+	var status_lbl := _label(kind + status, 15, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_lbl.position = Vector2(0.0, btn.RIBBON_Y + btn.RIBBON_H + 6.0)
 	status_lbl.size = Vector2(NODE_SIZE.x, 18.0)
@@ -646,6 +665,14 @@ func _build_node(c: Dictionary) -> void:
 	status_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(status_lbl)
 	btn.mouse_entered.connect(_show_desc.bind(id))
+	# Hovering a waypoint lifts it toward you; leaving settles it back.
+	btn.pivot_offset = NODE_SIZE * 0.5
+	btn.mouse_entered.connect(func():
+		if available or cleared:
+			Sfx.play("select")
+			btn.create_tween().tween_property(btn, "scale", Vector2.ONE * 1.1, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
+	btn.mouse_exited.connect(func():
+		btn.create_tween().tween_property(btn, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_SINE))
 	if available:
 		btn.pressed.connect(_open_briefing.bind(id))
 	else:
@@ -653,11 +680,8 @@ func _build_node(c: Dictionary) -> void:
 	_act_layer.add_child(btn)
 	# Both roads of the Rabagão choice pulse while the choice is still open.
 	var choice_open: bool = c.has("branch") and String(s["choice"]) == "" and available and not cleared
-	if id == _next_id or choice_open:
-		btn.pivot_offset = NODE_SIZE * 0.5
-		var pulse := btn.create_tween().set_loops()
-		pulse.tween_property(btn, "scale", Vector2.ONE * 1.05, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		pulse.tween_property(btn, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	if choice_open:
+		btn.is_next = true
 
 func _show_desc(id: String) -> void:
 	if not is_instance_valid(_desc_label):

@@ -9,7 +9,7 @@ extends Button
 const SEAL_TOP := 4.0
 const SEAL_R := 34.0
 const RIBBON_Y := 74.0
-const RIBBON_H := 38.0
+const RIBBON_H := 44.0
 
 var route_open := false
 var route_cleared := false
