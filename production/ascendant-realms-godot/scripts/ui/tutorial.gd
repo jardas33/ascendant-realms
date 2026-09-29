@@ -47,13 +47,30 @@ func setup(p_world, p_rts) -> void:
 	_panel = Panel.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.05, 0.06, 0.085, 0.94)
-	sb.set_border_width_all(2)
-	sb.border_color = Color(0.62, 0.5, 0.28, 0.95)
-	sb.set_corner_radius_all(8)
+	sb.set_border_width_all(1)
+	sb.border_width_top = 3
+	sb.border_color = Color(0.86, 0.68, 0.36, 0.95)
+	sb.set_corner_radius_all(3)
 	sb.shadow_color = Color(0, 0, 0, 0.45)
 	sb.shadow_size = 6
 	_panel.add_theme_stylebox_override("panel", sb)
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Progress along the lesson: a row of diamonds along the bottom edge,
+	# gold for steps done, a glowing one for the step at hand.
+	_panel.draw.connect(func():
+		if _steps.is_empty():
+			return
+		var n := _steps.size()
+		var gap := 18.0
+		var x0 := _panel.size.x * 0.5 - (n - 1) * gap * 0.5
+		var y := _panel.size.y - 1.0
+		for k in n:
+			var c := Vector2(x0 + k * gap, y)
+			var d := 6.0 if k == _step else 4.5
+			var col := Color(0.98, 0.84, 0.46) if k < _step else (Color(1.0, 0.92, 0.6) if k == _step else Color(0.3, 0.32, 0.36))
+			_panel.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0)]), col)
+			if k == _step:
+				_panel.draw_arc(c, d + 4.0, 0.0, TAU, 16, Color(1.0, 0.9, 0.55, 0.5), 1.2, true))
 	add_child(_panel)
 	# top-center band, explicit anchors + offsets (never a hand position on an anchored node)
 	_panel.anchor_left = 0.5
@@ -182,6 +199,7 @@ var _seen_selection := false
 func _advance() -> void:
 	_transition_log.append({"from_step": _step + 1, "to_step": _step + 2, "timestamp_ms": Time.get_ticks_msec(), "state": get_state_snapshot()})
 	_step += 1
+	_panel.queue_redraw()
 	Sfx.play("ready", -8.0)
 	if _step >= _steps.size():
 		_completed = true

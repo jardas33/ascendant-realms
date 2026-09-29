@@ -130,15 +130,41 @@ func _build() -> void:
 	tabs.offset_top = 92.0
 	tabs.offset_bottom = 132.0
 	add_child(tabs)
+	# Act tabs are wax seals: the open Act glows, sealed Acts are dark iron.
+	var act_group := ButtonGroup.new()
 	for a in CampaignDefs.ACTS.size():
 		var b := Button.new()
 		b.text = ["I", "II", "III", "IV", "V"][a]
-		b.custom_minimum_size = Vector2(64, 38)
+		b.custom_minimum_size = Vector2(46, 46)
 		b.focus_mode = Control.FOCUS_NONE
-		if ResourceLoader.exists(THEME_PATH):
-			b.theme = load(THEME_PATH)
+		b.toggle_mode = true
+		b.button_group = act_group
 		b.add_theme_font_override("font", _title_font())
 		b.add_theme_font_size_override("font_size", 18)
+		for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+			var sb := StyleBoxFlat.new()
+			sb.set_corner_radius_all(23)
+			sb.set_border_width_all(2)
+			match state:
+				"pressed", "hover_pressed":
+					sb.bg_color = Color(0.62, 0.14, 0.1)
+					sb.border_color = Color(1.0, 0.84, 0.46)
+					sb.shadow_color = Color(1.0, 0.7, 0.3, 0.45)
+					sb.shadow_size = 8
+				"hover":
+					sb.bg_color = Color(0.42, 0.1, 0.08)
+					sb.border_color = Color(1.0, 0.84, 0.46)
+				"disabled":
+					sb.bg_color = Color(0.12, 0.13, 0.15)
+					sb.border_color = Color(0.36, 0.4, 0.46)
+				_:
+					sb.bg_color = Color(0.34, 0.08, 0.06)
+					sb.border_color = Color(0.82, 0.64, 0.34)
+			b.add_theme_stylebox_override(state, sb)
+		b.add_theme_color_override("font_color", Color(0.98, 0.9, 0.7))
+		b.add_theme_color_override("font_pressed_color", Color(1, 0.96, 0.82))
+		b.add_theme_color_override("font_hover_pressed_color", Color(1, 0.96, 0.82))
+		b.add_theme_color_override("font_disabled_color", Color(0.5, 0.52, 0.56))
 		b.disabled = not _act_reached(a)
 		b.tooltip_text = String(CampaignDefs.ACTS[a]["title"]) if _act_reached(a) else "Sealed"
 		b.pressed.connect(func(): _show_act(a))
@@ -645,6 +671,8 @@ func _act_progress_text(a: int) -> String:
 
 func _show_act(a: int) -> void:
 	_act = a
+	if a < _act_buttons.size() and is_instance_valid(_act_buttons[a]):
+		_act_buttons[a].button_pressed = true
 	if is_instance_valid(_mood):
 		_mood.color = ACT_MOODS[a]
 	for child in _act_layer.get_children():

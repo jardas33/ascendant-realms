@@ -5,15 +5,41 @@ var accent := Color(0.82, 0.64, 0.36)
 var command_kind := "ORDER"
 var command_state := "READY"
 var is_menu := false
+## A light glint that sweeps once across the tile when the pointer arrives.
+var _glint := -1.0
 
 
 func _ready() -> void:
 	resized.connect(queue_redraw)
-	mouse_entered.connect(queue_redraw)
+	mouse_entered.connect(func():
+		if not disabled:
+			_glint = 0.0
+			set_process(true)
+		queue_redraw())
 	mouse_exited.connect(queue_redraw)
 	focus_entered.connect(queue_redraw)
 	focus_exited.connect(queue_redraw)
+	set_process(false)
 	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	if _glint < 0.0:
+		set_process(false)
+		return
+	_glint += delta * 2.6
+	if _glint > 1.2:
+		_glint = -1.0
+	queue_redraw()
+
+
+func _draw_glint(w: float, h: float) -> void:
+	if _glint < 0.0 or disabled:
+		return
+	var x := -40.0 + (w + 80.0) * _glint
+	var fade := sin(clampf(_glint, 0.0, 1.0) * PI)
+	draw_colored_polygon(PackedVector2Array([Vector2(x, 0), Vector2(x + 26, 0), Vector2(x + 6, h), Vector2(x - 20, h)]), Color(1.0, 0.92, 0.7, 0.10 * fade))
+	draw_colored_polygon(PackedVector2Array([Vector2(x + 8, 0), Vector2(x + 14, 0), Vector2(x - 6, h), Vector2(x - 12, h)]), Color(1.0, 0.95, 0.8, 0.16 * fade))
 
 
 func set_command_state(value: String) -> void:
@@ -40,6 +66,7 @@ func _draw() -> void:
 		var outline := PackedVector2Array(menu_shape)
 		outline.append(menu_shape[0])
 		draw_polyline(outline, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.43), 1.2, true)
+		_draw_glint(w, h)
 		return
 	if command_kind == "ORDER":
 		# Four independent hit targets sit in a single cast command well. A
@@ -74,6 +101,7 @@ func _draw() -> void:
 			var highlight := PackedVector2Array(face)
 			highlight.append(face[0])
 			draw_polyline(highlight, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.56), 1.3, true)
+		_draw_glint(w, h)
 		return
 	if command_kind in ["BUILD", "TRAIN", "RESEARCH"]:
 		# Give the authored structure and technology art a lit recess instead of
@@ -119,6 +147,7 @@ func _draw() -> void:
 		draw_line(Vector2(w - 13, 1), Vector2(w - 1, 13), Color(metal.r, metal.g, metal.b, 0.49 if enabled else 0.12), 1.2, true)
 		if lit or active:
 			draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
+		_draw_glint(w, h)
 		return
 	# A faceted silhouette and raised rail turn flat rows into tactile controls.
 	var cut := 9.0 if command_kind == "ABILITY" else 6.0
@@ -151,3 +180,4 @@ func _draw() -> void:
 	draw_line(Vector2(w - 13, 1), Vector2(w - 1, 13), Color(metal.r, metal.g, metal.b, 0.56 if lit else 0.28), 1.0, true)
 	if active:
 		draw_line(Vector2(12, h - 2), Vector2(w * 0.52, h - 2), Color(metal.r, metal.g, metal.b, 0.82), 2.0, true)
+	_draw_glint(w, h)
