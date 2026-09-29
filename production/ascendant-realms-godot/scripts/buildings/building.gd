@@ -129,6 +129,10 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	if world and world.has_method("invalidate_entity_snapshots"):
 		world.invalidate_entity_snapshots()
 	max_hp = float(p_def.get("hp", 1000))
+	# Granitborn castro walls: the hillfort people build stone that does not
+	# fall (Karak lost twice to minute-nine rushes over 90 matches).
+	if commander and String(commander.race) == "karak":
+		max_hp *= 1.25
 	armor_class = p_def.get("armor_class", "fortified")
 	base_armor = float(p_def.get("armor", 0))
 	footprint = float(p_def.get("footprint", 4.0))

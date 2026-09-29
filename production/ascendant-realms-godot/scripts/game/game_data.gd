@@ -82,7 +82,7 @@ const RACES := {
 		"color": Color(0.85, 0.6, 0.3),
 		"hero": "karak_hero_thanelord",
 		"hero_name": "Thane-Lord",
-		"mechanic": "Stone Resolve: slow but incredibly durable warriors and mighty siege.",
+		"mechanic": "Stone Resolve: slow but incredibly durable warriors, mighty siege, and castro walls a quarter tougher than anyone else's.",
 		"main_building": "karak_hold",
 		"worker": "karak_miner",
 		"start_units": ["karak_miner", "karak_miner", "karak_miner", "karak_warrior"],
