@@ -225,8 +225,42 @@ func _group(parent: VBoxContainer, title_text: String) -> VBoxContainer:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 2)
 	panel.add_child(content)
-	content.add_child(_heading(title_text))
+	# Heading with a small drawn emblem for the section.
+	var head_row := HBoxContainer.new()
+	head_row.add_theme_constant_override("separation", 10)
+	var icon := Control.new()
+	icon.custom_minimum_size = Vector2(30, 30)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var kind := title_text
+	icon.draw.connect(func(): _draw_section_emblem(icon, kind))
+	head_row.add_child(icon)
+	head_row.add_child(_heading(title_text))
+	content.add_child(head_row)
 	return content
+
+func _draw_section_emblem(ci: Control, kind: String) -> void:
+	var c := ci.size * 0.5
+	var gold := Color(0.93, 0.76, 0.42)
+	ci.draw_circle(c, 14.0, Color(0.05, 0.05, 0.06, 0.9))
+	ci.draw_arc(c, 14.0, 0.0, TAU, 28, Color(gold, 0.8), 1.4, true)
+	match kind:
+		"AUDIO":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-7, -3), c + Vector2(-3, -3), c + Vector2(2, -7), c + Vector2(2, 7), c + Vector2(-3, 3), c + Vector2(-7, 3)]), gold)
+			ci.draw_arc(c + Vector2(2, 0), 5.0, -0.8, 0.8, 8, gold, 1.4, true)
+			ci.draw_arc(c + Vector2(2, 0), 8.5, -0.8, 0.8, 10, gold, 1.4, true)
+		"DISPLAY":
+			ci.draw_rect(Rect2(c + Vector2(-8, -6), Vector2(16, 11)), gold, false, 1.6)
+			ci.draw_line(c + Vector2(-4, 8), c + Vector2(4, 8), gold, 1.6, true)
+		"CAMERA":
+			ci.draw_arc(c, 6.0, 0.0, TAU, 20, gold, 1.6, true)
+			ci.draw_circle(c, 2.4, gold)
+			ci.draw_arc(c, 9.5, -2.6, -0.6, 12, gold, 1.4, true)
+		_:
+			ci.draw_circle(c + Vector2(0, -6), 2.4, gold)
+			ci.draw_line(c + Vector2(-7, -2), c + Vector2(7, -2), gold, 1.6, true)
+			ci.draw_line(c + Vector2(0, -2), c + Vector2(0, 4), gold, 1.6, true)
+			ci.draw_line(c + Vector2(0, 4), c + Vector2(-4, 9), gold, 1.6, true)
+			ci.draw_line(c + Vector2(0, 4), c + Vector2(4, 9), gold, 1.6, true)
 
 func _heading(text: String) -> Label:
 	var l := Label.new()
