@@ -418,6 +418,9 @@ func _refresh() -> void:
 	# attributes, filled in the faction's colour, over faint guide rings.
 	var chart := Control.new()
 	chart.custom_minimum_size = Vector2(0, 330)
+	# Grows into whatever height the leaf has, so no dead space sits below.
+	chart.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	chart.resized.connect(chart.queue_redraw)
 	chart.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var chart_col: Color = GameData.RACES.get(String(h.get("race", "")), {}).get("color", Color(0.9, 0.7, 0.4))
 	var attr_names: Array = ProfileManager.ATTRIBUTES
