@@ -93,6 +93,7 @@ func setup() -> void:
 	vb.add_child(title)
 
 	var subtitle := Label.new()
+	_subtitle = subtitle
 	subtitle.text = "The battle is paused"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 16)
@@ -237,6 +238,27 @@ func _cycle_music() -> void:
 func set_shown(s: bool) -> void:
 	visible = s
 	_update_chapter_line()
+	_update_battle_so_far()
+
+var _subtitle: Label
+
+## The battle so far, under the title: time, foes slain, soldiers standing.
+func _update_battle_so_far() -> void:
+	if not is_instance_valid(_subtitle):
+		return
+	var scene := get_tree().current_scene
+	var world = scene.get("world") if scene else null
+	if world == null or not is_instance_valid(world):
+		_subtitle.text = "The battle is paused"
+		return
+	var t := int(world.match_time)
+	var soldiers := 0
+	if is_instance_valid(world.player_commander):
+		for u in world.player_commander.units:
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker:
+				soldiers += 1
+	var slain := int(world.kills_by_player)
+	_subtitle.text = "The battle is paused  ·  %d:%02d  ·  %d %s slain  ·  %d %s standing" % [t / 60, t % 60, slain, "foe" if slain == 1 else "foes", soldiers, "soldier" if soldiers == 1 else "soldiers"]
 
 var _chapter_line: Label
 
