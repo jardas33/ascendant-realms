@@ -604,6 +604,16 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Hero sheet:** the faction shield is pinned to the portrait frame.
   - **Main menu:** the saga button breathes a slow warm light.
   - Regression passed (18 checks). No new Codex work. Pushed to GitHub.
+- **Plans 51 and 52 (done): balance settled, more life in the screens**
+  - **Balance over 135 matches after the sturdier-worker fix and Hollow lifesteal back to 9%:** Hollow 15-8-4, Ironmaw 15-10-2, Lioraen 14-12-1, Sunspear 12-9-6, Sylvan 11-7-9, Karak 10-10-7, Wyldkin 9-12-6, Vorthak 9-16-2, Frostborn 8-14-5, Barrosan 7-12-8. Every faction is now between 7 and 15 wins; before, the range was 4 to 23. Balance moves to maintenance, and the focus goes back to making the game feel good.
+  - **Battle alerts:** each alert pops in and takes its kind's colour: red for attacks and losses, violet for Lume and jars, green for gains.
+  - **Top bar:** resource numbers flash green on a gain and amber on a spend.
+  - **Skirmish:** Begin Battle breathes a slow warm light, like the saga button on the main menu.
+  - **War Chest:** a relic you equip lights up in its slot with a chime.
+  - **Loading screen:** a turning Lume sigil sits over the status line.
+  - **Result screen:** epic and legendary finds pop in with a chime.
+  - **Endless:** the Road of the Week wears a violet ribbon showing the days until the next road.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
