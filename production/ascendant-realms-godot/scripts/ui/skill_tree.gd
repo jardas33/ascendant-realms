@@ -981,15 +981,8 @@ func _panel_style(bg: Color, border: Color, radius: int, width: int) -> StyleBox
 
 func _on_respec() -> void:
 	Sfx.play("select")
-	var dlg := ConfirmationDialog.new()
-	dlg.dialog_text = "Refund all unlocked skills? Your skill points will be returned."
-	dlg.title = "Respec Constellation"
-	add_child(dlg)
-	dlg.confirmed.connect(func():
-		ProfileManager.respec_skills()
-		dlg.queue_free())
-	dlg.canceled.connect(func(): dlg.queue_free())
-	dlg.popup_centered()
+	var dlg: Control = load("res://scripts/ui/gilt_confirm.gd").ask(self, "Respec Constellation", "Refund all unlocked skills? Your skill points will be returned.", "Refund Skills")
+	dlg.confirmed.connect(func(): ProfileManager.respec_skills())
 
 func _goto(path: String) -> void:
 	Sfx.play("select")

@@ -363,16 +363,10 @@ func _button(text: String, col: Color, cb: Callable) -> Button:
 
 func _on_delete() -> void:
 	Sfx.play("select")
-	var dlg := ConfirmationDialog.new()
-	dlg.title = "Delete Hero"
-	dlg.dialog_text = "Permanently delete your hero and all progression? This cannot be undone."
-	add_child(dlg)
+	var dlg: Control = load("res://scripts/ui/gilt_confirm.gd").ask(self, "Delete Hero", "Permanently delete your hero and all progression? This cannot be undone.", "Delete Forever", true)
 	dlg.confirmed.connect(func():
 		ProfileManager.wipe_hero()
-		dlg.queue_free()
 		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn"))
-	dlg.canceled.connect(func(): dlg.queue_free())
-	dlg.popup_centered()
 
 func _goto(path: String) -> void:
 	Sfx.play("select")
