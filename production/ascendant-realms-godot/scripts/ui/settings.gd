@@ -297,10 +297,12 @@ func _slider_row(name: String, mn: float, mx: float, step: float, val: float, cb
 	val_lbl.add_theme_font_override("font", _body_font())
 	val_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
 	val_lbl.add_theme_font_size_override("font_size", 18)
-	val_lbl.text = "%.2f" % val
+	# Volumes read as percentages, speeds as multipliers.
+	var fmt := func(x: float) -> String: return ("%d%%" % roundi(x * 100.0)) if mx <= 1.0 else ("%.1f×" % x)
+	val_lbl.text = fmt.call(val)
 	row.add_child(val_lbl)
 	slider.value_changed.connect(func(v):
-		val_lbl.text = "%.2f" % v
+		val_lbl.text = fmt.call(v)
 		cb.call(v))
 	return row
 
