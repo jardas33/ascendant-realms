@@ -107,6 +107,10 @@ func _build() -> void:
 	var begin := _button("Begin Battle", Vector2(300, 54), _on_begin)
 	_style_primary(begin)
 	footer.add_child(begin)
+	# The call to arms breathes a slow warm light.
+	var breathe := begin.create_tween().set_loops()
+	breathe.tween_property(begin, "self_modulate", Color(1.22, 1.1, 0.9), 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	breathe.tween_property(begin, "self_modulate", Color(1, 1, 1), 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 	_select_race(_player_race, false)
 	_refresh_map_preview()

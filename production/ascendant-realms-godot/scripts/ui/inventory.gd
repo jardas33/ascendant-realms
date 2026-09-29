@@ -428,6 +428,20 @@ func _rebuild_items() -> void:
 	for item in sorted:
 		_items_box.add_child(_item_card(item))
 
+## The relic just equipped lights up in its slot, and the hero's forge rings.
+func _flash_equipped(slot: String) -> void:
+	await get_tree().process_frame
+	var card := find_child("EquippedRelic_" + slot, true, false) as Control
+	if card == null:
+		return
+	Sfx.play("levelup", -6.0)
+	card.pivot_offset = card.size * 0.5
+	card.modulate = Color(1.6, 1.45, 1.1)
+	card.scale = Vector2(1.04, 1.04)
+	var tw := card.create_tween().set_parallel(true)
+	tw.tween_property(card, "modulate", Color.WHITE, 0.6)
+	tw.tween_property(card, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
 func _item_card(item: Dictionary) -> Button:
 	var rarity := str(item.get("rarity", "common"))
 	var accent: Color = RARITY_COLORS.get(rarity, Color.WHITE)
@@ -553,6 +567,7 @@ func _show_item_detail(item: Dictionary) -> void:
 		_detail_box.add_child(_wrap_label("Set pieces worn: %d of 4 (bonus at 2, power at 4)." % worn))
 	var eq := _button("Equip", func():
 		ProfileManager.equip_item(item)
+		_flash_equipped.call_deferred(str(item.get("slot", "")))
 		_clear_after(_detail_box, 2)
 		_detail_box.add_child(_empty_message("SELECT A RELIC", "Choose a relic to inspect its powers and compare it to equipped gear.", EMPTY_RELIC_ART)))
 	_style_primary(eq)

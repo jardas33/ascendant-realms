@@ -378,6 +378,23 @@ func _build_ui() -> void:
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	vbox.add_theme_constant_override("separation", 12)
 
+	# A slowly turning Lume sigil over the status line.
+	var sigil := Control.new()
+	sigil.custom_minimum_size = Vector2(0, 34)
+	sigil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(sigil)
+	sigil.draw.connect(func():
+		var c := Vector2(sigil.size.x * 0.5, 17)
+		var spin := Time.get_ticks_msec() / 900.0
+		for k in 8:
+			var a := spin + k * TAU / 8.0
+			var r := 13.0 if k % 2 == 0 else 8.0
+			sigil.draw_line(c, c + Vector2(cos(a), sin(a)) * r, Color(1.0, 0.82, 0.45, 0.85 if k % 2 == 0 else 0.5), 1.8, true)
+		sigil.draw_circle(c, 3.5, Color(1.0, 0.92, 0.65))
+		sigil.draw_arc(c, 16.0, spin * -0.5, spin * -0.5 + 4.2, 24, Color(0.8, 0.62, 1.0, 0.7), 1.4, true))
+	var sigil_tw := sigil.create_tween().set_loops()
+	sigil_tw.tween_callback(sigil.queue_redraw).set_delay(0.03)
+
 	_status = Label.new()
 	_status.text = "Loading..."
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
