@@ -3741,6 +3741,12 @@ func _on_unit_died(unit) -> void:
 		_saga_react(int(unit.team), "hero")
 		if int(unit.team) != player_team and source_team == player_team:
 			enemy_heroes_slain += 1
+			# An enemy hero falls: the horn sounds and your hero says so.
+			Sfx.play("horn", -8.0)
+			emit_signal("alert", "The enemy hero %s has fallen!" % String(unit.def.get("name", "")), unit.global_position)
+			var own_hero = player_commander.hero_ref if is_instance_valid(player_commander) else null
+			if is_instance_valid(own_hero) and own_hero.has_method("say"):
+				own_hero.say(load("res://scripts/game/bark_defs.gd").pick(String(player_commander.race), "slay"))
 	if unit.has_meta("road_boss") and source_team == player_team:
 		# A Road Tyrant pays like ten Elites (on top of the milestone legendary),
 		# and always drops a piece of its own set.
