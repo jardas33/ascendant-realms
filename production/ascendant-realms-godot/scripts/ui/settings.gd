@@ -18,7 +18,8 @@ const CONTROLS := [
 	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
 	["CARAVAN", "Select your main hall to buy food, timber or stone with gold, or sell a surplus for gold. Buying raises the price; it eases back over time."],
-	["CAMERA", "Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
+	["REACH RINGS", "Select a Barrosan Clanhold, a healing grove or your hero to see its reach on the ground: gold Fortify, green healing, blue command aura."],
+	["CAMERA","Arrows or screen edge move. Z / C rotate. Mouse wheel zooms."],
 	["SYSTEM", "F1 shows this manual in battle. F3 toggles debug information. Esc pauses the battle."],
 ]
 
