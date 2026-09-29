@@ -109,16 +109,33 @@ func _build() -> void:
 	columns.add_theme_constant_override("separation", 20)
 	add_child(columns)
 
-	# Left: scrollable form
+	# Left: the forging form on a dark gilt plate, so it reads as a crafted
+	# page rather than loose text floating on the painting.
+	var form_plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
+	form_plate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	form_plate.set("surface_alpha", 0.82)
+	form_plate.set("surface_alpha_bottom", 0.9)
+	var form_style := StyleBoxFlat.new()
+	form_style.bg_color = Color.TRANSPARENT
+	form_style.content_margin_left = 28.0
+	form_style.content_margin_right = 14.0
+	form_style.content_margin_top = 20.0
+	form_style.content_margin_bottom = 16.0
+	form_plate.add_theme_stylebox_override("panel", form_style)
+	columns.add_child(form_plate)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	columns.add_child(scroll)
+	form_plate.add_child(scroll)
 
 	var main := VBoxContainer.new()
 	main.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main.add_theme_constant_override("separation", 18)
-	scroll.add_child(main)
+	var form_gutter := MarginContainer.new()
+	form_gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	form_gutter.add_theme_constant_override("margin_right", 16)
+	scroll.add_child(form_gutter)
+	form_gutter.add_child(main)
 
 	# Name
 	main.add_child(_section_label("Name"))

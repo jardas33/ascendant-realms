@@ -537,6 +537,23 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Attribute steppers:** the +/- buttons in hero creation and on the hero sheet have bigger glyphs and centred values.
   - **Pause and result screens:** checked at 4:3 and 21:9. Both hold together with the new closed frames.
   - Regression passed. Pushed to GitHub.
+- **Visual revamp (Emanuel: "campaign and skill tree are insanely basic"; "go super deep on the visual UI")**
+  - **Skill constellation:** it is now a living night sky instead of rows of cards.
+    - Each skill is a glowing star orb. Its ring and halo show the state (owned, ready, open, locked). Ready stars pulse with a turning rune ring, and keystones wear a crown of light.
+    - Behind the stars are a twinkling starfield, a soft nebula in each path's colour and the path's name in large faint letters.
+    - Light motes flow along owned links, and claiming a star sets off a burst of light and sparks.
+    - Stars scale smoothly on hover, and the selected star wears counter-turning gilt rings. Nodes drift slightly off the grid, and dark plates behind the names keep the links from crossing the text.
+    - Gilt plates and forged buttons match the rest of the game. The page opens showing all paths.
+  - **Campaign map:** chapters are now wax-seal medallions stamped with their number, over parchment ribbons with the chapter's name.
+    - Won chapters get a laurel (gold for Heroic). Sealed chapters are dark iron with a chain, side roads get violet seals, and a chapter with a buried jar shows a jar badge.
+    - Gold dashes march along the open roads, mist drifts, embers and Lume motes rise, and open lands sit in pools of light.
+    - Your faction's banner waves at your next chapter. Waypoints lift with a sound on hover, and each Act's waypoints rise into place one by one.
+  - **Main menu:** your hero's card sits in the corner (portrait, faction, level, XP bar, points and talent picks waiting). A gilt plate backs the buttons, and hovered buttons are flanked by small Lume diamonds.
+  - **Faction heraldry:** a drawn sigil for every faction (faction_sigils.gd): the Barrosan bull, Lioraen leaf, Vorthak flame, Ironmaw broken chain, Moura fountain, Granitborn tower, Dominion sun, Wolfveil moon, Compaña candle and Careto bell. It appears on the skirmish cards (which lean in on hover) and on the HUD crest of every faction without painted art.
+  - **War Chest:** every relic now shows a picture: a rarity-coloured glow with a drawn emblem of its slot (blade, shield, helm, mail, gauntlet, boot, amulet, ring, cloak).
+  - **Result screen:** golden rays turn behind the plate on a victory, and a red glow shows on a defeat. The title drops in and settles, the ledger lines appear one after another, and the numbers count up.
+  - **Hero creation:** the form now sits on a gilt plate instead of floating over the painting.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

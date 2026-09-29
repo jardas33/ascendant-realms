@@ -4115,3 +4115,53 @@ func _on_game_over(victory: bool) -> void:
 	replay_btn.custom_minimum_size = Vector2(200, 56)
 	replay_btn.pressed.connect(func(): emit_signal("replay"))
 	btn_row.add_child(replay_btn)
+
+	# --- Presentation: the moment of the result -------------------------------
+	# Victory: slow golden rays behind the plate. Defeat: a cold red glow.
+	var rays := Control.new()
+	rays.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	rays.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_gameover_layer.add_child(rays)
+	_gameover_layer.move_child(rays, 1)
+	var ray_col := Color(1.0, 0.82, 0.42) if victory else Color(0.8, 0.18, 0.14)
+	rays.draw.connect(func():
+		var c := rays.size * 0.5
+		var reach := rays.size.length() * 0.6
+		var spin := float(rays.get_meta("spin")) if rays.has_meta("spin") else 0.0
+		if victory:
+			for k in 18:
+				var a0 := spin + k * TAU / 18.0
+				rays.draw_colored_polygon(PackedVector2Array([c, c + Vector2(cos(a0 - 0.05), sin(a0 - 0.05)) * reach, c + Vector2(cos(a0 + 0.05), sin(a0 + 0.05)) * reach]), Color(ray_col, 0.05))
+		for q in 8:
+			rays.draw_circle(c, 200.0 + q * 60.0, Color(ray_col, 0.025)))
+	rays.modulate.a = 0.0
+	rays.create_tween().tween_property(rays, "modulate:a", 1.0, 1.0)
+	var spin_tw := rays.create_tween().set_loops()
+	spin_tw.tween_method(func(v: float):
+		rays.set_meta("spin", v)
+		rays.queue_redraw(), 0.0, TAU / 18.0, 6.0)
+	# The title lands: it drops in large and settles.
+	heading.pivot_offset = Vector2(310, 40)
+	heading.scale = Vector2.ONE * 1.6
+	heading.modulate.a = 0.0
+	var h_tw := heading.create_tween().set_parallel(true)
+	h_tw.tween_property(heading, "scale", Vector2.ONE, 0.55).set_delay(0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	h_tw.tween_property(heading, "modulate:a", 1.0, 0.3).set_delay(0.35)
+	# The ledger lines reveal one after another, then the numbers count up.
+	var order := 0
+	for child in box.get_children():
+		if child == heading:
+			continue
+		child.modulate.a = 0.0
+		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(0.8 + order * 0.12)
+		order += 1
+	for cell in ledger.get_children():
+		var value_label: Label = cell.get_child(0) as Label
+		var final_text := value_label.text
+		var digits := final_text.replace("+", "")
+		if not digits.is_valid_int():
+			continue
+		var target := int(digits)
+		var prefix := "+" if final_text.begins_with("+") else ""
+		value_label.text = prefix + "0"
+		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(0.9 + order * 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
