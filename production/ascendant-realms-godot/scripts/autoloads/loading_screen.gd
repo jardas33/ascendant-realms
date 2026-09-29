@@ -256,6 +256,11 @@ const TIPS := [
 	"Endless stages can turn on a twist: a Forced March, a Gold Rush, or a Lume Tide that keeps surging from the earth.",
 	"On a night battlefield, every finished building keeps a hearth burning at its door.",
 	"Slay the enemy's hero and the war horn sounds for you. Your own hero will have something to say about it.",
+	"Select your Clanhold, a healing grove or your hero to see how far its power reaches, drawn on the ground.",
+	"Right-click the minimap to send your army across the field without scrolling the camera.",
+	"Press a control group's number twice to bring the camera to it.",
+	"Veterans earn a name from the army at rank three. Select one to read it.",
+	"Stone builds every hall and tower. An economy with no quarrymen stalls, however much food it hoards.",
 	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
 	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
 ]
