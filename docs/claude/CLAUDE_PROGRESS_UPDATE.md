@@ -554,6 +554,14 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Result screen:** golden rays turn behind the plate on a victory, and a red glow shows on a defeat. The title drops in and settles, the ledger lines appear one after another, and the numbers count up.
   - **Hero creation:** the form now sits on a gilt plate instead of floating over the painting.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Visual revamp, continued (plans 46 and 47)**
+  - **Hero creation:** your hero now stands on a stone dais ringed with a band of light in the faction's colour, with a warm rim light behind. Each race button shows its faction sigil.
+  - **Chapter briefings:** each briefing now opens as a war council. Your shield faces the enemy's across crossed blades, difficulty shows as pips, and the card pops in.
+  - **Pause menu:** your faction's shield hangs over the top of the plate.
+  - **Hero sheet:** deeds show as a row of medals, one per track: dark iron until earned, then bronze, silver, gold and finally Lume. Each medal carries its tier title and shows the next goal on hover.
+  - **Loading screen:** a dark wash at the bottom keeps the tip and the progress bar readable over bright paintings.
+  - **Barrosan sigil:** redrawn as the Barrosã bull with its great lyre horns.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
