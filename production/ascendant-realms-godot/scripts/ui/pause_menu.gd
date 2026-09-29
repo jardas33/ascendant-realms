@@ -171,6 +171,7 @@ func setup() -> void:
 	_add_key_row(system, "BACKSPACE", "Jump to latest alert", font)
 	_add_key_row(system, "Q T E R  ·  Y U V", "Hero abilities", font)
 	_add_key_row(system, "ESC", "Pause / resume", font)
+	_add_key_row(system, "F1", "Every hotkey (field manual)", font)
 	_add_key_row(system, "WHEEL / Z C", "Zoom / rotate camera", font)
 
 	_quit_button = _make_btn("Quit to Menu", func(): emit_signal("quit_requested"))
