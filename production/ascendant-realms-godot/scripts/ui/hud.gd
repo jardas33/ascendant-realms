@@ -2330,6 +2330,14 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
+	# A veteran's rank and the name the army gave it, in gold stars.
+	var rank := int(u.get("_veterancy")) if u.get("_veterancy") != null else 0
+	if rank > 0 and not u.is_worker and not u.is_hero:
+		var vet_name := String(u.get("veteran_name")) if u.get("veteran_name") != null else ""
+		var stars := "★".repeat(mini(rank, 5)) + (" %d" % rank if rank > 5 else "")
+		var vet := _mk_label(stars + ("   “%s”" % vet_name if vet_name != "" else "   Veteran"), 13, Color(1.0, 0.84, 0.42))
+		vet.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		info.add_child(vet)
 	info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
 
 	# hp bar + text
