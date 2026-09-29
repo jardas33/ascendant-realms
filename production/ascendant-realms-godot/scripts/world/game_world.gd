@@ -520,6 +520,11 @@ func _update_player_visibility() -> void:
 	for u in all_units():
 		if is_instance_valid(u) and not u.is_dead and u.team == player_team and not u._is_defeated_remnant():
 			_mark_visibility_radius(u.global_position, maxf(1.0, float(u.vision)))
+	# The Golden Loom sees far around it.
+	if is_instance_valid(player_commander):
+		for b in player_commander.buildings:
+			if is_instance_valid(b) and not b.is_dead and b.is_built and String(b.def.get("landmark", "")) == "loom":
+				_mark_visibility_radius(b.global_position, float(b.def.get("reach", 34.0)))
 	for u in all_units():
 		if is_instance_valid(u) and u.has_method("set_player_visibility_visible"):
 			u.set_player_visibility_visible(is_player_visible(u))
@@ -2260,6 +2265,12 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 		return "Cannot build this"
 	if building_id not in GameData.buildings_for_race(String(cmd.race)):
 		return "Cannot build this"
+	if int(cmd.tier) < int(bdef.get("min_tier", 1)):
+		return "Requires the Age of Iron" if int(bdef.get("min_tier", 1)) == 2 else "Requires the Age of Lume"
+	if bool(bdef.get("unique", false)):
+		for ob in cmd.buildings:
+			if is_instance_valid(ob) and not ob.is_dead and String(ob.building_id) == building_id:
+				return "You can raise only one %s" % String(bdef.get("name", "of these"))
 	if check_affordability and not cmd.can_afford(bdef.get("cost", {})):
 		return "Not enough resources"
 	var fp := float(bdef.get("footprint", 4.0))
@@ -3844,6 +3855,7 @@ func _award_hero_field_xp(victim, source_team: int) -> void:
 			emit_signal("hero_leveled", hero.field_level)
 
 func _on_unit_died(unit) -> void:
+	_ossuary_bell_rise(unit)
 	if unit.get_meta("v0434_death_handled", false):
 		return
 	unit.set_meta("v0434_death_handled", true)
@@ -4242,6 +4254,31 @@ func _race_first_melee(race: String) -> String:
 		if String(d.get("race", "")) == race and int(d.get("tier", 1)) == 1 and String(d.get("role", "")) == "melee":
 			return String(uid)
 	return ""
+
+## The Ossuary Bell: one in three of its people's soldiers who fall near it
+## rises again as a skeleton for 40 seconds.
+func _ossuary_bell_rise(unit) -> void:
+	if not is_instance_valid(unit) or unit.is_worker or unit.is_hero or unit.has_meta("summoned") or not game_running:
+		return
+	var cmd = commander_for_team(int(unit.team))
+	if cmd == null:
+		return
+	for b in cmd.buildings:
+		if is_instance_valid(b) and not b.is_dead and b.is_built and String(b.def.get("landmark", "")) == "bell" 				and b.global_position.distance_to(unit.global_position) <= float(b.def.get("reach", 22.0)):
+			if randf() > 0.34:
+				return
+			var pos: Vector3 = unit.global_position
+			get_tree().create_timer(1.0, false).timeout.connect(func():
+				if not game_running:
+					return
+				var su = spawn_unit("hollow_skeleton", int(cmd.team), pos)
+				if su:
+					su.set_meta("summoned", true)
+					var ref = su
+					get_tree().create_timer(40.0, false).timeout.connect(func():
+						if is_instance_valid(ref) and not ref.is_dead:
+							_dismiss_summon(ref)))
+			return
 
 ## A summon's time is up: it fades out without counting as a death.
 func _dismiss_summon(u) -> void:

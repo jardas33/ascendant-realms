@@ -825,6 +825,9 @@ func _show_fortify_ring(sel: bool) -> void:
 	elif def.has("heal_aura"):
 		reach = float(def.get("heal_aura_range", 16.0))
 		tint = Color(0.5, 1.0, 0.55)
+	elif def.has("landmark"):
+		reach = float(def.get("reach", 20.0))
+		tint = LANDMARK_TINT.get(String(def["landmark"]), tint)
 	if reach <= 0.0:
 		return
 	if not is_instance_valid(_fortify_ring):
@@ -1356,8 +1359,111 @@ func _physics_process(delta: float) -> void:
 			_house_food_tick(delta)
 		if def.has("heal_aura"):
 			_aura_tick(delta)
+		if def.has("landmark"):
+			_landmark_tick(delta)
 		if bool(def.get("vein_outpost", false)):
 			_outpost_tick(delta)
+
+## Landmark powers (BuildingDefs._add_landmarks), pulsed once a second.
+var _landmark_timer := 0.0
+var _landmark_clock := 0
+var _landmark_cd := 0.0
+
+func _landmark_tick(delta: float) -> void:
+	if not is_built or is_dead or not world or not commander or commander.defeated or not world.game_running:
+		return
+	_landmark_timer += delta
+	if _landmark_timer < 1.0:
+		return
+	_landmark_timer = 0.0
+	_landmark_clock += 1
+	_landmark_cd = maxf(0.0, _landmark_cd - 1.0)
+	var reach := float(def.get("reach", 20.0))
+	var here := global_position
+	match String(def.get("landmark", "")):
+		"oven":
+			if _landmark_clock % 20 == 0:
+				commander.add_resources("food", 40)
+				if team == world.player_team:
+					world.spawn_income_popup(here + Vector3.UP * 4.0, 40, "food")
+			for u in commander.units:
+				if is_instance_valid(u) and not u.is_dead and u.hp < u.max_hp and u.global_position.distance_to(here) <= reach:
+					u.hp = minf(u.max_hp, u.hp + 3.0)
+		"fountain":
+			world.heal_allies_near(here, reach, 5.0, team)
+			var h = commander.hero_ref
+			if is_instance_valid(h) and not h.is_dead and h.global_position.distance_to(here) <= reach:
+				h.mana = minf(h.max_mana, h.mana + 4.0)
+		"rift":
+			if _landmark_clock % 40 == 0:
+				for k in 2:
+					var su = world.spawn_unit("vorthak_ash_thrall", team, here + Vector3(4.0 - 8.0 * k, 0.0, 4.0))
+					if su:
+						su.set_meta("summoned", true)
+						var ref = su
+						get_tree().create_timer(60.0, false).timeout.connect(func():
+							if is_instance_valid(ref) and not ref.is_dead and is_instance_valid(world):
+								world._dismiss_summon(ref))
+				if team == world.player_team:
+					world.emit_signal("alert", "Two thralls climb out of the Rift Gate.", here)
+		"drum":
+			for u in commander.units:
+				if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(here) <= reach:
+					u.apply_spell_buff(1.0, 0.0, 1.2, 1.6)
+		"loom":
+			if _landmark_clock % 20 == 0:
+				commander.add_resources("gold", 30)
+				if team == world.player_team:
+					world.spawn_income_popup(here + Vector3.UP * 4.0, 30, "gold")
+		"stones":
+			for u in commander.units:
+				if is_instance_valid(u) and not u.is_dead and u.global_position.distance_to(here) <= reach:
+					u.apply_spell_buff(1.0, 3.0, 1.0, 1.6)
+			for b in commander.buildings:
+				if is_instance_valid(b) and not b.is_dead and b.is_built and b.hp < b.max_hp and b.global_position.distance_to(here) <= reach:
+					b.hp = minf(b.max_hp, b.hp + b.max_hp * 0.01)
+		"sundial":
+			if _landmark_clock % 30 == 0:
+				var target = world._nearest_enemy_to(here, team, [])
+				if target == null:
+					for u in world.all_units():
+						if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(here) <= reach:
+							target = u
+							break
+				if target != null and target.global_position.distance_to(here) <= reach:
+					world._cast_signature(self, "sig_sunfire", target.global_position, 1, 1.0, {"range": reach, "dmg": 120})
+		"howl":
+			if _landmark_cd <= 0.0:
+				for u in world.all_units():
+					if is_instance_valid(u) and not u.is_dead and u.team != team and not u.is_worker and u.global_position.distance_to(here) <= reach:
+						_landmark_cd = 30.0
+						var wolf: String = world._race_first_melee("wyldkin")
+						for k in 2:
+							var su = world.spawn_unit(wolf, team, here + Vector3(3.0 - 6.0 * k, 0.0, -3.0))
+							if su:
+								su.set_meta("summoned", true)
+								su.command_move(u.global_position, true)
+								var ref = su
+								get_tree().create_timer(30.0, false).timeout.connect(func():
+									if is_instance_valid(ref) and not ref.is_dead and is_instance_valid(world):
+										world._dismiss_summon(ref))
+						break
+		"bonfire":
+			for u in world.all_units():
+				if not is_instance_valid(u) or u.is_dead or u.global_position.distance_to(here) > reach:
+					continue
+				if u.team != team:
+					u.take_damage(8.0, self)
+				elif not u.is_worker:
+					u.apply_spell_buff(1.2, 0.0, 1.0, 1.6)
+	# The landmark's reach glows faintly when your own is selected (see
+	# _show_fortify_ring) and its power pulses with a small ring.
+	if _landmark_clock % 4 == 0 and team == world.player_team and world.has_method("spawn_ring_fx"):
+		world.spawn_ring_fx(here, LANDMARK_TINT.get(String(def.get("landmark", "")), Color(1, 0.85, 0.4)), minf(reach, 8.0))
+
+const LANDMARK_TINT := {"oven": Color(1.0, 0.6, 0.3), "fountain": Color(0.45, 1.0, 0.85), "rift": Color(0.7, 0.3, 1.0),
+	"drum": Color(1.0, 0.4, 0.25), "loom": Color(1.0, 0.85, 0.35), "stones": Color(0.82, 0.84, 0.9),
+	"sundial": Color(1.0, 0.85, 0.3), "howl": Color(0.7, 0.8, 1.0), "bell": Color(0.9, 0.8, 0.55), "bonfire": Color(1.0, 0.45, 0.2)}
 
 func outpost_slots() -> int:
 	return 3 + 2 * (outpost_level - 1)

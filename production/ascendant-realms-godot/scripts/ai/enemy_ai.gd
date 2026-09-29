@@ -1036,6 +1036,9 @@ func _manage_production() -> void:
 		_try_build("economy")
 	if commander.tier >= 2 and not _has_building_kind("arcane") and _tech_aggression >= 1.0:
 		_try_build("arcane")
+	# Its people's landmark, once the army is on its feet.
+	if commander.tier >= 2 and not _has_building_kind("landmark") and _army_size() >= 6 and difficulty != "easy":
+		_try_build("landmark")
 	# second barracks for hard/brutal
 	# ...and for anyone whose resources pile up faster than one barracks can
 	# spend them (a Barrosan AI sat on 400+ food with 3 soldiers).

@@ -420,6 +420,7 @@ static func get_all() -> Dictionary:
 	},
 	}
 	_add_outposts(defs)
+	_add_landmarks(defs)
 	return defs
 
 ## Vein outposts (docs/claude/RESOURCE_DESIGN.md): every faction can raise one
@@ -444,3 +445,46 @@ static func _add_outposts(defs: Dictionary) -> void:
 			"produces": [], "vein_outpost": true,
 			"desc": "Raised on a vein between the bases. Send workers inside: they gather safely, with no walking. Expand it for more workers, more output and, at the top, a watch-fire.",
 		}
+
+## Landmarks (plan 74): one per people, unlocked in the Age of Iron, one per
+## player. Each carries a power of its own ("landmark" key, run by
+## Building._landmark_tick) so no two peoples play alike.
+static func _add_landmarks(defs: Dictionary) -> void:
+	var common := {"kind": "landmark", "unique": true, "min_tier": 2, "armor_class": "fortified", "armor": 6,
+		"hp": 1400, "footprint": 4.6, "build_time": 55, "grants_pop": 0, "produces": []}
+	var list := {
+		"barrosan_village_oven": {"race": "barrosan", "name": "The Village Oven", "model": "res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb",
+			"cost": {"timber": 220, "stone": 180, "gold": 120}, "landmark": "oven", "reach": 20.0,
+			"desc": "Every family in the valley bakes in it. Gives 40 food every 20 seconds, and your units near it recover health."},
+		"lioraen_moura_fountain": {"race": "lioraen", "name": "Fountain of the Mouras", "model": _b("lioraen_lifewell"),
+			"cost": {"timber": 240, "stone": 140, "gold": 140}, "landmark": "fountain", "reach": 20.0,
+			"desc": "A Moura sings under the water. Heals your units nearby and restores your hero's mana."},
+		"vorthak_rift_gate": {"race": "vorthak", "name": "The Rift Gate", "model": _b("vorthak_warlock_spire"),
+			"cost": {"timber": 200, "stone": 200, "gold": 140}, "landmark": "rift", "reach": 20.0,
+			"desc": "What was drowned in Furna climbs back through. Every 40 seconds two ash thralls step out to fight for a minute."},
+		"grimtusk_war_drum": {"race": "grimtusk", "name": "The Great War Drum", "model": _b("vorthak_ash_forge"),
+			"cost": {"timber": 220, "stone": 160, "gold": 120}, "landmark": "drum", "reach": 26.0,
+			"desc": "Its beat is the beat of broken chains. Your soldiers near it strike 20% faster."},
+		"sylvan_golden_loom": {"race": "sylvan", "name": "The Golden Loom", "model": _b("lioraen_spirit_glade"),
+			"cost": {"timber": 200, "stone": 140, "gold": 180}, "landmark": "loom", "reach": 34.0,
+			"desc": "The Mouras weave gold from moonlight. Gives 30 gold every 20 seconds and reveals the land around it."},
+		"karak_standing_stones": {"race": "karak", "name": "The Standing Stones", "model": _b("barrosan_iron_forge"),
+			"cost": {"timber": 160, "stone": 260, "gold": 100}, "landmark": "stones", "reach": 22.0,
+			"desc": "Older than the castros. Your units near them gain +3 armor and your buildings near them slowly mend."},
+		"sunspear_sun_dial": {"race": "sunspear", "name": "The Great Sun Dial", "model": _b("barrosan_iron_forge"),
+			"cost": {"timber": 200, "stone": 200, "gold": 160}, "landmark": "sundial", "reach": 30.0,
+			"desc": "Imperial astronomy made a weapon. Every 30 seconds it calls a Sunfire Lance on the nearest enemy."},
+		"wyldkin_howling_stone": {"race": "wyldkin", "name": "The Howling Stone", "model": _b("lioraen_spirit_glade"),
+			"cost": {"timber": 220, "stone": 160, "gold": 120}, "landmark": "howl", "reach": 24.0,
+			"desc": "When enemies come near, the stone howls and two spectral wolves answer (at most every 30 seconds)."},
+		"hollow_ossuary_bell": {"race": "hollow", "name": "The Ossuary Bell", "model": _b("vorthak_warlock_spire"),
+			"cost": {"timber": 200, "stone": 180, "gold": 140}, "landmark": "bell", "reach": 22.0,
+			"desc": "It tolls for every death nearby. One in three of your soldiers who fall near it rises again as a skeleton."},
+		"frostborn_entrudo_bonfire": {"race": "frostborn", "name": "The Entrudo Bonfire", "model": _b("barrosan_iron_forge"),
+			"cost": {"timber": 260, "stone": 140, "gold": 120}, "landmark": "bonfire", "reach": 18.0,
+			"desc": "The winter effigy burns all Carnival. Enemies near it are scorched; your soldiers near it hit 20% harder."},
+	}
+	for id in list:
+		var d: Dictionary = common.duplicate()
+		d.merge(list[id], true)
+		defs[id] = d

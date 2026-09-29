@@ -3218,6 +3218,15 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = _commander.missing_resource_summary(cost)
+		# Landmarks wait for their Age and stand once per player.
+		if int(_commander.tier) < int(bdef.get("min_tier", 1)):
+			reason = "Requires the Age of Iron"
+			affordable = false
+		elif bool(bdef.get("unique", false)):
+			for ob in _commander.buildings:
+				if is_instance_valid(ob) and not ob.is_dead and String(ob.building_id) == String(bid):
+					reason = "Already raised"
+					affordable = false
 		# The gallery shows the full structure, name, cost and readiness at once.
 		var build_detail := _cost_string(cost).trim_prefix("  (").trim_suffix(")")
 		# Keep the scan line actionable; secondary effects remain in the tooltip.
