@@ -806,7 +806,38 @@ func set_selected(sel: bool) -> void:
 	set_hovered(_hovered)
 	if _tower_range_ring:
 		_tower_range_ring.visible = sel and is_built and not is_dead
+	_show_fortify_ring(sel)
 	_refresh_rally_marker(sel)
+
+## A selected Barrosan Clanhold shows how far its Fortify reaches (22 m):
+## everything of yours inside the gold ring gains armour.
+var _fortify_ring: MeshInstance3D
+
+func _show_fortify_ring(sel: bool) -> void:
+	if not commander or String(commander.race) != "barrosan" or not bool(def.get("is_hq", false)):
+		return
+	if not is_instance_valid(_fortify_ring):
+		if not sel:
+			return
+		_fortify_ring = MeshInstance3D.new()
+		_fortify_ring.name = "FortifyReach"
+		var torus := TorusMesh.new()
+		torus.inner_radius = 21.8
+		torus.outer_radius = 22.2
+		torus.rings = 96
+		torus.ring_segments = 6
+		_fortify_ring.mesh = torus
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(1.0, 0.82, 0.4, 0.55)
+		mat.emission_enabled = true
+		mat.emission = Color(1.0, 0.78, 0.35)
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_fortify_ring.material_override = mat
+		_fortify_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(_fortify_ring)
+		_fortify_ring.position.y = 0.1
+	_fortify_ring.visible = sel and is_built and not is_dead
 
 func _is_rally_capable() -> bool:
 	return is_built and not is_dead and not Array(def.get("produces", [])).is_empty()
