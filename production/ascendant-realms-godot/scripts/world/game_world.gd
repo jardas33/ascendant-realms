@@ -3107,6 +3107,9 @@ func _start_saga_events() -> void:
 ## enemy's line infantry marches on the player.
 ## Endless Road boss stages (every fifth stage that is not a festival): a
 ## Champion guards the enemy stronghold. Slaying it pays like three Elites.
+const CHAMPION_NAMES := ["Bento", "Urraca", "Gonçalo", "Mécia", "Vasco", "Brites", "Martim", "Leonor", "Afonso", "Custódia", "Fernão"]
+const CHAMPION_EPITHETS := ["the Unbroken", "of the Nine Scars", "Iron-hand", "the Oath-breaker", "the Grey", "Who Does Not Kneel", "of the Burned Oven", "the Tall"]
+
 func _spawn_champion(depth: int) -> void:
 	if commanders.size() < 2:
 		return
@@ -3134,9 +3137,13 @@ func _spawn_champion(depth: int) -> void:
 	boss.base_dmg *= 2.0
 	if is_instance_valid(boss.model_root):
 		boss.model_root.scale *= 1.5
+	# Every Champion has a name, the same one each time the stage is played.
+	var champ_name := "%s %s" % [CHAMPION_NAMES[depth % CHAMPION_NAMES.size()], CHAMPION_EPITHETS[(depth / 5) % CHAMPION_EPITHETS.size()]]
+	boss.def = boss.def.duplicate()
+	boss.def["name"] = champ_name
 	get_tree().create_timer(8.0, false).timeout.connect(func():
 		if game_running:
-			emit_signal("alert", "A Champion guards the enemy stronghold. Break it, and the road pays threefold.", boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
+			emit_signal("alert", "%s, a Champion, guards the enemy stronghold. Break them, and the road pays threefold." % champ_name, boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
 
 ## Road Tyrants (EndlessDefs.BOSSES): a named giant on every 25th stage, with
 ## a mechanic of its own, run from a once-a-second tick while it lives.
@@ -3839,7 +3846,10 @@ func _on_unit_died(unit) -> void:
 	if unit.has_meta("elite") and source_team == player_team:
 		elites_slain += 3 if unit.has_meta("champion") else 1
 		_bump_profile_stat("elites_slain")
-		emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
+		if unit.has_meta("champion") and not unit.has_meta("road_boss"):
+			emit_signal("alert", "The Champion %s falls. The road pays threefold." % String(unit.def.get("name", "")), unit.global_position)
+		else:
+			emit_signal("alert", "An Elite %s falls. The field owes you a better spoil." % String(unit.def.get("name", "enemy")), unit.global_position)
 		Sfx.play("levelup", -8.0)
 		if is_instance_valid(_fx_container):
 			CombatVfx.lume_pillar(_fx_container, unit.global_position, Color(1.0, 0.8, 0.3))
