@@ -3621,8 +3621,12 @@ func _award_hero_field_xp(victim, source_team: int) -> void:
 	if hero.global_position.distance_to(victim.global_position) > 18.0:
 		return
 	var amount := 60 if victim.is_hero else (6 if victim.is_worker else 12)
-	if hero.gain_field_xp(amount) and source_team == player_team:
-		emit_signal("hero_leveled", hero.field_level)
+	if hero.gain_field_xp(amount):
+		# A level on the field shows on the field: a golden column of Lume.
+		if is_instance_valid(_fx_container):
+			CombatVfx.lume_pillar(_fx_container, hero.global_position, Color(1.0, 0.85, 0.4))
+		if source_team == player_team:
+			emit_signal("hero_leveled", hero.field_level)
 
 func _on_unit_died(unit) -> void:
 	if unit.get_meta("v0434_death_handled", false):
