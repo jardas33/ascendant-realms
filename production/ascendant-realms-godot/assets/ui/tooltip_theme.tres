@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[sub_resource type="StyleBoxFlat" id="tip_panel"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 9.0
+bg_color = Color(0.03, 0.035, 0.05, 0.96)
+border_width_left = 1
+border_width_top = 2
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.68, 0.36, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 6
+
+[resource]
+TooltipLabel/colors/font_color = Color(0.94, 0.9, 0.8, 1)
+TooltipLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
+TooltipLabel/font_sizes/font_size = 16
+TooltipPanel/styles/panel = SubResource("tip_panel")

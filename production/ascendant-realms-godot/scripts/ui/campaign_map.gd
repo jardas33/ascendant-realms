@@ -366,6 +366,53 @@ func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
 	ahead.append("Road Tyrant at %d (%s)" % [next_tyrant, String(EndlessDefs.boss(next_tyrant).get("name", "?"))])
 	var next_mut := maxi(30, (depth / 30 + 1) * 30)
 	ahead.append("new enemy mutation at %d" % next_mut)
+	# The road drawn: this stage as your standard, the milestones ahead as
+	# waypoints on a marching road (relic chest, festival bonfire, Tyrant skull,
+	# mutation eye), spaced by how far away each one is.
+	var track := Control.new()
+	track.custom_minimum_size = Vector2(0, 86)
+	track.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	track.visible = not weekly
+	var marks: Array = [[next_relic, "relic", Color(0.98, 0.8, 0.36)], [next_fest, "festival", Color(1.0, 0.55, 0.25)], [next_tyrant, "tyrant", Color(0.92, 0.3, 0.26)], [next_mut, "mutation", Color(0.72, 0.52, 0.98)]]
+	var far := float(maxi(next_mut, next_tyrant) - depth + 1)
+	var font_t := _title_font()
+	track.draw.connect(func():
+		var x0 := 40.0
+		var x1 := track.size.x - 40.0
+		var y := 34.0
+		track.draw_line(Vector2(x0, y), Vector2(x1, y), Color(0.02, 0.02, 0.03, 0.8), 7.0, true)
+		var k := 0
+		while x0 + k * 14.0 < x1:
+			track.draw_line(Vector2(x0 + k * 14.0, y), Vector2(minf(x0 + k * 14.0 + 7.0, x1), y), Color(0.99, 0.82, 0.42, 0.85), 2.6, true)
+			k += 1
+		# You are here.
+		track.draw_circle(Vector2(x0, y), 11.0, Color(0.55, 0.12, 0.1))
+		track.draw_arc(Vector2(x0, y), 11.0, 0.0, TAU, 24, Color(0.99, 0.82, 0.42), 2.0, true)
+		track.draw_string(font_t, Vector2(x0 - 30, y + 34), "STAGE %d" % depth, HORIZONTAL_ALIGNMENT_CENTER, 60, 12, Color(0.95, 0.86, 0.64))
+		for m in marks:
+			var fx := x0 + (x1 - x0) * clampf(float(int(m[0]) - depth) / far, 0.06, 1.0)
+			var mc: Color = m[2]
+			var p := Vector2(fx, y)
+			track.draw_circle(p, 13.0, Color(0.04, 0.035, 0.03, 0.95))
+			track.draw_arc(p, 13.0, 0.0, TAU, 24, mc, 2.0, true)
+			match String(m[1]):
+				"relic":
+					track.draw_rect(Rect2(p + Vector2(-7, -3), Vector2(14, 9)), mc)
+					track.draw_rect(Rect2(p + Vector2(-7, -7), Vector2(14, 4)), mc.lightened(0.2))
+				"festival":
+					track.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -9), p + Vector2(6, 5), p + Vector2(-6, 5)]), mc)
+					track.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -3), p + Vector2(3, 5), p + Vector2(-3, 5)]), Color(1, 0.9, 0.5))
+				"tyrant":
+					track.draw_circle(p + Vector2(0, -2), 6.5, mc)
+					track.draw_rect(Rect2(p + Vector2(-4, 3), Vector2(8, 5)), mc)
+					track.draw_circle(p + Vector2(-2.5, -2), 1.8, Color(0.05, 0.03, 0.02))
+					track.draw_circle(p + Vector2(2.5, -2), 1.8, Color(0.05, 0.03, 0.02))
+				_:
+					track.draw_arc(p, 7.0, PI * 0.1, PI * 0.9, 10, mc, 2.0, true)
+					track.draw_arc(p, 7.0, PI * 1.1, PI * 1.9, 10, mc, 2.0, true)
+					track.draw_circle(p, 3.0, mc)
+			track.draw_string(font_t, Vector2(fx - 40, y + 34), str(int(m[0])), HORIZONTAL_ALIGNMENT_CENTER, 80, 13, mc.lightened(0.2)))
+	box.add_child(track)
 	var road := _label("The road ahead: " + "  ·  ".join(ahead), 14, Color(0.78, 0.74, 0.62))
 	road.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	road.visible = not weekly
@@ -441,11 +488,18 @@ func _open_chronicle() -> void:
 	ps.content_margin_top = 28.0
 	ps.content_margin_bottom = 24.0
 	plate.add_theme_stylebox_override("panel", ps)
-	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	plate.offset_left = 180.0
-	plate.offset_right = -180.0
-	plate.offset_top = 50.0
-	plate.offset_bottom = -50.0
+	# A book-width column: lines of story read best at around ninety
+	# characters, not stretched across a wide screen.
+	plate.set("surface_alpha", 0.96)
+	plate.set("surface_alpha_bottom", 0.97)
+	plate.anchor_left = 0.5
+	plate.anchor_right = 0.5
+	plate.anchor_top = 0.0
+	plate.anchor_bottom = 1.0
+	plate.offset_left = -600.0
+	plate.offset_right = 600.0
+	plate.offset_top = 40.0
+	plate.offset_bottom = -40.0
 	layer.add_child(plate)
 	var outer := VBoxContainer.new()
 	outer.add_theme_constant_override("separation", 10)
@@ -460,7 +514,11 @@ func _open_chronicle() -> void:
 	var book := VBoxContainer.new()
 	book.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	book.add_theme_constant_override("separation", 8)
-	scroll.add_child(book)
+	var book_gutter := MarginContainer.new()
+	book_gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	book_gutter.add_theme_constant_override("margin_right", 22)
+	scroll.add_child(book_gutter)
+	book_gutter.add_child(book)
 	for a in CampaignDefs.ACTS.size():
 		var done: Array = CampaignDefs.chapters_in_act(a).filter(func(c): return String(c["id"]) in s["cleared"])
 		if done.is_empty():
@@ -473,7 +531,25 @@ func _open_chronicle() -> void:
 			var tag := "  ·  side road" if bool(c.get("side", false)) else ""
 			if id in s.get("heroic", []):
 				tag += "  ·  heroic laurel"
-			book.add_child(_label(String(c["title"]) + tag, 22, Color(0.99, 0.86, 0.48), true))
+			# Chapter heading: its seal, then its name.
+			var heading := HBoxContainer.new()
+			heading.add_theme_constant_override("separation", 12)
+			var seal := Control.new()
+			seal.custom_minimum_size = Vector2(40, 40)
+			var seal_num := id
+			var heroic_seal: bool = id in s.get("heroic", [])
+			seal.draw.connect(func():
+				var cc := seal.size * 0.5
+				seal.draw_circle(cc, 18.0, Color(0.52, 0.38, 0.12) if heroic_seal else Color(0.2, 0.34, 0.24))
+				seal.draw_arc(cc, 18.0, 0.0, TAU, 28, Color(0.95, 0.78, 0.42), 1.6, true)
+				var f := _title_font()
+				var tw := f.get_string_size(seal_num, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+				seal.draw_string(f, cc + Vector2(-tw * 0.5, 4), seal_num, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.99, 0.93, 0.75)))
+			heading.add_child(seal)
+			var title_lbl := _label(String(c["title"]) + tag, 22, Color(0.99, 0.86, 0.48), true)
+			title_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			heading.add_child(title_lbl)
+			book.add_child(heading)
 			var brief := _label(CampaignDefs.briefing_for(id, _hero_race()), 16, Color(0.86, 0.84, 0.78))
 			brief.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			brief.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -482,9 +558,15 @@ func _open_chronicle() -> void:
 			won.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			won.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			book.add_child(won)
-			var gap := Control.new()
-			gap.custom_minimum_size = Vector2(0, 10)
-			book.add_child(gap)
+			# An ornament between chapters.
+			var orn := Control.new()
+			orn.custom_minimum_size = Vector2(0, 26)
+			orn.draw.connect(func():
+				var cc := Vector2(orn.size.x * 0.5, orn.size.y * 0.5)
+				orn.draw_line(cc + Vector2(-160, 0), cc + Vector2(-14, 0), Color(0.95, 0.78, 0.42, 0.45), 1.2, true)
+				orn.draw_line(cc + Vector2(14, 0), cc + Vector2(160, 0), Color(0.95, 0.78, 0.42, 0.45), 1.2, true)
+				orn.draw_colored_polygon(PackedVector2Array([cc + Vector2(0, -6), cc + Vector2(6, 0), cc + Vector2(0, 6), cc + Vector2(-6, 0)]), Color(0.95, 0.78, 0.42, 0.8)))
+			book.add_child(orn)
 	var close := Button.new()
 	close.text = "Close"
 	close.custom_minimum_size = Vector2(200, 50)

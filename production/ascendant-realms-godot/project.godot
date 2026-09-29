@@ -217,3 +217,7 @@ textures/default_texture_filter=3
 common/physics_ticks_per_second=30
 common/physics_interpolation=true
 common/max_physics_steps_per_frame=4
+
+[gui]
+
+theme/custom="res://assets/ui/tooltip_theme.tres"
