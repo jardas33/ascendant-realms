@@ -663,6 +663,16 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Gold Rush:** every gold mine holds twice as much.
   - A test match confirmed each one applies: worker speed 3.6 became 4.32, total gold 9,000 became 18,000, and the tide flag was on.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plans 62 and 63 (done): heroes with a voice, and a fairer fog**
+  - **Working method:** routine runs (balance matches, a mechanical Skirmish change) now go to Sonnet workers; Opus plans, writes the lore and reviews their results.
+  - **Battle cries:** every faction's hero has its own lines, shown over the hero's head. It calls one out as the war horn opens the battle, sometimes when you order it to march or attack, and over a fallen enemy hero ("Tell the oven: one less.", "Take your candle."). Enemy heroes you can see in a fight call out too, in a warm red.
+  - **Enemy hero slain:** the war horn sounds and an alert names the fallen hero.
+  - **Skirmish:** the setup screen remembers your last faction, opponents, resources, speed and map.
+  - **Minimap:** your hero wears a slow gold pulse, so it is found at a glance.
+  - **Result screen:** a small chart shows each side's soldiers over the whole battle, in team colours (on screens 900 pixels tall or more).
+  - **Fog fixes (bugs):** sounds are not positional, so hidden activity was heard across the map. An enemy's finished building chimed, and fights in the fog could be heard. Recruit, rank-up and level-up light bursts also floated above the fog. Now all of these only play for what you can see.
+  - **Balance check (45 matches, Sonnet):** Hollow 6-2-1, Vorthak 6-2-1, Sunspear 5-2-2, Karak 5-3-1, Wyldkin 4-3-2, Sylvan 4-3-2, Frostborn 3-6-0, Barrosan 3-5-1, Ironmaw 2-6-1, Lioraen 1-7-1. Lioraen dug almost no Lume jars. A second 45 matches is running to see if this is real or noise, since nothing in these plans changed the fighting.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
