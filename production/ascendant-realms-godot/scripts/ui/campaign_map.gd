@@ -520,7 +520,7 @@ func _launch_endless(st: Dictionary) -> void:
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
 
 func _open_chronicle() -> void:
-	Sfx.play("select")
+	Sfx.play("page")
 	var s := ProfileManager.saga()
 	var layer := Control.new()
 	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -833,7 +833,7 @@ func _show_desc(id: String) -> void:
 
 # --------------------------------------------------------------------------
 func _open_briefing(id: String) -> void:
-	Sfx.play("select")
+	Sfx.play("page")
 	if is_instance_valid(_briefing):
 		_briefing.queue_free()
 	var c := CampaignDefs.find(id)
@@ -985,7 +985,8 @@ func _stamp_seal(id: String) -> void:
 	tw.tween_property(btn, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(btn, "modulate:a", 1.0, 0.18)
 	await tw.finished
-	Sfx.play("levelup")
+	Sfx.play("stamp", -2.0)
+	Sfx.play("levelup", -12.0)
 	var ring := Control.new()
 	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ring.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

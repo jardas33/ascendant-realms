@@ -3548,7 +3548,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 				if res is Dictionary and not bool(res.get("ok", false)):
 					_flash_notice(String(res.get("reason", "Cannot trade")))
 				else:
-					Sfx.play("select")
+					Sfx.play("coin", -8.0)
 				_rebuild_command_card(cap_hq, [cap_hq]))
 			trade_row.add_child(tb)
 		# Second row: sell a surplus for gold.
@@ -3571,7 +3571,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 				if res is Dictionary and not bool(res.get("ok", false)):
 					_flash_notice(String(res.get("reason", "Cannot sell")))
 				else:
-					Sfx.play("select")
+					Sfx.play("coin", -8.0)
 				_rebuild_command_card(cap_hq2, [cap_hq2]))
 			sell_row.add_child(sb)
 

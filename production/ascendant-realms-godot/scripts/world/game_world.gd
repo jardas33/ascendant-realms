@@ -2682,7 +2682,7 @@ func _open_lume_jar(jar, team: int) -> void:
 		CombatVfx.lume_pillar(_fx_container, pos, Color(0.8, 0.6, 1.0))
 	if team == player_team:
 		spawn_income_popup(pos + Vector3.UP * 3.0, jar.REWARD_GOLD, "gold")
-		Sfx.play("levelup")
+		Sfx.play("coin")
 		jars_dug_by_player += 1
 		_bump_profile_stat("jars_dug")
 		emit_signal("alert", "Your troops dug up a Lume jar: +%d gold, +%d %s." % [jar.REWARD_GOLD, jar.REWARD_OTHER, low], pos)
@@ -3280,6 +3280,8 @@ func _start_match() -> void:
 	_update_player_visibility()
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
 	_battle_music = true
+	# A war horn opens every battle.
+	Sfx.play("horn", -6.0)
 	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
 	emit_signal("alert", last_alert_message, Vector3.ZERO)
 	_start_saga_voices()

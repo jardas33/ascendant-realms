@@ -155,6 +155,7 @@ func _make_button(text: String, cb: Callable) -> Button:
 	b.pressed.connect(cb)
 	# A small lift on hover.
 	b.mouse_entered.connect(func():
+		Sfx.play("hover", -14.0)
 		b.pivot_offset = b.size * 0.5
 		b.create_tween().tween_property(b, "scale", Vector2.ONE * 1.04, 0.12)
 		b.set_meta("hot", true)

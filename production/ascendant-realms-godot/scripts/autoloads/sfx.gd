@@ -16,6 +16,13 @@ var lib := {
 	"projectile_impact": B + "combat/combat_projectile_impact.wav",
 	"spell": B + "combat/combat_spell_cast.mp3",
 	"death": B + "combat/combat_unit_death.mp3",
+	# Procedural UI sounds (made by tools/synth_sfx.py).
+	"hover": B + "ui/ui_hover_tick.wav",
+	"coin": B + "ui/ui_coin_chime.wav",
+	"stamp": B + "ui/ui_seal_stamp.wav",
+	"page": B + "ui/ui_page_turn.wav",
+	"horn": B + "ui/ui_war_horn.wav",
+	"knock": B + "ui/ui_order_knock.wav",
 }
 
 var music := {
