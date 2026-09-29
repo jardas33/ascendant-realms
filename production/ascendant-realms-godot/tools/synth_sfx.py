@@ -62,4 +62,12 @@ write('ui_war_horn.wav', lowpass([horn(i / SR) for i in range(n)], 0.25))
 n = int(SR * 0.18)
 write('ui_order_knock.wav', [sum(math.sin(2 * math.pi * f * max(0.0, i / SR - o)) * env(max(0.0, i / SR - o), 0.001, 0.02) * (1 if i / SR >= o else 0)
                                   for f, o in [(520, 0.0), (430, 0.07)]) for i in range(n)])
+# 7. Collapse: a deep rumble with falling timber and stone crackle (a building falls).
+n = int(SR * 1.6)
+rough = lowpass([random.uniform(-1, 1) for _ in range(n)], 0.03)
+crackle = [random.uniform(-1, 1) if random.random() < 0.02 + 0.1 * math.exp(-i / SR / 0.25) else 0.0 for i in range(n)]
+crackle = lowpass(crackle, 0.5)
+write('ui_collapse.wav', [rough[i] * 3.0 * env(i / SR, 0.02, 0.5)
+                          + math.sin(2 * math.pi * (48 + 20 * math.exp(-i / SR / 0.2)) * i / SR) * 0.6 * env(i / SR, 0.01, 0.35)
+                          + crackle[i] * 1.2 * env(i / SR, 0.05, 0.6) for i in range(n)])
 print('ok')

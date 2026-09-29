@@ -1602,6 +1602,10 @@ func _destroy(from = null) -> void:
 	if commander:
 		commander.recompute_pop()
 	emit_signal("died", self)
+	# A fall you can see is a fall you can hear; unseen ones stay silent so
+	# the sound never gives away a fight in the fog.
+	if world and (int(team) == int(world.player_team) or (world.has_method("is_player_visible") and world.is_player_visible(self))):
+		Sfx.play("collapse", -5.0)
 	if world:
 		world.on_building_destroyed(self)
 	# Collapse: the structure shudders, lists to one side and sinks into a

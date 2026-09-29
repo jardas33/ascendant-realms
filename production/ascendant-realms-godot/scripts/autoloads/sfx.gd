@@ -23,6 +23,7 @@ var lib := {
 	"page": B + "ui/ui_page_turn.wav",
 	"horn": B + "ui/ui_war_horn.wav",
 	"knock": B + "ui/ui_order_knock.wav",
+	"collapse": B + "ui/ui_collapse.wav",
 }
 
 var music := {
