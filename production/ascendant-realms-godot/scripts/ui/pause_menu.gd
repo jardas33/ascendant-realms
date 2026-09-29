@@ -40,10 +40,40 @@ func setup() -> void:
 	_panel.offset_top = -300.0
 	_panel.offset_bottom = 300.0
 
+	# Your faction's shield hangs over the top edge of the plate.
+	var race_id := String(Match.get_config().get("player_race", "barrosan"))
+	var crest := Control.new()
+	crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# A sibling of the plate, not its child: a container would stretch it.
+	crest.anchor_left = 0.5
+	crest.anchor_right = 0.5
+	crest.anchor_top = 0.5
+	crest.anchor_bottom = 0.5
+	crest.offset_left = -32.0
+	crest.offset_right = 32.0
+	crest.offset_top = -348.0
+	crest.offset_bottom = -274.0
+	add_child(crest)
+
+	var col: Color = GameData.RACES.get(race_id, {}).get("color", Color(0.7, 0.6, 0.4))
+	crest.draw.connect(func():
+		var w := crest.size.x
+		var h := crest.size.y
+		var shield := PackedVector2Array([Vector2(2, 2), Vector2(w - 2, 2), Vector2(w - 2, h * 0.55), Vector2(w * 0.5, h - 2), Vector2(2, h * 0.55)])
+		crest.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.97))
+		var c := Vector2(w * 0.5, h * 0.45)
+		var inner := PackedVector2Array()
+		for p in shield:
+			inner.append(c + (p - c) * 0.84)
+		crest.draw_colored_polygon(inner, col.darkened(0.2))
+		shield.append(shield[0])
+		crest.draw_polyline(shield, Color(0.95, 0.78, 0.42), 2.2, true)
+		load("res://scripts/ui/faction_sigils.gd").draw(crest, race_id, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+
 	var margin := MarginContainer.new()
 	_panel.add_child(margin)
 	margin.add_theme_constant_override("margin_left", 46)
-	margin.add_theme_constant_override("margin_top", 30)
+	margin.add_theme_constant_override("margin_top", 40)
 	margin.add_theme_constant_override("margin_right", 46)
 	margin.add_theme_constant_override("margin_bottom", 32)
 	var vb := VBoxContainer.new()
