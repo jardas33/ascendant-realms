@@ -4162,17 +4162,24 @@ func spawn_hit_fx(pos: Vector3, kind: String) -> void:
 	# single short-lived, non-gameplay effect for every impact kind.
 	if kind == "melee":
 		col = Color(1.0, 0.72, 0.42)
+	# Sparks float above the fog; a hidden fight shows none.
+	if player_visibility_state_at(pos) != VISIBILITY_CURRENTLY_VISIBLE:
+		return
 	CombatVfx.hit(_fx_container, pos, col, kind in ["cinder", "rift_shell", "thornpod", "arcane", "fire"])
 
 func spawn_collapse_fx(pos: Vector3, footprint: float) -> void:
 	if not is_instance_valid(_fx_container):
 		return
-	CombatVfx.collapse(_fx_container, pos, footprint)
 	clear_ground_cover(pos, footprint * 1.5)
+	# A collapse hidden in the fog neither shows nor shakes the camera: both
+	# would tell the player where a fight they cannot see was decided.
+	if player_visibility_state_at(pos) != VISIBILITY_CURRENTLY_VISIBLE:
+		return
+	CombatVfx.collapse(_fx_container, pos, footprint)
 	emit_signal("camera_shake", 0.7, pos)
 
 func spawn_death_fx(pos: Vector3) -> void:
-	if is_instance_valid(_fx_container):
+	if is_instance_valid(_fx_container) and player_visibility_state_at(pos) == VISIBILITY_CURRENTLY_VISIBLE:
 		CombatVfx.death(_fx_container, pos)
 		CombatVfx.battle_scar(_fx_container, pos)
 		# The grass where a unit fell stays trampled.

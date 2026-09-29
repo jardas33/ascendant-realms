@@ -165,6 +165,9 @@ func _physics_process(delta: float) -> void:
 		return
 	global_position += to.normalized() * step
 	look_at(target_pos, Vector3.UP)
+	# A shot flying through the fog is not drawn: it would reveal the archer.
+	if world and world.has_method("player_visibility_state_at"):
+		visible = world.player_visibility_state_at(global_position) == world.VISIBILITY_CURRENTLY_VISIBLE
 
 func _impact() -> void:
 	if world and world.has_method("projectile_impact"):
