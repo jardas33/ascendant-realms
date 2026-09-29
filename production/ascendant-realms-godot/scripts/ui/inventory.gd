@@ -718,7 +718,7 @@ func _stats_block(item: Dictionary, compare) -> VBoxContainer:
 		stat_name.add_theme_color_override("font_color", Color(0.78, 0.75, 0.65))
 		line.add_child(stat_name)
 		var stat_value := Label.new()
-		stat_value.text = "+%s" % str(stats[k])
+		stat_value.text = _short_stat(str(k), float(stats[k])).get_slice(" ", 0)
 		stat_value.add_theme_font_size_override("font_size", 20)
 		stat_value.add_theme_color_override("font_color", Color(0.82, 0.95, 0.84))
 		line.add_child(stat_value)
