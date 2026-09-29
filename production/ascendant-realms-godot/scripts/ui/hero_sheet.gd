@@ -589,7 +589,7 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour �
 			nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			cv.add_child(nm)
 			var rk := Label.new()
-			rk.text = ("New talent" if rank_now == 0 else "Rank %d  ›  %d" % [rank_now, rank_now + 1])
+			rk.text = ("New talent  ·  click to take" if rank_now == 0 else "Rank %d  ›  %d  ·  click to take" % [rank_now, rank_now + 1])
 			rk.add_theme_font_size_override("font_size", 13)
 			rk.add_theme_color_override("font_color", Color(0.62, 0.85, 0.62))
 			rk.mouse_filter = Control.MOUSE_FILTER_IGNORE
