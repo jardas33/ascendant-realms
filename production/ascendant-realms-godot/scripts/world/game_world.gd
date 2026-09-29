@@ -2019,6 +2019,8 @@ func _setup_commanders() -> void:
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
 	_apply_start_twists()
+	for b in all_buildings():
+		_light_hearth(b)
 	Unit.damage_numbers_on = bool(ProfileManager.settings().get("damage_numbers", true))
 	_m20_end(stage)
 
@@ -3852,7 +3854,27 @@ func _on_building_died(building) -> void:
 		commanders[building.team].buildings.erase(building)
 		commanders[building.team].recompute_pop()
 
+## On dark battlefields (night, dusk, storm) every finished building keeps a
+## warm hearth-light, so a village reads as lived in. The light is a child of
+## the building, so it hides with it in the fog.
+func _light_hearth(b) -> void:
+	if not is_instance_valid(b) or not b.is_built or b.has_node("HearthLight"):
+		return
+	if not battle_mood() in ["night", "dusk", "storm"]:
+		return
+	var l := OmniLight3D.new()
+	l.name = "HearthLight"
+	l.light_color = Color(1.0, 0.68, 0.36)
+	l.light_energy = 3.2 if battle_mood() == "night" else 2.0
+	l.omni_range = float(b.def.get("footprint", 4.0)) * 0.8 + 6.0
+	l.omni_attenuation = 1.6
+	l.shadow_enabled = false
+	b.add_child(l)
+	# At the doorstep, just outside the walls, so the glow spills on the yard.
+	l.position = Vector3(0.0, 2.2, float(b.def.get("footprint", 4.0)) * 0.6 + 0.6)
+
 func on_building_completed(building) -> void:
+	_light_hearth(building)
 	var tx_id := String(building.get_meta("v0431_transaction_id", ""))
 	if tx_id == "":
 		return
