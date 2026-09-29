@@ -4,10 +4,12 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(220.0, 105.0)
-const FOCUSED_SPACING := Vector2(246.0, 106.0)
+const SPACING := Vector2(220.0, 160.0)
+const FOCUSED_SPACING := Vector2(250.0, 160.0)
 const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(200.0, 92.0)
+const NODE_SIZE := Vector2(190.0, 146.0)
+const ORB := Vector2(96.0, 96.0)
+const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 const GRAPH_ZOOM := 0.74
 const FOCUSED_ZOOM := 0.92
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
@@ -43,49 +45,103 @@ const GLYPH_TEXTURES := {
 }
 
 class Glyph extends Control:
+	## A star of the constellation: a glowing orb in the path's colour. Its
+	## ring and halo say the state (owned, ready to claim, open, locked);
+	## ready stars pulse and wear a turning rune ring, keystones a crown of
+	## light. Also used, smaller, for the selected-star panel.
 	var kind := "passive"
 	var accent := Color.WHITE
 	var locked := false
+	var state := "PURCHASABLE"
+	var hovered := false
 	var texture: Texture2D
+	var _t := 0.0
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		queue_redraw()
 
+	func _process(delta: float) -> void:
+		_t += delta
+		if state == "PURCHASABLE" or hovered or kind == "keystone":
+			queue_redraw()
+
+	func _state_color() -> Color:
+		match state:
+			"UNLOCKED":
+				return MINT
+			"PURCHASABLE":
+				return GOLD_BRIGHT
+			"INSUFFICIENT_POINTS":
+				return accent.lerp(GOLD, 0.35)
+			_:
+				return LOCKED
+
 	func _draw() -> void:
-		var c := LOCKED if locked else accent
+		var c := size * 0.5
+		var r := minf(size.x, size.y) * (0.40 if kind == "keystone" else 0.36)
+		var sc := _state_color()
+		var dim := locked or state == "PREREQUISITE_BLOCKED"
+		var pulse := 0.5 + 0.5 * sin(_t * 3.2)
+		# Halo: soft rings of light, stronger for owned and ready stars.
+		var halo := 0.10 if dim else (0.22 if state == "UNLOCKED" else (0.18 + 0.12 * pulse if state == "PURCHASABLE" else 0.12))
+		if hovered:
+			halo += 0.1
+		for k in 6:
+			draw_circle(c, r * (1.0 + 0.12 * float(k + 1)), Color(sc, halo * (1.0 - float(k) / 6.0) * 0.55))
+		# Keystone crown: four long points of light behind the orb.
+		if kind == "keystone":
+			var spin := _t * 0.2
+			for q in 4:
+				var a := spin + q * PI * 0.5
+				var tip := c + Vector2(cos(a), sin(a)) * r * 1.75
+				var side := Vector2(cos(a + PI * 0.5), sin(a + PI * 0.5)) * r * 0.22
+				draw_colored_polygon(PackedVector2Array([c + side, tip, c - side]), Color(sc, 0.35 if not dim else 0.15))
+		# The orb: deep ink shading up to the path colour at its heart.
+		for k in 8:
+			var f := 1.0 - float(k) / 8.0
+			var col := INK.lerp(accent.darkened(0.35), 0.15 + 0.6 * (1.0 - f))
+			if dim:
+				col = col.darkened(0.45)
+			draw_circle(c + Vector2(-r * 0.12, -r * 0.14) * (1.0 - f), r * f, col)
 		if texture:
-			var tint := Color(0.68, 0.72, 0.78, 0.78) if locked else Color.WHITE
-			draw_texture_rect(texture, Rect2(Vector2.ZERO, Vector2(50.0, 50.0)), false, tint)
-			draw_arc(Vector2(25.0, 25.0), 24.0, 0.0, TAU, 32, Color(c, 0.82), 1.6, true)
-			if locked:
-				draw_circle(Vector2(39.0, 39.0), 8.0, Color(INK, 0.92))
-				draw_rect(Rect2(35.0, 39.0, 8.0, 7.0), LOCKED, false, 1.5)
-				draw_arc(Vector2(39.0, 39.0), 3.5, PI, TAU, 10, LOCKED, 1.5, true)
-			return
-		var center := Vector2(22.0, 28.0)
-		draw_circle(center, 17.0, Color(c, 0.12))
-		draw_arc(center, 17.0, 0.0, TAU, 20, Color(c, 0.7), 1.5, true)
-		# Locked stars keep their kind symbol (dimmed) so the path stays readable
-		# at a glance; a small padlock badge carries the locked state.
-		if kind == "active":
-			draw_circle(center, 6.0, Color(c, 0.82))
-			draw_line(Vector2(22, 10), Vector2(22, 18), c, 2.0, true)
-			draw_line(Vector2(22, 38), Vector2(22, 46), c, 2.0, true)
-			draw_line(Vector2(4, 28), Vector2(12, 28), c, 2.0, true)
-			draw_line(Vector2(32, 28), Vector2(40, 28), c, 2.0, true)
-		elif kind == "keystone":
-			var points := PackedVector2Array([Vector2(22, 9), Vector2(35, 21), Vector2(22, 47), Vector2(9, 21)])
-			draw_colored_polygon(points, Color(c, 0.7))
-			draw_polyline(points + PackedVector2Array([points[0]]), c, 2.0, true)
-			draw_circle(center, 4.0, INK)
+			var tint := Color(0.62, 0.66, 0.74, 0.7) if dim else Color.WHITE
+			var inner := r * 1.42
+			draw_texture_rect(texture, Rect2(c - Vector2(inner, inner) * 0.5, Vector2(inner, inner)), false, tint)
 		else:
-			draw_circle(center, 6.0, Color(c, 0.75))
-			draw_arc(center, 11.0, -0.6, 2.4, 12, c, 2.0, true)
-		if locked:
-			draw_circle(Vector2(36.0, 42.0), 8.0, Color(INK, 0.95))
-			draw_rect(Rect2(32.0, 42.0, 8.0, 7.0), LOCKED, false, 1.5)
-			draw_arc(Vector2(36.0, 42.0), 3.5, PI, TAU, 10, LOCKED, 1.5, true)
+			var gc := Color(PAPER, 0.45) if dim else PAPER
+			if kind == "active":
+				draw_circle(c, r * 0.18, gc)
+				for q in 4:
+					var a2 := q * PI * 0.5 + PI * 0.25
+					draw_line(c + Vector2(cos(a2), sin(a2)) * r * 0.32, c + Vector2(cos(a2), sin(a2)) * r * 0.62, gc, 2.2, true)
+			elif kind == "keystone":
+				var s := r * 0.48
+				draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.62, 0), c + Vector2(0, s), c + Vector2(-s * 0.62, 0)]), gc)
+			else:
+				# A small four-point star.
+				var s2 := r * 0.46
+				draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s2), c + Vector2(s2 * 0.24, -s2 * 0.24), c + Vector2(s2, 0), c + Vector2(s2 * 0.24, s2 * 0.24),
+					c + Vector2(0, s2), c + Vector2(-s2 * 0.24, s2 * 0.24), c + Vector2(-s2, 0), c + Vector2(-s2 * 0.24, -s2 * 0.24)]), gc)
+		# Gloss highlight.
+		draw_arc(c, r * 0.82, PI * 1.1, PI * 1.55, 16, Color(1, 1, 1, 0.10 if dim else 0.22), r * 0.14, true)
+		# State ring.
+		draw_arc(c, r, 0.0, TAU, 48, Color(sc, 0.9 if not dim else 0.55), 2.6 if not dim else 1.6, true)
+		if state == "PURCHASABLE":
+			# A turning ring of runes: the star is ready to claim.
+			var rr := r * 1.22
+			for q in 10:
+				var a3 := _t * 0.8 + q * TAU / 10.0
+				draw_arc(c, rr, a3, a3 + TAU / 22.0, 6, Color(GOLD_BRIGHT, 0.55 + 0.35 * pulse), 2.0, true)
+		elif state == "UNLOCKED":
+			draw_arc(c, r * 1.16, 0.0, TAU, 48, Color(MINT, 0.35), 1.2, true)
+		if dim:
+			# Padlock badge.
+			var b := c + Vector2(r * 0.72, r * 0.72)
+			draw_circle(b, r * 0.3, Color(INK, 0.95))
+			draw_arc(b, r * 0.3, 0.0, TAU, 20, Color(LOCKED, 0.9), 1.2, true)
+			draw_rect(Rect2(b + Vector2(-r * 0.13, -r * 0.02), Vector2(r * 0.26, r * 0.2)), LOCKED, false, 1.4)
+			draw_arc(b + Vector2(0, -r * 0.02), r * 0.09, PI, TAU, 10, LOCKED, 1.4, true)
 
 class ConstellationCanvas extends Control:
 	var presenter: Object
@@ -115,7 +171,7 @@ var _glyph_texture_cache := {}
 var _nodes: Array = []
 var _selected_id := ""
 var _hovered_id := ""
-var _branch_filter := "active"
+var _branch_filter := ""
 var _zoom := GRAPH_ZOOM
 var _pan := Vector2.ZERO
 var _dragging := false
@@ -154,9 +210,9 @@ func _build() -> void:
 	title_col.add_child(_label("HERO CONSTELLATION", 30, GOLD_BRIGHT))
 	_hero_subtitle = _label("Shape the legend you carry into battle", 17, MUTED)
 	title_col.add_child(_hero_subtitle)
-	var point_card := PanelContainer.new()
+	var point_card: PanelContainer = PLATE_SCRIPT.new()
 	point_card.custom_minimum_size = Vector2(270.0, 70.0)
-	point_card.add_theme_stylebox_override("panel", _panel_style(Color("#211b2b"), GOLD, 12, 1))
+	point_card.add_theme_stylebox_override("panel", _plate_inset(10))
 	header_row.add_child(point_card)
 	var point_box := VBoxContainer.new()
 	point_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -168,13 +224,13 @@ func _build() -> void:
 	_points_subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	point_box.add_child(_points_subtitle)
 
-	var detail_bg := PanelContainer.new()
+	var detail_bg: PanelContainer = PLATE_SCRIPT.new()
 	detail_bg.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	detail_bg.offset_left = 24.0
 	detail_bg.offset_top = 128.0
 	detail_bg.offset_right = 374.0
 	detail_bg.offset_bottom = -116.0
-	detail_bg.add_theme_stylebox_override("panel", _panel_style(PANEL, Color("#34445d"), 14, 1))
+	detail_bg.add_theme_stylebox_override("panel", _plate_inset(4))
 	add_child(detail_bg)
 	var detail_margin := MarginContainer.new()
 	detail_margin.add_theme_constant_override("margin_left", 20)
@@ -248,14 +304,14 @@ func _build() -> void:
 	if _node_buttons.has("act_1"):
 		_selected_id = "act_1"
 
-	var legend := PanelContainer.new()
+	var legend: PanelContainer = PLATE_SCRIPT.new()
 	legend.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	legend.offset_left = -690.0
 	legend.offset_right = -300.0
 	legend.offset_top = 11.0
 	legend.offset_bottom = 107.0
 	_legend_panel = legend
-	legend.add_theme_stylebox_override("panel", _panel_style(Color("#101729"), Color("#283850"), 12, 1))
+	legend.add_theme_stylebox_override("panel", _plate_inset(4))
 	add_child(legend)
 	var legend_margin := MarginContainer.new()
 	legend_margin.add_theme_constant_override("margin_left", 15)
@@ -325,32 +381,40 @@ func _add_node_button(n: Dictionary) -> void:
 	# engine's delayed one-line tooltip obscuring neighboring constellation nodes.
 	b.tooltip_text = ""
 	b.add_theme_font_size_override("font_size", 1)
+	# A star, not a card: the button itself draws nothing; the orb, the name
+	# under it and a small cost line make the node.
+	for state_name in ["normal", "hover", "pressed", "focus", "disabled"]:
+		b.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
+	b.pivot_offset = NODE_SIZE * 0.5
 	var glyph := Glyph.new()
-	glyph.position = Vector2(6.0, 11.0)
-	glyph.size = Vector2(50.0, 50.0)
+	glyph.position = Vector2((NODE_SIZE.x - ORB.x) * 0.5, 0.0)
+	glyph.size = ORB
 	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	glyph.kind = "active" if n.get("effect", {}).has("ability") else "passive"
 	glyph.kind = "keystone" if n.get("keystone", false) else glyph.kind
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 21, PAPER)
-	name_label.position = Vector2(60.0, 6.0)
-	name_label.size = Vector2(134.0, 55.0)
+	var name_label := _label(str(n.get("name", "")), 17, PAPER)
+	name_label.add_theme_font_override("font", _title_font())
+	name_label.position = Vector2(0.0, ORB.y - 2.0)
+	name_label.size = Vector2(NODE_SIZE.x, 34.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	name_label.max_lines_visible = 2
+	name_label.add_theme_constant_override("line_spacing", -3)
+	name_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
+	name_label.add_theme_constant_override("outline_size", 5)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Keep long single-word names intact at both supported resolutions.
-	var name_size := 21
-	var title_font := name_label.get_theme_font("font")
-	for word in name_label.text.split(" "):
-		while name_size > 17 and title_font.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > name_label.size.x - 4.0:
-			name_size -= 1
-	name_label.add_theme_font_size_override("font_size", name_size)
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 15, MUTED)
-	cost_label.position = Vector2(60.0, 66.0)
-	cost_label.size = Vector2(134.0, 18.0)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 12, MUTED)
+	var two_lines: bool = _title_font().get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x > NODE_SIZE.x - 4.0
+	cost_label.position = Vector2(0.0, ORB.y + (38.0 if two_lines else 20.0))
+	cost_label.size = Vector2(NODE_SIZE.x, 16.0)
+	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cost_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
+	cost_label.add_theme_constant_override("outline_size", 4)
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(cost_label)
 	b.pressed.connect(_on_node_pressed.bind(n))
@@ -361,7 +425,11 @@ func _add_node_button(n: Dictionary) -> void:
 
 func _node_pos(n: Dictionary) -> Vector2:
 	var p := _display_grid_pos(n)
-	return MARGIN + Vector2(p.x, p.y) * _layout_spacing()
+	var base := MARGIN + Vector2(p.x, p.y) * _layout_spacing()
+	# A little deterministic drift off the grid, so all the paths together
+	# read as a sky of constellations rather than a spreadsheet.
+	var h := str(n.get("id", "")).hash()
+	return base + Vector2(float(h % 37) - 18.0, float((h / 37) % 21) - 10.0)
 
 func _layout_spacing() -> Vector2:
 	return FOCUSED_SPACING if _branch_filter != "" else SPACING
@@ -485,8 +553,8 @@ func _on_viewport_input(event: InputEvent) -> void:
 		_apply_transform()
 
 func _draw_background() -> void:
-	# The realm's key art under a deep night scrim, the same treatment as the
-	# skirmish and war-chest screens, instead of a flat navy field.
+	# Night sky over the realm's key art: a deep scrim, then a violet-to-ink
+	# wash so the constellation is the brightest thing on the page.
 	draw_rect(Rect2(Vector2.ZERO, size), INK)
 	if _backdrop == null and ResourceLoader.exists(BACKDROP):
 		_backdrop = load(BACKDROP)
@@ -494,70 +562,147 @@ func _draw_background() -> void:
 		var tex_size := _backdrop.get_size()
 		var cover := maxf(size.x / tex_size.x, size.y / tex_size.y)
 		var draw_size := tex_size * cover
-		draw_texture_rect(_backdrop, Rect2((size - draw_size) * 0.5, draw_size), false, Color(1, 1, 1, 0.55))
-		draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.03, 0.07, 0.62))
-		# Vignette toward the edges keeps the constellation the brightest thing.
-		for i in 10:
-			var inset := float(i) * 26.0
-			draw_rect(Rect2(Vector2(inset, inset), size - Vector2(inset, inset) * 2.0), Color(0, 0, 0, 0.045), false, 26.0)
-	for i in range(8):
-		var x := float(i) * size.x / 7.0
-		draw_line(Vector2(x, 0), Vector2(x + 160.0, size.y), Color(0.18, 0.25, 0.38, 0.08), 1.0)
-	for i in range(6):
-		var y := 120.0 + float(i) * maxf(1.0, (size.y - 170.0) / 5.0)
-		draw_line(Vector2(390.0, y), Vector2(size.x - 24.0, y), Color(0.35, 0.42, 0.54, 0.07), 1.0)
+		draw_texture_rect(_backdrop, Rect2((size - draw_size) * 0.5, draw_size), false, Color(1, 1, 1, 0.38))
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.025, 0.06, 0.72))
+	# A wash of night colour: violet high up, ink low down.
+	for k in 12:
+		var f := float(k) / 12.0
+		draw_rect(Rect2(0, size.y * f, size.x, size.y / 12.0 + 1.0), Color(0.16, 0.08, 0.26, 0.10 * (1.0 - f)))
+	for i in 10:
+		var inset := float(i) * 26.0
+		draw_rect(Rect2(Vector2(inset, inset), size - Vector2(inset, inset) * 2.0), Color(0, 0, 0, 0.05), false, 26.0)
+	# Faint fixed stars across the whole page, so the twinkling sky inside
+	# the constellation view has no visible edge.
+	var srng := RandomNumberGenerator.new()
+	srng.seed = 1977
+	for k in int(size.x * size.y / 5200.0):
+		draw_circle(Vector2(srng.randf() * size.x, srng.randf() * size.y), srng.randf_range(0.5, 1.4), Color(0.85, 0.9, 1.0, srng.randf_range(0.12, 0.35)))
 	draw_line(Vector2(24, 108), Vector2(size.x - 24, 108), Color(GOLD, 0.35), 1.0)
 	draw_line(Vector2(24, size.y - 105), Vector2(size.x - 24, size.y - 105), Color(GOLD, 0.22), 1.0)
 
+## Stars of the sky behind the constellation, made once and twinkled each frame.
+var _sky: Array = []
+var _sky_size := Vector2.ZERO
+## Bursts of light when a star is claimed: {pos, t, col}.
+var _bursts: Array = []
+var _sky_time := 0.0
+
+func _process(delta: float) -> void:
+	_sky_time += delta
+	if is_instance_valid(_canvas) and is_visible_in_tree():
+		_canvas.queue_redraw()
+	if not _bursts.is_empty():
+		_bursts = _bursts.filter(func(b): return _sky_time - float(b["t"]) < 1.2)
+
+func _orb_center(n: Dictionary) -> Vector2:
+	return _node_pos(n) + Vector2(NODE_SIZE.x * 0.5, ORB.y * 0.5)
+
+func _ensure_sky(area: Vector2) -> void:
+	if _sky_size == area and not _sky.is_empty():
+		return
+	_sky_size = area
+	_sky.clear()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 77077
+	var count := int(clampf(area.x * area.y / 5200.0, 120.0, 900.0))
+	for k in count:
+		_sky.append({"p": Vector2(rng.randf() * area.x, rng.randf() * area.y), "r": rng.randf_range(0.6, 1.9),
+			"ph": rng.randf() * TAU, "sp": rng.randf_range(0.6, 2.2), "tint": rng.randf()})
+
 func _draw_constellation(canvas: CanvasItem) -> void:
-	var branch_seen := {}
+	var area: Vector2 = _canvas.size + Vector2(600, 600)
+	_ensure_sky(area)
+	# The sky: twinkling stars, a few warm, most cold.
+	for st in _sky:
+		var tw := 0.35 + 0.65 * (0.5 + 0.5 * sin(_sky_time * float(st["sp"]) + float(st["ph"])))
+		var col := Color(0.85, 0.9, 1.0) if float(st["tint"]) < 0.8 else Color(1.0, 0.85, 0.6)
+		canvas.draw_circle(Vector2(st["p"]) - Vector2(300, 300), float(st["r"]), Color(col, 0.55 * tw))
+	# Nebulae: soft clouds of each path's colour around its stars.
+	var branch_pts := {}
+	for n in _nodes:
+		if _node_buttons.has(str(n.get("id", ""))) and _is_visible_node(n):
+			var br := str(n.get("branch", ""))
+			if not branch_pts.has(br):
+				branch_pts[br] = []
+			branch_pts[br].append(_orb_center(n))
+	for br in branch_pts:
+		var pts: Array = branch_pts[br]
+		var bc: Color = _branch_color(br)
+		for k in pts.size():
+			if k % 2 == 1:
+				continue
+			var p: Vector2 = pts[k]
+			for q in 5:
+				canvas.draw_circle(p + Vector2(sin(k * 1.7) * 30.0, cos(k * 2.3) * 24.0), 50.0 + q * 26.0, Color(bc, 0.014))
+		# The constellation's name, large and faint above its first star.
+		var top: Vector2 = pts[0]
+		for p2 in pts:
+			if p2.y < top.y:
+				top = p2
+		var title: String = String(br).to_upper()
+		var tfs := 26
+		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
+		canvas.draw_string(_title_font(), top + Vector2(-tw2 * 0.5, -58.0), title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc, 0.42))
+	# Links: faint for locked, bright for open paths, with motes of light
+	# flowing along the owned ones toward the next star.
 	for n in _nodes:
 		var id := str(n.get("id", ""))
 		if not _node_buttons.has(id) or not _is_visible_node(n):
 			continue
-		var branch := str(n.get("branch", ""))
-		var anchor := _node_pos(n)
-		var state := _node_state(n)
-		if state == "UNLOCKED" or state == "PURCHASABLE":
-			var star_color := MINT if state == "UNLOCKED" else GOLD_BRIGHT
-			# A restrained crown stays clear of nearby links and keeps the status
-			# legible when all paths are shown together.
-			var crest := anchor + Vector2(NODE_SIZE.x * 0.5, -5.0)
-			canvas.draw_line(crest + Vector2(-36.0, 0.0), crest + Vector2(-9.0, 0.0), Color(star_color, 0.5), 1.3, true)
-			canvas.draw_line(crest + Vector2(9.0, 0.0), crest + Vector2(36.0, 0.0), Color(star_color, 0.5), 1.3, true)
-			canvas.draw_colored_polygon(PackedVector2Array([
-				crest + Vector2(0.0, -6.0), crest + Vector2(6.0, 0.0),
-				crest + Vector2(0.0, 6.0), crest + Vector2(-6.0, 0.0)
-			]), Color(star_color, 0.78))
-		if not branch_seen.has(branch):
-			branch_seen[branch] = anchor.x
-			canvas.draw_string(_title_font(), Vector2(anchor.x, 25.0), branch.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, Color(_branch_color(branch), 0.82))
+		var to := _orb_center(n)
 		for req in n.get("req", []):
 			var required := _find_node(str(req))
-			if not _node_buttons.has(req) or not _is_visible_node(required):
+			if required.is_empty() or not _node_buttons.has(req) or not _is_visible_node(required):
 				continue
-			var from_node := required
-			if from_node.is_empty():
-				continue
-			var from := _node_pos(from_node) + Vector2(NODE_SIZE.x * 0.5, NODE_SIZE.y)
-			var to := anchor + Vector2(NODE_SIZE.x * 0.5, 0.0)
+			var from := _orb_center(required)
 			var complete := _is_unlocked(id) and _is_unlocked(req)
 			var available := _prereqs_met(n) and not _is_unlocked(id)
 			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
 			var path := _constellation_link(from, to)
-			var strength := 0.88 if complete or available else 0.32
-			canvas.draw_polyline(path, Color(col, strength * 0.12), 9.0 if complete or available else 5.0, true)
-			canvas.draw_polyline(path, Color(col, strength * 0.46), 3.6 if complete or available else 2.0, true)
-			canvas.draw_polyline(path, Color(PAPER, strength * 0.52), 1.0, true)
-			canvas.draw_circle(to, 5.0 if complete or available else 3.0, Color(col, strength * 0.33))
-			canvas.draw_circle(to, 2.2, Color(col, strength))
+			var strength := 0.9 if complete else (0.75 if available else 0.28)
+			canvas.draw_polyline(path, Color(col, strength * 0.10), 12.0 if complete or available else 5.0, true)
+			canvas.draw_polyline(path, Color(col, strength * 0.40), 3.4 if complete or available else 1.6, true)
+			canvas.draw_polyline(path, Color(PAPER, strength * 0.55), 1.0, true)
+			if complete or available:
+				var motes := 3 if complete else 2
+				for m in motes:
+					var t := fmod(_sky_time * (0.28 if complete else 0.18) + float(m) / float(motes) + float(id.hash() % 97) / 97.0, 1.0)
+					var idx := t * float(path.size() - 1)
+					var i0 := int(idx)
+					var p3: Vector2 = path[i0].lerp(path[mini(i0 + 1, path.size() - 1)], idx - float(i0))
+					canvas.draw_circle(p3, 5.0, Color(col, 0.18))
+					canvas.draw_circle(p3, 2.4, Color(col.lightened(0.4), 0.9))
+	# A dark plate behind each star's name keeps links from crossing the text.
+	for n in _nodes:
+		var nid := str(n.get("id", ""))
+		if not _node_buttons.has(nid) or not _is_visible_node(n):
+			continue
+		var b: Button = _node_buttons[nid]
+		var lab: Label = b.get_child(1) as Label
+		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x + 18.0)
+		var lines := 2 if tw3 >= NODE_SIZE.x - 2.0 else 1
+		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, 19.0 * lines + 22.0))
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.02, 0.025, 0.05, 0.72)
+		sb.set_corner_radius_all(8)
+		canvas.draw_style_box(sb, plate)
+	# Claim bursts: an expanding ring and sparks.
+	for b in _bursts:
+		var age := (_sky_time - float(b["t"])) / 1.2
+		var bp: Vector2 = b["pos"]
+		var bcol: Color = b["col"]
+		canvas.draw_arc(bp, 30.0 + age * 90.0, 0.0, TAU, 40, Color(bcol, 0.8 * (1.0 - age)), 3.0 * (1.0 - age) + 1.0, true)
+		canvas.draw_arc(bp, 20.0 + age * 55.0, 0.0, TAU, 40, Color(PAPER, 0.5 * (1.0 - age)), 1.5, true)
+		for q in 12:
+			var a := q * TAU / 12.0 + float(b["t"])
+			canvas.draw_circle(bp + Vector2(cos(a), sin(a)) * (26.0 + age * 110.0), 2.5 * (1.0 - age) + 0.5, Color(bcol.lightened(0.3), 1.0 - age))
 
 func _constellation_link(from: Vector2, to: Vector2) -> PackedVector2Array:
 	var points := PackedVector2Array()
 	var delta := to - from
-	var bend := minf(26.0, absf(delta.y) * 0.22)
-	var first := from + Vector2(delta.x * 0.27, bend)
-	var second := to - Vector2(delta.x * 0.27, bend)
+	var bend := minf(22.0, absf(delta.y) * 0.18)
+	var first := from + Vector2(delta.x * 0.3, bend)
+	var second := to - Vector2(delta.x * 0.3, bend)
 	for step in range(17):
 		var t := float(step) / 16.0
 		var inverse := 1.0 - t
@@ -647,15 +792,21 @@ func _refresh_nodes() -> void:
 		b.position = _node_pos(n)
 		var state := _node_state(n)
 		var cost_label: Label = b.get_child(2) as Label
-		cost_label.text = "%d SP  •  %s" % [int(n.get("cost", 1)), _node_tag(n)]
+		cost_label.text = "%d SP  ·  %s" % [int(n.get("cost", 1)), _node_tag(n)]
 		cost_label.modulate = GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
-		b.add_theme_stylebox_override("normal", _node_style(n, id == _selected_id, id == _hovered_id))
-		b.add_theme_stylebox_override("hover", _node_style(n, id == _selected_id, true))
-		b.add_theme_stylebox_override("pressed", _node_style(n, true, true))
+		var name_label: Label = b.get_child(1) as Label
+		name_label.modulate = Color(1, 1, 1, 1) if state != "PREREQUISITE_BLOCKED" else Color(0.72, 0.75, 0.82, 0.8)
+		if id == _selected_id:
+			name_label.add_theme_color_override("font_color", GOLD_BRIGHT)
+		else:
+			name_label.add_theme_color_override("font_color", PAPER)
 		var glyph: Glyph = b.get_child(0) as Glyph
+		glyph.state = state
 		glyph.locked = state == "PREREQUISITE_BLOCKED"
+		glyph.hovered = id == _hovered_id or id == _selected_id
 		glyph.accent = _branch_color(str(n.get("branch", "")))
 		glyph.queue_redraw()
+		b.scale = Vector2.ONE * (1.08 if id == _hovered_id else 1.0)
 	var visible_count := 0
 	var owned_count := 0
 	for n in _nodes:
@@ -718,6 +869,7 @@ func _on_node_pressed(n: Dictionary) -> void:
 	if _prereqs_met(n) and int(ProfileManager.hero().get("skill_points", 0)) >= int(n.get("cost", 1)):
 		if ProfileManager.unlock_skill(id):
 			Sfx.play("levelup")
+			_bursts.append({"pos": _orb_center(n), "t": _sky_time, "col": _branch_color(str(n.get("branch", "")))})
 			_status_label.text = "%s joined your constellation." % str(n.get("name", ""))
 		else:
 			Sfx.play("select")
@@ -779,11 +931,17 @@ func _tool_button(text: String, cb: Callable) -> Button:
 	b.add_theme_font_override("font", ThemeDB.fallback_font)
 	b.add_theme_font_size_override("font_size", 17)
 	b.add_theme_color_override("font_color", PAPER)
-	b.add_theme_stylebox_override("normal", _panel_style(Color("#182238"), Color("#52657e"), 9, 1))
-	b.add_theme_stylebox_override("hover", _panel_style(Color("#26334d"), GOLD, 9, 1))
-	b.add_theme_stylebox_override("pressed", _panel_style(Color("#332b1d"), GOLD_BRIGHT, 9, 2))
+	# The game's forged gilt buttons, as on every other page.
+	if ResourceLoader.exists("res://assets/ui/theme.tres"):
+		b.theme = load("res://assets/ui/theme.tres")
 	b.pressed.connect(cb)
 	return b
+
+func _plate_inset(pad: int) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color.TRANSPARENT
+	box.set_content_margin_all(pad)
+	return box
 
 func _panel_style(bg: Color, border: Color, radius: int, width: int) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()

@@ -13,7 +13,7 @@ const THEME_PATH := "res://assets/ui/theme.tres"
 const REGION_BUTTON_SCRIPT := preload("res://scripts/ui/campaign_region_button.gd")
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
-const NODE_SIZE := Vector2(224, 112)
+const NODE_SIZE := Vector2(236, 142)
 const DIFF_COLORS := {
 	"Easy":   Color(0.4, 0.85, 0.45),
 	"Normal": Color(0.7, 0.85, 0.3),
@@ -614,34 +614,37 @@ func _build_node(c: Dictionary) -> void:
 	btn.disabled = not available
 	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
 		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
-	var vb := VBoxContainer.new()
-	vb.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vb.offset_left = 16.0
-	vb.offset_right = -16.0
-	vb.offset_top = 10.0
-	vb.offset_bottom = -10.0
-	vb.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_theme_constant_override("separation", 2)
-	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var kind := "SIDE ROAD  ·  " if bool(c.get("side", false)) else ("THE CHOICE  ·  " if c.has("branch") else "")
-	var head := _label(kind + id, 12, Color(0.75, 0.70, 0.58))
-	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(head)
-	var name_lbl := _label(String(c["title"]), 17, Color(1.0, 0.87, 0.35) if available else Color(0.72, 0.76, 0.80), true)
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(name_lbl)
 	var laurel: bool = id in s.get("heroic", [])
+	btn.number = id
+	btn.side_road = bool(c.get("side", false))
+	btn.heroic = laurel
+	btn.has_jar = bool(c.get("jar", false))
+	btn.jar_found = id in s["jars"]
+	btn.is_next = id == _next_id
+	# The chapter's name rides the parchment ribbon under its seal.
+	var name_lbl := _label(String(c["title"]), 15, Color(0.20, 0.12, 0.05) if (available or cleared) else Color(0.20, 0.21, 0.24), true)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_lbl.max_lines_visible = 2
+	name_lbl.add_theme_constant_override("line_spacing", -4)
+	name_lbl.add_theme_constant_override("outline_size", 0)
+	name_lbl.position = Vector2(26.0, btn.RIBBON_Y)
+	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.RIBBON_H)
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(name_lbl)
+	var kind := "Side road  ·  " if bool(c.get("side", false)) else ("The Choice  ·  " if c.has("branch") else "")
 	var status := "Sealed by your choice" if sealed_by_choice else (("Heroic laurel" if laurel else "Cleared") if cleared else (String(c["difficulty"]) if available else "Sealed"))
 	if bool(c.get("jar", false)):
 		status += ("  ·  jar found" if id in s["jars"] else "  ·  a jar lies here") if available or cleared else ""
-	var status_lbl := _label(status, 13, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
+	var status_lbl := _label(kind + status, 13, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.62, 0.66, 0.70))
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status_lbl.position = Vector2(0.0, btn.RIBBON_Y + btn.RIBBON_H + 6.0)
+	status_lbl.size = Vector2(NODE_SIZE.x, 18.0)
+	status_lbl.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.95))
+	status_lbl.add_theme_constant_override("outline_size", 5)
 	status_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(status_lbl)
-	btn.add_child(vb)
+	btn.add_child(status_lbl)
 	btn.mouse_entered.connect(_show_desc.bind(id))
 	if available:
 		btn.pressed.connect(_open_briefing.bind(id))
@@ -793,8 +796,41 @@ func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 # --------------------------------------------------------------------------
+## Map ambience: time for the marching roads, drifting mist and embers.
+var _anim_t := 0.0
+var _embers: Array = []
+
+func _process(delta: float) -> void:
+	_anim_t += delta
+	if is_instance_valid(_canvas):
+		_canvas.queue_redraw()
+
+func _seal_point(id: String) -> Vector2:
+	# Roads meet the seal at the top of each waypoint, not its ribbon.
+	return _positions[id] + Vector2(0.0, REGION_BUTTON_SCRIPT.SEAL_TOP + REGION_BUTTON_SCRIPT.SEAL_R - NODE_SIZE.y * 0.5)
+
 func _draw_path() -> void:
 	var s := ProfileManager.saga()
+	var vp := _canvas.size
+	# Lands still sealed sink into shadow; open and won chapters sit in light.
+	for c in CampaignDefs.chapters_in_act(_act):
+		var cid := String(c["id"])
+		if not _positions.has(cid):
+			continue
+		var open: bool = ProfileManager.chapter_available(cid) or cid in s["cleared"]
+		var p0 := _seal_point(cid)
+		for k in 6:
+			var rad := 70.0 + k * 26.0
+			if open:
+				_canvas.draw_circle(p0, rad, Color(1.0, 0.82, 0.45, 0.016))
+			else:
+				_canvas.draw_circle(p0, rad, Color(0.0, 0.0, 0.02, 0.05))
+	# Drifting mist: long pale bands crossing slowly.
+	for k in 5:
+		var y := vp.y * (0.28 + 0.12 * k)
+		var x := fmod(_anim_t * (14.0 + k * 5.0) + k * 420.0, vp.x + 900.0) - 450.0
+		for q in 4:
+			_canvas.draw_circle(Vector2(x + q * 110.0, y + sin(_anim_t * 0.3 + k + q) * 12.0), 80.0 + q * 10.0, Color(0.85, 0.88, 0.92, 0.018))
 	for c in CampaignDefs.chapters_in_act(_act):
 		var from_id := String(c["id"])
 		if not _positions.has(from_id):
@@ -804,21 +840,68 @@ func _draw_path() -> void:
 			if not _positions.has(to_id):
 				continue
 			var lit: bool = ProfileManager.chapter_available(to_id) or to_id in s["cleared"]
-			_draw_march_route(_positions[from_id], _positions[to_id], lit)
+			_draw_march_route(_seal_point(from_id), _seal_point(to_id), lit)
+	# Embers and Lume motes rising over the map.
+	if _embers.is_empty():
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 7707
+		for k in 70:
+			_embers.append({"x": rng.randf(), "ph": rng.randf(), "sp": rng.randf_range(0.02, 0.06), "r": rng.randf_range(1.0, 2.6), "warm": rng.randf() < 0.7})
+	for e in _embers:
+		var f := fmod(float(e["ph"]) + _anim_t * float(e["sp"]), 1.0)
+		var ep := Vector2(float(e["x"]) * vp.x + sin(_anim_t * 0.8 + float(e["ph"]) * 9.0) * 16.0, vp.y * (1.0 - f))
+		var ec := Color(1.0, 0.66, 0.28) if bool(e["warm"]) else Color(0.78, 0.62, 1.0)
+		var fade := sin(f * PI)
+		_canvas.draw_circle(ep, float(e["r"]) * 2.4, Color(ec, 0.08 * fade))
+		_canvas.draw_circle(ep, float(e["r"]), Color(ec, 0.65 * fade))
+	# The hero's standard planted at the next chapter: "you are here".
+	if _positions.has(_next_id) and int(CampaignDefs.find(_next_id).get("act", -1)) == _act:
+		_draw_hero_standard(_seal_point(_next_id) + Vector2(REGION_BUTTON_SCRIPT.SEAL_R + 22.0, -12.0))
+
+func _draw_hero_standard(base: Vector2) -> void:
+	var col: Color = GameData.RACES.get(_hero_race(), {}).get("color", Color(0.8, 0.3, 0.2))
+	var pole_top := base + Vector2(0, -70)
+	_canvas.draw_line(base + Vector2(0, 26), pole_top, Color(0.25, 0.18, 0.1), 3.0, true)
+	_canvas.draw_circle(pole_top, 3.5, Color(0.95, 0.78, 0.4))
+	# A waving pennant.
+	var pts := PackedVector2Array()
+	var bottom := PackedVector2Array()
+	for k in 11:
+		var t := float(k) / 10.0
+		var wave := sin(_anim_t * 3.0 - t * 4.0) * 5.0 * t
+		pts.append(pole_top + Vector2(4.0 + t * 46.0, 4.0 + wave))
+		bottom.append(pole_top + Vector2(4.0 + t * 46.0, 30.0 - t * 12.0 + wave))
+	var poly := pts.duplicate()
+	bottom.reverse()
+	poly.append_array(bottom)
+	_canvas.draw_colored_polygon(poly, col)
+	poly.append(poly[0])
+	_canvas.draw_polyline(poly, Color(0.95, 0.78, 0.4, 0.9), 1.4, true)
+	var hero: Dictionary = ProfileManager.hero()
+	var initial := String(GameData.RACES.get(_hero_race(), {}).get("name", "?")).trim_prefix("The ").substr(0, 1)
+	_canvas.draw_string(_title_font(), pole_top + Vector2(18, 24 + sin(_anim_t * 3.0 - 1.6) * 2.5), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(1, 0.95, 0.8))
+	# A ring of light at the foot of the standard.
+	_canvas.draw_arc(base + Vector2(0, 26), 10.0 + 4.0 * sin(_anim_t * 2.0), 0.0, TAU, 20, Color(0.98, 0.8, 0.4, 0.5), 1.5, true)
+	if hero.is_empty():
+		return
 
 func _draw_march_route(from: Vector2, to: Vector2, lit: bool) -> void:
-	# A curved, inked march route: a dark under-stroke, then dashes that glow
-	# gold once the leg is open and stay faint slate while it is sealed.
+	# A curved, inked march route: a dark under-stroke, then dashes that march
+	# along the road (and glow gold) once the leg is open, faint slate while
+	# it is sealed.
 	var mid := (from + to) * 0.5
 	var normal := Vector2(-(to - from).y, (to - from).x).normalized()
 	var ctrl := mid + normal * (to - from).length() * 0.12
 	var pts := PackedVector2Array()
-	for k in 33:
-		var t := float(k) / 32.0
+	for k in 65:
+		var t := float(k) / 64.0
 		pts.append(from.lerp(ctrl, t).lerp(ctrl.lerp(to, t), t))
-	_canvas.draw_polyline(pts, Color(0.02, 0.02, 0.03, 0.7), 7.0, true)
-	var dash_col := Color(0.98, 0.80, 0.38, 0.95) if lit else Color(0.55, 0.58, 0.64, 0.55)
+	_canvas.draw_polyline(pts, Color(0.02, 0.02, 0.03, 0.7), 8.0, true)
 	if lit:
-		_canvas.draw_polyline(pts, Color(0.98, 0.72, 0.30, 0.18), 12.0, true)
-	for k in range(0, 32, 2):
-		_canvas.draw_line(pts[k], pts[k + 1], dash_col, 3.0, true)
+		_canvas.draw_polyline(pts, Color(0.98, 0.72, 0.30, 0.16), 14.0, true)
+		var shift := int(_anim_t * 10.0) % 4
+		for k in range(shift, 63, 4):
+			_canvas.draw_line(pts[k], pts[mini(k + 2, 64)], Color(0.99, 0.82, 0.42, 0.95), 3.2, true)
+	else:
+		for k in range(0, 63, 4):
+			_canvas.draw_circle(pts[k], 1.6, Color(0.58, 0.61, 0.67, 0.55))
