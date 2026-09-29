@@ -404,6 +404,7 @@ func _build() -> void:
 	_preview_cam.fov = 60.0
 	_preview_viewport.add_child(_preview_cam)
 	_preview_cam.look_at(Vector3(0.0, 0.96, 0.0))
+	_preview_container.resized.connect(_fit_preview_cam)
 
 	# Environment — ambient + sky color so model is readable
 	var env_node := WorldEnvironment.new()
@@ -519,6 +520,17 @@ func _on_race(rid: String) -> void:
 	_refresh_race()
 	_load_hero_model()
 
+## The frame is tall and narrow on 4:3 and 16:10 screens: the camera steps
+## back so the hero's dais stays inside it.
+func _fit_preview_cam() -> void:
+	if not is_instance_valid(_preview_cam) or not is_instance_valid(_preview_container):
+		return
+	var base_z := 3.1 if _race_id == "lioraen" else 2.6
+	var sz := _preview_container.size
+	var aspect := sz.x / maxf(1.0, sz.y)
+	_preview_cam.position.z = base_z * maxf(1.0, 0.62 / maxf(0.2, aspect))
+	_preview_cam.look_at(Vector3(0.0, 0.96, 0.0))
+
 func _refresh_race() -> void:
 	# The dais ring takes the chosen faction's colour.
 	if _dais_ring_mat != null:
@@ -603,8 +615,7 @@ func _load_hero_model() -> void:
 	ModelUtils.scale_to_height(model, 1.8)
 	ModelUtils.ground_model(model, 0.0)
 	_play_preview_idle(model, hero_id)
-	_preview_cam.position.z = 3.1 if _race_id == "lioraen" else 2.6
-	_preview_cam.look_at(Vector3(0.0, 0.96, 0.0))
+	_fit_preview_cam()
 
 	# Apply variant rotation and tint
 	_apply_variant_visuals()

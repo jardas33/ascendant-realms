@@ -152,10 +152,15 @@ func _column(header: String, assign: Callable) -> Control:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	panel.add_child(scroll)
+	# A gutter on the right keeps the rows clear of the scrollbar.
+	var gutter := MarginContainer.new()
+	gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gutter.add_theme_constant_override("margin_right", 14)
+	scroll.add_child(gutter)
 	var v := VBoxContainer.new()
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	v.add_theme_constant_override("separation", 6)
-	scroll.add_child(v)
+	gutter.add_child(v)
 	var h := Label.new()
 	h.text = header.to_upper()
 	h.add_theme_font_override("font", _title_font())

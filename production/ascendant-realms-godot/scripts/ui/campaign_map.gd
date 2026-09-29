@@ -76,8 +76,9 @@ func _label(text: String, size: int, col: Color, title_font := false) -> Label:
 	l.add_theme_font_override("font", _title_font() if title_font else ThemeDB.fallback_font)
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", col)
-	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	l.add_theme_constant_override("outline_size", 4 if title_font else 2)
+	# A heavy dark outline keeps small text readable over the bright map.
+	l.add_theme_color_override("font_outline_color", Color(0.01, 0.01, 0.02, 0.95))
+	l.add_theme_constant_override("outline_size", 7 if title_font else 5)
 	return l
 
 # --------------------------------------------------------------------------

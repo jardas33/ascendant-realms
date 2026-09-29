@@ -650,7 +650,11 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var title: String = String(br).to_upper()
 		var tfs := 26
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
-		canvas.draw_string(_title_font(), top + Vector2(-tw2 * 0.5, -58.0), title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc, 0.42))
+		# Readable over the night sky: a dark outline under a brighter name,
+		# lifted clear of the first star's selection rings.
+		var title_pos := top + Vector2(-tw2 * 0.5, -70.0)
+		canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 6, Color(0.01, 0.015, 0.03, 0.85))
+		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.25), 0.8))
 	# Links: faint for locked, bright for open paths, with motes of light
 	# flowing along the owned ones toward the next star.
 	for n in _nodes:
@@ -685,7 +689,7 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 	var sel := _find_node(_selected_id)
 	if not sel.is_empty() and _is_visible_node(sel):
 		var sc2 := _orb_center(sel)
-		var rr2 := ORB.x * 0.62
+		var rr2 := ORB.x * 0.56
 		for q in 3:
 			var a4 := _sky_time * 0.9 + q * TAU / 3.0
 			canvas.draw_arc(sc2, rr2, a4, a4 + 1.3, 20, Color(GOLD_BRIGHT, 0.85), 2.2, true)
