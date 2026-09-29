@@ -639,6 +639,10 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Carrying:** workers now visibly carry what they gather on their shoulders: a log, a grey stone, a gleaming gold nugget or a food sack. It disappears when they drop it off.
   - **Performance:** the frame-time benchmark is 22.4 ms, the same as before these additions.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 57 (done): full UI audit**
+  - All eight menus were shot at four screen shapes (1920x1080, 1728x1080, 1920x823 and 1440x1080): 32 screenshots. Nothing is stretched, clipped or crowded after the recent changes.
+  - **Skill constellation:** the selected star's turning rings crossed its own name. They are now drawn beneath the name plate.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

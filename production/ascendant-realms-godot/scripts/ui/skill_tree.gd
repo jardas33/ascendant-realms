@@ -680,6 +680,17 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 					var p3: Vector2 = path[i0].lerp(path[mini(i0 + 1, path.size() - 1)], idx - float(i0))
 					canvas.draw_circle(p3, 5.0, Color(col, 0.18))
 					canvas.draw_circle(p3, 2.4, Color(col.lightened(0.4), 0.9))
+	# The selected star wears two counter-turning gilt rings,
+	# drawn under the name plates so they never cross the star's name.
+	var sel := _find_node(_selected_id)
+	if not sel.is_empty() and _is_visible_node(sel):
+		var sc2 := _orb_center(sel)
+		var rr2 := ORB.x * 0.62
+		for q in 3:
+			var a4 := _sky_time * 0.9 + q * TAU / 3.0
+			canvas.draw_arc(sc2, rr2, a4, a4 + 1.3, 20, Color(GOLD_BRIGHT, 0.85), 2.2, true)
+			var a5 := -_sky_time * 0.6 + q * TAU / 3.0
+			canvas.draw_arc(sc2, rr2 + 7.0, a5, a5 + 0.8, 14, Color(GOLD_BRIGHT, 0.45), 1.4, true)
 	# A dark plate behind each star's name keeps links from crossing the text.
 	for n in _nodes:
 		var nid := str(n.get("id", ""))
@@ -691,16 +702,6 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var lines := 2 if tw3 >= NODE_SIZE.x - 2.0 else 1
 		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, 19.0 * lines + 22.0))
 		canvas.draw_style_box(_name_plate_style, plate)
-	# The selected star wears two counter-turning gilt rings.
-	var sel := _find_node(_selected_id)
-	if not sel.is_empty() and _is_visible_node(sel):
-		var sc2 := _orb_center(sel)
-		var rr2 := ORB.x * 0.62
-		for q in 3:
-			var a4 := _sky_time * 0.9 + q * TAU / 3.0
-			canvas.draw_arc(sc2, rr2, a4, a4 + 1.3, 20, Color(GOLD_BRIGHT, 0.85), 2.2, true)
-			var a5 := -_sky_time * 0.6 + q * TAU / 3.0
-			canvas.draw_arc(sc2, rr2 + 7.0, a5, a5 + 0.8, 14, Color(GOLD_BRIGHT, 0.45), 1.4, true)
 	# Claim bursts: an expanding ring and sparks.
 	for b in _bursts:
 		var age := (_sky_time - float(b["t"])) / 1.2
