@@ -754,6 +754,12 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Landmarks, one per people:** raised once each, from the Age of Iron. Village Oven (food and healing), Fountain of the Mouras (healing and hero mana), Rift Gate (thralls every 40 seconds), Great War Drum (20% faster attacks), Golden Loom (gold and a wide view), Standing Stones (armour and repairs), Great Sun Dial (a Sunfire Lance every 30 seconds), Howling Stone (wolves answer intruders), Ossuary Bell (a third of the fallen rise as skeletons), Entrudo Bonfire (scorches enemies, fires up your soldiers). Each wears a turning Lume crystal in its people's colour. All ten were tested; the computer player raises its own.
   - **Also:** hero last words on falling and a battle cry on revival; a confirmation before quitting a battle; the result screen counts spells cast; manual entries and new loading tips.
   - Regression passed (18 checks) after every change. Pushed to GitHub. A balance check with all of this in is finishing.
+- **Plan 76 (done): deeper identity per people**
+  - **Capstone upgrades:** each people has a final upgrade at the forge in the Age of Lume: The Bull of Barroso, The Seven Mouths Open, Furna Remembered, No More Chains, The Court Assembled, The Living Castro, The Seventy-Fifth Triumph, The Seventh Son, The Procession Without End, Carnival Unending. That makes 40 upgrades in all.
+  - **Landmarks on the minimap:** a star in the people's colour. When an enemy's landmark is first seen, an alert names it.
+  - **Faction pages:** hero creation and Skirmish now list each people's three spells and its landmark.
+  - **Balance:** the first check with the new spells had Ironmaw at 7-1-1, so Break the Chains was toned down from +35% attack speed and +25% damage to +25% and +20%. A second check is running.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
