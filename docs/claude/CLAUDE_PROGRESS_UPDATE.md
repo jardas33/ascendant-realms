@@ -673,6 +673,15 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Fog fixes (bugs):** sounds are not positional, so hidden activity was heard across the map. An enemy's finished building chimed, and fights in the fog could be heard. Recruit, rank-up and level-up light bursts also floated above the fog. Now all of these only play for what you can see.
   - **Balance check (45 matches, Sonnet):** Hollow 6-2-1, Vorthak 6-2-1, Sunspear 5-2-2, Karak 5-3-1, Wyldkin 4-3-2, Sylvan 4-3-2, Frostborn 3-6-0, Barrosan 3-5-1, Ironmaw 2-6-1, Lioraen 1-7-1. Lioraen dug almost no Lume jars. A second 45 matches is running to see if this is real or noise, since nothing in these plans changed the fighting.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 64 (done): lore you can feel, and a balance check**
+  - **Battle cries in the story:** hero creation shows your people's battle cry. Campaign briefings introduce a new enemy with the cry they charge with ("They charge crying 'Violet fire!'").
+  - **Dark battlefields:** in night, dusk and storm battles, every finished building keeps a warm hearth-light at its door. It hides with the building in the fog.
+  - **Pause menu:** shows the battle so far, for example "12:40 · 23 foes slain · 18 soldiers standing".
+  - **Main menu:** the hero card names the next chapter of the saga.
+  - **Text fixes:** "Mechanic: Fortify: ..." now reads "Fortify: ..."; "Know your foe: Moura Court: Precision: ..." now reads "Moura Court. Precision: ...". Three new loading tips.
+  - **Balance (90 matches, two Sonnet runs):** Lioraen's 1-7 in the first run was noise; they went 6-1-2 in the second. Pooled: Vorthak 12-5-1, Karak 10-6-2, Ironmaw 9-8-1, Hollow 8-8-2, Wyldkin 8-7-3, Sunspear 8-5-5, Lioraen 7-8-3, Sylvan 6-8-4, Careto Host 5-11-2, Barrosan 4-11-3.
+  - Barrosan and the Careto Host were also bottom in the older 135 matches (225 pooled: 11-23-11 and 13-25-7). Barrosan soldiers now have +6% health everywhere (Fortify only helps near home), and the Careto Host +15% instead of +10%. A 90-match check of this is running.
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
