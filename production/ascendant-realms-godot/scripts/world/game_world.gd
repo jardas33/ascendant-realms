@@ -2673,6 +2673,22 @@ var _jars_spawned := 0
 var jars_dug_by_player := 0
 var jars_opened_by_team := {}
 
+var _enemy_cry_timer := 0.0
+
+## Enemy heroes you can see in a fight call out too, now and then.
+func _tick_enemy_cries(delta: float) -> void:
+	_enemy_cry_timer += delta
+	if _enemy_cry_timer < 25.0:
+		return
+	_enemy_cry_timer = 0.0
+	for cmd in commanders:
+		if int(cmd.team) == player_team or cmd.defeated:
+			continue
+		var h = cmd.hero_ref
+		if is_instance_valid(h) and not h.is_dead and h.state == h.State.ATTACKING and is_player_visible(h) and h.has_method("say"):
+			h.say(load("res://scripts/game/bark_defs.gd").pick(String(cmd.race), "attack"), Color(1.0, 0.68, 0.6))
+			return
+
 func _tick_lume_jars(delta: float) -> void:
 	if bool(Match.get_config().get("no_veins", false)) or match_time < 240.0:
 		return
@@ -3452,6 +3468,7 @@ func _physics_process(delta: float) -> void:
 		_aura_timer = 0.0
 	_tick_vein_flares(delta)
 	_tick_lume_jars(delta)
+	_tick_enemy_cries(delta)
 	_last_stand_timer += delta
 	if _last_stand_timer >= 20.0:
 		_last_stand_timer = 0.0

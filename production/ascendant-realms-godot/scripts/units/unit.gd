@@ -3325,7 +3325,7 @@ func _show_hero_title() -> void:
 ## A short call over the unit's head (a hero's battle cry), fading out.
 var _bark: Label3D
 
-func say(text: String) -> void:
+func say(text: String, col: Color = Color(1.0, 0.95, 0.82)) -> void:
 	if text == "" or is_dead:
 		return
 	if is_instance_valid(_bark):
@@ -3339,7 +3339,7 @@ func say(text: String) -> void:
 	_bark.pixel_size = 0.0008
 	_bark.font_size = 24
 	_bark.outline_size = 8
-	_bark.modulate = Color(1.0, 0.95, 0.82)
+	_bark.modulate = col
 	_bark.outline_modulate = Color(0.06, 0.03, 0.0, 0.95)
 	add_child(_bark)
 	_bark.position = Vector3(0.0, _visual_height + 1.6, 0.0)
