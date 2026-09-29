@@ -620,6 +620,13 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Battle:** a war horn opens every battle. Every accepted order gets a soft knock. Placing a building lands with a stamp. Jars and caravan trades ring the coin chime.
   - **Result screen:** new deeds pop in with a chime, like epic loot.
   - Regression passed (18 checks). Pushed to GitHub.
+- **Plan 54 (done): finishing touches on every screen**
+  - **Gilt panels:** a short stray line sat in the top-left corner of every gilt panel (main menu, settings, hero sheet, war chest, hero creation). It is replaced by a small crest on the top edge: a gilt diamond with short rules either side.
+  - **Sliders:** every slider now has a gilt track, a gold fill and a gem grabber that brightens on hover. The settings sliders fill their row instead of stopping halfway.
+  - **Hero sheet:** the dark box behind the portrait is gone. Each attribute now says what one point buys, for example "+25 health per point" under Endurance.
+  - **Result screen:** loot shows as rows with a gem in the rarity's colour and a small rarity tag, instead of "Loot: name (rare)" text. The line under the title no longer repeats "Victory".
+  - **War Chest:** each open slot tile shows its slot emblem, brighter when the chest holds something that fits.
+  - Regression passed (18 checks). Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability

@@ -292,6 +292,11 @@ func _open_slot_tile(slot: String, inv: Array) -> Button:
 	stack.add_theme_constant_override("separation", 0)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tile.add_child(stack)
+	# A faint emblem of the slot on the tile's right, brighter when the chest
+	# holds something that fits.
+	tile.draw.connect(func():
+		var emblem_col := Color(ready_col, 0.55) if fits > 0 else Color(0.55, 0.58, 0.58, 0.28)
+		_draw_slot_emblem(tile, Vector2(tile.size.x - 28.0, tile.size.y * 0.5), 13.0, slot, emblem_col))
 	var name_label := Label.new()
 	name_label.text = _pretty(slot).to_upper()
 	name_label.add_theme_font_size_override("font_size", 15)
