@@ -741,6 +741,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Fog fixes (bugs):** a building collapsing out of sight shook your camera and threw up dust, telling you where a hidden fight was decided. Deaths, hit sparks and arrows in the fog were also drawn above it. None of these show now unless you can see the spot.
   - **Living backgrounds:** the loading screen painting drifts slowly in while the realm loads, and the hero creation, hero sheet, War Chest, settings and skirmish backgrounds breathe with a slow drift in and out.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plans 72 to 75 (done): every people truly unique**
+  - **Asked for:** plenty of spells, and different buildings and upgrades for each people.
+  - **Spells, 30 new, 3 per people:**
+    - B: the signature spell, known from the start, stronger at hero levels 15 and 35. It was first put on G, but G was already the Guard key.
+    - N: learned at hero level 10. M: learned at level 25. Each grows a rank every 20 levels after.
+    - Examples: Chega de Bois (a spectral bull charges a line), Spring of Seven Mouths (a healing spring), Rift Chains, Earthshaker, Fool's Gold (pays 20 gold per enemy caught), Avalanche, Rain of Spears, Moon Leap, Candle Curse, Soul Drain, Winter's Breath, Dance of the Masks.
+    - Summoned soldiers (levy, wolves, skeletons, bladesingers) are spectral: pale and glowing, they take no population and their fall is not counted as a loss.
+    - Every spell has an emblem on its card: the people's sigil in the spell's colour, with a mark for what it does. The hero sheet lists your people's spells, keys, ranks and unlock levels.
+    - All 30 were cast in live test battles and each did its job. Enemy heroes use them too (signature above Easy, the level-10 spell on Hard and Brutal, the level-25 spell deep on the Endless Road).
+  - **Upgrades, 30 (was 2):** three ranks each of weapons and armour gated by the Ages; four economy and defence upgrades at the main hall (faster gathering, bigger worker loads, sturdier buildings, harder-hitting towers); two upgrades found nowhere else for each people (Horns of the Chega, Ash-glass Blades, Grave Hunger, Castro Stonework and so on). Locked ones say what they need. The computer player researches them.
+  - **Landmarks, one per people:** raised once each, from the Age of Iron. Village Oven (food and healing), Fountain of the Mouras (healing and hero mana), Rift Gate (thralls every 40 seconds), Great War Drum (20% faster attacks), Golden Loom (gold and a wide view), Standing Stones (armour and repairs), Great Sun Dial (a Sunfire Lance every 30 seconds), Howling Stone (wolves answer intruders), Ossuary Bell (a third of the fallen rise as skeletons), Entrudo Bonfire (scorches enemies, fires up your soldiers). Each wears a turning Lume crystal in its people's colour. All ten were tested; the computer player raises its own.
+  - **Also:** hero last words on falling and a battle cry on revival; a confirmation before quitting a battle; the result screen counts spells cast; manual entries and new loading tips.
+  - Regression passed (18 checks) after every change. Pushed to GitHub. A balance check with all of this in is finishing.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
