@@ -695,6 +695,19 @@ Last updated: 2026-09-28. Claude updates this file after every pass. (Earlier en
   - **Five new festival stages**, so every faction now has one: the Matança (Ironmaw), the Blessing of the Springs (Lioraen), the Dawn of the Mouras (Moura Court), the Climb to the Castro (Granitborn) and the Parade of Bronze (Aurean Dominion).
   - **Deeds:** a new title, Moonbane of Montalegre, at six Road Tyrants slain.
   - Regression passed (18 checks) after every change. Pushed to GitHub.
+- **Plan 67 (done): a Sonnet-led UI audit, and more Endless Road**
+  - **UI audit (Sonnet worker, reviewed by Opus):** all eight menus at four screen shapes plus the War Chest detail, 36 screenshots. Nothing was clipped, stretched or broken. It found five small defects, all fixed:
+    - Skill constellation branch names were too dim to read. They now have a dark outline and a brighter colour, and sit clear of the first star's rings.
+    - Small campaign-map text over the bright painting had weak contrast. Every campaign label now has a heavier dark outline.
+    - The War Chest item rows ran under the scrollbar on 4:3 and 16:10 screens. They now keep a gap on the right.
+    - On narrow screens the hero-creation dais touched the portrait frame. The preview camera now steps back to fit.
+    - The selected star's turning rings sit a little tighter to the orb.
+  - **Skirmish on 4:3 screens:** the map legend now sits below a larger map instead of beside a small one with empty space around it.
+  - **Hero creation:** Forge Hero breathes a slow warm light like the other main actions.
+  - **Road Tyrants:** each carries a light of its own colour; the Lobisomem turns blood-red when it frenzies.
+  - **Endless champions** (every fifth stage) now have names such as "Urraca Iron-hand", and their fall gets its own alert.
+  - **Two new deep-road mutations:** Thorned (melee attackers take 10% of the blow back per rank) and Keen (ranged soldiers reach a metre further and see further per rank).
+  - Regression passed (18 checks) after every change. Pushed to GitHub.
 - **Extras:** the main menu subtitle and five new lore tips on the loading screen.
 
 ## Performance and stability
