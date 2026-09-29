@@ -3061,9 +3061,14 @@ func _face(target_pos: Vector3) -> void:
 # Damage / death / heal
 # --------------------------------------------------------------------------
 var _last_damaged_msec := -100000
+## Who hit this unit last (a unit or building), for AI defence: archers
+## out-ranged the old "enemy within 14 m" check and killed workers unanswered.
+var last_attacker = null
 
 func take_damage(amount: float, from = null) -> void:
 	_last_damaged_msec = Time.get_ticks_msec()
+	if from is Node and is_instance_valid(from) and from.get("team") != null and int(from.get("team")) != team:
+		last_attacker = from
 	if is_dead or (world and not world.game_running):
 		return
 	var source_team := _combat_source_team(from)

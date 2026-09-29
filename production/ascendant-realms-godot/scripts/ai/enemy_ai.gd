@@ -1130,6 +1130,10 @@ func _manage_defense() -> void:
 	for u in commander.units:
 		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and now - int(u.get("_last_damaged_msec")) < int(2500.0 / maxf(0.01, Engine.time_scale)):
 			var raider = world.find_enemy_near(u.global_position, 14.0, commander.team)
+			# Archers shoot from beyond 14 m: answer whoever actually hit the worker.
+			var hitter = u.get("last_attacker")
+			if raider == null and hitter != null and is_instance_valid(hitter) and not bool(hitter.get("is_dead")) and hitter.global_position.distance_to(u.global_position) < 40.0:
+				raider = hitter
 			if raider:
 				if threat == null:
 					threat = raider
