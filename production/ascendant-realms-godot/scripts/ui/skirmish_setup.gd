@@ -3,6 +3,7 @@ extends Control
 ## battlefield on a tactical preview, set opponents and pace, then march into
 ## game_world. The Match config contract is unchanged.
 
+const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const PRESENTATION_THEME := "res://assets/ui/theme.tres"
@@ -241,30 +242,40 @@ func _race_card(rid: String) -> Button:
 	tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_child(tag)
 	card.pressed.connect(_select_race.bind(rid, true))
+	# The shield leans in when hovered.
+	card.mouse_entered.connect(func():
+		crest.pivot_offset = crest.size * 0.5
+		crest.create_tween().tween_property(crest, "scale", Vector2.ONE * 1.15, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
+	card.mouse_exited.connect(func():
+		crest.create_tween().tween_property(crest, "scale", Vector2.ONE, 0.16))
 	return card
 
 func _crest(race: Dictionary, col: Color) -> Control:
-	# A heraldic lozenge in the faction colour with its initial, until each
-	# faction has painted crest art.
+	# A heraldic shield in the faction colour: gilt rim, a lighter chief and
+	# the faction's initial, until each faction has painted crest art.
 	var holder := Control.new()
-	holder.custom_minimum_size = Vector2(44, 44)
+	holder.custom_minimum_size = Vector2(46, 54)
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	holder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var initial := str(race.get("name", "?")).substr(0, 1)
+	var race_id := ""
+	for k in GameData.RACES:
+		if GameData.RACES[k] == race:
+			race_id = String(k)
 	holder.draw.connect(func():
-		var c := holder.size * 0.5
-		var r := minf(holder.size.x, holder.size.y) * 0.48
-		var pts := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
-		holder.draw_colored_polygon(pts, col.darkened(0.35))
+		var w := holder.size.x
+		var h := holder.size.y
+		var m := 2.0
+		var shield := PackedVector2Array([Vector2(m, m), Vector2(w - m, m), Vector2(w - m, h * 0.55), Vector2(w * 0.5, h - m), Vector2(m, h * 0.55)])
+		holder.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.95))
+		var c := Vector2(w * 0.5, h * 0.45)
 		var inner := PackedVector2Array()
-		for p in pts:
-			inner.append(c + (p - c) * 0.8)
-		holder.draw_colored_polygon(inner, col.darkened(0.05))
-		pts.append(pts[0])
-		holder.draw_polyline(pts, GOLD, 1.5, true)
-		var font := _title_font()
-		var tw := font.get_string_size(initial, HORIZONTAL_ALIGNMENT_LEFT, -1, 20)
-		holder.draw_string(font, c + Vector2(-tw.x * 0.5, 7), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(0.06, 0.05, 0.04)))
+		for p in shield:
+			inner.append(c + (p - c) * 0.84)
+		holder.draw_colored_polygon(inner, col.darkened(0.2))
+		holder.draw_rect(Rect2(inner[0], Vector2(inner[1].x - inner[0].x, h * 0.16)), Color(col.lightened(0.2), 0.55))
+		shield.append(shield[0])
+		holder.draw_polyline(shield, GOLD, 1.8, true)
+		FACTION_SIGILS.draw(holder, race_id, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
 	return holder
 
 func _card_style(col: Color, state: String) -> StyleBoxFlat:

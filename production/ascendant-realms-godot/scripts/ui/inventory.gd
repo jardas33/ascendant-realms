@@ -602,19 +602,76 @@ func _detail_meta(item: Dictionary, equipped: bool) -> Label:
 	label.add_theme_color_override("font_color", RARITY_COLORS.get(rarity, Color.WHITE))
 	return label
 
-func _item_art(item: Dictionary, edge: int, node_name: String) -> TextureRect:
+## A relic's picture on a rarity-coloured glow. Relics with painted art show
+## it; the rest get a drawn emblem of their slot (blade, shield, helm, ring
+## and so on), so every card in the chest has a picture.
+func _item_art(item: Dictionary, edge: int, node_name: String) -> Control:
+	var rarity := str(item.get("rarity", "common"))
+	var glow: Color = RARITY_COLORS.get(rarity, Color.WHITE)
+	var slot := str(item.get("slot", ""))
+	var holder := Control.new()
+	holder.name = node_name
+	holder.custom_minimum_size = Vector2(edge, edge)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var art_path := str(RELIC_ART.get(str(item.get("name", "")), ""))
-	if art_path.is_empty() or not ResourceLoader.exists(art_path):
-		return null
-	var art := TextureRect.new()
-	art.name = node_name
-	art.texture = load(art_path)
-	art.custom_minimum_size = Vector2(edge, edge)
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return art
+	var tex: Texture2D = load(art_path) if not art_path.is_empty() and ResourceLoader.exists(art_path) else null
+	holder.draw.connect(func():
+		var c := holder.size * 0.5
+		var r := minf(holder.size.x, holder.size.y) * 0.46
+		var strength := {"common": 0.10, "uncommon": 0.16, "rare": 0.22, "epic": 0.28, "legendary": 0.36}.get(rarity, 0.12)
+		for k in 7:
+			holder.draw_circle(c, r * (1.0 - k * 0.12), Color(glow, float(strength) * (0.25 + k * 0.1)))
+		holder.draw_arc(c, r * 0.92, 0.0, TAU, 48, Color(glow, 0.55), 1.6, true)
+		if tex != null:
+			return
+		_draw_slot_emblem(holder, c, r * 0.62, slot, glow.lightened(0.35)))
+	if tex != null:
+		var art := TextureRect.new()
+		art.texture = tex
+		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		holder.add_child(art)
+	return holder
+
+func _draw_slot_emblem(ci: CanvasItem, c: Vector2, r: float, slot: String, col: Color) -> void:
+	var dark := Color(0.03, 0.03, 0.04, 0.9)
+	match slot:
+		"main_hand":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.14, -r * 0.7), c + Vector2(r * 0.14, r * 0.35), c + Vector2(-r * 0.14, r * 0.35), c + Vector2(-r * 0.14, -r * 0.7)]), col)
+			ci.draw_rect(Rect2(c + Vector2(-r * 0.45, r * 0.35), Vector2(r * 0.9, r * 0.14)), col)
+			ci.draw_rect(Rect2(c + Vector2(-r * 0.08, r * 0.49), Vector2(r * 0.16, r * 0.4)), col.darkened(0.3))
+		"off_hand":
+			var sh := PackedVector2Array([c + Vector2(-r * 0.7, -r * 0.8), c + Vector2(r * 0.7, -r * 0.8), c + Vector2(r * 0.7, 0), c + Vector2(0, r), c + Vector2(-r * 0.7, 0)])
+			ci.draw_colored_polygon(sh, col)
+			ci.draw_line(c + Vector2(0, -r * 0.7), c + Vector2(0, r * 0.8), dark, 2.0, true)
+		"head":
+			ci.draw_arc(c + Vector2(0, r * 0.2), r * 0.75, PI, TAU, 24, col, r * 0.3, true)
+			ci.draw_rect(Rect2(c + Vector2(-r * 0.8, r * 0.15), Vector2(r * 1.6, r * 0.22)), col)
+		"body":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.8, -r * 0.7), c + Vector2(-r * 0.3, -r * 0.8), c + Vector2(0, -r * 0.55), c + Vector2(r * 0.3, -r * 0.8), c + Vector2(r * 0.8, -r * 0.7), c + Vector2(r * 0.6, r * 0.9), c + Vector2(-r * 0.6, r * 0.9)]), col)
+		"hands":
+			ci.draw_rect(Rect2(c + Vector2(-r * 0.5, -r * 0.3), Vector2(r, r * 1.1)), col)
+			for k in 4:
+				ci.draw_rect(Rect2(c + Vector2(-r * 0.5 + k * r * 0.26, -r * 0.8), Vector2(r * 0.2, r * 0.52)), col)
+		"feet":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.3, -r * 0.8), c + Vector2(r * 0.15, -r * 0.8), c + Vector2(r * 0.15, r * 0.3), c + Vector2(r * 0.8, r * 0.5), c + Vector2(r * 0.8, r * 0.8), c + Vector2(-r * 0.3, r * 0.8)]), col)
+		"amulet":
+			ci.draw_arc(c + Vector2(0, -r * 0.3), r * 0.6, PI * 0.1, PI * 0.9, 20, col, 2.0, true)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, r * 0.05), c + Vector2(r * 0.35, r * 0.45), c + Vector2(0, r * 0.9), c + Vector2(-r * 0.35, r * 0.45)]), col)
+		"ring1", "ring2":
+			ci.draw_arc(c + Vector2(0, r * 0.15), r * 0.55, 0.0, TAU, 32, col, r * 0.2, true)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r * 0.8), c + Vector2(r * 0.25, -r * 0.5), c + Vector2(0, -r * 0.3), c + Vector2(-r * 0.25, -r * 0.5)]), col.lightened(0.3))
+		"cloak":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.3, -r * 0.85), c + Vector2(r * 0.3, -r * 0.85), c + Vector2(r * 0.85, r * 0.85), c + Vector2(0, r * 0.65), c + Vector2(-r * 0.85, r * 0.85)]), col)
+		_:
+			for q in 8:
+				var a := q * TAU / 8.0
+				var rr := r if q % 2 == 0 else r * 0.45
+				ci.draw_line(c, c + Vector2(cos(a), sin(a)) * rr, col, 2.2, true)
+			ci.draw_circle(c, r * 0.25, col)
 
 func _add_detail_art(item: Dictionary) -> void:
 	var art := _item_art(item, 295, "InspectedRelicArt")

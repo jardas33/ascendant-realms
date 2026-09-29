@@ -5,6 +5,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const WORDMARK := "res://assets/ui/wordmark_title.png"
+const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 func _ready() -> void:
 	AudioManager.play_music_path(Sfx.music_key("menu"), -8.0, true)
@@ -73,6 +74,31 @@ func _build() -> void:
 	if not OS.has_feature("web"):
 		col.add_child(_make_button("Quit", _on_quit))
 
+	# A dark gilt plate behind the column so the choices read over any part
+	# of the painting.
+	var backing: PanelContainer = PLATE_SCRIPT.new()
+	backing.set("surface_alpha", 0.55)
+	backing.set("surface_alpha_bottom", 0.72)
+	var bstyle := StyleBoxFlat.new()
+	bstyle.bg_color = Color.TRANSPARENT
+	backing.add_theme_stylebox_override("panel", bstyle)
+	backing.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	backing.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	add_child(backing)
+	move_child(backing, col.get_index())
+	var fit_backing := func():
+		var r: Rect2 = Rect2(col.position, col.size)
+		backing.position = r.position - Vector2(30, 24)
+		backing.size = r.size + Vector2(60, 48)
+	col.resized.connect(fit_backing)
+	fit_backing.call_deferred()
+	backing.modulate.a = 0.0
+	backing.create_tween().tween_property(backing, "modulate:a", 1.0, 0.6).set_delay(0.45)
+
+	# Your hero, waiting: portrait, level and experience in the corner.
+	if ProfileManager.has_hero():
+		add_child(_make_hero_card())
+
 	# Buttons rise into place one after another.
 	var i := 0
 	for b in col.get_children():
@@ -124,10 +150,91 @@ func _make_button(text: String, cb: Callable) -> Button:
 	# A small lift on hover.
 	b.mouse_entered.connect(func():
 		b.pivot_offset = b.size * 0.5
-		b.create_tween().tween_property(b, "scale", Vector2.ONE * 1.04, 0.12))
+		b.create_tween().tween_property(b, "scale", Vector2.ONE * 1.04, 0.12)
+		b.set_meta("hot", true)
+		b.queue_redraw())
 	b.mouse_exited.connect(func():
-		b.create_tween().tween_property(b, "scale", Vector2.ONE, 0.12))
+		b.create_tween().tween_property(b, "scale", Vector2.ONE, 0.12)
+		b.set_meta("hot", false)
+		b.queue_redraw())
+	# Hovered choices are flanked by two small Lume diamonds.
+	b.draw.connect(func():
+		if not b.has_meta("hot") or not bool(b.get_meta("hot")):
+			return
+		for side in [-1.0, 1.0]:
+			var c := Vector2(b.size.x * 0.5 + float(side) * (b.size.x * 0.5 + 14.0), b.size.y * 0.5)
+			var d := 6.0
+			b.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0)]), Color(1.0, 0.84, 0.45, 0.95))
+			b.draw_line(c + Vector2(float(side) * -8.0, 0), c + Vector2(float(side) * -30.0, 0), Color(1.0, 0.84, 0.45, 0.6), 1.4, true))
 	return b
+
+func _make_hero_card() -> Control:
+	var h: Dictionary = ProfileManager.hero()
+	var race: Dictionary = GameData.get_race(str(h.get("race", "")))
+	var card: PanelContainer = PLATE_SCRIPT.new()
+	card.set("surface_alpha", 0.78)
+	card.set("surface_alpha_bottom", 0.86)
+	var st := StyleBoxFlat.new()
+	st.bg_color = Color.TRANSPARENT
+	st.set_content_margin_all(14)
+	card.add_theme_stylebox_override("panel", st)
+	card.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	card.offset_left = 28.0
+	card.offset_top = -170.0
+	card.offset_right = 470.0
+	card.offset_bottom = -26.0
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	card.add_child(row)
+	var hero_def: Dictionary = GameData.get_unit(str(race.get("hero", "")))
+	if not hero_def.is_empty() and ResourceLoader.exists(str(hero_def.get("portrait", ""))):
+		var portrait := EntityPortraitView.new()
+		portrait.custom_minimum_size = Vector2(112, 112)
+		portrait.configure_definition(hero_def, false)
+		row.add_child(portrait)
+	var col := VBoxContainer.new()
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_theme_constant_override("separation", 4)
+	row.add_child(col)
+	var font: Font = load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
+	var name_l := Label.new()
+	name_l.text = str(h.get("name", "Hero"))
+	name_l.add_theme_font_override("font", font)
+	name_l.add_theme_font_size_override("font_size", 26)
+	name_l.add_theme_color_override("font_color", Color(0.98, 0.9, 0.66))
+	col.add_child(name_l)
+	var sub := Label.new()
+	sub.text = "%s  ·  %s  ·  Level %d" % [str(race.get("name", "")), str(h.get("archetype", "")).capitalize(), int(h.get("level", 1))]
+	sub.add_theme_font_size_override("font_size", 15)
+	sub.add_theme_color_override("font_color", Color(0.84, 0.8, 0.7))
+	col.add_child(sub)
+	var bar := ProgressBar.new()
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(0, 10)
+	bar.max_value = maxf(1.0, ProfileManager.xp_for_level(int(h.get("level", 1))))
+	bar.value = float(h.get("xp", 0.0))
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.93, 0.72, 0.3)
+	fill.set_corner_radius_all(3)
+	var back := StyleBoxFlat.new()
+	back.bg_color = Color(0.05, 0.05, 0.06, 0.9)
+	back.border_color = Color(0.6, 0.48, 0.28, 0.8)
+	back.set_border_width_all(1)
+	back.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.add_theme_stylebox_override("background", back)
+	col.add_child(bar)
+	var pts := int(h.get("skill_points", 0)) + int(h.get("attr_points", 0))
+	var tp: int = ProfileManager.talent_points() if ProfileManager.has_method("talent_points") else 0
+	var hint := Label.new()
+	hint.text = ("%d points to spend  ·  %d talent picks waiting" % [pts, tp]) if (pts > 0 or tp > 0) else "Ready for battle"
+	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_color_override("font_color", Color(0.98, 0.82, 0.42) if (pts > 0 or tp > 0) else Color(0.6, 0.85, 0.62))
+	col.add_child(hint)
+	card.modulate.a = 0.0
+	card.create_tween().tween_property(card, "modulate:a", 1.0, 0.7).set_delay(0.9)
+	return card
 
 func _make_vignette() -> TextureRect:
 	var n := 128

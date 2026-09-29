@@ -4,6 +4,7 @@ extends Control
 ## alert feed and the game-over screen. Reads from GameWorld / RTSController /
 ## Commander and connects to their signals; guards every handler against freed
 ## nodes because units and buildings free themselves on death.
+const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 
 signal pause_requested
@@ -3579,7 +3580,6 @@ const TECH_FLAVOR := {
 func _drawn_faction_crest(race_id: String, crest_size: Vector2) -> Control:
 	var race: Dictionary = GameData.RACES.get(race_id, {})
 	var col: Color = race.get("color", Color(0.6, 0.6, 0.6))
-	var initial := String(race.get("name", "?")).trim_prefix("The ").substr(0, 1)
 	var holder := Control.new()
 	holder.custom_minimum_size = crest_size
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3603,10 +3603,7 @@ func _drawn_faction_crest(race_id: String, crest_size: Vector2) -> Control:
 		holder.draw_polyline(shield, COMMAND_GOLD, 2.0, true)
 		inner.append(inner[0])
 		holder.draw_polyline(inner, Color(COMMAND_GOLD, 0.45), 1.0, true)
-		var font: Font = get_theme_default_font()
-		var fs := int(h * 0.42)
-		var tw := font.get_string_size(initial, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
-		holder.draw_string(font, Vector2(w * 0.5 - tw.x * 0.5, h * 0.5 + fs * 0.32), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.98, 0.9, 0.7)))
+		FACTION_SIGILS.draw(holder, race_id, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.98, 0.9, 0.7)))
 	return holder
 
 func _tech_display_name(tid: String, fallback: String) -> String:
