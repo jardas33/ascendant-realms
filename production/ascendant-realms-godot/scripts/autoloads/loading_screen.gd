@@ -337,6 +337,29 @@ func _build_ui() -> void:
 		wm.offset_top = 80
 		wm.offset_bottom = 380
 
+	# A dark wash rising from the bottom edge so the tip and progress read
+	# over the brightest paintings.
+	var wash := TextureRect.new()
+	var wgrad := Gradient.new()
+	wgrad.set_color(0, Color(0.01, 0.012, 0.02, 0.0))
+	wgrad.set_color(1, Color(0.01, 0.012, 0.02, 0.82))
+	var wtex := GradientTexture2D.new()
+	wtex.gradient = wgrad
+	wtex.fill_from = Vector2(0, 0)
+	wtex.fill_to = Vector2(0, 1)
+	wtex.width = 4
+	wtex.height = 64
+	wash.texture = wtex
+	wash.stretch_mode = TextureRect.STRETCH_SCALE
+	wash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(wash)
+	wash.anchor_left = 0.0
+	wash.anchor_right = 1.0
+	wash.anchor_top = 1.0
+	wash.anchor_bottom = 1.0
+	wash.offset_top = -300
+	wash.offset_bottom = 0
+
 	# Bottom band -- R2: anchor_top = anchor_bottom = 1.0, NEGATIVE
 	# offset_top so the band sits INSIDE the viewport (not below).
 	var band := Control.new()
