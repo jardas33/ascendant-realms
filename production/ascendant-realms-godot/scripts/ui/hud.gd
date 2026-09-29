@@ -4108,6 +4108,8 @@ func _on_game_over(victory: bool) -> void:
 		var loot_line := _mk_label("Loot: %s  (%s)" % [String(it.get("name", "")), String(it.get("rarity", "common"))], 16, loot_colors.get(String(it.get("rarity", "common")), Color.WHITE))
 		loot_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		loot_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		if String(it.get("rarity", "")) in ["epic", "legendary"]:
+			loot_line.set_meta("rare_pop", true)
 		box.add_child(loot_line)
 	if loot_sorted.size() > loot_cap:
 		var more := _mk_label("...and %d more in the War Chest" % (loot_sorted.size() - loot_cap), 15, Color(0.8, 0.76, 0.66))
@@ -4211,6 +4213,16 @@ func _on_game_over(victory: bool) -> void:
 			continue
 		child.modulate.a = 0.0
 		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(0.8 + order * 0.12)
+		# Epic and legendary finds land with a pop and a chime.
+		if child.has_meta("rare_pop") and child is Control:
+			var rc: Control = child
+			var pop := rc.create_tween()
+			pop.tween_interval(0.8 + order * 0.12)
+			pop.tween_callback(func():
+				rc.pivot_offset = rc.size * 0.5
+				rc.scale = Vector2(1.25, 1.25)
+				Sfx.play("levelup", -8.0))
+			pop.tween_property(rc, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		order += 1
 	for cell in ledger.get_children():
 		var value_label: Label = cell.get_child(0) as Label

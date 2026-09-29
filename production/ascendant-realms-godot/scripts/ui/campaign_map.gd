@@ -339,6 +339,24 @@ func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
 	var head := _label("THE ENDLESS ROAD  ·  STAGE %d" % depth, 16, Color(0.75, 0.68, 0.52), true)
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(head)
+	if weekly:
+		# The Road of the Week wears a violet ribbon with its week number.
+		var ribbon := Control.new()
+		ribbon.custom_minimum_size = Vector2(0, 34)
+		ribbon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var days_left := 7 - int(fmod(Time.get_unix_time_from_system(), 604800.0) / 86400.0)
+		var week_text := "ROAD OF THE WEEK  ·  NEW ROAD IN %d DAY%s" % [days_left, "" if days_left == 1 else "S"]
+		ribbon.draw.connect(func():
+			var f := _title_font()
+			var tw := f.get_string_size(week_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+			var w := tw + 60.0
+			var x0 := (ribbon.size.x - w) * 0.5
+			var band := PackedVector2Array([Vector2(x0, 4), Vector2(x0 + w, 4), Vector2(x0 + w - 12, 17), Vector2(x0 + w, 30), Vector2(x0, 30), Vector2(x0 + 12, 17)])
+			ribbon.draw_colored_polygon(band, Color(0.36, 0.2, 0.56))
+			band.append(band[0])
+			ribbon.draw_polyline(band, Color(0.95, 0.78, 0.42), 1.4, true)
+			ribbon.draw_string(f, Vector2(x0 + 30, 23), week_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(0.99, 0.93, 0.8)))
+		box.add_child(ribbon)
 	var t := _label(String(st["title"]), 34, Color(0.98, 0.84, 0.46), true)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(t)
