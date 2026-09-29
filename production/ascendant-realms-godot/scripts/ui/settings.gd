@@ -69,7 +69,13 @@ func _build() -> void:
 	var columns := HBoxContainer.new()
 	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_theme_constant_override("separation", 18)
-	scroll.add_child(columns)
+	# Keep the plates clear of the scroll bar so it never sits on a frame edge.
+	var gutter := MarginContainer.new()
+	gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gutter.add_theme_constant_override("margin_right", 16)
+	gutter.add_theme_constant_override("margin_bottom", 8)
+	scroll.add_child(gutter)
+	gutter.add_child(columns)
 	var left := VBoxContainer.new()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left.add_theme_constant_override("separation", 8)
@@ -150,7 +156,7 @@ func _build() -> void:
 		explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_child(explanation)
 		var rule := ColorRect.new()
-		rule.custom_minimum_size = Vector2(0, 1)
+		rule.custom_minimum_size = Vector2(0, 2)
 		rule.color = Color(0.78, 0.68, 0.48, 0.17)
 		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		manual.add_child(rule)

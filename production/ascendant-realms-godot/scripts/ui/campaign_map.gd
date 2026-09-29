@@ -13,7 +13,7 @@ const THEME_PATH := "res://assets/ui/theme.tres"
 const REGION_BUTTON_SCRIPT := preload("res://scripts/ui/campaign_region_button.gd")
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
-const NODE_SIZE := Vector2(200, 96)
+const NODE_SIZE := Vector2(224, 112)
 const DIFF_COLORS := {
 	"Easy":   Color(0.4, 0.85, 0.45),
 	"Normal": Color(0.7, 0.85, 0.3),
@@ -242,6 +242,8 @@ func _build() -> void:
 	endless.offset_top = -66.0
 	endless.offset_bottom = -16.0
 	endless.disabled = ProfileManager.saga()["cleared"].is_empty()
+	endless.tooltip_text = "Win your first chapter to open the Endless Road." if endless.disabled else "Stage after stage, deeper each time, with records to beat."
+	chronicle.tooltip_text = "Win a chapter to begin the Chronicle." if chronicle.disabled else "Reread the story of every chapter you have won."
 	endless.pressed.connect(_open_endless)
 	add_child(endless)
 
@@ -614,10 +616,10 @@ func _build_node(c: Dictionary) -> void:
 		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
 	var vb := VBoxContainer.new()
 	vb.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vb.offset_left = 8.0
-	vb.offset_right = -8.0
-	vb.offset_top = 4.0
-	vb.offset_bottom = -4.0
+	vb.offset_left = 16.0
+	vb.offset_right = -16.0
+	vb.offset_top = 10.0
+	vb.offset_bottom = -10.0
 	vb.alignment = BoxContainer.ALIGNMENT_CENTER
 	vb.add_theme_constant_override("separation", 2)
 	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -706,7 +708,7 @@ func _open_briefing(id: String) -> void:
 	box.add_child(t)
 	var rule := ColorRect.new()
 	rule.color = Color(0.98, 0.84, 0.46, 0.4)
-	rule.custom_minimum_size = Vector2(0, 1)
+	rule.custom_minimum_size = Vector2(0, 2)
 	box.add_child(rule)
 	var body := _label(CampaignDefs.briefing_for(id, _hero_race()), 18, Color(0.92, 0.89, 0.80))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

@@ -160,6 +160,9 @@ func _build_faction_panel() -> Control:
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 10)
 	grid.add_theme_constant_override("v_separation", 10)
+	# The cards grow to fill the panel on tall windows instead of leaving an
+	# empty band between the list and the faction dossier.
+	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
 	for rid in _race_ids():
 		var card := _race_card(str(rid))
@@ -199,6 +202,7 @@ func _race_card(rid: String) -> Button:
 	card.focus_mode = Control.FOCUS_NONE
 	card.custom_minimum_size = Vector2(0, 76)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.clip_contents = true
 	for state in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
 		card.add_theme_stylebox_override(state, _card_style(col, state))
@@ -227,8 +231,12 @@ func _race_card(rid: String) -> Button:
 	var tag := Label.new()
 	tag.text = str(race.get("blurb", "")).get_slice(".", 0)
 	tag.add_theme_font_override("font", _body_font())
-	tag.add_theme_font_size_override("font_size", 12)
+	tag.add_theme_font_size_override("font_size", 13)
 	tag.add_theme_color_override("font_color", MUTED)
+	# Wraps to up to three lines, so taller cards show the faction's line in
+	# full instead of a one-line fragment in an empty card.
+	tag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tag.max_lines_visible = 3
 	tag.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_child(tag)
@@ -525,7 +533,7 @@ func _body_label(font_size: int, col: Color) -> Label:
 func _rule() -> Control:
 	var line := ColorRect.new()
 	line.color = Color(GOLD, 0.35)
-	line.custom_minimum_size = Vector2(0, 1)
+	line.custom_minimum_size = Vector2(0, 2)
 	return line
 
 func _choice_row(labels: Array, keys: Array, setter: Callable, current: String) -> HBoxContainer:

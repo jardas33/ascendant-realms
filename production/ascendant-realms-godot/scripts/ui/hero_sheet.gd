@@ -50,7 +50,13 @@ func _build_static() -> void:
 	_body = VBoxContainer.new()
 	_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_body.add_theme_constant_override("separation", 18)
-	scroll.add_child(_body)
+	# Keep the plates clear of the scroll bar so it never sits on a frame edge.
+	var gutter := MarginContainer.new()
+	gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gutter.add_theme_constant_override("margin_right", 16)
+	gutter.add_theme_constant_override("margin_bottom", 8)
+	scroll.add_child(gutter)
+	gutter.add_child(_body)
 
 	var footer_back := ColorRect.new()
 	footer_back.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -272,6 +278,8 @@ func _refresh() -> void:
 		nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		nl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 		nl.add_theme_font_size_override("font_size", 19)
+		nl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		nl.size_flags_vertical = Control.SIZE_FILL
 		row.add_child(nl)
 		var vl := Label.new()
 		vl.text = str(int(attrs.get(a, 0)))
@@ -280,6 +288,8 @@ func _refresh() -> void:
 		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vl.add_theme_color_override("font_color", Color(0.96, 0.84, 0.57))
 		vl.add_theme_font_size_override("font_size", 20)
+		vl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		vl.size_flags_vertical = Control.SIZE_FILL
 		row.add_child(vl)
 		if attr_pts > 0:
 			var plus := Button.new()
@@ -293,8 +303,10 @@ func _refresh() -> void:
 			blank.custom_minimum_size = Vector2(46, 40)
 			row.add_child(blank)
 		var rule := ColorRect.new()
-		rule.custom_minimum_size = Vector2(0, 1)
-		rule.color = Color(0.78, 0.68, 0.48, 0.22)
+		# Two pixels: a one-pixel rule vanished on every other row when the
+		# 1920-wide layout is scaled down to smaller windows.
+		rule.custom_minimum_size = Vector2(0, 2)
+		rule.color = Color(0.78, 0.68, 0.48, 0.16)
 		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		attr_list.add_child(rule)
 

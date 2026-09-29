@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=21 format=3]
+[gd_resource type="Theme" load_steps=25 format=3]
 
 [ext_resource type="StyleBox" path="res://assets/ui/panel_main.tres" id="2_sb"]
 [ext_resource type="StyleBox" path="res://assets/ui/panel_hud.tres" id="3_sb"]
@@ -7,6 +7,10 @@
 [ext_resource type="Texture2D" path="res://assets/ui/buttons/forged_hover.png" id="forged_hover_tex"]
 [ext_resource type="Texture2D" path="res://assets/ui/buttons/forged_pressed.png" id="forged_pressed_tex"]
 [ext_resource type="Texture2D" path="res://assets/ui/buttons/forged_disabled.png" id="forged_disabled_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/toggle_on.png" id="toggle_on_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/toggle_off.png" id="toggle_off_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/toggle_on_disabled.png" id="toggle_on_disabled_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/toggle_off_disabled.png" id="toggle_off_disabled_tex"]
 
 [sub_resource type="StyleBoxFlat" id="btn_normal"]
 content_margin_left = 9.0
@@ -198,3 +202,19 @@ Panel/styles/panel = ExtResource("2_sb")
 PanelContainer/styles/panel = ExtResource("2_sb")
 HudPanel/styles/panel = ExtResource("3_sb")
 HudPanelPanelContainer/styles/panel = ExtResource("3_sb")
+CheckButton/styles/normal = SubResource("forged_focus")
+CheckButton/styles/hover = SubResource("forged_focus")
+CheckButton/styles/pressed = SubResource("forged_focus")
+CheckButton/styles/hover_pressed = SubResource("forged_focus")
+CheckButton/styles/disabled = SubResource("forged_focus")
+CheckButton/styles/focus = SubResource("forged_focus")
+CheckBox/styles/normal = SubResource("forged_focus")
+CheckBox/styles/hover = SubResource("forged_focus")
+CheckBox/styles/pressed = SubResource("forged_focus")
+CheckBox/styles/hover_pressed = SubResource("forged_focus")
+CheckBox/styles/disabled = SubResource("forged_focus")
+CheckBox/styles/focus = SubResource("forged_focus")
+CheckButton/icons/checked = ExtResource("toggle_on_tex")
+CheckButton/icons/unchecked = ExtResource("toggle_off_tex")
+CheckButton/icons/checked_disabled = ExtResource("toggle_on_disabled_tex")
+CheckButton/icons/unchecked_disabled = ExtResource("toggle_off_disabled_tex")

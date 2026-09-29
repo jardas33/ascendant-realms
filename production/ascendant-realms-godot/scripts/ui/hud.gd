@@ -1083,7 +1083,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
-	rule.custom_minimum_size = Vector2(0, 1)
+	rule.custom_minimum_size = Vector2(0, 2)
 	rule.color = Color(accent.r, accent.g, accent.b, 0.66)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(rule)
@@ -4040,7 +4040,7 @@ func _on_game_over(victory: bool) -> void:
 		box.add_child(story_line)
 	var rule := ColorRect.new()
 	rule.color = Color(accent, 0.45)
-	rule.custom_minimum_size = Vector2(0, 1)
+	rule.custom_minimum_size = Vector2(0, 2)
 	box.add_child(rule)
 	var ledger := GridContainer.new()
 	ledger.columns = 5
