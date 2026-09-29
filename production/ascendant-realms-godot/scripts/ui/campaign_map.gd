@@ -275,6 +275,11 @@ func _build() -> void:
 	add_child(endless)
 
 	_show_act(_act)
+	# Just won a chapter: its seal is stamped onto the map.
+	if Match.has_meta("fresh_seal"):
+		var fresh := String(Match.get_meta("fresh_seal"))
+		Match.remove_meta("fresh_seal")
+		_stamp_seal.call_deferred(fresh)
 	# Arriving from the main menu's Endless Road button.
 	if Match.has_meta("open_endless"):
 		Match.remove_meta("open_endless")
@@ -943,6 +948,43 @@ Objective: destroy the enemy's ability to rebuild."), 15, Color(0.85, 0.72, 0.45
 	pop.tween_property(plate, "modulate:a", 1.0, 0.25)
 	pop.tween_property(plate, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	plate.resized.connect(func(): plate.pivot_offset = plate.size * 0.5)
+
+## The seal of a chapter just won slams down: it drops from large, lands with
+## a ring of dust and a flash, and the level-up chime plays.
+func _stamp_seal(id: String) -> void:
+	await get_tree().create_timer(0.7).timeout
+	var btn: Button = null
+	for child in _act_layer.get_children():
+		if child.get("number") == id:
+			btn = child
+	if btn == null:
+		return
+	btn.pivot_offset = Vector2(NODE_SIZE.x * 0.5, REGION_BUTTON_SCRIPT.SEAL_TOP + REGION_BUTTON_SCRIPT.SEAL_R)
+	btn.scale = Vector2.ONE * 2.2
+	btn.modulate.a = 0.0
+	var tw := btn.create_tween().set_parallel(true)
+	tw.tween_property(btn, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_property(btn, "modulate:a", 1.0, 0.18)
+	await tw.finished
+	Sfx.play("levelup")
+	var ring := Control.new()
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ring.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(ring)
+	var centre: Vector2 = btn.global_position + btn.pivot_offset
+	var t0 := Time.get_ticks_msec()
+	ring.draw.connect(func():
+		var age := float(Time.get_ticks_msec() - t0) / 900.0
+		if age >= 1.0:
+			return
+		ring.draw_arc(centre, 40.0 + age * 90.0, 0.0, TAU, 48, Color(1.0, 0.84, 0.46, 0.9 * (1.0 - age)), 4.0 * (1.0 - age) + 1.0, true)
+		ring.draw_circle(centre, 36.0 * (1.0 - age), Color(1.0, 0.95, 0.8, 0.35 * (1.0 - age)))
+		for k in 14:
+			var a := k * TAU / 14.0
+			ring.draw_circle(centre + Vector2(cos(a), sin(a)) * (34.0 + age * 120.0), 3.0 * (1.0 - age), Color(0.85, 0.72, 0.5, 1.0 - age)))
+	var redraw := ring.create_tween()
+	redraw.tween_method(func(_v: float): ring.queue_redraw(), 0.0, 1.0, 0.9)
+	redraw.tween_callback(ring.queue_free)
 
 func _draw_shield(ci: CanvasItem, c: Vector2, r: float, race_id: String) -> void:
 	var col: Color = GameData.RACES.get(race_id, {}).get("color", Color(0.6, 0.6, 0.6))

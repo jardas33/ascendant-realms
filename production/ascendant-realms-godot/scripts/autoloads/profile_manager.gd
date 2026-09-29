@@ -145,6 +145,8 @@ func complete_chapter(id: String) -> void:
 		return
 	if not (id in s["cleared"]):
 		s["cleared"].append(id)
+		# The campaign map stamps this seal when it next opens (not saved).
+		Match.set_meta("fresh_seal", id)
 	# A Heroic Replay win earns the chapter its laurel.
 	if bool(Match.get_config().get("campaign_heroic", false)) and String(Match.get_config().get("campaign_chapter", "")) == id and not (id in s["heroic"]):
 		s["heroic"].append(id)
