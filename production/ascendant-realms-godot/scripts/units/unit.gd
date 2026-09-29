@@ -943,6 +943,10 @@ func _update_p1r21_animation_speed() -> void:
 	anim.speed_scale = lerpf(P1R21_MIN_WALK_ANIMATION_SCALE, P1R21_MAX_WALK_ANIMATION_SCALE, normalized)
 
 func _play_sfx(key: String, volume_db: float) -> void:
+	# Sounds are not positional, so a fight hidden in the fog would otherwise
+	# be heard from anywhere on the map. Only what the player can see is heard.
+	if world and world.has_method("is_player_visible") and not world.is_player_visible(self):
+		return
 	var sfx = get_node_or_null("/root/Sfx")
 	if sfx and sfx.has_method("play"):
 		sfx.play(key, volume_db)

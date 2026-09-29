@@ -1584,6 +1584,12 @@ func _draw_minimap() -> void:
 			bool(u.is_worker),
 			bool(u.is_hero))
 
+	# Your own hero wears a slow gold pulse, so it is found at a glance.
+	if is_instance_valid(_commander) and is_instance_valid(_commander.hero_ref) and not _commander.hero_ref.is_dead:
+		var hp_map := _world_to_map(_commander.hero_ref.global_position)
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0)
+		_minimap.draw_arc(hp_map, 10.0 + beat * 4.0, 0.0, TAU, 24, Color(1.0, 0.85, 0.4, 0.35 + 0.45 * (1.0 - beat)), 1.6, true)
+
 	# While the player's hero is down, a gold ring pulses on the stronghold
 	# where the Lume will raise them.
 	if is_instance_valid(_commander) and not is_instance_valid(_commander.hero_ref):

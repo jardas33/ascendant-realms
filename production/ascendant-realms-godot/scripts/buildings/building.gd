@@ -1088,7 +1088,10 @@ func _complete_build() -> void:
 	if is_instance_valid(selection_ring) and selection_ring.visible:
 		set_selected(true)
 	_play_build_completion_cue()
-	Sfx.play("build_complete", -4.0)
+	# Only your own finished buildings chime: an enemy's, unseen in the fog,
+	# used to ring across the map and give its builders away.
+	if world and int(team) == int(world.player_team):
+		Sfx.play("build_complete", -4.0)
 	if commander:
 		commander.recompute_pop()
 		if int(def.get("tier_unlock", 0)) > commander.tier:

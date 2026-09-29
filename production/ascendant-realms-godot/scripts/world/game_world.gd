@@ -2321,7 +2321,7 @@ func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: in
 		target.take_damage(final, source_payload)
 		# Physical pierce projectiles request one impact cue only after the target's
 		# authoritative HP actually falls. Keep arcane/siege and launch routing intact.
-		if kind in ["arrow", "bolt", "thorn"] and dtype == "pierce" and hp_before >= 0.0 and is_instance_valid(target) and float(target.hp) < hp_before:
+		if kind in ["arrow", "bolt", "thorn"] and dtype == "pierce" and hp_before >= 0.0 and is_instance_valid(target) and float(target.hp) < hp_before and is_player_visible(target):
 			Sfx.play("projectile_impact", -8.0)
 	if splash > 0.0:
 		var splash_source = {"source_unit": projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg * 0.5, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
