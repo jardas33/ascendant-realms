@@ -586,6 +586,14 @@ var _sky_size := Vector2.ZERO
 ## Bursts of light when a star is claimed: {pos, t, col}.
 var _bursts: Array = []
 var _sky_time := 0.0
+## One shared style for the name plates (the sky redraws every frame).
+var _name_plate_style: StyleBoxFlat = _make_name_plate_style()
+
+static func _make_name_plate_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.02, 0.025, 0.05, 0.72)
+	sb.set_corner_radius_all(8)
+	return sb
 
 func _process(delta: float) -> void:
 	_sky_time += delta
@@ -682,10 +690,7 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x + 18.0)
 		var lines := 2 if tw3 >= NODE_SIZE.x - 2.0 else 1
 		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, 19.0 * lines + 22.0))
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.02, 0.025, 0.05, 0.72)
-		sb.set_corner_radius_all(8)
-		canvas.draw_style_box(sb, plate)
+		canvas.draw_style_box(_name_plate_style, plate)
 	# The selected star wears two counter-turning gilt rings.
 	var sel := _find_node(_selected_id)
 	if not sel.is_empty() and _is_visible_node(sel):
