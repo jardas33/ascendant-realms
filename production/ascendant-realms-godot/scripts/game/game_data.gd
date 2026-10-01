@@ -89,7 +89,7 @@ const RACES := {
 	},
 	"sunspear": {
 		"name": "Aurean Dominion",
-		"blurb": "The southern empire of bronze and sun that won the seventy-fifth Ascension and never gave it back. Its engineers drown the highland springs behind great dams to end the Ascension wars forever. Disciplined legions whose morale never breaks, and who are not entirely wrong.",
+		"blurb": "The southern empire of bronze and sun that won the seventy-sixth Ascension and never gave it back. Its engineers drown the highland springs behind great dams to end the Ascension wars forever. Disciplined legions whose morale never breaks, and who are not entirely wrong.",
 		"color": Color(0.9, 0.75, 0.35),
 		"hero": "sunspear_hero_pharaoh",
 		"hero_name": "Sun Legate",

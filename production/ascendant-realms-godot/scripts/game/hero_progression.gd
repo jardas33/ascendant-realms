@@ -106,7 +106,7 @@ static func compute(hero: Dictionary) -> Dictionary:
 				"bruxa_charms": out["max_mana"] += 30.0 + lvl * 4.0; out["regen"] += 1.5 + lvl * 0.08
 		if int(set_count[sid]) >= 4:
 			var four: Array = load("res://scripts/game/loot_defs.gd").SETS[sid]["four"]
-			out["flags"][four[0]] = four[1]
+			_add_flag(out, String(four[0]), four[1])
 
 	out["mana_regen"] *= float(out.get("mana_regen_mult", 1.0))
 	# Mana Font (legendary power): mana returns half again as fast.
@@ -158,14 +158,28 @@ static func _apply_effect(out: Dictionary, eff: Dictionary) -> void:
 				"aura_range": out["aura_range"] += v
 	if eff.has("flag"):
 		for k in eff["flag"]:
-			out["flags"][k] = eff["flag"][k]
 			if k == "regen":
+				out["flags"][k] = eff["flag"][k]
 				out["regen"] += float(eff["flag"][k])
+			else:
+				_add_flag(out, String(k), eff["flag"][k])
 	if eff.has("ability"):
 		var ab = eff["ability"]
 		var id: String = ab["id"]
 		var lvl := int(ab.get("level", 1))
 		out["abilities"][id] = max(int(out["abilities"].get(id, 0)), lvl)
+
+## A power from a skill, an item or a set. Numbers add up. They used to
+## overwrite one another, so the last one learned won: Plunder (+200 starting
+## gold) learned after Golden Age (+300) left the hero with 200, and a 10%
+## lifesteal set replaced a 25% lifesteal keystone.
+static func _add_flag(out: Dictionary, key: String, value) -> void:
+	var flags: Dictionary = out["flags"]
+	if (value is float or value is int) and not value is bool:
+		var had = flags.get(key, 0.0)
+		flags[key] = (float(had) if (had is float or had is int) else 0.0) + float(value)
+	else:
+		flags[key] = value
 
 static func _apply_item(out: Dictionary, item: Dictionary) -> void:
 	for k in item.get("stats", {}):
@@ -181,7 +195,7 @@ static func _apply_item(out: Dictionary, item: Dictionary) -> void:
 			"heal_power": out["heal_power"] += v
 			"aura_dmg": out["aura_dmg"] += v
 	for f in item.get("flags", {}):
-		out["flags"][f] = item["flags"][f]
+		_add_flag(out, String(f), item["flags"][f])
 
 static func _apply_mastery(out: Dictionary, con: String, ranks: int) -> void:
 	# Mastery never stops paying: gently sub-linear, but unbounded (the old

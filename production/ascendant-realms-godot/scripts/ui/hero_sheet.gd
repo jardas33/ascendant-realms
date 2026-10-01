@@ -114,7 +114,7 @@ func _build_static() -> void:
 	nav.add_theme_constant_override("separation", 20)
 	nav.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(nav)
-	nav.add_child(_nav_button("Inventory", func(): _goto("res://scenes/ui/inventory.tscn")))
+	nav.add_child(_nav_button("War Chest", func(): _goto("res://scenes/ui/inventory.tscn")))
 	nav.add_child(_nav_button("Battle!", func(): _goto("res://scenes/ui/skirmish_setup.tscn")))
 	nav.add_child(_nav_button("Back", func(): _goto("res://scenes/ui/main_menu.tscn")))
 
@@ -479,6 +479,26 @@ func _refresh() -> void:
 	build_panel.add_child(_stat_line("Bonus Armor", "+%d" % int(b.get("bonus_armor", 0))))
 	build_panel.add_child(_stat_line("Attack Speed", "+%d%%" % int(round(float(b.get("attack_speed", 0)) * 100.0))))
 	build_panel.add_child(_stat_line("Max Mana", "%d" % int(b.get("max_mana", 0))))
+	build_panel.add_child(_stat_line("Mana Regen", "%.1f a second" % float(b.get("mana_regen", 0.0))))
+	if absf(float(b.get("bonus_speed", 0.0))) > 0.001:
+		build_panel.add_child(_stat_line("Move Speed", "%+.1f" % float(b.get("bonus_speed", 0.0))))
+	if float(b.get("heal_power", 0.0)) > 0.0:
+		build_panel.add_child(_stat_line("Heal Power", "+%d" % int(b.get("heal_power", 0))))
+	if float(b.get("aura_dmg", 0.0)) > 0.0 or float(b.get("aura_armor", 0.0)) > 0.0:
+		build_panel.add_child(_stat_line("Command Aura", "+%s damage, +%s armor" % [String.num(float(b.get("aura_dmg", 0.0)), 1), String.num(float(b.get("aura_armor", 0.0)), 1)]))
+	# What the build does for the whole host, not only the hero.
+	var bf: Dictionary = b.get("flags", {})
+	var host: Array = []
+	if float(bf.get("gather_bonus", 0.0)) > 0.0:
+		host.append("+%d%% gathering" % int(round(float(bf["gather_bonus"]) * 100.0)))
+	if float(bf.get("train_speed", 0.0)) > 0.0:
+		host.append("+%d%% training" % int(round(float(bf["train_speed"]) * 100.0)))
+	if float(bf.get("build_speed", 0.0)) > 0.0:
+		host.append("+%d%% building" % int(round(float(bf["build_speed"]) * 100.0)))
+	if float(bf.get("start_gold", 0.0)) > 0.0:
+		host.append("+%d gold at the start" % int(bf["start_gold"]))
+	if not host.is_empty():
+		build_panel.add_child(_stat_line("Your Host", ", ".join(host)))
 	build_panel.add_child(_stat_line("Abilities Unlocked", str((b.get("abilities", {}) as Dictionary).size())))
 	# One number to watch grow: damage output times survivability.
 	# The forge choices, which now carry real effects.

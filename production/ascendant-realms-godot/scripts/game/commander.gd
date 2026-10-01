@@ -202,10 +202,11 @@ func release_reserved_pop(def: Dictionary) -> void:
 	emit_signal("pop_changed", pop_used + reserved_pop, pop_cap)
 
 func train_speed_mult() -> float:
-	return 1.0 - float(build_flags.get("train_speed", 0.0))
+	# Skills, gear and upgrades add up; training never drops below 30% of its time.
+	return maxf(0.3, 1.0 - float(build_flags.get("train_speed", 0.0)))
 
 func build_speed_mult() -> float:
-	return 1.0 - float(build_flags.get("build_speed", 0.0))
+	return maxf(0.3, 1.0 - float(build_flags.get("build_speed", 0.0)))
 
 func gather_mult() -> float:
 	return 1.0 + float(build_flags.get("gather_bonus", 0.0))

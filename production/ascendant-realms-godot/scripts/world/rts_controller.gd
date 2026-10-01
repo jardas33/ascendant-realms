@@ -97,7 +97,7 @@ func _register_extra_ability_keys() -> void:
 		InputMap.action_add_event(action, ev)
 
 func setup(p_world, p_team: int) -> void:
-	_register_extra_ability_keys()
+	load("res://scripts/game/key_binds.gd").ensure_actions()
 	world = p_world
 	player_team = p_team
 	_apply_settings()

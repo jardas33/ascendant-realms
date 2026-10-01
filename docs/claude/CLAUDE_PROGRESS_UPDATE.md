@@ -890,6 +890,36 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - Wrong claims fixed: Karak walls are a fifth tougher, not a quarter; the Cinder Spitter does not ignore armor.
     - "Ashglass" and "Ash-glass" unified; the Warchest skill renamed War Coffers (it clashed with the War Chest screen).
   - **Balance:** one 45-match check on the build with the armor limit: every people between 2-6 and 7-2, two time-outs. That is within the noise of a single check; a pooled check follows once the rock ridges of plan 89 are in, because they change the test map.
+- **Plan 89 (done): crags, the first terrain that shapes play**
+  - **The gap:** all 24 maps were open fields from one template; only six had a river.
+  - **What is new:** impassable rock ridges on 22 maps (Bloomvale Meadows and the Dune Sea stay open on purpose). Five layouts: gates, walls, islands, corners and pillars. They make lanes, gaps worth holding and flank routes.
+  - **Fairness and safety rules, checked by code for every map:**
+    - Both sides of the field get matching ridges.
+    - No ridge stands near a start, a resource, a vein, an objective, the river or the map edge. A layout that would is dropped for that map.
+  - **How they behave (measured with `claude_cragcheck.gd`):**
+    - Units route around a ridge and never walk through the rock.
+    - An order given onto a ridge sends the troops to its foot, on their own side.
+    - Building on a ridge is refused with "Blocked by rocks".
+    - They show on the minimap, and a loading tip explains them.
+  - **Balance on the ridged test map:** CRAG_BALANCE_PLACEHOLDER
+- **Plan 90 (done): deep audit, pass 4 (how the game plays in your hands)**
+  - **Skill powers overwrote each other.** A power granted by two skills kept only the one learned last. Plunder (+200 starting gold) learned after Golden Age (+300) left the hero with 200; a 10% lifesteal gear set replaced a 25% lifesteal keystone. Powers now add up, from skills, gear and sets alike.
+  - **The economy branch was retuned to match.** Its nodes were written as rising totals, so simply adding them would have given +140% gathering and near-instant training. Each node now gives what its text says, and the whole branch adds up to +60% gathering, +40% training speed, +50% building speed and +600 starting gold. Training and building can never drop below 30% of their normal time.
+  - **Keystones named no numbers** ("Vast magical power"). All eight now state what they give.
+  - **Hero sheet:** the build panel now also shows mana regeneration, move speed, heal power, the command aura and what the build gives the whole host (gathering, training, building, starting gold).
+  - **Your own keys.** Settings has a KEYS list: 19 battle keys (orders, selection, hero spells, camera rotation) can be changed. A key already in use swaps with the one it replaces; keys with a fixed job (Esc, digits, W A S D) are refused. Battle buttons, the field manual, the pause menu, the tutorial and the loading tips all show the keys bound now.
+  - **Endless Road enemy heroes** now take a share of the player hero's strength that grows with the stage (none at the start, three quarters from stage 30). They used to have only their stage growth: 650 health at stage 50 against a hero of 1,600.
+  - **No building over field trees and boulders** that block movement ("Blocked by scenery").
+  - **Skill tree on small screens:** node captions are larger at 1366×768 (they were drawn at about 11 px).
+  - **Lore:** this is the seventy-seventh Ascension and there have been seventy-six, so the one the Dominion won was the seventy-sixth, not the seventy-fifth (four places). Furna was drowned by a dam seventy-seven years ago, so the dam at Salto is no longer called the first.
+  - **Skirmish experience by difficulty.** Beating a Brutal host paid the same experience as an Easy one. Easy now pays a fifth less, Hard a quarter more, Brutal half again, and each extra opponent a fifth more. The skirmish screen says so on hover.
+  - **Random People** can be chosen for any skirmish opponent; the people is drawn when the battle begins and never repeats the player's own.
+  - **Training queues.** A hall could hold only one of each soldier at a time: the button locked with "Already training" until that soldier was done. A soldier can now be queued again and again (up to eight in a hall), the button shows how many are queued, and Shift-click queues five at once.
+  - **Workers rallied onto a resource now gather it.** With the main hall's rally point set on a resource, new workers used to walk there and stand idle. A loading tip explains it.
+  - **Order tooltips** read like code notes ("begin the existing patrol behavior"). They now say what the order does.
+  - **Locked buttons stayed locked.** The command card was built once per selection, so a building or soldier greyed out for want of 20 gold stayed greyed after the gold came in, until the worker or hall was selected again. The card now refreshes the moment anything on it becomes affordable (or stops being so), and when a new Age begins.
+  - **Second text pass (HUD, alerts, menus):** the build card named the Age of Iron for every locked building, Age of Lume ones included; the skill tree showed internal state names ("PREREQUISITE BLOCKED", "INSUFFICIENT POINTS"); order feedback read "Build placement rejected" and "No valid target"; a unit's role read "Antiarmor"; the hero sheet's button to the War Chest said Inventory. All are now in plain words.
+  - **Workers go back to work.** A gatherer called away to build used to stand idle beside the finished building. It now returns to the resource it left.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:

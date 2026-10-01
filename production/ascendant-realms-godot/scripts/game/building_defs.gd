@@ -260,7 +260,7 @@ static func get_all() -> Dictionary:
 		"hp": 2200, "armor_class": "fortified", "armor": 10, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["sunspear_laborer"], "drop_off": true, "is_hq": true,
-		"desc": "The regent's seat in the conquered north, bronze and whitewash on highland stone. Trains Dominion Engineers.",
+		"desc": "The Regent's seat in the conquered north, bronze and whitewash on highland stone. Trains Dominion Engineers.",
 	},
 	"sunspear_dwelling": {
 		"race": "sunspear", "name": "Settler Housing", "kind": "house", "model": _b("barrosan_clan_croft"),
@@ -326,7 +326,7 @@ static func get_all() -> Dictionary:
 		"desc": "Takes apart the wolf-traps of the fojos and forges them into the pack's claws and hides.",
 	},
 	"wyldkin_spirit_totem": {
-		"race": "wyldkin", "name": "Howling Stone", "kind": "tower", "model": _b("lioraen_bloom_spire"),
+		"race": "wyldkin", "name": "Wolf Cairn", "kind": "tower", "model": _b("lioraen_bloom_spire"),
 		"hp": 700, "armor_class": "medium", "armor": 3, "footprint": 3.2,
 		"cost": {"timber": 90, "stone": 60}, "build_time": 24, "grants_pop": 0,
 		"tower_dmg": 20, "tower_range": 19.0, "tower_cd": 1.0, "tower_type": "pierce", "projectile": "thorn",
@@ -402,7 +402,7 @@ static func get_all() -> Dictionary:
 		"hp": 960, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["frostborn_reaver", "frostborn_shieldmaiden", "frostborn_hunter", "frostborn_berserker", "frostborn_jotun"],
-		"desc": "Where the Entrudo is rehearsed: runners, shields, snow hunters, wild caretos and the winter giants are readied for the chase.",
+		"desc": "Where the Entrudo is rehearsed: runners, shields, snow hunters, Wild Caretos and the winter giants are readied for the chase.",
 	},
 	"frostborn_runeforge": {
 		"race": "frostborn", "name": "Bell Forge", "kind": "economy", "model": _b("barrosan_iron_forge"),

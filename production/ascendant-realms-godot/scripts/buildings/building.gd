@@ -1194,26 +1194,31 @@ func _play_build_completion_cue() -> void:
 func can_produce(unit_id: String) -> bool:
 	return unit_id in def.get("produces", [])
 
+## How many soldiers and upgrades one building can have waiting.
+const MAX_QUEUE := 8
+
 func queue_unit(unit_id: String) -> Dictionary:
 	if not is_built or is_dead or (commander and commander.defeated) or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
 	if not can_produce(unit_id):
-		return {"ok": false, "reason": "Not produced here"}
+		return {"ok": false, "reason": "This building cannot train that"}
 	if Engine.get_process_frames() == _last_queue_frame:
 		return {"ok": false, "reason": "Already queued"}
+	if queue.size() >= MAX_QUEUE:
+		return {"ok": false, "reason": "The queue is full"}
 	var udef := GameData.get_unit(unit_id)
 	if udef.is_empty():
-		return {"ok": false, "reason": "Unknown"}
+		return {"ok": false, "reason": "Cannot train this"}
 	# tier gate
 	if int(udef.get("tier", 1)) > commander.tier:
-		return {"ok": false, "reason": "Requires higher Age"}
+		return {"ok": false, "reason": "Requires the Age of Iron" if int(udef.get("tier", 1)) == 2 else "Requires the Age of Lume"}
 	if not commander.can_afford(udef.get("cost", {})):
 		return {"ok": false, "reason": commander.missing_resource_summary(udef.get("cost", {}))}
 	if not commander.reserve_pop(udef):
 		return {"ok": false, "reason": "Need more housing"}
 	if not commander.spend(udef.get("cost", {})):
 		commander.release_reserved_pop(udef)
-		return {"ok": false, "reason": "Cannot pay cost"}
+		return {"ok": false, "reason": "Not enough resources"}
 	_last_queue_frame = Engine.get_process_frames()
 	var t: float = float(udef.get("build_time", 15)) * commander.train_speed_mult()
 	queue.append({"id": unit_id, "kind": "unit", "time_left": t, "total": t, "pop_reserved": true})
@@ -1235,7 +1240,7 @@ func queue_tech(tech_id: String) -> Dictionary:
 	elif tech_id not in GameData.research_for(def, String(commander.race) if commander else ""):
 		return {"ok": false, "reason": "Unavailable"}
 	if not commander.can_research(tech_id):
-		return {"ok": false, "reason": "Unavailable"}
+		return {"ok": false, "reason": "Already researched, under way, or waiting on an earlier upgrade"}
 	if not commander.can_afford(t.get("cost", {})):
 		return {"ok": false, "reason": commander.missing_resource_summary(t.get("cost", {}))}
 	commander.spend(t.get("cost", {}))
@@ -1344,9 +1349,27 @@ func _spawn_unit(unit_id: String) -> bool:
 				u.play_production_arrival_cue()
 			Sfx.play("ready", -6.0) if commander.is_human else null
 			if _has_rally:
-				u.command_move(rally_point)
+				# A worker rallied onto a resource goes to work there, as in
+				# every RTS; it used to walk up and stand idle beside it.
+				var node = _rally_resource() if u.is_worker else null
+				if node != null and u.has_method("command_gather"):
+					u.command_gather(node)
+				else:
+					u.command_move(rally_point)
 			return true
 	return false
+
+## The live resource node the rally point stands on (within 7 m), if any.
+func _rally_resource():
+	var best = null
+	var best_d := 7.0
+	for r in world.get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(r) and not r.depleted:
+			var d: float = rally_point.distance_to(r.global_position)
+			if d < best_d:
+				best_d = d
+				best = r
+	return best
 
 func set_rally(pos: Vector3) -> void:
 	if not _is_rally_capable() or (commander and commander.defeated) or (world and not world.game_running) or (world and team != world.player_team):

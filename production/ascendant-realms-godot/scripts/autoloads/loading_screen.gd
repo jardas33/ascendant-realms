@@ -214,13 +214,13 @@ var _tip: Label
 # player would otherwise have to discover by accident.
 const TIPS := [
 	"Right-click a resource with workers selected to gather it. Idle workers are counted at the top of the screen.",
-	"Press J, then click the ground, to attack-move: your army fights anything it meets on the way.",
+	"Press {cmd_attack}, then click the ground, to attack-move: your army fights anything it meets on the way.",
 	"Capture points pay out while you hold them: the Lume Spire gives gold, chapels heal, watches grant sight.",
 	"Units become veterans after three kills and gain health with each rank. Keep them alive.",
 	"Ctrl + a number (0 to 9) saves a control group; press the number again to select it.",
-	"Your hero's abilities are on Q, T, E and R, and Y, U and V once learned. Slam stuns every enemy around the hero.",
+	"Your hero's abilities are on {ability_1}, {ability_2}, {ability_3} and {ability_4}, and {ability_5}, {ability_6} and {ability_7} once learned. Slam stuns every enemy around the hero.",
 	"Buildings smoke when damaged and burn below 40% health. Send workers to repair them.",
-	"Press F to jump to an idle worker, and Space to find your hero.",
+	"Press {idle_worker} to jump to an idle worker, and {cycle_hero} to find your hero.",
 	"Scout early: the fog hides the enemy base until one of your units has seen it.",
 	"Lume is memory that burns. A village that bakes in one oven and remembers its dead keeps it strong.",
 	"Every seventy-seven years the Lume ascends and chooses a Jardas. Every Ascension has ended in war.",
@@ -261,7 +261,7 @@ const TIPS := [
 	"Press a control group's number twice to bring the camera to it.",
 	"Veterans earn a name from the army at rank three. Select one to read it.",
 	"Stone builds every hall and tower. An economy with no quarrymen stalls, however much food it hoards.",
-	"Press B for your people's signature spell. N and M are learned at hero levels 10 and 25.",
+	"Press {ability_sig} for your people's signature spell. {ability_p1} and {ability_p2} are learned at hero levels 10 and 25.",
 	"Every people raises its own landmark in the Age of Iron. The Village Oven feeds; the Rift Gate summons; the Great Sun Dial strikes.",
 	"Spell-summoned soldiers are spectral: they take no population and their fall is not counted against you.",
 	"Weapons and armor have three ranks each, and every people has two upgrades found nowhere else.",
@@ -271,6 +271,8 @@ const TIPS := [
 	"A river can be waded anywhere, but wading is slow. Whoever holds the bridge crosses at full speed.",
 	"In a skirmish the enemy hero measures itself against yours: a third of your hero's strength on Normal, two thirds on Hard, all of it on Brutal.",
 	"Hold the middle mouse button and drag to move the camera.",
+	"Shift-click a soldier in a hall to queue five at once. A hall holds up to eight in its queue.",
+	"Select your main hall and right-click a resource: new workers will walk straight to it and start gathering.",
 	"Crags cannot be crossed. March around them, or hold the gap between two of them.",
 ]
 
@@ -459,7 +461,7 @@ func _build_ui() -> void:
 func _show() -> void:
 	visible = true
 	if _tip:
-		_tip.text = "TIP  ·  " + String(TIPS[randi() % TIPS.size()]) + _next_goal_line()
+		_tip.text = "TIP  ·  " + load("res://scripts/game/key_binds.gd").fill(String(TIPS[randi() % TIPS.size()])) + _next_goal_line()
 	set_progress(0.0)
 
 ## One line about what the hero is closest to next, so every load shows a goal.

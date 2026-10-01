@@ -16,7 +16,7 @@ const FESTIVALS := [
 	{"title": "The Blessing of the Springs", "race": "lioraen", "mood": "", "text": "On the first of May the fountains are dressed in broom and flowers. The springs answer, and not every answer is kind."},
 	{"title": "The Dawn of the Mouras", "race": "sylvan", "mood": "dusk", "text": "On São João's morning the Mouras comb their golden hair by the water. Whoever sees them is offered a choice, and must choose."},
 	{"title": "The Climb to the Castro", "race": "karak", "mood": "", "text": "Pilgrims carry candles up the old hillfort for the Senhora da Graça. This year the stones carry something back down."},
-	{"title": "The Parade of Bronze", "race": "sunspear", "mood": "", "text": "The Dominion marks the seventy-fifth Ascension with a parade of bronze. This year it parades through the highlands."},
+	{"title": "The Parade of Bronze", "race": "sunspear", "mood": "", "text": "The Dominion marks the seventy-sixth Ascension with a parade of bronze. This year it parades through the highlands."},
 ]
 const TWISTS := ["night", "storm", "ember", "dusk", "champions", "warband", "spoils", "blood_moon", "lean", "fortified", "veterans", "allies", "gloom", "rich_veins", "jar_season", "forced_march", "lume_tide", "gold_rush"]
 const TWIST_TEXT := {"night": "Night battle", "storm": "Storm", "ember": "Fire on the road", "dusk": "Dusk",

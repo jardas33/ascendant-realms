@@ -7,13 +7,15 @@ const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 const MENU_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
+const KeyBinds := preload("res://scripts/game/key_binds.gd")
+
 const CONTROLS := [
 	["SELECTION", "Left-click selects. Drag selects a group. Hold Shift to add to selection."],
 	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map."],
-	["UNIT ORDERS", "J attack-move  ·  K stop  ·  H hold  ·  P patrol"],
-	["HERO POWERS", "Q Rally  ·  T Slam  ·  E Charge  ·  R Bolt  ·  Y Heal  ·  U Roots  ·  V Avatar (once learned). B is your people's signature spell; N and M are its spells learned at levels 10 and 25. Aim at the cursor."],
-	["CONTROL GROUPS", "Ctrl+0–9 assign a group. 0–9 recall it; press twice to bring the camera to it. Shift adds it to the selection. Tab selects the army."],
-	["QUICK SELECT", "F selects an idle worker. Space focuses the hero. Backspace jumps to the latest alert."],
+	["UNIT ORDERS", "{cmd_attack} attack-move  ·  {cmd_stop} stop  ·  {cmd_hold} hold  ·  {cmd_patrol} patrol"],
+	["HERO POWERS", "{ability_1} Rally  ·  {ability_2} Slam  ·  {ability_3} Charge  ·  {ability_4} Bolt  ·  {ability_5} Heal  ·  {ability_6} Roots  ·  {ability_7} Avatar (once learned). {ability_sig} is your people's signature spell; {ability_p1} and {ability_p2} are its spells learned at levels 10 and 25. Aim at the cursor."],
+	["CONTROL GROUPS", "Ctrl+0–9 assign a group. 0–9 recall it; press twice to bring the camera to it. Shift adds it to the selection. {select_army} selects the army."],
+	["QUICK SELECT", "{idle_worker} selects an idle worker. {cycle_hero} focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
 	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
@@ -21,7 +23,7 @@ const CONTROLS := [
 	["LANDMARKS", "In the Age of Iron each people can raise one landmark with a power of its own: an oven that feeds, a gate that summons, a dial that strikes. Look for it in your workers' build list."],
 	["UPGRADES", "The forge researches three ranks of weapons and armor and your people's own upgrades; the main hall researches economy and defense."],
 	["REACH RINGS", "Select a Barrosan Clanhold, a healing grove or your hero to see its reach on the ground: gold Fortify, green healing, blue command aura."],
-	["CAMERA","Arrows, W A S D or the screen edge move; hold the middle mouse button to drag. Z / C rotate. Mouse wheel zooms."],
+	["CAMERA","Arrows, W A S D or the screen edge move; hold the middle mouse button to drag. {cam_rot_l} / {cam_rot_r} rotate. Mouse wheel zooms."],
 	["SYSTEM", "F1 shows this manual in battle. F3 toggles debug information. Esc pauses the battle."],
 ]
 
@@ -136,6 +138,32 @@ func _build() -> void:
 	accessibility.add_child(_toggle_row("Reduce Screen Shake", bool(s.get("reduce_shake", false)),
 		func(on): ProfileManager.update_setting("reduce_shake", on)))
 
+	# Battle keys: click one, then press the key it should use.
+	var keys := _group(left, "KEYS")
+	KeyBinds.ensure_actions()
+	_key_note = Label.new()
+	_key_note.text = KEY_NOTE
+	_key_note.add_theme_font_override("font", _body_font())
+	_key_note.add_theme_font_size_override("font_size", 15)
+	_key_note.add_theme_color_override("font_color", Color(0.78, 0.76, 0.68))
+	_key_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	keys.add_child(_key_note)
+	for key_group in KeyBinds.ACTIONS:
+		for key_entry in key_group[1]:
+			keys.add_child(_key_row(String(key_entry[0]), String(key_entry[1])))
+	var reset_keys := Button.new()
+	reset_keys.text = "Restore the Default Keys"
+	reset_keys.custom_minimum_size = Vector2(0, 40)
+	reset_keys.focus_mode = Control.FOCUS_NONE
+	reset_keys.pressed.connect(func():
+		Sfx.play("select")
+		KeyBinds.reset()
+		ProfileManager.update_setting("keybinds", {})
+		_awaiting_action = ""
+		_key_note.text = KEY_NOTE
+		_refresh_key_buttons())
+	keys.add_child(reset_keys)
+
 	var manual_plate := _plate()
 	manual_plate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(manual_plate)
@@ -156,7 +184,9 @@ func _build() -> void:
 		key.add_theme_color_override("font_color", Color(0.94, 0.78, 0.46))
 		row.add_child(key)
 		var explanation := Label.new()
-		explanation.text = entry[1]
+		explanation.text = KeyBinds.fill(String(entry[1]))
+		explanation.set_meta("raw", String(entry[1]))
+		_manual_labels.append(explanation)
 		explanation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		explanation.add_theme_font_override("font", _body_font())
 		explanation.add_theme_font_size_override("font_size", 18)
@@ -269,6 +299,64 @@ func _draw_section_emblem(ci: Control, kind: String) -> void:
 			ci.draw_line(c + Vector2(0, -2), c + Vector2(0, 4), gold, 1.6, true)
 			ci.draw_line(c + Vector2(0, 4), c + Vector2(-4, 9), gold, 1.6, true)
 			ci.draw_line(c + Vector2(0, 4), c + Vector2(4, 9), gold, 1.6, true)
+
+const KEY_NOTE := "Click a key, then press the new one. Esc cancels. A key already in use swaps with the one you replace."
+var _key_buttons := {}
+var _awaiting_action := ""
+var _key_note: Label
+var _manual_labels: Array = []
+
+func _key_row(action: String, title: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(0, 42)
+	row.add_theme_constant_override("separation", 14)
+	var lbl := Label.new()
+	lbl.text = title
+	lbl.custom_minimum_size = Vector2(240, 32)
+	lbl.add_theme_font_override("font", _body_font())
+	lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
+	lbl.add_theme_font_size_override("font_size", 16)
+	row.add_child(lbl)
+	var b := Button.new()
+	b.custom_minimum_size = Vector2(170, 36)
+	b.focus_mode = Control.FOCUS_NONE
+	b.text = KeyBinds.label(action)
+	b.pressed.connect(func():
+		Sfx.play("select")
+		_awaiting_action = action
+		_refresh_key_buttons())
+	row.add_child(b)
+	_key_buttons[action] = b
+	return row
+
+func _refresh_key_buttons() -> void:
+	for action in _key_buttons:
+		var b: Button = _key_buttons[action]
+		b.text = "Press a key..." if action == _awaiting_action else KeyBinds.label(action)
+	# The manual beside the list names the same keys.
+	for l in _manual_labels:
+		if is_instance_valid(l):
+			l.text = KeyBinds.fill(String(l.get_meta("raw", l.text)))
+
+func _input(event: InputEvent) -> void:
+	if _awaiting_action == "" or not (event is InputEventKey) or not event.pressed or event.echo:
+		return
+	get_viewport().set_input_as_handled()
+	var code := int(event.physical_keycode) if int(event.physical_keycode) != 0 else int(event.keycode)
+	if code == KEY_ESCAPE:
+		_awaiting_action = ""
+		_key_note.text = KEY_NOTE
+	elif KeyBinds.is_reserved(code):
+		_key_note.text = "%s has a fixed job in battle. Choose another key." % OS.get_keycode_string(code)
+		Sfx.play_limited("refuse", -10.0, 250)
+		return
+	else:
+		var swapped: String = KeyBinds.rebind(_awaiting_action, code)
+		_key_note.text = ("%s now uses %s." % [KeyBinds.name_of(swapped), KeyBinds.label(swapped)]) if swapped != "" else KEY_NOTE
+		ProfileManager.update_setting("keybinds", KeyBinds.saved())
+		Sfx.play("select")
+		_awaiting_action = ""
+	_refresh_key_buttons()
 
 func _heading(text: String) -> Label:
 	var l := Label.new()

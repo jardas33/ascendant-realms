@@ -15,7 +15,7 @@ const TRACKS := [
 	{"id": "laurels", "name": "Heroic laurels", "stat": "heroic_laurels", "first": [1, 5, 15, 30, 44],
 		"titles": ["Laurelled", "Twice-tested", "Hard as Granite", "Heroic Jardas", "Crown of Laurels"]},
 	{"id": "legendary", "name": "Legendary finds", "stat": "legendary_found", "first": [1, 5, 15, 40],
-		"titles": ["Lucky", "Gold-finder", "Moura's Favourite", "Treasure of the Highlands"]},
+		"titles": ["Lucky", "Gold-finder", "Moura's Favorite", "Treasure of the Highlands"]},
 	{"id": "tyrants", "name": "Road Tyrants slain", "stat": "tyrants_slain", "first": [1, 4, 6, 10, 25],
 		"titles": ["Tyrant-breaker", "Bane of the Tarasca", "Moonbane of Montalegre", "Wolf-slayer of Larouco", "Ender of Tyrants"]},
 	{"id": "elites", "name": "Elites and champions slain", "stat": "elites_slain", "first": [5, 25, 100, 400],

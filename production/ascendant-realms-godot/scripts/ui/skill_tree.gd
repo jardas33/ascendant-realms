@@ -395,10 +395,14 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	var name_label := _label(str(n.get("name", "")), 17, PAPER)
+	# On a small screen the whole graph is drawn at about two thirds size, so
+	# the captions are set larger there to stay readable (17 became 11 px).
+	var compact := get_window().size.y < 850
+	var name_size := 20 if compact else 17
+	var name_label := _label(str(n.get("name", "")), name_size, PAPER)
 	name_label.add_theme_font_override("font", _title_font())
 	name_label.position = Vector2(0.0, ORB.y - 2.0)
-	name_label.size = Vector2(NODE_SIZE.x, 34.0)
+	name_label.size = Vector2(NODE_SIZE.x, 40.0 if compact else 34.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -408,10 +412,10 @@ func _add_node_button(n: Dictionary) -> void:
 	name_label.add_theme_constant_override("outline_size", 5)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 12, MUTED)
-	var two_lines: bool = _title_font().get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x > NODE_SIZE.x - 4.0
-	cost_label.position = Vector2(0.0, ORB.y + (38.0 if two_lines else 20.0))
-	cost_label.size = Vector2(NODE_SIZE.x, 16.0)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 15 if compact else 12, MUTED)
+	var two_lines: bool = _title_font().get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > NODE_SIZE.x - 4.0
+	cost_label.position = Vector2(0.0, ORB.y + ((42.0 if two_lines else 22.0) if compact else (38.0 if two_lines else 20.0)))
+	cost_label.size = Vector2(NODE_SIZE.x, 19.0 if compact else 16.0)
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
 	cost_label.add_theme_constant_override("outline_size", 4)
@@ -899,7 +903,7 @@ func _on_node_pressed(n: Dictionary) -> void:
 			Sfx.play("select")
 	else:
 		Sfx.play("select")
-		_detail_action.text = "NOT READY  •  See the requirement above"
+		_detail_action.text = "LOCKED  •  See what it requires above"
 	_refresh_nodes()
 
 func _update_detail(n: Dictionary) -> void:
@@ -915,7 +919,7 @@ func _update_detail(n: Dictionary) -> void:
 	_detail_title.text = str(n.get("name", ""))
 	_detail_type.text = ("ACTIVE ABILITY" if has_ability else "PASSIVE AUGMENT") + ("  •  KEYSTONE" if n.get("keystone", false) else "")
 	_detail_type.modulate = ACTIVE if has_ability else GOLD
-	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", state.replace("_", " ")]
+	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", String({"PURCHASABLE": "READY TO CLAIM", "INSUFFICIENT_POINTS": "NEED MORE POINTS", "PREREQUISITE_BLOCKED": "LOCKED"}.get(state, state.replace("_", " ")))]
 	_detail_body.text = str(n.get("desc", ""))
 	var req_names: Array[String] = []
 	for req in n.get("req", []):
@@ -930,9 +934,9 @@ func _update_detail(n: Dictionary) -> void:
 	elif state == "PURCHASABLE":
 		_detail_action.text = "READY TO CLAIM  •  Click to spend %d point%s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "s"]
 	elif state == "INSUFFICIENT_POINTS":
-		_detail_action.text = "AVAILABLE  •  INSUFFICIENT POINTS to claim it"
+		_detail_action.text = "NEED MORE POINTS  •  Your hero earns one with every level"
 	else:
-		_detail_action.text = "PREREQUISITE BLOCKED  •  Follow the parent path"
+		_detail_action.text = "LOCKED  •  Claim the star before it first"
 
 func _legend_item(text: String, color: Color) -> Label:
 	var label := _label("●  " + text, 10, color)

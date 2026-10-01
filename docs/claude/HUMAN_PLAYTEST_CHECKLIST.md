@@ -40,6 +40,15 @@ Endless Road from the main menu, then March On.
 - Settings: change one option and go back. Did it stick?
 - Quit and relaunch. Is your hero, loot and progress all still there?
 
+## 5. New since 2026-10-01, about 10 minutes
+
+- **Rock ridges.** Most maps now have impassable crags. Do they make the fight more interesting, or do they get in the way? Do your troops ever get stuck on one?
+- **The enemy hero.** With a strong hero, play one skirmish on Hard. Is the enemy hero now a real fight, or too much?
+- **Camera drag.** Hold the middle mouse button and drag. Does it feel right?
+- **Control groups.** Ctrl + a number sets a group (0 to 9). Shift + the number adds it to your selection.
+- **Your own keys.** Settings, KEYS: change one key and check that the battle buttons show the new one.
+- **Sounds.** Sixteen sounds are new (hits, spells, work, research). Is any of them unpleasant or too loud?
+
 ## What to send back
 
 For each section, one line each on: the best moment, the worst moment, and anything confusing. Screenshots help. The questions that matter most:

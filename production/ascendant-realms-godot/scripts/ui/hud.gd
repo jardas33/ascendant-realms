@@ -139,6 +139,15 @@ var _selection_portrait: PanelContainer = null
 var _cmd_panel: PanelContainer = null
 var _cmd_fixed: VBoxContainer = null
 var _cmd_scroll: ScrollContainer = null
+# The command card is built once per selection, so a button locked for want of
+# 20 gold stayed locked after the gold came in, until the player selected the
+# worker or hall again. Every priced button is watched and the card is rebuilt
+# the moment one of them changes state.
+var _card_single = null
+var _card_selection: Array = []
+var _card_watch: Array = []        # [cost, was_available, pop_definition]
+var _card_poll := 0.0
+var _card_force_refresh := false
 var _cmd_body: Control = null
 var _command_chassis: Control = null
 var _command_tooltip: PanelContainer = null
@@ -619,16 +628,18 @@ func _command_icon_path(title: String, detail: String) -> String:
 	return FRAME_PORTRAIT
 
 
+const KeyBinds := preload("res://scripts/game/key_binds.gd")
+
 func _command_hotkey(title: String) -> String:
 	var haystack := title.to_lower()
 	if haystack.contains("attack"):
-		return "J"
+		return KeyBinds.label("cmd_attack")
 	if haystack.contains("stop"):
-		return "K"
+		return KeyBinds.label("cmd_stop")
 	if haystack.contains("hold"):
-		return "H"
+		return KeyBinds.label("cmd_hold")
 	if haystack.contains("patrol"):
-		return "P"
+		return KeyBinds.label("cmd_patrol")
 	return ""
 
 
@@ -1233,7 +1244,7 @@ func _build_top_bar() -> void:
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
 	force_metrics.add_child(worker_metric["surface"])
-	_make_metric_clickable(worker_metric["surface"], "_select_idle_worker", "Workers without an active order. Click (or press F) to find the next one.")
+	_make_metric_clickable(worker_metric["surface"], "_select_idle_worker", KeyBinds.fill("Workers without an active order. Click (or press {idle_worker}) to find the next one."))
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
@@ -1380,7 +1391,7 @@ func _build_top_bar() -> void:
 	identity_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
-	var objective_text := "CONQUEST · End enemy rebuild" if victory_kind == "conquest" else victory_kind.capitalize()
+	var objective_text := "CONQUEST · Raze every enemy building" if victory_kind == "conquest" else victory_kind.capitalize()
 	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
 	objective_label.name = "MatchObjectiveLabel"
 	_survival_label = objective_label
@@ -1468,6 +1479,7 @@ func _on_pop_changed(used: int, cap: int) -> void:
 
 
 func _on_tier_changed(tier: int) -> void:
+	_card_force_refresh = true   # a new Age unlocks buildings, soldiers and research
 	if is_instance_valid(_tier_label):
 		_tier_label.text = TIER_NAMES.get(tier, "Age %d" % tier)
 
@@ -2075,6 +2087,11 @@ func _process(delta: float) -> void:
 		if is_instance_valid(_minimap):
 			_minimap.queue_redraw()
 
+	_card_poll += delta
+	if _card_poll >= 0.3:
+		_card_poll = 0.0
+		_refresh_card_if_costs_changed()
+
 	_resource_tooltip_accum += delta
 	if _resource_tooltip_accum >= RESOURCE_TOOLTIP_POLL_INTERVAL:
 		_resource_tooltip_accum = 0.0
@@ -2475,20 +2492,20 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		_single_target_label.visible = false
 		info.add_child(_single_target_label)
 	if read_only:
-		var public_role := String(u.def.get("role", "unit")).capitalize()
+		var public_role := _role_name(String(u.def.get("role", "unit")))
 		_single_stat_label.text = "Hostile · %s" % public_role
 
 	_refresh_single_live()
 
 
 func _ability_key_label(id: String) -> String:
-	var hotkeys := {"rally": "Q", "slam": "T", "charge": "E", "bolt": "R", "heal": "Y", "root": "U", "avatar": "V"}
+	var actions := {"rally": "ability_1", "slam": "ability_2", "charge": "ability_3", "bolt": "ability_4", "heal": "ability_5", "root": "ability_6", "avatar": "ability_7"}
 	if id.begins_with("sig_"):
-		return "B"
+		return KeyBinds.label("ability_sig")
 	var slot := int(SkillDefs.get_abilities().get(id, {}).get("slot", 0))
 	if slot > 0:
-		return "N" if slot == 1 else "M"
-	return String(hotkeys.get(id, ""))
+		return KeyBinds.label("ability_p1" if slot == 1 else "ability_p2")
+	return KeyBinds.label(String(actions[id])) if actions.has(id) else ""
 
 
 func _hero_unavailable_reason(u) -> String:
@@ -2555,7 +2572,7 @@ func _refresh_single_live() -> void:
 		elif u.has_method("cur_dmg"):
 			var role: String = u.def.get("role", "")
 			_single_stat_label.text = "DMG %s   ARM %s   RNG %.1f   %s" % [
-				_compact_combat_stat(u.cur_dmg()), _compact_combat_stat(u.cur_armor()), u.cur_range(), role.capitalize()]
+				_compact_combat_stat(u.cur_dmg()), _compact_combat_stat(u.cur_armor()), u.cur_range(), _role_name(role)]
 	if is_instance_valid(_single_target_label):
 		var target = u.get("_target") if u is Unit else null
 		var target_valid: bool = u is Unit and not _single_read_only and int(u.state) == Unit.State.ATTACKING \
@@ -2617,6 +2634,11 @@ func _selection_type_summary(units: Array) -> String:
 		parts.append("%s x%d" % [label, int(counts[label])])
 	return " · ".join(parts)
 
+
+## A unit's role as shown to the player (the data key "antiarmor" read "Antiarmor").
+func _role_name(role: String) -> String:
+	return String({"antiarmor": "Anti-armor", "melee": "Infantry", "ranged": "Ranged", "defender": "Defender",
+		"flanker": "Flanker", "healer": "Healer", "caster": "Caster", "siege": "Siege"}.get(role, role.capitalize()))
 
 func _compact_combat_stat(value: float) -> String:
 	var rounded := round(value)
@@ -2968,13 +2990,31 @@ func _refresh_queue() -> void:
 		_production_progress_bar.visible = true
 	var active_verb := "Training" if active_kind == "unit" else "Researching"
 	_production_status_label.text = "%s: %s %d%%" % [active_verb, active_display, roundi(active_prog * 100.0)]
+	# One slot per run of the same item ("Worker ×7"), so a long queue fits the
+	# dossier: two slots, then how many more wait. Clicking a slot cancels the
+	# last item of its run (the one in training keeps its progress).
 	var idx := 0
+	var shown := 0
+	var prev_key := ""
+	var prev_slot: Button = null
+	var prev_label := ""
+	var run := 0
 	for item in b.queue:
-		var slot := _mk_button("", 12)
-		slot.custom_minimum_size = Vector2(48, 28)
-		slot.add_theme_font_size_override("font_size", 10)
 		var kind: String = item.get("kind", "unit")
 		var iid: String = item.get("id", "")
+		var key := kind + ":" + iid
+		if key == prev_key and is_instance_valid(prev_slot):
+			run += 1
+			prev_slot.text = "%s ×%d" % [prev_label, run]
+			prev_slot.set_meta("cancel_index", idx)
+			idx += 1
+			continue
+		if shown >= 2:
+			_queue_container.add_child(_mk_label("+%d" % (b.queue.size() - idx), 13, COMMAND_GOLD))
+			break
+		var slot := _mk_button("", 12)
+		slot.custom_minimum_size = Vector2(68, 28)
+		slot.add_theme_font_size_override("font_size", 10)
 		var disp_name := ""
 		if kind == "unit":
 			disp_name = GameData.get_unit(iid).get("name", iid)
@@ -2984,12 +3024,14 @@ func _refresh_queue() -> void:
 		var total: float = float(item.get("total", 1.0))
 		var left: float = float(item.get("time_left", 0.0))
 		var prog: float = 1.0 - clampf(left / maxf(0.01, total), 0.0, 1.0)
-		slot.tooltip_text = "%s\nClick to cancel (%d%%)" % [disp_name, int(prog * 100.0)]
+		slot.tooltip_text = "%s
+Click to cancel one" % disp_name
+		slot.set_meta("cancel_index", idx)
 		var cap_b = b
-		var cap_idx := idx
+		var cap_slot := slot
 		slot.pressed.connect(func():
-			if is_instance_valid(cap_b) and cap_b.has_method("cancel_queue_item"):
-				_issue_order({"type": "cancel", "target": cap_b, "index": cap_idx}))
+			if is_instance_valid(cap_b) and cap_b.has_method("cancel_queue_item") and is_instance_valid(cap_slot):
+				_issue_order({"type": "cancel", "target": cap_b, "index": int(cap_slot.get_meta("cancel_index", 0))}))
 		# progress mini-bar under text
 		var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
 		# Queue slots have an explicit compact size. Keep the progress bar on a
@@ -2997,12 +3039,17 @@ func _refresh_queue() -> void:
 		# Godot does not repeatedly warn about conflicting opposite anchors while
 		# production_updated rebuilds the queue row.
 		pbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		pbar.custom_minimum_size = Vector2(44, 5)
+		pbar.custom_minimum_size = Vector2(64, 5)
 		pbar.value = prog
 		pbar.position = Vector2(2, 20)
-		pbar.size = Vector2(44, 5)
+		pbar.size = Vector2(64, 5)
 		slot.add_child(pbar)
 		_queue_container.add_child(slot)
+		prev_key = key
+		prev_slot = slot
+		prev_label = slot.text
+		run = 1
+		shown += 1
 		idx += 1
 
 
@@ -3143,7 +3190,35 @@ func _hide_command_tooltip() -> void:
 		_command_tooltip.visible = false
 
 
+func _watch_cost(cost: Dictionary, was_available: bool, pop_definition: Dictionary = {}) -> void:
+	_card_watch.append([cost, was_available, pop_definition])
+
+func _refresh_card_if_costs_changed() -> void:
+	if not is_instance_valid(_commander) or not is_instance_valid(_cmd_panel) or not _cmd_panel.visible:
+		return
+	# Never swap the buttons out from under a click in progress.
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		return
+	var changed := _card_force_refresh
+	for w in _card_watch:
+		var pop_def: Dictionary = w[2]
+		var ok: bool = _commander.can_afford(w[0]) and (pop_def.is_empty() or _commander.has_pop_for(pop_def))
+		if ok != bool(w[1]):
+			changed = true
+			break
+	if not changed:
+		return
+	_card_force_refresh = false
+	var keep_scroll := _cmd_scroll.scroll_vertical if is_instance_valid(_cmd_scroll) else 0
+	var still_selected: Array = _card_selection.filter(func(x): return is_instance_valid(x))
+	_rebuild_command_card(_card_single if is_instance_valid(_card_single) else null, still_selected)
+	if is_instance_valid(_cmd_scroll):
+		_cmd_scroll.set_deferred("scroll_vertical", keep_scroll)
+
 func _rebuild_command_card(single, selection: Array) -> void:
+	_card_single = single
+	_card_selection = selection.duplicate()
+	_card_watch.clear()
 	_hide_command_tooltip()
 	_clear_children(_cmd_fixed)
 	_clear_children(_cmd_body)
@@ -3311,12 +3386,13 @@ func _build_worker_card() -> void:
 			continue
 		var cost: Dictionary = bdef.get("cost", {})
 		var affordable: bool = _commander.can_afford(cost)
+		_watch_cost(cost, affordable)
 		var reason: String = ""
 		if not affordable:
 			reason = _commander.missing_resource_summary(cost)
 		# Landmarks wait for their Age and stand once per player.
 		if int(_commander.tier) < int(bdef.get("min_tier", 1)):
-			reason = "Requires the Age of Iron"
+			reason = "Requires the Age of Iron" if int(bdef.get("min_tier", 1)) == 2 else "Requires the Age of Lume"
 			affordable = false
 		elif bool(bdef.get("unique", false)):
 			for ob in _commander.buildings:
@@ -3384,7 +3460,7 @@ func _build_worker_card() -> void:
 			role.offset_bottom = -8.0
 			role.add_theme_constant_override("separation", 2)
 			role.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			var role_heading := _mk_label(String(build_definitions[index].get("kind", "structure")).to_upper(), 11, Color(0.89, 0.70, 0.35))
+			var role_heading := _mk_label(String({"main": "hall", "house": "dwelling"}.get(String(build_definitions[index].get("kind", "structure")), String(build_definitions[index].get("kind", "structure")))).to_upper(), 11, Color(0.89, 0.70, 0.35))
 			role.add_child(role_heading)
 			var first_sentence := String(build_definitions[index].get("desc", "")).get_slice(".", 0).strip_edges()
 			var role_description := _mk_label(first_sentence + "." if not first_sentence.is_empty() else "", 13, Color(0.86, 0.84, 0.76))
@@ -3441,19 +3517,19 @@ func _build_hero_command_card(u) -> void:
 
 	_add_command_section("Orders", "Move · attack")
 	var order_grid := _add_field_order_grid()
-	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
-	_add_military_command_button(order_grid, "Stop", "Stop current orders.", "Stop: clear the selected hero's current orders.", "stop")
-	_add_military_command_button(order_grid, "Hold", "Hold this position.", "Hold: keep the selected hero here while retaining current combat behavior.", "hold")
-	_add_military_command_button(order_grid, "Patrol", "Move between chosen points.", "Patrol: choose a destination to begin the existing patrol behavior.", "patrol")
+	_add_military_command_button(order_grid, "Attack Move", "Move and engage enemies encountered.", "Attack-move: march to a point and fight anything met on the way.", "attack_move")
+	_add_military_command_button(order_grid, "Stop", "Stop current orders.", "Stop: drop every order and stand.", "stop")
+	_add_military_command_button(order_grid, "Hold", "Hold this position.", "Hold: stand on this spot and fight what comes within reach, without giving chase.", "hold")
+	_add_military_command_button(order_grid, "Patrol", "Move between chosen points.", "Patrol: walk back and forth between here and a chosen point, fighting what you meet.", "patrol")
 
 
 func _build_military_card() -> void:
 	_add_command_section("Commands", "Move · attack")
 	var grid := _add_field_order_grid()
-	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack Move: choose a destination and engage enemies encountered.", "attack_move")
-	_add_military_command_button(grid, "Stop", "Stop current orders.", "Stop: clear the selected units' current orders.", "stop")
-	_add_military_command_button(grid, "Hold", "Hold this position.", "Hold: keep the selected units here while retaining their current combat behavior.", "hold")
-	_add_military_command_button(grid, "Patrol", "Move between chosen points.", "Patrol: choose a destination to begin the existing patrol behavior.", "patrol")
+	_add_military_command_button(grid, "Attack Move", "Move and engage enemies encountered.", "Attack-move: march to a point and fight anything met on the way.", "attack_move")
+	_add_military_command_button(grid, "Stop", "Stop current orders.", "Stop: drop every order and stand.", "stop")
+	_add_military_command_button(grid, "Hold", "Hold this position.", "Hold: stand on this spot and fight what comes within reach, without giving chase.", "hold")
+	_add_military_command_button(grid, "Patrol", "Move between chosen points.", "Patrol: walk back and forth between here and a chosen point, fighting what you meet.", "patrol")
 
 
 func _add_military_command_button(grid: GridContainer, title: String, detail: String, tooltip: String, action: String) -> void:
@@ -3585,6 +3661,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 		if b.outpost_level < b.OUTPOST_MAX_LEVEL:
 			var ecost: Dictionary = b.outpost_expand_cost()
 			var ereason: String = "" if _commander.can_afford(ecost) else _commander.missing_resource_summary(ecost)
+			_watch_cost(ecost, ereason == "")
 			var next_desc := "Level %d: %d worker slots, +%d%% output%s." % [b.outpost_level + 1, b.outpost_slots() + 2, int(25 * b.outpost_level), ", and a watch-fire that shoots raiders" if b.outpost_level + 1 >= b.OUTPOST_MAX_LEVEL else ""]
 			var eb := _mk_command_button("Expand Outpost", _cost_string(ecost).trim_prefix("  (").trim_suffix(")"), next_desc, ereason, "LOCKED" if ereason != "" else "READY", {}, next_desc, "Next", "", "EXPAND")
 			eb.disabled = ereason != ""
@@ -3604,7 +3681,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Queue a unit.", produces.size() > 4 and research.is_empty() and not is_hq)
+		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Shift-click queues five.", produces.size() > 4 and research.is_empty() and not is_hq)
 		var train_grid := _mk_command_grid()
 		train_grid.columns = 1
 		_cmd_body.add_child(train_grid)
@@ -3612,26 +3689,33 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var udef := GameData.get_unit(uid)
 			if udef.is_empty():
 				continue
-			var queued_for_training := false
+			# A unit already in the queue can be queued again: the button used
+			# to lock with "Already training", so a hall could hold only one
+			# of each soldier at a time and had to be clicked again after
+			# every one.
+			var queued_count := 0
 			for queued_item in b.queue:
 				if queued_item.get("kind", "unit") == "unit" and String(queued_item.get("id", "")) == String(uid):
-					queued_for_training = true
-					break
+					queued_count += 1
+			var queued_for_training := queued_count > 0
 			var cost: Dictionary = udef.get("cost", {})
 			var tier := int(udef.get("tier", 1))
 			var affordable: bool = _commander.can_afford(cost)
 			var housed: bool = _commander.has_pop_for(udef)
+			_watch_cost(cost, affordable and housed, udef)
 			var reason: String = ""
-			if queued_for_training:
-				reason = "Already training"
+			if b.queue.size() >= int(b.get("MAX_QUEUE") if b.get("MAX_QUEUE") != null else 8):
+				reason = "The queue is full"
 			elif tier > _commander.tier:
-				reason = "Requires Age %d" % tier
+				reason = "Requires the Age of Iron" if tier == 2 else "Requires the Age of Lume"
 			elif not housed:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = _commander.missing_resource_summary(cost)
 			var train_detail := "Age %d · %d pop · %s" % [tier, int(udef.get("pop", 1)), _cost_string(cost).trim_prefix("  (").trim_suffix(")")]
-			var train_state := "TRAINING" if queued_for_training else ("LOCKED" if not reason.is_empty() else "READY")
+			if queued_count > 0:
+				train_detail = "%d queued · %s" % [queued_count, train_detail]
+			var train_state := "LOCKED" if not reason.is_empty() else ("TRAINING" if queued_for_training else "READY")
 			var unit_emblem := String(uid) if String(uid) == "barrosan_worker" else ""
 			var unit_card_art := {} if not unit_emblem.is_empty() else udef
 			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
@@ -3665,6 +3749,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			if _commander.has_method("can_research"):
 				available = _commander.can_research(tid)
 			var affordable: bool = _commander.can_afford(cost)
+			_watch_cost(cost, affordable)
 			var reason := ""
 			if not available:
 				if _commander.completed_tech.has(tid):
@@ -3713,6 +3798,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			tb.focus_mode = Control.FOCUS_NONE
 			tb.add_theme_font_size_override("font_size", 15)
 			tb.disabled = int(_commander.resources.get("gold", 0)) < price
+			_watch_cost({"gold": price}, not tb.disabled)
 			tb.tooltip_text = "Trade %d gold for %d %s. Each trade raises the price by a few gold; it eases back over time." % [price, _commander.TRADE_BATCH, kind]
 			var cap_hq = b
 			var cap_kind := String(kind)
@@ -3736,6 +3822,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			sb.focus_mode = Control.FOCUS_NONE
 			sb.add_theme_font_size_override("font_size", 13)
 			sb.disabled = int(_commander.resources.get(kind, 0)) < _commander.SELL_BATCH
+			_watch_cost({kind: _commander.SELL_BATCH}, not sb.disabled)
 			sb.tooltip_text = "Sell %d %s to the caravan for %d gold." % [_commander.SELL_BATCH, kind, _commander.SELL_GOLD]
 			var cap_hq2 = b
 			var cap_sell := "sell_" + String(kind)
@@ -3802,10 +3889,20 @@ func _issue_order(order: Dictionary):
 func _try_queue_unit(b, uid: String) -> void:
 	if not is_instance_valid(b) or not b.has_method("queue_unit"):
 		return
-	var res: Dictionary = _issue_order({"type": "train", "target": b, "id": uid})
-	if res.get("ok", false):
+	# Shift-click queues five at once, or as many as can be paid for and housed.
+	var want := 5 if Input.is_key_pressed(KEY_SHIFT) else 1
+	var queued := 0
+	var res: Dictionary = {}
+	for i in want:
+		if i > 0:
+			b.set("_last_queue_frame", -1)   # the one-per-frame guard is for double clicks
+		res = _issue_order({"type": "train", "target": b, "id": uid})
+		if not res.get("ok", false):
+			break
+		queued += 1
+	if queued > 0:
 		var nm: String = GameData.get_unit(uid).get("name", "Unit")
-		_flash_notice("Training %s..." % nm, Color(0.6, 0.95, 0.6))
+		_flash_notice(("Training %s..." % nm) if queued == 1 else ("Training %d × %s..." % [queued, nm]), Color(0.6, 0.95, 0.6))
 		Sfx.play("select", -8.0)
 		_rebuild_command_card(b, [b])
 	else:
@@ -3878,11 +3975,11 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 		"STOP": "Stop order",
 		"HOLD": "Hold position",
 		"PATROL": "Patrol order",
-		"GUARD": "Guard unavailable",
+		"GUARD": "Guard is not available yet",
 	}
 	var message := String(labels.get(intent, "Command"))
 	if intent == "BUILD_OR_REPAIR" and accepted and String(feedback.get("feedback_type", "")) == "BUILD PLACEMENT":
-		message = "Build placement confirmed"
+		message = "Building started"
 	if intent == "BUILD_OR_REPAIR" and String(feedback.get("feedback_type", "")) == "REPAIR":
 		message = "Repair order"
 	var col := Color(0.45, 0.85, 1.0)
@@ -3894,11 +3991,11 @@ func _on_command_feedback_changed(feedback: Dictionary) -> void:
 		col = Color(0.5, 0.95, 0.55)
 	if not accepted:
 		if intent == "GUARD" or String(feedback.get("feedback_type", "")) == "UNAVAILABLE":
-			message = "Guard unavailable"
+			message = "Guard is not available yet"
 		elif intent == "BUILD_OR_REPAIR" and String(feedback.get("feedback_type", "")) == "REJECTED":
-			message = "Build placement rejected"
+			message = "Cannot build there"
 		else:
-			message = "No valid target"
+			message = "Nothing to do there"
 		col = Color(1.0, 0.5, 0.42)
 	_show_command_feedback(message, col)
 
@@ -4276,7 +4373,7 @@ func _on_game_over(victory: bool) -> void:
 		for new_id in after_sp:
 			if not before_sp.has(new_id):
 				var sdef: Dictionary = SkillDefs.get_abilities().get(String(new_id), {})
-				var key := "N" if int(sdef.get("slot", 1)) == 1 else "M"
+				var key := KeyBinds.label("ability_p1" if int(sdef.get("slot", 1)) == 1 else "ability_p2")
 				var sp_line := _mk_title_label("New spell learned: %s  (key %s)" % [String(sdef.get("name", new_id)), key], 17, Color(0.75, 0.9, 1.0))
 				sp_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 				sp_line.set_meta("rare_pop", true)
@@ -4582,7 +4679,7 @@ func toggle_key_card() -> void:
 		var k := _mk_label(String(row[0]), 14, COMMAND_GOLD)
 		k.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		grid.add_child(k)
-		var d := _mk_label(String(row[1]), 15, Color(0.92, 0.9, 0.84))
+		var d := _mk_label(KeyBinds.fill(String(row[1])), 15, Color(0.92, 0.9, 0.84))
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		d.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		d.custom_minimum_size = Vector2(560, 0)

@@ -236,7 +236,7 @@ static func get_all() -> Dictionary:
 		"effects": [{"who": "all", "armor": 3, "hp_mult": 0.08}], "flags": {"building_hp": 0.15, "tower_dmg": 0.25},
 		"cost": {"stone": 350, "gold": 200}, "time": 60, "at": "economy",
 		"desc": "The hillfort itself marches: all soldiers +3 armor and +8% health, buildings +15% health and towers strike harder."},
-	"sun_cap": {"name": "The Seventy-Fifth Triumph", "kind": "upgrade", "race": "sunspear", "min_tier": 3,
+	"sun_cap": {"name": "The Seventy-Sixth Triumph", "kind": "upgrade", "race": "sunspear", "min_tier": 3,
 		"effects": [{"who": "all", "dmg": 4, "armor": 2}], "flags": {"train_speed": 0.15},
 		"cost": {"gold": 380, "food": 250}, "time": 60, "at": "economy",
 		"desc": "The empire remembers its last victory: all soldiers +4 damage and +2 armor, and units train 15% faster."},

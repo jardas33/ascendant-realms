@@ -11,12 +11,14 @@ const MapPreviewScript := preload("res://scripts/ui/map_preview.gd")
 
 const DIFFICULTIES := ["easy", "normal", "hard", "brutal"]
 const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
+## An opponent slot left to chance: the people is drawn when the battle begins.
+const RANDOM_RACE := "__random__"
 ## What each difficulty means, shown when hovering the choice.
 const DIFF_HINTS := [
-	"Easy: a small, slow host. Its hero casts no spells.",
+	"Easy: a small, slow host. Its hero casts no spells. A win pays a fifth less experience.",
 	"Normal: an even fight. Its hero casts its people's signature spell and has a third of your own hero's strength.",
-	"Hard: a richer economy and larger attacks. Its hero knows more spells and has two thirds of your own hero's strength.",
-	"Brutal: the richest economy and the largest attacks. Its hero is a match for your own.",
+	"Hard: a richer economy and larger attacks. Its hero knows more spells and has two thirds of your own hero's strength. A win pays a quarter more experience.",
+	"Brutal: the richest economy and the largest attacks. Its hero is a match for your own. A win pays half again as much experience.",
 ]
 const RES_KINDS := ["standard", "quick", "rich"]
 const RES_LABELS := ["Standard", "Quick", "Rich"]
@@ -77,7 +79,7 @@ func _restore_last(hero_sets_race: bool) -> void:
 	if opps is Array and opps.size() >= 1 and opps.size() <= 3:
 		var valid: Array = []
 		for o in opps:
-			if o is Dictionary and ids.has(str(o.get("race", ""))) and DIFFICULTIES.has(str(o.get("diff", ""))):
+			if o is Dictionary and (ids.has(str(o.get("race", ""))) or str(o.get("race", "")) == RANDOM_RACE) and DIFFICULTIES.has(str(o.get("diff", ""))):
 				valid.append({"race": str(o["race"]), "diff": str(o["diff"])})
 			else:
 				valid.clear()
@@ -196,7 +198,7 @@ func _panel(ratio: float) -> Array:
 func _build_faction_panel() -> Control:
 	var parts := _panel(1.35)
 	var v: VBoxContainer = parts[1]
-	v.add_child(_heading("Choose Your Faction"))
+	v.add_child(_heading("Choose Your People"))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_stretch_ratio = 3.0
@@ -477,7 +479,7 @@ func _update_identity_note() -> void:
 		return
 	var profile_race := str(profile.get("race", "unknown"))
 	var profile_race_name: String = str(GameData.RACES.get(profile_race, {}).get("name", profile_race))
-	_identity_note.text = "Your hero %s of the %s leads this host. Persistent progression applies." % [str(profile.get("name", "Unnamed hero")), profile_race_name]
+	_identity_note.text = "%s of the %s leads this host, with every level, skill and relic earned so far." % [str(profile.get("name", "Unnamed hero")), profile_race_name]
 
 func _rebuild_opponents() -> void:
 	for c in _opp_container.get_children():
@@ -511,14 +513,16 @@ func _rebuild_opponents() -> void:
 		for j in opp_race_ids.size():
 			var rid: String = str(opp_race_ids[j])
 			race_opt.add_item(GameData.RACES[rid].get("name", rid), j)
+		race_opt.add_item("Random People", opp_race_ids.size())
 		var def_idx: int = opp_race_ids.find(defaults[i]) if i < defaults.size() else -1
 		if i < _saved_opps.size():
-			def_idx = opp_race_ids.find(_saved_opps[i]["race"])
+			def_idx = opp_race_ids.size() if str(_saved_opps[i]["race"]) == RANDOM_RACE else opp_race_ids.find(_saved_opps[i]["race"])
 		race_opt.select(max(0, def_idx))
 		var ids_ref: Array = opp_race_ids
 		opp_shield.draw.connect(func():
+			var is_random: bool = race_opt.selected >= ids_ref.size()
 			var rid2 := String(ids_ref[clampi(race_opt.selected, 0, ids_ref.size() - 1)])
-			var col: Color = GameData.RACES.get(rid2, {}).get("color", Color(0.6, 0.6, 0.6))
+			var col: Color = Color(0.42, 0.42, 0.46) if is_random else GameData.RACES.get(rid2, {}).get("color", Color(0.6, 0.6, 0.6))
 			var w := opp_shield.size.x
 			var h := opp_shield.size.y
 			var shield := PackedVector2Array([Vector2(1, 1), Vector2(w - 1, 1), Vector2(w - 1, h * 0.55), Vector2(w * 0.5, h - 1), Vector2(1, h * 0.55)])
@@ -530,7 +534,13 @@ func _rebuild_opponents() -> void:
 			opp_shield.draw_colored_polygon(inner, col.darkened(0.2))
 			shield.append(shield[0])
 			opp_shield.draw_polyline(shield, GOLD, 1.4, true)
-			FACTION_SIGILS.draw(opp_shield, rid2, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+			if is_random:
+				# An unknown host: a question mark where the sigil would be.
+				var qf := opp_shield.get_theme_default_font()
+				var qs := qf.get_string_size("?", HORIZONTAL_ALIGNMENT_LEFT, -1, 18)
+				opp_shield.draw_string(qf, Vector2(w * 0.5 - qs.x * 0.5, h * 0.47 + 6.0), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(0.99, 0.93, 0.75))
+			else:
+				FACTION_SIGILS.draw(opp_shield, rid2, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
 		race_opt.item_selected.connect(func(_idx):
 			Sfx.play("select")
 			opp_shield.queue_redraw())
@@ -566,7 +576,7 @@ func _refresh_map_preview() -> void:
 	for m in _map_infos:
 		if str(m["id"]) == _map_id:
 			info = m
-	_map_caption.text = "%s\n\nYour banner is ringed in gold. Violet marks are shrines; coloured dots are gold, stone, timber and food. Dark-edged dots are veins, where a worker can raise an outpost for steady income." % str(info.get("desc", ""))
+	_map_caption.text = "%s\n\nYour banner is ringed in gold. Violet marks are shrines; colored dots are gold, stone, timber and food. Dark-edged dots are veins, where a worker can raise an outpost for steady income." % str(info.get("desc", ""))
 
 func _pick_map() -> String:
 	if _map_id == "__random__":
@@ -587,8 +597,17 @@ func _on_begin() -> void:
 		var sel_idx: int = r["race"].get_selected_id()
 		var race: String = str(opp_race_ids[sel_idx]) if sel_idx >= 0 and sel_idx < opp_race_ids.size() else "barrosan"
 		var diff: String = DIFFICULTIES[r["diff"].get_selected_id()]
+		var saved_race := race
+		if sel_idx == opp_race_ids.size() and not opp_race_ids.is_empty():
+			# Random People: any but the player's own and, while there are
+			# enough left, any already drawn for this battle.
+			saved_race = RANDOM_RACE
+			var pool: Array = opp_race_ids.filter(func(id): return str(id) != _player_race and not opponents.any(func(o): return str(o["race"]) == str(id)))
+			if pool.is_empty():
+				pool = opp_race_ids
+			race = str(pool[randi() % pool.size()])
 		opponents.append({"race": race, "difficulty": diff})
-		saved_opps.append({"race": race, "diff": diff})
+		saved_opps.append({"race": saved_race, "diff": diff})
 	var cfg := Match.default_config()
 	cfg["player_race"] = _player_race
 	cfg["opponents"] = opponents

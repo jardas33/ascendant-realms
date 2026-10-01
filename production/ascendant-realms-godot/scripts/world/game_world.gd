@@ -2279,8 +2279,15 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	# player hero's own bonuses, by difficulty. A level-49 hero in full gear
 	# (1,600 health, 267 damage) used to face a Brutal hero of 330 and 32.
 	# Not used in AI-versus-AI balance runs, where both seats get this kit.
-	if String(Match.get_config().get("mode", "skirmish")) == "skirmish" and String(Match.get_config().get("ai_seat_difficulty", "")) == "" and not _player_hero_bonus.is_empty():
+	var battle_mode := String(Match.get_config().get("mode", "skirmish"))
+	if battle_mode in ["skirmish", "endless"] and String(Match.get_config().get("ai_seat_difficulty", "")) == "" and not _player_hero_bonus.is_empty():
 		var share := float({"easy": 0.0, "normal": 0.35, "hard": 0.65, "brutal": 1.0}.get(difficulty, 0.35))
+		# On the Endless Road the share grows with the stage instead: nothing
+		# at the start, three quarters from stage 30. Deep on the road the
+		# player's hero is at its strongest, and enemy heroes had only their
+		# stage growth (650 health at stage 50) to set against it.
+		if battle_mode == "endless":
+			share = minf(0.75, float(depth_now) * 0.025)
 		for k in ["bonus_hp", "bonus_dmg", "bonus_armor"]:
 			out[k] = float(out[k]) + float(_player_hero_bonus.get(k, 0.0)) * share
 		out["max_mana"] = float(out["max_mana"]) + maxf(0.0, float(_player_hero_bonus.get("max_mana", 100.0)) - 100.0) * share
@@ -2467,6 +2474,15 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 		return "Cannot build in the river"
 	if in_crag(pos, fp * 0.9):
 		return "Blocked by rocks"
+	# The few field trees and boulders that block movement block
+	# building too: a hall could be raised straight over a standing oak.
+	for blocker in _world_route_blockers:
+		if not String(blocker.get("object_id", "")).begins_with("environment_prop_decor_"):
+			continue
+		var bc: Vector3 = blocker.get("center", Vector3.INF)
+		var bh: Vector2 = blocker.get("half_extents", Vector2.ZERO)
+		if absf(pos.x - bc.x) < bh.x + fp * 0.8 and absf(pos.z - bc.z) < bh.y + fp * 0.8:
+			return "Blocked by scenery"
 	# A real construction worker is required, but the worker is not reserved by
 	# this pure validation call. This catches AI/player attempts that could never
 	# be serviced while leaving the existing worker command as the authority.
@@ -2477,7 +2493,7 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 				has_worker = true
 				break
 	if not has_worker:
-		return "No available Worker"
+		return "No free worker"
 	# Vein outposts stand on a free vein (the spot snaps to it); nothing else
 	# may be built on a vein.
 	if bool(bdef.get("vein_outpost", false)):
@@ -3341,7 +3357,7 @@ func _start_saga_events() -> void:
 ## Endless Road boss stages (every fifth stage that is not a festival): a
 ## Champion guards the enemy stronghold. Slaying it pays like three Elites.
 const CHAMPION_NAMES := ["Bento", "Urraca", "Gonçalo", "Mécia", "Vasco", "Brites", "Martim", "Leonor", "Afonso", "Custódia", "Fernão"]
-const CHAMPION_EPITHETS := ["the Unbroken", "of the Nine Scars", "Iron-hand", "the Oath-breaker", "the Grey", "Who Does Not Kneel", "of the Burned Oven", "the Tall"]
+const CHAMPION_EPITHETS := ["the Unbroken", "of the Nine Scars", "Iron-hand", "the Oath-breaker", "the Gray", "Who Does Not Kneel", "of the Burned Oven", "the Tall"]
 
 func _spawn_champion(depth: int) -> void:
 	if commanders.size() < 2:
@@ -3923,6 +3939,16 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 		xp *= 1.25
 	if victory:
 		xp *= 1.6
+	# A harder skirmish teaches more. Beating a Brutal host used to pay the
+	# same experience as an Easy one: Easy now pays a fifth less, Hard a
+	# quarter more, Brutal half again, and every opponent beyond the first a
+	# fifth more. The campaign and the Endless Road keep their own scales.
+	if victory and String(Match.get_config().get("mode", "skirmish")) == "skirmish":
+		var foes: Array = Match.get_config().get("opponents", [])
+		var hardest_rank := 0
+		for o in foes:
+			hardest_rank = maxi(hardest_rank, ["easy", "normal", "hard", "brutal"].find(String(o.get("difficulty", "normal"))))
+		xp *= float([0.8, 1.0, 1.25, 1.5][hardest_rank]) * (1.0 + 0.2 * float(maxi(0, foes.size() - 1)))
 	# Mentor talent: +5% battle experience per rank (sub-linear, never capped).
 	if ProfileManager.has_hero():
 		var mentor := int((ProfileManager.hero().get("talents", {}) as Dictionary).get("mentor", 0))

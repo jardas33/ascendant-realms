@@ -22,6 +22,9 @@ var data := {}
 
 func _ready() -> void:
 	load_game()
+	# The player's own battle keys (Settings) over the shipped ones.
+	var saved_keys = settings().get("keybinds", {})
+	load("res://scripts/game/key_binds.gd").apply(saved_keys if saved_keys is Dictionary else {})
 
 # --------------------------------------------------------------------------
 func _default_data() -> Dictionary:

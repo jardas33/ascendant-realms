@@ -158,13 +158,13 @@ func _fit_panel() -> void:
 func _build_steps() -> void:
 	_steps = [
 		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "Move the camera.", "check": "camera"},
-		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press Tab to select your army. Your units glow with your color when selected.", "success": "Select one of your units.", "check": "select"},
+		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press {select_army} to select your army. Your units glow with your color when selected.", "success": "Select one of your units.", "check": "select"},
 		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a resource (food, timber, stone or gold) to send them gathering.", "success": "Have a Worker gather any resource.", "check": "gather"},
 		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "Finish a building.", "check": "build"},
 		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "Train a soldier.", "check": "train"},
 		{"id": "vein", "title": "Claim a Vein", "text": "Veins glow between the bases. Select Workers and right-click a vein's ring to raise an outpost. When it is built, right-click it with Workers: they go inside and gather in safety.", "success": "You claimed a vein.", "check": "vein"},
-		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and press B for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Order your Hero to move.", "check": "hero"},
-		{"id": "combat", "title": "Attack the Enemy", "text": "Press J, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "Wound an enemy.", "check": "combat"},
+		{"id": "hero", "title": "Command Your Hero", "text": "Press {cycle_hero} to focus your Hero. Move them into battle and press {ability_sig} for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Order your Hero to move.", "check": "hero"},
+		{"id": "combat", "title": "Attack the Enemy", "text": "Press {cmd_attack}, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "Wound an enemy.", "check": "combat"},
 		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Capture the Lume Spire.", "check": "final"},
 	]
 
@@ -180,7 +180,7 @@ func _show_step() -> void:
 		_dots.queue_redraw()
 	var s = _steps[_step]
 	_title.text = "Step %d/%d: %s" % [_step + 1, _steps.size(), s["title"]]
-	_label.text = String(s["text"])
+	_label.text = load("res://scripts/game/key_binds.gd").fill(String(s["text"]))
 	_success.text = "Goal: " + String(s["success"])
 	_fit_panel.call_deferred()
 	if s["check"] == "hero":

@@ -61,6 +61,10 @@ var _patrol_b := Vector3.ZERO
 var _patrol_resume_after_combat := false
 var _follow_target = null
 var _hold_position := false
+## The resource a worker was gathering when it was called away to build. It
+## goes back there when the building is finished (the player's workers only;
+## the AI assigns its own).
+var _job_before_build = null
 var _stun := 0.0
 var _rooted := 0.0
 var _slow := 0.0
@@ -1890,6 +1894,7 @@ func command_build(building) -> void:
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
 	_v0436_r1j_set_target(null, "public_order")
+	_job_before_build = _gather_node if (is_instance_valid(_gather_node) and commander and commander.is_human) else null
 	_gather_node = null
 	_release_build_collision_exception()
 	_build_target = building
@@ -2995,6 +3000,12 @@ func _state_build(delta: float) -> void:
 		_release_build_collision_exception()
 		_build_target = null
 		state = State.IDLE
+		# Back to the work it left: a gatherer used to stand idle beside
+		# every building it finished.
+		var back = _job_before_build
+		_job_before_build = null
+		if is_instance_valid(back) and not back.depleted:
+			command_gather(back)
 		return
 	var interaction := get_construction_interaction_snapshot(_build_target)
 	if not bool(interaction.get("valid", false)):

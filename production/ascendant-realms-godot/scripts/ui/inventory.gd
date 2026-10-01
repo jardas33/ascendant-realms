@@ -103,7 +103,7 @@ func _build() -> void:
 	add_child(cols)
 
 	cols.add_child(_column("Equipped", func(v): _slots_box = v))
-	cols.add_child(_column("Items", func(v): _items_box = v))
+	cols.add_child(_column("Relics", func(v): _items_box = v))
 	cols.add_child(_column("Details", func(v): _detail_box = v))
 
 	var footer_back := ColorRect.new()

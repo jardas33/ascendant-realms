@@ -155,7 +155,7 @@ func _build() -> void:
 	main.add_child(_name_edit)
 
 	# Race — GridContainer so 10 races wrap neatly
-	main.add_child(_section_label("Race"))
+	main.add_child(_section_label("People"))
 	var race_grid := GridContainer.new()
 	race_grid.columns = 5
 	race_grid.add_theme_constant_override("h_separation", 10)

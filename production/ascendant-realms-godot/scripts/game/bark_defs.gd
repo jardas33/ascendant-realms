@@ -47,7 +47,7 @@ const LINES := {
 		"fall": ["Let me become the wall."],
 	},
 	"sunspear": {
-		"start": ["The seventy-fifth was ours. So is this.", "Bronze and sun, soldiers."],
+		"start": ["The seventy-sixth was ours. So is this.", "Bronze and sun, soldiers."],
 		"move": ["March in order.", "The legion advances."],
 		"attack": ["For the Dominion!", "Shields up, spears down!", "Sun take them!"],
 		"slay": ["The sun sets on you."],
