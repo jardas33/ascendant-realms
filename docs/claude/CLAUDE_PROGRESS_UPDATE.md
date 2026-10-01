@@ -838,6 +838,25 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - `sylvan_court.glb` is broken; `wyldkin_denhold.glb` is rough.
     - Worker portraits within one people are identical.
   - **Design note:** all 24 maps come from one template (4 seats, about 30 resources, 16 veins), so they differ mainly by theme and layout style.
+- **Plan 85 (done): deep audit, pass 2 (text, skill tree, HUD cards, Karak)**
+  - **Skill tree:** `claude_skilllint.gd` checked all 138 nodes: unique ids, valid prerequisites, and every effect key is read by game code.
+  - **Bugs fixed:**
+    - In a skirmish, the hero cast the spells of the people it was forged in, not the people it leads. A Barrosan-forged hero leading the Granitborn fielded Thane-Lord Carvalho casting Chega de Bois. Spells now follow the people chosen for the battle.
+    - The match header took the first word of each people's name, so a match against The Compaña read "Barrosan vs The".
+    - The vein tooltip told players to "build your outpost on it"; the real action is a right-click with workers (my own wrong correction from plan 78).
+    - Karak's armour upgrade and its signature spell were both called "Stone Skin". The upgrade is now Granite Plate.
+  - **Spell emblems:** the three spells of a people shared one sigil. Each spell now has a glyph drawn from what it does (shield, avalanche, wall, summoned figures, rain, droplet, leap, frenzy, roots, quake, nova, flight), with the people's sigil small in the corner.
+  - **Karak balance:** bottom of two pooled checks (10-22-4). A hillfort AI with a third early tower made no difference in an 18-match A/B and was removed. The cause is damage type: blunt is 10% weak against the light and unarmoured swarms, while slash is 15 to 25% strong. The Castro Warrior and Ironbreaker got +2 damage; an 18-match A/B went from 4-11-3 to 9-5-4.
+  - **Tutorial:** the gather step now names food.
+- **Plan 86 (done): sound**
+  - **Finding:** the game had 17 sounds. Gathering was silent, every melee hit shared one sound, every spell another, and a refused order made none.
+  - **Sixteen new procedural sounds** (free, made by `tools/synth_sfx.py`, no bought assets):
+    - Hits by weapon: a blunt thud, a siege launch, an arcane bolt.
+    - Spells by what they do: heal, quake, summon, ward, fury, rain, curse. 31 spells are mapped; four strike spells keep the general cast sound.
+    - Work: an axe in timber, a pick on stone and gold, a sickle in the field. Only the player's own workers on screen, at most one every 0.4 seconds.
+    - Research done, a new Age (three rising brass notes), and two low taps for a refused order.
+  - **Caveat:** I cannot hear them. The waveforms were checked numerically (no clipping, no DC offset, expected pitch), and they play at low volume. Emanuel should say if any is unpleasant.
+  - **Still open:** four harmless "material is null" lines at match load; two attempts to find the cause failed.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
