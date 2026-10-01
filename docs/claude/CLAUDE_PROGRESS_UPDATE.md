@@ -815,6 +815,29 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Stat nudges for the consistent outliers:** Careto damage +8% (was +12%), Vorthak health +10% (was +5%), Sylvan ranged reach +1.5 (was +1.2).
   - **Result, pooled 90 matches on the new AI:** only 2 time-outs. Barrosan 13-5, Sunspear 10-7-1, Vorthak 10-8, Compaña 9-9, Sylvan 9-9, Lioraen 9-9, Careto 8-9-1, Wyldkin 7-10-1, Ironmaw 7-11, Karak 6-11-1. Sylvan went from 2-15-1 to 9-9. Barrosan's damage bonus is trimmed to +8% (was +10%).
 
+- **Plan 84 (done): deep audit, pass 1** (Emanuel asked for every detail to be checked against AAA quality)
+  - **New automated checks:**
+    - `claude_lint.gd` checks every definition (77 units, 76 buildings, 42 upgrades, 37 spells, 44 chapters, 24 maps) for broken links and missing fields. It now runs in the regression suite.
+    - `claude_smoke.gd` plays each people in a live match: every building raised and selected, every unit trained, every upgrade researched, every spell cast, then a fight. All ten peoples ran with no script error.
+    - `claude_maplint.gd` loads each map and checks that bases are connected, every resource and vein is reachable, and each start has a fair share. All 24 maps pass.
+  - **Gameplay bugs fixed:**
+    - The Sun Scorpion pointed at a model file that does not exist and showed as a capsule.
+    - The Ironmaw Slinger never animated: its animations address a skeleton node by a name its model lacks. It now walks and shoots.
+    - Spell buffs shared one timer, so a landmark's aura (re-applied every second) kept Blood Rage or Testudo alive for as long as the unit stood near the landmark. Each stat now has its own timer.
+    - Soul Drain healed every nearby ally by the whole amount drained. It now shares it among the wounded.
+    - The Stone Mortar had no splash although it lobs boulders.
+  - **Text fixed:** ten building descriptions named units that do not exist (the palace "trains labourers"; the unit is the Dominion Engineer), two upgrade descriptions, and the Dirge-Singer's claim that the dead rise.
+  - **Visual identity for the seven peoples that borrow models:**
+    - Borrowed unit models wear their people's colours (granite blue, bronze, carnival red, moss, grave-green, silver).
+    - Borrowed buildings are scaled to fill their plots like the Barrosan set. A hall used to be smaller than its own landmark plaza.
+    - The Moura Court's model was a broken white block; it now uses a sound one.
+    - Rendered HUD portraits were tiny T-posed figures seen from behind. They now stand in their idle pose, face the viewer, wear their people's colours and are framed waist-up.
+  - **Art gaps for Codex's lane (not fixable without new models):**
+    - Seven peoples have no unit models of their own.
+    - The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista.
+    - `sylvan_court.glb` is broken; `wyldkin_denhold.glb` is rough.
+    - Worker portraits within one people are identical.
+  - **Design note:** all 24 maps come from one template (4 seats, about 30 resources, 16 veins), so they differ mainly by theme and layout style.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
