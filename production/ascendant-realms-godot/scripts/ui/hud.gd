@@ -4144,9 +4144,10 @@ func _update_survival_label() -> void:
 		if not dom.is_empty():
 			var clock := "%d:%02d" % [int(dom["left"]) / 60, int(dom["left"]) % 60]
 			if int(dom["team"]) < 0:
-				_survival_label.text = "DOMINATION · You hold %d of %d Lume sites" % [int(dom["held"]), int(dom["total"])]
+				# Short enough for the header: the tooltip carries the rule in full.
+				_survival_label.text = "DOMINATION · %d of %d sites yours" % [int(dom["held"]), int(dom["total"])]
 				if float(dom.get("opens_in", 0.0)) > 0.0:
-					_survival_label.text += "  ·  count begins in %d:%02d" % [int(dom["opens_in"]) / 60, int(dom["opens_in"]) % 60]
+					_survival_label.text += " · opens %d:%02d" % [int(dom["opens_in"]) / 60, int(dom["opens_in"]) % 60]
 				_survival_label.add_theme_color_override("font_color", Color(0.91, 0.84, 0.66))
 			elif int(dom["team"]) == int(world.player_team):
 				_survival_label.text = "DOMINATION · You win in %s" % clock

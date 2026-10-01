@@ -901,7 +901,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - An order given onto a ridge sends the troops to its foot, on their own side.
     - Building on a ridge is refused with "Blocked by rocks".
     - They show on the minimap, and a loading tip explains them.
-  - **Balance on the ridged test map:** 90 matches, every pairing in both seat orders: Wyldkin 12-6, Vorthak 10-8, Grimtusk 10-8, Sunspear 9-7-2, Hollow 9-8-1, Karak 9-8-1, Lioraen 9-8-1, Barrosan 9-8-1, Frostborn 7-11, Sylvan 3-15. Three time-outs and 0.77 stuck units a match, so the ridges cause no stalemates. Nine peoples are level; Sylvan is the outlier and is being fixed.
+  - **Balance on the ridged test map:** 90 matches, every pairing in both seat orders: Wyldkin 12-6, Vorthak 10-8, Grimtusk 10-8, Sunspear 9-7-2, Hollow 9-8-1, Karak 9-8-1, Lioraen 9-8-1, Barrosan 9-8-1, Frostborn 7-11, Sylvan 3-15. Three time-outs and 0.77 stuck units a match, so the ridges cause no stalemates. Nine peoples are level; Sylvan was the outlier and was fixed in plan 92.
 - **Plan 90 (done): deep audit, pass 4 (how the game plays in your hands)**
   - **Skill powers overwrote each other.** A power granted by two skills kept only the one learned last. Plunder (+200 starting gold) learned after Golden Age (+300) left the hero with 200; a 10% lifesteal gear set replaced a 25% lifesteal keystone. Powers now add up, from skills, gear and sets alike.
   - **The economy branch was retuned to match.** Its nodes were written as rising totals, so simply adding them would have given +140% gathering and near-instant training. Each node now gives what its text says, and the whole branch adds up to +60% gathering, +40% training speed, +50% building speed and +600 starting gold. Training and building can never drop below 30% of their normal time.
@@ -928,6 +928,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Domination: a second way to win a skirmish.** The skirmish screen offered a Victory choice with one option. Domination is new: hold every Lume site at once for two and a half minutes and you win (Conquest still wins too). The enemy can win the same way, so the sites matter. The count cannot begin in the first five minutes. The header shows how many sites you hold and whose clock is running, and the AI fights for the sites far harder in this mode.
   - **All selected workers join a new building.** With three workers selected, one went to build while two watched. (Holding Shift to place several buildings still sends one worker to each.)
   - **Claiming a vein is one order.** Workers sent to a vein raise the outpost and then go inside to work it; they used to stand beside it until ordered in. Up to three selected workers go, not one.
+- **Plan 92 (done): twelve-map soak, an AI bug, and the Moura Court**
+  - **Soak:** one AI-versus-AI match on each of twelve maps (every ridge layout, two river maps, an open field). Every match ended; ridges jammed nobody.
+  - **AI workers fled into their own hall.** A worker under fire was sent to shelter 6 m from the centre of its hall, but every hall is 7 m across, so the spot lay inside the walls. Fleeing workers pushed against the hall for the rest of the match and never worked again (six stuck in one match). They now shelter beside the hall and go back to work.
+  - **The Moura Court (Sylvan) was the weakest people in every check** (3-15 in the seat-balanced one). Three causes in its roster, not its AI: the Silver Duelist hit softer (12 against 14 or more) and trained slower than any other basic soldier; the High Moura was the frailest hero; and the Silver Warden was the only basic soldier that cost stone, which every hall and tower needs. The Duelist now deals 15 and trains in 12 seconds, the High Moura has 380 health and 30 damage, and the Warden costs food and timber only.
+  - **Result:** in an 18-match test against all nine peoples in both seats, the Court went 9-9 (5 of 9 from the first seat, 4 of 9 from the second), with no time-outs. That is one sample; the next pooled check will confirm it.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
@@ -1063,7 +1068,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Human playtest.** Nothing here has been played by a person since the audit passes. `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` lists what to try; section 5 covers everything new since 2026-10-01.
 - **Sound.** The sixteen procedural sounds of plan 86 were checked numerically only. Emanuel should say if any is unpleasant.
 - **Models (Codex's lane).** Seven peoples borrow another people's unit and building models. The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista; `wyldkin_denhold.glb` is rough.
-- **Balance.** Earlier single-order checks were biased by seat (plan 91). Tuning should wait for pooled checks that run every pairing in both seat orders.
+- **Balance.** Nine peoples were level in the first seat-balanced check and the Moura Court was fixed afterwards (9-9 in an 18-match test). A fresh pooled check in both seat orders should confirm the whole field after these changes.
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
 - **Keys.** Camera movement, control groups and the menu keys cannot be rebound; the other 19 battle keys can.
 - **Log noise.** Headless runs print "material is null" lines from Godot's dummy renderer (per-unit shader parameters); they are not errors in the game. One such line at match load in a real window is still unexplained.

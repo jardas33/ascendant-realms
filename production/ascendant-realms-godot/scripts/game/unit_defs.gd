@@ -291,9 +291,9 @@ static func get_all() -> Dictionary:
 	"sylvan_bladesinger": {
 		"race": "sylvan", "name": "Silver Duelist", "role": "melee", "tier": 1,
 		"model": _char("lioraen_bloomdancer"), "height": 1.8,
-		"hp": 130, "dmg": 12, "dmg_type": "slash", "armor_class": "light", "armor": 1,
+		"hp": 130, "dmg": 15, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "sylvan_bladehall",
+		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "sylvan_bladehall",
 		"desc": "Blade and spell woven into one cold, perfect song.",
 	},
 	"sylvan_warden": {
@@ -301,7 +301,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_rootwarden_guard"), "height": 1.9,
 		"hp": 180, "dmg": 14, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
-		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "sylvan_bladehall",
+		"cost": {"food": 70, "timber": 30}, "build_time": 18, "pop": 2, "produced_by": "sylvan_bladehall",
 		"desc": "An armored Moura guardian: a wall of silver and bark that does not bleed.",
 	},
 	"sylvan_longbow": {
@@ -340,7 +340,7 @@ static func get_all() -> Dictionary:
 	"sylvan_hero_archon": {
 		"race": "sylvan", "name": "High Moura", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("sylvan_hero_archon"), "height": 1.95,
-		"hp": 340, "dmg": 26, "dmg_type": "arcane", "armor_class": "medium", "armor": 3,
+		"hp": 380, "dmg": 30, "dmg_type": "arcane", "armor_class": "medium", "armor": 3,
 		"range": 15.0, "attack_cd": 1.2, "speed": 4.3, "vision": 30.0, "projectile": "lume_bolt", "pop": 0,
 		"desc": "Queen of the Moura Court, perfect and ageless, who sold her Lume for eternity.",
 	},

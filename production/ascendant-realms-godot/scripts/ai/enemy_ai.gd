@@ -1191,8 +1191,14 @@ func _manage_defense() -> void:
 			if raider:
 				if threat == null:
 					threat = raider
-				if u.global_position.distance_to(_base_pos) > 12.0:
-					u.command_move(_base_pos + (u.global_position - _base_pos).normalized() * 6.0)
+				# Shelter beside the hall, not inside it: the old spot (6 m from
+				# the centre of a hall 7 m across) lay within its walls, so
+				# fleeing workers pushed against the hall for the rest of the
+				# match and never went back to work.
+				var hall = _get_building_of_kind("main")
+				var shelter := (float(hall.footprint) if is_instance_valid(hall) else 7.0) + 3.5
+				if u.global_position.distance_to(_base_pos) > shelter + 4.0:
+					u.command_move(_base_pos + (u.global_position - _base_pos).normalized() * shelter)
 	if threat:
 		for u in commander.units:
 			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
