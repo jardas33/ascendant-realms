@@ -2010,7 +2010,13 @@ func _setup_commanders() -> void:
 	# hero stats from persistent profile
 	var hero_stats := {}
 	if ProfileManager.has_hero():
-		hero_stats = HeroProgression.compute(ProfileManager.hero())
+		# The hero leads the people chosen for this battle, so the spells are
+		# that people's: a Barrosan-forged hero commanding the Granitborn in
+		# a skirmish used to field Thane-Lord Carvalho casting Chega de Bois.
+		var battle_hero: Dictionary = ProfileManager.hero().duplicate(true)
+		if String(cfg.get("player_race", "")) != "":
+			battle_hero["race"] = String(cfg.get("player_race"))
+		hero_stats = HeroProgression.compute(battle_hero)
 	# AI-versus-AI balance tests: the player's seat gets the same hero an AI
 	# of that difficulty would, so both seats are compared fairly.
 	if String(cfg.get("ai_seat_difficulty", "")) != "":

@@ -3754,7 +3754,7 @@ const TECH_FLAVOR := {
 	"tech_weapons": {"barrosan": "Smithed Sledges", "lioraen": "Thorn-Hardened Blades", "vorthak": "Ash-Glass Edges", "grimtusk": "Chain-Iron Blades",
 		"sylvan": "Coal-Gold Edges", "karak": "Castro Steel", "sunspear": "Bronze Temper", "wyldkin": "Trap-Iron Claws", "hollow": "Candle-Iron Blades", "frostborn": "Bell-Iron Blades"},
 	"tech_armor": {"barrosan": "Granite-Wool Coats", "lioraen": "Bark Mail", "vorthak": "Glass Plate", "grimtusk": "Overseer Plate",
-		"sylvan": "Silver Mail", "karak": "Stone Skin", "sunspear": "Bronze Scale", "wyldkin": "Thick Pelts", "hollow": "Bone Mail", "frostborn": "Winter Fringes"},
+		"sylvan": "Silver Mail", "karak": "Granite Plate", "sunspear": "Bronze Scale", "wyldkin": "Thick Pelts", "hollow": "Bone Mail", "frostborn": "Winter Fringes"},
 }
 
 ## A heraldic shield in the faction's colour, gilt-rimmed, with its initial:
@@ -4264,6 +4264,9 @@ func _on_game_over(victory: bool) -> void:
 		Sfx.play("levelup", -6.0)
 		# Crossing level 10 or 25 teaches the hero a new spell of their people.
 		var race_now := String(ProfileManager.hero().get("race", "")) if ProfileManager.has_hero() else ""
+		# The spells in play are those of the people led in this battle.
+		if Match and String(Match.get_config().get("player_race", "")) != "":
+			race_now = String(Match.get_config().get("player_race"))
 		var before_sp: Dictionary = SkillDefs.people_spell_levels(race_now, int(result["level_before"]))
 		var after_sp: Dictionary = SkillDefs.people_spell_levels(race_now, int(result["level_after"]))
 		for new_id in after_sp:

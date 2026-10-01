@@ -243,7 +243,9 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		# tower occupies only a few pixels with that same camera, so let its live
 		# model fill the portrait aperture without cropping the roof or footing.
 		var narrow_structure := model_radius < target_height * 0.16
-		distance = 2.3 if narrow_structure else maxf(3.55, model_radius * 2.55 + 0.5)
+		# A stray far-off mesh in a borrowed model gave a huge radius and left
+		# the building a speck in its frame (the Ledger Stone): cap the reach.
+		distance = 2.3 if narrow_structure else maxf(3.55, minf(model_radius, target_height * 0.8) * 2.55 + 0.5)
 		_camera.position = Vector3(distance * (0.34 if narrow_structure else 0.48), target_height * (1.05 if narrow_structure else 1.48), distance)
 		_camera.fov = 50.0 if narrow_structure else 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
