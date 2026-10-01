@@ -489,7 +489,7 @@ func _refresh() -> void:
 		forge_bits.append("weak: " + String(h["weakness"]))
 	var forge_line := _stat_line("Forged as", ", ".join(forge_bits))
 	forge_line.tooltip_text = "Warrior +60 health, +3 damage · Commander stronger, wider aura · Ranger attack speed, sight, speed · Mage +40 mana, +10% spell power · Summoner healing, mana regeneration.
-Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armour · Frail -8% health · Slow -0.2 speed · Impatient -15% mana regeneration · Reckless -1 armour."
+Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor · Frail -8% health · Slow -0.2 speed · Impatient -15% mana regeneration · Reckless -1 armor."
 	build_panel.add_child(forge_line)
 	var power := HeroProgression.power(h)
 	build_panel.add_child(_stat_line("Hero Power", str(power)))
@@ -743,7 +743,7 @@ func _stat_line(name: String, val: String) -> HBoxContainer:
 const STAT_HELP := {
 	"Bonus Health": "Extra health from Endurance, Might, gear, sets, Fortitude mastery and talents.",
 	"Bonus Damage": "Extra damage per blow from Might, Intellect, gear, sets and Warfare mastery. Spells scale with it too.",
-	"Bonus Armor": "Flat armour from Willpower, gear and Granite Skin. Each point blunts every blow.",
+	"Bonus Armor": "Flat armor from Willpower, gear and Granite Skin. Each point blunts every blow.",
 	"Attack Speed": "Faster attacks from Agility, gear, Celerity mastery and Swift Blade.",
 	"Max Mana": "Mana for spells: Intellect, gear, Attunement mastery and Lume Well.",
 	"Abilities Unlocked": "Spells from the skill constellation (Q, T, E, R, Y, U, V) and your people (B, N, M).",

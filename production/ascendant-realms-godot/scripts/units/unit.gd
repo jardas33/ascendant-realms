@@ -446,7 +446,18 @@ func _apply_hero_stats() -> void:
 	move_speed += float(hs.get("bonus_speed", 0.0))
 	vision += float(hs.get("bonus_vision", 0.0))
 	atk_range += float(hs.get("bonus_range", 0.0))
-	attack_cd = max(0.35, attack_cd * (1.0 - float(hs.get("attack_speed", 0.0))))
+	# Attack speed never stops paying. The swing time used to be
+	# cd * (1 - speed) with a hard floor of 0.35 s, so every point of Agility
+	# or gear past roughly 70% was thrown away. Up to 50% it works as before;
+	# past that it keeps shortening the swing on a curve that never reaches
+	# zero, and once the swing is as fast as the animation allows the surplus
+	# becomes damage instead.
+	var haste := float(hs.get("attack_speed", 0.0))
+	var swing := attack_cd * (1.0 - haste) if haste <= 0.5 else attack_cd * 0.5 / (1.0 + (haste - 0.5) * 2.0)
+	if swing < 0.35:
+		base_dmg *= 0.35 / swing
+		swing = 0.35
+	attack_cd = swing
 	max_mana = float(hs.get("max_mana", 100.0))
 	mana = max_mana
 	mana_regen = float(hs.get("mana_regen", 5.0))
@@ -854,6 +865,10 @@ func _people_palette() -> Color:
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
 	var people_tint := _people_palette()
+	# The player's hero wears the look chosen at the forge.
+	if is_hero and is_instance_valid(commander) and commander.hero_stats is Dictionary and commander.hero_stats.has("look"):
+		var look := HeroProgression.look_tint(int(commander.hero_stats["look"]))
+		people_tint = Color(people_tint.r * look.r, people_tint.g * look.g, people_tint.b * look.b)
 	var team_tint: Color = commander.color if is_instance_valid(commander) else Color.WHITE
 	var tint_strength := P1R22_HERO_TEAM_TINT if is_hero else (P1R22_WORKER_TEAM_TINT if is_worker else P1R22_MILITARY_TEAM_TINT)
 	for child in model.find_children("*", "MeshInstance3D", true, false):

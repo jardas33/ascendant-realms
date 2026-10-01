@@ -3,6 +3,14 @@ class_name HeroProgression
 ## into a concrete set of live combat stats and build flags for a battle.
 ## Pure calculation — no scene-tree state.
 
+## The three looks offered at the forge. The choice used to tint only the
+## forge preview and was never seen again; the hero now wears it in battle.
+const LOOK_NAMES := ["Natural", "Moonlit", "Ember"]
+const LOOK_TINTS := [Color(1.0, 1.0, 1.0), Color(0.85, 0.95, 1.05), Color(1.1, 0.90, 0.75)]
+
+static func look_tint(look: int) -> Color:
+	return LOOK_TINTS[clampi(look, 0, LOOK_TINTS.size() - 1)]
+
 ## Returns a dict:
 ##   base stats overrides + bonuses + flags + abilities{id:level} + auras
 static func compute(hero: Dictionary) -> Dictionary:

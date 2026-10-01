@@ -157,21 +157,21 @@ func _fit_panel() -> void:
 
 func _build_steps() -> void:
 	_steps = [
-		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "The camera focus moves to a new position.", "check": "camera"},
-		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press Tab to select your army. Your units glow with your color when selected.", "success": "A player-owned unit is selected.", "check": "select"},
-		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a resource (food, timber, stone or gold) to send them gathering.", "success": "A worker extracts a real resource from the node.", "check": "gather"},
-		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "The placed structure finishes construction.", "check": "build"},
-		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "A newly queued military unit completes training.", "check": "train"},
+		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "Move the camera.", "check": "camera"},
+		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press Tab to select your army. Your units glow with your color when selected.", "success": "Select one of your units.", "check": "select"},
+		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a resource (food, timber, stone or gold) to send them gathering.", "success": "Have a Worker gather any resource.", "check": "gather"},
+		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "Finish a building.", "check": "build"},
+		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "Train a soldier.", "check": "train"},
 		{"id": "vein", "title": "Claim a Vein", "text": "Veins glow between the bases. Select Workers and right-click a vein's ring to raise an outpost. When it is built, right-click it with Workers: they go inside and gather in safety.", "success": "You claimed a vein.", "check": "vein"},
-		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and press B for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Your selected hero receives a real move order and changes position.", "check": "hero"},
-		{"id": "combat", "title": "Attack the Enemy", "text": "Press J, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "A real player attack deals combat damage to an enemy.", "check": "combat"},
-		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Your units enter the site, capture progress completes, and the Lume becomes yours.", "check": "final"},
+		{"id": "hero", "title": "Command Your Hero", "text": "Press SPACE to focus your Hero. Move them into battle and press B for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Order your Hero to move.", "check": "hero"},
+		{"id": "combat", "title": "Attack the Enemy", "text": "Press J, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "Wound an enemy.", "check": "combat"},
+		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Capture the Lume Spire.", "check": "final"},
 	]
 
 func _show_step() -> void:
 	if _completed:
 		_title.text = "Tutorial Complete"
-		_label.text = "You have learned the core battlefield loop. Your Lume claim was recorded through normal gameplay."
+		_label.text = "You know how to move, gather, build, train, fight and hold ground. The realms are yours to win."
 		if _success: _success.text = ""
 		_fit_panel.call_deferred()
 		_skip_button.text = "Return to Main Menu"

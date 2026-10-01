@@ -21,7 +21,7 @@ const SLOT_BASES := {
 	"cloak": [["Capa", "armor"], ["Cloak", "hp"]],
 	"relic": [["Charm", "mana_regen"], ["Relic", "heal_power"]],
 }
-const PREFIXES := ["Oxhide", "Granite", "Wolfbone", "Lume-touched", "Sunbronze", "Candlewax", "Ashglass",
+const PREFIXES := ["Oxhide", "Granite", "Wolfbone", "Lume-touched", "Sunbronze", "Candlewax", "Ash-glass",
 	"Chestnut", "Rye-straw", "Slate", "Moura-silver", "Castro", "Ember", "Frostbitten", "Oathbound"]
 const SUFFIXES := ["of Salto", "of the Larouco", "of the Chega", "of Tourém", "of the Drowned Bells",
 	"of the Seventh Son", "of the Communal Oven", "of the Rabagão", "of Furna", "of Montalegre",
@@ -34,11 +34,11 @@ const STAT_SCALE := {"dmg": 0.55, "hp": 5.0, "armor": 0.18, "speed": 0.02, "atta
 ## 4 pieces add a power.
 const SETS := {
 	"salto_oath": {"name": "Oath of Salto", "two": "health", "four": ["last_stand", true, "survive one lethal blow"]},
-	"furna_ashglass": {"name": "Furna's Ashglass", "two": "damage", "four": ["lifesteal", 0.1, "10% lifesteal"]},
+	"furna_ashglass": {"name": "Furna's Ash-glass", "two": "damage", "four": ["lifesteal", 0.1, "10% lifesteal"]},
 	"moura_silver": {"name": "Moura Silver", "two": "mana", "four": ["execute", true, "execute wounded foes"]},
 	"careto_masks": {"name": "Careto Masks", "two": "speed", "four": ["cleave", true, "cleave"]},
 	# Road Tyrant sets: they only drop when a Tyrant falls (never from ordinary battles).
-	"tarasca_scale": {"name": "Tarasca Scale", "two": "armour", "four": ["thornmail", 0.25, "25% thorns"]},
+	"tarasca_scale": {"name": "Tarasca Scale", "two": "armor", "four": ["thornmail", 0.25, "25% thorns"]},
 	"old_wolf_pelt": {"name": "Pelt of the Old Wolf", "two": "speed and damage", "four": ["haste_on_kill", true, "quicker blows after each kill"]},
 	"iron_abbot": {"name": "Iron of the Abbot", "two": "health regeneration", "four": ["last_stand", true, "survive one lethal blow"]},
 	"moura_crown": {"name": "Crown of the Moura Queen", "two": "spell power", "four": ["chain_lightning", true, "every fourth blow arcs lightning"]},
@@ -47,7 +47,7 @@ const SETS := {
 }
 const TYRANT_SETS := {"tarasca": "tarasca_scale", "old_wolf": "old_wolf_pelt", "iron_abbot": "iron_abbot", "moura_queen": "moura_crown", "lobisomem": "lobisomem_hide", "bruxa": "bruxa_charms"}
 
-const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ashglass", "moura_silver": "Moura-silver", "careto_masks": "Careto",
+const SET_PREFIX := {"salto_oath": "Oathsworn", "furna_ashglass": "Ash-glass", "moura_silver": "Moura-silver", "careto_masks": "Careto",
 	"tarasca_scale": "Tarasca-scale", "old_wolf_pelt": "Old Wolf's", "iron_abbot": "Abbot's Iron", "moura_crown": "Moura Queen's", "lobisomem_hide": "Lobisomem's", "bruxa_charms": "Bruxa's"}
 
 ## [flag, value, description] - powers the hero already understands.

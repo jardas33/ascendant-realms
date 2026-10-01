@@ -194,14 +194,14 @@ static func get_all() -> Dictionary:
 		"hp": 860, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 55}, "build_time": 30, "grants_pop": 0,
 		"produces": ["sylvan_bladesinger", "sylvan_warden", "sylvan_longbow", "sylvan_windrunner", "sylvan_silver_colossus"],
-		"desc": "A hall of still mirrors where the Court's duellists, wardens, archers, fountain riders and the Silver Colossus are enchanted for war.",
+		"desc": "A hall of still mirrors where the Court's duelists, wardens, archers, fountain riders and the Silver Colossus are enchanted for war.",
 	},
 	"sylvan_loreforge": {
 		"race": "sylvan", "name": "Coal-Gold Forge", "kind": "economy", "model": _b("lioraen_lifewell"),
 		"hp": 650, "armor_class": "medium", "armor": 2, "footprint": 3.8,
 		"cost": {"timber": 110, "stone": 70}, "build_time": 28, "grants_pop": 0, "is_research": true,
 		"produces": [], "research": ["tech_weapons", "tech_armor"],
-		"desc": "Where coal is spun into gold, as in the tales. Pays for the Court's weapon and armour upgrades.",
+		"desc": "Where coal is spun into gold, as in the tales. Pays for the Court's weapon and armor upgrades.",
 	},
 	"sylvan_star_spire": {
 		"race": "sylvan", "name": "Frozen Fountain", "kind": "tower", "model": _b("lioraen_bloom_spire"),
@@ -280,7 +280,7 @@ static func get_all() -> Dictionary:
 		"hp": 700, "armor_class": "medium", "armor": 3, "footprint": 4.0,
 		"cost": {"timber": 100, "stone": 80}, "build_time": 28, "grants_pop": 0, "is_research": true,
 		"produces": [], "research": ["tech_weapons", "tech_armor"],
-		"desc": "The treasury that taxes the valleys it floods. Pays for weapon and armour upgrades for the whole army.",
+		"desc": "The treasury that taxes the valleys it floods. Pays for weapon and armor upgrades for the whole army.",
 	},
 	"sunspear_obelisk_tower": {
 		"race": "sunspear", "name": "Survey Obelisk", "kind": "tower", "model": _b("barrosan_watchtower"),
@@ -366,7 +366,7 @@ static func get_all() -> Dictionary:
 		"hp": 620, "armor_class": "medium", "armor": 2, "footprint": 3.8,
 		"cost": {"timber": 100, "stone": 70}, "build_time": 26, "grants_pop": 0, "is_research": true,
 		"produces": [], "research": ["tech_weapons", "tech_armor"],
-		"desc": "Coffin-wood and candle-iron worked into the procession's weapons and bone armour.",
+		"desc": "Coffin-wood and candle-iron worked into the procession's weapons and bone armor.",
 	},
 	"hollow_bone_spire": {
 		"race": "hollow", "name": "Procession Cross", "kind": "arcane", "model": _b("vorthak_warlock_spire"),

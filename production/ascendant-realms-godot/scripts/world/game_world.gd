@@ -2041,6 +2041,7 @@ func _setup_commanders() -> void:
 		if String(cfg.get("player_race", "")) != "":
 			battle_hero["race"] = String(cfg.get("player_race"))
 		hero_stats = HeroProgression.compute(battle_hero)
+		hero_stats["look"] = int(battle_hero.get("appearance", 0))
 		_player_hero_bonus = hero_stats
 	# AI-versus-AI balance tests: the player's seat gets the same hero an AI
 	# of that difficulty would, so both seats are compared fairly.

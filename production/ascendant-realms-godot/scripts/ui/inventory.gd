@@ -535,13 +535,35 @@ func _item_card(item: Dictionary) -> Button:
 
 ## "+19 Dmg", "+7% Attack Speed", "+3.1 Mana Regen": whole numbers stay
 ## whole, small fractions of a multiplier read as percentages.
+## Full and short names of the item stats. The raw keys read "Dmg" and "Hp",
+## and three long names did not fit a relic card ("+105 Heal Po...").
+const STAT_NAMES := {
+	"dmg": ["Damage", "Damage"], "hp": ["Health", "Health"], "armor": ["Armor", "Armor"],
+	"speed": ["Move Speed", "Speed"], "attack_speed": ["Attack Speed", "Atk Speed"],
+	"mana": ["Mana", "Mana"], "mana_regen": ["Mana Regen", "Regen"],
+	"heal_power": ["Heal Power", "Heal"], "aura_dmg": ["Aura Damage", "Aura"],
+}
+
+func _stat_name(key: String, short: bool = false) -> String:
+	if STAT_NAMES.has(key):
+		return String(STAT_NAMES[key][1 if short else 0])
+	return _pretty(key)
+
+## The value of a stat as shown: attack speed is a share of the swing time
+## (always a percentage), move speed is metres a second (never one: +0.5
+## used to read "+50%").
+func _stat_value(key: String, value: float, signed: bool = true) -> String:
+	var sign_str := ("+" if value >= 0.0 else "-") if signed else ""
+	var v := absf(value)
+	if key == "attack_speed":
+		return "%s%d%%" % [sign_str, int(round(v * 100.0))]
+	if is_equal_approx(v, round(v)):
+		return "%s%d" % [sign_str, int(round(v))]
+	# Two decimals at most, without trailing zeros (0.26, 1.5).
+	return "%s%s" % [sign_str, ("%.2f" % v).rstrip("0").rstrip(".")]
+
 func _short_stat(key: String, value: float) -> String:
-	var name := _pretty(key)
-	if absf(value) < 1.0 and key.contains("speed"):
-		return "+%d%% %s" % [int(round(value * 100.0)), name]
-	if is_equal_approx(value, round(value)):
-		return "+%d %s" % [int(round(value)), name]
-	return "+%.1f %s" % [value, name]
+	return "%s %s" % [_stat_value(key, value), _stat_name(key, true)]
 
 func _show_item_detail(item: Dictionary) -> void:
 	Sfx.play("select")
@@ -560,7 +582,7 @@ func _show_item_detail(item: Dictionary) -> void:
 		var lost: Array = []
 		for k in (equipped.get("stats", {}) as Dictionary):
 			if not (item.get("stats", {}) as Dictionary).has(k):
-				lost.append("-%s %s" % [str(equipped["stats"][k]), _pretty(str(k))])
+				lost.append("-%s %s" % [_stat_value(str(k), float(equipped["stats"][k]), false), _stat_name(str(k))])
 		if not lost.is_empty():
 			var lost_label := _wrap_label("Lost from the equipped piece: " + ", ".join(lost))
 			lost_label.add_theme_color_override("font_color", Color(0.96, 0.67, 0.58))
@@ -743,20 +765,20 @@ func _stats_block(item: Dictionary, compare) -> VBoxContainer:
 		line.add_theme_constant_override("separation", 8)
 		content.add_child(line)
 		var stat_name := Label.new()
-		stat_name.text = _pretty(str(k)).to_upper()
+		stat_name.text = _stat_name(str(k)).to_upper()
 		stat_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		stat_name.add_theme_font_size_override("font_size", 15)
 		stat_name.add_theme_color_override("font_color", Color(0.78, 0.75, 0.65))
 		line.add_child(stat_name)
 		var stat_value := Label.new()
-		stat_value.text = _short_stat(str(k), float(stats[k])).get_slice(" ", 0)
+		stat_value.text = _stat_value(str(k), float(stats[k]))
 		stat_value.add_theme_font_size_override("font_size", 20)
 		stat_value.add_theme_color_override("font_color", Color(0.82, 0.95, 0.84))
 		line.add_child(stat_value)
 		if compare != null and compare.get("slot", "") == item.get("slot", ""):
 			var delta = float(stats[k]) - float(cmp.get(k, 0))
 			var delta_label := Label.new()
-			var signed_delta := "%+.0f" % delta if absf(delta - roundf(delta)) < 0.0001 else "%+.2f" % delta
+			var signed_delta := _stat_value(str(k), delta)
 			delta_label.text = "%s VS EQUIPPED" % signed_delta
 			delta_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			delta_label.add_theme_font_size_override("font_size", 16)

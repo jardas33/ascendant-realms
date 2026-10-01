@@ -11,6 +11,13 @@ const MapPreviewScript := preload("res://scripts/ui/map_preview.gd")
 
 const DIFFICULTIES := ["easy", "normal", "hard", "brutal"]
 const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
+## What each difficulty means, shown when hovering the choice.
+const DIFF_HINTS := [
+	"Easy: a small, slow host. Its hero casts no spells.",
+	"Normal: an even fight. Its hero casts its people's signature spell and has a third of your own hero's strength.",
+	"Hard: a richer economy and larger attacks. Its hero knows more spells and has two thirds of your own hero's strength.",
+	"Brutal: the richest economy and the largest attacks. Its hero is a match for your own.",
+]
 const RES_KINDS := ["standard", "quick", "rich"]
 const RES_LABELS := ["Standard", "Quick", "Rich"]
 const VICTORY_KINDS := ["conquest"]
@@ -532,8 +539,12 @@ func _rebuild_opponents() -> void:
 		diff_opt.custom_minimum_size = Vector2(118, 34)
 		for j in DIFF_LABELS.size():
 			diff_opt.add_item(DIFF_LABELS[j], j)
+			diff_opt.set_item_tooltip(j, DIFF_HINTS[j])
 		diff_opt.select(1 if i >= _saved_opps.size() else DIFFICULTIES.find(_saved_opps[i]["diff"]))
-		diff_opt.item_selected.connect(func(_idx): Sfx.play("select"))
+		diff_opt.tooltip_text = DIFF_HINTS[clampi(diff_opt.selected, 0, DIFF_HINTS.size() - 1)]
+		diff_opt.item_selected.connect(func(idx):
+			Sfx.play("select")
+			diff_opt.tooltip_text = DIFF_HINTS[clampi(idx, 0, DIFF_HINTS.size() - 1)])
 		row.add_child(diff_opt)
 		_opp_container.add_child(row)
 		_opp_rows.append({"race": race_opt, "diff": diff_opt})

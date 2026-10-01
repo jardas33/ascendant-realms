@@ -26,7 +26,7 @@ static func get_all() -> Dictionary:
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
 		"cost": {"food": 45, "timber": 10}, "build_time": 11, "pop": 1, "produced_by": "barracks",
-		"desc": "Farmers who fight in family blocks under the village banner. Cheap and stubborn; good against unarmoured foes.",
+		"desc": "Farmers who fight in family blocks under the village banner. Cheap and stubborn; good against unarmored foes.",
 	},
 	"barrosan_spear_guard": {
 		"race": "barrosan", "name": "Stoneward Spears", "role": "defender", "tier": 1,
@@ -62,7 +62,7 @@ static func get_all() -> Dictionary:
 		"hp": 240, "dmg": 30, "dmg_type": "blunt", "armor_class": "heavy", "armor": 5,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 90, "stone": 40, "gold": 60}, "build_time": 26, "pop": 3, "produced_by": "barracks",
-		"desc": "The village smiths, marching with the sledgehammers that shaped every plough in the valley. Crush heavy armour and walls.",
+		"desc": "The village smiths, marching with the sledgehammers that shaped every plow in the valley. Crush heavy armor and walls.",
 	},
 	"barrosan_ballista": {
 		"race": "barrosan", "name": "Clan Ballista", "role": "siege", "tier": 3, "is_siege": true,
@@ -159,7 +159,7 @@ static func get_all() -> Dictionary:
 		"hp": 160, "dmg": 24, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 0.9, "speed": 4.4, "vision": 22.0,
 		"cost": {"food": 90, "gold": 40}, "build_time": 18, "pop": 2, "produced_by": "barracks",
-		"desc": "A duellist armoured in violet glass. Strikes hard and fast, and costs the Cabal dearly.",
+		"desc": "A duelist armored in violet glass. Strikes hard and fast, and costs the Cabal dearly.",
 	},
 	"vorthak_cinder_spitter": {
 		"race": "vorthak", "name": "Cinder Spitter", "role": "ranged", "tier": 1,
@@ -168,7 +168,7 @@ static func get_all() -> Dictionary:
 		"hp": 80, "dmg": 15, "dmg_type": "arcane", "armor_class": "unarmored", "armor": 0,
 		"range": 16.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "cinder",
 		"cost": {"food": 65, "gold": 20}, "build_time": 16, "pop": 1, "produced_by": "barracks",
-		"desc": "Spits burning ash-glass. Ignores heavy armour with arcane fire.",
+		"desc": "Spits burning ash-glass. Its arcane fire bites hard into heavy armor.",
 	},
 	"vorthak_gloom_hound": {
 		"race": "vorthak", "name": "Gloom Hound", "role": "flanker", "tier": 2,
@@ -269,7 +269,7 @@ static func get_all() -> Dictionary:
 		"hp": 245, "dmg": 30, "dmg_type": "blunt", "armor_class": "heavy", "armor": 5,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 110, "stone": 40, "gold": 40}, "build_time": 26, "pop": 3, "produced_by": "grimtusk_warcamp",
-		"desc": "A mine slave the Lume-iron made enormous. Crushes armour, walls, and anything that stands still.",
+		"desc": "A mine slave the Lume-iron made enormous. Crushes armor, walls, and anything that stands still.",
 	},
 	"grimtusk_hero_warlord": {
 		"race": "grimtusk", "name": "Warboss Brasa", "role": "hero", "tier": 1, "is_hero": true,
@@ -289,7 +289,7 @@ static func get_all() -> Dictionary:
 		"desc": "A Moura servant who tends the Court's frozen gardens.",
 	},
 	"sylvan_bladesinger": {
-		"race": "sylvan", "name": "Silver Duellist", "role": "melee", "tier": 1,
+		"race": "sylvan", "name": "Silver Duelist", "role": "melee", "tier": 1,
 		"model": _char("lioraen_bloomdancer"), "height": 1.8,
 		"hp": 130, "dmg": 12, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
@@ -302,7 +302,7 @@ static func get_all() -> Dictionary:
 		"hp": 180, "dmg": 14, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "sylvan_bladehall",
-		"desc": "An armoured Moura guardian: a wall of silver and bark that does not bleed.",
+		"desc": "An armored Moura guardian: a wall of silver and bark that does not bleed.",
 	},
 	"sylvan_longbow": {
 		"race": "sylvan", "name": "Coal-Gold Archer", "role": "ranged", "tier": 1,
@@ -352,7 +352,7 @@ static func get_all() -> Dictionary:
 		"hp": 60, "dmg": 5, "dmg_type": "blunt", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 1.2, "speed": 3.6, "vision": 18.0,
 		"cost": {"food": 50}, "build_time": 12, "pop": 1,
-		"desc": "Granitborn stoneworker who hews rock and raises hillfort walls that never fall.",
+		"desc": "A Granitborn stoneworker who hews rock and raises hillfort walls that never fall.",
 	},
 	"karak_warrior": {
 		"race": "karak", "name": "Castro Warrior", "role": "melee", "tier": 1,
@@ -368,7 +368,7 @@ static func get_all() -> Dictionary:
 		"hp": 195, "dmg": 17, "dmg_type": "blunt", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "karak_warforge",
-		"desc": "Granitborn veteran who has stood in the same shield-wall for two hundred years.",
+		"desc": "A Granitborn veteran who has stood in the same shield-wall for two hundred years.",
 	},
 	"karak_quarreler": {
 		"race": "karak", "name": "Quarreler", "role": "ranged", "tier": 1,
@@ -376,7 +376,7 @@ static func get_all() -> Dictionary:
 		"hp": 90, "dmg": 17, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 17.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "bolt",
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "karak_warforge",
-		"desc": "A stone-skinned crossbowman whose bolts crack armour like slate.",
+		"desc": "A stone-skinned crossbowman whose bolts crack armor like slate.",
 	},
 	"karak_castro_rider": {
 		"race": "karak", "name": "Castro Rider", "role": "flanker", "tier": 2,
@@ -565,7 +565,7 @@ static func get_all() -> Dictionary:
 		"hp": 175, "dmg": 12, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 2.9, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "hollow_ossuary",
-		"desc": "An armoured dead knight who keeps the living away from the cross.",
+		"desc": "An armored dead knight who keeps the living away from the cross.",
 	},
 	"hollow_bonearcher": {
 		"race": "hollow", "name": "Grave Archer", "role": "ranged", "tier": 1,

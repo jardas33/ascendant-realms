@@ -9,8 +9,8 @@ const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 const ARCHETYPES := ["Warrior", "Commander", "Ranger", "Mage", "Summoner"]
 ## Strengths and weaknesses are real, small trade-offs (HeroProgression).
 const TRAIT_DESC := {
-	"Mighty": "+8% damage", "Swift": "+0.3 speed", "Arcane": "+30 mana", "Stalwart": "+2 armour",
-	"Frail": "-8% health", "Slow": "-0.2 speed", "Impatient": "-15% mana regeneration", "Reckless": "-1 armour",
+	"Mighty": "+8% damage", "Swift": "+0.3 speed", "Arcane": "+30 mana", "Stalwart": "+2 armor",
+	"Frail": "-8% health", "Slow": "-0.2 speed", "Impatient": "-15% mana regeneration", "Reckless": "-1 armor",
 }
 const ARCH_DESC := {
 	"Warrior": "Warrior: first into the line. +60 health and +3 damage.",
@@ -24,12 +24,9 @@ const WEAKNESSES := ["Frail", "Slow", "Impatient", "Reckless"]
 const START_ATTR := 3
 const ATTR_POOL := 5
 
-# Variant tints applied via SubViewportContainer.modulate
-const VARIANT_TINTS := [
-	Color(1.0, 1.0, 1.0, 1.0),        # Variant 1 — no tint
-	Color(0.85, 0.95, 1.05, 1.0),     # Variant 2 — cool blue-ish
-	Color(1.1, 0.90, 0.75, 1.0),      # Variant 3 — warm amber
-]
+# The looks (HeroProgression.LOOK_TINTS) tint the preview here and the hero
+# itself in battle.
+const VARIANT_TINTS := HeroProgression.LOOK_TINTS
 const VARIANT_Y_ROT := [0.0, 0.6, -0.6]  # starting Y rotation offsets per variant
 
 var _name_edit: LineEdit
@@ -149,6 +146,8 @@ func _build() -> void:
 	main.add_child(_section_label("Name"))
 	_name_edit = LineEdit.new()
 	_name_edit.placeholder_text = "Enter a hero name..."
+	# Long enough for any name, short enough for the battle HUD's hero plate.
+	_name_edit.max_length = 24
 	_name_edit.custom_minimum_size = Vector2(400, 40)
 	_name_edit.add_theme_font_override("font", ThemeDB.fallback_font)
 	_name_edit.add_theme_color_override("font_color", Color.WHITE)
@@ -576,7 +575,7 @@ func _appear_step(dir: int) -> void:
 	_apply_variant_visuals()
 
 func _update_appear() -> void:
-	_appear_label.text = "Variant %d" % (_appearance + 1)
+	_appear_label.text = String(HeroProgression.LOOK_NAMES[clampi(_appearance, 0, HeroProgression.LOOK_NAMES.size() - 1)])
 
 func _attr_step(attr: String, dir: int) -> void:
 	if dir > 0 and _points_left <= 0:
@@ -669,9 +668,10 @@ func _on_forge() -> void:
 	if hname == "":
 		_name_edit.placeholder_text = "A name is required!"
 		_name_edit.grab_focus()
+		Sfx.play_limited("refuse", -10.0, 250)
 		return
 	Sfx.play("select")
-	ProfileManager.create_hero(hname, _race_id, _archetype, _appearance, _strength, _weakness, _attrs)
+	ProfileManager.create_hero(hname, _race_id, _archetype, _appearance, _strength, _weakness, _attrs, _points_left)
 	var origin := Match.consume_pending_hero_origin()
 	match origin:
 		"campaign":

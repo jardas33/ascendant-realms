@@ -46,7 +46,7 @@ func has_hero() -> bool:
 	return data.has("hero") and not data["hero"].is_empty() and data["hero"].has("name")
 
 func create_hero(hero_name: String, race: String, archetype: String,
-		appearance: int, strength: String, weakness: String, attrs: Dictionary) -> void:
+		appearance: int, strength: String, weakness: String, attrs: Dictionary, unspent_points: int = 0) -> void:
 	data["hero"] = {
 		"name": hero_name,
 		"race": race,
@@ -57,7 +57,9 @@ func create_hero(hero_name: String, race: String, archetype: String,
 		"level": 1,
 		"xp": 0.0,
 		"skill_points": 1,
-		"attr_points": 0,
+		# Points left unspent at the forge are kept for the hero sheet
+		# (they used to be thrown away without a word).
+		"attr_points": maxi(0, unspent_points),
 		"attributes": attrs.duplicate(),
 		"skills": [],                    # unlocked skill node ids
 		"mastery": 0,                    # endless mastery level
@@ -194,7 +196,7 @@ func add_xp(amount: float) -> Dictionary:
 	var h = data["hero"]
 	h["xp"] = float(h.get("xp", 0.0)) + amount
 	var gained := 0
-	var beyond_tree := _tree_size()
+	var learnable := learnable_points(h)
 	while true:
 		var lvl = int(h["level"])
 		var need = xp_for_level(lvl)
@@ -203,7 +205,7 @@ func add_xp(amount: float) -> Dictionary:
 			h["level"] = lvl + 1
 			gained += 1
 			# Before finishing the tree: skill points. After: mastery points.
-			if int(h.get("skills", []).size()) < beyond_tree and _potential_points(h) < beyond_tree_points():
+			if _potential_points(h) < learnable:
 				h["skill_points"] = int(h.get("skill_points", 0)) + 1
 			else:
 				h["mastery"] = int(h.get("mastery", 0)) + 1
@@ -218,14 +220,28 @@ func add_xp(amount: float) -> Dictionary:
 		save_game()
 	return {"levels": gained}
 
-func _tree_size() -> int:
-	return SkillDefs.get_tree().size()
-
-func beyond_tree_points() -> int:
+## The skill points this hero can ever spend: every node of the tree except
+## the other peoples' own. The whole tree used to be counted, but a hero can
+## never learn another people's nodes, so dozens of levels paid a skill point
+## with nothing to buy and no mastery either.
+func learnable_points(h: Dictionary) -> int:
 	var total := 0
+	var race := String(h.get("race", ""))
 	for n in SkillDefs.get_tree():
+		if n.has("race") and String(n["race"]) != race:
+			continue
 		total += int(n.get("cost", 1))
 	return total
+
+## Skill points beyond what the tree can take become mastery (heroes saved
+## before the fix above may hold some).
+func _settle_surplus_skill_points(h: Dictionary) -> void:
+	var surplus := mini(_potential_points(h) - learnable_points(h), int(h.get("skill_points", 0)))
+	if surplus <= 0:
+		return
+	h["skill_points"] = int(h["skill_points"]) - surplus
+	h["mastery"] = int(h.get("mastery", 0)) + surplus
+	h["mastery_points"] = int(h.get("mastery_points", 0)) + surplus
 
 func _potential_points(h: Dictionary) -> int:
 	# total points a hero could have earned == spent + available (skill only)
@@ -611,6 +627,7 @@ func _normalize_profile(d: Dictionary) -> Dictionary:
 			if typeof(h.get(key)) not in [TYPE_INT, TYPE_FLOAT] or float(h[key]) < 0.0: h[key] = hero_defaults[key]
 		for key in ATTRIBUTES:
 			if typeof(h["attributes"].get(key, 0)) not in [TYPE_INT, TYPE_FLOAT] or int(h["attributes"].get(key, 0)) < 0: h["attributes"][key] = 0
+		_settle_surplus_skill_points(h)
 	if typeof(d["stats"].get("battles", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("battles", 0)) < 0: d["stats"]["battles"] = 0
 	if typeof(d["stats"].get("victories", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("victories", 0)) < 0: d["stats"]["victories"] = 0
 	if typeof(d["stats"].get("units_killed", 0)) not in [TYPE_INT, TYPE_FLOAT] or int(d["stats"].get("units_killed", 0)) < 0: d["stats"]["units_killed"] = 0

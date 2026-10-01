@@ -862,6 +862,34 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Rivers were decoration.** Six maps have a river and a bridge, but the river is a walkable ford, so the bridge had no purpose, and a house could be placed in the water. Now wading is slow (62% speed) and the bridge crosses at full speed: 11.1 seconds to wade a crossing against 8.1 over the bridge. Building in the river is refused with "Cannot build in the river". A loading tip explains it.
   - **AI walled in its own hall.** When 24 tries to find a legal building spot all failed, a fallback dropped the building 16 m in front of the hall with no checks, on the road the rules keep open. Three houses and a war hall sealed a Clanhold; four workers were stuck and eleven idle. The AI now searches a wider arc and otherwise waits. The same match went from not finishing by 24 minutes to a win at 16:39 with no stuck units.
   - **Design gap noted:** maps have no terrain that shapes play apart from the river. All 24 are open fields from one template. Ridges, forests and chokepoints would need obstacle support in the route planner; that is a larger piece of work to plan.
+- **Plan 88 (done): deep audit, pass 3 (heroes, progression, controls, match flow)**
+  - **Sweeps that came back clean:**
+    - All 44 campaign chapters start and run (`claude_chapsmoke.gd`).
+    - Match flow: pause, restart, play again and continue all work (`claude_flow.gd`).
+    - Equipped gear reaches the live hero in battle (`claude_equipcheck.gd`).
+  - **Restart Battle:** the pause menu had no way to restart a battle. It now has one, with a confirmation.
+  - **A geared hero could not be killed.** Armour subtracted a flat amount, so a level-49 hero in full gear (66 armour) took 1 damage from every ordinary soldier. Armour now never blocks more than 75% of a hit. The same hero kills 21 of 30 soldiers alone and then falls, instead of standing forever.
+  - **Enemy heroes ignored the player's hero.** That level-49 hero (1,608 health, 267 damage) faced a Brutal enemy hero of 330 health and 32 damage. In a skirmish the enemy hero now takes a share of the player hero's own bonuses: none on Easy, 35% on Normal, 65% on Hard, all on Brutal (1,812 health, 245 damage against the hero above). Campaign and the Endless Road keep their own growth. The skirmish screen explains each difficulty on hover.
+  - **Skill points with nothing to buy.** The game counted the whole skill tree (256 points) before starting mastery, but a hero can never learn the other nine peoples' nodes, so only 184 points are spendable. Levels 185 to 256 paid a skill point that could not be spent, and no mastery. Mastery now starts when the hero's own tree is paid for, and saved heroes holding surplus points get them back as mastery.
+  - **Attack speed had a hidden cap.** The swing time was floored at 0.35 seconds, so Agility and gear past roughly 70% attack speed did nothing. It now keeps paying without limit: past the fastest swing, the surplus becomes damage.
+  - **Forge fixes:**
+    - Attribute points left unspent at the forge were thrown away. They are now kept for the hero sheet.
+    - The appearance choice ("Variant 1 to 3") only tinted the forge preview. The three looks are now named (Natural, Moonlit, Ember) and the hero wears the chosen one in battle.
+    - Hero names are limited to 24 characters, and an empty name sounds the refusal taps.
+  - **War Chest text:**
+    - Item cards cut off long stat lines ("+105 Heal Po..."). Cards now use short stat names.
+    - Stats read "Dmg" and "Hp"; they now read Damage and Health.
+    - Move speed below 1 was shown as a percentage (+0.5 read "+50%"). It is metres a second and now shows as such.
+  - **Controls:**
+    - Holding the middle mouse button drags the camera.
+    - Control groups go from five to ten (1 to 9 and 0). Shift with the number adds the group to the selection.
+  - **Capture points could be stolen in one tick.** An owned site kept its capture progress at full, so a single enemy scout stepping into the ring took it instantly. Taking an owned site now takes as long as a neutral one (2.9 seconds, measured), and a claim nobody presses fades.
+  - **Text pass (a full proofread of every player-visible string):**
+    - One spelling convention: 49 British spellings changed to the American the rest of the game uses (armor, defense, center, gray).
+    - The tutorial's goals read like test assertions ("A worker extracts a real resource from the node"). They are now plain ("Have a Worker gather any resource").
+    - Wrong claims fixed: Karak walls are a fifth tougher, not a quarter; the Cinder Spitter does not ignore armor.
+    - "Ashglass" and "Ash-glass" unified; the Warchest skill renamed War Coffers (it clashed with the War Chest screen).
+  - **Balance:** one 45-match check on the build with the armor limit: every people between 2-6 and 7-2, two time-outs. That is within the noise of a single check; a pooled check follows once the rock ridges of plan 89 are in, because they change the test map.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:

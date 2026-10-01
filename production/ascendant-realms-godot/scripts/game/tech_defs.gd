@@ -6,7 +6,7 @@ class_name TechDefs
 ## An upgrade's "effects" list is applied to the units whose role matches
 ## "who" (all, melee, ranged, defender, flanker, siege, caster, worker, hero):
 ## dmg and armor add, hp_mult and speed_mult add a fraction, range and vision
-## add metres, lifesteal adds a fraction of damage dealt. "flags" add to the
+## add meters, lifesteal adds a fraction of damage dealt. "flags" add to the
 ## commander's build flags (gather_bonus, train_speed, carry_bonus,
 ## building_hp, tower_dmg, bloom_boost). "req" lists techs needed first and
 ## "min_tier" the Age needed. A "race" entry shows only for that people.
@@ -16,14 +16,14 @@ static func get_all() -> Dictionary:
 	"advance_tier_2": {
 		"name": "Advance to Age of Iron", "kind": "tier", "tier": 2,
 		"cost": {"food": 200, "gold": 150}, "time": 40, "at": "main",
-		"desc": "Unlock Tier 2 units, elite troops and advanced buildings.",
+		"desc": "Opens the Age of Iron: new units, elite troops and advanced buildings.",
 	},
 	"advance_tier_3": {
 		"name": "Advance to Age of Lume", "kind": "tier", "tier": 3,
 		"cost": {"food": 400, "gold": 300, "stone": 150}, "time": 60, "at": "main",
-		"desc": "Unlock Tier 3 elites, casters and siege engines.",
+		"desc": "Opens the Age of Lume: elites, casters and siege engines.",
 	},
-	# --- Army: three ranks of weapons and of armour --------------------------
+	# --- Army: three ranks of weapons and of armor --------------------------
 	"tech_weapons": {
 		"name": "Forged Weapons", "kind": "upgrade", "stat": "dmg", "add": 4,
 		"cost": {"gold": 120, "stone": 60}, "time": 35, "at": "economy",
@@ -58,7 +58,7 @@ static func get_all() -> Dictionary:
 		"cost": {"gold": 320, "timber": 220}, "time": 55, "at": "economy",
 		"desc": "+3 more armor to all your combat units.",
 	},
-	# --- Economy and defence, at the main hall -------------------------------
+	# --- Economy and defense, at the main hall -------------------------------
 	"tech_tools": {
 		"name": "Sharpened Tools", "kind": "upgrade", "flags": {"gather_bonus": 0.15},
 		"cost": {"timber": 100, "gold": 60}, "time": 30, "at": "main",

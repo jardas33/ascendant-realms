@@ -180,15 +180,30 @@ func _physics_process(delta: float) -> void:
 		elif counts[t] == lead:
 			tie = true
 	if lead_team != -1 and not tie and lead_team != owner_team:
+		# Every claim starts from nothing. An owned site kept its progress at
+		# full, so one enemy scout stepping into the ring took it in a single
+		# tick; and a second team inherited whatever the first had built up.
+		if _contesting_team != lead_team:
+			_contesting_team = lead_team
+			_progress = 0.0
 		_progress += delta * 0.35
-		_contesting_team = lead_team
 		_tint(GameData.TEAM_COLORS.get(lead_team, Color.WHITE), clamp(_progress, 0, 1))
 		if _progress >= 1.0:
 			_set_owner(lead_team)
-	elif owner_team == -1:
+	elif _contesting_team >= 0:
+		# Nobody presses the claim: it fades, and an owned site settles back
+		# to its owner's colours.
 		_progress = max(0.0, _progress - delta * 0.15)
-		if _contesting_team >= 0:
+		if _progress > 0.0:
 			_tint(GameData.TEAM_COLORS.get(_contesting_team, Color.WHITE), _progress)
+		else:
+			var faded := _contesting_team
+			_contesting_team = -1
+			if owner_team >= 0:
+				_progress = 1.0
+				_tint(GameData.TEAM_COLORS.get(owner_team, Color.WHITE), 1.0)
+			else:
+				_tint(GameData.TEAM_COLORS.get(faded, Color.WHITE), 0.0)
 
 	# benefit income
 	if owner_team >= 0:

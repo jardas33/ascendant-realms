@@ -34,7 +34,7 @@ const RACES := {
 	},
 	"lioraen": {
 		"name": "Lioraen Concord",
-		"blurb": "The living groves of the highland springs, who village legend calls the Mouras Encantadas. They swore to guard the Lume if the villages would remember them. The villages forgot, and they are fading into trees. Fast skirmishers, healing groves, ground that mends your army.",
+		"blurb": "The living groves of the highland springs, whom village legend calls the Mouras Encantadas. They swore to guard the Lume if the villages would remember them. The villages forgot, and they are fading into trees. Fast skirmishers, healing groves, ground that mends your army.",
 		"color": Color(0.35, 0.72, 0.55),
 		"hero": "lioraen_hero_warden",
 		"hero_name": "Grove Warden",
@@ -82,7 +82,7 @@ const RACES := {
 		"color": Color(0.85, 0.6, 0.3),
 		"hero": "karak_hero_thanelord",
 		"hero_name": "Thane-Lord",
-		"mechanic": "Stone Resolve: slow but incredibly durable warriors, mighty siege, castro walls a quarter tougher than anyone else's, and stone-skinned quarriers.",
+		"mechanic": "Stone Resolve: slow but incredibly durable warriors, mighty siege, castro walls a fifth tougher than anyone else's, and stone-skinned quarriers.",
 		"main_building": "karak_hold",
 		"worker": "karak_miner",
 		"start_units": ["karak_miner", "karak_miner", "karak_miner", "karak_warrior"],
@@ -122,7 +122,7 @@ const RACES := {
 	},
 	"frostborn": {
 		"name": "Careto Host",
-		"blurb": "Masked winter revellers of the Larouco in red-and-green fringes and iron cowbells. They look like chaos, but they are the oldest wardens of the border between the living and the dead, and they chase both winter and the dead back into the ground.",
+		"blurb": "Masked winter revelers of the Larouco in red-and-green fringes and iron cowbells. They look like chaos, but they are the oldest wardens of the border between the living and the dead, and they chase both winter and the dead back into the ground.",
 		"color": Color(0.6, 0.8, 0.95),
 		"hero": "frostborn_hero_jarl",
 		"hero_name": "Eldest Mask",
@@ -232,8 +232,8 @@ func compute_damage(raw: float, dmg_type: String, armor_class: String, flat_armo
 	var mult: float = damage_multiplier(dmg_type, armor_class)
 	var hit: float = raw * mult
 	var dmg: float = hit - maxf(0.0, flat_armor) * 0.5
-	# Armour never blocks more than three quarters of a hit. Without this
-	# floor a geared high-level hero (66 armour) took 1 damage from every
+	# Armor never blocks more than three quarters of a hit. Without this
+	# floor a geared high-level hero (66 armor) took 1 damage from every
 	# ordinary soldier and could not be killed by an army. Ordinary units
-	# never reach the floor: their armour blocks at most a few points.
+	# never reach the floor: their armor blocks at most a few points.
 	return maxf(1.0, maxf(dmg, hit * ARMOR_MIN_DAMAGE_SHARE))

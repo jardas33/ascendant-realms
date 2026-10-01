@@ -166,8 +166,9 @@ func setup() -> void:
 	_add_key_row(movement, "H  /  P", "Hold / patrol", font)
 	_add_key_row(movement, "RMB VEIN", "Workers claim / work it", font)
 	_add_key_row(movement, "RMB MINIMAP", "Send the selection there", font)
-	_add_key_row(system, "CTRL + 1–5", "Set control group", font)
-	_add_key_row(system, "1–5  (TWICE)", "Select group  (and find it)", font)
+	_add_key_row(system, "CTRL + 0–9", "Set control group", font)
+	_add_key_row(system, "0–9  (TWICE)", "Select group  (and find it)", font)
+	_add_key_row(system, "SHIFT + 0–9", "Add group to selection", font)
 	_add_key_row(system, "F", "Select idle worker", font)
 	_add_key_row(system, "SPACE", "Focus hero", font)
 	_add_key_row(system, "BACKSPACE", "Jump to latest alert", font)
@@ -175,6 +176,7 @@ func setup() -> void:
 	_add_key_row(system, "ESC", "Pause / resume", font)
 	_add_key_row(system, "F1", "Every hotkey (field manual)", font)
 	_add_key_row(system, "WHEEL / Z C", "Zoom / rotate camera", font)
+	_add_key_row(system, "MIDDLE DRAG", "Drag the camera", font)
 
 	# Start the same battle again from the beginning (asked first: the
 	# battle in progress is lost).

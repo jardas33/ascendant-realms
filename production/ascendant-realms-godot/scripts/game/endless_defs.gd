@@ -112,13 +112,13 @@ static func stage(depth: int, player_race: String, salt: int = 0) -> Dictionary:
 ## soldier carries mutations: one more every 30 stages, forever, and a
 ## mutation drawn twice stacks. Seeded by the stage, like everything else.
 const MUTATIONS := {
-	"ironhide": "Ironhide: +2 armour per rank",
+	"ironhide": "Ironhide: +2 armor per rank",
 	"frenzy": "Frenzy: +12% attack speed per rank",
 	"leeching": "Leeching: heal 5% of damage dealt per rank",
 	"titan": "Titan: +25% health per rank",
 	"swift": "Swift: +10% speed per rank",
 	"thorned": "Thorned: melee attackers take 10% of their blow back per rank",
-	"keen": "Keen: ranged soldiers reach a metre further and see further, per rank",
+	"keen": "Keen: ranged soldiers reach a meter further and see further, per rank",
 }
 
 static func mutations_for(depth: int) -> Dictionary:
@@ -140,7 +140,7 @@ const BOSSES := [
 	{"id": "tarasca", "name": "The Tarasca of the Cávado", "kind": "pulse",
 		"text": "The river-dragon of the old tales. Every few seconds it breathes fire in a ring around itself: fight it from range, or step back when it rears."},
 	{"id": "old_wolf", "name": "The Old Wolf of Larouco", "kind": "summon",
-		"text": "Grey as the mountain and older than the villages. It howls, and the pack answers: kill the wolves or be buried in them."},
+		"text": "Gray as the mountain and older than the villages. It howls, and the pack answers: kill the wolves or be buried in them."},
 	{"id": "iron_abbot", "name": "The Iron Abbot of Pitões", "kind": "regen",
 		"text": "The monastery's last guardian, bound in iron and prayer. It heals quickly whenever it is left alone for a breath: never stop striking."},
 	{"id": "moura_queen", "name": "The Moura Queen", "kind": "ward",

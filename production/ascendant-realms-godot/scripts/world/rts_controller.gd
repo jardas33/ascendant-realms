@@ -371,6 +371,26 @@ func get_camera_pitch_degrees() -> float:
 # --------------------------------------------------------------------------
 # Input
 # --------------------------------------------------------------------------
+var _pan_dragging := false
+
+## Holding the middle mouse button drags the ground under the cursor, as in
+## every modern RTS. Handled in _input so the drag keeps going over the HUD.
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
+		_pan_dragging = event.pressed and world != null and world.game_running
+	elif event is InputEventMouseMotion and _pan_dragging:
+		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE) or not is_instance_valid(camera):
+			_pan_dragging = false
+			return
+		# World metres under one screen pixel at the current zoom; the ground
+		# is seen at a slant, so screen-vertical drags cover more of it.
+		var vs := get_viewport().get_visible_rect().size
+		var per_px := 2.0 * cam_arm.spring_length * tan(deg_to_rad(camera.fov) * 0.5) / maxf(1.0, vs.y)
+		var slant := 1.0 / maxf(0.3, sin(deg_to_rad(-DEFAULT_CAMERA_PITCH)))
+		var d := Vector3(-event.relative.x * per_px, 0.0, -event.relative.y * per_px * slant)
+		cam_pivot.global_position = _clamp_camera_focus(cam_pivot.global_position + d.rotated(Vector3.UP, _cam_yaw))
+		emit_signal("camera_moved")
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
 		# F1 shows every hotkey on one card; F1 or Esc hides it.
@@ -446,8 +466,10 @@ func _handle_key(event: InputEventKey) -> void:
 		if _patrol_mode:
 			cancel_patrol_mode()
 			return
-	if event.ctrl_pressed and kc >= KEY_1 and kc <= KEY_5:
-		_assign_group(kc - KEY_1 + 1)
+	# Ten control groups (1 to 9 and 0). Ctrl sets one; Shift with the number
+	# adds the group to what is already selected.
+	if event.ctrl_pressed and kc >= KEY_0 and kc <= KEY_9:
+		_assign_group(kc - KEY_0)
 		return
 	if Input.is_action_just_pressed("cmd_attack"): _begin_attack_move()
 	elif Input.is_action_just_pressed("cmd_stop"): _cmd_stop()
@@ -457,11 +479,11 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("idle_worker"): _select_idle_worker()
 	elif Input.is_action_just_pressed("cycle_hero"): _cycle_hero()
 	elif Input.is_action_just_pressed("select_army"): _select_army()
-	elif Input.is_action_just_pressed("group_1"): _recall_group(1)
-	elif Input.is_action_just_pressed("group_2"): _recall_group(2)
-	elif Input.is_action_just_pressed("group_3"): _recall_group(3)
-	elif Input.is_action_just_pressed("group_4"): _recall_group(4)
-	elif Input.is_action_just_pressed("group_5"): _recall_group(5)
+	elif Input.is_action_just_pressed("group_1"): _recall_group(1, event.shift_pressed)
+	elif Input.is_action_just_pressed("group_2"): _recall_group(2, event.shift_pressed)
+	elif Input.is_action_just_pressed("group_3"): _recall_group(3, event.shift_pressed)
+	elif Input.is_action_just_pressed("group_4"): _recall_group(4, event.shift_pressed)
+	elif Input.is_action_just_pressed("group_5"): _recall_group(5, event.shift_pressed)
 	# ability hotkeys
 	elif Input.is_action_just_pressed("ability_1"): _queue_ability("rally")
 	elif Input.is_action_just_pressed("ability_2"): _queue_ability("slam")
@@ -473,6 +495,9 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("ability_sig"): _queue_signature()
 	elif Input.is_action_just_pressed("ability_p1"): _queue_people_spell(1)
 	elif Input.is_action_just_pressed("ability_p2"): _queue_people_spell(2)
+	# Groups 6 to 9 and 0 have no action of their own; any key bound to
+	# something above wins.
+	elif (kc >= KEY_6 and kc <= KEY_9) or kc == KEY_0: _recall_group(kc - KEY_0, event.shift_pressed)
 
 # --------------------------------------------------------------------------
 # Selection
@@ -1176,13 +1201,14 @@ func _assign_group(n: int) -> void:
 var _last_group_key := -1
 var _last_group_ms := -100000
 
-func _recall_group(n: int) -> void:
+func _recall_group(n: int, additive: bool = false) -> void:
 	if not _groups.has(n):
 		return
 	_set_inspection_target(null)
-	_clear_selection()
+	if not additive:
+		_clear_selection()
 	for u in _groups[n]:
-		if is_instance_valid(u) and not u.is_dead and not u._is_defeated_remnant():
+		if is_instance_valid(u) and not u.is_dead and not u._is_defeated_remnant() and not selected.has(u):
 			_add_to_selection(u)
 	emit_signal("selection_changed", selected)
 	if not selected.is_empty():
