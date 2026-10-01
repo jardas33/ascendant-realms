@@ -1008,6 +1008,19 @@ func _update_p1r21_animation_speed() -> void:
 func _seen_by_player() -> bool:
 	return world == null or not world.has_method("is_player_visible") or world.is_player_visible(self)
 
+## An axe, a pick or a sickle for the player's own workers on screen, rate
+## limited across the whole workforce (gathering used to be silent).
+func _play_work_sfx(kind: String) -> void:
+	if not world or team != world.player_team:
+		return
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	if cam == null or not cam.is_position_in_frustum(global_position):
+		return
+	var sfx = get_node_or_null("/root/Sfx")
+	if sfx and sfx.has_method("play_limited"):
+		var key := "chop" if kind == "timber" else ("harvest" if kind == "food" else "pick")
+		sfx.play_limited(key, -17.0, 420)
+
 func _play_sfx(key: String, volume_db: float) -> void:
 	# Sounds are not positional, so a fight hidden in the fog would otherwise
 	# be heard from anywhere on the map. Only what the player can see is heard.
@@ -2676,7 +2689,8 @@ func _do_attack() -> void:
 		attack_event_id = r1j_recorder.record_attack_start(self, _target, cur_dmg(), dmg_type, _engage_range(), global_position.distance_to(_target.global_position), state, _navigation_command_type)
 	if atk_range > 0.0 and def.has("projectile"):
 		_spawn_projectile(attack_event_id)
-		_play_sfx("arrow" if dmg_type == "pierce" else "spell", -8.0)
+		# A bow, a siege engine and a caster each sound like what they are.
+		_play_sfx("siege" if is_siege else ("arrow" if dmg_type == "pierce" else "zap"), -8.0 if not is_siege else -6.0)
 	else:
 		# melee: apply after small delay
 		# Capture a stable runtime identity instead of the Node reference itself.
@@ -2706,7 +2720,7 @@ func _do_attack() -> void:
 					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
 				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
 				if dealt > 0.0:
-					_play_sfx("sword", -8.0)
+					_play_sfx("blunt" if dmg_type == "blunt" else "sword", -8.0)
 				_on_dealt_damage(dealt, tgt)
 				if r1j_recorder:
 					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
@@ -2816,6 +2830,7 @@ func _state_gather(delta: float) -> void:
 			var before_amount: int = _gather_node.amount
 			var got: int = _gather_node.extract(min(3, remaining_capacity))
 			if got > 0:
+				_play_work_sfx(String(_gather_node.resource_kind))
 				_carry_kind = _gather_node.resource_kind
 				_carry += got
 				_show_carry_bundle(_carry_kind)
@@ -3703,7 +3718,11 @@ func cast_ability(id: String, target_pos: Vector3) -> bool:
 	var ab := SkillDefs.get_abilities().get(id, {})
 	mana -= float(ab.get("mana", 0))
 	ability_cd[id] = float(ab.get("cd", 10.0)) * (0.75 if bool(hero_flags.get("quickcast", false)) else 1.0)
-	_play_sfx("spell", -4.0)
+	var cast_sound := "spell"
+	var sfx_node = get_node_or_null("/root/Sfx")
+	if sfx_node and sfx_node.has_method("spell_sound"):
+		cast_sound = sfx_node.spell_sound(id)
+	_play_sfx(cast_sound, -4.0 if cast_sound == "spell" else -7.0)
 	if world:
 		world.execute_hero_ability(self, id, target_pos, abilities.get(id, 1))
 	return true

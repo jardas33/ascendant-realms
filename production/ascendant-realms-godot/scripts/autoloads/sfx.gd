@@ -24,7 +24,51 @@ var lib := {
 	"horn": B + "ui/ui_war_horn.wav",
 	"knock": B + "ui/ui_order_knock.wav",
 	"collapse": B + "ui/ui_collapse.wav",
+	# Plan 86 (tools/synth_sfx.py): hits by weapon, spells by what they do,
+	# work sounds, research, a new Age and a refused order.
+	"blunt": B + "combat/combat_blunt_hit.wav",
+	"siege": B + "combat/combat_siege_launch.wav",
+	"zap": B + "combat/combat_arcane_zap.wav",
+	"sp_heal": B + "combat/spell_heal.wav",
+	"sp_quake": B + "combat/spell_quake.wav",
+	"sp_summon": B + "combat/spell_summon.wav",
+	"sp_ward": B + "combat/spell_ward.wav",
+	"sp_fury": B + "combat/spell_fury.wav",
+	"sp_rain": B + "combat/spell_rain.wav",
+	"sp_curse": B + "combat/spell_curse.wav",
+	"chop": B + "combat/work_chop.wav",
+	"pick": B + "combat/work_pick.wav",
+	"harvest": B + "combat/work_harvest.wav",
+	"research": B + "ui/ui_research_done.wav",
+	"age_up": B + "ui/ui_age_up.wav",
+	"refuse": B + "ui/ui_refuse.wav",
 }
+
+## The cast sound of each spell, by what it does. Spells not listed keep the
+## general "spell" sound.
+const SPELL_SOUNDS := {
+	"heal": "sp_heal", "sig_spring": "sp_heal", "lio_bloom": "sp_heal", "bar_horn": "sp_heal",
+	"slam": "sp_quake", "grim_quake": "sp_quake", "kar_avalanche": "sp_quake", "sig_bull": "sp_quake", "wyl_leap": "sp_quake",
+	"bar_levy": "sp_summon", "syl_mirror": "sp_summon", "sig_pack": "sp_summon", "sig_candles": "sp_summon",
+	"sig_stoneskin": "sp_ward", "kar_bastion": "sp_ward", "sun_testudo": "sp_ward",
+	"rally": "sp_fury", "avatar": "sp_fury", "sig_chains": "sp_fury", "grim_rage": "sp_fury", "wyl_frenzy": "sp_fury", "fro_masks": "sp_fury", "sig_entrudo": "sp_fury",
+	"sun_rain": "sp_rain", "sig_ashglass": "sp_rain", "lio_thorns": "sp_rain",
+	"hol_curse": "sp_curse", "hol_drain": "sp_curse", "vor_chains": "sp_curse", "root": "sp_curse", "fro_breath": "sp_curse",
+}
+
+var _last_played_ms := {}
+
+func spell_sound(spell_id: String) -> String:
+	return String(SPELL_SOUNDS.get(spell_id, "spell"))
+
+## Plays `key` unless it already sounded within `gap_ms`: twenty workers at
+## one grove must not turn into twenty axes a second.
+func play_limited(key: String, vol: float, gap_ms: int) -> void:
+	var now := Time.get_ticks_msec()
+	if now - int(_last_played_ms.get(key, -100000)) < gap_ms:
+		return
+	_last_played_ms[key] = now
+	play(key, vol)
 
 var music := {
 	"menu": M + "music_menu_ascendant_main_theme.mp3",

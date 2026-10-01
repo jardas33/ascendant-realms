@@ -1289,11 +1289,11 @@ func _process_production(delta: float) -> void:
 				# A new Age is announced with the war horn and a column of Lume
 				# over the hall; smaller research lands with a seal stamp.
 				if String(GameData.get_tech(completed_tech_id).get("kind", "")) == "tier":
-					Sfx.play("horn", -4.0)
+					Sfx.play("age_up", -4.0)
 					if world.has_method("celebrate_at"):
 						world.celebrate_at(global_position, Color(1.0, 0.8, 0.35))
 				else:
-					Sfx.play("stamp", -10.0)
+					Sfx.play("research", -9.0)
 		queue.remove_at(0)
 		emit_signal("production_updated")
 	else:

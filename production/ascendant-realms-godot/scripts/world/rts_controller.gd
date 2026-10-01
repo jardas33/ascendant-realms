@@ -849,6 +849,7 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 					return
 			else:
 				world.emit_signal("alert", reason, Vector3.ZERO)
+				Sfx.play_limited("refuse", -10.0, 250)
 				return
 	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team:
 		var repair_issued := false
@@ -1142,6 +1143,7 @@ func _queue_ability(id: String) -> void:
 		var left := float(hero.ability_cd.get(id, 0.0))
 		var why := "%s is recharging (%.0fs)" % [ab.get("name", id), ceilf(left)] if left > 0.0 else "Not enough mana for %s" % ab.get("name", id)
 		world.emit_signal("alert", why, Vector3.ZERO)
+		Sfx.play_limited("refuse", -10.0, 250)
 		return
 	var ground = _raycast_ground()
 	var target_pos = ground if ground != null else hero.global_position

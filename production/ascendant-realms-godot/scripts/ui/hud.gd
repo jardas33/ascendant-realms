@@ -3824,6 +3824,10 @@ func _try_queue_tech(b, tid: String) -> void:
 
 
 func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
+	# A refusal (anything that is not the green "Training..." notice) also
+	# sounds two low taps, so a click that did nothing is never silent.
+	if col.g < 0.9 or col.r > 0.9:
+		Sfx.play_limited("refuse", -10.0, 250)
 	# Toast anchored just above the command card so the player always sees the
 	# result of a train/build/research click.
 	var box := PanelContainer.new()
