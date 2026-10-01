@@ -823,8 +823,30 @@ static func _xray_overlay_material() -> ShaderMaterial:
 		_xray_material.shader = load("res://assets/shaders/unit_xray.gdshader")
 	return _xray_material
 
+## Seven peoples still borrow another people's character models (the
+## Granitborn march in Barrosan bodies, the Compaña in Vorthak ones). Until
+## each has its own, a borrowed body wears its people's colours, so two
+## peoples on one field never look like the same army.
+## (The Ironmaw are left out: their orc bodies are their own.)
+const PEOPLE_PALETTES := {
+	"karak": Color(0.84, 0.92, 1.12),      # castro granite, cold blue-grey
+	"sunspear": Color(1.22, 1.0, 0.6),     # Dominion bronze and sun
+	"frostborn": Color(1.2, 0.72, 0.68),   # Careto carnival red
+	"wyldkin": Color(0.72, 0.98, 0.66),    # Wolfveil moss
+	"hollow": Color(0.66, 0.92, 0.8),      # Compaña candle-green pallor
+	"sylvan": Color(0.84, 0.96, 1.25),     # Moura silver
+}
+
+func _people_palette() -> Color:
+	var race := String(def.get("race", ""))
+	var file := String(def.get("model", "")).get_file()
+	if race == "" or not PEOPLE_PALETTES.has(race) or file.begins_with(race):
+		return Color.WHITE
+	return PEOPLE_PALETTES[race]
+
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
+	var people_tint := _people_palette()
 	var team_tint: Color = commander.color if is_instance_valid(commander) else Color.WHITE
 	var tint_strength := P1R22_HERO_TEAM_TINT if is_hero else (P1R22_WORKER_TEAM_TINT if is_worker else P1R22_MILITARY_TEAM_TINT)
 	for child in model.find_children("*", "MeshInstance3D", true, false):
@@ -839,6 +861,8 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			# mutate the source resource or each other's visual state.
 			var mat := (source as BaseMaterial3D).duplicate()
 			mat.albedo_color = mat.albedo_color.lerp(Color(1.08, 1.08, 1.08), lift)
+			if people_tint != Color.WHITE:
+				mat.albedo_color = Color(mat.albedo_color.r * people_tint.r, mat.albedo_color.g * people_tint.g, mat.albedo_color.b * people_tint.b, mat.albedo_color.a)
 			mat.albedo_color = mat.albedo_color.lerp(team_tint, tint_strength)
 			mat.roughness = maxf(mat.roughness, P1R20_ROUGHNESS_FLOOR)
 			# The generated character exports pack metalness into the roughness map
