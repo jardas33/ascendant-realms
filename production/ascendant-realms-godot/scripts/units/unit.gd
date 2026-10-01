@@ -2366,11 +2366,11 @@ func _state_idle(delta: float) -> void:
 		return
 	velocity.x = 0
 	velocity.z = 0
-	# A soldier standing still does not need a collision move every tick; one
-	# in six (staggered) keeps it settled on the ground at a sixth of the cost.
-	if velocity.y != 0.0 or (Engine.get_physics_frames() + spawn_serial) % 6 == 0:
-		move_and_slide()
+	move_and_slide()
 	_play("idle")
+	# Do not throttle the scan below (tried in plan 82: five scans a second
+	# and one collision move in six gave 120 standing soldiers +7 FPS, but
+	# Vorthak fell from 14 wins in 36 to 6 in 36 in A/B round robins).
 	if _is_defeated_remnant():
 		return
 	if is_worker and _carry > 0 and not _carry_hold:
@@ -2381,14 +2381,7 @@ func _state_idle(delta: float) -> void:
 		return
 	# auto-acquire nearby enemies if not holding fire and not worker
 	if not is_worker or is_hero:
-		# Every idle soldier scanned every unit on the map each physics tick:
-		# 120 soldiers standing still cost as much as 120 fighting. Five
-		# staggered scans a second (as attack-move already does) react as fast.
-		var e = null
-		_acquire_timer -= delta
-		if _acquire_timer <= 0.0:
-			_acquire_timer = ACQUIRE_INTERVAL * (0.8 + 0.4 * fposmod(float(spawn_serial) * 0.618034, 1.0))
-			e = world.find_enemy_in_range(self, vision) if world else null
+		var e = world.find_enemy_in_range(self, vision) if world else null
 		if e and not _hold_position:
 			command_attack(e)
 		elif e and _hold_position:
