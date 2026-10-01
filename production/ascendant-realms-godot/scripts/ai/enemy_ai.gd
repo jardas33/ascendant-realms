@@ -1470,7 +1470,21 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
 		if _spot_clear(p, footprint):
 			return p
-	return _base_pos + Vector3(cos(toward), 0, sin(toward)) * 16.0 + Vector3(_rng.randf_range(-6, 6), 0, _rng.randf_range(-6, 6))
+	# A crowded base: look in a wider arc and further out, still by the rules.
+	# (The old fallback dropped the building 16 m in front of the hall with no
+	# check at all, on the very road _spot_clear keeps open: three houses and a
+	# war hall walled a Clanhold in, and its workers could no longer deliver.)
+	for attempt in 30:
+		var ang2 := toward + _rng.randf_range(-2.2, 2.2)
+		var dist2 := 22.0 + _rng.randf() * 50.0
+		var p2 := _base_pos + Vector3(cos(ang2) * dist2, 0, sin(ang2) * dist2)
+		p2.x = clamp(p2.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
+		p2.z = clamp(p2.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
+		if _spot_clear(p2, footprint):
+			return p2
+	# Nowhere legal this time: a point no placement accepts, so the caller
+	# waits and tries again later.
+	return Vector3(99999.0, 0.0, 99999.0)
 
 ## Units wedged between tightly packed buildings in their own base. Keep a
 ## walking lane between both footprints, and stay off resource nodes.
