@@ -177,7 +177,7 @@ static func get_all() -> Dictionary:
 
 	# ---------------- SYLVAN COURT ----------------
 	"sylvan_court": {
-		"race": "sylvan", "name": "Moura Court", "kind": "main", "model": _b("sylvan_court"),
+		"race": "sylvan", "name": "Moura Court", "kind": "main", "model": _b("lioraen_groveheart"),
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["sylvan_acolyte"], "drop_off": true, "is_hq": true,

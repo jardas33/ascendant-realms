@@ -240,6 +240,22 @@ func _apply_faction_palette(m: Node, path: String) -> void:
 				_palette_materials[key] = tinted
 			mesh_instance.set_surface_override_material(i, _palette_materials[key])
 
+## Widest horizontal extent of a model in world metres (the same corner
+## walk ModelUtils.measure_height does, on X and Z).
+func _world_width(node: Node3D) -> float:
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for child in node.find_children("*", "MeshInstance3D"):
+		var mi := child as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		var box: AABB = mi.get_aabb()
+		for corner_idx in 8:
+			var p: Vector3 = mi.to_global(box.get_endpoint(corner_idx))
+			lo = Vector2(minf(lo.x, p.x), minf(lo.y, p.z))
+			hi = Vector2(maxf(hi.x, p.x), maxf(hi.y, p.z))
+	return maxf(hi.x - lo.x, hi.y - lo.y) if lo.x != INF else 0.0
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -272,6 +288,16 @@ func _build_model() -> void:
 		if _is_a01_model_path(path):
 			target_h = minf(PRESENTATION_HEIGHT_MAX, target_h * TASK604_A01_R1_SCALE)
 		ModelUtils.scale_to_height(m, target_h)
+		# A slim borrowed model (an arch, a shrine, a hut) scaled by height
+		# alone filled a fraction of its plot: the other peoples' halls looked
+		# like sheds beside the Barrosan ones, and a landmark's plaza dwarfed
+		# its own hall. Widen such a model to fill most of its plot, growing
+		# at most 70%. Towers stay slim; the authored Barrosan set is left as is.
+		if String(def.get("kind", "")) != "tower" and String(def.get("race", "")) != "barrosan":
+			var model_width: float = _world_width(m)
+			var want_width: float = footprint * 1.55
+			if model_width > 0.01 and model_width < want_width:
+				m.scale *= minf(want_width / model_width, 1.7)
 		ModelUtils.ground_model(m)
 		# Same hulls as before, but shapes are generated once per model and
 		# reused (and prewarmed at match load by GameWorld).
