@@ -806,6 +806,14 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **First launch verified:** with no hero, the current menu shows "Begin the Saga" and leads to hero creation.
   - **Balance:** the pooled 90-match check ran on the reverted-later code, so it is not used for tuning. Before it, the peoples sat between 5 and 12 wins of 18. The Ironmaw and Sylvan nudges from plan 81 still need a clean pooled check.
   - **New tool:** `claude_matrix_one.sh <people> <reps>` runs one people's nine matchups, for A/B tests like the one above.
+- **Plan 83 (in progress): why the weakest people loses**
+  - **Clean pooled check (90 matches, idle machine, 10 time-outs):** Careto 11-3-4, Ironmaw 11-6-1, Barrosan 8-4-6, Compaña 10-7-1, Karak 9-7-2, Sunspear 9-8-1, Wyldkin 8-9-1, Lioraen 7-10-1, Vorthak 5-11-2, Sylvan 2-15-1.
+  - **Sylvan's real problem was its AI, not its stats.** By minute four it had six houses (room for 60 people, 27 used), sat on 300 stone and 300 gold with 40 food, and fielded half its rival's army.
+  - **Fix 1, all peoples:** the AI counts houses already under construction before laying another. It used to queue up to four at once near the cap.
+  - **Fix 2, all peoples:** a stock three times the scarcest one now releases gatherers when that scarcest stock is under 100. Stocks of 150 to 350 never gave up a worker before.
+  - **Fix 3, Sylvan:** standard workforce and attack size, as Karak already had. Its 16 workers held it at the population cap while swarms arrived.
+  - **Stat nudges for the consistent outliers:** Careto damage +8% (was +12%), Vorthak health +10% (was +5%), Sylvan ranged reach +1.5 (was +1.2).
+  - **Running:** a pooled 90-match check on the new AI.
 
 ## Performance and stability
 
