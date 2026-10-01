@@ -1045,6 +1045,17 @@ func _manage_production() -> void:
 	var piling: bool = int(commander.resources.get("food", 0)) > 350 and int(commander.resources.get("timber", 0)) > 250
 	if _count_building_kind("barracks") < 2 and ((_tech_aggression >= 1.4 and _army_size() > _second_barracks_army) or piling):
 		_try_build("barracks")
+	# A winning AI sat on 10,000 gold with 18 soldiers and two barracks, losing
+	# troops at the enemy's towers as fast as it trained them, and the match
+	# ran out the clock. Wealth it cannot spend becomes more barracks.
+	var food_now := int(commander.resources.get("food", 0))
+	var timber_now := int(commander.resources.get("timber", 0))
+	var flush: bool = food_now > 900 and timber_now > 500
+	var want_barracks := 2
+	if flush:
+		want_barracks = 4 if (food_now > 2200 and timber_now > 900) else 3
+	if difficulty != "easy" and _count_building_kind("barracks") >= 2 and _count_building_kind("barracks") < want_barracks:
+		_try_build("barracks")
 
 	# A side reduced to a handful of workers spent every scrap of food on
 	# replacement soldiers and never rebuilt its economy: matches deadlocked
@@ -1056,7 +1067,7 @@ func _manage_production() -> void:
 		if not is_instance_valid(b) or b.is_dead or not b.is_built:
 			continue
 		var kind = b.def.get("kind", "")
-		if kind in ["barracks", "arcane"] and b.queue.size() < 2:
+		if kind in ["barracks", "arcane"] and b.queue.size() < (3 if flush else 2):
 			var choices: Array = b.def.get("produces", [])
 			var pick := _choose_unit(choices)
 			if pick != "":
