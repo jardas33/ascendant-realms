@@ -62,8 +62,9 @@ var _patrol_resume_after_combat := false
 var _follow_target = null
 var _hold_position := false
 ## The resource a worker was gathering when it was called away to build. It
-## goes back there when the building is finished (the player's workers only;
-## the AI assigns its own).
+## goes back there when the building is finished. (This was for the player's
+## workers only at first; the seat that had it then won 60% of AI-versus-AI
+## matches, so every worker does it now.)
 var _job_before_build = null
 var _stun := 0.0
 var _rooted := 0.0
@@ -163,6 +164,8 @@ var _navigation_waypoint_index := 0
 var _navigation_last_requested := Vector3(INF, INF, INF)
 var _navigation_last_command := ""
 const ORDINARY_MOVE_SETTLE_WINDOW := 0.75
+const CROWDED_ARRIVAL_RADIUS := 7.0
+const CROWDED_ARRIVAL_WINDOW := 2.0
 const ORDINARY_MOVE_PROGRESS_THRESHOLD := 0.05
 var _ordinary_move_best_distance := INF
 var _ordinary_move_stalled_elapsed := 0.0
@@ -1894,7 +1897,7 @@ func command_build(building) -> void:
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
 	_v0436_r1j_set_target(null, "public_order")
-	_job_before_build = _gather_node if (is_instance_valid(_gather_node) and commander and commander.is_human) else null
+	_job_before_build = _gather_node if is_instance_valid(_gather_node) else null
 	_gather_node = null
 	_release_build_collision_exception()
 	_build_target = building
@@ -2141,6 +2144,11 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	elif command_type == "gather" and is_instance_valid(_gather_node):
 		target_blocker = _gather_node
 	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance(), null, _route_request_reason(command_type), target_blocker) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
+	if _grid_route_wanted:
+		_grid_route_wanted = false
+		var grid_wps: Array = world.grid_waypoints_for_unit(global_position, pos) if world and world.has_method("grid_waypoints_for_unit") else []
+		if grid_wps.size() > 1:
+			_navigation_waypoints = grid_wps
 	_navigation_waypoint_index = 0
 	if _navigation_waypoints.is_empty():
 		_navigation_waypoints = [pos]
@@ -2539,8 +2547,10 @@ func _state_move(delta: float, attack_move: bool) -> void:
 		_attack_move_ordered = false
 		_attack_move_destination = Vector3.ZERO
 		state = State.IDLE
-	elif attack_move:
-		_reset_ordinary_move_settlement()
+	# (An attack-move used to wipe its arrival clock here on every tick, so a
+	# soldier that could not stand on the exact spot never arrived: it stayed
+	# in ATTACK_MOVE for the rest of the match and its AI, which only gives
+	# orders to idle soldiers, never used it again.)
 
 func _reset_ordinary_move_settlement() -> void:
 	_ordinary_move_best_distance = INF
@@ -2566,8 +2576,15 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 		_reset_ordinary_move_settlement()
 		return false
 	var distance := global_position.distance_to(target)
+	# An attack-moving army is sent to one point and cannot all stand on it.
+	# Soldiers that stopped two or three metres short kept pressing toward it
+	# for the rest of the match, never idle, so their AI never gave them
+	# another order. A soldier that close which makes no more progress has arrived.
 	var settle_radius := ARRIVE_DIST + agent.radius
-	if distance > settle_radius:
+	# Right at the spot a short pause is enough; a little way off (the place
+	# is taken by comrades who arrived first) it takes a longer one.
+	var crowded_arrival := attack_move_travel and distance > settle_radius and distance <= CROWDED_ARRIVAL_RADIUS
+	if distance > settle_radius and not crowded_arrival:
 		_reset_ordinary_move_settlement()
 		return false
 	if _ordinary_move_best_distance == INF:
@@ -2578,7 +2595,7 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 		_ordinary_move_stalled_elapsed = 0.0
 		return false
 	_ordinary_move_stalled_elapsed += delta
-	if _ordinary_move_stalled_elapsed < ORDINARY_MOVE_SETTLE_WINDOW:
+	if _ordinary_move_stalled_elapsed < (CROWDED_ARRIVAL_WINDOW if crowded_arrival else ORDINARY_MOVE_SETTLE_WINDOW):
 		return false
 	_navigation_waypoints.clear()
 	_navigation_waypoint_index = 0
@@ -3001,11 +3018,12 @@ func _state_build(delta: float) -> void:
 		_release_build_collision_exception()
 		_build_target = null
 		state = State.IDLE
+		_step_out_of_walls()
 		var back = _job_before_build
 		_job_before_build = null
-		# The player's workers who raise a vein outpost go inside and work it
-		# (they used to stand beside it until ordered in one more time).
-		if commander and commander.is_human and world and world.get("command_bus") != null 				and bool(finished.def.get("vein_outpost", false)) and finished.garrison.size() < finished.outpost_slots():
+		# Workers who raise a vein outpost go inside and work it (they used
+		# to stand beside it until ordered in one more time).
+		if world and world.get("command_bus") != null 				and bool(finished.def.get("vein_outpost", false)) and finished.garrison.size() < finished.outpost_slots():
 			world.command_bus.issue({"type": "garrison", "units": [self], "target": finished})
 			return
 		# Otherwise back to the work it left: a gatherer used to stand idle
@@ -3079,6 +3097,17 @@ func _worker_interaction_transition_is_pending() -> bool:
 	# Until _state_return installs the new return target, a callback carrying the
 	# old interaction velocity must not move the Worker in the old direction.
 	return is_worker and state == State.RETURNING and (_navigation_command_type == "gather" or _navigation_command_type == "build")
+
+## A unit standing inside a building, a crag or a blocking prop is put on the
+## nearest open ground (a builder is left inside the walls it has just
+## finished; nothing else should ever be there, but if it is, it gets out).
+func _step_out_of_walls() -> void:
+	if not world or not world.has_method("out_of_blockers") or has_meta("garrisoned_in"):
+		return
+	var open: Vector3 = world.out_of_blockers(global_position)
+	if Vector2(open.x - global_position.x, open.z - global_position.z).length() > 0.05:
+		global_position = Vector3(open.x, global_position.y, open.z)
+		reset_physics_interpolation()
 
 func _release_build_collision_exception() -> void:
 	if not is_instance_valid(_build_target):
@@ -3162,6 +3191,7 @@ func _healer_tick(delta: float) -> void:
 # Movement helpers
 # --------------------------------------------------------------------------
 var _stall_anchor := Vector3(INF, INF, INF)
+var _grid_route_wanted := false
 var _stall_clock := 0.0
 var _sidestep_time := 0.0
 var _sidestep_sign := 1.0
@@ -3287,12 +3317,17 @@ func _move_along_path(delta: float) -> bool:
 		_sidestep_time = 0.9
 		_sidestep_sign = -_sidestep_sign
 		_navigation_last_requested = Vector3(INF, INF, INF)
+		# Four seconds without getting nearer: the route it was given does
+		# not work on the ground. The next one comes from the grid.
+		_grid_route_wanted = true
 	_stall_clock += delta
 	if _stall_clock >= 1.5:
 		if _stall_anchor.x != INF and global_position.distance_to(_stall_anchor) < 0.35:
 			_sidestep_time = 0.9
 			_sidestep_sign = -_sidestep_sign
 			_navigation_last_requested = Vector3(INF, INF, INF)
+			# Not moving because it stands inside a wall? Step out of it.
+			_step_out_of_walls()
 		_stall_anchor = global_position
 		_stall_clock = 0.0
 	if _sidestep_time > 0.0:

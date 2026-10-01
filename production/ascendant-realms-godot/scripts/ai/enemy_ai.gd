@@ -1294,7 +1294,10 @@ func _launch_attack() -> void:
 		if i < guard_n:
 			u.set_meta("ai_home_guard", true)
 			if u.global_position.distance_to(guard_post) > 10.0:
-				u.command_move(guard_post, true)
+				# Each guard has its own place around the post: sent to one
+				# point they jostled for it without end.
+				var place: Vector3 = guard_post + Vector3(cos(float(i) * 2.4), 0.0, sin(float(i) * 2.4)) * (1.6 + 0.7 * float(i))
+				u.command_move(place, true)
 		else:
 			u.set_meta("ai_home_guard", false)
 			u.command_move(target, true)

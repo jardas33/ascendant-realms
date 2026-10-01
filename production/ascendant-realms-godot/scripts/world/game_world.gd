@@ -1870,10 +1870,22 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		# This is a valid bounded NavigationAgent fallback, not a permanently
 		# failed route. Reuse it for nearby requests until topology or age makes
 		# a fresh authored detour search worthwhile.
+		var bailed_grid := _grid_route(origin, requested, all_blockers)
+		if not bailed_grid.is_empty():
+			_route_result_cache_store(route_cache_key, origin, requested, bailed_grid)
+			return bailed_grid
 		_route_result_cache_store(route_cache_key, origin, requested, [requested])
 		return [requested]
 
 	if fail_closed:
+		# The corner solver found no safe way round. It used to answer with a
+		# straight line (or no move at all), and the unit then pushed against
+		# a wall for the rest of the match: a worker hemmed in between its
+		# hall, a house and two gold nodes never got out. Ask the grid first.
+		var closed_grid := _grid_route(origin, requested, all_blockers)
+		if not closed_grid.is_empty():
+			_route_result_cache_store(route_cache_key, origin, requested, closed_grid)
+			return closed_grid
 		var worker_owned_route := movement_reason == "PLAYER_MOVE" or movement_reason.begins_with("WORKER_")
 		if worker_owned_route and origin_started_inside_blocker and origin.distance_to(requested) > maxf(1.2, clearance):
 			# A Worker can legitimately receive a plain move while still inside
@@ -1894,6 +1906,160 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		points.append(final_target)
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+## `pos` itself, or the nearest open ground if it lies inside a building, a
+## crag or a blocking prop. A builder may walk through its own site; when the
+## walls went up around it, it was left standing inside them and could never
+## move again. Resource nodes are left out: gatherers work right against them.
+func out_of_blockers(pos: Vector3, body: float = 0.9) -> Vector3:
+	var blockers: Array[Dictionary] = _navigation_blocker_snapshots()
+	var p := pos
+	var inside_any := false
+	for _pass in 3:
+		var moved := false
+		for blocker in blockers:
+			var node = blocker.get("node")
+			if not is_instance_valid(node) or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+				continue
+			var c: Vector3 = blocker.get("center", node.global_position)
+			var h: Vector2 = blocker.get("half_extents", Vector2.ONE)
+			var dx := p.x - c.x
+			var dz := p.z - c.z
+			if absf(dx) >= h.x or absf(dz) >= h.y:
+				continue
+			# Out through the nearer wall.
+			if h.x - absf(dx) < h.y - absf(dz):
+				p.x = c.x + (h.x + body) * (1.0 if dx >= 0.0 else -1.0)
+			else:
+				p.z = c.z + (h.y + body) * (1.0 if dz >= 0.0 else -1.0)
+			moved = true
+			inside_any = true
+		if not moved:
+			return clamp_to_playable_bounds(p) if inside_any else pos
+	# Wall behind wall behind wall: take the nearest free cell of the grid.
+	_ensure_grid(blockers)
+	var cell := _grid_free_near(_grid_cell(pos))
+	return _grid_point(cell) if cell.x >= 0 else pos
+
+# --- Grid route: the fallback when the corner solver gives up ----------------
+# The corner solver walks from rectangle corner to rectangle corner and is
+# quick, but it has no answer for a pocket (a unit hemmed in on three sides)
+# or for a chain of blockers longer than its eight steps. This is a plain
+# A* search on a grid of the whole field, built from the same blockers and
+# rebuilt only when a building, crag or resource appears or goes. It is only
+# consulted when the corner solver has failed, so ordinary routes are unchanged.
+const GRID_CELL := 1.5
+const GRID_BODY := 0.8          # a unit's body and a little air around a blocker
+var _grid: AStarGrid2D = null
+var _grid_generation := -1
+var _grid_half := 140.0
+var grid_routes_served := 0     # how often the fallback was used (for probes)
+
+func _grid_cell(p: Vector3) -> Vector2i:
+	return Vector2i(int(floor((p.x + _grid_half) / GRID_CELL)), int(floor((p.z + _grid_half) / GRID_CELL)))
+
+func _grid_point(c: Vector2i) -> Vector3:
+	return Vector3((float(c.x) + 0.5) * GRID_CELL - _grid_half, 0.0, (float(c.y) + 0.5) * GRID_CELL - _grid_half)
+
+func _ensure_grid(blockers: Array[Dictionary]) -> void:
+	if _grid != null and _grid_generation == _route_cache_generation:
+		return
+	_grid_half = float(map.get("size", 140.0))
+	if _grid == null:
+		var n := int(ceil(_grid_half * 2.0 / GRID_CELL))
+		_grid = AStarGrid2D.new()
+		_grid.region = Rect2i(0, 0, n, n)
+		_grid.cell_size = Vector2(GRID_CELL, GRID_CELL)
+		_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+		_grid.update()
+	else:
+		_grid.fill_solid_region(_grid.region, false)
+	for blocker in blockers:
+		var node = blocker.get("node")
+		if not is_instance_valid(node):
+			continue
+		var c: Vector3 = blocker.get("center", node.global_position)
+		var h: Vector2 = blocker.get("half_extents", Vector2.ONE) + Vector2(GRID_BODY, GRID_BODY)
+		# Only cells whose centre lies inside the widened rectangle are solid,
+		# so a gap wide enough for a unit stays open.
+		var lo := Vector2i(int(ceil((c.x - h.x + _grid_half) / GRID_CELL - 0.5)), int(ceil((c.z - h.y + _grid_half) / GRID_CELL - 0.5)))
+		var hi := Vector2i(int(floor((c.x + h.x + _grid_half) / GRID_CELL - 0.5)), int(floor((c.z + h.y + _grid_half) / GRID_CELL - 0.5)))
+		if hi.x < lo.x or hi.y < lo.y:
+			continue
+		var solid := Rect2i(lo, hi - lo + Vector2i.ONE).intersection(_grid.region)
+		if solid.size.x > 0 and solid.size.y > 0:
+			_grid.fill_solid_region(solid, true)
+	_grid_generation = _route_cache_generation
+
+## The free cell nearest to `cell` (itself if free), or (-1, -1).
+func _grid_free_near(cell: Vector2i) -> Vector2i:
+	if _grid.is_in_boundsv(cell) and not _grid.is_point_solid(cell):
+		return cell
+	for r in range(1, 10):
+		var best := Vector2i(-1, -1)
+		var best_d := INF
+		for dx in range(-r, r + 1):
+			for dz in range(-r, r + 1):
+				if maxi(absi(dx), absi(dz)) != r:
+					continue
+				var c := cell + Vector2i(dx, dz)
+				if _grid.is_in_boundsv(c) and not _grid.is_point_solid(c):
+					var d := float(dx * dx + dz * dz)
+					if d < best_d:
+						best_d = d
+						best = c
+		if best.x >= 0:
+			return best
+	return Vector2i(-1, -1)
+
+func _grid_line_clear(a: Vector3, b: Vector3) -> bool:
+	var steps := maxi(1, int(ceil(a.distance_to(b) / (GRID_CELL * 0.5))))
+	for i in range(steps + 1):
+		var c := _grid_cell(a.lerp(b, float(i) / float(steps)))
+		if not _grid.is_in_boundsv(c) or _grid.is_point_solid(c):
+			return false
+	return true
+
+## For a unit that has made no progress on the route it was given.
+func grid_waypoints_for_unit(origin: Vector3, requested: Vector3) -> Array:
+	return _grid_route(origin, out_of_crags(requested, 2.2, origin), _navigation_blocker_snapshots())
+
+## A walkable route from `origin` to `requested` as a short list of waypoints,
+## or [] if the grid has none either.
+func _grid_route(origin: Vector3, requested: Vector3, blockers: Array[Dictionary]) -> Array:
+	_ensure_grid(blockers)
+	var from := _grid_free_near(_grid_cell(origin))
+	var to := _grid_free_near(_grid_cell(requested))
+	if from.x < 0 or to.x < 0:
+		return []
+	var cells: Array[Vector2i] = _grid.get_id_path(from, to)
+	if cells.is_empty():
+		return []
+	var pts: Array[Vector3] = []
+	for c in cells:
+		pts.append(_grid_point(c))
+	# Pull the string: keep only the corners.
+	var out: Array = [pts[0]]
+	var i := 0
+	while i < pts.size() - 1:
+		var j := i + 1
+		while j + 1 < pts.size() and j - i < 60 and _grid_line_clear(pts[i], pts[j + 1]):
+			j += 1
+		out.append(pts[j])
+		i = j
+	# End on the exact spot asked for: when it is open ground, and also when
+	# it lies just inside a blocker's margin (a builder's or gatherer's place
+	# right against a wall or a node), so the last step is still taken.
+	var last: Vector3 = out.back()
+	var flat_goal := Vector3(requested.x, 0.0, requested.z)
+	if last.distance_to(flat_goal) > 0.3:
+		if (_grid_cell(requested) == to and _grid_line_clear(last, flat_goal)) or (_grid_cell(requested) != to and last.distance_to(flat_goal) <= 3.5):
+			out.append(flat_goal)
+	# Skip the first cell centre when the unit can walk straight to the next corner.
+	if out.size() >= 2 and _grid_cell(origin) == from and _grid_line_clear(origin, out[1]):
+		out.remove_at(0)
+	grid_routes_served += 1
+	return out
 
 func _segment_clear_of_active_route_blockers(a: Vector3, b: Vector3, blockers: Array[Dictionary], clearance: float, exempt_node = null) -> bool:
 	var cache_key := "%s|%s|%d|%s" % [a, b, roundi(clearance * 100.0), str(exempt_node.get_instance_id()) if is_instance_valid(exempt_node) else ""]
