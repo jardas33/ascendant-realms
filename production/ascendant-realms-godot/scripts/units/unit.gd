@@ -474,8 +474,9 @@ func _apply_race_passive() -> void:
 			# (plans 50 to 63). +6% health then gave 1-6-11: sturdy but unable
 			# to finish a fight. The bull's charge hits harder instead.
 			# 0-4-5 and 2-6-1 in the two plan 78-80 checks, losing the long
-			# games: +10% (was +7%).
-			base_dmg *= 1.10
+			# games: +10% (was +7%). Then 13-5 over 90 matches once the AI
+			# economy fixes of plan 83 landed: +8%.
+			base_dmg *= 1.08
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.
