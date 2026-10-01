@@ -226,7 +226,14 @@ func damage_multiplier(dmg_type: String, armor_class: String) -> float:
 	return 1.0
 
 ## Effective damage after armor-class table and flat armor reduction.
+const ARMOR_MIN_DAMAGE_SHARE := 0.25
+
 func compute_damage(raw: float, dmg_type: String, armor_class: String, flat_armor: float) -> float:
 	var mult: float = damage_multiplier(dmg_type, armor_class)
-	var dmg: float = raw * mult - maxf(0.0, flat_armor) * 0.5
-	return maxf(1.0, dmg)
+	var hit: float = raw * mult
+	var dmg: float = hit - maxf(0.0, flat_armor) * 0.5
+	# Armour never blocks more than three quarters of a hit. Without this
+	# floor a geared high-level hero (66 armour) took 1 damage from every
+	# ordinary soldier and could not be killed by an army. Ordinary units
+	# never reach the floor: their armour blocks at most a few points.
+	return maxf(1.0, maxf(dmg, hit * ARMOR_MIN_DAMAGE_SHARE))
