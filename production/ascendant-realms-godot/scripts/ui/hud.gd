@@ -405,7 +405,7 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		var vein = world.vein_near(ground, 4.5) if ground != null and is_instance_valid(world) and world.has_method("vein_near") else null
 		if vein != null and (not world.has_method("player_visibility_state_at") or world.player_visibility_state_at(vein.global_position) != 0):
 			_set_vein_hover(vein)
-			var owner_txt := "Free: build your outpost on it" if vein.is_free() else ("Your outpost" if int(vein.outpost.team) == int(rts.player_team) else "Held by the enemy")
+			var owner_txt := "Free: right-click with workers to raise an outpost" if vein.is_free() else ("Your outpost" if int(vein.outpost.team) == int(rts.player_team) else "Held by the enemy")
 			_resource_tooltip_label.text = "%s
 %d left  ·  %s" % [vein.display_name(), int(vein.amount), owner_txt]
 			_place_resource_tooltip(pointer)
@@ -1317,7 +1317,7 @@ func _build_top_bar() -> void:
 	# Against several opponents the header counts them and the full line
 	# names each; it used to name only the first ("Barrosan vs Lioraen" in a
 	# one-against-three stage).
-	var short_opponent := opponent_name.get_slice(" ", 0)
+	var short_opponent := _short_people_name(opponent_name)
 	if opponents.size() > 1:
 		var all_names: Array = []
 		for o in opponents:
@@ -1326,7 +1326,7 @@ func _build_top_bar() -> void:
 		opponent_name = ", ".join(all_names)
 		short_opponent = "%d Hosts" % opponents.size()
 	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
-	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), short_opponent]
+	var short_identity := "%s  vs  %s" % [_short_people_name(player_name), short_opponent]
 	var objective_crest_path := String(COMMAND_CRESTS.get(player_race, ""))
 	var objective_has_painted_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
 	# Every faction shows a crest: painted art where it exists, a drawn
@@ -1395,6 +1395,15 @@ func _build_top_bar() -> void:
 	_bounty_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_bounty_label.tooltip_text = "Meet the bounty and win for extra spoils and +20% experience."
 	mission_stack.add_child(_bounty_label)
+
+
+## First word of a people's name for the compact header, skipping a leading
+## article: "The Compaña" read "The" ("Barrosan vs The").
+func _short_people_name(full: String) -> String:
+	var words := full.split(" ", false)
+	if words.size() > 1 and String(words[0]).to_lower() == "the":
+		return String(words[1])
+	return String(words[0]) if words.size() > 0 else full
 
 
 func _format_top_resource_amount(amount: int) -> String:

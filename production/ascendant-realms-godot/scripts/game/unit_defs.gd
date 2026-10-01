@@ -357,7 +357,7 @@ static func get_all() -> Dictionary:
 	"karak_warrior": {
 		"race": "karak", "name": "Castro Warrior", "role": "melee", "tier": 1,
 		"model": _char("dwarf_warrior"), "height": 1.6,
-		"hp": 140, "dmg": 13, "dmg_type": "blunt", "armor_class": "medium", "armor": 2,
+		"hp": 140, "dmg": 15, "dmg_type": "blunt", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.4, "vision": 20.0,
 		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "karak_warforge",
 		"desc": "Half flesh, half granite. Slower than most, tougher than all.",
@@ -365,7 +365,7 @@ static func get_all() -> Dictionary:
 	"karak_ironbreaker": {
 		"race": "karak", "name": "Ironbreaker", "role": "defender", "tier": 1,
 		"model": _char("barrosan_spear_guard"), "height": 1.65,
-		"hp": 195, "dmg": 15, "dmg_type": "blunt", "armor_class": "heavy", "armor": 4,
+		"hp": 195, "dmg": 17, "dmg_type": "blunt", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "karak_warforge",
 		"desc": "Granitborn veteran who has stood in the same shield-wall for two hundred years.",

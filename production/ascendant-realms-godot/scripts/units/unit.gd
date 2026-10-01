@@ -496,6 +496,9 @@ func _apply_race_passive() -> void:
 			base_armor += 1.0
 			# 2-6 and 2-5 in both checks with the new spells, whose Stone Skin
 			# only defends: a little more bite.
+			# (Plan 85: their blunt weapons are 10% weak against the light
+			# and unarmoured swarms, so the warrior and ironbreaker also got
+			# +2 damage in unit_defs: 4-11-3 became 9-5-4 over 18 matches.)
 			base_dmg *= 1.08
 			max_hp *= 1.08
 			# Castro quarriers are half stone too (+1 armor on top of the
