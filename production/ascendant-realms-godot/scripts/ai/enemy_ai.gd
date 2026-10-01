@@ -89,11 +89,13 @@ func _apply_personality() -> void:
 			# factions before the big army ever marched (1-7 records).
 			# The Granitborn hold their walls and march at the usual size: massing
 			# two extra soldiers left them 1-15 against early rushes.
-			if String(commander.race) != "karak":
+			# The Moura Court too: 2-15-1 over 90 clean matches, capped at 28
+			# people by its 16 workers while swarms of 17 arrived at minute four.
+			if not String(commander.race) in ["karak", "sylvan"]:
 				_army_attack_size += 2
 			# Extra mouths hurt once the home food runs dry (Karak 4-12-2 over
 			# 90 matches); the Granitborn keep a standard workforce.
-			if String(commander.race) != "karak":
+			if not String(commander.race) in ["karak", "sylvan"]:
 				_worker_target += 2
 		"frostborn":
 			# The Careto chase winter out of the villages: they strike early too
@@ -911,11 +913,19 @@ func _rebalance_gatherers() -> void:
 	var short_gap := 0.99
 	var donor := ""
 	var donor_gap := -0.99
+	var lowest_stock := 1000000
+	for k in crews:
+		lowest_stock = mini(lowest_stock, int(r.get(k, 0)))
 	for k in crews:
 		var stock := int(r.get(k, 0))
 		# A Karak AI starved on 0 food and 10 timber while 900 gold sat
 		# unspent: a big stockpile now releases its gatherers much sooner.
 		var pressure := 1.7 if stock < 150 else (1.2 if stock < 350 else (0.6 if stock < 600 else 0.15))
+		# Stocks of 150 to 350 never gave up a worker, so a Moura Court sat on
+		# 300 stone and 300 gold with 40 food and half its rival's army. A
+		# stock three times the scarcest one now counts as piled up.
+		if lowest_stock < 100 and stock > 200 and stock > 3 * (lowest_stock + 30):
+			pressure = minf(pressure, 0.6)
 		var gap: float = float(_gather_share.get(k, GATHER_SHARE[k])) * float(total) * pressure - float(crews[k].size())
 		if gap > short_gap:
 			short = k
@@ -994,8 +1004,19 @@ func _manage_economy() -> void:
 	# build houses when near pop cap
 	# Plan housing early: factions whose soldiers take 2 population (Barrosan
 	# Spear Guard, Outrider) hit the cap long before a late house went up.
-	if commander.pop_used >= commander.pop_cap - 6 and commander.pop_cap < commander.POP_HARD_CAP:
+	if commander.pop_used >= _planned_pop_cap() - 6 and commander.pop_cap < commander.POP_HARD_CAP:
 		_try_build("house")
+
+## The population cap once the houses already under construction finish. The
+## AI used to look at the built cap only, so near the cap it laid a new house
+## every few seconds: a Moura Court had six by minute four (room for 60, 27
+## used) and half the army of its opponent.
+func _planned_pop_cap() -> int:
+	var cap := int(commander.pop_cap)
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and not b.is_built:
+			cap += int(b.def.get("grants_pop", 0))
+	return cap
 
 # --- tech -----------------------------------------------------------------
 func _manage_tech() -> void:
@@ -1342,7 +1363,7 @@ func _try_build(kind: String) -> void:
 	# Finish what is already laid out before starting more sites.
 	# ...except a house when the population is capped: a Barrosan AI sat at
 	# 12/12 for minutes with 650 food, its house queued behind slow sites.
-	var needs_house: bool = commander.pop_used >= commander.pop_cap - 6 and commander.pop_cap < commander.POP_HARD_CAP
+	var needs_house: bool = commander.pop_used >= _planned_pop_cap() - 6 and commander.pop_cap < commander.POP_HARD_CAP
 	# Houses first: nothing else is started while the army needs room.
 	if needs_house and kind != "house" and kind != "barracks":
 		return

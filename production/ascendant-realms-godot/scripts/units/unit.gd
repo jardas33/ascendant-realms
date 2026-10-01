@@ -484,9 +484,12 @@ func _apply_race_passive() -> void:
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
 			# 5-12-1 over the two clean plan 80-81 checks: +6% (was +4%).
+			# Then 2-15-1 over the clean pooled plan 82 check. The cause was its
+			# AI (overbuilt houses, starved of food, too many workers), fixed
+			# in enemy_ai.gd; the stats get only a little more reach (+1.5).
 			base_dmg *= 1.06
 			if atk_range > 0.0:
-				atk_range += 1.2
+				atk_range += 1.5
 		"karak":                          # Stone Resolve — armored and hardy
 			# 2 wins in the plan 34 round robin: a touch more bite.
 			base_armor += 1.0
@@ -511,14 +514,16 @@ func _apply_race_passive() -> void:
 		"hollow":                         # Undying — every warrior drains life on hit
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
-			base_dmg *= 1.12
+			# Was +12%: top of both pooled plan 82 checks (10-2-6 and 11-3-4).
+			base_dmg *= 1.08
 			# 13-25-7 over 225 pooled matches (plans 50 to 63): a little tougher.
 			max_hp *= 1.15
 			hp = max_hp
 		"vorthak":                        # Rift Toll — thralls move a touch faster
 			move_speed *= 1.06
 			# 2-5-2 in the plan 39 round robin: a little more staying power.
-			max_hp *= 1.05
+			# 14-20-2 and 5-11-2 over the clean plan 80-82 checks: +10% (was +5%).
+			max_hp *= 1.10
 			hp = max_hp
 		"lioraen":                        # Grove-blessed — sturdier than they look
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
