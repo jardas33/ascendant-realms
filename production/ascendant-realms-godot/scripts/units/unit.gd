@@ -475,8 +475,11 @@ func _apply_race_passive() -> void:
 			# to finish a fight. The bull's charge hits harder instead.
 			# 0-4-5 and 2-6-1 in the two plan 78-80 checks, losing the long
 			# games: +10% (was +7%). Then 13-5 over 90 matches once the AI
-			# economy fixes of plan 83 landed: +8%.
-			base_dmg *= 1.08
+			# economy fixes of plan 83 landed: +8%. 44-21-7 over four pooled
+			# checks once its AI stopped walling in its own hall. Still 12-6
+			# at +4% in an 18-match A/B, so the bonus is gone: the clans rely
+			# on Fortify (cur_armor) and their cheap, sturdy levy.
+			base_dmg *= 1.0
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.
@@ -500,7 +503,8 @@ func _apply_race_passive() -> void:
 			# and unarmoured swarms, so the warrior and ironbreaker also got
 			# +2 damage in unit_defs: 4-11-3 became 9-5-4 over 18 matches.)
 			base_dmg *= 1.08
-			max_hp *= 1.08
+			# 22-43-7 over four pooled checks: +14% health (was +8%).
+			max_hp *= 1.14
 			# Castro quarriers are half stone too (+1 armor on top of the
 			# sturdier workers every faction now has).
 			if is_worker:
