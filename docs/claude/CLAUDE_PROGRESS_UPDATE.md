@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-30. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -782,14 +782,22 @@ Last updated: 2026-09-30. Claude updates this file after every pass. (Earlier en
   - **Walkthrough through the public menus** (the game's AI played the player seat): skirmish to a result, campaign chapter 1-1 won at 9:15, Endless Road Stage 26 to a result, and the save read back correctly by a fresh process. There is no mid-match save; saving covers hero, loot and progress.
   - **Performance (1080p, GTX 1070):** 120-unit battle 39.5 FPS average (1% low 14); late game at 12:32 was 53.6 FPS (1% low 25.7).
   - **Verdict given:** promote after two small fixes and one match played by a person.
-- **Plan 80 (in progress): fix what the audit found**
+- **Plan 80 (done): fix what the audit found**
   - **One main menu:** the launch scene now opens the current menu (hero card, Continue, Endless Road). It used to show an older menu that players never saw again after their first Back. The old scene remains only for Codex's capture drivers.
   - **Error spam fixed:** delayed spell, summon and construction-panel timers captured units that had died. They now look the unit up by id. Two 24-minute AI matches logged 0 of these errors (the audit saw 7 and 72).
   - **Stalemates:** a winning AI sat on 10,000 gold with 18 soldiers and never finished. A rich AI now builds a third and fourth barracks and queues deeper. The two pairings that had timed out now end (13:41 and 23:10).
   - **Small UI fixes:** finished research reads DONE (was "COMPLET…"); the match header counts every opponent ("Barrosan vs 3 Hosts"); unit names fit in the selection strip on wide screens; locked skill names are brighter.
   - **Checked, not a bug:** the skirmish defeat screen's stats and buttons fade in by 4.6 seconds.
   - **Balance:** Karak's core units were a step below every other people's; they are raised to match. A clean 45-match check is running with nothing else on the machine.
-  - **Still open:** four harmless "material is null" lines at match load (engine teardown order); ranged rows standing off in the staged 120-unit test.
+  - **Still open:** four harmless "material is null" lines at match load (engine teardown order).
+- **Plan 81 (done): after-audit balance and polish**
+  - **First clean check (45 matches, idle machine):** 2 time-outs, down from 16. Karak 5-4.
+  - **Second clean check:** 5 time-outs. Results swung widely between the two runs with almost no change (Lioraen 3-5 then 8-1, Sylvan 5-4 then 0-8), so one 45-match run is too noisy to tune small numbers on. Tuning now uses pooled results only.
+  - **Pooled over both checks (18 matches each):** Ironmaw 12-4-2, Lioraen 11-6-1, Wyldkin 10-8, Karak 9-7-2, Compaña 9-8-1, Careto 8-8-2, Barrosan 7-9-2, Vorthak 7-10-1, Sunspear 5-11-2, Sylvan 5-12-1.
+  - **Changes:** Barrosan damage passive +10% (was +7%), Lioraen +8% (was +6%), Ironmaw +6% (was +8%), Sylvan +6% (was +4%).
+  - **Mass orders verified:** 60 of 60 units obey one move or attack-move order. The "idle rows" seen in the audit's staged battle were archers firing in place and melee queued behind a packed front.
+  - **UI:** the bounty line sits inside the objective card; the result screen reveals all its rows within 1.2 seconds, so the buttons no longer arrive late after a long loot list.
+  - **For Emanuel:** `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` is a 45-minute checklist for the human session the audit asks for. The audit report now lists the status of each finding.
 
 ## Performance and stability
 
