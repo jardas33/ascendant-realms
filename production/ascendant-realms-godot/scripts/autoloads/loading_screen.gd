@@ -271,6 +271,7 @@ const TIPS := [
 	"A river can be waded anywhere, but wading is slow. Whoever holds the bridge crosses at full speed.",
 	"In a skirmish the enemy hero measures itself against yours: a third of your hero's strength on Normal, two thirds on Hard, all of it on Brutal.",
 	"Hold the middle mouse button and drag to move the camera.",
+	"Crags cannot be crossed. March around them, or hold the gap between two of them.",
 ]
 
 

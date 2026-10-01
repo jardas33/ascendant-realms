@@ -1715,6 +1715,9 @@ func get_hp_ratio() -> float:
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
+	# An order onto a crag is an order to its foot, on this unit's side of it.
+	if world and world.has_method("out_of_crags"):
+		pos = world.out_of_crags(pos, 2.6, global_position)
 	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
 	var before_state := state

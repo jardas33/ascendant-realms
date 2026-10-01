@@ -47,30 +47,30 @@ static func hollowspan() -> Dictionary:
 # ---------------------------------------------------------------------------
 static func _specs() -> Array:
 	return [
-		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true},
-		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","layout":"corners","spread":96,"rich":0.9,"cap":"triple"},
-		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","layout":"edges","spread":110,"rich":1.0,"cap":"triple"},
-		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","layout":"corners","spread":102,"rich":1.0,"cap":"triple","bridge":true},
+		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
+		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","layout":"corners","spread":96,"rich":0.9,"cap":"triple","crags":"walls"},
+		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","layout":"edges","spread":110,"rich":1.0,"cap":"triple","crags":"corners"},
+		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","layout":"corners","spread":102,"rich":1.0,"cap":"triple","bridge":true,"crags":"islands"},
 		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","layout":"edges","spread":114,"rich":0.9,"cap":"single"},
-		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","layout":"corners","spread":84,"rich":1.1,"cap":"triple"},
-		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple"},
-		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","layout":"edges","spread":100,"rich":1.0,"cap":"triple","bridge":true},
-		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","layout":"corners","spread":118,"rich":0.9,"cap":"triple"},
-		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","layout":"corners","spread":96,"rich":1.1,"cap":"triple","bridge":true},
-		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","layout":"edges","spread":112,"rich":1.0,"cap":"single"},
-		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","layout":"edges","spread":112,"rich":0.9,"cap":"triple"},
-		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","layout":"corners","spread":116,"rich":0.9,"cap":"single"},
+		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","layout":"corners","spread":84,"rich":1.1,"cap":"triple","crags":"gates"},
+		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple","crags":"walls"},
+		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","layout":"edges","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"corners"},
+		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","layout":"corners","spread":118,"rich":0.9,"cap":"triple","crags":"islands"},
+		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","layout":"corners","spread":96,"rich":1.1,"cap":"triple","bridge":true,"crags":"gates"},
+		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","layout":"edges","spread":112,"rich":1.0,"cap":"single","crags":"pillars"},
+		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","layout":"edges","spread":112,"rich":0.9,"cap":"triple","crags":"corners"},
+		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","layout":"corners","spread":116,"rich":0.9,"cap":"single","crags":"walls"},
 		{"id":"bloomvale","name":"Bloomvale Meadows","theme":"verdant","layout":"corners","spread":108,"rich":1.5,"cap":"triple"},
-		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","layout":"corners","spread":100,"rich":1.0,"cap":"quad"},
-		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","layout":"corners","spread":100,"rich":1.0,"cap":"triple"},
-		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple"},
-		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true},
-		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single"},
-		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","layout":"corners","spread":118,"rich":0.9,"cap":"triple"},
-		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","layout":"corners","spread":104,"rich":1.5,"cap":"quad"},
-		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","layout":"edges","spread":104,"rich":0.6,"cap":"single"},
-		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","layout":"corners","spread":116,"rich":1.0,"cap":"triple","bridge":true},
-		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","layout":"corners","spread":96,"rich":1.1,"cap":"quad"},
+		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","layout":"corners","spread":100,"rich":1.0,"cap":"quad","crags":"gates"},
+		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","layout":"corners","spread":100,"rich":1.0,"cap":"triple","crags":"walls"},
+		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple","crags":"islands"},
+		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
+		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single","crags":"walls"},
+		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","layout":"corners","spread":118,"rich":0.9,"cap":"triple","crags":"islands"},
+		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","layout":"corners","spread":104,"rich":1.5,"cap":"quad","crags":"gates"},
+		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","layout":"edges","spread":104,"rich":0.6,"cap":"single","crags":"pillars"},
+		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","layout":"corners","spread":116,"rich":1.0,"cap":"triple","bridge":true,"crags":"walls"},
+		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","layout":"corners","spread":96,"rich":1.1,"cap":"quad","crags":"islands"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -111,7 +111,79 @@ static func _assemble(s: Dictionary) -> Dictionary:
 		m["bridge"] = {"pos": Vector3(0, 0, 52), "model": BRIDGE}
 	if m["water"].get("enabled", false):
 		m["veins"] = _veins_off_water(m["veins"], m["overview"])
+	m["crags"] = _crags(String(s.get("crags", "")), m)
 	return m
+
+# ---------------------------------------------------------------------------
+# Crags: impassable rock ridges that give a battlefield lanes, gates and flanks
+# ---------------------------------------------------------------------------
+## Each style is an ordered list of groups: [fold, Vector4(x, z, half_x, half_z)].
+## Fold 2 adds the twin on the far side of the centre; fold 4 adds the mirrors
+## and the x/z swap as well. A group is used only if every copy keeps clear of
+## the starts, resources, veins, objectives, water and the map edge, so a
+## layout can never wall in an economy, and both sides of the field match.
+const CRAG_STYLES := {
+	"gates": [[2, Vector4(-38, -38, 7, 7)], [4, Vector4(0, -66, 14, 4)], [4, Vector4(0, -102, 4, 12)]],
+	"walls": [[4, Vector4(0, -60, 16, 4)], [4, Vector4(0, -96, 4, 14)], [2, Vector4(-34, -34, 5, 5)]],
+	"islands": [[2, Vector4(-40, -40, 6, 6)], [2, Vector4(-58, -18, 5, 8)], [2, Vector4(-18, -58, 8, 5)], [4, Vector4(0, -84, 10, 5)]],
+	"corners": [[4, Vector4(62, -62, 8, 8)], [2, Vector4(-38, -38, 6, 6)], [4, Vector4(92, -92, 10, 10)]],
+	"pillars": [[4, Vector4(60, -60, 6, 6)], [4, Vector4(84, -84, 6, 6)], [2, Vector4(-36, -36, 5, 5)]],
+}
+
+static func _crags(style: String, m: Dictionary) -> Array:
+	var out: Array = []
+	for group in CRAG_STYLES.get(style, []):
+		var copies := _crag_copies(group[1], int(group[0]))
+		if _crags_clear(copies, m):
+			out.append_array(copies)
+	return out
+
+static func _crag_copies(r: Vector4, fold: int) -> Array:
+	var all: Array = [r, Vector4(-r.x, -r.y, r.z, r.w)]
+	if fold >= 4:
+		all.append_array([Vector4(-r.x, r.y, r.z, r.w), Vector4(r.x, -r.y, r.z, r.w),
+			Vector4(r.y, r.x, r.w, r.z), Vector4(-r.y, -r.x, r.w, r.z),
+			Vector4(-r.y, r.x, r.w, r.z), Vector4(r.y, -r.x, r.w, r.z)])
+	var out: Array = []
+	var seen := {}
+	for c in all:
+		var key := "%d,%d,%d,%d" % [roundi(c.x), roundi(c.y), roundi(c.z), roundi(c.w)]
+		if seen.has(key):
+			continue
+		seen[key] = true
+		out.append({"pos": Vector3(c.x, 0.0, c.y), "half": Vector2(c.z, c.w)})
+	return out
+
+static func _crags_clear(copies: Array, m: Dictionary) -> bool:
+	var keep: Array = []   # [position, clear distance]
+	for p in m.get("start_positions", []):
+		keep.append([p, 46.0])
+	for r in m.get("resources", []):
+		keep.append([r["pos"], 9.0])
+	for v in m.get("veins", []):
+		keep.append([v["pos"], 12.0])
+	for c in m.get("capture_points", []):
+		keep.append([c["pos"], 15.0])
+	var water: bool = bool(m.get("water", {}).get("enabled", false))
+	var ov: Dictionary = m.get("overview", {})
+	for c in copies:
+		var p: Vector3 = c["pos"]
+		var h: Vector2 = c["half"]
+		if absf(p.x) + h.x > MAP_SIZE - 14.0 or absf(p.z) + h.y > MAP_SIZE - 14.0:
+			return false
+		if water:
+			if m.has("bridge"):
+				if absf(p.z - float(ov.get("water_center_z", 52.0))) < h.y + 15.0:
+					return false
+			elif p.z + h.y > float(ov.get("water_center_z", 118.0)) - float(ov.get("water_width", 34.0)) * 0.5 - 6.0:
+				return false
+		for k in keep:
+			var q: Vector3 = k[0]
+			var dx := maxf(absf(q.x - p.x) - h.x, 0.0)
+			var dz := maxf(absf(q.z - p.z) - h.y, 0.0)
+			if Vector2(dx, dz).length() < float(k[1]):
+				return false
+	return true
 
 ## Keep veins on dry ground: a vein in the river or the bay could never hold
 ## an outpost. Crossing rivers push them to the nearer bank; the bay pushes

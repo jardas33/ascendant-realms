@@ -374,6 +374,7 @@ func _ready() -> void:
 	_m20_end(navigation_stage)
 	var decoration_stage := _m20_begin("GAMEWORLD_DECORATION", "GAMEWORLD_READY", 1)
 	_scatter_environment()
+	_build_crags()
 	_m20_end(decoration_stage)
 	var commanders_stage := _m20_begin("GAMEWORLD_COMMANDERS", "GAMEWORLD_READY", 1)
 	_setup_commanders()
@@ -856,6 +857,134 @@ func in_ford(pos: Vector3, margin: float = 0.0) -> bool:
 func terrain_speed_mult(pos: Vector3) -> float:
 	return FORD_SPEED if in_ford(pos) else 1.0
 
+# --- Crags ------------------------------------------------------------------
+# Impassable rock ridges (MapDefs.CRAG_STYLES). They turn an open field into
+# lanes, gates and flanks: units route around them and nothing is built on them.
+const CRAG_ROCKS := ["res://assets/environment/rocks/highland_rock_cluster.glb", "res://assets/environment/rocks/mossy_boulder.glb"]
+
+## True when `pos` lies within `margin` metres of a crag.
+func in_crag(pos: Vector3, margin: float = 0.0) -> bool:
+	for c in map.get("crags", []):
+		var p: Vector3 = c["pos"]
+		var h: Vector2 = c["half"]
+		if absf(pos.x - p.x) < h.x + margin and absf(pos.z - p.z) < h.y + margin:
+			return true
+	return false
+
+## `pos` itself, or the nearest open ground if it lies in a crag: an order
+## given onto the rocks sends the troops to their foot.
+func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF) -> Vector3:
+	for c in map.get("crags", []):
+		var p: Vector3 = c["pos"]
+		var h: Vector2 = c["half"]
+		var dx := pos.x - p.x
+		var dz := pos.z - p.z
+		if absf(dx) >= h.x + margin or absf(dz) >= h.y + margin:
+			continue
+		# The four ways out, each with how far the point has to move.
+		var exits: Array = [
+			[Vector3(p.x + h.x + margin, pos.y, pos.z), h.x + margin - dx],
+			[Vector3(p.x - h.x - margin, pos.y, pos.z), h.x + margin + dx],
+			[Vector3(pos.x, pos.y, p.z + h.y + margin), h.y + margin - dz],
+			[Vector3(pos.x, pos.y, p.z - h.y - margin), h.y + margin + dz],
+		]
+		var least := INF
+		for e in exits:
+			least = minf(least, float(e[1]))
+		# Among the faces about as near as the nearest, take the one on the
+		# marcher's side, so troops sent at a ridge stop before it, not behind it.
+		var best: Vector3 = exits[0][0]
+		var best_score := INF
+		for e in exits:
+			if float(e[1]) > least + 5.0:
+				continue
+			var score: float = float(e[1]) if from == Vector3.INF else from.distance_to(e[0])
+			if score < best_score:
+				best_score = score
+				best = e[0]
+		return best
+	return pos
+
+func _build_crags() -> void:
+	var crags: Array = map.get("crags", [])
+	if crags.is_empty():
+		return
+	var models: Array = []
+	for path in CRAG_ROCKS:
+		if ResourceLoader.exists(path):
+			models.append(path)
+	var layer := Node3D.new()
+	layer.name = "Crags"
+	add_child(layer)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5309 + crags.size()
+	for i in crags.size():
+		var pos: Vector3 = crags[i]["pos"]
+		var half: Vector2 = crags[i]["half"]
+		var holder := Node3D.new()
+		holder.name = "Crag%d" % i
+		layer.add_child(holder)
+		holder.position = pos
+		if not models.is_empty():
+			# The body: tall rock clusters shoulder to shoulder, so the ridge
+			# reads as a wall and not as a row of boulders with gaps.
+			var nx := maxi(1, roundi(half.x * 2.0 / 3.0))
+			var nz := maxi(1, roundi(half.y * 2.0 / 3.0))
+			var cell := Vector2(half.x * 2.0 / float(nx), half.y * 2.0 / float(nz))
+			for ix in nx:
+				for iz in nz:
+					var rock: Node3D = load(models[0]).instantiate()
+					holder.add_child(rock)
+					ModelUtils.scale_to_height(rock, rng.randf_range(4.6, 6.6))
+					var radius := ModelUtils.measure_radius(rock)
+					var fit := maxf(cell.x, cell.y) * 1.05
+					if radius > fit:
+						rock.scale *= fit / radius
+					ModelUtils.ground_model(rock)
+					rock.position = Vector3(-half.x + (float(ix) + 0.5) * cell.x + rng.randf_range(-0.4, 0.4), rock.position.y,
+						-half.y + (float(iz) + 0.5) * cell.y + rng.randf_range(-0.4, 0.4))
+					rock.rotation.y = rng.randf() * TAU
+					_prep_decor(rock)
+					# Unlike scattered boulders, a ridge needs its shadow to read as a wall.
+					for mesh in rock.find_children("*", "MeshInstance3D", true, false):
+						(mesh as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+			# The foot: fallen boulders along the rim soften the outline.
+			var rubble := int((half.x + half.y) * 0.9)
+			for k in rubble:
+				var boulder: Node3D = load(models[models.size() - 1]).instantiate()
+				holder.add_child(boulder)
+				ModelUtils.scale_to_height(boulder, rng.randf_range(0.9, 1.8))
+				ModelUtils.ground_model(boulder)
+				var on_x := rng.randf() < half.x / (half.x + half.y)
+				var edge := 1.0 if rng.randf() < 0.5 else -1.0
+				boulder.position = Vector3(rng.randf_range(-half.x, half.x) if on_x else edge * (half.x - 0.4), boulder.position.y,
+					edge * (half.y - 0.4) if on_x else rng.randf_range(-half.y, half.y))
+				boulder.rotation.y = rng.randf() * TAU
+				_prep_decor(boulder)
+		_register_navigation_obstacle(holder, "crag", pos, half, 4.0, "ENVIRONMENT_PROP", "crag_world_blocker", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
+		# The avoidance disc of a long ridge must not swell to its length and
+		# close the gates beside it: thin discs along the ridge instead.
+		var thin := minf(half.x, half.y)
+		var record: Dictionary = _world_blocker_records.get(_world_blocker_key(holder, "crag"), {})
+		var disc = record.get("obstacle")
+		if is_instance_valid(disc):
+			disc.radius = thin + 0.5
+		var along := Vector3(1, 0, 0) if half.x >= half.y else Vector3(0, 0, 1)
+		var reach := maxf(half.x, half.y) - thin
+		var discs := int(ceil(reach / maxf(1.0, thin * 1.5)))
+		for k in range(1, discs + 1):
+			for side in [-1.0, 1.0]:
+				var offset: Vector3 = along * (reach * float(k) / float(discs)) * float(side)
+				var extra := NavigationObstacle3D.new()
+				extra.avoidance_enabled = true
+				extra.radius = thin + 0.5
+				extra.height = 4.0
+				extra.position = offset
+				holder.add_child(extra)
+				clear_ground_cover(pos + offset, thin + 1.5)
+		clear_ground_cover(pos, thin + 1.5)
+	load("res://scripts/world/static_batcher.gd").batch(layer)
+
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
 	return String(ProfileManager.settings().get("graphics", "high"))
@@ -1309,6 +1438,9 @@ func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGenerator) -> void:
 	if pool.is_empty():
 		return
+	# No lone trees or boulders in or against a crag.
+	if in_crag(pos, 3.0):
+		return
 	# Keep trees and boulders out of the river ford on bridge maps.
 	if map.has("bridge") and _theme.get("water", {}).get("enabled", false):
 		var ov: Dictionary = map.get("overview", {})
@@ -1552,6 +1684,7 @@ func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clear
 
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
 	var __started := Time.get_ticks_usec()
+	requested = out_of_crags(requested, clearance + 1.2, origin)
 	var __result := _solve_navigation_waypoints(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
 	_note_route_solver_time(Time.get_ticks_usec() - __started)
 	return __result
@@ -2332,6 +2465,8 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 	# Nothing is built in the river: a hall used to be placeable mid-ford.
 	if in_ford(pos, fp * 0.8):
 		return "Cannot build in the river"
+	if in_crag(pos, fp * 0.9):
+		return "Blocked by rocks"
 	# A real construction worker is required, but the worker is not reserved by
 	# this pure validation call. This catches AI/player attempts that could never
 	# be serviced while leaving the existing worker command as the authority.
@@ -2852,6 +2987,7 @@ func _spawn_lume_jar() -> void:
 	var p: Vector3 = a.lerp(b, 0.5).lerp(Vector3.ZERO, 0.35) + Vector3(rng.randf_range(-14.0, 14.0), 0.0, rng.randf_range(-14.0, 14.0))
 	if navigation_map_rid.is_valid():
 		p = NavigationServer3D.map_get_closest_point(navigation_map_rid, p)
+	p = out_of_crags(p, 6.0)
 	p.y = 0.0
 	var jar = LumeJarScript.new()
 	add_child(jar)
