@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-09-29. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-09-30. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -766,14 +766,30 @@ Last updated: 2026-09-29. Claude updates this file after every pass. (Earlier en
   - **Result screen:** a line names any spell the hero learned during the match, beside the count of spells cast.
   - **Sound and glow:** signature spells sound a war horn and summons a drum stamp. Spell buttons glow when ready.
   - **Tutorial:** the hero step now mentions the signature spell on B.
-- **Plan 78 (in progress): resources and the "big circles"**
+- **Plan 78 (done): resources and the "big circles"**
   - **The big circles were the vein markers.** On the minimap and the Skirmish preview they are now small dots in the resource's colour. On the ground the rings are thinner and fainter.
   - **Stone:** the dark disc under quarries is gone.
   - **Hover:** with the cursor over a resource, a clear ring in its colour appears (gold, grey, green or amber), sized to the model.
   - **Gather order:** the ring flashes once, so you see where the workers are going.
   - **Veins:** under the cursor the ring brightens and a tooltip gives the kind, the amount left and who holds it.
   - **Checked:** no resource overlaps a building on three maps. Regression passed (18 checks) after every change. Pushed to GitHub.
-  - **Next:** a clean 45-match balance check is running; tuning follows from it.
+- **Plan 79 (done): landmarks become monuments**
+  - Each of the ten landmarks stands on a flagstone plaza with its own centrepiece: a ring of standing stones (Karak), a golden sun dial (Sunspear), a burning bonfire (Frostborn), a war drum, a bell frame, a golden loom, a howling menhir, a rift ring, a fountain and a bread oven. Three of them used to look like the same forge.
+- **Release-candidate audit R1 (done, 2026-09-30), on frozen HEAD `72ef006d`**
+  - **Report with screenshots, battle video and timelapse:** https://claude.ai/artifact/EDVPeodwjVHp5EfLrLPYrA
+  - **Frozen state:** local and GitHub matched, clean tree. All five Codex tips the lane tracks are ancestors, and so is `main`. The only newer Codex branch not contained is `codex/astra-complete-ui-overhaul-r1` (`e6bfaf8e`, 22 Sep, 2 commits).
+  - **Tests:** compile sweep clean, 17 of 17 regression checks.
+  - **Walkthrough through the public menus** (the game's AI played the player seat): skirmish to a result, campaign chapter 1-1 won at 9:15, Endless Road Stage 26 to a result, and the save read back correctly by a fresh process. There is no mid-match save; saving covers hero, loot and progress.
+  - **Performance (1080p, GTX 1070):** 120-unit battle 39.5 FPS average (1% low 14); late game at 12:32 was 53.6 FPS (1% low 25.7).
+  - **Verdict given:** promote after two small fixes and one match played by a person.
+- **Plan 80 (in progress): fix what the audit found**
+  - **One main menu:** the launch scene now opens the current menu (hero card, Continue, Endless Road). It used to show an older menu that players never saw again after their first Back. The old scene remains only for Codex's capture drivers.
+  - **Error spam fixed:** delayed spell, summon and construction-panel timers captured units that had died. They now look the unit up by id. Two 24-minute AI matches logged 0 of these errors (the audit saw 7 and 72).
+  - **Stalemates:** a winning AI sat on 10,000 gold with 18 soldiers and never finished. A rich AI now builds a third and fourth barracks and queues deeper. The two pairings that had timed out now end (13:41 and 23:10).
+  - **Small UI fixes:** finished research reads DONE (was "COMPLET…"); the match header counts every opponent ("Barrosan vs 3 Hosts"); unit names fit in the selection strip on wide screens; locked skill names are brighter.
+  - **Checked, not a bug:** the skirmish defeat screen's stats and buttons fade in by 4.6 seconds.
+  - **Balance:** Karak's core units were a step below every other people's; they are raised to match. A clean 45-match check is running with nothing else on the machine.
+  - **Still open:** four harmless "material is null" lines at match load (engine teardown order); ranged rows standing off in the staged 120-unit test.
 
 ## Performance and stability
 
