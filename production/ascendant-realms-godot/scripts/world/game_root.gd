@@ -101,6 +101,7 @@ func _ready() -> void:
 	pause_menu.setup()
 	pause_menu.resume_requested.connect(_toggle_pause)
 	pause_menu.quit_requested.connect(_return_to_menu)
+	pause_menu.restart_requested.connect(_replay)
 	_m20_end(pause_stage)
 
 	# Debug overlay

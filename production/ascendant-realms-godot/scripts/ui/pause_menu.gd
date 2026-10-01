@@ -3,6 +3,7 @@ extends Control
 
 signal resume_requested
 signal quit_requested
+signal restart_requested
 
 var _panel: PanelContainer
 var _resume_button: Button
@@ -175,6 +176,12 @@ func setup() -> void:
 	_add_key_row(system, "F1", "Every hotkey (field manual)", font)
 	_add_key_row(system, "WHEEL / Z C", "Zoom / rotate camera", font)
 
+	# Start the same battle again from the beginning (asked first: the
+	# battle in progress is lost).
+	var restart_button := _make_btn("Restart Battle", func():
+		var rdlg: Control = load("res://scripts/ui/gilt_confirm.gd").ask(self, "Restart the Battle", "Begin this battle again from the start? What you have built here is lost.", "Restart", true)
+		rdlg.confirmed.connect(func(): emit_signal("restart_requested")))
+	vb.add_child(restart_button)
 	# Leaving a battle forfeits it, so ask first on the same gilt plate.
 	_quit_button = _make_btn("Quit to Menu", func():
 		var dlg: Control = load("res://scripts/ui/gilt_confirm.gd").ask(self, "Leave the Battle", "Quit to the menu? This battle ends here and earns no spoils.", "Quit Battle", true)
