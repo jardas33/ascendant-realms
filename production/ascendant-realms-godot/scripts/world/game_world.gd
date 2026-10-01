@@ -2041,6 +2041,7 @@ func _setup_commanders() -> void:
 		if String(cfg.get("player_race", "")) != "":
 			battle_hero["race"] = String(cfg.get("player_race"))
 		hero_stats = HeroProgression.compute(battle_hero)
+		_player_hero_bonus = hero_stats
 	# AI-versus-AI balance tests: the player's seat gets the same hero an AI
 	# of that difficulty would, so both seats are compared fairly.
 	if String(cfg.get("ai_seat_difficulty", "")) != "":
@@ -2104,6 +2105,9 @@ func battle_mood() -> String:
 	var chapter_mood := String(CampaignDefs.CHAPTER_MOODS.get(String(cfg.get("campaign_chapter", "")), ""))
 	return chapter_mood if chapter_mood != "" else String(cfg.get("mood", ""))
 
+## What HeroProgression gave the player's hero this battle (see _ai_hero_stats).
+var _player_hero_bonus := {}
+
 func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var count := int({"easy": 0, "normal": 1, "hard": 2, "brutal": 3}.get(difficulty, 1))
 	var level := 2 if difficulty in ["hard", "brutal"] else 1
@@ -2134,9 +2138,19 @@ func _ai_hero_stats(race: String, difficulty: String) -> Dictionary:
 	var champ := 1.5 if "champions" in Match.get_config().get("twists", []) else 1.0
 	# Enemy heroes also grow with every Endless Road stage.
 	growth = (growth + float(Match.get_config().get("endless_depth", 0)) * 0.8) * champ
-	return {"abilities": abilities, "max_mana": 120.0 + growth * 3.0, "mana_regen": 5.0 + growth * 0.1,
+	var out := {"abilities": abilities, "max_mana": 120.0 + growth * 3.0, "mana_regen": 5.0 + growth * 0.1,
 		"bonus_hp": growth * 8.0, "bonus_dmg": growth * 0.5, "bonus_armor": floorf(growth / 10.0),
 		"regen": 1.5 + growth * 0.05}
+	# In a skirmish the enemy hero answers the player's: a share of the
+	# player hero's own bonuses, by difficulty. A level-49 hero in full gear
+	# (1,600 health, 267 damage) used to face a Brutal hero of 330 and 32.
+	# Not used in AI-versus-AI balance runs, where both seats get this kit.
+	if String(Match.get_config().get("mode", "skirmish")) == "skirmish" and String(Match.get_config().get("ai_seat_difficulty", "")) == "" and not _player_hero_bonus.is_empty():
+		var share := float({"easy": 0.0, "normal": 0.35, "hard": 0.65, "brutal": 1.0}.get(difficulty, 0.35))
+		for k in ["bonus_hp", "bonus_dmg", "bonus_armor"]:
+			out[k] = float(out[k]) + float(_player_hero_bonus.get(k, 0.0)) * share
+		out["max_mana"] = float(out["max_mana"]) + maxf(0.0, float(_player_hero_bonus.get("max_mana", 100.0)) - 100.0) * share
+	return out
 
 func _build_starting_base(cmd, pos: Vector3) -> void:
 	var stage := _m20_begin("GAMEWORLD_STARTING_BASE_%d" % int(cmd.team), "GAMEWORLD_COMMANDER_SETUP", 3)
