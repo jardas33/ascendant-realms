@@ -217,6 +217,8 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			ModelUtils.recenter_a03_house_a_visual_only(model)
 		if is_building or bool(definition.get("is_siege", false)):
 			model_radius = ModelUtils.measure_radius(model)
+		if not is_building:
+			_pose_and_tint_unit(model, path, definition)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
 		var mesh := MeshInstance3D.new()
@@ -251,10 +253,72 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		_camera.fov = 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.38, 0.0), Vector3.UP)
 	else:
-		_camera.position = Vector3(0.0, target_height * 0.58, distance)
-		_camera.fov = 56.0 if compact_card else 62.0
-		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
-	_pivot.rotation_degrees.y = -18.0
+		# Waist-up, like the painted portraits: a full body in a 54 px card
+		# was a few pixels of figure in a dark frame.
+		_camera.position = Vector3(0.0, target_height * 0.74, 1.55 if compact_card else 1.75)
+		_camera.fov = 50.0
+		_camera.look_at(Vector3(0.0, target_height * 0.68, 0.0), Vector3.UP)
+	# Character models face -Z (Godot's model front) and the camera sits on
+	# +Z, so a unit showed its back: turn units to face the viewer.
+	_pivot.rotation_degrees.y = -18.0 if (is_building or bool(definition.get("is_siege", false))) else 162.0
+
+
+## A rendered unit portrait stood in its bind pose (arms straight out) and in
+## its lender's colours. Put it in its idle stance and its people's palette.
+func _pose_and_tint_unit(model: Node3D, path: String, definition: Dictionary) -> void:
+	var race := str(definition.get("race", ""))
+	var tint: Color = Unit.PEOPLE_PALETTES.get(race, Color.WHITE) if not path.get_file().begins_with(race) else Color.WHITE
+	if tint != Color.WHITE:
+		for child in model.find_children("*", "MeshInstance3D", true, false):
+			var mi := child as MeshInstance3D
+			if mi == null or mi.mesh == null:
+				continue
+			for surface in mi.mesh.get_surface_count():
+				var source := mi.get_active_material(surface)
+				if source is BaseMaterial3D:
+					var mat := (source as BaseMaterial3D).duplicate() as BaseMaterial3D
+					mat.albedo_color = Color(mat.albedo_color.r * tint.r, mat.albedo_color.g * tint.g, mat.albedo_color.b * tint.b, mat.albedo_color.a)
+					mi.set_surface_override_material(surface, mat)
+	var file := path.get_file().get_basename()
+	var lib_path := "res://assets/characters/%s/%s_animations.tres" % [file, file]
+	var player: AnimationPlayer = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if player == null and ResourceLoader.exists(lib_path):
+		player = AnimationPlayer.new()
+		model.add_child(player)
+		player.add_animation_library("", load(lib_path))
+	if player == null:
+		return
+	var idle := ""
+	for anim_name in player.get_animation_list():
+		if "idle" in String(anim_name).to_lower():
+			idle = String(anim_name)
+			break
+	if idle == "":
+		return
+	# Same skeleton-name repair as Unit: libraries address %GeneralSkeleton.
+	var first: Animation = player.get_animation(idle)
+	if first.get_track_count() > 0 and String(first.track_get_path(0)).begins_with("%GeneralSkeleton") and model.get_node_or_null("%GeneralSkeleton") == null:
+		var skeletons: Array = model.find_children("*", "Skeleton3D", true, false)
+		if skeletons.size() == 1:
+			skeletons[0].name = "GeneralSkeleton"
+			skeletons[0].owner = model
+			skeletons[0].unique_name_in_owner = true
+	player.play(idle)
+	player.advance(0.35)
+	player.pause()
+	_redraw_once_posed()
+
+
+## A compact card renders its viewport once, and that one frame was taken
+## before the skeleton had applied the idle pose. Render it again once the
+## pose is in.
+func _redraw_once_posed() -> void:
+	if not is_inside_tree():
+		return
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if is_instance_valid(_viewport) and custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
 func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
