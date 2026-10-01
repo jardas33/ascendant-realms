@@ -477,12 +477,14 @@ func _apply_race_passive() -> void:
 			# games: +10% (was +7%).
 			base_dmg *= 1.10
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
-			# Was +12%: 7-1-1 in the plan 39 round robin.
-			base_dmg *= 1.08
+			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
+			# the two clean plan 80-81 checks, top both times.
+			base_dmg *= 1.06
 		"sylvan":                         # Precision — keener sight and reach
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
-			base_dmg *= 1.04
+			# 5-12-1 over the two clean plan 80-81 checks: +6% (was +4%).
+			base_dmg *= 1.06
 			if atk_range > 0.0:
 				atk_range += 1.2
 		"karak":                          # Stone Resolve — armored and hardy

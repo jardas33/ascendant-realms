@@ -1341,8 +1341,9 @@ func _build_top_bar() -> void:
 	objective_inset.bg_color = Color.TRANSPARENT
 	objective_inset.content_margin_left = 11.0
 	objective_inset.content_margin_right = 12.0
-	objective_inset.content_margin_top = 9.0
-	objective_inset.content_margin_bottom = 6.0
+	# Four lines in a 112 px card: the bounty line sat on the bottom edge.
+	objective_inset.content_margin_top = 6.0
+	objective_inset.content_margin_bottom = 5.0
 	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
 	add_child(_objective_panel)
 	var mission_row := HBoxContainer.new()
@@ -1363,7 +1364,7 @@ func _build_top_bar() -> void:
 		campaign_crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		mission_row.add_child(campaign_crest)
 	var mission_stack := VBoxContainer.new()
-	mission_stack.add_theme_constant_override("separation", 3)
+	mission_stack.add_theme_constant_override("separation", 1)
 	mission_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mission_row.add_child(mission_stack)
 	# Campaign battles are titled by their chapter, not the map.
@@ -4426,17 +4427,20 @@ func _on_game_over(victory: bool) -> void:
 	h_tw.tween_property(heading, "scale", Vector2.ONE, 0.55).set_delay(_result_hold + 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	h_tw.tween_property(heading, "modulate:a", 1.0, 0.3).set_delay(_result_hold + 0.35)
 	# The ledger lines reveal one after another, then the numbers count up.
+	# A long ledger (loot, deeds, talents) pushed the buttons past 4.5 s
+	# after a defeat: the whole reveal now fits in 1.2 s whatever its length.
 	var order := 0
+	var reveal_step := minf(0.12, 1.2 / maxf(1.0, float(box.get_child_count() - 1)))
 	for child in box.get_children():
 		if child == heading:
 			continue
 		child.modulate.a = 0.0
-		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(_result_hold + 0.8 + order * 0.12)
+		child.create_tween().tween_property(child, "modulate:a", 1.0, 0.3).set_delay(_result_hold + 0.8 + order * reveal_step)
 		# Epic and legendary finds land with a pop and a chime.
 		if child.has_meta("rare_pop") and child is Control:
 			var rc: Control = child
 			var pop := rc.create_tween()
-			pop.tween_interval(_result_hold + 0.8 + order * 0.12)
+			pop.tween_interval(_result_hold + 0.8 + order * reveal_step)
 			pop.tween_callback(func():
 				rc.pivot_offset = rc.size * 0.5
 				rc.scale = Vector2(1.25, 1.25)
@@ -4452,7 +4456,7 @@ func _on_game_over(victory: bool) -> void:
 		var target := int(digits)
 		var prefix := "+" if final_text.begins_with("+") else ""
 		value_label.text = prefix + "0"
-		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(_result_hold + 0.9 + order * 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		value_label.create_tween().tween_method(func(v: float): value_label.text = prefix + str(int(v)), 0.0, float(target), 1.1).set_delay(_result_hold + 0.9 + order * reveal_step).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 ## One find on the result screen: a faceted gem in the rarity's colour, the
