@@ -798,6 +798,13 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Mass orders verified:** 60 of 60 units obey one move or attack-move order. The "idle rows" seen in the audit's staged battle were archers firing in place and melee queued behind a packed front.
   - **UI:** the bounty line sits inside the objective card; the result screen reveals all its rows within 1.2 seconds, so the buttons no longer arrive late after a long loot list.
   - **For Emanuel:** `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` is a 45-minute checklist for the human session the audit asks for. The audit report now lists the status of each finding.
+- **Plan 82 (in progress): where the frame time really goes**
+  - **Correction to the audit:** the big-battle "1% low 14 FPS, worst frame 122 ms" included the probe's own screenshot captures. Measured cleanly over four 30-second runs, the 120-unit battle averages 47 to 48 FPS with a worst frame of 55 to 82 ms. The report is corrected.
+  - **What bounds the frame rate:** the display is 75 Hz with vsync. An empty battlefield view runs at 66 FPS on High (71 on Medium, the 75 cap on Low). 120 units add about 4 ms to that 15 ms base, so the base scene's rendering dominates, not the armies.
+  - **Measured and ruled out:** skeletal animation (21.3 ms per frame off, 21.9 ms on); the world's own per-tick work (0.4 ms); unit scripts in a battle (about 4 ms per simulation tick). An animation throttle was built, showed no gain, and was removed.
+  - **Fixed:** idle soldiers scanned every unit on the map every tick. They now scan five times a second, like attack-moving soldiers already did, and settle on the ground one tick in six. A standing 120-unit army went from 45 to 52 FPS.
+  - **First launch verified:** with no hero, the current menu shows "Begin the Saga" and leads to hero creation.
+  - **Running:** a pooled 90-match balance check (two runs back to back, idle machine).
 
 ## Performance and stability
 
