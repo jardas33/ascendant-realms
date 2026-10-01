@@ -857,6 +857,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - Research done, a new Age (three rising brass notes), and two low taps for a refused order.
   - **Caveat:** I cannot hear them. The waveforms were checked numerically (no clipping, no DC offset, expected pitch), and they play at low volume. Emanuel should say if any is unpleasant.
   - **Still open:** four harmless "material is null" lines at match load; two attempts to find the cause failed.
+- **Plan 87 (done): rivers and AI bases**
+  - **Balance, pooled over the last three 90-match checks (54 matches per people):** every people is between 22 and 30 wins; Karak is healthy at 8-7-3 after its fix. No stat changes this round.
+  - **Rivers were decoration.** Six maps have a river and a bridge, but the river is a walkable ford, so the bridge had no purpose, and a house could be placed in the water. Now wading is slow (62% speed) and the bridge crosses at full speed: 11.1 seconds to wade a crossing against 8.1 over the bridge. Building in the river is refused with "Cannot build in the river". A loading tip explains it.
+  - **AI walled in its own hall.** When 24 tries to find a legal building spot all failed, a fallback dropped the building 16 m in front of the hall with no checks, on the road the rules keep open. Three houses and a war hall sealed a Clanhold; four workers were stuck and eleven idle. The AI now searches a wider arc and otherwise waits. The same match went from not finishing by 24 minutes to a win at 16:39 with no stuck units.
+  - **Design gap noted:** maps have no terrain that shapes play apart from the river. All 24 are open fields from one template. Ridges, forests and chokepoints would need obstacle support in the route planner; that is a larger piece of work to plan.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
