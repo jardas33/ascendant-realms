@@ -3422,7 +3422,7 @@ func _build_hero_command_card(u) -> void:
 			# People and signature spells wear their own emblem: the people's
 			# sigil in the spell's colour, marked by what the spell does.
 			if ab.has("tint") or bool(ab.get("sig", false)):
-				btn.add_child(_spell_emblem(ab, String(u.commander.race) if u.commander else ""))
+				btn.add_child(_spell_emblem(ab, String(u.commander.race) if u.commander else "", String(cap_id)))
 			var cap_u = u
 			var aimed: bool = cap_id in ["root", "bolt", "charge"] or (float(ab.get("range", 0.0)) > 0.0 and String(ab.get("use", "enemy")) == "enemy" and (ab.has("fx") or bool(ab.get("sig", false))) and not cap_id in ["sig_chains", "sig_stoneskin", "sig_entrudo"])
 			btn.pressed.connect(func():
@@ -4603,47 +4603,119 @@ func _make_metric_clickable(surface: Control, method: String, tip: String) -> vo
 
 
 ## The emblem on a people or signature spell's card.
-func _spell_emblem(ab: Dictionary, race: String) -> Control:
+## Signature spells are written in code, so their emblem glyph is named here.
+const SIGNATURE_GLYPHS := {"sig_bull": "line", "sig_spring": "heal", "sig_ashglass": "rain", "sig_chains": "fury",
+	"sig_moura": "stun", "sig_stoneskin": "ward", "sig_sunfire": "strike", "sig_pack": "summon",
+	"sig_candles": "summon", "sig_entrudo": "flee"}
+
+func _spell_emblem(ab: Dictionary, race: String, spell_id: String = "") -> Control:
 	var e := Control.new()
 	e.name = "SpellEmblem"
 	e.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	e.position = Vector2(4, 4)
 	e.size = Vector2(68, 68)
 	var tint: Color = ab.get("tint", GameData.RACES.get(race, {}).get("color", Color(1, 0.8, 0.4)))
+	# What the spell does decides its glyph, so no two spells of a people
+	# share a picture (all three used to show the same sigil).
 	var kind := "strike"
-	var fx: Array = ab.get("fx", [])
-	for st in fx:
+	for st in ab.get("fx", []):
 		match String(st.get("op", "")):
 			"summon": kind = "summon"
 			"heal": kind = "heal"
-			"buff", "repair": kind = "ward" if kind == "strike" else kind
-	if bool(ab.get("sig", false)):
-		kind = "sig"
-	e.draw.connect(_draw_spell_emblem.bind(e, kind, tint, race))
+			"flee": kind = "flee"
+			"dash": kind = "dash"
+			"repair": kind = "repair"
+			"buff":
+				if kind == "strike":
+					kind = "ward" if float(st.get("armor", 0.0)) > 0.0 else "fury"
+			"damage":
+				if kind == "strike":
+					if String(st.get("at", "")) == "line": kind = "line"
+					elif bool(st.get("drain", false)): kind = "drain"
+					elif int(st.get("waves", 1)) > 1 and not st.has("root"): kind = "rain"
+					elif st.has("root"): kind = "root"
+					elif st.has("stun") and String(st.get("at", "")) == "hero": kind = "quake"
+					elif st.has("stun"): kind = "stun"
+					elif String(st.get("at", "")) == "hero": kind = "nova"
+	kind = String(SIGNATURE_GLYPHS.get(spell_id, kind))
+	e.draw.connect(_draw_spell_emblem.bind(e, kind, tint, race, bool(ab.get("sig", false))))
 	return e
 
-func _draw_spell_emblem(e: Control, kind: String, tint: Color, race: String) -> void:
+func _draw_spell_emblem(e: Control, kind: String, tint: Color, race: String, is_sig: bool = false) -> void:
 	var c := e.size * 0.5
+	var ink := tint.lightened(0.45)
 	e.draw_rect(Rect2(Vector2.ZERO, e.size), Color(0.03, 0.035, 0.05, 1.0))
 	e.draw_circle(c, 30.0, Color(tint, 0.22))
 	e.draw_arc(c, 29.0, 0.0, TAU, 40, Color(tint, 0.9), 2.0, true)
-	if kind == "sig":
-		e.draw_arc(c, 24.0, 0.0, TAU, 40, Color(1.0, 0.9, 0.6, 0.7), 1.2, true)
-	FACTION_SIGILS.draw(e, race, c + Vector2(0, -2), 15.0, Color(tint.lightened(0.35), 0.95))
-	# A small mark in the lower right says what the spell does.
-	var m := c + Vector2(19, 19)
-	e.draw_circle(m, 8.0, Color(0.03, 0.03, 0.04, 0.95))
+	if is_sig:
+		e.draw_arc(c, 25.0, 0.0, TAU, 40, Color(1.0, 0.9, 0.6, 0.75), 1.2, true)
+	var g := c + Vector2(-3, -3)
 	match kind:
 		"heal":
-			e.draw_rect(Rect2(m + Vector2(-1.5, -5), Vector2(3, 10)), Color(0.5, 1.0, 0.6))
-			e.draw_rect(Rect2(m + Vector2(-5, -1.5), Vector2(10, 3)), Color(0.5, 1.0, 0.6))
+			e.draw_rect(Rect2(g + Vector2(-4, -14), Vector2(8, 28)), ink)
+			e.draw_rect(Rect2(g + Vector2(-14, -4), Vector2(28, 8)), ink)
 		"ward":
-			e.draw_colored_polygon(PackedVector2Array([m + Vector2(-5, -5), m + Vector2(5, -5), m + Vector2(5, 0), m + Vector2(0, 6), m + Vector2(-5, 0)]), Color(0.85, 0.88, 1.0))
+			e.draw_colored_polygon(PackedVector2Array([g + Vector2(-13, -14), g + Vector2(13, -14), g + Vector2(13, 2), g + Vector2(0, 16), g + Vector2(-13, 2)]), ink)
+			e.draw_line(g + Vector2(0, -12), g + Vector2(0, 12), Color(0.03, 0.035, 0.05, 0.8), 2.0)
+		"repair":
+			for row in 3:
+				var y := -13.0 + row * 9.0
+				if row == 1:
+					e.draw_rect(Rect2(g + Vector2(-14, y), Vector2(5, 7)), ink)
+					e.draw_rect(Rect2(g + Vector2(-7, y), Vector2(12, 7)), ink)
+					e.draw_rect(Rect2(g + Vector2(7, y), Vector2(6, 7)), ink)
+				else:
+					e.draw_rect(Rect2(g + Vector2(-14, y), Vector2(12, 7)), ink)
+					e.draw_rect(Rect2(g + Vector2(1, y), Vector2(12, 7)), ink)
 		"summon":
-			e.draw_circle(m + Vector2(-2.5, -1), 2.5, Color(0.75, 0.85, 1.0))
-			e.draw_circle(m + Vector2(3, -1), 2.5, Color(0.75, 0.85, 1.0))
-			e.draw_rect(Rect2(m + Vector2(-5, 2), Vector2(10, 3)), Color(0.75, 0.85, 1.0))
-		"sig":
-			e.draw_colored_polygon(PackedVector2Array([m + Vector2(0, -6), m + Vector2(6, 0), m + Vector2(0, 6), m + Vector2(-6, 0)]), Color(1.0, 0.85, 0.45))
+			for dx in [-9.0, 9.0]:
+				e.draw_circle(g + Vector2(dx, -8), 5.0, ink)
+				e.draw_colored_polygon(PackedVector2Array([g + Vector2(dx - 7, 14), g + Vector2(dx - 5, -1), g + Vector2(dx + 5, -1), g + Vector2(dx + 7, 14)]), ink)
+		"fury":
+			for k in 2:
+				var top := g + Vector2(0, -15 + k * 12)
+				e.draw_colored_polygon(PackedVector2Array([top, top + Vector2(14, 12), top + Vector2(8, 12), top + Vector2(0, 5), top + Vector2(-8, 12), top + Vector2(-14, 12)]), ink)
+		"line":
+			for k in 3:
+				var tip := g + Vector2(-12 + k * 11, 0)
+				e.draw_colored_polygon(PackedVector2Array([tip + Vector2(-5, -12), tip + Vector2(7, 0), tip + Vector2(-5, 12), tip + Vector2(-1, 0)]), Color(ink, 0.55 + 0.22 * k))
+		"rain":
+			for k in 3:
+				var top2 := g + Vector2(-11 + k * 11, -14 + (4 if k == 1 else 0))
+				e.draw_line(top2, top2 + Vector2(-4, 20), ink, 2.5, true)
+				e.draw_colored_polygon(PackedVector2Array([top2 + Vector2(-8, 17), top2 + Vector2(0, 19), top2 + Vector2(-6, 26)]), ink)
+		"root":
+			e.draw_arc(g, 9.0, 0.0, TAU, 24, ink, 2.5, true)
+			for k in 8:
+				var a := TAU * float(k) / 8.0
+				e.draw_line(g + Vector2(cos(a), sin(a)) * 9.0, g + Vector2(cos(a), sin(a)) * 16.0, ink, 2.5, true)
+		"stun":
+			for k in 3:
+				e.draw_arc(g, 5.0 + k * 5.5, -0.6 + k * 1.3, 3.4 + k * 1.3, 18, ink, 2.5, true)
+		"quake":
+			e.draw_polyline(PackedVector2Array([g + Vector2(-15, 6), g + Vector2(-7, -8), g + Vector2(-2, 3), g + Vector2(4, -12), g + Vector2(9, 4), g + Vector2(15, -5)]), ink, 3.0, true)
+			e.draw_line(g + Vector2(-15, 13), g + Vector2(15, 13), ink, 2.5, true)
+		"nova":
+			e.draw_circle(g, 5.0, ink)
+			for k in 8:
+				var a2 := TAU * float(k) / 8.0 + 0.2
+				e.draw_colored_polygon(PackedVector2Array([g + Vector2(cos(a2 - 0.16), sin(a2 - 0.16)) * 8.0, g + Vector2(cos(a2), sin(a2)) * 17.0, g + Vector2(cos(a2 + 0.16), sin(a2 + 0.16)) * 8.0]), ink)
+		"drain":
+			e.draw_circle(g + Vector2(0, 5), 9.0, ink)
+			e.draw_colored_polygon(PackedVector2Array([g + Vector2(-8, 1), g + Vector2(0, -15), g + Vector2(8, 1)]), ink)
+		"dash":
+			e.draw_arc(g + Vector2(4, 0), 13.0, 1.9, 4.4, 20, ink, 3.0, true)
+			e.draw_colored_polygon(PackedVector2Array([g + Vector2(-2, -14), g + Vector2(14, -8), g + Vector2(1, -2)]), ink)
+		"flee":
+			e.draw_circle(g, 4.0, ink)
+			for k in 4:
+				var a3 := TAU * float(k) / 4.0 + PI * 0.25
+				var dir := Vector2(cos(a3), sin(a3))
+				e.draw_line(g + dir * 7.0, g + dir * 15.0, ink, 2.5, true)
+				e.draw_colored_polygon(PackedVector2Array([g + dir * 18.0, g + dir * 12.0 + dir.orthogonal() * 4.5, g + dir * 12.0 - dir.orthogonal() * 4.5]), ink)
 		_:
-			e.draw_colored_polygon(PackedVector2Array([m + Vector2(-1, -6), m + Vector2(4, -1), m + Vector2(0, 0), m + Vector2(2, 6), m + Vector2(-4, 0), m + Vector2(0, -1)]), Color(1.0, 0.6, 0.35))
+			e.draw_colored_polygon(PackedVector2Array([g + Vector2(2, -16), g + Vector2(-9, 2), g + Vector2(-1, 2), g + Vector2(-4, 16), g + Vector2(9, -3), g + Vector2(1, -3)]), ink)
+	# The people's sigil sits small in the corner.
+	var m := c + Vector2(19, 19)
+	e.draw_circle(m, 9.0, Color(0.03, 0.03, 0.04, 0.95))
+	FACTION_SIGILS.draw(e, race, m, 6.0, Color(tint.lightened(0.2), 0.95))
