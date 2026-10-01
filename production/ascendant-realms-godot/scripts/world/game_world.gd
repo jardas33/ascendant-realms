@@ -352,6 +352,14 @@ func _ready() -> void:
 	var ready_stage := _m20_begin("GAMEWORLD_READY")
 	var cfg := Match.get_config()
 	map = MapDefs.get_map(cfg.get("map", "hollowspan"))
+	# Balance tool: the first two seats trade places, to tell a seat advantage
+	# that comes from the map from one that comes from the rules.
+	if bool(cfg.get("flip_starts", false)) and (map.get("start_positions", []) as Array).size() >= 2:
+		map = map.duplicate(true)
+		var flipped: Array = map["start_positions"]
+		var first_start = flipped[0]
+		flipped[0] = flipped[1]
+		flipped[1] = first_start
 	var bounds_stage := _m20_begin("GAMEWORLD_BOUNDS", "GAMEWORLD_READY", 1)
 	_setup_playable_bounds()
 	_m20_end(bounds_stage)
@@ -771,7 +779,7 @@ func _scatter_environment() -> void:
 		# Corner starts sit inside this belt; keep their yards clear of trees.
 		if _near_any_start(pos, starts, 30.0):
 			continue
-		_place_decor(decor, (trees if pick < 0.62 else rocks), pos, rng)
+		_place_decor(decor, (trees if pick < 0.62 else rocks), pos, rng, _near_any_start(pos, starts, 40.0))
 	var recorder = _m20_recorder()
 	if recorder:
 		recorder.record_population("perimeter_decor", perimeter_count, float(Time.get_ticks_usec() - perimeter_start) / 1000.0, 0.0, "game_world._scatter_environment")
@@ -792,7 +800,7 @@ func _scatter_environment() -> void:
 		var pick := rng.randf()
 		if _near_any_start(pos, starts, 30.0):
 			continue
-		_place_decor(decor, (trees if pick < 0.72 else rocks), pos, rng)
+		_place_decor(decor, (trees if pick < 0.72 else rocks), pos, rng, _near_any_start(pos, starts, 40.0))
 	if recorder:
 		recorder.record_population("foothill_decor", foothill_count, float(Time.get_ticks_usec() - foothill_start) / 1000.0, 0.0, "game_world._scatter_environment")
 
@@ -1450,7 +1458,11 @@ func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 			return true
 	return false
 
-func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGenerator) -> void:
+## `discard`: draw the same random numbers but leave nothing standing. Used
+## for the ring just outside a start's yard, where the houses of a faction's
+## village stand (a pine grew through a cottage roof); every other tree and
+## rock on the map stays exactly where it was.
+func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGenerator, discard: bool = false) -> void:
 	if pool.is_empty():
 		return
 	# No lone trees or boulders in or against a crag.
@@ -1475,6 +1487,9 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
+	if discard:
+		inst.queue_free()
+		return
 	_prep_decor(inst, DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE), h if is_tree else 0.0)
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
@@ -1700,6 +1715,7 @@ func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clear
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
 	var __started := Time.get_ticks_usec()
 	requested = out_of_crags(requested, clearance + 1.2, origin)
+	requested = _out_of_route_margins(requested, clearance, target_blocker)
 	var __result := _solve_navigation_waypoints(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
 	_note_route_solver_time(Time.get_ticks_usec() - __started)
 	return __result
@@ -2179,6 +2195,85 @@ func _resource_navigation_approach_point(blocker: Dictionary, center: Vector3, f
 	var approach_radius := minf(RESOURCE_GATHER_INTERACTION_RADIUS - 0.05, boundary_radius + RESOURCE_CORE_ROUTE_MARGIN)
 	return center + direction * maxf(0.65, approach_radius)
 
+## A destination in the walking margin round a building (or on the building)
+## is not a place the planner can end a route: it sent the unit to a corner of
+## the building instead, up to twenty metres from the spot that was clicked,
+## sometimes on the far side. The destination is moved straight out to the
+## edge of the margin, the nearest ground a unit can stand on. The thing the
+## unit was sent to (a building to attack or enter, a resource) is left alone.
+func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker = null) -> Vector3:
+	var rects: Array = []
+	for blocker in _navigation_blocker_snapshots():
+		var node = blocker.get("node")
+		if not is_instance_valid(node) or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+			continue
+		if is_instance_valid(target_blocker) and (node == target_blocker or blocker.get("owner") == target_blocker):
+			continue
+		var c: Vector3 = blocker.get("center", node.global_position)
+		var h: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		if absf(requested.x - c.x) <= h.x + 12.0 and absf(requested.z - c.z) <= h.y + 12.0:
+			rects.append([c, h])
+	# Margins overlap (a hall and the hamlet behind it), so stepping out of
+	# one can land in the next. Try the nearest candidate first, and from a
+	# candidate that is still inside something, step out of that in turn.
+	var open: Array = [requested]
+	for _try in 24:
+		if open.is_empty():
+			break
+		var best := 0
+		for i in range(1, open.size()):
+			if open[i].distance_squared_to(requested) < open[best].distance_squared_to(requested):
+				best = i
+		var p: Vector3 = open[best]
+		open.remove_at(best)
+		var free := true
+		for rect in rects:
+			if not _point_inside_route_rectangle(p, rect[0], rect[1]):
+				continue
+			free = false
+			var c2: Vector3 = rect[0]
+			var h2: Vector2 = rect[1]
+			open.append(Vector3(c2.x - h2.x - 0.05, p.y, p.z))
+			open.append(Vector3(c2.x + h2.x + 0.05, p.y, p.z))
+			open.append(Vector3(p.x, p.y, c2.z - h2.y - 0.05))
+			open.append(Vector3(p.x, p.y, c2.z + h2.y + 0.05))
+		if free:
+			return clamp_to_playable_bounds(p) if p != requested else requested
+	return requested
+
+## Where a gatherer should stand at `node`. `wanted` is the side it comes
+## from; if that spot lies in the walking margin of a building, crag or prop
+## the route planner cannot end a route there (it stopped the worker at a
+## corner of the hall, where it stood for the rest of the match with timber
+## two steps away). Then the nearest side of the node that is free is used.
+func resource_stand_point(node, wanted: Vector3, clearance: float) -> Vector3:
+	var centre: Vector3 = node.global_position
+	var near: Array = []
+	for blocker in _navigation_blocker_snapshots():
+		var other = blocker.get("node")
+		if not is_instance_valid(other) or other == node or blocker.get("owner") == node or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+			continue
+		var c: Vector3 = blocker.get("center", other.global_position)
+		var h: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		if absf(c.x - centre.x) <= h.x + 2.5 and absf(c.z - centre.z) <= h.y + 2.5:
+			near.append([c, h])
+	if near.is_empty():
+		return wanted
+	var radius := Vector2(wanted.x - centre.x, wanted.z - centre.z).length()
+	var base := atan2(wanted.z - centre.z, wanted.x - centre.x)
+	for step in 9:
+		for side in ([1.0] if step == 0 else [1.0, -1.0]):
+			var ang: float = base + side * float(step) * PI / 8.0
+			var p := centre + Vector3(cos(ang), 0.0, sin(ang)) * radius
+			var free := true
+			for entry in near:
+				if _point_inside_route_rectangle(p, entry[0], entry[1]):
+					free = false
+					break
+			if free:
+				return p
+	return wanted
+
 func _route_rectangle_corners(center: Vector3, half_extents: Vector2) -> Array[Vector3]:
 	# Unit.command_move keeps the normal 1.2m arrival tolerance for ordinary
 	# movement. Put route waypoints beyond that stop distance so a unit settling
@@ -2485,7 +2580,10 @@ func _build_starting_base(cmd, pos: Vector3) -> void:
 	cmd.hero_ref = null
 	# starting workers + one soldier + hero
 	var start_units: Array = race.get("start_units", [])
-	var angle := 0.0
+	# The opening circle of workers and the hero are laid out from the side of
+	# the hall that faces the field, so every start is a mirror of the others.
+	var facing := atan2(-pos.z, -pos.x) if Vector2(pos.x, pos.z).length() > 6.0 else 0.0
+	var angle := facing
 	var i := 0
 	for uid_key in start_units:
 		var uid := _resolve_unit_id(cmd.race, uid_key)
@@ -2495,7 +2593,7 @@ func _build_starting_base(cmd, pos: Vector3) -> void:
 		i += 1
 	# hero
 	var hero_id: String = race.get("hero", "")
-	var hero = spawn_unit(hero_id, cmd.team, pos + Vector3(6, 0, 6))
+	var hero = spawn_unit(hero_id, cmd.team, pos + Vector3(cos(facing + 0.5), 0, sin(facing + 0.5)) * 8.5)
 	if hero:
 		cmd.hero_ref = hero
 		if ProfileManager.has_hero() and cmd.is_human:

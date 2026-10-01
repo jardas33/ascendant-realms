@@ -1811,8 +1811,16 @@ func command_attack(tgt, r1j_order_id: String = "") -> void:
 	if recorder:
 		recorder.record_unit_command(self, r1j_order_id, "attack_target" if r1j_order_id != "" else "auto_attack", before_state, state, before_target, _target, tgt.global_position)
 
+## A melee blow already in the air still lands if its owner fell in this very
+## frame. Two soldiers who swing at the same instant used to be resolved in
+## order, and the first one's blow cancelled the second's: in an even fight
+## the side that was processed first (the player's) won every exchange. In
+## 1 v 1 and 5 v 5 tests of identical squads team 0 won every time.
+var _death_frame := -1
+var _dying_blow := false
+
 func _can_attack_target(tgt) -> bool:
-	if is_dead or not is_instance_valid(tgt) or tgt == self:
+	if (is_dead and not _dying_blow) or not is_instance_valid(tgt) or tgt == self:
 		return false
 	if not (tgt is Unit or tgt is Building):
 		return false
@@ -2758,7 +2766,12 @@ func _do_attack() -> void:
 			# Revalidate the captured target before reading its transform. A target
 			# can be queue_freed during the windup, and stale closures must not
 			# dereference it before the existing attack-validity guards run.
-			if is_dead or not _can_attack_target(tgt):
+			var fell_this_frame := is_dead and _death_frame == Engine.get_process_frames()
+			if is_dead and not fell_this_frame:
+				return
+			_dying_blow = fell_this_frame
+			if not _can_attack_target(tgt):
+				_dying_blow = false
 				return
 			var in_resolution_range := global_position.distance_to(tgt.global_position) <= _combat_reach(tgt) + 0.15
 			if tgt is Unit:
@@ -2780,6 +2793,7 @@ func _do_attack() -> void:
 				# never implemented: half damage to enemies around the target.
 				if bool(hero_flags.get("cleave", false)) and is_instance_valid(tgt):
 					world.apply_splash(tgt.global_position, 2.5, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
+			_dying_blow = false
 		)
 
 func _spawn_projectile(attack_event_id: String = "") -> void:
@@ -2903,7 +2917,10 @@ func _gather_interaction_target(node) -> Vector3:
 	# point remains outside the core while staying inside the existing 2.2m
 	# gather interaction radius, so navigation can route to a legal boundary
 	# point instead of asking avoidance to enter the resource centre.
-	return node.global_position + direction.normalized() * 2.1
+	var wanted: Vector3 = node.global_position + direction.normalized() * 2.1
+	if world and world.has_method("resource_stand_point"):
+		return world.resource_stand_point(node, wanted, _building_route_clearance())
+	return wanted
 
 func _state_return(delta: float) -> void:
 	if world and not world.game_running:
@@ -3662,6 +3679,7 @@ func _die(from = null) -> void:
 	if is_dead:
 		return
 	is_dead = true
+	_death_frame = Engine.get_process_frames()
 	state = State.DEAD
 	# Retire construction ownership immediately. DEAD units no longer tick the
 	# BUILDING state, so leaving this reference live would retain a stale site

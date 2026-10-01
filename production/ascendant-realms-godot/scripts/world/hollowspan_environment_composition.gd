@@ -196,21 +196,25 @@ func build_faction_start(parent: Node3D, origin: Vector3, race: String) -> void:
 # start's own frame (toward = map centre) on the side away from the fight and
 # clear of the resource cluster; houses register as world blockers so units
 # path around them. Presentation only: no ownership, selection or economy.
+# The hamlet stands well behind the hall: the two houses of the A03 pair to
+# the left and right of the lane, eleven metres clear of the hall's back wall,
+# and a croft on each flank. (The pair used to stand at an angle with one house
+# hard against the hall's corner, roof to roof, across the path to the timber.)
 const HAMLET_HOUSES := [
 	# [asset, back, side, yaw offset, height]
-	["res://assets/environment/buildings/barrosan_houses_a03.glb", 20.0, -8.0, 0.35, 7.4],
-	["res://assets/environment/buildings/barrosan_clan_croft.glb", 18.0, 12.5, -0.5, 6.2],
-	["res://assets/environment/buildings/barrosan_clan_croft.glb", 28.0, 3.5, 2.9, 5.8],
+	["res://assets/environment/buildings/barrosan_houses_a03.glb", 27.0, 1.5, 0.0, 7.4],
+	["res://assets/environment/buildings/barrosan_clan_croft.glb", 16.0, 21.0, -0.5, 6.2],
+	["res://assets/environment/buildings/barrosan_clan_croft.glb", 16.0, -21.0, 2.9, 5.8],
 ]
 const HAMLET_DRESSING := [
 	# [asset key, back, side, yaw]
 	["logs", 18.5, -1.5, 0.9],
-	["logs", 27.0, 13.5, 2.1],
-	["fence", 29.0, -13.5, 1.25],
-	["fence", 17.0, 17.0, -0.35],
-	["wall", 36.0, -6.0, 0.15],
+	["logs", 20.0, 5.0, 2.1],
+	["fence", 37.0, -12.0, 1.25],
+	["fence", 12.0, 16.0, -0.35],
+	["wall", 39.0, 0.0, 0.15],
 	["brush", 30.5, -1.0, 0.0],
-	["brush", 22.5, 19.0, 0.5],
+	["brush", 22.5, 21.0, 0.5],
 	["cairn", 15.0, 8.0, 0.0],
 ]
 
@@ -271,9 +275,33 @@ func _place_hamlet_house(parent: Node3D, path: String, position: Vector3, yaw: f
 	house.rotation.y = yaw
 	ModelUtils.ground_model(house)
 	_set_presentation_only(house, true)
-	house.add_to_group("navigation_soft_blockers")
-	house.set_meta("navigation_blocker_id", "hamlet_house_%d" % index)
-	house.set_meta("navigation_blocker_class", "ASTRA_LARGE")
+	# The A03 asset is two houses with a yard between them. As one blocker its
+	# box was 27 by 38 metres of mostly open ground (set at an angle, so the box
+	# is far larger than the houses): it lay over the back of the hall and over
+	# a starting worker, routes went round ground anyone could walk on, and it
+	# was too big to count as a solid obstacle, so soldiers walked through the
+	# houses themselves. Each house is its own blocker now.
+	var parts := {}
+	for mesh in house.find_children("*", "MeshInstance3D", true, false):
+		var prefix := String(mesh.name).get_slice("_", 0)
+		if prefix.length() == 1:
+			if not parts.has(prefix):
+				parts[prefix] = []
+			parts[prefix].append(mesh)
+	if parts.size() < 2:
+		house.add_to_group("navigation_soft_blockers")
+		house.set_meta("navigation_blocker_id", "hamlet_house_%d" % index)
+		house.set_meta("navigation_blocker_class", "ASTRA_LARGE")
+		return house
+	for prefix in parts:
+		var part := Node3D.new()
+		part.name = "House%s" % prefix
+		house.add_child(part)
+		for mesh in parts[prefix]:
+			(mesh as Node3D).reparent(part, true)
+		part.add_to_group("navigation_soft_blockers")
+		part.set_meta("navigation_blocker_id", "hamlet_house_%d%s" % [index, String(prefix).to_lower()])
+		part.set_meta("navigation_blocker_class", "ASTRA_LARGE")
 	return house
 
 

@@ -2536,6 +2536,8 @@ func _refresh_single_live() -> void:
 	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
 	if not unavailable_reason.is_empty():
 		for w in _ability_widgets:
+			if not is_instance_valid(w["button"]) or not is_instance_valid(w["overlay"]):
+				continue
 			var unavailable_button: Button = w["button"]
 			var unavailable_overlay: Label = w["overlay"]
 			if is_instance_valid(unavailable_button):
@@ -2584,9 +2586,12 @@ func _refresh_single_live() -> void:
 		_single_economy_label.text = _worker_cargo_text(u)
 	# ability cooldown / affordability visuals
 	for w in _ability_widgets:
-		var btn: Button = w["button"]
-		if not is_instance_valid(btn):
+		# Check before the typed assignment: putting a freed button into a
+		# typed variable is itself a script error, which stopped every spell
+		# button's cooldown from updating once the card had been rebuilt.
+		if not is_instance_valid(w["button"]) or not is_instance_valid(w["overlay"]):
 			continue
+		var btn: Button = w["button"]
 		var id: String = w["id"]
 		var cd: float = float(u.ability_cd.get(id, 0.0)) if "ability_cd" in u else 0.0
 		var ab: Dictionary = SkillDefs.get_abilities().get(id, {})
@@ -3219,6 +3224,16 @@ func _rebuild_command_card(single, selection: Array) -> void:
 	_card_single = single
 	_card_selection = selection.duplicate()
 	_card_watch.clear()
+	# The hero's card lists its spell buttons afresh every time it is built.
+	var kept_widgets := []
+	for w in _ability_widgets:
+		var wb = w["button"]
+		if not is_instance_valid(wb):
+			continue
+		if (is_instance_valid(_cmd_body) and _cmd_body.is_ancestor_of(wb)) or (is_instance_valid(_cmd_fixed) and _cmd_fixed.is_ancestor_of(wb)):
+			continue
+		kept_widgets.append(w)
+	_ability_widgets = kept_widgets
 	_hide_command_tooltip()
 	_clear_children(_cmd_fixed)
 	_clear_children(_cmd_body)

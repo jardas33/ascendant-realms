@@ -142,7 +142,14 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	build_time = float(p_def.get("build_time", 30.0))
 	if commander:
 		build_time *= commander.build_speed_mult()
-	rally_point = global_position + Vector3(0, 0, footprint + 3.0)
+	# New soldiers step out on the side that faces the middle of the field.
+	# The default used to be due north for every building, which is the front
+	# of a south-western base and the back of a north-eastern one: there the
+	# soldiers came out behind their hall, against the map's edge. In mirror
+	# matches the south-western start won 23 of 28.
+	var field_side := Vector3(-global_position.x, 0.0, -global_position.z)
+	field_side = field_side.normalized() if field_side.length() > 6.0 else Vector3(0, 0, 1)
+	rally_point = global_position + field_side * (footprint + 3.0)
 	if world and world.has_method("clear_ground_cover"):
 		world.clear_ground_cover(global_position, footprint * 1.2 + 1.0)
 	_build_model()
