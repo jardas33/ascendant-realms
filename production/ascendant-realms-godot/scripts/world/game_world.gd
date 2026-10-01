@@ -832,6 +832,30 @@ func _start_ambient_sound() -> void:
 	add_child(amb)
 	amb.build(str(map.get("theme", "highland")), battle_mood())
 
+# --- The ford ---------------------------------------------------------------
+# Bridge maps have a shallow river across the field. It can be waded anywhere,
+# but wading is slow: the bridge is the fast crossing, so it is worth holding.
+const FORD_SPEED := 0.62
+const BRIDGE_HALF_WIDTH := 6.5
+
+## True when `pos` (with `margin` metres to spare) stands in the river water
+## and not on the bridge deck.
+func in_ford(pos: Vector3, margin: float = 0.0) -> bool:
+	if not map.has("bridge") or not bool(map.get("water", {}).get("enabled", false)):
+		return false
+	var ov: Dictionary = map.get("overview", {})
+	# The visible water is 80% of the overview width (see TerrainBuilder._build_ford).
+	var half_w: float = float(ov.get("water_width", 22.0)) * 0.4
+	if absf(pos.z - float(ov.get("water_center_z", 52.0))) > half_w + margin:
+		return false
+	var bridge_pos: Vector3 = map["bridge"].get("pos", Vector3.ZERO)
+	return absf(pos.x - bridge_pos.x) > BRIDGE_HALF_WIDTH + margin * 0.5
+
+## Movement speed factor of the ground under `pos`: 1.0 on land and on the
+## bridge, FORD_SPEED in the river.
+func terrain_speed_mult(pos: Vector3) -> float:
+	return FORD_SPEED if in_ford(pos) else 1.0
+
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
 	return String(ProfileManager.settings().get("graphics", "high"))
@@ -2290,6 +2314,9 @@ func get_building_placement_reason(building_id: String, team: int, pos: Vector3,
 	var lim := float(map.get("size", MapDefs.MAP_SIZE)) - 6.0
 	if abs(pos.x) > lim or abs(pos.z) > lim or abs(pos.y) > 1.0:
 		return "Outside build area"
+	# Nothing is built in the river: a hall used to be placeable mid-ford.
+	if in_ford(pos, fp * 0.8):
+		return "Cannot build in the river"
 	# A real construction worker is required, but the worker is not reserved by
 	# this pure validation call. This catches AI/player attempts that could never
 	# be serviced while leaving the existing worker command as the authority.

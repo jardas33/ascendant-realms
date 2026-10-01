@@ -1010,6 +1010,12 @@ func _seen_by_player() -> bool:
 
 ## An axe, a pick or a sickle for the player's own workers on screen, rate
 ## limited across the whole workforce (gathering used to be silent).
+## Wading the river is slow; the bridge is not (GameWorld.terrain_speed_mult).
+func _ground_speed_mult() -> float:
+	if world and world.has_method("terrain_speed_mult"):
+		return float(world.terrain_speed_mult(global_position))
+	return 1.0
+
 func _play_work_sfx(kind: String) -> void:
 	if not world or team != world.player_team:
 		return
@@ -3071,7 +3077,7 @@ func _worker_build_target_velocity(avoidance_velocity: Vector3) -> Vector3:
 	if to_target.length_squared() < 0.0025:
 		return avoidance_velocity
 	var direction := to_target.normalized()
-	var speed := move_speed
+	var speed := move_speed * _ground_speed_mult()
 	if _slow > 0.0:
 		speed *= 0.5
 	if _rooted > 0.0:
@@ -3253,7 +3259,7 @@ func _move_along_path(delta: float) -> bool:
 	if _sidestep_time > 0.0:
 		_sidestep_time -= delta
 		dir = (dir * 0.35 + Vector3(-dir.z, 0.0, dir.x) * _sidestep_sign).normalized()
-	var spd := move_speed
+	var spd := move_speed * _ground_speed_mult()
 	if _slow > 0.0: spd *= 0.5
 	if _rooted > 0.0: spd = 0.0
 	var requested_velocity: Vector3 = dir * spd

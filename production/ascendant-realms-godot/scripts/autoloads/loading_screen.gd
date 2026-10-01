@@ -268,6 +268,7 @@ const TIPS := [
 	"The Moura Court's Fool's Gold pays twenty gold for every enemy it catches.",
 	"Soldiers who reach rank 3 earn a name. Keep them alive, and they march with you in the retinue.",
 	"Lock your favourite gear in the War Chest so Salvage Commons never melts it.",
+	"A river can be waded anywhere, but wading is slow. Whoever holds the bridge crosses at full speed.",
 ]
 
 
