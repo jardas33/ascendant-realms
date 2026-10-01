@@ -9,7 +9,16 @@ const WORDMARK := "res://assets/ui/wordmark_title.png"
 const CAPTURE_BOOTSTRAP_SCRIPT := preload("res://tests/capture_bootstrap.gd")
 var _tutorial_button: Button
 
+## Env switches of the capture drivers that start from this scene.
+const CAPTURE_ENVS := ["ASCENDANT_CURRENT_COMBAT_CAPTURE", "ASCENDANT_CURRENT_MILITARY_PRODUCTION_CAPTURE", "ASCENDANT_CURRENT_RESEARCH_CAPTURE", "ASCENDANT_CURRENT_SHORT_PUBLIC_CAPTURE", "ASCENDANT_CURRENT_WORKER_ECONOMY_CAPTURE", "ASCENDANT_P1S1_CAPTURE", "ASCENDANT_P1S4_CAPTURE", "ASCENDANT_P1_LOAD01", "ASCENDANT_P1_UI_CAPTURE", "ASCENDANT_V0431_CAPTURE", "ASCENDANT_V0432_CAPTURE", "ASCENDANT_V0433_CAPTURE", "ASCENDANT_V0434_CAPTURE", "ASCENDANT_V0435_CAPTURE", "ASCENDANT_V0436_CAPTURE", "ASCENDANT_V0436_E1R2_CAPTURE", "ASCENDANT_V0436_E3R_CAPTURE", "ASCENDANT_V0436_R1C_CAPTURE", "ASCENDANT_V0436_R1D_STARTUP_CAPTURE", "ASCENDANT_V0436_R1F_CAPTURE", "ASCENDANT_V0436_R1G_CAPTURE", "ASCENDANT_V0436_R1H_CAPTURE", "ASCENDANT_V0436_R1J_CAPTURE", "ASCENDANT_V0436_R1K_CAPTURE", "ASCENDANT_V0436_R1_CAPTURE"]
+
 func _ready() -> void:
+	# Players go straight to the current menu (hero card, Continue, Endless
+	# Road), the one every Back button returns to. This scene stays the entry
+	# point only for the capture drivers switched on by CAPTURE_ENVS.
+	if not _capture_requested():
+		get_tree().change_scene_to_file.call_deferred("res://scenes/ui/main_menu.tscn")
+		return
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if ResourceLoader.exists("res://assets/ui/theme.tres"):
@@ -27,6 +36,12 @@ func _ready() -> void:
 		call_deferred("_start_v0431_capture_scene")
 	if OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") != "1" and (OS.get_environment("ASCENDANT_CURRENT_COMBAT_CAPTURE") == "1" or OS.get_environment("ASCENDANT_CURRENT_SHORT_PUBLIC_CAPTURE") == "1" or OS.get_environment("ASCENDANT_P1_UI_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1G_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0432_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1"):
 		call_deferred("_start_v0431_capture_scene")
+
+func _capture_requested() -> bool:
+	for k in CAPTURE_ENVS:
+		if OS.get_environment(String(k)) == "1":
+			return true
+	return false
 
 func _start_e3r_menu_capture() -> void:
 	if not is_instance_valid(_tutorial_button) or get_tree().root.has_meta("e3r_menu_capture_consumed"):

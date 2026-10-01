@@ -3190,9 +3190,11 @@ func _spawn_champion(depth: int) -> void:
 	var champ_name := "%s %s" % [CHAMPION_NAMES[depth % CHAMPION_NAMES.size()], CHAMPION_EPITHETS[(depth / 5) % CHAMPION_EPITHETS.size()]]
 	boss.def = boss.def.duplicate()
 	boss.def["name"] = champ_name
+	var champ_id: int = boss.get_instance_id()
 	get_tree().create_timer(8.0, false).timeout.connect(func():
+		var champ = instance_from_id(champ_id)
 		if game_running:
-			emit_signal("alert", "%s, a Champion, guards the enemy stronghold. Break them, and the road pays threefold." % champ_name, boss.global_position if is_instance_valid(boss) else Vector3.ZERO))
+			emit_signal("alert", "%s, a Champion, guards the enemy stronghold. Break them, and the road pays threefold." % champ_name, champ.global_position if is_instance_valid(champ) else Vector3.ZERO))
 
 ## Road Tyrants (EndlessDefs.BOSSES): a named giant on every 25th stage, with
 ## a mechanic of its own, run from a once-a-second tick while it lives.
@@ -3258,9 +3260,11 @@ func _spawn_road_boss(depth: int) -> void:
 			var guard = spawn_unit(pick, 1, boss.global_position + Vector3(cos(k * 1.57), 0, sin(k * 1.57)) * 4.0)
 			if guard:
 				guard.set_meta("boss_court", true)
+	var tyrant_id: int = boss.get_instance_id()
 	get_tree().create_timer(6.0, false).timeout.connect(func():
-		if game_running and is_instance_valid(boss):
-			emit_signal("alert", "%s holds the enemy stronghold. %s" % [String(bdef["name"]), String(bdef["text"])], boss.global_position))
+		var tyrant = instance_from_id(tyrant_id)
+		if game_running and is_instance_valid(tyrant):
+			emit_signal("alert", "%s holds the enemy stronghold. %s" % [String(bdef["name"]), String(bdef["text"])], tyrant.global_position))
 	_boss_tick()
 
 const TYRANT_AURA := {"pulse": Color(1.0, 0.5, 0.2), "summon": Color(0.75, 0.85, 1.0), "regen": Color(1.0, 0.85, 0.45),
@@ -3961,9 +3965,12 @@ func _try_hero_revival(cmd, hero_id: String) -> void:
 	if cmd.team == player_team:
 		emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
 		# Back on their feet, they call the host again.
+		var risen_id: int = hero.get_instance_id()
+		var risen_race := String(cmd.race)
 		get_tree().create_timer(1.0, false).timeout.connect(func():
-			if is_instance_valid(hero) and hero.has_method("say"):
-				hero.say(load("res://scripts/game/bark_defs.gd").pick(String(cmd.race), "start")))
+			var risen = instance_from_id(risen_id)
+			if is_instance_valid(risen) and risen.has_method("say"):
+				risen.say(load("res://scripts/game/bark_defs.gd").pick(risen_race, "start")))
 
 func _on_building_died(building) -> void:
 	_unregister_world_blocker(building)
@@ -4140,14 +4147,16 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			spawn_ring_fx(hero.global_position, Color(1, 0.5, 0.9), 6.0)
 			CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.55, 0.95), 2.0)
 			emit_signal("camera_shake", 0.5, hero.global_position)
+			var avatar_id: int = hero.get_instance_id()
 			get_tree().create_timer(12.0).timeout.connect(func():
-				if is_instance_valid(hero) and not hero.is_dead:
-					hero.max_hp /= 1.5
-					hero.hp = min(hero.hp, hero.max_hp)
-					hero.base_dmg /= 1.6
-					if hero.model_root:
-						var t2 = hero.create_tween()
-						t2.tween_property(hero.model_root, "scale", hero.model_root.scale / 1.4, 0.4)
+				var hero_now = instance_from_id(avatar_id)
+				if is_instance_valid(hero_now) and not hero_now.is_dead:
+					hero_now.max_hp /= 1.5
+					hero_now.hp = min(hero_now.hp, hero_now.max_hp)
+					hero_now.base_dmg /= 1.6
+					if hero_now.model_root:
+						var t2 = hero_now.create_tween()
+						t2.tween_property(hero_now.model_root, "scale", hero_now.model_root.scale / 1.4, 0.4)
 			)
 
 ## The ten signature spells, one per people (SkillDefs.SIGNATURE). Each
@@ -4188,13 +4197,16 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 		"sig_ashglass":
 			# Violet fire on the ground for 6 seconds.
 			var burn := float(ab.get("dmg", 22)) * m
+			var burner_id: int = hero.get_instance_id()
 			for k in 6:
 				get_tree().create_timer(float(k) + 0.2, false).timeout.connect(func():
 					if not game_running:
 						return
+					var burner = instance_from_id(burner_id)
+					if not is_instance_valid(burner): burner = {"source_team": team}
 					for u in all_units():
 						if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(to) <= 6.0:
-							u.take_damage(GameData.compute_damage(burn, "magic", u.armor_class, u.cur_armor()), hero)
+							u.take_damage(GameData.compute_damage(burn, "magic", u.armor_class, u.cur_armor()), burner)
 					if is_instance_valid(_fx_container) and player_visibility_state_at(to) == VISIBILITY_CURRENTLY_VISIBLE:
 						CombatVfx.hit(_fx_container, to + Vector3(randf_range(-3, 3), 0.5, randf_range(-3, 3)), Color(0.75, 0.3, 1.0), true)
 						spawn_ring_fx(to, Color(0.7, 0.3, 1.0), 6.0))
@@ -4225,15 +4237,18 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 			# A warning ring, then after a second the lance of light.
 			spawn_ring_fx(to, Color(1.0, 0.85, 0.3), 5.0)
 			var lance := float(ab.get("dmg", 160)) * m
+			var lancer_id: int = hero.get_instance_id()
 			get_tree().create_timer(1.0, false).timeout.connect(func():
 				if not game_running:
 					return
+				var lancer = instance_from_id(lancer_id)
+				if not is_instance_valid(lancer): lancer = {"source_team": team}
 				for u in all_units():
 					if is_instance_valid(u) and not u.is_dead and u.team != team and u.global_position.distance_to(to) <= 5.0:
-						u.take_damage(GameData.compute_damage(lance, "magic", u.armor_class, u.cur_armor()), hero)
+						u.take_damage(GameData.compute_damage(lance, "magic", u.armor_class, u.cur_armor()), lancer)
 				for b in all_buildings():
 					if is_instance_valid(b) and not b.is_dead and int(b.team) != team and b.global_position.distance_to(to) <= 5.0 + float(b.footprint) * 0.5:
-						b.take_damage(lance * 0.5, hero)
+						b.take_damage(lance * 0.5, lancer)
 				CombatVfx.lume_pillar(_fx_container, to, Color(1.0, 0.85, 0.35))
 				CombatVfx.shockwave(_fx_container, to, Color(1.0, 0.8, 0.3), 5.0)
 				emit_signal("camera_shake", 0.8, to))
@@ -4251,8 +4266,9 @@ func _cast_signature(hero, id: String, target_pos: Vector3, level: int, power: f
 					continue
 				mark_summoned(su)
 				su.base_dmg *= 1.0 + 0.2 * float(level - 1)
-				var ref = su
+				var ref_id: int = su.get_instance_id()
 				get_tree().create_timer(25.0, false).timeout.connect(func():
+					var ref = instance_from_id(ref_id)
 					if is_instance_valid(ref) and not ref.is_dead:
 						_dismiss_summon(ref))
 			CombatVfx.lume_pillar(_fx_container, at, Color(0.75, 0.85, 1.0) if id == "sig_pack" else Color(1.0, 0.8, 0.45))
@@ -4296,9 +4312,11 @@ func _run_spell_fx(hero, ab: Dictionary, target_pos: Vector3, level: int, power:
 					if delay <= 0.0:
 						_spell_damage_wave(hero, st, from, to, m, tint, w == 0)
 					else:
+						var caster_id: int = hero.get_instance_id()
 						get_tree().create_timer(delay, false).timeout.connect(func():
-							if game_running and is_instance_valid(hero):
-								_spell_damage_wave(hero, st, hero.global_position if String(st.get("at", "")) == "hero" else from, to, m, tint, false))
+							var caster = instance_from_id(caster_id)
+							if game_running and is_instance_valid(caster):
+								_spell_damage_wave(caster, st, caster.global_position if String(st.get("at", "")) == "hero" else from, to, m, tint, false))
 			"heal":
 				var at: Vector3 = to if String(step.get("at", "hero")) == "target" else from
 				heal_allies_near(at, float(step.get("r", 14.0)), (float(step.get("amt", 60)) + float(hero.heal_power) * 0.5) * m, team)
@@ -4324,8 +4342,9 @@ func _run_spell_fx(hero, ab: Dictionary, target_pos: Vector3, level: int, power:
 					if su == null:
 						continue
 					mark_summoned(su)
-					var ref = su
+					var ref_id: int = su.get_instance_id()
 					get_tree().create_timer(float(step.get("secs", 30.0)), false).timeout.connect(func():
+						var ref = instance_from_id(ref_id)
 						if is_instance_valid(ref) and not ref.is_dead:
 							_dismiss_summon(ref))
 				if is_instance_valid(_fx_container):
@@ -4416,8 +4435,9 @@ func _ossuary_bell_rise(unit) -> void:
 				var su = spawn_unit("hollow_skeleton", int(cmd.team), pos)
 				if su:
 					mark_summoned(su)
-					var ref = su
+					var ref_id: int = su.get_instance_id()
 					get_tree().create_timer(40.0, false).timeout.connect(func():
+						var ref = instance_from_id(ref_id)
 						if is_instance_valid(ref) and not ref.is_dead:
 							_dismiss_summon(ref)))
 			return

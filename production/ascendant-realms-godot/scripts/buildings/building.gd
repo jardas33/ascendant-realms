@@ -1403,8 +1403,9 @@ func _landmark_tick(delta: float) -> void:
 					var su = world.spawn_unit("vorthak_ash_thrall", team, here + Vector3(4.0 - 8.0 * k, 0.0, 4.0))
 					if su:
 						world.mark_summoned(su)
-						var ref = su
+						var ref_id: int = su.get_instance_id()
 						get_tree().create_timer(60.0, false).timeout.connect(func():
+							var ref = instance_from_id(ref_id)
 							if is_instance_valid(ref) and not ref.is_dead and is_instance_valid(world):
 								world._dismiss_summon(ref))
 				if team == world.player_team:
@@ -1446,8 +1447,9 @@ func _landmark_tick(delta: float) -> void:
 							if su:
 								world.mark_summoned(su)
 								su.command_move(u.global_position, true)
-								var ref = su
+								var ref_id: int = su.get_instance_id()
 								get_tree().create_timer(30.0, false).timeout.connect(func():
+									var ref = instance_from_id(ref_id)
 									if is_instance_valid(ref) and not ref.is_dead and is_instance_valid(world):
 										world._dismiss_summon(ref))
 						break

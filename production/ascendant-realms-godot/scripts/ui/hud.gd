@@ -955,10 +955,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		btn.add_child(key_badge)
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
-		var status_label := _mk_label(status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
+		# "COMPLETED" was cut to "COMPLET..." in the 75 px slot: finished work reads DONE.
+		var status_label := _mk_label("DONE" if status == "COMPLETED" else status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
-		status_label.offset_left = -83.0
+		status_label.offset_left = -112.0
 		status_label.offset_right = -8.0
 		status_label.offset_top = card_height - 19
 		status_label.offset_bottom = card_height - 2
@@ -1313,8 +1314,19 @@ func _build_top_bar() -> void:
 	var mode_name := str(identity.get("mode", "skirmish")).capitalize()
 	var map_id := str(identity.get("map", "hollowspan"))
 	var map_name := str(MapDefs.get_map(map_id).get("name", map_id)).strip_edges()
+	# Against several opponents the header counts them and the full line
+	# names each; it used to name only the first ("Barrosan vs Lioraen" in a
+	# one-against-three stage).
+	var short_opponent := opponent_name.get_slice(" ", 0)
+	if opponents.size() > 1:
+		var all_names: Array = []
+		for o in opponents:
+			var o_race := str(o.get("race", ""))
+			all_names.append(str(GameData.RACES.get(o_race, {}).get("name", o_race)).strip_edges())
+		opponent_name = ", ".join(all_names)
+		short_opponent = "%d Hosts" % opponents.size()
 	var full_identity := "%s  vs  %s  •  %s  •  %s" % [player_name, opponent_name, mode_name, map_name]
-	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), opponent_name.get_slice(" ", 0)]
+	var short_identity := "%s  vs  %s" % [player_name.get_slice(" ", 0), short_opponent]
 	var objective_crest_path := String(COMMAND_CRESTS.get(player_race, ""))
 	var objective_has_painted_crest := not objective_crest_path.is_empty() and ResourceLoader.exists(objective_crest_path)
 	# Every faction shows a crest: painted art where it exists, a drawn
@@ -2654,13 +2666,18 @@ func _build_multi(units: Array) -> void:
 		if not is_instance_valid(u):
 			continue
 		var cell: BoxContainer = HBoxContainer.new() if expanded_pair else VBoxContainer.new()
-		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(54, 64)
+		# On wide screens the six columns have room for whole names
+		# ("Seedkeeper" was cut to "Seedkee..." in a 54 px cell).
+		var cell_w := 74.0 if get_viewport_rect().size.x >= 1800.0 else 54.0
+		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, 64)
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var portrait_size := Vector2(64, 64) if expanded_pair else Vector2(54, 46)
 		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
 			portrait.custom_minimum_size = portrait_size
+			if not expanded_pair:
+				portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 			cell.add_child(portrait)
 			portrait.configure_entity(u)
 			# EntityPortraitView restores its full-card minimum during _ready();
@@ -2678,7 +2695,7 @@ func _build_multi(units: Array) -> void:
 		# Small cards keep the name's last word ("Crag Archer" reads "Archer")
 		# rather than cutting it off; the full name is on the tooltip.
 		var full_name := str(u.def.get("name", "Unit"))
-		var card_name := full_name if expanded_pair or bool(u.is_hero) else full_name.split(" ")[-1]
+		var card_name := full_name if expanded_pair else full_name.split(" ")[-1]
 		cell.tooltip_text = full_name
 		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + card_name, 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -2686,6 +2703,8 @@ func _build_multi(units: Array) -> void:
 		details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
 		bar.custom_minimum_size = Vector2(70, 8) if expanded_pair else Vector2(50, 8)
+		if not expanded_pair:
+			bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		details.add_child(bar)
 		grid.add_child(cell)
 		_multi_bars.append({"unit": u, "bar": bar})
@@ -2787,11 +2806,13 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		t.wait_time = 0.2
 		t.autostart = true
 		cap_pb.add_child(t)
+		var cap_b_id: int = cap_b.get_instance_id()
 		t.timeout.connect(func():
-			if is_instance_valid(cap_b) and is_instance_valid(cap_pb):
-				cap_pb.value = clamp(cap_b.build_progress, 0.0, 1.0)
+			var cb = instance_from_id(cap_b_id)
+			if is_instance_valid(cb) and is_instance_valid(cap_pb):
+				cap_pb.value = clamp(cb.build_progress, 0.0, 1.0)
 				if is_instance_valid(cap_label):
-					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0))
+					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cb.build_progress, 0.0, 1.0) * 100.0))
 
 	# production queue row (only meaningful when it produces)
 	if not read_only and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
@@ -3500,13 +3521,15 @@ func _build_building_card(b) -> void:
 		t.wait_time = 0.2
 		t.autostart = true
 		site.add_child(t)
+		var site_b_id: int = cap_b.get_instance_id()
 		t.timeout.connect(func():
-			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_site):
-				var pct := roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0)
+			var cb = instance_from_id(site_b_id)
+			if is_instance_valid(cb) and is_instance_valid(cap_label) and is_instance_valid(cap_site):
+				var pct := roundi(clampf(cb.build_progress, 0.0, 1.0) * 100.0)
 				cap_label.text = "%d%%" % pct
-				cap_site.set_progress(float(cap_b.build_progress))
+				cap_site.set_progress(float(cb.build_progress))
 				if is_instance_valid(cap_stage):
-					cap_stage.text = _construction_phase(float(cap_b.build_progress))
+					cap_stage.text = _construction_phase(float(cb.build_progress))
 		)
 		return
 	var def: Dictionary = b.def

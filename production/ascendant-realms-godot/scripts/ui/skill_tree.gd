@@ -815,7 +815,7 @@ func _refresh_nodes() -> void:
 		cost_label.text = "%d SP  ·  %s" % [int(n.get("cost", 1)), _node_tag(n)]
 		cost_label.modulate = GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
 		var name_label: Label = b.get_child(1) as Label
-		name_label.modulate = Color(1, 1, 1, 1) if state != "PREREQUISITE_BLOCKED" else Color(0.72, 0.75, 0.82, 0.8)
+		name_label.modulate = Color(1, 1, 1, 1) if state != "PREREQUISITE_BLOCKED" else Color(0.86, 0.88, 0.94, 0.96)
 		if id == _selected_id:
 			name_label.add_theme_color_override("font_color", GOLD_BRIGHT)
 		else:
