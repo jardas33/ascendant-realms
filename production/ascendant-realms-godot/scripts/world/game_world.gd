@@ -111,7 +111,7 @@ func _start_lume_surge() -> void:
 	Sfx.play("spell", -2.0)
 	# The AI races for it too, with idle soldiers that are close enough.
 	for cmd in commanders:
-		if int(cmd.team) == player_team or cmd.defeated:
+		if (int(cmd.team) == player_team and not _is_balance_run()) or cmd.defeated:
 			continue
 		var sent := 0
 		for u in cmd.units:
@@ -223,10 +223,20 @@ func _bounty_met(victory: bool) -> bool:
 		"raze": return building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size() >= int(bounty["count"])
 	return false
 
+## True in the AI-versus-AI balance probe, where the player's seat is driven
+## by the same AI: rules that treat the player differently are switched off
+## so that both seats are equal.
+func _is_balance_run() -> bool:
+	return String(Match.get_config().get("ai_seat_difficulty", "")) != ""
+
 ## About one enemy soldier in 25 is an Elite: tougher, larger, gold-edged and
 ## worth extra loot. Chosen from the match seed and spawn order.
 func _maybe_make_elite(u, team: int) -> void:
 	if team == player_team or u.is_worker or u.is_hero or u.is_siege:
+		return
+	# AI-versus-AI balance runs: no Elites, or the second seat fields a
+	# stronger army than the first (the first seat won only 41% of 108 matches).
+	if _is_balance_run():
 		return
 	if absi(sim_seed_for(u.spawn_serial) % 100) >= 4:
 		return
@@ -983,7 +993,12 @@ func _build_crags() -> void:
 				holder.add_child(extra)
 				clear_ground_cover(pos + offset, thin + 1.5)
 		clear_ground_cover(pos, thin + 1.5)
-	load("res://scripts/world/static_batcher.gd").batch(layer)
+	# One merged mesh per crag, not one for all of them: a crag off screen is
+	# then culled instead of every ridge on the map being drawn every frame.
+	var batcher = load("res://scripts/world/static_batcher.gd")
+	for holder in layer.get_children():
+		if holder is Node3D:
+			batcher.batch(holder)
 
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
@@ -3783,6 +3798,7 @@ func _physics_process(delta: float) -> void:
 	match_time += delta
 	_sample_army_timeline(delta)
 	_check_survival()
+	_tick_domination(delta)
 	_visibility_timer += delta
 	if _visibility_timer >= VISIBILITY_UPDATE_INTERVAL:
 		_visibility_timer = 0.0
@@ -3865,6 +3881,73 @@ func _check_survival() -> void:
 	var left := survival_remaining()
 	if left == 0.0 and not match_ended and is_instance_valid(player_commander) and not player_commander.defeated:
 		_end_game(true, "You held until dawn")
+
+# --- Domination --------------------------------------------------------------
+# A second way to win a skirmish: hold every Lume site on the field at once
+# for DOMINATION_HOLD seconds. Conquest still wins as well. Any side can do
+# it, so a player who ignores the sites can lose to an enemy that takes them.
+const DOMINATION_HOLD := 150.0
+## No clock runs in the first five minutes: on a one-site map the side that
+## reached the spire first would win before the other had raised an army.
+const DOMINATION_OPENS := 300.0
+var _dom_team := -1
+var _dom_time := 0.0
+var _dom_warned := {}
+
+## {} outside Domination. Otherwise the team holding every site (-1 if none),
+## the seconds left on its clock, and how many sites the player holds.
+func domination_status() -> Dictionary:
+	if _victory_kind != "domination":
+		return {}
+	var points: Array = get_tree().get_nodes_in_group("capture_points")
+	var mine := 0
+	for p in points:
+		if is_instance_valid(p) and int(p.owner_team) == player_team:
+			mine += 1
+	return {"team": _dom_team, "left": maxf(0.0, DOMINATION_HOLD - _dom_time), "held": mine, "total": points.size(),
+		"opens_in": maxf(0.0, DOMINATION_OPENS - match_time)}
+
+func _tick_domination(delta: float) -> void:
+	if _victory_kind != "domination" or match_ended or match_time < DOMINATION_OPENS:
+		return
+	var points: Array = get_tree().get_nodes_in_group("capture_points")
+	if points.is_empty():
+		return
+	var holder := int(points[0].owner_team) if is_instance_valid(points[0]) else -1
+	for p in points:
+		if not is_instance_valid(p) or int(p.owner_team) != holder:
+			holder = -1
+			break
+	if holder >= 0 and (holder >= commanders.size() or commanders[holder].defeated):
+		holder = -1
+	if holder < 0:
+		if _dom_team >= 0:
+			emit_signal("alert", "The hold on the Lume sites is broken." if _dom_team != player_team else "You no longer hold every Lume site.", Vector3.ZERO)
+		_dom_team = -1
+		_dom_time = 0.0
+		return
+	var site: Vector3 = points[0].global_position
+	if holder != _dom_team:
+		_dom_team = holder
+		_dom_time = 0.0
+		_dom_warned.clear()
+		if holder == player_team:
+			emit_signal("alert", "You hold every Lume site. Keep them for %d seconds to win." % int(DOMINATION_HOLD), site)
+		else:
+			var holder_name := String(GameData.get_race(String(commanders[holder].race)).get("name", "The enemy"))
+			emit_signal("alert", "%s holds every Lume site! Take one back within %d seconds or lose." % [holder_name, int(DOMINATION_HOLD)], site)
+			Sfx.play("horn", -4.0)
+	_dom_time += delta
+	var left := DOMINATION_HOLD - _dom_time
+	for mark in [60, 30, 10]:
+		if left <= float(mark) and not _dom_warned.has(mark):
+			_dom_warned[mark] = true
+			emit_signal("alert", ("%d seconds until you win by domination." if holder == player_team else "%d seconds until the enemy wins by domination!") % mark, site)
+	if left <= 0.0:
+		if holder == player_team:
+			_end_game(true, "Domination")
+		else:
+			_end_game(false, "domination_lost")
 
 func _check_victory() -> void:
 	# Conquest requires no HQ, no live rebuilding worker, and no live buildings.
@@ -4137,7 +4220,7 @@ func _schedule_hero_revival(cmd, hero_id: String) -> void:
 	if hero_id == "" or not game_running:
 		return
 	var delay := 45.0
-	if cmd.is_human and ProfileManager.has_hero():
+	if cmd.is_human and ProfileManager.has_hero() and not _is_balance_run():
 		delay += minf(45.0, float(ProfileManager.hero().get("level", 1)))
 	if cmd.team == player_team:
 		# The hero's last words before the Lume takes them home.

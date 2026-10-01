@@ -47,6 +47,9 @@ Endless Road from the main menu, then March On.
 - **Camera drag.** Hold the middle mouse button and drag. Does it feel right?
 - **Control groups.** Ctrl + a number sets a group (0 to 9). Shift + the number adds it to your selection.
 - **Your own keys.** Settings, KEYS: change one key and check that the battle buttons show the new one.
+- **Training queues.** In a hall, click the same soldier several times, then Shift-click it. Does the queue feel right? Does a greyed-out button light up by itself when you can afford it?
+- **Workers.** Send a gatherer to build something: does it go back to work afterwards? Right-click a vein with three workers: do they build the outpost and go inside?
+- **Domination.** On the skirmish screen choose Victory: Domination. Is it clear what to do, and is the enemy's race for the Lume sites fair?
 - **Sounds.** Sixteen sounds are new (hits, spells, work, research). Is any of them unpleasant or too loud?
 
 ## What to send back

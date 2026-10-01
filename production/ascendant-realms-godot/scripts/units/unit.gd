@@ -2997,13 +2997,19 @@ func _state_build(delta: float) -> void:
 		state = State.IDLE
 		return
 	if not _repair_target and _build_target.is_built:
+		var finished = _build_target
 		_release_build_collision_exception()
 		_build_target = null
 		state = State.IDLE
-		# Back to the work it left: a gatherer used to stand idle beside
-		# every building it finished.
 		var back = _job_before_build
 		_job_before_build = null
+		# The player's workers who raise a vein outpost go inside and work it
+		# (they used to stand beside it until ordered in one more time).
+		if commander and commander.is_human and world and world.get("command_bus") != null 				and bool(finished.def.get("vein_outpost", false)) and finished.garrison.size() < finished.outpost_slots():
+			world.command_bus.issue({"type": "garrison", "units": [self], "target": finished})
+			return
+		# Otherwise back to the work it left: a gatherer used to stand idle
+		# beside every building it finished.
 		if is_instance_valid(back) and not back.depleted:
 			command_gather(back)
 		return

@@ -22,8 +22,10 @@ const DIFF_HINTS := [
 ]
 const RES_KINDS := ["standard", "quick", "rich"]
 const RES_LABELS := ["Standard", "Quick", "Rich"]
-const VICTORY_KINDS := ["conquest"]
-const VICTORY_LABELS := ["Conquest"]
+const VICTORY_KINDS := ["conquest", "domination"]
+const VICTORY_LABELS := ["Conquest", "Domination"]
+const VICTORY_TIPS := ["Conquest: destroy every enemy building and worker.",
+	"Domination: hold every Lume site at once for two and a half minutes. Conquest wins too. The enemy can win the same way."]
 
 const GOLD := Color(0.86, 0.70, 0.40)
 const GOLD_BRIGHT := Color(1.0, 0.86, 0.52)
@@ -423,7 +425,10 @@ func _build_battle_panel() -> Control:
 	settings.add_child(_setting_label("Resources"))
 	settings.add_child(_choice_row(RES_LABELS, RES_KINDS, func(k): _res_kind = k, _res_kind))
 	settings.add_child(_setting_label("Victory"))
-	settings.add_child(_choice_row(VICTORY_LABELS, VICTORY_KINDS, func(k): _victory = k, _victory))
+	var victory_row := _choice_row(VICTORY_LABELS, VICTORY_KINDS, func(k): _victory = k, _victory)
+	for vi in victory_row.get_child_count():
+		(victory_row.get_child(vi) as Control).tooltip_text = VICTORY_TIPS[vi]
+	settings.add_child(victory_row)
 	settings.add_child(_setting_label("Game Speed"))
 	var speed_row := HBoxContainer.new()
 	speed_row.add_theme_constant_override("separation", 10)

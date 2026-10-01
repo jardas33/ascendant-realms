@@ -901,7 +901,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - An order given onto a ridge sends the troops to its foot, on their own side.
     - Building on a ridge is refused with "Blocked by rocks".
     - They show on the minimap, and a loading tip explains them.
-  - **Balance on the ridged test map:** CRAG_BALANCE_PLACEHOLDER
+  - **Balance on the ridged test map:** 90 matches, every pairing in both seat orders: Wyldkin 12-6, Vorthak 10-8, Grimtusk 10-8, Sunspear 9-7-2, Hollow 9-8-1, Karak 9-8-1, Lioraen 9-8-1, Barrosan 9-8-1, Frostborn 7-11, Sylvan 3-15. Three time-outs and 0.77 stuck units a match, so the ridges cause no stalemates. Nine peoples are level; Sylvan is the outlier and is being fixed.
 - **Plan 90 (done): deep audit, pass 4 (how the game plays in your hands)**
   - **Skill powers overwrote each other.** A power granted by two skills kept only the one learned last. Plunder (+200 starting gold) learned after Golden Age (+300) left the hero with 200; a 10% lifesteal gear set replaced a 25% lifesteal keystone. Powers now add up, from skills, gear and sets alike.
   - **The economy branch was retuned to match.** Its nodes were written as rising totals, so simply adding them would have given +140% gathering and near-instant training. Each node now gives what its text says, and the whole branch adds up to +60% gathering, +40% training speed, +50% building speed and +600 starting gold. Training and building can never drop below 30% of their normal time.
@@ -920,6 +920,14 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Locked buttons stayed locked.** The command card was built once per selection, so a building or soldier greyed out for want of 20 gold stayed greyed after the gold came in, until the worker or hall was selected again. The card now refreshes the moment anything on it becomes affordable (or stops being so), and when a new Age begins.
   - **Second text pass (HUD, alerts, menus):** the build card named the Age of Iron for every locked building, Age of Lume ones included; the skill tree showed internal state names ("PREREQUISITE BLOCKED", "INSUFFICIENT POINTS"); order feedback read "Build placement rejected" and "No valid target"; a unit's role read "Antiarmor"; the hero sheet's button to the War Chest said Inventory. All are now in plain words.
   - **Workers go back to work.** A gatherer called away to build used to stand idle beside the finished building. It now returns to the resource it left.
+- **Plan 91 (done): a fairer balance check, and Domination**
+  - **My balance checks were biased.** In 108 AI-versus-AI matches the first seat won only 41%. Pairings ran in alphabetical order, so the peoples early in the alphabet (Barrosan, Frostborn, Grimtusk, Hollow, Karak) always sat in the weaker seat and were under-rated; Wyldkin, Vorthak, Sylvan and Sunspear were over-rated. Every earlier single-order result in this file carries that bias.
+  - **Why the first seat is weaker:** it is the player's seat, and the game treats the player differently on purpose: about 1 enemy soldier in 25 is an Elite (+80% health, +50% damage), the player's hero revives up to 45 seconds slower, and only AI seats race for a Lume surge.
+  - **The fix to the method:** a pooled check is now one matrix in each seat order, and in balance runs those three rules are switched off so both seats are equal. Real battles are unchanged.
+  - **Contested resources were lopsided.** The middle of every map had one stone node to the north and one food node to the south, so the southern seats had food, which every soldier costs, on their doorstep. Every contested node now has a twin on the far side.
+  - **Domination: a second way to win a skirmish.** The skirmish screen offered a Victory choice with one option. Domination is new: hold every Lume site at once for two and a half minutes and you win (Conquest still wins too). The enemy can win the same way, so the sites matter. The count cannot begin in the first five minutes. The header shows how many sites you hold and whose clock is running, and the AI fights for the sites far harder in this mode.
+  - **All selected workers join a new building.** With three workers selected, one went to build while two watched. (Holding Shift to place several buildings still sends one worker to each.)
+  - **Claiming a vein is one order.** Workers sent to a vein raise the outpost and then go inside to work it; they used to stand beside it until ordered in. Up to three selected workers go, not one.
 ## Performance and stability
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
@@ -1052,4 +1060,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 
 ## Still open
 
+- **Human playtest.** Nothing here has been played by a person since the audit passes. `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` lists what to try; section 5 covers everything new since 2026-10-01.
+- **Sound.** The sixteen procedural sounds of plan 86 were checked numerically only. Emanuel should say if any is unpleasant.
+- **Models (Codex's lane).** Seven peoples borrow another people's unit and building models. The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista; `wyldkin_denhold.glb` is rough.
+- **Balance.** Earlier single-order checks were biased by seat (plan 91). Tuning should wait for pooled checks that run every pairing in both seat orders.
+- **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
+- **Keys.** Camera movement, control groups and the menu keys cannot be rebound; the other 19 battle keys can.
+- **Log noise.** Headless runs print "material is null" lines from Godot's dummy renderer (per-unit shader parameters); they are not errors in the game. One such line at match load in a real window is still unexplained.
 - **Draw calls:** about 2,800 draw calls in the opening. Instancing the decor would be the next rendering win.

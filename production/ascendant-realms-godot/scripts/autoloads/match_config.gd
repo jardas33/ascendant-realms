@@ -29,7 +29,7 @@ func default_config() -> Dictionary:
 		"opponents": [{"race": "vorthak", "difficulty": "normal"}],
 		"map": "hollowspan",
 		"start_resources": "standard",   # standard | quick | rich
-		"victory": "conquest",           # conquest is the only supported player-facing rule
+		"victory": "conquest",           # conquest | domination (the supported player-facing rules)
 		"mode": "skirmish",              # skirmish | campaign | tutorial
 		"campaign_node": 0,
 		"game_speed": 1.0,
@@ -47,7 +47,9 @@ func get_config() -> Dictionary:
 func _normalize_supported_victory(cfg: Dictionary) -> Dictionary:
 	var normalized := cfg.duplicate(true)
 	var requested := str(normalized.get("victory", "conquest"))
-	if requested != "conquest":
+	# Domination (hold every Lume site) is implemented in GameWorld; anything
+	# else falls back to conquest.
+	if not requested in ["conquest", "domination"]:
 		normalized["victory"] = "conquest"
 	return normalized
 

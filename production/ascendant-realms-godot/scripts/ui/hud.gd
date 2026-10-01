@@ -1391,11 +1391,11 @@ func _build_top_bar() -> void:
 	identity_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
-	var objective_text := "CONQUEST · Raze every enemy building" if victory_kind == "conquest" else victory_kind.capitalize()
+	var objective_text := "CONQUEST · Raze every enemy building" if victory_kind == "conquest" else ("DOMINATION · Hold every Lume site" if victory_kind == "domination" else victory_kind.capitalize())
 	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
 	objective_label.name = "MatchObjectiveLabel"
 	_survival_label = objective_label
-	objective_label.tooltip_text = "Eliminate the enemy's rebuild capability." if victory_kind == "conquest" else objective_text
+	objective_label.tooltip_text = "Destroy every enemy building and worker to win." if victory_kind == "conquest" else ("Hold every Lume site at once for two and a half minutes (the count begins five minutes in), or destroy every enemy building and worker. The enemy can win the same way." if victory_kind == "domination" else objective_text)
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(objective_label)
@@ -4138,6 +4138,23 @@ func _update_bounty_label(delta: float) -> void:
 func _update_survival_label() -> void:
 	if not is_instance_valid(_survival_label) or not is_instance_valid(world) or not world.has_method("survival_remaining"):
 		return
+	# Domination: the count of sites held, or the clock of whoever holds them all.
+	if world.has_method("domination_status"):
+		var dom: Dictionary = world.domination_status()
+		if not dom.is_empty():
+			var clock := "%d:%02d" % [int(dom["left"]) / 60, int(dom["left"]) % 60]
+			if int(dom["team"]) < 0:
+				_survival_label.text = "DOMINATION · You hold %d of %d Lume sites" % [int(dom["held"]), int(dom["total"])]
+				if float(dom.get("opens_in", 0.0)) > 0.0:
+					_survival_label.text += "  ·  count begins in %d:%02d" % [int(dom["opens_in"]) / 60, int(dom["opens_in"]) % 60]
+				_survival_label.add_theme_color_override("font_color", Color(0.91, 0.84, 0.66))
+			elif int(dom["team"]) == int(world.player_team):
+				_survival_label.text = "DOMINATION · You win in %s" % clock
+				_survival_label.add_theme_color_override("font_color", Color(0.6, 0.95, 0.6))
+			else:
+				_survival_label.text = "DOMINATION · Enemy wins in %s" % clock
+				_survival_label.add_theme_color_override("font_color", Color(1.0, 0.5, 0.42))
+			return
 	var left: float = world.survival_remaining()
 	if left < 0.0:
 		return
@@ -4295,7 +4312,7 @@ func _on_game_over(victory: bool) -> void:
 	var secs := int(t) % 60
 	var reason := String(result.get("reason", "Conquest"))
 	# The result keeps machine reasons for tests; the ledger shows words.
-	reason = String({"hq_destroyed": "Your stronghold was razed", "no_live_buildings": "Your last hall burned"}.get(reason, reason))
+	reason = String({"hq_destroyed": "Your stronghold was razed", "no_live_buildings": "Your last hall burned", "domination_lost": "The enemy held every Lume site"}.get(reason, reason))
 	var outcome_text := "The field is yours" if victory else "Your host has fallen"
 	# A bare "Victory" or "Defeat" reason only repeats the title above.
 	if not reason.to_lower() in ["victory", "defeat", ""]:

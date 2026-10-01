@@ -868,7 +868,7 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 			var oid := "%s_outpost" % String(world.commanders[player_team].race)
 			var reason: String = world.get_building_placement_reason(oid, player_team, vein.global_position, true)
 			if reason == "":
-				var ob = _issue({"type": "place", "id": oid, "team": player_team, "pos": vein.global_position, "units": [claimers[0]]})
+				var ob = _issue({"type": "place", "id": oid, "team": player_team, "pos": vein.global_position, "units": claimers.slice(0, 3)})
 				if ob:
 					_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "CLAIM VEIN", vein.global_position, ob)
 					return
@@ -1553,7 +1553,15 @@ func _try_place_building_at(g: Vector3) -> bool:
 		cancel_build_mode()
 		return false
 	# The nearest free worker is sent with the placement order itself.
-	var b = _issue({"type": "place", "id": bid, "team": player_team, "pos": g, "units": [worker] if worker else []})
+	# Every selected worker that is free joins the build: with three selected,
+	# one used to go while two stood and watched. While Shift is held to place
+	# several buildings, each still gets one worker, so the crew spreads out.
+	var crew: Array = [worker] if worker else []
+	if not Input.is_key_pressed(KEY_SHIFT):
+		for u in _selected_units():
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.team == player_team and u.state != u.State.BUILDING and not u._is_defeated_remnant() and not crew.has(u):
+				crew.append(u)
+	var b = _issue({"type": "place", "id": bid, "team": player_team, "pos": g, "units": crew})
 	var placed := false
 	if b:
 		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)

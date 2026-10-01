@@ -1329,8 +1329,16 @@ func _pick_attack_target() -> Vector3:
 # --- capture --------------------------------------------------------------
 func _manage_capture() -> void:
 	# occasionally send a small squad to a neutral/enemy capture point
-	if _army_size() < 4 or _rng.randf() > 0.15:
+	# (in a Domination battle the sites decide the war: go far more often,
+	# in greater strength, and at once when a rival holds them all)
+	var dom: Dictionary = world.domination_status() if world.has_method("domination_status") else {}
+	var domination := not dom.is_empty()
+	var rival_holds_all: bool = domination and int(dom.get("team", -1)) >= 0 and int(dom.get("team", -1)) != commander.team
+	if _army_size() < 4 and not rival_holds_all:
 		return
+	if not rival_holds_all and _rng.randf() > (0.5 if domination else 0.15):
+		return
+	var squad_size := 99 if rival_holds_all else (5 if domination else 3)
 	var points = world.get_tree().get_nodes_in_group("capture_points")
 	for p in points:
 		if is_instance_valid(p) and p.owner_team != commander.team:
@@ -1338,7 +1346,7 @@ func _manage_capture() -> void:
 			for u in commander.units:
 				if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.state == u.State.IDLE:
 					squad.append(u)
-					if squad.size() >= 3:
+					if squad.size() >= squad_size:
 						break
 			# Stand inside the 7.5 m capture ring on the near side, not on the
 			# landmark itself: the centre is solid, so squads sent there pushed

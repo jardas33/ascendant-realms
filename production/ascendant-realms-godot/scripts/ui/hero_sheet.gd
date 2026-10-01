@@ -485,7 +485,12 @@ func _refresh() -> void:
 	if float(b.get("heal_power", 0.0)) > 0.0:
 		build_panel.add_child(_stat_line("Heal Power", "+%d" % int(b.get("heal_power", 0))))
 	if float(b.get("aura_dmg", 0.0)) > 0.0 or float(b.get("aura_armor", 0.0)) > 0.0:
-		build_panel.add_child(_stat_line("Command Aura", "+%s damage, +%s armor" % [String.num(float(b.get("aura_dmg", 0.0)), 1), String.num(float(b.get("aura_armor", 0.0)), 1)]))
+		var aura_bits: Array = []
+		if float(b.get("aura_dmg", 0.0)) > 0.0:
+			aura_bits.append("+%s damage" % String.num(float(b.get("aura_dmg", 0.0)), 1))
+		if float(b.get("aura_armor", 0.0)) > 0.0:
+			aura_bits.append("+%s armor" % String.num(float(b.get("aura_armor", 0.0)), 1))
+		build_panel.add_child(_stat_line("Command Aura", ", ".join(aura_bits) + " to soldiers nearby"))
 	# What the build does for the whole host, not only the hero.
 	var bf: Dictionary = b.get("flags", {})
 	var host: Array = []

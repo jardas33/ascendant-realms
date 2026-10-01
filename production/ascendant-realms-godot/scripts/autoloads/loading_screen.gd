@@ -239,7 +239,7 @@ const TIPS := [
 	"Every tenth stage of the Endless Road is a Barroso feast: Entrudo, the Chega de Bois, the Night of the Witches.",
 	"Deeds never run out. Every tier earns a title and a mastery point.",
 	"Every tenth level, the hero picks one of three talents. Talents stack forever.",
-	"Veins lie between the bases. Right-click one with workers to raise an outpost, then send workers inside to gather in safety.",
+	"Veins lie between the bases. Right-click one with workers: they raise an outpost and go inside to gather in safety.",
 	"Workers inside an outpost free their population: expanding across the map also grows your army.",
 	"Expand an outpost twice for more workers and more output. The third level lights a watch-fire that shoots raiders.",
 	"A Lume flare doubles a vein's output for 90 seconds. Take it, or take it from them.",
@@ -274,6 +274,7 @@ const TIPS := [
 	"Shift-click a soldier in a hall to queue five at once. A hall holds up to eight in its queue.",
 	"Select your main hall and right-click a resource: new workers will walk straight to it and start gathering.",
 	"Crags cannot be crossed. March around them, or hold the gap between two of them.",
+	"In a Domination skirmish, holding every Lume site at once for two and a half minutes wins the battle, for you or for the enemy.",
 ]
 
 

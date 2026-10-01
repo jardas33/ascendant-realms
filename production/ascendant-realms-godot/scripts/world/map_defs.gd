@@ -271,19 +271,25 @@ static func _veins(starts: Array, rich: float) -> Array:
 	return out
 
 static func _contested(rich: float) -> Array:
+	# Every contested node has a twin on the far side of the centre, so no
+	# seat has the middle's stone or food nearer than its rival. (There was
+	# one stone node, to the north, and one food node, to the south: the
+	# southern seats had the food that every soldier costs on their doorstep.)
 	var out := [
 		{"kind": "gold", "pos": Vector3(-26, 0, -16)},
 		{"kind": "gold", "pos": Vector3(26, 0, 16)},
 		{"kind": "stone", "pos": Vector3(0, 0, -34)},
 		{"kind": "timber", "pos": Vector3(-20, 0, 30)},
 		{"kind": "timber", "pos": Vector3(20, 0, -30)},
-		{"kind": "food", "pos": Vector3(0, 0, 30)},
+		{"kind": "food", "pos": Vector3(-34, 0, 0)},
+		{"kind": "stone", "pos": Vector3(0, 0, 34)},
+		{"kind": "food", "pos": Vector3(34, 0, 0)},
 	]
 	if rich >= 1.4:
 		out.append({"kind": "gold", "pos": Vector3(-46, 0, 8)})
 		out.append({"kind": "gold", "pos": Vector3(46, 0, -8)})
 	elif rich <= 0.7:
-		return [out[0], out[1], out[2]]
+		return [out[0], out[1], out[2], out[6]]
 	return out
 
 static func _captures(style: String) -> Array:

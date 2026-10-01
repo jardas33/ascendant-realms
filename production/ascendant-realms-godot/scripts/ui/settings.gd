@@ -17,7 +17,7 @@ const CONTROLS := [
 	["CONTROL GROUPS", "Ctrl+0–9 assign a group. 0–9 recall it; press twice to bring the camera to it. Shift adds it to the selection. {select_army} selects the army."],
 	["QUICK SELECT", "{idle_worker} selects an idle worker. {cycle_hero} focuses the hero. Backspace jumps to the latest alert."],
 	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
-	["VEINS", "Right-click a ringed vein with workers to raise an outpost, then right-click the finished outpost to send them inside. Expand it for more room and output."],
+	["VEINS", "Right-click a ringed vein with workers: they raise an outpost and go inside to work it. Right-click the outpost with more workers to send them in too. Expand it for more room and output."],
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
 	["CARAVAN", "Select your main hall to buy food, timber or stone with gold, or sell a surplus for gold. Buying raises the price; it eases back over time."],
 	["LANDMARKS", "In the Age of Iron each people can raise one landmark with a power of its own: an oven that feeds, a gate that summons, a dial that strikes. Look for it in your workers' build list."],
