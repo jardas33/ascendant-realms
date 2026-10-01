@@ -4392,7 +4392,14 @@ func _spell_damage_wave(hero, st: Dictionary, from: Vector3, to: Vector3, m: flo
 			if is_instance_valid(b) and not b.is_dead and int(b.team) != team and b.global_position.distance_to(centre) <= r + float(b.footprint) * 0.5:
 				b.take_damage(dmg * 0.5, hero)
 	if bool(st.get("drain", false)) and drained > 0.0:
-		heal_allies_near(from, r + 6.0, drained, team)
+		# The drained life is shared among the wounded: giving each ally the
+		# whole sum healed a full army to the brim from one cast.
+		var wounded: Array = []
+		for u in all_units():
+			if is_instance_valid(u) and not u.is_dead and u.team == team and u.hp < u.max_hp and u.global_position.distance_to(from) <= r + 6.0:
+				wounded.append(u)
+		for u in wounded:
+			u.heal(drained / float(wounded.size()))
 	if first and int(st.get("gold", 0)) > 0 and hit > 0:
 		var cmd = commander_for_team(team)
 		if cmd:

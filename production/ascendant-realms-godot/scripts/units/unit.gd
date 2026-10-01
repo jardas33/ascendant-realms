@@ -627,6 +627,18 @@ func _build_model() -> void:
 		# An animation library whose tracks point at a rig this model does not
 		# have (the Ironmaw Slinger) made every animation change rebuild the
 		# mixer for seconds, freezing the whole battle. Such models stay still.
+		# Most libraries address the skeleton as %GeneralSkeleton. A model whose
+		# skeleton node kept its import name (the Ironmaw Slinger's
+		# "Skeleton3D") matched no track and stood frozen: when the tracks do
+		# not resolve, give its one skeleton the expected unique name and
+		# check again. (Libraries with explicit paths, like the Stoneward
+		# Spears', already match and are left alone.)
+		if anim and not _animation_matches_rig(anim) and m.get_node_or_null("%GeneralSkeleton") == null:
+			var skeletons: Array = m.find_children("*", "Skeleton3D", true, false)
+			if skeletons.size() == 1:
+				skeletons[0].name = "GeneralSkeleton"
+				skeletons[0].owner = m
+				skeletons[0].unique_name_in_owner = true
 		if anim and not _animation_matches_rig(anim):
 			anim.active = false
 			anim = null
@@ -1578,13 +1590,31 @@ var _spell_dmg_mult := 1.0
 var _spell_armor := 0.0
 var _spell_haste := 1.0
 var _spell_buff_time := 0.0
+var _spell_dmg_time := 0.0
+var _spell_armor_time := 0.0
+var _spell_haste_time := 0.0
 var _vulnerable_time := 0.0
 
 func apply_spell_buff(dmg_mult: float, armor: float, haste: float, secs: float) -> void:
-	_spell_dmg_mult = maxf(_spell_dmg_mult, dmg_mult)
-	_spell_armor = maxf(_spell_armor, armor)
-	_spell_haste = maxf(_spell_haste, haste)
-	_spell_buff_time = maxf(_spell_buff_time, secs)
+	# Each stat keeps its own clock. They used to share one, so a weak aura
+	# re-applied every second (a landmark's) kept a strong spell (Blood Rage,
+	# Testudo) alive for as long as the unit stood beside the landmark.
+	if dmg_mult > _spell_dmg_mult:
+		_spell_dmg_mult = dmg_mult
+		_spell_dmg_time = secs
+	elif dmg_mult > 1.0 and is_equal_approx(dmg_mult, _spell_dmg_mult):
+		_spell_dmg_time = maxf(_spell_dmg_time, secs)
+	if armor > _spell_armor:
+		_spell_armor = armor
+		_spell_armor_time = secs
+	elif armor > 0.0 and is_equal_approx(armor, _spell_armor):
+		_spell_armor_time = maxf(_spell_armor_time, secs)
+	if haste > _spell_haste:
+		_spell_haste = haste
+		_spell_haste_time = secs
+	elif haste > 1.0 and is_equal_approx(haste, _spell_haste):
+		_spell_haste_time = maxf(_spell_haste_time, secs)
+	_spell_buff_time = maxf(_spell_dmg_time, maxf(_spell_armor_time, _spell_haste_time))
 
 func apply_vulnerable(secs: float) -> void:
 	_vulnerable_time = maxf(_vulnerable_time, secs)
@@ -2283,10 +2313,18 @@ func _physics_process(delta: float) -> void:
 	if _slow > 0.0: _slow -= delta
 	if _spell_buff_time > 0.0:
 		_spell_buff_time -= delta
-		if _spell_buff_time <= 0.0:
-			_spell_dmg_mult = 1.0
-			_spell_armor = 0.0
-			_spell_haste = 1.0
+		if _spell_dmg_time > 0.0:
+			_spell_dmg_time -= delta
+			if _spell_dmg_time <= 0.0:
+				_spell_dmg_mult = 1.0
+		if _spell_armor_time > 0.0:
+			_spell_armor_time -= delta
+			if _spell_armor_time <= 0.0:
+				_spell_armor = 0.0
+		if _spell_haste_time > 0.0:
+			_spell_haste_time -= delta
+			if _spell_haste_time <= 0.0:
+				_spell_haste = 1.0
 	if _vulnerable_time > 0.0: _vulnerable_time -= delta
 	if _stun > 0.0:
 		_stun -= delta

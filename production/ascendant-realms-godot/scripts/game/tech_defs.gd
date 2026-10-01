@@ -136,9 +136,9 @@ static func get_all() -> Dictionary:
 	# --- Moura Court ---------------------------------------------------------
 	"syl_thread": {
 		"name": "Golden Thread", "kind": "upgrade", "race": "sylvan",
-		"effects": [{"who": "ranged", "range": 2.0, "vision": 4.0}, {"who": "caster", "range": 2.0, "vision": 4.0}],
+		"effects": [{"who": "ranged", "range": 2.0, "vision": 4.0}, {"who": "healer", "range": 2.0, "vision": 4.0}],
 		"cost": {"gold": 160, "timber": 100}, "time": 40, "at": "economy",
-		"desc": "The Mouras spin their sight into gold: ranged units and casters +2 range and see further.",
+		"desc": "The Mouras spin their sight into gold: archers and choristers +2 range and see further.",
 	},
 	"syl_mist": {
 		"name": "Mist-veiled Ranks", "kind": "upgrade", "race": "sylvan",
@@ -201,9 +201,9 @@ static func get_all() -> Dictionary:
 	# --- Careto Host ---------------------------------------------------------
 	"fro_fury": {
 		"name": "Caretos' Fury", "kind": "upgrade", "race": "frostborn",
-		"effects": [{"who": "melee", "dmg": 3, "armor": 1}, {"who": "flanker", "dmg": 3, "armor": 1}],
+		"effects": [{"who": "melee", "dmg": 3, "armor": 1}],
 		"cost": {"food": 150, "gold": 120}, "time": 40, "at": "economy",
-		"desc": "Masks on, bells ringing, and no mercy: melee and raiding units +3 damage and +1 armor.",
+		"desc": "Masks on, bells ringing, and no mercy: every melee fighter, the Winter Giant included, +3 damage and +1 armor.",
 	},
 	"fro_bells": {
 		"name": "Winter Bells", "kind": "upgrade", "race": "frostborn",

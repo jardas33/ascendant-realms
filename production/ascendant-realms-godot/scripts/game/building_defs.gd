@@ -67,7 +67,7 @@ static func get_all() -> Dictionary:
 		"hp": 850, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["lioraen_bloomdancer", "lioraen_rootwarden_guard", "lioraen_thorn_ranger", "lioraen_windstrider"],
-		"desc": "Grown war-grove that trains dancers, wardens, rangers and lancers.",
+		"desc": "Grown war-grove that trains Bloomdancers, Rootwardens, Thornrunners and Windstriders.",
 	},
 	"lioraen_lifewell_forge": {
 		"race": "lioraen", "name": "Grove Forge", "kind": "economy", "model": _b("lioraen_lifewell"),
@@ -145,7 +145,7 @@ static func get_all() -> Dictionary:
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 340, "stone": 190}, "build_time": 58, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["grimtusk_peon"], "drop_off": true, "is_hq": true,
-		"desc": "The overseers' pithead, taken in the uprising and never given back. Trains freed diggers and holds the Horde together.",
+		"desc": "The overseers' pithead, taken in the uprising and never given back. Trains Ironmaw Haulers and holds the Horde together.",
 	},
 	"grimtusk_warren": {
 		"race": "grimtusk", "name": "Freed Barracks", "kind": "house", "model": _b("vorthak_ash_forge"),
@@ -181,7 +181,7 @@ static func get_all() -> Dictionary:
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["sylvan_acolyte"], "drop_off": true, "is_hq": true,
-		"desc": "The hidden court under the fountain, where the Mouras keep their gold and their bargains. Trains acolytes.",
+		"desc": "The hidden court under the fountain, where the Mouras keep their gold and their bargains. Trains Silver Handmaids.",
 	},
 	"sylvan_haven": {
 		"race": "sylvan", "name": "Silver Grotto", "kind": "house", "model": _b("lioraen_lifewell"),
@@ -194,7 +194,7 @@ static func get_all() -> Dictionary:
 		"hp": 860, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 55}, "build_time": 30, "grants_pop": 0,
 		"produces": ["sylvan_bladesinger", "sylvan_warden", "sylvan_longbow", "sylvan_windrunner", "sylvan_silver_colossus"],
-		"desc": "A hall of still mirrors where the Court's duellists, wardens, archers and fountain riders are enchanted for war.",
+		"desc": "A hall of still mirrors where the Court's duellists, wardens, archers, fountain riders and the Silver Colossus are enchanted for war.",
 	},
 	"sylvan_loreforge": {
 		"race": "sylvan", "name": "Coal-Gold Forge", "kind": "economy", "model": _b("lioraen_lifewell"),
@@ -224,7 +224,7 @@ static func get_all() -> Dictionary:
 		"hp": 2400, "armor_class": "fortified", "armor": 11, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 220}, "build_time": 65, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["karak_miner"], "drop_off": true, "is_hq": true,
-		"desc": "A walled castro on the hilltop, older than the Dominion and harder than it. Trains quarrymen and anchors the hillfort.",
+		"desc": "A walled castro on the hilltop, older than the Dominion and harder than it. Trains Castro Quarriers and anchors the hillfort.",
 	},
 	"karak_longhouse": {
 		"race": "karak", "name": "Roundhouse", "kind": "house", "model": _b("barrosan_clan_croft"),
@@ -260,7 +260,7 @@ static func get_all() -> Dictionary:
 		"hp": 2200, "armor_class": "fortified", "armor": 10, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["sunspear_laborer"], "drop_off": true, "is_hq": true,
-		"desc": "The regent's seat in the conquered north, bronze and whitewash on highland stone. Trains labourers.",
+		"desc": "The regent's seat in the conquered north, bronze and whitewash on highland stone. Trains Dominion Engineers.",
 	},
 	"sunspear_dwelling": {
 		"race": "sunspear", "name": "Settler Housing", "kind": "house", "model": _b("barrosan_clan_croft"),
@@ -273,7 +273,7 @@ static func get_all() -> Dictionary:
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["sunspear_legion", "sunspear_phalanx", "sunspear_bowman", "sunspear_charioteer", "sunspear_scorpion"],
-		"desc": "The Dominion's drill hall: legionaries, phalanx, archers and charioteers train to its bronze trumpets.",
+		"desc": "The Dominion's drill hall: legionaries, phalanx, archers, charioteers and scorpion crews train to its bronze trumpets.",
 	},
 	"sunspear_bazaar": {
 		"race": "sunspear", "name": "Dominion Treasury", "kind": "economy", "model": _b("barrosan_iron_forge"),
@@ -303,7 +303,7 @@ static func get_all() -> Dictionary:
 		"hp": 1950, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 340, "stone": 190}, "build_time": 58, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["wyldkin_forager"], "drop_off": true, "is_hq": true,
-		"desc": "A den under the old oak where the seventh sons meet on full-moon nights. Trains foragers and marks the pack's ground.",
+		"desc": "A den under the old oak where the seventh sons meet on full-moon nights. Trains Wolfveil Trackers and marks the pack's ground.",
 	},
 	"wyldkin_burrow": {
 		"race": "wyldkin", "name": "Moon Burrow", "kind": "house", "model": _b("lioraen_lifewell"),
@@ -346,7 +346,7 @@ static func get_all() -> Dictionary:
 		"hp": 1950, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 330, "stone": 185}, "build_time": 56, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["hollow_gravedigger"], "drop_off": true, "is_hq": true,
-		"desc": "A roadside chapel where the Compaña lights its candles. Raises gravediggers and leads the procession.",
+		"desc": "A roadside chapel where the Compaña lights its candles. Raises Candle-Keepers and leads the procession.",
 	},
 	"hollow_crypt": {
 		"race": "hollow", "name": "Wayside Grave", "kind": "house", "model": _b("vorthak_ash_forge"),
@@ -373,7 +373,7 @@ static func get_all() -> Dictionary:
 		"hp": 680, "armor_class": "light", "armor": 1, "footprint": 4.0,
 		"cost": {"timber": 110, "gold": 90}, "build_time": 34, "grants_pop": 0,
 		"produces": ["hollow_necromancer"],
-		"desc": "The cross the Compaña carries at its head. Trains the procession's necromancers.",
+		"desc": "The cross the Compaña carries at its head. Trains the procession's Dirge-Singers.",
 	},
 	"hollow_curse_obelisk": {
 		"race": "hollow", "name": "Forgotten Cairn", "kind": "tower", "model": _b("vorthak_rift_obelisk"),

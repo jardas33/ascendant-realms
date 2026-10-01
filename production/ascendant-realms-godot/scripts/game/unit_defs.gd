@@ -398,9 +398,9 @@ static func get_all() -> Dictionary:
 		"race": "karak", "name": "Stone Mortar", "role": "siege", "tier": 3, "is_siege": true,
 		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.0,
 		"hp": 165, "dmg": 58, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
-		"range": 22.0, "attack_cd": 2.8, "speed": 2.2, "vision": 26.0, "projectile": "bolt",
+		"range": 22.0, "attack_cd": 2.8, "speed": 2.2, "vision": 26.0, "projectile": "bolt", "splash": 4.0,
 		"cost": {"timber": 120, "gold": 60}, "build_time": 30, "pop": 3, "produced_by": "karak_warforge",
-		"desc": "Lobs carved boulders from the castro walls.",
+		"desc": "Lobs carved boulders from the castro walls. Each one breaks apart among whoever stands close together.",
 	},
 	"karak_hero_thanelord": {
 		"race": "karak", "name": "Thane-Lord Carvalho", "role": "hero", "tier": 1, "is_hero": true,
@@ -453,7 +453,7 @@ static func get_all() -> Dictionary:
 	},
 	"sunspear_scorpion": {
 		"race": "sunspear", "name": "Sun Scorpion", "role": "siege", "tier": 3,
-		"model": _char("barrosan_ballista"), "height": 1.6,
+		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.2,
 		"hp": 170, "dmg": 56, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
 		"range": 22.0, "attack_cd": 2.7, "speed": 2.4, "vision": 26.0, "projectile": "bolt", "is_siege": true,
 		"cost": {"timber": 120, "gold": 60}, "build_time": 30, "pop": 3, "produced_by": "sunspear_legion_hall",
@@ -589,7 +589,7 @@ static func get_all() -> Dictionary:
 		"hp": 100, "dmg": 30, "dmg_type": "arcane", "armor_class": "unarmored", "armor": 0,
 		"range": 18.0, "attack_cd": 2.0, "speed": 3.3, "vision": 26.0, "projectile": "void_bolt", "splash": 3.5,
 		"cost": {"food": 90, "gold": 70}, "build_time": 24, "pop": 2, "produced_by": "hollow_bone_spire",
-		"desc": "Sings the procession's hymn. The dead rise to answer.",
+		"desc": "Sings the procession's hymn. Its cold fire falls on whole ranks at once.",
 	},
 	"hollow_hero_lich": {
 		"race": "hollow", "name": "Candle-King", "role": "hero", "tier": 1, "is_hero": true,
