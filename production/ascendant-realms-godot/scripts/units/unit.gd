@@ -473,7 +473,9 @@ func _apply_race_passive() -> void:
 			# Fortify only helps at home; 11-23-11 over 225 pooled matches
 			# (plans 50 to 63). +6% health then gave 1-6-11: sturdy but unable
 			# to finish a fight. The bull's charge hits harder instead.
-			base_dmg *= 1.07
+			# 0-4-5 and 2-6-1 in the two plan 78-80 checks, losing the long
+			# games: +10% (was +7%).
+			base_dmg *= 1.10
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin.
 			base_dmg *= 1.08
@@ -521,8 +523,8 @@ func _apply_race_passive() -> void:
 			# did not carry them away from home.
 			max_hp *= 1.10
 			# 2-7 and 1-6 in both checks with the new spells (their signature
-			# only heals): a little more bite.
-			base_dmg *= 1.06
+			# only heals): a little more bite. 3-3-3 and 3-5-1 after: +8%.
+			base_dmg *= 1.08
 			hp = max_hp
 		_:
 			pass
