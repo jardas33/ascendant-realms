@@ -530,7 +530,9 @@ func _apply_race_passive() -> void:
 			# +2 damage in unit_defs: 4-11-3 became 9-5-4 over 18 matches.)
 			base_dmg *= 1.08
 			# 22-43-7 over four pooled checks: +14% health (was +8%).
-			max_hp *= 1.14
+			# Then 51-21 over the four six-map checks of plans 100 to 103,
+			# first or second in three of them: +10%.
+			max_hp *= 1.10
 			# Castro quarriers are half stone too (+1 armor on top of the
 			# sturdier workers every faction now has).
 			if is_worker:
@@ -552,7 +554,9 @@ func _apply_race_passive() -> void:
 			move_speed *= 1.08
 			base_dmg *= 1.10
 		"hollow":                         # Undying — every warrior drains life on hit
-			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
+			# 26-44 over the four six-map checks of plans 100 to 103, in the
+			# bottom three every time: 11% (was 9%).
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.11)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			# Was +12%: top of both pooled plan 82 checks (10-2-6 and 11-3-4).
 			# 11-23-2 over 180 matches on the corrected AI (plan 95): +12% again.

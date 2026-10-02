@@ -15,9 +15,9 @@ const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
 const RANDOM_RACE := "__random__"
 ## What each difficulty means, shown when hovering the choice.
 const DIFF_HINTS := [
-	"Easy: a small, slow host. Its hero casts no spells. A win pays a fifth less experience.",
-	"Normal: an even fight. Its hero casts its people's signature spell and has a third of your own hero's strength.",
-	"Hard: a richer economy and larger attacks. Its hero knows more spells and has two thirds of your own hero's strength. A win pays a quarter more experience.",
+	"Easy: a small, slow host that leaves you in peace for the first five minutes. Its hero casts no spells. A win pays a fifth less experience.",
+	"Normal: an even fight. It attacks in waves from about the fourth minute. Its hero casts its people's signature spell and has a third of your own hero's strength.",
+	"Hard: a richer economy and larger attacks, from the third minute and without pause. Its hero knows more spells and has two thirds of your own hero's strength. A win pays a quarter more experience.",
 	"Brutal: the richest economy and the largest attacks. Its hero is a match for your own. A win pays half again as much experience.",
 ]
 const RES_KINDS := ["standard", "quick", "rich"]
