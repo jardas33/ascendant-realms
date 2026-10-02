@@ -52,6 +52,16 @@ Endless Road from the main menu, then March On.
 - **Domination.** On the skirmish screen choose Victory: Domination. Is it clear what to do, and is the enemy's race for the Lume sites fair?
 - **Sounds.** Sixteen sounds are new (hits, spells, work, research). Is any of them unpleasant or too loud?
 
+## 6. New since 2026-10-02, about 15 minutes
+
+- **How hard is Normal now?** The AI is much stronger than before: its hero fights with the army, its soldiers obey their orders and its workers survive. On Normal the first enemy soldiers reach you between 2:20 and 3:45. Play one skirmish on Normal and one on Easy. Is Normal fair for a first-time player, or should it be eased?
+- **Big armies.** Select twenty or more soldiers and attack-move (J, then click). Do they arrive in ranks? While they march, give them a new attack-move somewhere else: do all of them turn?
+- **Shift.** Hold Shift and right-click three places: do your soldiers visit them in turn? Does an order without Shift cancel the rest?
+- **The economy after minute five.** Play until the fields by your hall run out. Are the notices clear about what to do next? Claim a vein with three workers, then let another field run dry: do its workers walk to your outpost by themselves?
+- **Outposts.** An outpost now earns twice what it did. Does expanding across the map feel worth it? Is the caravan (100 of a resource for 100 gold) useful?
+- **The tutorial.** Play "How to Play" as if for the first time. Is "Raise a War Hall" clear?
+- **Orders beside buildings.** Right-click the ground right next to one of your buildings: does the soldier stop where you clicked?
+
 ## What to send back
 
 For each section, one line each on: the best moment, the worst moment, and anything confusing. Screenshots help. The questions that matter most:
