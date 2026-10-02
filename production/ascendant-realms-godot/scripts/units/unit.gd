@@ -86,6 +86,12 @@ var _death_recorded := false
 var _gather_node = null
 var _gather_stall_time := 0.0
 const GATHER_STALL_REACH := 3.2
+## How far a worker walks on its own to the next node of the same kind when
+## its node runs dry. Further than this it stops and waits for orders: it used
+## to set off for the nearest node anywhere on the map, across the battlefield
+## and under the enemy's towers (one AI lost seventeen workers that way in two
+## minutes, and a player's workers did the same behind their back).
+const WORKER_RETARGET_RANGE := 45.0
 var _pending_gather_node = null
 var _desired_gather_kind := ""
 var _carry := 0
@@ -2849,7 +2855,7 @@ func _state_gather(delta: float) -> void:
 	if not is_instance_valid(_gather_node) or _gather_node.depleted:
 		# Retarget only the requested resource kind; never silently switch kinds.
 		var n = world.find_nearest_resource_exact(global_position, _desired_gather_kind, team) if world and world.has_method("find_nearest_resource_exact") else null
-		if n:
+		if n and global_position.distance_to(n.global_position) <= WORKER_RETARGET_RANGE:
 			_gather_node = n
 			_move_target = _gather_interaction_target(n)
 		else:
@@ -2969,7 +2975,7 @@ func _state_return(delta: float) -> void:
 			state = State.GATHERING
 		else:
 			var next = world.find_nearest_resource_exact(global_position, _desired_gather_kind, team) if world and world.has_method("find_nearest_resource_exact") else null
-			if next:
+			if next and global_position.distance_to(next.global_position) <= WORKER_RETARGET_RANGE:
 				_gather_node = next
 				state = State.GATHERING
 			else:

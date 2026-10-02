@@ -292,7 +292,10 @@ func _manage_veins() -> void:
 				if i == commander.team:
 					continue
 				var es: Vector3 = world.map.get("start_positions", [])[i] if i < world.map.get("start_positions", []).size() else Vector3.INF
-				if v.global_position.distance_to(es) < d:
+				# Well on our side of the field, not merely nearer to us: an
+				# outpost at the halfway line was a march through the fighting
+				# for every worker sent to raise or staff it.
+				if v.global_position.distance_to(es) < d * 1.6:
 					nearer_enemy = true
 			# Prefer the vein of whatever the stores are shortest of (a
 			# Barrosan AI claimed stone and gold while starving on food).
@@ -342,6 +345,17 @@ func _manage_veins() -> void:
 		var can_send := mini(free_slots, gatherers - 6)
 		if can_send <= 0:
 			continue
+		# Not into an outpost the enemy is standing at.
+		var besieged := false
+		for cmd in world.commanders:
+			if cmd == commander or cmd.defeated:
+				continue
+			for foe in cmd.units:
+				if is_instance_valid(foe) and not foe.is_dead and not foe.is_worker and foe.global_position.distance_to(ob.global_position) < 40.0:
+					besieged = true
+					break
+		if besieged:
+			continue
 		spare.sort_custom(func(a, b): return a.global_position.distance_squared_to(ob.global_position) < b.global_position.distance_squared_to(ob.global_position))
 		world.command_bus.execute({"type": "garrison", "units": spare.slice(0, can_send), "target": ob})
 
@@ -359,9 +373,11 @@ func _caravan_trade() -> void:
 	if hq == null:
 		return
 	# Short on gold but sitting on a pile of something else: sell the pile.
+	# (At 900 a Candle Chapel sat on 900 food with no gold at all, and every
+	# one of its soldiers costs a little gold: nothing was trained.)
 	if int(commander.resources.get("gold", 0)) < 120:
 		for k in ["stone", "timber", "food"]:
-			if int(commander.resources.get(k, 0)) > 900:
+			if int(commander.resources.get(k, 0)) > (450 if int(commander.resources.get("gold", 0)) < 40 else 900):
 				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + k})
 				return
 	for i in 2:
@@ -843,11 +859,62 @@ func _assign_idle_workers() -> void:
 				if not kinds.has(k):
 					kinds.append(k)
 			for kind in kinds:
-				var node = world.find_nearest_resource_exact(u.global_position, kind)
+				var node = _pick_node(kind, u.global_position)
 				if node:
 					u.command_gather(node)
 					if u.state != u.State.IDLE:
 						break
+
+## The node of `kind` to send a gatherer to: the nearest one round the base,
+## and failing that the one nearest the base that stands beside one of our
+## own buildings with no enemy soldier or tower near it. Only when the store
+## of that kind is nearly empty is an unguarded node taken, and then only one
+## well on our side of the field with no enemy in sight of it. (The nearest node
+## of the kind anywhere used to be taken, which marched workers through the
+## fighting to the far side of the map as soon as the home deposit ran dry.)
+const HOME_NODE_RADIUS := 60.0
+
+func _pick_node(kind: String, from: Vector3):
+	var best = null
+	var best_score := INF
+	for r in get_tree().get_nodes_in_group("resources"):
+		if not is_instance_valid(r) or r.depleted or String(r.resource_kind) != kind:
+			continue
+		var home: float = r.global_position.distance_to(_base_pos)
+		var score: float = from.distance_to(r.global_position)
+		if home > HOME_NODE_RADIUS:
+			if not _node_is_safe(r, int(commander.resources.get(kind, 0)) < 60):
+				continue
+			score = 1000.0 + home
+		if score < best_score:
+			best_score = score
+			best = r
+	return best
+
+func _node_is_safe(node, desperate: bool = false) -> bool:
+	var at: Vector3 = node.global_position
+	var home: float = at.distance_to(_base_pos)
+	var guarded := false
+	for own in commander.buildings:
+		if is_instance_valid(own) and not own.is_dead and own.is_built and own.global_position.distance_to(at) < 35.0:
+			guarded = true
+			break
+	if not guarded and not desperate:
+		return false
+	var keep_off := 40.0 if guarded else 55.0
+	for cmd in world.commanders:
+		if cmd == commander or cmd.defeated:
+			continue
+		var their_hall: Vector3 = world.map.get("start_positions", [])[cmd.team] if cmd.team < world.map.get("start_positions", []).size() else Vector3.INF
+		if their_hall != Vector3.INF and at.distance_to(their_hall) < home * (1.0 if guarded else 1.3):
+			return false
+		for u in cmd.units:
+			if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.global_position.distance_to(at) < keep_off:
+				return false
+		for b in cmd.buildings:
+			if is_instance_valid(b) and not b.is_dead and b.def.has("tower_dmg") and b.global_position.distance_to(at) < 30.0:
+				return false
+	return true
 
 # Workers only took new jobs when idle, and a gathering worker never goes
 # idle, so the first assignment stuck forever. Fixed thresholds were not
@@ -938,7 +1005,7 @@ func _rebalance_gatherers() -> void:
 	# Move two at once when one stock is starving and another is piled high.
 	var moves := 2 if int(r.get(short, 0)) < 100 and int(r.get(donor, 0)) > 500 else 1
 	for u in crews[donor]:
-		var node = world.find_nearest_resource(u.global_position, short)
+		var node = _pick_node(short, u.global_position)
 		if node:
 			u.command_gather(node)
 			moves -= 1
@@ -1005,6 +1072,11 @@ func _manage_economy() -> void:
 	# Plan housing early: factions whose soldiers take 2 population (Barrosan
 	# Spear Guard, Outrider) hit the cap long before a late house went up.
 	if commander.pop_used >= _planned_pop_cap() - 6 and commander.pop_cap < commander.POP_HARD_CAP:
+		_try_build("house")
+	# Out of food with no safe food left to gather: every house keeps a
+	# garden, so another house is the food supply (as the game tells the
+	# player when the deposit by the hall runs dry).
+	elif int(commander.resources.get("food", 0)) < 80 and _count_building_kind("house") < 12 and _unbuilt_count() < 2 and _pick_node("food", _base_pos) == null:
 		_try_build("house")
 
 ## The population cap once the houses already under construction finish. The
@@ -1270,9 +1342,14 @@ func _launch_attack() -> void:
 	if target == Vector3.ZERO:
 		return
 	# multi-prong on hard+: split army
+	# The hero is not one of them: a hero that fights at range (the Candle-King,
+	# the Binder, the Warden, the Archon) sorted to the front of the home guard
+	# below, was sent to the guard post and never left it. Those four peoples
+	# fought every battle without their hero and filled the bottom of every
+	# balance check; the Compaña won 1 match in 18.
 	var soldiers := []
 	for u in commander.units:
-		if is_instance_valid(u) and not u.is_dead and not u.is_worker:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
 			soldiers.append(u)
 	# A home guard stays behind: raiders killed 30 or more workers a match
 	# while every soldier marched off. The ranged soldiers nearest home (a

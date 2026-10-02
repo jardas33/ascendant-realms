@@ -156,12 +156,19 @@ func _fit_panel() -> void:
 	_panel.offset_bottom = _panel.offset_top + maxf(110.0, h)
 
 func _build_steps() -> void:
+	var barracks := "barracks"
+	for bid in GameData.buildings_for_race(String(world.player_commander.race)):
+		if String(GameData.get_building(bid).get("kind", "")) == "barracks":
+			barracks = String(GameData.get_building(bid).get("name", barracks))
 	_steps = [
 		{"id": "camera", "title": "Move the Camera", "text": "Use the ARROW KEYS or push the mouse to the screen edge to move the camera. Scroll the wheel to zoom.", "success": "Move the camera.", "check": "camera"},
 		{"id": "select", "title": "Select Units", "text": "Left-click a unit to select it, or drag a box to select many. Hold Shift while clicking or dragging to add units. Press {select_army} to select your army. Your units glow with your color when selected.", "success": "Select one of your units.", "check": "select"},
 		{"id": "gather", "title": "Gather Resources", "text": "Select a Worker and right-click a resource (food, timber, stone or gold) to send them gathering.", "success": "Have a Worker gather any resource.", "check": "gather"},
-		{"id": "build", "title": "Build a Structure", "text": "With a Worker selected, use the command card (bottom-right) to place a building. Left-click to set its spot. Right-click to cancel build mode.", "success": "Finish a building.", "check": "build"},
-		{"id": "train", "title": "Train an Army", "text": "Select a military building and click a unit to train it. Watch your population (top bar) — build houses for more.", "success": "Train a soldier.", "check": "train"},
+		# The lesson used to say "place a building" and then "select a military
+		# building": a player who had raised a house had no such building and
+		# nothing told them to make one. It names the barracks now.
+		{"id": "build", "title": "Raise a %s" % barracks, "text": "Soldiers are trained in a %s. With a Worker selected, pick it on the command card (bottom-right) and left-click the ground to set its spot. Right-click cancels." % barracks, "success": "Finish a %s." % barracks, "check": "build"},
+		{"id": "train", "title": "Train an Army", "text": "Select your %s and click a soldier on its command card. Every soldier takes room: watch your population (top bar) and build houses for more." % barracks, "success": "Train a soldier.", "check": "train"},
 		{"id": "vein", "title": "Claim a Vein", "text": "Veins glow between the bases. Select Workers and right-click a vein's ring: they raise an outpost, then go inside and gather in safety. Send more Workers in with a right-click on the outpost.", "success": "You claimed a vein.", "check": "vein"},
 		{"id": "hero", "title": "Command Your Hero", "text": "Press {cycle_hero} to focus your Hero. Move them into battle and press {ability_sig} for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Order your Hero to move.", "check": "hero"},
 		{"id": "combat", "title": "Attack the Enemy", "text": "Press {cmd_attack}, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "Wound an enemy.", "check": "combat"},
@@ -204,6 +211,8 @@ func _process(delta: float) -> void:
 		_advance()
 
 var _seen_selection := false
+var _camera_rested := false
+var _camera_last := Vector3.INF
 func _advance() -> void:
 	_transition_log.append({"from_step": _step + 1, "to_step": _step + 2, "timestamp_ms": Time.get_ticks_msec(), "state": get_state_snapshot()})
 	_step += 1
@@ -252,14 +261,29 @@ func get_completion_button() -> Button:
 func _check_condition(cond: String) -> bool:
 	match cond:
 		"camera":
-			_camera_seen = is_instance_valid(rts.cam_pivot) and rts.cam_pivot.global_position.distance_to(_camera_origin) > 2.0
+			if not is_instance_valid(rts.cam_pivot):
+				return false
+			# The match opens with the camera gliding to the player's hall,
+			# and that glide used to complete this lesson before the player
+			# had read it. Measure from where the camera first comes to rest.
+			var cam_now: Vector3 = rts.cam_pivot.global_position
+			if not _camera_rested:
+				if cam_now.distance_to(_camera_last) < 0.05:
+					_camera_rested = true
+					_camera_origin = cam_now
+				_camera_last = cam_now
+				return false
+			_camera_seen = cam_now.distance_to(_camera_origin) > 2.0
 			return _camera_seen
 		"select":
 			return _selection_seen
 		"gather":
 			return world.resource_extractions.size() > _resource_extraction_baseline
 		"build":
-			return int(world.get_v0431_construction_audit().get("completed_count", 0)) > _construction_baseline
+			for b in world.player_commander.buildings:
+				if is_instance_valid(b) and not b.is_dead and b.is_built and String(b.def.get("kind", "")) == "barracks":
+					return true
+			return false
 		"train":
 			return _army_count() > _army_baseline
 		"hero":

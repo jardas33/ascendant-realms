@@ -2580,16 +2580,17 @@ func _build_starting_base(cmd, pos: Vector3) -> void:
 	cmd.hero_ref = null
 	# starting workers + one soldier + hero
 	var start_units: Array = race.get("start_units", [])
-	# The opening circle of workers and the hero are laid out from the side of
-	# the hall that faces the field, so every start is a mirror of the others.
+	# The opening workers, the soldier and the hero stand in an arc on the side
+	# of the hall that faces the field, so every start is a mirror of the
+	# others. (They used to ring the hall, and two of the four stood behind
+	# it, half hidden by the roof in the player's first view of the game.)
 	var facing := atan2(-pos.z, -pos.x) if Vector2(pos.x, pos.z).length() > 6.0 else 0.0
-	var angle := facing
 	var i := 0
 	for uid_key in start_units:
 		var uid := _resolve_unit_id(cmd.race, uid_key)
-		var sp := pos + Vector3(cos(angle) * 10.0, 0, sin(angle) * 10.0)
+		var angle := facing + (float(i) - float(start_units.size() - 1) * 0.5) * 0.6
+		var sp := pos + Vector3(cos(angle) * 11.0, 0, sin(angle) * 11.0)
 		spawn_unit(uid, cmd.team, sp)
-		angle += TAU / max(1, start_units.size())
 		i += 1
 	# hero
 	var hero_id: String = race.get("hero", "")
