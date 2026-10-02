@@ -2091,6 +2091,11 @@ func _route_request_reason(command_type: String) -> String:
 	return "MILITARY_MOVE" if not is_worker else "PLAYER_MOVE"
 
 var _navigation_short_replan_msec := 0
+## Set when an order's route could not be planned in its own frame. Nothing
+## asked again for an attack-move, so the unit walked on to its OLD destination
+## and stopped there: of forty marching soldiers given a new attack-move, four
+## obeyed. _move_along_path now plans it as soon as a frame has room.
+var _navigation_replan_deferred := false
 
 func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
@@ -2149,7 +2154,9 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	if world and world.has_method("route_budget_available") and not world.route_budget_available() and not _navigation_waypoints.is_empty() and _navigation_command_type in ["attack", "attack_move", "gather"]:
 		# The frame's route budget is spent: keep following the current route
 		# and re-plan on a later tick (the request is left unrecorded).
+		_navigation_replan_deferred = true
 		return
+	_navigation_replan_deferred = false
 	_navigation_last_requested = pos
 	_navigation_last_command = _navigation_command_type
 	var target_blocker = null
@@ -3222,6 +3229,8 @@ var _sidestep_sign := 1.0
 func _move_along_path(delta: float) -> bool:
 	if not agent:
 		return true
+	if _navigation_replan_deferred and (world == null or not world.has_method("route_budget_available") or world.route_budget_available()):
+		_set_agent_target(_requested_move_target, _navigation_command_type)
 	if world and world.has_method("is_navigation_ready") and not world.is_navigation_ready():
 		_navigation_target_pending = true
 		_navigation_path_wait_frames = 0
