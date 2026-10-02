@@ -1383,9 +1383,25 @@ func _launch_attack() -> void:
 		else:
 			u.set_meta("ai_home_guard", false)
 			u.command_move(target, true)
-	# hero joins the push
-	if is_instance_valid(commander.hero_ref) and not commander.hero_ref.is_dead:
-		commander.hero_ref.command_move(target, true)
+	# The hero joins the push, but not while it is falling back hurt (this
+	# order used to turn it round again within eight seconds) and not alone:
+	# a hero just back from the dead walked across the map by itself and died
+	# again. A sword-carrying hero fell four times in ten minutes that way,
+	# each fall worth as much to the enemy hero as five soldiers, while a hero
+	# that fights from behind the line never fell at all: the four peoples
+	# with such heroes led every balance check.
+	var hero = commander.hero_ref
+	if is_instance_valid(hero) and not hero.is_dead:
+		var hurt: bool = (hero.has_meta("ai_retreating") and bool(hero.get_meta("ai_retreating"))) or hero.hp < hero.max_hp * 0.6
+		var escort := 0
+		for u in soldiers:
+			if u.global_position.distance_to(hero.global_position) < 60.0:
+				escort += 1
+		if not hurt and escort >= 3:
+			hero.command_move(target, true)
+		elif not hurt and hero.state == hero.State.IDLE and hero.global_position.distance_to(_base_pos) < 70.0 and hero.global_position.distance_to(_rally) > 12.0:
+			# Wait where the army musters and leave with the next soldiers.
+			hero.command_move(_rally, true)
 
 func _pick_attack_target() -> Vector3:
 	# Preserve the existing nearest built hostile Building priority.
@@ -1666,7 +1682,7 @@ func _cast_hero_spells() -> void:
 		return
 	# A badly hurt hero falls back to the stronghold to recover instead of
 	# dying for nothing; the next wave takes them along again.
-	if hero.hp < hero.max_hp * 0.3 and hero.global_position.distance_to(_base_pos) > 25.0 and not hero.can_cast("heal"):
+	if hero.hp < hero.max_hp * 0.4 and hero.global_position.distance_to(_base_pos) > 25.0 and not hero.can_cast("heal"):
 		if not bool(hero.get_meta("ai_retreating", false)):
 			hero.set_meta("ai_retreating", true)
 			hero.command_move(_base_pos, false)

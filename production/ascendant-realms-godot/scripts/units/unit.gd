@@ -507,7 +507,9 @@ func _apply_race_passive() -> void:
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.
-			base_dmg *= 1.06
+			# Last in five checks running on the corrected AI of plans 95 to 97
+			# (28-59 over 450 matches): back to +12%.
+			base_dmg *= 1.12
 		"sylvan":                         # Precision — keener sight and reach
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
@@ -549,9 +551,11 @@ func _apply_race_passive() -> void:
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			# Was +12%: top of both pooled plan 82 checks (10-2-6 and 11-3-4).
 			# 11-23-2 over 180 matches on the corrected AI (plan 95): +12% again.
-			base_dmg *= 1.12
+			# Still 28-59 over the five checks of plans 95 to 97: +15%.
+			base_dmg *= 1.15
 			# 13-25-7 over 225 pooled matches (plans 50 to 63): a little tougher.
-			max_hp *= 1.15
+			# +20% (was +15%) with the damage change of plan 97.
+			max_hp *= 1.20
 			hp = max_hp
 		"vorthak":                        # Rift Toll — thralls move a touch faster
 			move_speed *= 1.06
