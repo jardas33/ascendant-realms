@@ -11,12 +11,12 @@ const KeyBinds := preload("res://scripts/game/key_binds.gd")
 
 const CONTROLS := [
 	["SELECTION", "Left-click selects. Drag selects a group. Hold Shift to add to selection."],
-	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map."],
+	["CONTEXT ORDER", "Right-click moves, attacks, gathers, rallies, or repairs. Right-click the minimap to send the selection across the map. Hold Shift to add a move or attack-move after the orders already given."],
 	["UNIT ORDERS", "{cmd_attack} attack-move  ·  {cmd_stop} stop  ·  {cmd_hold} hold  ·  {cmd_patrol} patrol"],
 	["HERO POWERS", "{ability_1} Rally  ·  {ability_2} Slam  ·  {ability_3} Charge  ·  {ability_4} Bolt  ·  {ability_5} Heal  ·  {ability_6} Roots  ·  {ability_7} Avatar (once learned). {ability_sig} is your people's signature spell; {ability_p1} and {ability_p2} are its spells learned at levels 10 and 25. Aim at the cursor."],
 	["CONTROL GROUPS", "Ctrl+0–9 assign a group. 0–9 recall it; press twice to bring the camera to it. Shift adds it to the selection. {select_army} selects the army."],
 	["QUICK SELECT", "{idle_worker} selects an idle worker. {cycle_hero} focuses the hero. Backspace jumps to the latest alert."],
-	["CONSTRUCTION", "Left-click places a building. Right-click cancels."],
+	["CONSTRUCTION", "Left-click places a building; hold Shift to place several in a row. Right-click cancels."],
 	["VEINS", "Right-click a ringed vein with workers: they raise an outpost and go inside to work it. Right-click the outpost with more workers to send them in too. Expand it for more room and output."],
 	["LUME JARS", "A violet diamond on the minimap is a buried jar. Keep your troops over it, alone, for six seconds to dig it up."],
 	["CARAVAN", "Select your main hall to buy food, timber or stone with gold, or sell a surplus for gold. Buying raises the price; it eases back over time."],

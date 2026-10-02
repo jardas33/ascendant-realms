@@ -1729,9 +1729,22 @@ func get_hp_ratio() -> float:
 # --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
+## Orders waiting their turn (Shift + right-click or Shift + attack-move):
+## each is {"pos": Vector3, "attack": bool}. The next one starts when the unit
+## comes to rest; any order given without Shift clears the list.
+var _order_queue: Array = []
+var _running_queued_order := false
+const ORDER_QUEUE_LIMIT := 12
+
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
+	if queue and (state == State.MOVING or state == State.ATTACK_MOVE or state == State.ATTACKING or not _order_queue.is_empty()):
+		if _order_queue.size() < ORDER_QUEUE_LIMIT:
+			_order_queue.append({"pos": pos, "attack": attack_move})
+		return
+	if not _running_queued_order:
+		_order_queue.clear()
 	# An order onto a crag is an order to its foot, on this unit's side of it.
 	if world and world.has_method("out_of_crags"):
 		pos = world.out_of_crags(pos, 2.6, global_position)
@@ -1760,6 +1773,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 		recorder.record_unit_command(self, r1j_order_id, "attack_move" if attack_move else "move", before_state, state, before_target, _target, pos)
 
 func command_stop() -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant(): return
 	_patrol_resume_after_combat = false
 	_reset_ordinary_move_settlement()
@@ -1792,12 +1806,14 @@ func command_stop() -> void:
 		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
 
 func command_hold() -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running): return
 	command_stop()
 	_hold_position = true
 	state = State.HOLD
 
 func command_attack(tgt, r1j_order_id: String = "") -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not _can_attack_target(tgt):
 		return
 	_patrol_resume_after_combat = false
@@ -1850,6 +1866,7 @@ func _can_attack_target(tgt) -> bool:
 	return tgt.has_method("take_damage") and tgt.has_method("get_hp_ratio")
 
 func command_patrol(pos: Vector3) -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running): return
 	_patrol_resume_after_combat = true
 	_hold_position = false
@@ -1862,6 +1879,7 @@ func command_patrol(pos: Vector3) -> void:
 	_set_agent_target(_patrol_b, "patrol")
 
 func command_guard(tgt) -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or not is_instance_valid(tgt): return
 	_patrol_resume_after_combat = false
 	_attack_move_ordered = false
@@ -1870,6 +1888,7 @@ func command_guard(tgt) -> void:
 	state = State.FOLLOW
 
 func command_gather(node) -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
 		if world and world.has_method("record_resource_command_rejection"):
 			world.record_resource_command_rejection(self, node, "not_a_live_resource_node")
@@ -1905,6 +1924,7 @@ func command_gather(node) -> void:
 	state = State.GATHERING
 
 func command_build(building) -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(building):
 		return
 	if not (building is Building) or building.is_dead or building.is_built or building.team != team:
@@ -1925,6 +1945,7 @@ func command_build(building) -> void:
 	state = State.BUILDING
 
 func command_repair(building) -> void:
+	_order_queue.clear()
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running) or not is_worker or not is_instance_valid(building):
 		return
 	if not (building is Building) or building.is_dead or not building.is_built or building.team != team or building.hp >= building.max_hp:
@@ -2457,6 +2478,11 @@ func _physics_process(delta: float) -> void:
 	if global_position.y != 0.0:
 		global_position.y = 0.0
 
+	if state == State.IDLE and not _order_queue.is_empty():
+		var queued: Dictionary = _order_queue.pop_front()
+		_running_queued_order = true
+		command_move(queued["pos"], bool(queued["attack"]))
+		_running_queued_order = false
 	match state:
 		State.IDLE, State.HOLD:
 			_state_idle(delta)

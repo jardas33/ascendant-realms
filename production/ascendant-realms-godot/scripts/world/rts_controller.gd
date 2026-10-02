@@ -891,7 +891,8 @@ func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
 			_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "REPAIR" if repair_issued and not construction_issued else "BUILD/CONTINUE", hit.global_position, hit)
 		return
 	if intent == COMMAND_MOVE and ground != null:
-		_formation_move(units, ground)
+		# With Shift the move waits its turn after the orders already given.
+		_formation_move(units, ground, queue)
 		_emit_command_feedback(COMMAND_MOVE, "MOVE", ground, null)
 
 ## Right-click on the minimap: the selection marches there, or a selected
@@ -933,12 +934,12 @@ func issue_attack_target(target) -> bool:
 		_emit_command_feedback(COMMAND_ATTACK, "ATTACK", target.global_position, target)
 	return issued
 
-func _formation_move(units: Array, target: Vector3) -> void:
+func _formation_move(units: Array, target: Vector3, queue: bool = false) -> void:
 	if units.size() <= 1:
 		if units.size() == 1:
-			_issue({"type": "move", "units": units, "pos": target})
+			_issue({"type": "move", "units": units, "pos": target, "queue": queue})
 		return
-	_issue({"type": "move", "units": units, "pos": target, "positions": _formation_slots(units, target)})
+	_issue({"type": "move", "units": units, "pos": target, "positions": _formation_slots(units, target), "queue": queue})
 
 ## One place per unit in a rectangle centred on `target`, in the order of
 ## `units`. Each soldier gets the place that matches where it already stands
@@ -992,7 +993,7 @@ func issue_attack_move_destination(destination: Vector3) -> bool:
 	# An attack-move ends in the same formation as a move. Every soldier used
 	# to be sent to the one clicked point, and forty of them fought each other
 	# for it on arrival.
-	_issue({"type": "attack_move", "units": units, "pos": destination, "positions": _formation_slots(units, destination) if units.size() > 1 else [], "order_id": order_id})
+	_issue({"type": "attack_move", "units": units, "pos": destination, "positions": _formation_slots(units, destination) if units.size() > 1 else [], "order_id": order_id, "queue": Input.is_key_pressed(KEY_SHIFT)})
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK_MOVE, "ATTACK-MOVE", destination, null)
 	cancel_attack_move_mode()

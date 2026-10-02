@@ -113,8 +113,8 @@ func execute(order: Dictionary):
 			i += 1
 			continue
 		match String(order.get("type", "")):
-			"move": u.command_move(slots[i] if i < slots.size() else pos)
-			"attack_move": u.command_move(slots[i] if i < slots.size() and slots[i] is Vector3 else pos, true, false, order_id)
+			"move": u.command_move(slots[i] if i < slots.size() else pos, false, bool(order.get("queue", false)))
+			"attack_move": u.command_move(slots[i] if i < slots.size() and slots[i] is Vector3 else pos, true, bool(order.get("queue", false)), order_id)
 			"attack":
 				var t = slots[i] if i < slots.size() and is_instance_valid(slots[i]) else target
 				if is_instance_valid(t):
@@ -150,7 +150,7 @@ func serialize(order: Dictionary) -> Dictionary:
 		out["positions"] = slots
 	if String(order.get("order_id", "")) != "":
 		out["order_id"] = String(order["order_id"])
-	for k in ["id", "index", "team"]:
+	for k in ["id", "index", "team", "queue"]:
 		if order.has(k):
 			out[k] = order[k]
 	return out
@@ -168,6 +168,8 @@ func deserialize(data: Dictionary) -> Dictionary:
 		out["index"] = int(data["index"])
 	if data.has("team"):
 		out["team"] = int(data["team"])
+	if data.has("queue"):
+		out["queue"] = bool(data["queue"])
 	if data.has("target"):
 		out["target"] = resolve(int(data["target"]))
 	if data.has("pos"):
