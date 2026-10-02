@@ -106,9 +106,14 @@ func refund(cost: Dictionary, ratio: float = 1.0) -> void:
 ## Every trade raises the price a little; it eases back to the base over time.
 ## Late matches banked thousands of gold while armies starved on empty food
 ## and stone nodes; this turns a hoard into an army.
-const TRADE_BATCH := 50
+# The caravan gave 50 for 100 gold and paid 30 gold for 100: turning a pile
+# of one thing into another kept 15% of it, so a store that had run dry stayed
+# dry while others overflowed (an AI sat on 1,350 food and 960 stone with no
+# timber). It now gives 100 for 100 gold (rising 8 a trade, easing back over
+# time) and pays 40 for 100: a round trip keeps 40% at best.
+const TRADE_BATCH := 100
 const TRADE_BASE_PRICE := 100.0
-const TRADE_PRICE_STEP := 6.0
+const TRADE_PRICE_STEP := 8.0
 var _trade_price := TRADE_BASE_PRICE
 var _trade_stamp := 0.0
 
@@ -122,7 +127,7 @@ func trade_price() -> int:
 ## The caravan also buys surplus: 100 food, timber or stone for 30 gold, at
 ## a flat rate (buying back costs far more, so there is no loop to exploit).
 const SELL_BATCH := 100
-const SELL_GOLD := 30
+const SELL_GOLD := 40
 
 func sell_for_gold(kind: String) -> Dictionary:
 	if not ["food", "timber", "stone"].has(kind):

@@ -490,7 +490,7 @@ static func get_all() -> Dictionary:
 		"model": _char("beastfolk_wolf_warrior"), "height": 1.85,
 		"hp": 130, "dmg": 13, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.3, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 14, "pop": 1, "produced_by": "wyldkin_hunt_lodge",
+		"cost": {"food": 60, "timber": 10}, "build_time": 11, "pop": 1, "produced_by": "wyldkin_hunt_lodge",
 		"desc": "When the moon is up, the seventh son stops being a man.",
 	},
 	"wyldkin_packguard": {
@@ -506,7 +506,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_thorn_ranger"), "height": 1.8,
 		"hp": 87, "dmg": 15, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 17.0, "attack_cd": 1.3, "speed": 3.9, "vision": 25.0, "projectile": "thorn",
-		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "wyldkin_hunt_lodge",
+		"cost": {"food": 50, "timber": 30}, "build_time": 14, "pop": 1, "produced_by": "wyldkin_hunt_lodge",
 		"desc": "Hurls splinters of the stone wolf-traps back at those who built them.",
 	},
 	"wyldkin_direwolf": {

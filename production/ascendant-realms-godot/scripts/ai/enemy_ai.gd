@@ -77,8 +77,12 @@ var _second_barracks_army := 6
 
 func _apply_personality() -> void:
 	match String(commander.race):
-		"vorthak", "hollow":
+		"hollow":
 			_army_attack_size = maxi(4, _army_attack_size - 3)
+		"vorthak":
+			# First or second in five checks running on the AI of plans 95 to
+			# 99 (61-29): its first wave waits for one soldier more.
+			_army_attack_size = maxi(4, _army_attack_size - 2)
 		"wyldkin":
 			# The pack still strikes first, but with one soldier fewer than the
 			# usual wave, not three: an early wave led by a hero that has to
@@ -290,7 +294,17 @@ func _manage_veins() -> void:
 				building_one = true
 	# Claim: the nearest free vein that is closer to us than to any enemy start.
 	var home_workers := _worker_count()
-	var max_outposts := 1 + int(float(world.get("match_time")) / 300.0)
+	# The deposits round a hall last about four and a half minutes with a full
+	# crew. The AI used to allow itself one outpost until minute five and two
+	# until minute ten, and kept six workers "at home" whatever was left
+	# there: from minute five it had two workers in a vein and thirteen
+	# standing idle, for the rest of the match. It now opens an outpost for
+	# every kind that has run dry at home, on top of one every four minutes.
+	var dry_kinds: Array = []
+	for k in ["food", "timber", "stone", "gold"]:
+		if not _home_has(k):
+			dry_kinds.append(k)
+	var max_outposts := clampi(1 + int(float(world.get("match_time")) / 240.0) + dry_kinds.size(), 1, 6)
 	# Only open another outpost once the last ones are mostly staffed.
 	var empty_slots := 0
 	for ob in outposts:
@@ -316,7 +330,7 @@ func _manage_veins() -> void:
 			# Barrosan AI claimed stone and gold while starving on food).
 			# Weight by what the faction spends too: every army eats food, and
 			# a Frostborn AI claimed stone and gold veins while food sat at 12.
-			var score := d - (60.0 if String(v.kind) == _needed_resource() else 0.0) - 140.0 * float(_gather_share.get(String(v.kind), 0.2)) - (90.0 if String(v.kind) == "food" else 0.0)
+			var score := d - (60.0 if String(v.kind) == _needed_resource() else 0.0) - 140.0 * float(_gather_share.get(String(v.kind), 0.2)) - (90.0 if String(v.kind) == "food" else 0.0) - (120.0 if dry_kinds.has(String(v.kind)) else 0.0)
 			if not nearer_enemy and score < best_d:
 				best_d = score
 				best = v
@@ -357,7 +371,13 @@ func _manage_veins() -> void:
 			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and (u.get_meta("garrison_target") if u.has_meta("garrison_target") else null) == null:
 				gatherers += 1
 				spare.append(u)
-		var can_send := mini(free_slots, gatherers - 6)
+		# Six stay at the home deposits while there is something left there
+		# to gather; workers with nothing to do all go.
+		var idle_spare := 0
+		for sp in spare:
+			if sp.state == sp.State.IDLE:
+				idle_spare += 1
+		var can_send := mini(free_slots, maxi(gatherers - 6, idle_spare))
 		if can_send <= 0:
 			continue
 		# Not into an outpost the enemy is standing at.
@@ -387,29 +407,42 @@ func _caravan_trade() -> void:
 			break
 	if hq == null:
 		return
-	# Short on gold but sitting on a pile of something else: sell the pile.
-	# (At 900 a Candle Chapel sat on 900 food with no gold at all, and every
-	# one of its soldiers costs a little gold: nothing was trained.)
-	if int(commander.resources.get("gold", 0)) < 120:
+	var low := ""
+	var low_amt := 150
+	for k in ["food", "timber", "stone"]:
+		if int(commander.resources.get(k, 0)) < low_amt:
+			low = k
+			low_amt = int(commander.resources.get(k, 0))
+	# Sell a pile when gold is short, or when a store has run low and there is
+	# not the gold to buy it: a pile is the biggest store over 500 (over 350
+	# when the gold is nearly gone) that is not itself the one running low.
+	# (The AI only ever sold with under 120 gold and over 900 of something,
+	# and so sat on a thousand food and stone with no timber to build with.)
+	var gold_now := int(commander.resources.get("gold", 0))
+	if gold_now < 120 or (low != "" and gold_now < commander.trade_price() + 30):
+		var pile := ""
+		var pile_amt := 350 if gold_now < 40 else 500
 		for k in ["stone", "timber", "food"]:
-			if int(commander.resources.get(k, 0)) > (450 if int(commander.resources.get("gold", 0)) < 40 else 900):
-				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + k})
-				return
+			if k != low and int(commander.resources.get(k, 0)) > pile_amt:
+				pile = k
+				pile_amt = int(commander.resources.get(k, 0))
+		if pile != "":
+			world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + pile})
+			if pile_amt > 900:
+				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + pile})
 	for i in 2:
 		var price: int = commander.trade_price()
-		var low := ""
-		var low_amt := 150
+		low = ""
+		low_amt = 150
 		for k in ["food", "timber", "stone"]:
 			if int(commander.resources.get(k, 0)) < low_amt:
 				low = k
 				low_amt = int(commander.resources.get(k, 0))
 		if low == "":
 			return
-		# An empty store is worth the gold at once. The AI used to wait for
-		# 250 gold beyond the price whatever the need: with the home trees
-		# felled a Careto AI sat on 5 timber and 245 gold from minute six,
-		# and every soldier, house and outpost it could have made costs timber.
-		var reserve := 250 if low_amt >= 40 else 30
+		# An empty store is worth the gold at once; otherwise keep a little
+		# gold back for soldiers and research.
+		var reserve := 150 if low_amt >= 40 else 30
 		if int(commander.resources.get("gold", 0)) < price + reserve:
 			return
 		world.command_bus.execute({"type": "trade", "target": hq, "id": low})
@@ -911,6 +944,13 @@ func _pick_node(kind: String, from: Vector3):
 			best = r
 	return best
 
+## Is there still a live deposit of `kind` round the hall?
+func _home_has(kind: String) -> bool:
+	for r in get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(r) and not r.depleted and String(r.resource_kind) == kind and r.global_position.distance_to(_base_pos) <= HOME_NODE_RADIUS:
+			return true
+	return false
+
 func _node_is_safe(node, desperate: bool = false) -> bool:
 	var at: Vector3 = node.global_position
 	var home: float = at.distance_to(_base_pos)
@@ -1084,7 +1124,13 @@ func _manage_economy() -> void:
 	for b in commander.buildings:
 		if is_instance_valid(b) and not b.is_dead and bool(b.def.get("vein_outpost", false)):
 			inside += b.garrison.size()
-	if hq and _worker_count() < _worker_target + inside:
+	# Once nothing is left to gather round the hall the home crew is only
+	# builders: four are enough. (The full crew was kept whatever was left,
+	# so an AI on its veins fed ten idle mouths out of its army's room.)
+	var home_crew := _worker_target
+	if not (_home_has("food") or _home_has("timber") or _home_has("stone") or _home_has("gold")):
+		home_crew = 4
+	if hq and _worker_count() < home_crew + inside:
 		if hq.queue.size() < 2:
 			var wid = GameData.get_race(commander.race).get("worker", "")
 			hq.queue_unit(wid)
@@ -1165,6 +1211,12 @@ func _manage_production() -> void:
 	var timber_now := int(commander.resources.get("timber", 0))
 	var flush: bool = food_now > 900 and timber_now > 500
 	var want_barracks := 2
+	# Six peoples train from two kinds of hall (a barracks and a spire or
+	# grove); the other four have the barracks alone and so trained a third
+	# fewer soldiers at a time from the Age of Bronze on. They raise a third
+	# barracks where the others raise their spire.
+	if commander.tier >= 2 and _building_id_for_kind("arcane") == "":
+		want_barracks = 3
 	if flush:
 		want_barracks = 4 if (food_now > 2200 and timber_now > 900) else 3
 	if difficulty != "easy" and _count_building_kind("barracks") >= 2 and _count_building_kind("barracks") < want_barracks:

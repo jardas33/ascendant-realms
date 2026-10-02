@@ -79,7 +79,13 @@ var garrison: Array = []
 var outpost_level := 1
 var _outpost_timer := 0.0
 var _outpost_pay_timer := 0.0
-const OUTPOST_RATE := 0.5          # per worker per second at level 1 (about a walking worker's pace, with no walking)
+# Per worker per second at level 1. It was 0.5, written down as "about a
+# walking worker's pace", but a worker walking between a deposit and the hall
+# brings in about 2.3 a second: a base moved onto its veins earned a fifth of
+# what its opening did, and every match starved from minute five. At 1.0 a
+# first outpost earns 3 a second and four fully expanded ones 42, a little
+# more than the fifteen workers of the opening (about 34).
+const OUTPOST_RATE := 1.0
 const OUTPOST_MAX_LEVEL := 3
 
 var model_root: Node3D

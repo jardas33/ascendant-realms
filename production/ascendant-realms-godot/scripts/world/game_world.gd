@@ -3222,7 +3222,9 @@ func _spawn_veins() -> void:
 		add_child(vein)
 		vein.global_position = p
 		# Deeper on the Endless Road the veins run richer.
-		vein.configure(String(v["kind"]), 4000 + 120 * int(Match.get_config().get("endless_depth", 0)))
+		# 6,000 a vein (was 4,000): at the new outpost rate a fully expanded
+		# outpost empties one in about ten minutes.
+		vein.configure(String(v["kind"]), 6000 + 120 * int(Match.get_config().get("endless_depth", 0)))
 		clear_ground_cover(p, 5.0)
 
 ## Lume flares: from minute six, every four minutes one vein burns with Lume

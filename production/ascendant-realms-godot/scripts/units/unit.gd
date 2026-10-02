@@ -539,13 +539,18 @@ func _apply_race_passive() -> void:
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
 			# 7-14-6 over 135 matches: steadier healing and a little more health.
 			# 7-27-2 over 180 matches on the corrected AI (plan 95): +10% (was +5%).
-			regen += 3.0
+			# 14-4 once its AI stopped over-massing (plan 99): the healing eases
+			# from 3 to 2 a second.
+			regen += 2.0
 			max_hp *= 1.10
 			hp = max_hp
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
 			# Was +15% speed and +10% damage: 9-0 in the AI round robin.
+			# Then +5% damage: last or next to last in five checks on the AI
+			# of plans 95 to 99 (27-63), and its tier-one army won 30% of
+			# equal-cost fights in the open. +10% again.
 			move_speed *= 1.08
-			base_dmg *= 1.05
+			base_dmg *= 1.10
 		"hollow":                         # Undying — every warrior drains life on hit
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
