@@ -2916,7 +2916,10 @@ func _state_gather(delta: float) -> void:
 			_gather_node = n
 			_move_target = _gather_interaction_target(n)
 		else:
-			state = State.RETURNING if _carry > 0 else State.IDLE
+			if _carry > 0:
+				state = State.RETURNING
+			else:
+				_go_to_outpost_or_idle()
 			return
 	var d := global_position.distance_to(_gather_node.global_position)
 	# A worker that has come to rest just outside the 2.2 m reach (crowded or
@@ -3043,7 +3046,20 @@ func _state_return(delta: float) -> void:
 				_gather_node = next
 				state = State.GATHERING
 			else:
-				state = State.IDLE
+				_go_to_outpost_or_idle()
+
+## The deposit has run dry and no other is within reach. If the side owns an
+## outpost on a vein of the same resource with a free place, the worker goes
+## there and works it; otherwise it waits for orders. (Fifteen workers used to
+## stand idle the moment the home fields were empty, and each had to be sent
+## to an outpost by hand.)
+func _go_to_outpost_or_idle() -> void:
+	state = State.IDLE
+	if world == null or not world.has_method("outpost_with_room") or world.get("command_bus") == null:
+		return
+	var post = world.outpost_with_room(team, _desired_gather_kind, global_position)
+	if post != null:
+		world.command_bus.execute({"type": "garrison", "units": [self], "target": post})
 
 func get_economy_snapshot() -> Dictionary:
 	var activity := "Idle"

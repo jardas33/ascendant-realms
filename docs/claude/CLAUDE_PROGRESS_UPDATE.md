@@ -1002,6 +1002,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
     - Wyldkin: damage bonus 10% (was 5%); Claw Warriors train in 11 s (was 14) and Spine Throwers in 14 s (was 16). In equal-cost fights in the open their tier-one army won 30%.
     - Sunspear: healing 2 a second (was 3). Vorthak: its first wave waits for one more soldier.
   - **A new measuring tool:** a round robin of equal-cost tier-one armies meeting in the open, each with its people's bonuses and hero (45 pairings in eight minutes). Karak's army won 88% of its fights, Barrosan 80%, Frostborn and Sunspear 69%, Lioraen and Sylvan 55%, Wyldkin 30%, Hollow and Grimtusk 22%, Vorthak 2%. Match results do not follow that order (Vorthak wins matches with cheap soldiers trained fast, Frostborn loses them with strong ones trained slowly), which is why changes are judged on full matches.
+- **Plan 100 (done): workers find their own way to an outpost, and a balance check worth trusting**
+  - **Workers go to your outpost by themselves.** When a home deposit runs dry, its workers used to stand idle (fifteen of them, a few minutes into every match) and each had to be sent to an outpost by hand. If you own an outpost on a vein of the same resource with a free place and no enemy near it, they now walk there and go inside; the rest wait for orders as before, and the idle-worker counter shows them.
+  - **Why balance results swung so much.** The old check played every pairing on one map, with a seed fixed by the map and the two peoples: a pairing played out much the same every time on one build and completely differently on the next. One people went 14-3-1, 8-10 and 5-13 over three builds with nothing changed in it. The new check plays the same 90 matches (every pairing from both seats) across six maps with a random seed for each.
+  - **Balance on the new check (plan 99 numbers):** Vorthak 12-6, Wyldkin 11-7, Karak 10-8, Barrosan 10-8, Sylvan 9-8-1, Sunspear 8-10, Lioraen 8-10, Frostborn 7-10-1, Hollow 7-11, Grimtusk 7-11. Every people is between 7 and 12 wins of 18, the tightest table so far and inside what chance allows. The first seat won 38 of 89.
+  - **One more check in the regression suite** (39 in all): workers moving to an outpost with room.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
@@ -1136,7 +1141,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Human playtest.** Nothing here has been played by a person since the audit passes. `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` lists what to try; section 5 covers everything new since 2026-10-01.
 - **Sound.** The sixteen procedural sounds of plan 86 were checked numerically only. Emanuel should say if any is unpleasant.
 - **Models (Codex's lane).** Seven peoples borrow another people's unit and building models. The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista; `wyldkin_denhold.glb` is rough.
-- **Balance.** The economy changed in plan 99, so earlier tables are superseded. On the new economy one 90-match check ran from 14-4 to 5-13; Wyldkin and Frostborn (last in five checks) were helped and Sunspear and Vorthak trimmed in the same plan. The next check says whether that was right.
+- **Balance.** On the new six-map check (plan 100) every people is between 7 and 12 wins of 18. A second run will be pooled with it before anything is tuned again.
 - **Corner.** Fixed in plan 98. Over the four checks since, the first seat has won 197 of 357 matches (55%).
 - **AI strength for a human.** The AI is much stronger than a week ago (its heroes fight, its armies obey, its workers survive). A Normal AI reaches a player who does nothing between 2:20 and 3:45 with two to five soldiers and its hero. Whether Normal is now too hard needs a human playtest.
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.

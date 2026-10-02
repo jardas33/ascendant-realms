@@ -3373,6 +3373,34 @@ func _open_lume_jar(jar, team: int) -> void:
 		emit_signal("alert", "The enemy dug up a Lume jar.", pos)
 
 ## The free vein nearest a point, within `radius`.
+## A finished outpost of `team` on a vein of `kind` that still has a free
+## place (workers already walking to it count), with no enemy soldier near
+## it: the nearest to `from` within 150 m, or null.
+func outpost_with_room(team: int, kind: String, from: Vector3):
+	var cmd = commander_for_team(team)
+	if cmd == null:
+		return null
+	var best = null
+	var best_d := 150.0
+	for b in cmd.buildings:
+		if not is_instance_valid(b) or b.is_dead or not b.is_built or not bool(b.def.get("vein_outpost", false)) or not b.has_meta("vein"):
+			continue
+		var vein = b.get_meta("vein")
+		if not is_instance_valid(vein) or String(vein.kind) != kind or int(vein.amount) <= 0:
+			continue
+		var heading := 0
+		for u in cmd.units:
+			if is_instance_valid(u) and u.has_meta("garrison_target") and u.get_meta("garrison_target") == b:
+				heading += 1
+		if b.garrison.size() + heading >= b.outpost_slots():
+			continue
+		var d: float = from.distance_to(b.global_position)
+		if d >= best_d or find_enemy_near(b.global_position, 40.0, team) != null:
+			continue
+		best_d = d
+		best = b
+	return best
+
 func vein_near(pos: Vector3, radius: float = 5.0):
 	var best = null
 	var best_d := radius
