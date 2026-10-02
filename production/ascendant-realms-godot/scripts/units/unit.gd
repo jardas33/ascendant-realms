@@ -2132,6 +2132,15 @@ var _navigation_short_replan_msec := 0
 var _navigation_replan_deferred := false
 
 func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
+	# An order onto the last few metres at the map's edge is an order to the
+	# nearest ground a unit may stand on. Such a point used to be kept as it
+	# was: the unit set off, found its goal "outside the field" and stopped
+	# where it stood, idle.
+	# (A metre and a half inside the line: a goal on the line itself kept the
+	# unit shuffling beside it, every last step "predicted out of bounds".)
+	if world and world.has_method("clamp_to_playable_bounds"):
+		pos.x = clampf(pos.x, float(world.playable_min.x) + 1.5, float(world.playable_max.x) - 1.5)
+		pos.z = clampf(pos.z, float(world.playable_min.z) + 1.5, float(world.playable_max.z) - 1.5)
 	_requested_move_target = pos
 	if command_type != "":
 		_navigation_command_type = command_type

@@ -1804,6 +1804,12 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		var origin_inside := _point_inside_route_rectangle(current, center, half_extents)
 		if origin_inside:
 			origin_started_inside_blocker = true
+		# A unit standing in the walking margin round a building may leave in
+		# any direction except through the building itself. The margin was
+		# waived whole, body and all: a soldier beside its hall, ordered to the
+		# far side, was given a leg straight through the hall and pushed
+		# against the wall for most of a minute.
+		var body_extents: Vector2 = blocker.get("half_extents", half_extents)
 		var target_direction := final_target - center
 		target_direction.y = 0.0
 		if target_direction.length_squared() > 0.01:
@@ -1816,7 +1822,7 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 			if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
 				solver_bailed = true
 				break
-			var incoming_clear := origin_inside or not _segment_enters_route_rectangle(current, first, center, half_extents)
+			var incoming_clear := (origin_inside and not _segment_enters_route_rectangle(current, first, center, body_extents)) or not _segment_enters_route_rectangle(current, first, center, half_extents)
 			if not incoming_clear:
 				continue
 			var incoming_exception = blocker.get("node") if origin_inside else null
@@ -1873,6 +1879,8 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 						continue
 					if _point_inside_route_rectangle(bridge_candidate, center, half_extents):
 						continue
+					if origin_inside and _segment_enters_route_rectangle(current, bridge_candidate, center, body_extents):
+						continue
 					if not _segment_clear_of_active_route_blockers(current, bridge_candidate, blockers, clearance, blocker.get("node") if origin_inside else null):
 						continue
 					var bridge_score := current.distance_to(bridge_candidate) + bridge_candidate.distance_to(final_target)
@@ -1891,7 +1899,7 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 			# valid ground position. Pick the closest safe corner and stop there.
 			for candidate in candidates:
 				var fallback_exception = blocker.get("node") if origin_inside else null
-				if (origin_inside or not _segment_enters_route_rectangle(current, candidate, center, half_extents)) and _segment_clear_of_active_route_blockers(current, candidate, blockers, clearance, fallback_exception):
+				if ((origin_inside and not _segment_enters_route_rectangle(current, candidate, center, body_extents)) or not _segment_enters_route_rectangle(current, candidate, center, half_extents)) and _segment_clear_of_active_route_blockers(current, candidate, blockers, clearance, fallback_exception):
 					if best_first == Vector3.ZERO or current.distance_to(candidate) < current.distance_to(best_first):
 						best_first = candidate
 			if best_first == Vector3.ZERO:
@@ -1954,8 +1962,30 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		return points if not points.is_empty() else [origin]
 	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
 		points.append(final_target)
+	points = _straighten_route(origin, points, blockers, clearance)
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+## Drops every waypoint the unit can walk straight past. The corner search
+## goes from one obstacle's corner to the next and could hand back a route
+## that doubled back on itself among the trees beside a hall (nine waypoints,
+## four changes of direction, twice the walk). A leg is only shortened when
+## the straight line keeps the full walking margin from every obstacle, so a
+## route that starts or ends inside a margin keeps its first or last leg.
+func _straighten_route(origin: Vector3, points: Array, blockers: Array[Dictionary], clearance: float) -> Array:
+	if points.size() < 3:
+		return points
+	var out: Array = []
+	var from := origin
+	var i := 0
+	while i < points.size():
+		var j := points.size() - 1
+		while j > i and not _segment_clear_of_active_route_blockers(from, points[j], blockers, clearance):
+			j -= 1
+		out.append(points[j])
+		from = points[j]
+		i = j + 1
+	return out
 
 ## `pos` itself, or the nearest open ground if it lies inside a building, a
 ## crag or a blocking prop. A builder may walk through its own site; when the

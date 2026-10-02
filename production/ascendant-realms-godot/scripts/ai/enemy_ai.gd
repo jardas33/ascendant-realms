@@ -1421,6 +1421,15 @@ func _manage_defense() -> void:
 			if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
 				if u.global_position.distance_to(threat.global_position) < 80.0 and u.global_position.distance_to(_base_pos) < 85.0:
 					u.command_attack(threat)
+		# The hero defends its own base too. It was left out of the recall:
+		# an AI's hero stood at full health by its hall, still at level one
+		# five minutes in, while its soldiers fell seventy metres away and
+		# the attacking hero grew three levels on them.
+		var hero = commander.hero_ref
+		if is_instance_valid(hero) and not hero.is_dead and hero.hp >= hero.max_hp * 0.5 and not bool(hero.get_meta("ai_retreating", false)):
+			var to_threat: float = hero.global_position.distance_to(threat.global_position)
+			if hero.global_position.distance_to(_base_pos) < 85.0 and to_threat < 90.0 and (hero.state == hero.State.IDLE or (to_threat > 16.0 and hero.state == hero.State.MOVING)):
+				hero.command_move(threat.global_position, true)
 
 # --- offense --------------------------------------------------------------
 func _army_size() -> int:
@@ -1444,7 +1453,18 @@ func _manage_offense() -> void:
 	# sides defend so well that a quarter of AI matches never ended.
 	if float(world.get("match_time")) > 1200.0:
 		needed = mini(needed, 4)
-	if size >= needed and _attack_timer > 8.0:
+	# Normal attacks in waves with a pause between them, and not in the first
+	# three and a half minutes. It used to march the moment it had six to nine
+	# soldiers (from 2:20) and then send every new soldier after them within
+	# eight seconds, twenty "waves" in seven minutes: that unbroken stream beat
+	# the Hard AI, which waits to mass, as often as it lost to it. Hard and
+	# Brutal keep the stream.
+	var wave_gap := 8.0
+	var grace := 0.0
+	if difficulty == "normal":
+		wave_gap = 40.0
+		grace = 210.0
+	if size >= needed and _attack_timer > wave_gap and float(world.get("match_time")) >= grace:
 		_attack_timer = 0.0
 		_wave_number += 1
 		_launch_attack()
