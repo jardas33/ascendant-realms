@@ -2482,6 +2482,17 @@ func _physics_process(delta: float) -> void:
 	if global_position.y != 0.0:
 		global_position.y = 0.0
 
+	# Workers at work do not steer round each other. Five or six share one
+	# deposit and one hall, and crowd-avoidance made them queue and shuffle
+	# there: how much a base gathered then depended on which way its deposits
+	# happened to face (one side of the map gathered 5 to 9% more food and
+	# timber with the same workers, and won about two matches in three). A
+	# worker that is gathering or carrying walks straight; it steers round
+	# others again as soon as it is given anything else to do.
+	if is_worker and agent:
+		var at_work: bool = state == State.GATHERING or state == State.RETURNING
+		if agent.avoidance_enabled == at_work:
+			agent.avoidance_enabled = not at_work
 	if state == State.IDLE and not _order_queue.is_empty():
 		var queued: Dictionary = _order_queue.pop_front()
 		_running_queued_order = true
@@ -2964,7 +2975,12 @@ func _gather_interaction_target(node) -> Vector3:
 	# point remains outside the core while staying inside the existing 2.2m
 	# gather interaction radius, so navigation can route to a legal boundary
 	# point instead of asking avoidance to enter the resource centre.
-	var wanted: Vector3 = node.global_position + direction.normalized() * 2.1
+	# Each worker has its own place on the arc that faces the way it comes
+	# from (seven places, 26 degrees apart), so a crew on one deposit stands
+	# side by side instead of all on one spot now that workers at work no
+	# longer push each other apart.
+	var place := float(posmod(spawn_serial, 7) - 3) * 0.45
+	var wanted: Vector3 = node.global_position + direction.normalized().rotated(Vector3.UP, place) * 2.1
 	if world and world.has_method("resource_stand_point"):
 		return world.resource_stand_point(node, wanted, _building_route_clearance())
 	return wanted
@@ -2988,6 +3004,8 @@ func _state_return(delta: float) -> void:
 	# remain unchanged.
 	var reached_projected_dropoff := _navigation_last_target_ready and global_position.distance_to(_navigation_effective_target) <= ARRIVE_DIST + 0.05
 	if d > dropoff_threshold and not reached_projected_dropoff:
+		# The hall itself is the target; the route planner ends the walk at
+		# the edge of its walking margin on the side the worker comes from.
 		_move_target = drop.global_position
 		_set_agent_target(_move_target, "return")
 		_move_along_path(delta)

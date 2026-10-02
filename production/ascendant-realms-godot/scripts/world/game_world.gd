@@ -360,6 +360,21 @@ func _ready() -> void:
 		var first_start = flipped[0]
 		flipped[0] = flipped[1]
 		flipped[1] = first_start
+	# Balance tool: "seat_starts" lists which of the map's starts each seat
+	# takes, in seat order (e.g. [2, 3] puts the two seats on the other pair of
+	# corners), to find which positions an advantage belongs to.
+	var seat_starts: Array = cfg.get("seat_starts", [])
+	if not seat_starts.is_empty():
+		map = map.duplicate(true)
+		var all_starts: Array = (map["start_positions"] as Array).duplicate()
+		var reordered: Array = []
+		for idx in seat_starts:
+			if int(idx) >= 0 and int(idx) < all_starts.size() and not reordered.has(all_starts[int(idx)]):
+				reordered.append(all_starts[int(idx)])
+		for st in all_starts:
+			if not reordered.has(st):
+				reordered.append(st)
+		map["start_positions"] = reordered
 	var bounds_stage := _m20_begin("GAMEWORLD_BOUNDS", "GAMEWORLD_READY", 1)
 	_setup_playable_bounds()
 	_m20_end(bounds_stage)
@@ -1229,7 +1244,13 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 	var center := node.global_position
 	var visible_half := Vector2(node.footprint, node.footprint)
 	if not bounds.is_empty():
-		center = bounds["center"]
+		# The size comes from the model; the centre stays on the node itself.
+		# A model's middle sits up to 0.8 m off its origin, always in the same
+		# compass direction, while workers stand 2.1 m from the origin: the
+		# solid core was a little in the way at one base and a little out of
+		# the way at the mirrored one. The same deposit gave 469 timber to one
+		# seat and 549 to the other in two minutes, and whole matches tilted
+		# toward the western starts (about two wins in three).
 		visible_half = bounds["half_extents"]
 	var core_half := _resource_core_half_extents(node.resource_kind, visible_half)
 	_navigation_soft_blockers.append({
@@ -1256,20 +1277,33 @@ func _register_resource_navigation_blocker(node: ResourceNode) -> void:
 	node.depleted_once.connect(_on_resource_depleted_navigation_blocker)
 	node.depleted_once.connect(_on_resource_depleted_notice)
 
-## The home food node running dry is the economy's turning point (every unit
-## eats), so tell the player once what feeds an army after it.
-var _told_food_dry := false
+## A home deposit running dry is a turning point (the food most of all:
+## every unit eats), so the player is told once per resource what replaces
+## it. Only food had a notice; the timber goes at about minute six and with
+## it every house and most soldiers, and nothing said why.
+var _told_dry := {}
+const DRY_NOTICES := {
+	"food": "The food by your hall is gone. Houses keep a garden; claim a Terraced farm (a food vein) or buy food at the caravan.",
+	"timber": "The timber by your hall is gone. Claim an Old-growth grove (a timber vein) or buy timber at the caravan.",
+	"stone": "The stone by your hall is gone. Claim a Granite quarry (a stone vein) or buy stone at the caravan.",
+	"gold": "The gold by your hall is gone. Claim a Gold vein, hold the Lume sites, or sell a surplus at the caravan.",
+}
 
 func _on_resource_depleted_notice(node: ResourceNode) -> void:
-	if _told_food_dry or node.resource_kind != "food" or bool(Match.get_config().get("no_veins", false)):
+	var kind := String(node.resource_kind)
+	if _told_dry.has(kind) or not DRY_NOTICES.has(kind) or bool(Match.get_config().get("no_veins", false)):
 		return
 	var starts: Array = map.get("start_positions", [])
 	if player_team < 0 or player_team >= starts.size():
 		return
 	if node.global_position.distance_to(starts[player_team]) > 45.0:
 		return
-	_told_food_dry = true
-	emit_signal("alert", "The food by your hall is gone. Houses keep a garden; claim a food vein or trade gold at the caravan.", node.global_position)
+	# Only when it was the last one of its kind round the hall.
+	for other in get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(other) and other != node and not other.depleted and String(other.resource_kind) == kind and other.global_position.distance_to(starts[player_team]) <= 45.0:
+			return
+	_told_dry[kind] = true
+	emit_signal("alert", String(DRY_NOTICES[kind]), node.global_position)
 
 func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
 	var changed := false
@@ -1715,7 +1749,7 @@ func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clear
 func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0, building_snapshot = null, movement_reason: String = "OTHER", target_blocker = null) -> Array:
 	var __started := Time.get_ticks_usec()
 	requested = out_of_crags(requested, clearance + 1.2, origin)
-	requested = _out_of_route_margins(requested, clearance, target_blocker)
+	requested = _out_of_route_margins(requested, clearance, target_blocker, origin)
 	var __result := _solve_navigation_waypoints(origin, requested, clearance, building_snapshot, movement_reason, target_blocker)
 	_note_route_solver_time(Time.get_ticks_usec() - __started)
 	return __result
@@ -2201,7 +2235,7 @@ func _resource_navigation_approach_point(blocker: Dictionary, center: Vector3, f
 ## sometimes on the far side. The destination is moved straight out to the
 ## edge of the margin, the nearest ground a unit can stand on. The thing the
 ## unit was sent to (a building to attack or enter, a resource) is left alone.
-func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker = null) -> Vector3:
+func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker = null, origin: Vector3 = Vector3.INF) -> Vector3:
 	var rects: Array = []
 	for blocker in _navigation_blocker_snapshots():
 		var node = blocker.get("node")
@@ -2220,9 +2254,15 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 	for _try in 24:
 		if open.is_empty():
 			break
+		# Nearest to the spot asked for; between equals (the dead centre of a
+		# building has four) the one nearest to where the unit is coming from,
+		# not always the same wall.
 		var best := 0
-		for i in range(1, open.size()):
-			if open[i].distance_squared_to(requested) < open[best].distance_squared_to(requested):
+		var best_key := INF
+		for i in range(open.size()):
+			var key: float = open[i].distance_to(requested) + (0.02 * open[i].distance_to(origin) if origin != Vector3.INF else 0.0)
+			if key < best_key:
+				best_key = key
 				best = i
 		var p: Vector3 = open[best]
 		open.remove_at(best)
@@ -3062,6 +3102,23 @@ const DEPOSIT_FLOAT_COLORS := {
 ## A delivery rises off the hall as "+12" in the resource's colour, so a busy
 ## economy is something you can see, not just a number in the top bar.
 func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
+	# One number per resource over each hall, on its own row, counting up
+	# while deliveries keep coming. Every delivery used to get its own label
+	# 2.6 m beside the last, and a label is about 7 m wide: with ten workers
+	# the hall wore an unreadable heap of "+10 timb+10 timb+10 fo".
+	var key := "%d:%s" % [drop.get_instance_id(), kind]
+	var now := Time.get_ticks_msec()
+	var live = _deposit_float_stack.get(key)
+	if live != null and is_instance_valid(live.get("label")) and now - int(live["t"]) < 900:
+		live["amount"] = int(live["amount"]) + amount
+		live["t"] = now
+		var shown: Label3D = live["label"]
+		shown.text = "+%d %s" % [int(live["amount"]), kind]
+		shown.modulate.a = 1.0
+		if live.get("tween") != null and (live["tween"] as Tween).is_valid():
+			(live["tween"] as Tween).kill()
+		live["tween"] = _deposit_float_fade(shown)
+		return
 	var l := Label3D.new()
 	l.text = "+%d %s" % [amount, kind]
 	l.font_size = 64
@@ -3072,19 +3129,16 @@ func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
 	l.pixel_size = 0.012
 	l.modulate = DEPOSIT_FLOAT_COLORS.get(kind, Color(0.95, 0.9, 0.75))
 	add_child(l)
-	# Deliveries landing close together fan out sideways instead of overlapping.
-	var key := drop.get_instance_id()
-	var now := Time.get_ticks_msec()
-	var prev: Dictionary = _deposit_float_stack.get(key, {"t": 0, "n": 0})
-	var slot := int(prev["n"]) + 1 if now - int(prev["t"]) < 600 else 0
-	_deposit_float_stack[key] = {"t": now, "n": slot % 4}
-	var spread: Array[float] = [0.0, 2.6, -2.6, 5.2]
-	var start := drop.global_position + Vector3(spread[slot % 4], 7.0, 0.0)
-	l.global_position = start
+	var row := maxi(0, ["food", "timber", "stone", "gold"].find(kind))
+	l.global_position = drop.global_position + Vector3(0.0, 7.0 + 1.5 * float(row), 0.0)
+	_deposit_float_stack[key] = {"label": l, "amount": amount, "t": now, "tween": _deposit_float_fade(l)}
+
+func _deposit_float_fade(l: Label3D) -> Tween:
 	var tw := l.create_tween().set_parallel(true)
-	tw.tween_property(l, "global_position", start + Vector3(0, 1.6, 0), 1.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tw.tween_property(l, "modulate:a", 0.0, 0.5).set_delay(0.7)
+	tw.tween_property(l, "global_position:y", l.global_position.y + 0.6, 1.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tw.tween_property(l, "modulate:a", 0.0, 0.5).set_delay(0.9)
 	tw.chain().tween_callback(l.queue_free)
+	return tw
 
 func find_nearest_dropoff(pos: Vector3, team: int):
 	var best = null

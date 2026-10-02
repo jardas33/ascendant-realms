@@ -77,8 +77,14 @@ var _second_barracks_army := 6
 
 func _apply_personality() -> void:
 	match String(commander.race):
-		"vorthak", "hollow", "wyldkin":
+		"vorthak", "hollow":
 			_army_attack_size = maxi(4, _army_attack_size - 3)
+		"wyldkin":
+			# The pack still strikes first, but with one soldier fewer than the
+			# usual wave, not three: an early wave led by a hero that has to
+			# walk into the towers lost its army and its hero (6-12 once the AI
+			# of plans 95 to 97 played everyone properly).
+			_army_attack_size = maxi(4, _army_attack_size - 1)
 		"grimtusk":
 			# Early swarms win AI wars (the swarm factions took 42 of 72 pooled
 			# games); Ironmaw, with the cheapest army, led every run (13-17 wins).
@@ -98,7 +104,11 @@ func _apply_personality() -> void:
 		"frostborn":
 			# The Careto chase winter out of the villages: they strike early too
 			# (3-11-4 over 90 matches while waiting to mass).
-			_army_attack_size = maxi(4, _army_attack_size - 2)
+			# That was measured on the old AI. On the AI of plans 95 to 97 the
+			# early wave is what loses: last in six checks running, 5-13 even
+			# with 15% more damage and 20% more health. They march at the usual
+			# size now.
+			pass
 		"barrosan":
 			# The clans strike early with cheap levies before the enemy masses.
 			_army_attack_size = maxi(5, _army_attack_size - 2)
@@ -387,8 +397,6 @@ func _caravan_trade() -> void:
 				return
 	for i in 2:
 		var price: int = commander.trade_price()
-		if int(commander.resources.get("gold", 0)) < price + 250:
-			return
 		var low := ""
 		var low_amt := 150
 		for k in ["food", "timber", "stone"]:
@@ -396,6 +404,13 @@ func _caravan_trade() -> void:
 				low = k
 				low_amt = int(commander.resources.get(k, 0))
 		if low == "":
+			return
+		# An empty store is worth the gold at once. The AI used to wait for
+		# 250 gold beyond the price whatever the need: with the home trees
+		# felled a Careto AI sat on 5 timber and 245 gold from minute six,
+		# and every soldier, house and outpost it could have made costs timber.
+		var reserve := 250 if low_amt >= 40 else 30
+		if int(commander.resources.get("gold", 0)) < price + reserve:
 			return
 		world.command_bus.execute({"type": "trade", "target": hq, "id": low})
 
