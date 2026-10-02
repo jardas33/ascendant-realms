@@ -1137,7 +1137,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Sound.** The sixteen procedural sounds of plan 86 were checked numerically only. Emanuel should say if any is unpleasant.
 - **Models (Codex's lane).** Seven peoples borrow another people's unit and building models. The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista; `wyldkin_denhold.glb` is rough.
 - **Balance.** The economy changed in plan 99, so earlier tables are superseded. On the new economy one 90-match check ran from 14-4 to 5-13; Wyldkin and Frostborn (last in five checks) were helped and Sunspear and Vorthak trimmed in the same plan. The next check says whether that was right.
-- **Corner.** Fixed in plan 98. Over the four checks since, the first seat has won 245 of 447 matches (55%).
+- **Corner.** Fixed in plan 98. Over the four checks since, the first seat has won 197 of 357 matches (55%).
 - **AI strength for a human.** The AI is much stronger than a week ago (its heroes fight, its armies obey, its workers survive). A Normal AI reaches a player who does nothing between 2:20 and 3:45 with two to five soldiers and its hero. Whether Normal is now too hard needs a human playtest.
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
 - **Keys.** Camera movement, control groups and the menu keys cannot be rebound; the other 19 battle keys can.
