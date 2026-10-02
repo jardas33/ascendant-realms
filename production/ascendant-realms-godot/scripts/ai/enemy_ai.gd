@@ -748,10 +748,18 @@ func _manage_easy_followup_waves() -> void:
 		u.command_move(target, true)
 	_easy_next_wave = _easy_elapsed + 150.0
 
+## An Easy opponent leaves the player alone for the first four and a half
+## minutes. Its first wave used to leave as soon as four to six soldiers were
+## out: at 1:17 for the Vorthak, standing at the player's hall at 2:12, in the
+## very first chapter of the campaign and earlier than a Normal opponent.
+const EASY_FIRST_WAVE_AFTER := 270.0
+
 func _manage_easy_staging_and_wave() -> void:
 	if _easy_wave_launched:
 		return
 	if _army_size() < _army_attack_size:
+		return
+	if float(world.get("match_time")) < EASY_FIRST_WAVE_AFTER:
 		return
 	if _easy_wave_target == Vector3.ZERO:
 		_easy_wave_target = _find_player_target()
@@ -1428,7 +1436,24 @@ func _manage_defense() -> void:
 		var hero = commander.hero_ref
 		if is_instance_valid(hero) and not hero.is_dead and hero.hp >= hero.max_hp * 0.5 and not bool(hero.get_meta("ai_retreating", false)):
 			var to_threat: float = hero.global_position.distance_to(threat.global_position)
-			if hero.global_position.distance_to(_base_pos) < 85.0 and to_threat < 90.0 and (hero.state == hero.State.IDLE or (to_threat > 16.0 and hero.state == hero.State.MOVING)):
+			# Not alone against a whole wave, though: with the rule above and
+			# nothing else, a sword-carrying hero met every raid by itself and
+			# fell nearly six times a match (its people won 4 of 18). It goes
+			# when the raid is a handful, or when its own soldiers who answer
+			# the call are at least half as many as the raiders.
+			var raiders := 0
+			for cmd in world.commanders:
+				if cmd == commander or cmd.defeated:
+					continue
+				for foe in cmd.units:
+					if is_instance_valid(foe) and not foe.is_dead and not foe.is_worker and foe.global_position.distance_to(threat.global_position) < 25.0:
+						raiders += 1
+			var defenders := 0
+			for u in commander.units:
+				if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.global_position.distance_to(threat.global_position) < 80.0 and u.global_position.distance_to(_base_pos) < 85.0:
+					defenders += 1
+			var backed: bool = raiders <= 2 or defenders * 2 >= raiders
+			if backed and hero.global_position.distance_to(_base_pos) < 85.0 and to_threat < 90.0 and (hero.state == hero.State.IDLE or (to_threat > 16.0 and hero.state == hero.State.MOVING)):
 				hero.command_move(threat.global_position, true)
 
 # --- offense --------------------------------------------------------------
@@ -1522,6 +1547,13 @@ func _launch_attack() -> void:
 	var guard_n := 0 if soldiers.size() < 6 else maxi(2, soldiers.size() / 5)
 	# After fifteen minutes every AI commits everything (evenly matched sides
 	# otherwise traded waves until the clock ran out).
+	# Normal sends a wave of the size it was waiting for (and two more), not
+	# everything it has: after its quiet opening it had eleven to sixteen
+	# soldiers, and all of them arrived together at minute four. The rest
+	# stay to guard its base until the next wave.
+	if difficulty == "normal":
+		var wave_size := _army_attack_size + mini(maxi(_wave_number - 1, 0), 3) * 2 + 2
+		guard_n = maxi(guard_n, soldiers.size() - wave_size)
 	if float(world.get("match_time")) > 900.0:
 		guard_n = 0
 	soldiers.sort_custom(func(a, b):

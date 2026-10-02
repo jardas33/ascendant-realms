@@ -642,7 +642,7 @@ func _prune_workers_if_mixed() -> void:
 		selected = filtered
 
 func _add_to_selection(u) -> void:
-	if u in selected:
+	if not is_instance_valid(u) or u in selected:
 		return
 	selected.append(u)
 	u.set_selected(true)

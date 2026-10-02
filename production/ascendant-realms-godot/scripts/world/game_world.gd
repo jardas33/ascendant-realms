@@ -1784,6 +1784,7 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	var fail_closed := false
 	var origin_started_inside_blocker := false
 	var solver_bailed := false
+	var patched_together := false
 	var ignored: Array = []
 	var final_target := requested
 	_active_route_segment_cache.clear()
@@ -1830,7 +1831,14 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 				continue
 			var first_direction := first - center
 			first_direction.y = 0.0
-			var exits_away_from_target := not origin_inside or target_direction.length_squared() < 0.01 or first_direction.dot(target_direction) <= 0.01
+			# A unit inside the margin used to be made to leave by a corner on
+			# the side away from its goal, so that it would not cut through
+			# the building. The body test above does that job now, and the old
+			# rule did harm: a builder ends its work standing exactly on the
+			# margin's edge, where "inside" and "outside" change with the last
+			# decimal. Inside, it was sent to the far corner; outside, to the
+			# near one; it turned round every tick and never left the spot.
+			var exits_away_from_target := true
 			if not exits_away_from_target:
 				continue
 			for second in candidates:
@@ -1840,7 +1848,12 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 				if second.distance_to(first) < 0.01:
 					continue
 				var middle_clear := not _segment_enters_route_rectangle(first, second, center, half_extents)
-				var outgoing_clear := destination_inside or not _segment_enters_route_rectangle(second, final_target, center, half_extents)
+				# The same for a goal inside the margin (a builder's place beside
+				# the next house, a metre into this building's margin): the last
+				# leg may cross the margin, never the building. A worker sent to
+				# mend a house was routed to the far corner of the war hall
+				# between them and then straight back through it.
+				var outgoing_clear := (destination_inside and not _segment_enters_route_rectangle(second, final_target, center, body_extents)) or not _segment_enters_route_rectangle(second, final_target, center, half_extents)
 				var outgoing_exception = blocker.get("node") if destination_inside else null
 				if not middle_clear or not outgoing_clear or not _segment_clear_of_active_route_blockers(first, second, blockers, clearance) or not _segment_clear_of_active_route_blockers(second, final_target, blockers, clearance, outgoing_exception):
 					continue
@@ -1857,6 +1870,7 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		if solver_bailed:
 			break
 		if best_cost == INF:
+			patched_together = true
 			# If every corner of the selected blocker is screened by another
 			# active blocker, bridge to the next safe rectangle corner and let the
 			# bounded outer loop resolve that blocker in turn. This preserves the
@@ -1963,8 +1977,31 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
 		points.append(final_target)
 	points = _straighten_route(origin, points, blockers, clearance)
+	# A route that is still a long way round (four waypoints or more, a third
+	# longer than the straight line) is checked against the grid, which sees
+	# the whole neighbourhood at once: through the ring of trees and ore round
+	# a hall the corner search went out, back and out again.
+	# So is any route the corner search could not finish cleanly and patched
+	# together from the corners of neighbouring obstacles: where the margins of
+	# two buildings overlap (a mender's place between a house and a war hall),
+	# such a route could end in a leg straight through one of them, and the
+	# worker turned back and forth beside the wall without ever arriving.
+	var corner_length := _route_length(origin, points)
+	if patched_together or (points.size() >= 4 and corner_length > origin.distance_to(final_target) * 1.35):
+		var grid_alternative := _grid_route(origin, final_target, all_blockers)
+		if not grid_alternative.is_empty() and grid_alternative.back().distance_to(Vector3(final_target.x, 0.0, final_target.z)) <= 0.3 and (patched_together or _route_length(origin, grid_alternative) < corner_length * 0.85):
+			points = grid_alternative
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+func _route_length(origin: Vector3, points: Array) -> float:
+	var total := 0.0
+	var from := Vector3(origin.x, 0.0, origin.z)
+	for p in points:
+		var q := Vector3(p.x, 0.0, p.z)
+		total += from.distance_to(q)
+		from = q
+	return total
 
 ## Drops every waypoint the unit can walk straight past. The corner search
 ## goes from one obstacle's corner to the next and could hand back a route
