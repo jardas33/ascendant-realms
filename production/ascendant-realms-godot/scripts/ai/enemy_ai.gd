@@ -466,6 +466,7 @@ func _think_easy() -> void:
 	_manage_easy_worker_production()
 	_manage_easy_housing()
 	_manage_easy_buildings()
+	_manage_easy_outposts()
 	_manage_easy_staging_and_wave()
 	_manage_easy_hq_pressure()
 	_manage_easy_replacement()
@@ -500,7 +501,10 @@ func _assign_easy_idle_workers() -> void:
 		if worker.state != worker.State.IDLE:
 			continue
 		var desired := String(plan[i % plan.size()])
-		var node = world.find_nearest_resource_exact(worker.global_position, desired)
+		# The nearest node of the kind anywhere on the map used to be taken:
+		# once the deposits round its hall ran dry, an Easy opponent's workers
+		# walked to the player's own trees. Home nodes and safe ones only.
+		var node = _easy_node(desired, worker.global_position)
 		var assigned := desired
 		if not node:
 			_easy_resource_shortages.append({"worker_id": worker.unit_id,
@@ -509,7 +513,7 @@ func _assign_easy_idle_workers() -> void:
 			for fallback in _available_easy_resource_kinds():
 				if fallback == desired:
 					continue
-				node = world.find_nearest_resource_exact(worker.global_position, fallback)
+				node = _easy_node(String(fallback), worker.global_position)
 				if node:
 					assigned = fallback
 					break
@@ -519,6 +523,75 @@ func _assign_easy_idle_workers() -> void:
 				"worker_runtime_id": str(worker.get_instance_id()), "requested": desired,
 				"assigned": assigned, "node_id": str(node.get_instance_id()),
 				"time": _easy_elapsed, "explicit_fallback": assigned != desired})
+
+## The exact-kind node nearest the worker while it lies round the hall; past
+## the home deposits, only a node the full AI would also call safe.
+func _easy_node(kind: String, from: Vector3):
+	var node = world.find_nearest_resource_exact(from, kind)
+	if node and node.global_position.distance_to(_base_pos) <= HOME_NODE_RADIUS:
+		return node
+	return _pick_node(kind, from)
+
+## When a kind has run dry round the hall, an Easy opponent opens one outpost
+## on a vein of that kind well on its own side (two at most) and sends its
+## idle workers in. Without this its economy simply ended after the home
+## deposits: seven workers stood idle for the rest of the match.
+func _manage_easy_outposts() -> void:
+	if float(world.get("match_time")) < 150.0:
+		return
+	var oid := "%s_outpost" % String(commander.race)
+	var odef: Dictionary = GameData.get_building(oid)
+	if odef.is_empty():
+		return
+	var outposts: Array = []
+	var building_one := false
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and bool(b.def.get("vein_outpost", false)):
+			if b.is_built:
+				outposts.append(b)
+			else:
+				building_one = true
+	for ob in outposts:
+		var free_slots: int = ob.outpost_slots() - ob.garrison.size()
+		var idle: Array = []
+		for u in commander.units:
+			if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state == u.State.IDLE:
+				if (u.get_meta("garrison_target") if u.has_meta("garrison_target") else null) == ob:
+					free_slots -= 1
+				else:
+					idle.append(u)
+		if free_slots > 0 and not idle.is_empty():
+			world.command_bus.execute({"type": "garrison", "units": idle.slice(0, free_slots), "target": ob})
+	var dry_kinds: Array = []
+	for k in ["food", "timber", "stone", "gold"]:
+		if not _home_has(k):
+			dry_kinds.append(k)
+	if building_one or dry_kinds.is_empty() or outposts.size() >= mini(2, dry_kinds.size()) or not commander.can_afford(odef.get("cost", {})):
+		return
+	var held: Array = []
+	for ob in outposts:
+		var ov = ob.get_meta("vein") if ob.has_meta("vein") else null
+		if ov != null and is_instance_valid(ov):
+			held.append(String(ov.kind))
+	var best = null
+	var best_d := INF
+	var starts: Array = world.map.get("start_positions", [])
+	for v in get_tree().get_nodes_in_group("veins"):
+		if not v.is_free() or int(v.amount) <= 0 or not dry_kinds.has(String(v.kind)) or held.has(String(v.kind)):
+			continue
+		var d: float = v.global_position.distance_to(_base_pos)
+		var ours := true
+		for i in world.commanders.size():
+			if i != commander.team and i < starts.size() and v.global_position.distance_to(starts[i]) < d * 1.6:
+				ours = false
+		if ours and d < best_d:
+			best_d = d
+			best = v
+	var w = _free_worker()
+	if best and w:
+		var ob = world.place_building(oid, commander.team, best.global_position)
+		if ob:
+			w.command_build(ob)
 
 func _easy_resource_plan() -> Array:
 	# First pass funds construction with all four real resource kinds represented;
