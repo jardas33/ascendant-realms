@@ -114,7 +114,7 @@ func execute(order: Dictionary):
 			continue
 		match String(order.get("type", "")):
 			"move": u.command_move(slots[i] if i < slots.size() else pos)
-			"attack_move": u.command_move(pos, true, false, order_id)
+			"attack_move": u.command_move(slots[i] if i < slots.size() and slots[i] is Vector3 else pos, true, false, order_id)
 			"attack":
 				var t = slots[i] if i < slots.size() and is_instance_valid(slots[i]) else target
 				if is_instance_valid(t):

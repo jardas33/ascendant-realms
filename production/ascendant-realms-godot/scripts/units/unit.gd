@@ -536,8 +536,9 @@ func _apply_race_passive() -> void:
 			hp = max_hp
 		"sunspear":                       # Sunfire — resilient morale (steady healing)
 			# 7-14-6 over 135 matches: steadier healing and a little more health.
+			# 7-27-2 over 180 matches on the corrected AI (plan 95): +10% (was +5%).
 			regen += 3.0
-			max_hp *= 1.05
+			max_hp *= 1.10
 			hp = max_hp
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
 			# Was +15% speed and +10% damage: 9-0 in the AI round robin.
@@ -547,7 +548,8 @@ func _apply_race_passive() -> void:
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.09)
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			# Was +12%: top of both pooled plan 82 checks (10-2-6 and 11-3-4).
-			base_dmg *= 1.08
+			# 11-23-2 over 180 matches on the corrected AI (plan 95): +12% again.
+			base_dmg *= 1.12
 			# 13-25-7 over 225 pooled matches (plans 50 to 63): a little tougher.
 			max_hp *= 1.15
 			hp = max_hp
@@ -555,7 +557,9 @@ func _apply_race_passive() -> void:
 			move_speed *= 1.06
 			# 2-5-2 in the plan 39 round robin: a little more staying power.
 			# 14-20-2 and 5-11-2 over the clean plan 80-82 checks: +10% (was +5%).
-			max_hp *= 1.10
+			# Those checks were played while the Binder sat in the home guard
+			# (plan 95). With the hero marching: 26-10 over 180 matches. +6%.
+			max_hp *= 1.06
 			hp = max_hp
 		"lioraen":                        # Grove-blessed — sturdier than they look
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone

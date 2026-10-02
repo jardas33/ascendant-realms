@@ -938,21 +938,33 @@ func _formation_move(units: Array, target: Vector3) -> void:
 		if units.size() == 1:
 			_issue({"type": "move", "units": units, "pos": target})
 		return
+	_issue({"type": "move", "units": units, "pos": target, "positions": _formation_slots(units, target)})
+
+## One place per unit in a rectangle centred on `target`, in the order of
+## `units`. Each soldier gets the place that matches where it already stands
+## in the group (the northern ones the northern row, the western ones the
+## western file), so the group keeps its shape instead of every soldier
+## crossing every other on the way: places used to be dealt out in selection
+## order.
+func _formation_slots(units: Array, target: Vector3) -> Array:
 	# Center a deterministic rectangular formation around the clicked point. The
 	# previous half-cell offset pushed every group toward one corner and made the
 	# arrival read as a collapse. Slots remain ordinary public move commands.
 	var cols := maxi(1, int(ceil(sqrt(float(units.size())))))
 	var rows := int(ceil(float(units.size()) / float(cols)))
 	var spacing := 2.4
-	var i := 0
+	var order: Array = range(units.size())
+	order.sort_custom(func(a, b): return units[a].global_position.z < units[b].global_position.z)
 	var slots: Array = []
-	for u in units:
-		var row := i / cols
-		var col := i % cols
-		var offset := Vector3((float(col) - float(cols - 1) * 0.5) * spacing, 0, (float(row) - float(rows - 1) * 0.5) * spacing)
-		slots.append(target + offset)
-		i += 1
-	_issue({"type": "move", "units": units, "pos": target, "positions": slots})
+	slots.resize(units.size())
+	for row in rows:
+		var in_row: Array = order.slice(row * cols, mini((row + 1) * cols, order.size()))
+		in_row.sort_custom(func(a, b): return units[a].global_position.x < units[b].global_position.x)
+		for col in in_row.size():
+			# A short last row is centred under the full ones.
+			var offset := Vector3((float(col) - float(in_row.size() - 1) * 0.5) * spacing, 0, (float(row) - float(rows - 1) * 0.5) * spacing)
+			slots[in_row[col]] = target + offset
+	return slots
 
 func _begin_attack_move() -> void:
 	_clean_selection()
@@ -977,7 +989,10 @@ func issue_attack_move_destination(destination: Vector3) -> bool:
 	var recorder = _v0436_r1j_recorder()
 	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
 	var issued := not units.is_empty()
-	_issue({"type": "attack_move", "units": units, "pos": destination, "order_id": order_id})
+	# An attack-move ends in the same formation as a move. Every soldier used
+	# to be sent to the one clicked point, and forty of them fought each other
+	# for it on arrival.
+	_issue({"type": "attack_move", "units": units, "pos": destination, "positions": _formation_slots(units, destination) if units.size() > 1 else [], "order_id": order_id})
 	if issued:
 		_emit_command_feedback(COMMAND_ATTACK_MOVE, "ATTACK-MOVE", destination, null)
 	cancel_attack_move_mode()

@@ -91,12 +91,10 @@ func _apply_personality() -> void:
 			# two extra soldiers left them 1-15 against early rushes.
 			# The Moura Court too: 2-15-1 over 90 clean matches, capped at 28
 			# people by its 16 workers while swarms of 17 arrived at minute four.
-			if not String(commander.race) in ["karak", "sylvan"]:
-				_army_attack_size += 2
-			# Extra mouths hurt once the home food runs dry (Karak 4-12-2 over
-			# 90 matches); the Granitborn keep a standard workforce.
-			if not String(commander.race) in ["karak", "sylvan"]:
-				_worker_target += 2
+			# The Aurean Dominion as well, since plan 96: massing two more and
+			# feeding two more workers left it 7-27-2 over 180 matches. All three
+			# march at the usual size with the usual workforce.
+			pass
 		"frostborn":
 			# The Careto chase winter out of the villages: they strike early too
 			# (3-11-4 over 90 matches while waiting to mass).
@@ -197,12 +195,10 @@ func _go_for_jars() -> void:
 	var jars: Array = get_tree().get_nodes_in_group("lume_jars")
 	if jars.is_empty():
 		return
-	var idle: Array = []
-	for u in commander.units:
-		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and u.state == u.State.IDLE:
-			idle.append(u)
-	if idle.size() < 6:
-		return
+	# Who can go: soldiers with nothing to do, the home guard, and anyone who
+	# is already close by. (Only idle soldiers used to be asked, six at least,
+	# and an army that is always on the march has none: no AI dug up a single
+	# jar in most matches.)
 	for jar in jars:
 		if not is_instance_valid(jar):
 			continue
@@ -214,8 +210,17 @@ func _go_for_jars() -> void:
 				near += 1
 		if near >= 3:
 			continue
-		idle.sort_custom(func(a, b): return a.global_position.distance_squared_to(jp) < b.global_position.distance_squared_to(jp))
-		for u in idle.slice(0, 4):
+		var pool: Array = []
+		for u in commander.units:
+			if not is_instance_valid(u) or u.is_dead or u.is_worker or u.is_hero:
+				continue
+			var d: float = u.global_position.distance_to(jp)
+			if d < 45.0 or (d < 130.0 and (u.state == u.State.IDLE or (u.has_meta("ai_home_guard") and bool(u.get_meta("ai_home_guard"))))):
+				pool.append(u)
+		if pool.size() < 3:
+			continue
+		pool.sort_custom(func(a, b): return a.global_position.distance_squared_to(jp) < b.global_position.distance_squared_to(jp))
+		for u in pool.slice(0, 4):
 			u.command_move(jp + Vector3(_rng.randf_range(-2.0, 2.0), 0, _rng.randf_range(-2.0, 2.0)), true)
 		return
 
