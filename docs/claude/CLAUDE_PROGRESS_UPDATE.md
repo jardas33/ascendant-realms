@@ -1106,7 +1106,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 
 - **Plan 112 (done): Codex's second batching finding**
   - **A stale cache.** The fix of plan 111 remembered each material's signature. If a material was changed after it was first seen, the old signature was still returned: in Codex's fixture two red materials are signed, the second is turned blue, and the pair came out of the batcher as one red mesh. The signature is now read from the material every time it is asked for, with no cache.
-  - **The fixture is in the regression suite.** It fails on the previous commit (one red batch) and passes now (one red, one blue). Joined building surfaces, draw calls and loading time are unchanged.
+  - **The fixture is in the regression suite.** It fails on the previous commit (one red batch) and passes now (one red, one blue). Joined building surfaces and draw calls are unchanged; I did not measure the effect on loading time.
   - **Known and left for Codex's menu pass:** the buttons check sometimes reports the "<" appearance button on the hero creation screen as covered by a container (about one suite run in three, never when run alone). That screen is among the files Codex is working on, so it is noted here and not touched.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
