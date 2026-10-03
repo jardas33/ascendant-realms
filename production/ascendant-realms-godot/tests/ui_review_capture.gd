@@ -24,6 +24,12 @@ func _run() -> void:
 			"mode": "skirmish",
 			"game_speed": 1.0,
 		})
+	var mode := OS.get_environment("ASCENDANT_UI_MODE")
+	if not mode.is_empty():
+		# e.g. "tutorial", to review the tutorial overlay.
+		var mcfg: Dictionary = root.get_node("Match").get_config().duplicate(true)
+		mcfg["mode"] = mode
+		root.get_node("Match").set_config(mcfg)
 	var target := OS.get_environment("ASCENDANT_UI_SCENE")
 	if target.is_empty():
 		target = "res://scenes/game_world.tscn"
@@ -570,6 +576,12 @@ func _run() -> void:
 				if not card_copy.contains(word):
 					validation_errors.append("missing_card_copy:" + word)
 			print("UI_VALIDATION ", "PASS" if validation_errors.is_empty() else "FAIL", " ", validation_errors)
+	var result_kind := OS.get_environment("ASCENDANT_UI_GAMEOVER")
+	if not result_kind.is_empty() and instance.get("hud") != null:
+		# Review the battle result ledger: "win" or "loss".
+		instance.hud._on_game_over(result_kind == "win")
+		for i in 240:
+			await process_frame
 	if OS.get_environment("ASCENDANT_UI_PAUSE") == "1":
 		# Review the pause menu over the live battle.
 		if instance.get("pause_menu") != null:
