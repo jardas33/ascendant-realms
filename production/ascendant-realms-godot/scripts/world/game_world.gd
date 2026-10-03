@@ -4626,12 +4626,15 @@ func _on_unit_died(unit) -> void:
 	for cmd in commanders:
 		if cmd.hero_ref == unit:
 			cmd.hero_ref = null
+			cmd.set_meta("fallen_hero_field_xp", int(unit.field_xp))
 			_schedule_hero_revival(cmd, String(unit.unit_id))
 
 ## Warlords Battlecry heroes are not lost for the whole battle: the Lume
 ## raises a fallen hero at their stronghold after a while (45 s, plus a second
 ## per player hero level up to 90 s). No stronghold, no revival until one
 ## stands again.
+const HERO_REVIVAL_XP_KEPT := 0.5
+
 func _schedule_hero_revival(cmd, hero_id: String) -> void:
 	if hero_id == "" or not game_running:
 		return
@@ -4662,6 +4665,13 @@ func _try_hero_revival(cmd, hero_id: String) -> void:
 	if hero == null:
 		return
 	cmd.hero_ref = hero
+	# A raised hero keeps half of what this battle taught it. It used to come
+	# back with nothing: one death took a level-five hero (half again the
+	# health, a third more damage) down to level one while the enemy's kept
+	# growing, and the side whose hero fell first rarely recovered.
+	var kept_xp: int = int(float(cmd.get_meta("fallen_hero_field_xp")) * HERO_REVIVAL_XP_KEPT) if cmd.has_meta("fallen_hero_field_xp") else 0
+	if kept_xp > 0:
+		hero.gain_field_xp(kept_xp)
 	if is_instance_valid(_fx_container):
 		CombatVfx.lume_pillar(_fx_container, hero.global_position, Color(1.0, 0.78, 0.36))
 		CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.82, 0.35), 2.0)
@@ -4672,7 +4682,10 @@ func _try_hero_revival(cmd, hero_id: String) -> void:
 		hero.model_root.scale = full * 0.15
 		hero.model_root.create_tween().tween_property(hero.model_root, "scale", full, 0.7).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	if cmd.team == player_team:
-		emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
+		if int(hero.field_level) > 1:
+			emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold, at battle level %d." % int(hero.field_level), hero.global_position)
+		else:
+			emit_signal("alert", "The Lume burns. Your hero rises again at the stronghold!", hero.global_position)
 		# Back on their feet, they call the host again.
 		var risen_id: int = hero.get_instance_id()
 		var risen_race := String(cmd.race)

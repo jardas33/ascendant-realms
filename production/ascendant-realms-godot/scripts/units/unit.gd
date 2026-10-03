@@ -550,7 +550,8 @@ func _apply_race_passive() -> void:
 			# 14-4 once its AI stopped over-massing (plan 99): the healing eases
 			# from 3 to 2 a second. 45-25 over the four six-map checks on the AI of plans 102 to 104 (360 matches): 1.5.
 			regen += 1.5
-			max_hp *= 1.10
+			# 24-10 over the next two checks: +7% health (was +10%).
+			max_hp *= 1.07
 			hp = max_hp
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
 			# Was +15% speed and +10% damage: 9-0 in the AI round robin.
