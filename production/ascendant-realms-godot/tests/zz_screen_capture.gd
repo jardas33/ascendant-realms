@@ -29,6 +29,7 @@ func _run() -> void:
 					s["unlocked"].append(str(next))
 		s["heroic"] = ["1-1"]
 		s["jars"] = ["1-2"]
+		s["endless_best"] = 23
 	var scene := load(OS.get_environment("ASCENDANT_UI_SCENE")) as PackedScene
 	if scene == null:
 		quit(2)
@@ -45,6 +46,18 @@ func _run() -> void:
 			screen._selected_id = click
 			screen._show_page()
 		for i in 6:
+			await process_frame
+	var call := OS.get_environment("ASCENDANT_UI_CALL")
+	if not call.is_empty():
+		# e.g. "_open_chronicle" or "_show_act_card:1" on the screen under test.
+		var target = root.get_child(root.get_child_count() - 1)
+		var bits := call.split(":")
+		if target.has_method(bits[0]):
+			if bits.size() > 1:
+				target.call(bits[0], int(bits[1]))
+			else:
+				target.call(bits[0])
+		for i in 90:
 			await process_frame
 	var fly := OS.get_environment("ASCENDANT_UI_FLY_PATH")
 	if not fly.is_empty():

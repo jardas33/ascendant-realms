@@ -778,3 +778,111 @@ func _process(delta: float) -> void:
 	if is_instance_valid(_act_layer):
 		for child in _act_layer.get_children():
 			child.queue_redraw()
+
+
+# --- the Chronicle and the Act card --------------------------------------------------
+func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
+	Sfx.play("select")
+	var depth := ProfileManager.endless_best() + 1 if chosen_depth < 1 else clampi(chosen_depth, 1, ProfileManager.endless_best() + 1)
+	var st := EndlessDefs.stage(depth, _hero_race())
+	if weekly:
+		st = EndlessDefs.weekly(_hero_race())
+		depth = int(st["depth"])
+	var folio: Control = load("res://scripts/ui/codex/codex_endless.gd").new()
+	folio.name = "EndlessRoad"
+	folio.host = self
+	folio.depth = depth
+	folio.weekly = weekly
+	folio.st = st
+	add_child(folio)
+
+
+func _open_chronicle() -> void:
+	Sfx.play("page")
+	var book: Control = load("res://scripts/ui/codex/codex_chronicle.gd").new()
+	book.name = "Chronicle"
+	book.hero_race = _hero_race()
+	add_child(book)
+
+
+## A new Act opens like a chapter page: the Act's wax seal, its name in an
+## illuminated capital between gilt rules, and the line that sets its mood.
+func _show_act_card(a: int) -> void:
+	var layer := Control.new()
+	layer.name = "ActCard"
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(layer)
+	var mood: Color = ACT_MOODS[a]
+	var bg := ColorRect.new()
+	bg.color = CodexKit.NIGHT
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(bg)
+	# The Act's mood as a soft light behind its name.
+	var grad := Gradient.new()
+	var tint := Color(mood.r, mood.g, mood.b).lightened(0.15)
+	grad.set_color(0, Color(tint, 0.42))
+	grad.set_color(1, Color(tint, 0.0))
+	grad.add_point(0.45, Color(tint, 0.14))
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(0.5, 0.0)
+	tex.width = 512
+	tex.height = 512
+	var glow := TextureRect.new()
+	glow.texture = tex
+	glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	glow.stretch_mode = TextureRect.STRETCH_SCALE
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	glow.offset_left = -760.0
+	glow.offset_right = 760.0
+	glow.offset_top = -560.0
+	glow.offset_bottom = 480.0
+	layer.add_child(glow)
+	var born := _anim_t
+	var seal := Control.new()
+	seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	seal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	seal.draw.connect(func():
+		var pulse := fmod((_anim_t - born) * 0.6, 1.0)
+		CodexKit.draw_seal(seal, seal.size * 0.5 + Vector2(0, -190), 46.0, ROMAN[a], pulse))
+	layer.add_child(seal)
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	box.offset_top = 80.0
+	box.add_theme_constant_override("separation", 12)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(box)
+	var parts: PackedStringArray = String(CampaignDefs.ACTS[a]["title"]).split(": ")
+	var kicker := CodexKit.label(parts[0].to_upper(), 20, CodexKit.GILT, CodexKit.FONT_DISPLAY_BOLD)
+	kicker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var name_line := CodexKit.illuminated(parts[1] if parts.size() > 1 else parts[0], 58, CodexKit.GILT_HI)
+	name_line.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var rule := Control.new()
+	rule.custom_minimum_size = Vector2(560, 22)
+	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rule.draw.connect(func(): CodexKit.draw_rule(rule, Vector2(0, 11), Vector2(rule.size.x, 11)))
+	var sub := CodexKit.label(String(CampaignDefs.ACTS[a]["subtitle"]), 26, CodexKit.TEXT, CodexKit.FONT_SERIF_ITALIC)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var hint := CodexKit.label("Click to open the map", 17, CodexKit.TEXT_DIM, CodexKit.FONT_SERIF_ITALIC)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var lines: Array[Control] = [kicker, name_line, rule, sub, hint]
+	for i in lines.size():
+		box.add_child(lines[i])
+		lines[i].modulate.a = 0.0
+		lines[i].create_tween().tween_property(lines[i], "modulate:a", 1.0, 0.6).set_delay(0.3 + i * 0.3)
+	var spin := create_tween().set_loops()
+	spin.tween_callback(seal.queue_redraw).set_delay(1.0 / 30.0)
+	layer.tree_exiting.connect(spin.kill)
+	Sfx.play("horn", -8.0)
+	layer.modulate.a = 0.0
+	layer.create_tween().tween_property(layer, "modulate:a", 1.0, 0.8)
+	layer.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed:
+			layer.queue_free())
