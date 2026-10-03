@@ -1521,6 +1521,15 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
 	inst.rotation.y = rng.randf() * TAU
+	# Not on a vein either: an oak grew over the log stack of an old-growth
+	# grove and hid it, and a tree in the ring is in the outpost's way.
+	# (Dropped after the random draws, like the ring round a start, so every
+	# other tree on the map stays where it was.)
+	if not discard:
+		for v in map.get("veins", []):
+			if pos.distance_to(v["pos"]) < 8.5:
+				discard = true
+				break
 	if discard:
 		inst.queue_free()
 		return

@@ -1070,7 +1070,12 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **One hall, 351 draw calls.** The three hand-made Barrosan buildings are built from many separate pieces: the hall from 351, the war hall from 309, the house from 154 (every other building in the game is a single piece). Each piece is drawn separately in every pass (colour, depth and each shadow split), so one Barrosan hall cost more than all the other buildings on the map together, and the default people's base ran to thousands of draw calls.
   - **The pieces are now joined** into one mesh with a surface for each distinct material, after the model has been dressed and its collision hulls made. In a match the hall drops from 351 surfaces to 9, the war hall from 306 to 9 and the house from 76 to 6, with the same collision hulls as before (25, 1 and 7). The buildings look the same finished and under construction (compared in screenshots), collide the same, and the regression suite passes.
   - **Measured:** the opening view of a match went from 2,347 draw calls to 1,321; a view of a Barrosan base with a hall, two war halls and a house from 2,999 to 1,169. On this machine (GTX 1070) that view's frame time went from about 13.8 ms to 12.8 ms; the gain will be larger on weaker graphics cards and with bigger bases.
-  - **Still heavy:** the veins (16 surfaces each, sixteen on a map), the timber stacks (33 each) and the crags (38 each).
+- **Plan 107 (done): crags and veins joined too, and no trees on veins**
+  - **A ridge of 38 rocks was 38 meshes.** The batcher that joins static scenery grouped pieces by which copy of a material they carried, and every rock of a crag had its own copy of the same one. It now groups by what the material looks like: a crag is one or two meshes, and the base dressing and the enemy holdfast lost a few dozen more. Vein models (a dozen or more loose pieces each) are joined as well, 16 surfaces down to 6.
+  - **Measured:** the opening view is now 1,055 draw calls; it was 2,347 before plan 106. Compared pixel by pixel before and after, the base, a crag and the four kinds of vein differ only where grass and leaves move.
+  - **Trees stood on veins.** Three to eight trees or boulders per map grew within seven metres of a vein; an oak covered the log stack of an old-growth grove completely, and a tree in the ring is in the outpost's way. Scenery now keeps clear of veins (the other trees stay where they were).
+  - **Still heavy:** the timber stacks beside a hall (33 surfaces each) and the food and gold deposits; they change as they are gathered, so they need more care.
+  - One more check in the regression suite (46 in all): no tree or boulder within seven metres of a vein on four maps.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
@@ -1211,4 +1216,4 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
 - **Keys.** Camera movement, control groups and the menu keys cannot be rebound; the other 19 battle keys can.
 - **Log noise.** Headless runs print "material is null" lines from Godot's dummy renderer (per-unit shader parameters); they are not errors in the game. One such line at match load in a real window is still unexplained.
-- **Draw calls:** about 1,300 in the opening since plan 106 (was 2,350). Veins, timber stacks and crags are the next to join.
+- **Draw calls:** about 1,050 in the opening since plans 106 and 107 (was 2,350). The deposits beside a hall are the heaviest things left.
