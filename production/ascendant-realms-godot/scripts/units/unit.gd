@@ -503,13 +503,15 @@ func _apply_race_passive() -> void:
 			# checks once its AI stopped walling in its own hall. Still 12-6
 			# at +4% in an 18-match A/B, so the bonus is gone: the clans rely
 			# on Fortify (cur_armor) and their cheap, sturdy levy.
-			base_dmg *= 1.0
+			# 22-44 over the four six-map checks on the AI of plans 102 to 104 (360 matches), once AI heroes defended their bases: +5%.
+			base_dmg *= 1.05
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.
 			# Last in five checks running on the corrected AI of plans 95 to 97
 			# (28-59 over 450 matches): back to +12%.
-			base_dmg *= 1.12
+			# 28-44 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +15%.
+			base_dmg *= 1.15
 		"sylvan":                         # Precision — keener sight and reach
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0
@@ -517,7 +519,8 @@ func _apply_race_passive() -> void:
 			# Then 2-15-1 over the clean pooled plan 82 check. The cause was its
 			# AI (overbuilt houses, starved of food, too many workers), fixed
 			# in enemy_ai.gd; the stats get only a little more reach (+1.5).
-			base_dmg *= 1.06
+			# 45-25 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +3% (was +6%).
+			base_dmg *= 1.03
 			if atk_range > 0.0:
 				atk_range += 1.5
 		"karak":                          # Stone Resolve — armored and hardy
@@ -542,8 +545,8 @@ func _apply_race_passive() -> void:
 			# 7-14-6 over 135 matches: steadier healing and a little more health.
 			# 7-27-2 over 180 matches on the corrected AI (plan 95): +10% (was +5%).
 			# 14-4 once its AI stopped over-massing (plan 99): the healing eases
-			# from 3 to 2 a second.
-			regen += 2.0
+			# from 3 to 2 a second. 45-25 over the four six-map checks on the AI of plans 102 to 104 (360 matches): 1.5.
+			regen += 1.5
 			max_hp *= 1.10
 			hp = max_hp
 		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
@@ -557,6 +560,9 @@ func _apply_race_passive() -> void:
 			# 26-44 over the four six-map checks of plans 100 to 103, in the
 			# bottom three every time: 11% (was 9%).
 			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.11)
+			# Still 19-49 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +8% health.
+			max_hp *= 1.08
+			hp = max_hp
 		"frostborn":                      # Winter's Wrath — towering, hard-hitting
 			# Was +12%: top of both pooled plan 82 checks (10-2-6 and 11-3-4).
 			# 11-23-2 over 180 matches on the corrected AI (plan 95): +12% again.
@@ -580,7 +586,8 @@ func _apply_race_passive() -> void:
 			max_hp *= 1.10
 			# 2-7 and 1-6 in both checks with the new spells (their signature
 			# only heals): a little more bite. 3-3-3 and 3-5-1 after: +8%.
-			base_dmg *= 1.08
+			# 48-23 over the four six-map checks on the AI of plans 102 to 104 (360 matches), first or second in three of them: +4%.
+			base_dmg *= 1.04
 			hp = max_hp
 		_:
 			pass

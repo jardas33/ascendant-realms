@@ -1515,6 +1515,8 @@ func _press_the_siege() -> void:
 	for u in commander.units:
 		if not is_instance_valid(u) or u.is_dead or u.is_worker or u.state != u.State.IDLE:
 			continue
+		if u.is_hero and bool(u.get_meta("ai_retreating", false)):
+			continue
 		if u.global_position.distance_to(_base_pos) < 35.0:
 			continue
 		var best = null
@@ -1874,9 +1876,20 @@ func _cast_hero_spells() -> void:
 		return
 	# A badly hurt hero falls back to the stronghold to recover instead of
 	# dying for nothing; the next wave takes them along again.
-	if hero.hp < hero.max_hp * 0.4 and hero.global_position.distance_to(_base_pos) > 25.0 and not hero.can_cast("heal"):
+	# Deep in enemy ground the walk home is long and the chasers are many: a
+	# hero that turned back at 40% there was cut down on the way (a Barrosan
+	# Thane at 2% was still in the enemy base half a minute later) and came
+	# back at level one against a level-five enemy hero. Far from home it
+	# turns back at half health.
+	var home_d: float = hero.global_position.distance_to(_base_pos)
+	var turn_back: float = 0.5 if home_d > 110.0 else 0.4
+	if hero.hp < hero.max_hp * turn_back and home_d > 25.0 and not hero.can_cast("heal"):
 		if not bool(hero.get_meta("ai_retreating", false)):
 			hero.set_meta("ai_retreating", true)
+			hero.command_move(_base_pos, false)
+		elif hero.state != hero.State.MOVING:
+			# Something turned it round on the way (a blow it answered, a
+			# siege order): home again.
 			hero.command_move(_base_pos, false)
 		return
 	if hero.hp > hero.max_hp * 0.8:
