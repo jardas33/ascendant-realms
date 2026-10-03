@@ -269,6 +269,109 @@ func _world_width(node: Node3D) -> float:
 			hi = Vector2(maxf(hi.x, p.x), maxf(hi.y, p.z))
 	return maxf(hi.x - lo.x, hi.y - lo.y) if lo.x != INF else 0.0
 
+## The authored Barrosan hall, war hall and house are built from 150 to 350
+## separate pieces, and every piece is a draw call in every pass (colour,
+## depth, each shadow split): one hall cost more than all the other buildings
+## on the map together, and a Barrosan base ran to thousands of draw calls.
+## Once the model is dressed and its collision hulls exist, the pieces are
+## joined into one mesh with a surface for each distinct material. The hulls
+## move to the model's root; nothing else about the building changes.
+const MERGE_PARTS_OVER := 24
+static var _merged_parts_cache := {}
+
+static func _material_signature(mat: Material) -> String:
+	if mat is BaseMaterial3D:
+		var b := mat as BaseMaterial3D
+		return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s" % [b.get_class(), str(b.albedo_texture), str(b.albedo_color), str(b.roughness), str(b.roughness_texture), str(b.metallic), str(b.metallic_texture), str(b.normal_enabled), str(b.normal_texture), str(b.transparency), str(b.cull_mode), str(b.emission_enabled) + str(b.emission) + str(b.emission_texture), str(b.uv1_scale) + str(b.uv1_offset), str(b.shading_mode) + str(b.vertex_color_use_as_albedo) + str(b.texture_filter), str(b.ao_enabled) + str(b.ao_texture)]
+	return "id:%d" % mat.get_instance_id()
+
+static func _transform_up_to(node: Node, ancestor: Node) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n: Node = node
+	while n != null and n != ancestor:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf
+
+func _merge_static_parts(m: Node3D, path: String) -> void:
+	var parts: Array = []
+	for child in m.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		# Anything skinned or drawn with a shader of its own stays as it is.
+		if mi.skeleton != NodePath("") and mi.get_node_or_null(mi.skeleton) is Skeleton3D:
+			return
+		if mi.material_override != null and not (mi.material_override is BaseMaterial3D):
+			return
+		for surface in mi.mesh.get_surface_count():
+			if not (mi.get_active_material(surface) is BaseMaterial3D):
+				return
+		parts.append(mi)
+	if parts.size() <= MERGE_PARTS_OVER:
+		return
+	var cache_key := "%s|%s" % [path, String(def.get("race", ""))]
+	var merged: Array = _merged_parts_cache.get(cache_key, [])
+	if merged.is_empty():
+		# One mesh for each shadow setting, one surface for each material.
+		var tools := {}
+		var materials := {}
+		var order: Array = []
+		for part in parts:
+			var mi := part as MeshInstance3D
+			var xform := _transform_up_to(mi, m)
+			for surface in mi.mesh.get_surface_count():
+				var mat: Material = mi.get_active_material(surface)
+				var key := "%d|%s" % [int(mi.cast_shadow), _material_signature(mat)]
+				if not tools.has(key):
+					var st := SurfaceTool.new()
+					st.begin(Mesh.PRIMITIVE_TRIANGLES)
+					tools[key] = st
+					materials[key] = mat
+					order.append(key)
+				(tools[key] as SurfaceTool).append_from(mi.mesh, surface, xform)
+		var by_shadow := {}
+		for key in order:
+			var shadow := int(String(key).get_slice("|", 0))
+			var mesh: ArrayMesh = by_shadow.get(shadow)
+			if mesh == null:
+				mesh = ArrayMesh.new()
+				by_shadow[shadow] = mesh
+			(tools[key] as SurfaceTool).commit(mesh)
+			mesh.surface_set_material(mesh.get_surface_count() - 1, materials[key])
+		for shadow in by_shadow:
+			merged.append([by_shadow[shadow], shadow])
+		_merged_parts_cache[cache_key] = merged
+	# The collision hulls hang from the parts they were made from.
+	for part in parts:
+		var mi := part as MeshInstance3D
+		for child in mi.get_children():
+			if child is StaticBody3D:
+				var body := child as StaticBody3D
+				var body_xform := _transform_up_to(mi, m) * body.transform
+				mi.remove_child(body)
+				m.add_child(body)
+				body.transform = body_xform
+	for part in parts:
+		if is_instance_valid(part) and not (part as Node).is_queued_for_deletion():
+			var holder: Node = (part as Node).get_parent()
+			if holder:
+				holder.remove_child(part)
+			# Let go of the mesh first: a part freed while it still held a
+			# material nobody else uses made the renderer report a null material.
+			(part as MeshInstance3D).mesh = null
+			(part as Node).free()
+	for entry in merged:
+		var joined := MeshInstance3D.new()
+		joined.name = "JoinedParts"
+		joined.mesh = entry[0]
+		joined.cast_shadow = int(entry[1]) as GeometryInstance3D.ShadowCastingSetting
+		m.add_child(joined)
+		# The building looks its model's meshes up with find_children(), which
+		# only returns nodes that have an owner.
+		joined.owner = m
+
 func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
@@ -318,6 +421,7 @@ func _build_model() -> void:
 		_drop_oversized_part_hulls(m)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(m)
+		_merge_static_parts(m, path)
 		for mi in m.find_children("*", "MeshInstance3D"):
 			_mesh_instances.append(mi)
 	else:
