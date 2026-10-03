@@ -125,8 +125,24 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		m21_remaining_us = Time.get_ticks_usec() - m21_tree_start
 	_build_depletion_status_visual(scale_h)
 	_update_depletion_visual()
+	call_deferred("_join_static_visuals")
 	if m21_recorder:
 		_m21_record({"index":m21_index, "resource_kind":kind, "model_path":model_path, "scale_height":scale_h, "configure_total_us":Time.get_ticks_usec() - m21_total_start, "tree_setup_us":m21_tree_end - m21_tree_start, "model_acquisition_us":m21_model_acquisition_us, "model_instantiation_us":m21_model_instantiation_us, "visual_setup_us":m21_visual_setup_us, "collision_helper_us":m21_collision_helper_us, "collision_attach_us":m21_collision_attach_us, "remaining_us":m21_remaining_us, "mesh_identities":m21_meshes, "collision_shape_count":m21_collision_shapes, "collision_body_count":m21_collision_bodies, "collision_layer":collision_layer, "collision_cache_hits":m21_collision_cache_hits, "collision_cache_misses":m21_collision_cache_misses})
+
+## A deposit's model and its dressing are two or three dozen loose pieces (a
+## timber stack is 33), each a draw call in every pass, and five deposits
+## stand beside every hall. Once the node is in the world they are joined into
+## one mesh for each material. The accent ring, which pulses as workers
+## gather, and the status bars stay as they are.
+func _join_static_visuals() -> void:
+	if not is_inside_tree() or not is_instance_valid(model_root):
+		return
+	var batcher = load("res://scripts/world/static_batcher.gd")
+	if is_instance_valid(_authored_visual_model):
+		batcher.batch(_authored_visual_model, true)
+	for child in model_root.get_children():
+		if child is Node3D and not (child is MeshInstance3D) and child != _authored_visual_model and (String(child.name).ends_with("Dressing") or String(child.name) == "StoneQuarryFragments"):
+			batcher.batch(child, true)
 
 func set_player_visibility_visible(is_visible: bool) -> void:
 	_player_visibility_visible = is_visible

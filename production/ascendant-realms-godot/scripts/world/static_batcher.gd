@@ -8,7 +8,9 @@ extends RefCounted
 ## Anything animated, skinned, additive or carrying per-instance shader
 ## parameters is left alone. Presentation only.
 
-static func batch(layer: Node3D) -> int:
+## `hidden_too`: the layer may be hidden as a whole for now (a deposit under
+## the fog of war); pieces hidden inside the layer are still left alone.
+static func batch(layer: Node3D, hidden_too: bool = false) -> int:
 	if not is_instance_valid(layer):
 		return 0
 	var groups := {}
@@ -17,7 +19,7 @@ static func batch(layer: Node3D) -> int:
 	var merged := 0
 	for node in layer.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
-		if not _batchable(mi, layer):
+		if not _batchable(mi, layer, hidden_too):
 			continue
 		var xform := layer.global_transform.affine_inverse() * mi.global_transform
 		for surface in mi.mesh.get_surface_count():
@@ -54,8 +56,16 @@ static func material_signature(mat: Material) -> String:
 	return "id:%d" % (mat.get_instance_id() if mat != null else 0)
 
 
-static func _batchable(mi: MeshInstance3D, layer: Node3D) -> bool:
-	if mi == null or mi.mesh == null or not mi.is_visible_in_tree():
+static func _batchable(mi: MeshInstance3D, layer: Node3D, hidden_too: bool = false) -> bool:
+	if mi == null or mi.mesh == null:
+		return false
+	if hidden_too:
+		var v: Node = mi
+		while v and v != layer:
+			if v is Node3D and not (v as Node3D).visible:
+				return false
+			v = v.get_parent()
+	elif not mi.is_visible_in_tree():
 		return false
 	if mi.skeleton != NodePath("") and mi.get_node_or_null(mi.skeleton) is Skeleton3D:
 		return false

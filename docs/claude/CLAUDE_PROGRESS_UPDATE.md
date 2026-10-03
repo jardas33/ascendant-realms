@@ -1074,7 +1074,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **A ridge of 38 rocks was 38 meshes.** The batcher that joins static scenery grouped pieces by which copy of a material they carried, and every rock of a crag had its own copy of the same one. It now groups by what the material looks like: a crag is one or two meshes, and the base dressing and the enemy holdfast lost a few dozen more. Vein models (a dozen or more loose pieces each) are joined as well, 16 surfaces down to 6.
   - **Measured:** the opening view is now 1,055 draw calls; it was 2,347 before plan 106. Compared pixel by pixel before and after, the base, a crag and the four kinds of vein differ only where grass and leaves move.
   - **Trees stood on veins.** Three to eight trees or boulders per map grew within seven metres of a vein; an oak covered the log stack of an old-growth grove completely, and a tree in the ring is in the outpost's way. Scenery now keeps clear of veins (the other trees stay where they were).
-  - **Still heavy:** the timber stacks beside a hall (33 surfaces each) and the food and gold deposits; they change as they are gathered, so they need more care.
+  - **The deposits beside a hall are joined as well.** A timber stack was 33 loose pieces, a food deposit 27. Their models and dressing are now one mesh for each material (7 and 10 surfaces); the ring that pulses as workers gather and the status bars are untouched. Close-ups of all five deposits match pixel for pixel but for moving grass. The opening view is down to 846 draw calls, from 2,347 at the start of plan 106.
   - One more check in the regression suite (46 in all): no tree or boulder within seven metres of a vein on four maps.
   - **Train buttons.** A soldier whose cost names three resources ("70 food, 20 timber, 10 stone") ran into the word LOCKED or READY at the end of the same line. The state now sits beside the soldier's name on the top line.
   - **An Endless Road stage through the menus** (three Brutal opponents on the Crucible, twenty minutes at three times speed): every milestone reached, no errors.
@@ -1218,4 +1218,4 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
 - **Keys.** Camera movement, control groups and the menu keys cannot be rebound; the other 19 battle keys can.
 - **Log noise.** Headless runs print "material is null" lines from Godot's dummy renderer (per-unit shader parameters); they are not errors in the game. One such line at match load in a real window is still unexplained.
-- **Draw calls:** about 1,050 in the opening since plans 106 and 107 (was 2,350). The deposits beside a hall are the heaviest things left.
+- **Draw calls:** about 850 in the opening since plans 106 and 107 (was 2,350). What is left is mostly the 120 single trees and boulders of a map and the units themselves.
