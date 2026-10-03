@@ -271,6 +271,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 110, "stone": 40, "gold": 40}, "build_time": 26, "pop": 3, "produced_by": "grimtusk_warcamp",
 		"desc": "A mine slave the Lume-iron made enormous. Crushes armor, walls, and anything that stands still.",
 	},
+	"grimtusk_slag_thrower": {
+		"race": "grimtusk", "name": "Slag Thrower", "role": "siege", "tier": 3, "is_siege": true,
+		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.2,
+		"hp": 180, "dmg": 55, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
+		"range": 21.0, "attack_cd": 2.8, "speed": 2.3, "vision": 26.0, "projectile": "bolt", "splash": 4.0,
+		"cost": {"timber": 120, "gold": 60}, "build_time": 30, "pop": 3, "produced_by": "grimtusk_warcamp",
+		"desc": "A counterweight arm from the pit head, loaded with slag. The Ironmaw dug the mines; now they throw them back.",
+	},
 	"grimtusk_hero_warlord": {
 		"race": "grimtusk", "name": "Warboss Brasa", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("grimtusk_hero_warlord"), "height": 2.2,
@@ -591,6 +599,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 90, "gold": 70}, "build_time": 24, "pop": 2, "produced_by": "hollow_bone_spire",
 		"desc": "Sings the procession's hymn. Its cold fire falls on whole ranks at once.",
 	},
+	"hollow_passing_bell": {
+		"race": "hollow", "name": "Passing Bell", "role": "siege", "tier": 3, "is_siege": true,
+		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.2,
+		"hp": 160, "dmg": 56, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
+		"range": 22.0, "attack_cd": 2.8, "speed": 2.3, "vision": 26.0, "projectile": "void_bolt",
+		"cost": {"timber": 110, "gold": 70}, "build_time": 30, "pop": 3, "produced_by": "hollow_bone_spire",
+		"desc": "The bell the Compaña rings for whoever is to die next, carried on a bier. Walls that hear it crack.",
+	},
 	"hollow_hero_lich": {
 		"race": "hollow", "name": "Candle-King", "role": "hero", "tier": 1, "is_hero": true,
 		"model": _char("hollow_hero_lich"), "height": 2.1,
@@ -647,6 +663,19 @@ static func get_all() -> Dictionary:
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.8, "vision": 20.0,
 		"cost": {"food": 110, "stone": 40, "gold": 40}, "build_time": 26, "pop": 3, "produced_by": "frostborn_war_hall",
 		"desc": "The oldest mask, carried by something that was never a man.",
+	},
+	# The three peoples that had neither a siege engine nor a healer (Careto,
+	# Compaña, Ironmaw) sat at the bottom of every balance check and lost the
+	# long matches: nothing of theirs outranged a tower. Each has an engine
+	# now. All three borrow the Barrosan ballista model, as the Stone Mortar
+	# and the Sun Scorpion do, until they get their own.
+	"frostborn_pyre_cart": {
+		"race": "frostborn", "name": "Entrudo Pyre", "role": "siege", "tier": 3, "is_siege": true,
+		"model": "res://assets/props/vehicles/barrosan_ballista.glb", "height": 2.2,
+		"hp": 175, "dmg": 54, "dmg_type": "siege", "armor_class": "medium", "armor": 2,
+		"range": 21.0, "attack_cd": 2.7, "speed": 2.3, "vision": 26.0, "projectile": "cinder", "splash": 4.0,
+		"cost": {"timber": 130, "gold": 50}, "build_time": 30, "pop": 3, "produced_by": "frostborn_war_hall",
+		"desc": "The cart that carries the Entrudo to the fire on the last night of carnival. Now it throws the fire instead, over walls and onto whoever stands close together.",
 	},
 	"frostborn_hero_jarl": {
 		"race": "frostborn", "name": "O Velho, the Eldest Mask", "role": "hero", "tier": 1, "is_hero": true,

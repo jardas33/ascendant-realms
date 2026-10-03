@@ -157,7 +157,7 @@ static func get_all() -> Dictionary:
 		"race": "grimtusk", "name": "Revolt Camp", "kind": "barracks", "model": _b("vorthak_bone_barracks"),
 		"hp": 820, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 140, "stone": 45}, "build_time": 28, "grants_pop": 0,
-		"produces": ["grimtusk_grunt", "grimtusk_bowcrusha", "grimtusk_wolfrider", "grimtusk_berserker", "grimtusk_ogre"],
+		"produces": ["grimtusk_grunt", "grimtusk_bowcrusha", "grimtusk_wolfrider", "grimtusk_berserker", "grimtusk_ogre", "grimtusk_slag_thrower"],
 		"desc": "Where the revolt drills with picks turned into weapons. Musters the Horde's fighters and chain-breakers.",
 	},
 	"grimtusk_bonesmith": {
@@ -372,8 +372,8 @@ static func get_all() -> Dictionary:
 		"race": "hollow", "name": "Procession Cross", "kind": "arcane", "model": _b("vorthak_warlock_spire"),
 		"hp": 680, "armor_class": "light", "armor": 1, "footprint": 4.0,
 		"cost": {"timber": 110, "gold": 90}, "build_time": 34, "grants_pop": 0,
-		"produces": ["hollow_necromancer"],
-		"desc": "The cross the Compaña carries at its head. Trains the procession's Dirge-Singers.",
+		"produces": ["hollow_necromancer", "hollow_passing_bell"],
+		"desc": "The cross the Compaña carries at its head. Trains the procession's Dirge-Singers and sends out its Passing Bell.",
 	},
 	"hollow_curse_obelisk": {
 		"race": "hollow", "name": "Forgotten Cairn", "kind": "tower", "model": _b("vorthak_rift_obelisk"),
@@ -401,7 +401,7 @@ static func get_all() -> Dictionary:
 		"race": "frostborn", "name": "Entrudo Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
 		"hp": 960, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
-		"produces": ["frostborn_reaver", "frostborn_shieldmaiden", "frostborn_hunter", "frostborn_berserker", "frostborn_jotun"],
+		"produces": ["frostborn_reaver", "frostborn_shieldmaiden", "frostborn_hunter", "frostborn_berserker", "frostborn_jotun", "frostborn_pyre_cart"],
 		"desc": "Where the Entrudo is rehearsed: runners, shields, snow hunters, Wild Caretos and the winter giants are readied for the chase.",
 	},
 	"frostborn_runeforge": {
