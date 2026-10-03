@@ -6,6 +6,9 @@ const GameWorldScript := preload("res://scripts/world/game_world.gd")
 const RTSControllerScript := preload("res://scripts/world/rts_controller.gd")
 const EnemyAIScript := preload("res://scripts/ai/enemy_ai.gd")
 const HudScript := preload("res://scripts/ui/hud.gd")
+## The Reliquary HUD (art direction A). ASCENDANT_HUD=classic restores the
+## previous HUD for side-by-side captures.
+const ReliquaryHudScript := preload("res://scripts/ui/reliquary/reliquary_hud.gd")
 const PauseMenuScript := preload("res://scripts/ui/pause_menu.gd")
 const DebugOverlayScript := preload("res://scripts/ui/debug_overlay.gd")
 const TutorialScript := preload("res://scripts/ui/tutorial.gd")
@@ -81,7 +84,7 @@ func _ready() -> void:
 	hud_layer.name = "HUDLayer"
 	hud_layer.layer = 2
 	add_child(hud_layer)
-	hud = HudScript.new()
+	hud = HudScript.new() if OS.get_environment("ASCENDANT_HUD") == "classic" else ReliquaryHudScript.new()
 	hud_layer.add_child(hud)
 	hud.setup(world, rts)
 	hud.pause_requested.connect(_toggle_pause)

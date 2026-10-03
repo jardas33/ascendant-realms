@@ -489,7 +489,7 @@ func _build() -> void:
 	back.clip_text = false
 	back.custom_minimum_size = Vector2(200, 50)
 	back.focus_mode = Control.FOCUS_NONE
-	back.add_theme_font_override("font", ThemeDB.fallback_font)
+	back.add_theme_font_override("font", _title_font(20))
 	back.add_theme_font_size_override("font_size", 20)
 	back.add_theme_color_override("font_color", Color.WHITE)
 	back.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
@@ -500,7 +500,7 @@ func _build() -> void:
 	forge.clip_text = false
 	forge.custom_minimum_size = Vector2(260, 50)
 	forge.focus_mode = Control.FOCUS_NONE
-	forge.add_theme_font_override("font", ThemeDB.fallback_font)
+	forge.add_theme_font_override("font", _title_font(20))
 	forge.add_theme_font_size_override("font_size", 20)
 	forge.add_theme_color_override("font_color", Color(0.98, 0.92, 0.6))
 	forge.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))

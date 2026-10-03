@@ -4540,6 +4540,10 @@ func _on_game_over(victory: bool) -> void:
 	replay_btn.custom_minimum_size = Vector2(200, 56)
 	replay_btn.pressed.connect(func(): emit_signal("replay"))
 	btn_row.add_child(replay_btn)
+	# The result's actions speak in the display face, like every menu's.
+	for rb in [continue_btn, replay_btn]:
+		rb.add_theme_font_override("font", RqKit.font(RqKit.FONT_DISPLAY))
+		rb.add_theme_font_size_override("font_size", 20)
 
 	# --- Presentation: the moment of the result -------------------------------
 	# Victory: slow golden rays behind the plate. Defeat: a cold red glow.
