@@ -17,6 +17,18 @@ func _run() -> void:
 			"strength": "", "weakness": "", "level": 12, "xp": 0.0, "skill_points": 3, "attr_points": 0,
 			"attributes": {}, "skills": ["cmb_1", "cmb_2", "cmb_3", "act_1", "act_2", "act_3", "def_1", "def_2", "eco_1", "race_bar_1"],
 			"mastery": 0, "mastery_points": 0, "mastery_spent": {}, "inventory": [], "equipment": {}, "loadouts": [], "history": []}
+	if OS.get_environment("ASCENDANT_UI_REVIEW_SAGA") == "1":
+		# Review fixture: three chapters walked, one heroic, one jar found.
+		var pm2 = root.get_node("ProfileManager")
+		var s: Dictionary = pm2.saga()
+		s["cleared"] = ["1-1", "1-2", "1-3"]
+		s["unlocked"] = ["1-1"]
+		for id in s["cleared"]:
+			for next in load("res://scripts/game/campaign_defs.gd").find(id).get("unlocks", []):
+				if not (str(next) in s["unlocked"]):
+					s["unlocked"].append(str(next))
+		s["heroic"] = ["1-1"]
+		s["jars"] = ["1-2"]
 	var scene := load(OS.get_environment("ASCENDANT_UI_SCENE")) as PackedScene
 	if scene == null:
 		quit(2)
@@ -27,7 +39,9 @@ func _run() -> void:
 	var click := OS.get_environment("ASCENDANT_UI_SELECT_STAR")
 	if not click.is_empty():
 		var screen = root.get_child(root.get_child_count() - 1)
-		if screen.has_method("_show_page"):
+		if screen.has_method("_open_briefing"):
+			screen._open_briefing(click)
+		elif screen.has_method("_show_page"):
 			screen._selected_id = click
 			screen._show_page()
 		for i in 6:

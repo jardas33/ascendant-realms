@@ -213,9 +213,12 @@ func _fit_view(animate: bool) -> void:
 	if not is_instance_valid(_view) or _view.size.x < 10.0:
 		return
 	_fitted = true
-	var reach := _outer_radius() + 150.0
-	var z := clampf(minf(_view.size.x, _view.size.y - 40.0) / (2.0 * reach), 0.35, 1.0)
-	_fly_to(Vector2(0.0, 20.0 / z), z, animate)
+	# Fit the whole sky with the path names: they hang 128 beyond the rim,
+	# and need room under the title band and above the foot hint.
+	var reach := _outer_radius() + 128.0
+	var z := clampf(minf(_view.size.x / (2.0 * (reach + 40.0)), (_view.size.y - 150.0) / (2.0 * reach)), 0.35, 1.0)
+	var origin_y := 80.0 + reach * z
+	_fly_to(Vector2(0.0, (_view.size.y * 0.5 - origin_y) / z), z, animate)
 
 
 func _fly_to(chart_point: Vector2, zoom: float, animate: bool = true) -> void:
@@ -625,6 +628,8 @@ func _draw_edges_fade(v: Control) -> void:
 	v.draw_polygon(top, PackedColorArray([Color(night, 0.92), Color(night, 0.92), Color(night, 0.0), Color(night, 0.0)]))
 	var bottom := PackedVector2Array([Vector2(0, v.size.y - 90), Vector2(v.size.x, v.size.y - 90), Vector2(v.size.x, v.size.y), Vector2(0, v.size.y)])
 	v.draw_polygon(bottom, PackedColorArray([Color(night, 0.0), Color(night, 0.0), Color(night, 0.9), Color(night, 0.9)]))
+	for path in SECTORS:
+		_draw_path_name(path, v)
 	_draw_seal(v)
 
 
@@ -664,8 +669,9 @@ func _draw_star_name(n: Dictionary) -> void:
 	v.draw_string(face, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
-func _draw_path_name(path: String) -> void:
-	var v := _view
+## Without a canvas this only reserves the label's room so star names keep
+## clear of it; the veil then paints it above the night fade.
+func _draw_path_name(path: String, v: CanvasItem = null) -> void:
 	var a := _sector_angle(path)
 	var dir := Vector2(cos(a), sin(a))
 	var p := _origin() + dir * (_outer_radius() + 128.0) * _zoom
@@ -688,14 +694,16 @@ func _draw_path_name(path: String) -> void:
 	var gs := 26.0
 	var block_w := gs + 10.0 + tw
 	var top := p + Vector2(-block_w * 0.5, -18.0)
+	var bw := maxf(block_w, hw)
+	if v == null:
+		_label_rects.append(Rect2(p + Vector2(-bw * 0.5, -36.0), Vector2(bw, 56.0)))
+		return
 	if g:
 		v.draw_texture_rect(g, Rect2(top + Vector2(0, -gs * 0.5 + 2.0), Vector2(gs, gs)), false, pig)
 	v.draw_string_outline(face, top + Vector2(gs + 10.0, 8.0), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0.02, 0.02, 0.04, 0.85))
 	v.draw_string(face, top + Vector2(gs + 10.0, 8.0), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, pig.lightened(0.2))
 	v.draw_string_outline(hf, p + Vector2(-hw * 0.5, 14.0), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, 5, Color(0.02, 0.02, 0.04, 0.85))
 	v.draw_string(hf, p + Vector2(-hw * 0.5, 14.0), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, CodexKit.TEXT_MUTED)
-	var bw := maxf(block_w, hw)
-	_label_rects.append(Rect2(p + Vector2(-bw * 0.5, -36.0), Vector2(bw, 56.0)))
 
 
 func _draw_seal(v: Control) -> void:

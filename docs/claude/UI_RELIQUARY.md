@@ -29,7 +29,7 @@ below comes from it.
 | 4 | Validator in `tests/ui_review_capture.gd` updated for the Reliquary layout | Done (military, building, worker, construction, hero, 1366 views) |
 | 5 | PR into `claude/perf-placeholders-r1` | Open: https://github.com/jardas33/ascendant-realms/pull/11, CI green |
 | 6 | **Skill constellation** in style B: `scripts/ui/codex/star_chart.gd` now drives `scenes/ui/skill_tree.tscn` (old `skill_tree.gd` kept, unused). Radial chart, 8 paths from the hero crest, keystones on gilt rings, codex page, claim button, zoom/pan, label collision. Kit: `scripts/ui/codex/codex_kit.gd`, `codex_button.gd` | Done (first pass), renders reviewed |
-| 7 | **Campaign map** (`scripts/ui/campaign_map.gd`, 1208 lines, `campaign_region_button.gd`) in style B: illuminated map of the Terras Frias, region seals, chapter cards with the saga text | Not started |
+| 7 | **Campaign map** (`scripts/ui/campaign_map.gd`, 1208 lines, `campaign_region_button.gd`) in style B: illuminated map of the Terras Frias, region seals, chapter cards with the saga text | In progress: `scripts/ui/codex/saga_map.gd` subclasses the old script and redraws everything (inked chart, act seal strip, wax chapter seals, codex briefing page); `campaign_map.tscn` points at it |
 | 8 | Chronicle / saga log screen in style B (new or inside campaign map) | Not started |
 | 9 | Menus and modals on RqKit: `main_menu.gd`, `pause_menu.gd`, `settings.gd`, `skirmish_setup.gd`, `hero_creation.gd`, `hero_sheet.gd`, `inventory.gd`, `gilt_confirm.gd`, `tutorial.gd` | Not started |
 | 10 | Page-by-page audit of every screen at 1920x1080 and 1366x768 (no stretched frames, no clipped text, no frame inside frame) | Not started |
@@ -102,6 +102,7 @@ godot --path . --rendering-driver vulkan --resolution 1920x1080 -s res://tests/u
 - Current step: step 7, campaign map in style B. Menus render with
   `tests/zz_screen_capture.gd` (`ASCENDANT_UI_SCENE=res://scenes/ui/skill_tree.tscn`,
   `ASCENDANT_UI_REVIEW_HERO=1` for a level 12 review hero, `ASCENDANT_UI_SELECT_STAR=act_4`,
-  `ASCENDANT_UI_FLY_PATH=active`).
+  `ASCENDANT_UI_FLY_PATH=active`). Campaign map: `ASCENDANT_UI_SCENE=res://scenes/ui/campaign_map.tscn`
+  with `ASCENDANT_UI_REVIEW_SAGA=1` (three chapters walked) and `ASCENDANT_UI_SKIP_ACT_CARD=1`.
 - A hero with no learned spells shows four empty "Unlearned" sockets; the
   validator checks for those sockets instead of spell tiles.
