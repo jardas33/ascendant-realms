@@ -53,15 +53,13 @@ static func batch(layer: Node3D, hidden_too: bool = false) -> int:
 ## energy, and whatever else the material has): the first version compared a
 ## chosen fifteen, and two materials that differed only in normal strength or
 ## emission energy were joined as one (found by Codex's review).
-static var _signature_cache := {}
-
+## It is read from the material every time it is asked for. A cached answer
+## went stale as soon as a material was changed after it was first seen: two
+## red materials, one then turned blue, were still joined as one red mesh
+## (Codex's second review, with a red and blue fixture).
 static func material_signature(mat: Material) -> String:
 	if mat == null:
 		return "null"
-	var id := mat.get_instance_id()
-	var cached = _signature_cache.get(id)
-	if cached != null and (cached[0] as WeakRef).get_ref() == mat:
-		return cached[1]
 	var parts: PackedStringArray = [mat.get_class()]
 	for prop in mat.get_property_list():
 		if int(prop["usage"]) & PROPERTY_USAGE_STORAGE == 0:
@@ -70,9 +68,7 @@ static func material_signature(mat: Material) -> String:
 		if prop_name in ["resource_name", "resource_path", "resource_local_to_scene", "resource_scene_unique_id", "script"]:
 			continue
 		parts.append("%s=%s" % [prop_name, str(mat.get(prop_name))])
-	var signature := "|".join(parts)
-	_signature_cache[id] = [weakref(mat), signature]
-	return signature
+	return "|".join(parts)
 
 
 static func _batchable(mi: MeshInstance3D, layer: Node3D, hidden_too: bool = false) -> bool:

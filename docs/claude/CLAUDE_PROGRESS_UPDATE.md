@@ -1104,6 +1104,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **For an independent benchmark** (Codex's review notes the numbers are mine alone): in `D:\ClaudeWork\ar-review`, `claude_draws2.gd` prints surfaces by kind of object and the frame's draw calls in a window; `claude_rc_bigbattle.gd` runs the 120-soldier battle (`CLAUDE_RC_N=60`, `CLAUDE_RC_SECS=25`); `claude_bbprof.gd` is the same with engine monitors, best run with `--disable-vsync`; `claude_fxleak.gd` counts combat particle systems during and after a fight. Each is copied into `tests/`, run with `-s`, and deleted again.
   - Three more checks in the regression suite (50 in all): vein outposts on Thornwild, the batcher's material comparison, and (run on its own, because two windowed checks fought over the mouse) the manual card.
 
+- **Plan 112 (done): Codex's second batching finding**
+  - **A stale cache.** The fix of plan 111 remembered each material's signature. If a material was changed after it was first seen, the old signature was still returned: in Codex's fixture two red materials are signed, the second is turned blue, and the pair came out of the batcher as one red mesh. The signature is now read from the material every time it is asked for, with no cache.
+  - **The fixture is in the regression suite.** It fails on the previous commit (one red batch) and passes now (one red, one blue). Joined building surfaces, draw calls and loading time are unchanged.
+  - **Known and left for Codex's menu pass:** the buttons check sometimes reports the "<" appearance button on the hero creation screen as covered by a container (about one suite run in three, never when run alone). That screen is among the files Codex is working on, so it is noted here and not touched.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
