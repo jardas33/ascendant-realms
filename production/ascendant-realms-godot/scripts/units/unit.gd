@@ -533,8 +533,9 @@ func _apply_race_passive() -> void:
 			# and unarmoured swarms, so the warrior and ironbreaker also got
 			# +2 damage in unit_defs: 4-11-3 became 9-5-4 over 18 matches.)
 			# 24-12 over the two checks after the +10% health step: +5%
-			# damage (was +8%).
-			base_dmg *= 1.05
+			# damage (was +8%). That was one step too many: 12-20 over the
+			# two checks that closed plan 104, last of the ten. +8% again.
+			base_dmg *= 1.08
 			# 22-43-7 over four pooled checks: +14% health (was +8%).
 			# Then 51-21 over the four six-map checks of plans 100 to 103,
 			# first or second in three of them: +10%.
