@@ -1326,6 +1326,9 @@ func _build_health_bar() -> void:
 	add_child(_health_bar_root)
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
+	# Overlays cast no shadow: health bars, attack cues and the hit flash (a
+	# copy of the whole body) were each drawn into the shadow passes too.
+	_health_bar_back.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var back_mesh := BoxMesh.new()
 	back_mesh.size = Vector3(1.5, 0.2, 0.035)
 	_health_bar_back.mesh = back_mesh
@@ -1336,6 +1339,7 @@ func _build_health_bar() -> void:
 	_health_bar_root.add_child(_health_bar_back)
 	_health_bar_fill = MeshInstance3D.new()
 	_health_bar_fill.name = "HealthBarFill"
+	_health_bar_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var fill_mesh := BoxMesh.new()
 	fill_mesh.size = Vector3(1.4, 0.14, 0.045)
 	_health_bar_fill.mesh = fill_mesh
@@ -1388,6 +1392,7 @@ func _build_r15_combat_presentation() -> void:
 	# authored here. The existing controller and Unit combat path remain owner.
 	_r15_attack_cue = MeshInstance3D.new()
 	_r15_attack_cue.name = "CombatAttackCue"
+	_r15_attack_cue.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var cue_mesh := TorusMesh.new()
 	var cue_radius := clampf(_selection_indicator_radius * 0.92, 0.42, 1.0)
 	cue_mesh.inner_radius = cue_radius * 0.86
@@ -1415,6 +1420,7 @@ func _build_r15_combat_presentation() -> void:
 	# not participate in targeting, collision, navigation, or damage.
 	_weapon_arc_cue = MeshInstance3D.new()
 	_weapon_arc_cue.name = "WeaponArcPresentationCue"
+	_weapon_arc_cue.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var arc_material := StandardMaterial3D.new()
 	arc_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	arc_material.albedo_color = Color(0.98, 0.67, 0.30, 0.84) if team == 0 else Color(0.86, 0.24, 0.16, 0.84)
@@ -1448,6 +1454,7 @@ func _build_r15_combat_presentation() -> void:
 
 	_r15_hit_flash = MeshInstance3D.new()
 	_r15_hit_flash.name = "CombatHitFlash"
+	_r15_hit_flash.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var flash_mesh := SphereMesh.new()
 	flash_mesh.radius = COMBAT_HIT_FLASH_RADIUS
 	flash_mesh.height = COMBAT_HIT_FLASH_HEIGHT

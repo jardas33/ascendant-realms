@@ -1085,6 +1085,8 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **What the profile says about big battles.** The same view runs at 64 frames a second with no soldiers, 60 with 40 and about 40 with 120. Each soldier costs about 23 draw calls (its body in the colour, depth and shadow passes, its accessories, the shadow blob under it). The Ironmaw Slinger stands out: 33,000 triangles in 15 surfaces where other soldiers have about 4,000 in 4 or 5, and its AI fields fifteen to twenty of them. That is a model for Codex's list.
   - With the building, scenery and deposit joins of plans 106 and 107, the 120-soldier battle went from 34 to 38 frames a second to 39 to 42.
   - One more check in the regression suite (47 in all): no particle system is left ten seconds after a fight.
+  - **Health bars cast shadows.** A soldier's health bar, its attack cues and its hit flash (a copy of the whole body) were all drawn into the shadow passes as well. They cast none now: 200 fewer draw calls in the 120-soldier battle, which runs at 44 to 45 frames a second (39 before, measured the same way).
+  - **Nothing else piles up.** In a full AI match the number of nodes in the scene follows the number of soldiers up and down (3,300 at minute two, 5,560 at minute eight with 87 soldiers, 5,250 at minute ten with 69).
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
