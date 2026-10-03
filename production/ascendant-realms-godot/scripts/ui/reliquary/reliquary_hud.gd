@@ -15,6 +15,8 @@ const RQ_BAR := preload("res://scripts/ui/reliquary/rq_bar.gd")
 const RQ_TOOLTIP := preload("res://scripts/ui/reliquary/rq_tooltip.gd")
 const RQ_SITE := preload("res://scripts/ui/reliquary/rq_site.gd")
 
+var _rq_tooltip_title := ""
+
 # Layout at the 1920x1080 reference canvas.
 const RQ_DECK_HEIGHT := 172.0
 const RQ_DECK_WIDTH := 1210.0
@@ -885,6 +887,7 @@ func _rq_finish_tile(btn: Button, title: String, kind: String, hotkey: String, t
 		full += "\nUnavailable: " + disabled_reason
 	btn.tooltip_text = ""
 	btn.set_meta("command_tooltip_text", full)
+	btn.set_meta("command_title", title)
 	var accent: Color = RqKit.mat("lume")
 	btn.mouse_entered.connect(func(): _show_command_tooltip(title, kind, hotkey, tooltip, disabled_reason, accent))
 	btn.mouse_exited.connect(_hide_command_tooltip)
@@ -1066,6 +1069,32 @@ func _rq_draw_socket(socket: Control) -> void:
 		socket.draw_texture_rect(g, Rect2(tile.get_center() - Vector2(px, px) * 0.5, Vector2(px, px)), false, Color(lume.r, lume.g, lume.b, 0.16 + 0.05 * RqKit.age))
 
 
+func _rebuild_command_card(single, selection: Array) -> void:
+	# A card rebuilt under the pointer (costs became affordable, a new Age)
+	# keeps the open tooltip on the same command instead of dropping it.
+	var open_title := ""
+	if is_instance_valid(_command_tooltip) and _command_tooltip.visible:
+		open_title = String(_rq_tooltip_title)
+	super._rebuild_command_card(single, selection)
+	if open_title.is_empty() or not is_instance_valid(_cmd_panel):
+		return
+	for btn in _cmd_panel.find_children("*", "Button", true, false):
+		if not btn.is_queued_for_deletion() and String(btn.get_meta("command_title", "")) == open_title:
+			btn.mouse_entered.emit()
+			return
+
+
+func _clear_children(node: Node) -> void:
+	# Children are freed at the end of the frame. Rename them first so a card
+	# rebuilt in the same frame keeps its node names (ConstructionProgress,
+	# HeroDeck...) instead of getting auto-numbered ones.
+	if not is_instance_valid(node):
+		return
+	for c in node.get_children():
+		c.name = "Freed_%d" % c.get_instance_id()
+		c.queue_free()
+
+
 func _build_building_card(b) -> void:
 	if b.is_built:
 		super._build_building_card(b)
@@ -1118,6 +1147,7 @@ func _build_military_card() -> void:
 func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip: String, disabled_reason: String, accent: Color) -> void:
 	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel):
 		return
+	_rq_tooltip_title = title
 	_clear_children(_command_tooltip)
 	_command_tooltip.set("accent", accent)
 	var stack := VBoxContainer.new()
@@ -1434,7 +1464,8 @@ func _fit_to_viewport() -> void:
 		var cmd_width := (deck.end.x - 14.0 - cmd_left) / cmd_scale
 		var fixed_height := _cmd_fixed.get_combined_minimum_size().y if is_instance_valid(_cmd_fixed) else 0.0
 		var content := _cmd_body.get_combined_minimum_size().y + fixed_height + 22.0
-		var ceiling := clampf(vp.y * 0.45, 430.0, 500.0)
+		# Screen-space ceiling: the deck never climbs past ~45% of the screen; longer lists scroll.
+		var ceiling := clampf(vp.y * 0.45, 430.0, 500.0) / cmd_scale
 		var floor_h := (inner_bottom - inner_top) / cmd_scale
 		var height := clampf(content, floor_h, ceiling)
 		_cmd_panel.scale = Vector2.ONE * cmd_scale

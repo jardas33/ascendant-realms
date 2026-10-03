@@ -194,6 +194,7 @@ func _run() -> void:
 				break
 		for index in 2:
 			await process_frame
+		print("UI_TOOLTIP target=", tooltip_target_found, " visible=", instance.hud._command_tooltip.visible)
 	if OS.get_environment("ASCENDANT_UI_CLEAN_POINTER") == "1" and OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") != "1":
 		# A physical desktop pointer left over a card should not insert its hover
 		# tooltip into a neutral comparison capture. Exercise tooltip separately.
@@ -444,7 +445,12 @@ func _run() -> void:
 					continue
 				actual_cards += 1
 				card_kinds.append(str(button.get_meta("command_kind")))
-				if selected_kind not in ["war_hall", "war_hall_queued"] and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
+				var scroll_clipped := false
+				if reliquary and hud._cmd_scroll is ScrollContainer and hud._cmd_scroll.is_ancestor_of(button):
+					# A card scrolled out of a scrollable list is clipped, not outside the deck.
+					var view_rect: Rect2 = hud._cmd_scroll.get_global_rect()
+					scroll_clipped = not view_rect.encloses(button.get_global_rect()) and hud._cmd_scroll.get_v_scroll_bar().max_value > hud._cmd_scroll.size.y
+				if selected_kind not in ["war_hall", "war_hall_queued"] and not scroll_clipped and not hud._cmd_panel.get_global_rect().encloses(button.get_global_rect()):
 					validation_errors.append("card_outside_deck:" + str(actual_cards))
 				if button.pressed.get_connections().is_empty():
 					validation_errors.append("card_missing_command:" + str(actual_cards))
@@ -452,6 +458,9 @@ func _run() -> void:
 					card_copy += label.text + " "
 				if reliquary:
 					card_copy += String(button.get_meta("command_tooltip_text", "")) + " "
+			if reliquary and selected_kind == "hero" and not instance.rts.selected.is_empty():
+				# Reliquary lists every learned spell plus the four field orders.
+				expected_cards = instance.rts.selected[0].abilities.size() + 4
 			if expected_cards > 0 and actual_cards != expected_cards:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
 			if selected_kind in ["building", "building_queued"] and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
@@ -490,7 +499,12 @@ func _run() -> void:
 						pictured_orders += 1
 				if pictured_orders != 4:
 					validation_errors.append("field_order_art_missing:%d_expected_4" % pictured_orders)
-			if selected_kind == "hero" and reliquary:
+			var hero_knows_rally: bool = selected_kind == "hero" and not instance.rts.selected.is_empty() and instance.rts.selected[0].abilities.has("rally")
+			if selected_kind == "hero" and reliquary and not hero_knows_rally:
+				# A fresh profile has no spells: the deck must show empty sockets instead.
+				if hud._cmd_panel.find_child("SpellSocket*", true, false) == null:
+					validation_errors.append("unlearned_spell_sockets_missing")
+			elif selected_kind == "hero" and reliquary:
 				var rally_tile_found := false
 				for button in hud._cmd_panel.find_children("*", "Button", true, false):
 					if String(button.get("ability_id")) == "rally" and String(button.get("glyph_name")) == "rally":
@@ -541,7 +555,9 @@ func _run() -> void:
 			var expected_words: Array[String] = []
 			if selected_kind == "hero":
 				if reliquary:
-					expected_words = ["Rallying Cry", "Mana: 40", "Cooldown: 18s", "Attack Move", "Stop", "Hold", "Patrol"]
+					expected_words = ["Attack Move", "Stop", "Hold", "Patrol"]
+					if hero_knows_rally:
+						expected_words.append_array(["Rallying Cry", "Mana: 40", "Cooldown: 18s"])
 				else:
 					expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
 			elif selected_kind == "worker":
@@ -574,6 +590,9 @@ func _run() -> void:
 		for button in instance.hud._cmd_panel.find_children("*", "Button", true, false):
 			if not button.has_meta("command_kind"):
 				continue
+			var meta_title := String(button.get_meta("command_title", ""))
+			if not meta_title.is_empty():
+				card_by_title[meta_title] = button
 			for label in button.find_children("*", "Label", true, false):
 				if label.text in ["Attack Move", "Stop", "Hold", "Patrol", "Rallying Cry", "Clan Croft", "Lifewell", "Ash Forge", "Advance to Age of Iron", "Clan Levy", "Ash Thrall"]:
 					card_by_title[label.text] = button

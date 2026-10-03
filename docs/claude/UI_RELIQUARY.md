@@ -25,7 +25,7 @@ below comes from it.
 | --- | --- | --- |
 | 1 | Pillars, three directions, pick A | Done (artifact https://claude.ai/artifact/PGCvbHJHsyTPPKv5TgAeKV) |
 | 2 | Kit: tokens, fonts (Cinzel, Alegreya Sans, OFL), 43 glyph SVGs, painters | Done |
-| 3 | Battle HUD: top ribbon, Age medallion, objective, minimap housing, deck, unit and building dossiers, spell tiles, orders, cards, tooltips, heralds, toasts, build-site card, min UI scale for small windows | Done, final render check running |
+| 3 | Battle HUD: top ribbon, Age medallion, objective, minimap housing, deck, unit and building dossiers, spell tiles, orders, cards, tooltips, heralds, toasts, build-site card, min UI scale for small windows | Done, render-validated |
 | 4 | Validator in `tests/ui_review_capture.gd` updated for the Reliquary layout | Done (military, building, worker, construction, hero, 1366 views) |
 | 5 | PR into `claude/perf-placeholders-r1` | Next |
 | 6 | **Skill constellation** (`scripts/ui/skill_tree.gd`, 993 lines) in style B: star-chart of the hero's skills on dark vellum, gilt lines between learned nodes, Lume pulses on nodes you can buy | Not started |
@@ -97,8 +97,11 @@ godot --path . --rendering-driver vulkan --resolution 1920x1080 -s res://tests/u
 
 ## 6. Current step and loose ends
 
-- Final render check of build site (new `rq_site.gd`), building, worker and
-  hero-with-spells views, then commit, push and open the PR (step 5).
+- Battle HUD validated in the cloud on 2026-10-03: `hero` (with and without
+  spells, tooltip open), `military`, `worker`, `building` and `construction`
+  at 1920x1080, `hero` and `building` at 1366x768. All `UI_VALIDATION PASS`.
+- `war_hall` (scrolling barracks list) has not been re-rendered on the new HUD.
+- Current step: PR from `claude/project-thread-h7p2wb` into
+  `claude/perf-placeholders-r1`. After it, start step 6 (skill constellation).
 - A hero with no learned spells shows four empty "Unlearned" sockets; the
-  validator still expects five cards there, so `hero` without
-  `ASCENDANT_UI_HERO_SPELLS` reports `card_count`. Expected, not a layout bug.
+  validator checks for those sockets instead of spell tiles.
