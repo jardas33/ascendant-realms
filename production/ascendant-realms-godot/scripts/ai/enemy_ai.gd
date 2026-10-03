@@ -1102,6 +1102,13 @@ func _race_gather_share() -> Dictionary:
 			for uid in bd.get("produces", []):
 				var ud: Dictionary = GameData.get_unit(String(uid))
 				var weight := 2.0 if int(ud.get("tier", 1)) == 1 else 1.0
+				# An army holds two siege engines at most. Counted like any
+				# other soldier, a new engine in the Ironmaw and Careto
+				# barracks (timber and gold) pulled their workers off the food
+				# they were already short of: both fell from a third of their
+				# matches to a fifth.
+				if String(ud.get("role", "")) == "siege":
+					weight = 0.2
 				for k in ud.get("cost", {}):
 					need[k] = float(need.get(k, 0.0)) + float(ud["cost"][k]) * weight
 		if String(bd.get("kind", "")) == "house":
@@ -1333,6 +1340,15 @@ func _manage_production() -> void:
 	# with 0 workers and thousands of unspent gold. Workers come first.
 	if _worker_count() < mini(6, _worker_target) and _get_building_of_kind("main") != null:
 		return
+	# Saving for the third age. The age costs 400 food, and an AI whose
+	# barracks swallowed every scrap of food as it came in never had it: an
+	# Ironmaw AI was still in the second age at minute twelve, without its
+	# giant or its siege engine, in match after match. From minute six, with
+	# an army two over its wave size and nobody at its gates, it stops
+	# training until the age is paid for.
+	if commander.tier == 2 and float(world.get("match_time")) > 360.0 and commander.can_research("advance_tier_3") and _army_size() >= _army_attack_size + 2:
+		if not commander.can_afford(GameData.get_tech("advance_tier_3").get("cost", {})) and world.find_enemy_near(_base_pos, 60.0, commander.team) == null:
+			return
 	# train army from military buildings
 	for b in commander.buildings:
 		if not is_instance_valid(b) or b.is_dead or not b.is_built:
