@@ -93,6 +93,18 @@ static func _emitter(parent: Node3D, pos: Vector3, process: ParticleProcessMater
 	p.global_position = pos
 	p.emitting = true
 	p.finished.connect(p.queue_free)
+	# The `finished` signal alone is not enough: it never arrived, and every
+	# hit, death and gathered chip left its emitter in the scene for the rest
+	# of the match (1,360 dead emitters after fourteen seconds of a 120-soldier
+	# fight, each still ticking every simulation step). The emitter is also
+	# removed by the clock, a little after its last particle has faded.
+	var p_id: int = p.get_instance_id()
+	var tree := parent.get_tree()
+	if tree:
+		tree.create_timer(life * 2.0 + 0.5, false).timeout.connect(func():
+			var old = instance_from_id(p_id)
+			if is_instance_valid(old) and not (old as Node).is_queued_for_deletion():
+				(old as Node).queue_free())
 	return p
 
 
