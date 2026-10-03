@@ -669,7 +669,8 @@ func _choice_row(labels: Array, keys: Array, setter: Callable, current: String) 
 	for i in labels.size():
 		var b := Button.new()
 		b.toggle_mode = true
-		b.custom_minimum_size = Vector2(104, 34)
+		# Wide enough for its own word: "Domination" was cut to "Domina...".
+		b.custom_minimum_size = Vector2(maxf(104.0, 11.0 * float(String(labels[i]).length()) + 34.0), 34)
 		b.focus_mode = Control.FOCUS_NONE
 		b.button_pressed = (keys[i] == current)
 		_label_button(b, labels[i], Color.WHITE)

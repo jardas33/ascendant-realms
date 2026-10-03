@@ -4744,7 +4744,8 @@ func toggle_key_card() -> void:
 		var d := _mk_label(KeyBinds.fill(String(row[1])), 15, Color(0.92, 0.9, 0.84))
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		d.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-		d.custom_minimum_size = Vector2(560, 0)
+		# Wide lines: at 560 the manual's twenty entries stood taller than the screen.
+		d.custom_minimum_size = Vector2(860, 0)
 		grid.add_child(d)
 	var foot := _mk_label("F1 closes this card  ·  Backspace jumps to the latest alert", 13, Color(0.72, 0.68, 0.58))
 	foot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
