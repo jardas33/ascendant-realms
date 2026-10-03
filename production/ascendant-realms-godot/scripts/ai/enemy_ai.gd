@@ -1369,6 +1369,29 @@ func _choose_unit(choices: Array) -> String:
 			legal.append(c)
 	if legal.is_empty():
 		return ""
+	# Four siege engines are a battery; more is a parade. A spire that trains
+	# one caster and one engine picked the engine half the time, and a
+	# Vorthak AI in the campaign fielded eight Fracture Engines at once (a
+	# Compaña AI, ten Passing Bells). Past four, or past a fifth of the army,
+	# it trains something else if it can.
+	var engines_now := 0
+	var soldiers_now := 0
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
+			soldiers_now += 1
+			if String(u.def.get("role", "")) == "siege":
+				engines_now += 1
+	# Engines already ordered count as well (three halls each queue two).
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead:
+			for item in b.queue:
+				if String(item.get("kind", "")) == "unit" and String(GameData.get_unit(String(item.get("id", ""))).get("role", "")) == "siege":
+					engines_now += 1
+	if engines_now >= 4 or (engines_now >= 2 and engines_now * 5 > soldiers_now):
+		var no_engines := legal.filter(func(c): return String(GameData.get_unit(c).get("role", "")) != "siege")
+		if no_engines.is_empty():
+			return ""
+		legal = no_engines
 	# Counter the enemy: favour damage types that hit the most common armour in
 	# the opposing army hardest (slash into Vorthak's unarmoured swarm, pierce
 	# into light troops), still leaning toward higher tiers, with some variety.
