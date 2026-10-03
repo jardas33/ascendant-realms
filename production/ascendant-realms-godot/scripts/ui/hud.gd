@@ -2425,6 +2425,14 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var portrait_footer := _mk_title_label(role_word, 12, Color(0.96, 0.83, 0.58))
 	portrait_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_footer)
+	# A hero's level in this battle (ten per cent health and eight per cent
+	# damage a level, half kept if it falls) was told only in passing alerts.
+	_single_battle_level_label = null
+	if u.is_hero:
+		_single_battle_level_label = _mk_label(_battle_level_text(u), 12, Color(1.0, 0.84, 0.42))
+		_single_battle_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_single_battle_level_label.tooltip_text = "Battle level: your hero grows up to five levels in a battle from kills made near it, each worth a tenth more health and 8% more damage. A hero that falls comes back with half of that experience."
+		portrait_stack.add_child(_single_battle_level_label)
 	call_deferred("_fit_to_viewport")
 
 	# info column
@@ -2530,10 +2538,22 @@ func _hero_unavailable_reason(u) -> String:
 	return ""
 
 
+var _single_battle_level_label: Label = null
+
+func _battle_level_text(u) -> String:
+	var level := int(u.field_level)
+	var steps: Array = u.FIELD_LEVEL_XP
+	if level >= steps.size():
+		return "Battle level %d" % level
+	return "Battle level %d
+%d / %d" % [level, int(u.field_xp), int(steps[level])]
+
 func _refresh_single_live() -> void:
 	var u = _tracked_single
 	if u == null:
 		return
+	if is_instance_valid(_single_battle_level_label) and is_instance_valid(u) and u is Unit and u.is_hero:
+		_single_battle_level_label.text = _battle_level_text(u)
 	if not is_instance_valid(u):
 		_rebuild_selection([])
 		return
@@ -4212,7 +4232,7 @@ func _on_alert(message: String, _pos: Vector3) -> void:
 
 
 func _on_hero_leveled(level: int) -> void:
-	_push_alert("Hero reached level %d!" % level, Color(0.95, 0.85, 0.4))
+	_push_alert("Your hero reached battle level %d." % level, Color(0.95, 0.85, 0.4))
 	Sfx.play("levelup", -4.0)
 
 

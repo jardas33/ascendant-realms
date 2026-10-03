@@ -1088,6 +1088,9 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Health bars cast shadows.** A soldier's health bar, its attack cues and its hit flash (a copy of the whole body) were all drawn into the shadow passes as well. They cast none now: 200 fewer draw calls in the 120-soldier battle, which runs at 44 to 45 frames a second (39 before, measured the same way).
   - **Nothing else piles up.** In a full AI match the number of nodes in the scene follows the number of soldiers up and down (3,300 at minute two, 5,560 at minute eight with 87 soldiers, 5,250 at minute ten with 69).
 
+- **Plan 109 (done): the hero's battle level is shown**
+  - A hero grows up to five levels during a battle (a tenth more health and 8% more damage each), and since plan 104 keeps half of that when it falls. The only sign of it was a passing message, "Hero reached level 3!", which read like the hero's permanent level (52, say). The hero's card now shows **Battle level 3** and the experience toward the next one (180 / 280) under the portrait, with a tooltip that explains the rule, and the message says "Your hero reached battle level 3."
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
