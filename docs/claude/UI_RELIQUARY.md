@@ -27,17 +27,15 @@ below comes from it.
 | 2 | Kit: tokens, fonts (Cinzel, Alegreya Sans, OFL), 43 glyph SVGs, painters | Done |
 | 3 | Battle HUD: top ribbon, Age medallion, objective, minimap housing, deck, unit and building dossiers, spell tiles, orders, cards, tooltips, heralds, toasts, build-site card, min UI scale for small windows | Done, render-validated |
 | 4 | Validator in `tests/ui_review_capture.gd` updated for the Reliquary layout | Done (military, building, worker, construction, hero, 1366 views) |
-| 5 | PR into `claude/perf-placeholders-r1` | Next |
-| 6 | **Skill constellation** (`scripts/ui/skill_tree.gd`, 993 lines) in style B: star-chart of the hero's skills on dark vellum, gilt lines between learned nodes, Lume pulses on nodes you can buy | Not started |
+| 5 | PR into `claude/perf-placeholders-r1` | Open: https://github.com/jardas33/ascendant-realms/pull/11, CI green |
+| 6 | **Skill constellation** in style B: `scripts/ui/codex/star_chart.gd` now drives `scenes/ui/skill_tree.tscn` (old `skill_tree.gd` kept, unused). Radial chart, 8 paths from the hero crest, keystones on gilt rings, codex page, claim button, zoom/pan, label collision. Kit: `scripts/ui/codex/codex_kit.gd`, `codex_button.gd` | Done (first pass), renders reviewed |
 | 7 | **Campaign map** (`scripts/ui/campaign_map.gd`, 1208 lines, `campaign_region_button.gd`) in style B: illuminated map of the Terras Frias, region seals, chapter cards with the saga text | Not started |
 | 8 | Chronicle / saga log screen in style B (new or inside campaign map) | Not started |
 | 9 | Menus and modals on RqKit: `main_menu.gd`, `pause_menu.gd`, `settings.gd`, `skirmish_setup.gd`, `hero_creation.gd`, `hero_sheet.gd`, `inventory.gd`, `gilt_confirm.gd`, `tutorial.gd` | Not started |
 | 10 | Page-by-page audit of every screen at 1920x1080 and 1366x768 (no stretched frames, no clipped text, no frame inside frame) | Not started |
 | 11 | Retire old styling helpers (`ornate_panel_style.gd`, `hud_plate.gd`, inline StyleBoxFlat in hud.gd) once nothing uses them | Not started |
 
-How to do steps 6 to 9: add a style B painter set next to RqKit (suggested
-`scripts/ui/codex/codex_kit.gd`: vellum, ink, gilt, illuminated capitals,
-same people materials), then rebuild each screen the same way as the HUD:
+How to do steps 7 to 9: use the style B kit `CodexKit` (`scripts/ui/codex/codex_kit.gd`: night vellum, leather page, gilt rules, vermilion capitals, wax seal, Cormorant Garamond), then rebuild each screen the same way as the HUD:
 subclass or restyle, keep its logic, render, compare against the B frame in
 `/mnt/project-files/notes/ui/r1_mockups`, fix, repeat.
 
@@ -101,7 +99,9 @@ godot --path . --rendering-driver vulkan --resolution 1920x1080 -s res://tests/u
   spells, tooltip open), `military`, `worker`, `building` and `construction`
   at 1920x1080, `hero` and `building` at 1366x768. All `UI_VALIDATION PASS`.
 - `war_hall` (scrolling barracks list) has not been re-rendered on the new HUD.
-- Current step: PR from `claude/project-thread-h7p2wb` into
-  `claude/perf-placeholders-r1`. After it, start step 6 (skill constellation).
+- Current step: step 7, campaign map in style B. Menus render with
+  `tests/zz_screen_capture.gd` (`ASCENDANT_UI_SCENE=res://scenes/ui/skill_tree.tscn`,
+  `ASCENDANT_UI_REVIEW_HERO=1` for a level 12 review hero, `ASCENDANT_UI_SELECT_STAR=act_4`,
+  `ASCENDANT_UI_FLY_PATH=active`).
 - A hero with no learned spells shows four empty "Unlearned" sockets; the
   validator checks for those sockets instead of spell tiles.
