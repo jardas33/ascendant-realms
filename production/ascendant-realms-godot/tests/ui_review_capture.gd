@@ -570,6 +570,12 @@ func _run() -> void:
 				if not card_copy.contains(word):
 					validation_errors.append("missing_card_copy:" + word)
 			print("UI_VALIDATION ", "PASS" if validation_errors.is_empty() else "FAIL", " ", validation_errors)
+	if OS.get_environment("ASCENDANT_UI_PAUSE") == "1":
+		# Review the pause menu over the live battle.
+		if instance.get("pause_menu") != null:
+			instance.get("pause_menu").set_shown(true)
+		for i in 20:
+			await process_frame
 	var output := OS.get_environment("ASCENDANT_UI_OUTPUT")
 	if output.is_empty():
 		output = "user://ui_review.png"
