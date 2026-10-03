@@ -224,6 +224,10 @@ func _run() -> void:
 		print("UI_COMMAND_CARDS ", command_names)
 		if OS.get_environment("ASCENDANT_UI_VALIDATE") == "1":
 			var safe_rect := root.get_viewport().get_visible_rect()
+			# The Reliquary HUD (art direction A) has no metric titles or command
+			# header, seats the crest in the Age medallion and draws orders and
+			# spells as vector glyph tiles; its checks follow that layout.
+			var reliquary: bool = hud.get("_rq_deck") != null
 			if metric_stress_mode in ["1", "large"]:
 				var stress_amount := 123456 if metric_stress_mode == "large" else 9999
 				for resource_kind in ["food", "timber", "stone", "gold"]:
@@ -269,7 +273,7 @@ func _run() -> void:
 				validation_errors.append("top_objective_menu_overlap")
 			for instrument in [hud._top_panel, hud._force_panel]:
 				var metric_titles: Array[Node] = instrument.find_children("TopMetricTitle", "Label", true, false)
-				if metric_titles.size() != 4:
+				if metric_titles.size() != 4 and not reliquary:
 					validation_errors.append("top_metric_title_count:%d_expected_4" % metric_titles.size())
 				for metric_title in metric_titles:
 					var title_label := metric_title as Label
@@ -300,9 +304,9 @@ func _run() -> void:
 				var match_crest := hud.find_child("MatchFactionCrest", true, false) as TextureRect
 				if not is_instance_valid(match_crest) or not is_instance_valid(match_crest.texture) or match_crest.texture.resource_path != expected_crest_path:
 					validation_errors.append("match_faction_crest_missing:" + player_race)
-				elif not hud._objective_panel.get_global_rect().encloses(match_crest.get_global_rect()):
+				elif not (hud._age_panel if reliquary else hud._objective_panel).get_global_rect().encloses(match_crest.get_global_rect()):
 					validation_errors.append("match_faction_crest_outside_plaque")
-				if OS.get_environment("ASCENDANT_UI_SELECT") in ["hero", "worker", "military"]:
+				if OS.get_environment("ASCENDANT_UI_SELECT") in ["hero", "worker", "military"] and not reliquary:
 					var command_crest := hud._cmd_panel.find_child("CommandFactionCrest", true, false) as TextureRect
 					if not is_instance_valid(command_crest) or not is_instance_valid(command_crest.texture) or command_crest.texture.resource_path != expected_crest_path:
 						validation_errors.append("command_faction_crest_missing:" + player_race)
@@ -321,8 +325,8 @@ func _run() -> void:
 					validation_errors.append("lioraen_%s_portrait_missing:%s" % [selected_kind, active_unit_portrait])
 				if selected_kind == "hero":
 					var warden_caption := false
-					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
-						if portrait_label.text == "WARDEN":
+					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false) + hud._sel_panel.find_children("*", "Label", true, false):
+						if portrait_label.text.to_upper() == "WARDEN":
 							warden_caption = true
 					if not warden_caption:
 						validation_errors.append("lioraen_hero_caption_missing")
@@ -340,8 +344,8 @@ func _run() -> void:
 						validation_errors.append("vorthak_%s_selected_art_missing" % selected_kind)
 				if selected_kind == "hero":
 					var binder_footer := false
-					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
-						if portrait_label.text == "BINDER":
+					for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false) + hud._sel_panel.find_children("*", "Label", true, false):
+						if portrait_label.text.to_upper() == "BINDER":
 							binder_footer = true
 					if not binder_footer:
 						validation_errors.append("vorthak_binder_role_caption_missing")
@@ -353,8 +357,8 @@ func _run() -> void:
 				if thornrunner_portrait != "res://assets/ui/portraits/lioraen/astra_r1/thornrunner.png":
 					validation_errors.append("lioraen_thornrunner_portrait_missing:" + thornrunner_portrait)
 				var ranger_caption := false
-				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
-					if portrait_label.text == "RANGER":
+				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false) + hud._sel_panel.find_children("*", "Label", true, false):
+					if portrait_label.text.to_upper() == "RANGER":
 						ranger_caption = true
 				if not ranger_caption:
 					validation_errors.append("lioraen_thornrunner_caption_missing")
@@ -369,8 +373,8 @@ func _run() -> void:
 				if not is_instance_valid(warlock_portrait) or not warlock_portrait.has_method("get_active_portrait_path") or String(warlock_portrait.get_active_portrait_path()) != "res://assets/ui/portraits/vorthak/astra_r1/veil_warlock.png":
 					validation_errors.append("vorthak_veil_warlock_selected_art_missing")
 				var caster_footer := false
-				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false):
-					if portrait_label.text == "CASTER":
+				for portrait_label in hud._selection_portrait.find_children("*", "Label", true, false) + hud._sel_panel.find_children("*", "Label", true, false):
+					if portrait_label.text.to_upper() == "CASTER":
 						caster_footer = true
 				if not caster_footer:
 					validation_errors.append("vorthak_warlock_role_caption_missing")
@@ -398,7 +402,10 @@ func _run() -> void:
 					validation_errors.append("vorthak_barracks_unit_art:%d_expected_%d" % [seen_art.size(), expected_unit_art.size()])
 			if selected_kind in ["building", "construction"]:
 				var selected_building_art := ""
-				for portrait_view in hud._sel_panel.find_children("*", "Control", true, false):
+				var building_views: Array[Node] = hud._sel_panel.find_children("*", "Control", true, false)
+				if reliquary and is_instance_valid(hud._selection_portrait):
+					building_views.append_array(hud._selection_portrait.find_children("*", "Control", true, false))
+				for portrait_view in building_views:
 					if portrait_view.has_method("get_active_portrait_path"):
 						selected_building_art = String(portrait_view.get_active_portrait_path())
 				if selected_kind == "building":
@@ -407,7 +414,7 @@ func _run() -> void:
 					if not expected_building_art.is_empty() and selected_building_art != expected_building_art:
 						validation_errors.append("selected_building_art_missing:" + selected_building_art)
 					if not selected_building_art.is_empty():
-						var artwork := hud._sel_panel.find_child("PortraitArtwork", true, false) as Control
+						var artwork := (hud._selection_portrait if reliquary else hud._sel_panel).find_child("PortraitArtwork", true, false) as Control
 						var portrait_frame := artwork.get_parent() as Control if is_instance_valid(artwork) else null
 						if not is_instance_valid(portrait_frame) or not portrait_frame.get_global_rect().encloses(artwork.get_global_rect()):
 							validation_errors.append("selected_building_art_outside_frame")
@@ -428,6 +435,8 @@ func _run() -> void:
 					validation_errors.append("card_missing_command:" + str(actual_cards))
 				for label in button.find_children("*", "Label", true, false):
 					card_copy += label.text + " "
+				if reliquary:
+					card_copy += String(button.get_meta("command_tooltip_text", "")) + " "
 			if expected_cards > 0 and actual_cards != expected_cards:
 				validation_errors.append("card_count:%d_expected_%d" % [actual_cards, expected_cards])
 			if selected_kind in ["building", "building_queued"] and (not card_kinds.has("TRAIN") or not card_kinds.has("RESEARCH")):
@@ -446,7 +455,7 @@ func _run() -> void:
 							var emblem = button.find_child("CommandEmblem", true, false) as Control
 							if not is_instance_valid(emblem) or emblem.get("icon_kind") != expected_emblems[label.text]:
 								validation_errors.append("building_command_emblem_missing:" + label.text)
-				var aperture = hud._sel_panel.find_child("PortraitViewport", true, false) as Control
+				var aperture = (hud._selection_portrait if reliquary else hud._sel_panel).find_child("PortraitViewport", true, false) as Control
 				if not is_instance_valid(aperture) or not aperture.clip_contents:
 					validation_errors.append("building_portrait_aperture_missing")
 				else:
@@ -462,9 +471,18 @@ func _run() -> void:
 							var emblem = button.find_child("CommandEmblem", true, false) as Control
 							if is_instance_valid(emblem) and emblem.get("icon_kind") == field_orders[label.text] and emblem.get("visual_faction") == player_race:
 								pictured_orders += 1
+					if reliquary and String(button.get("glyph_name")) in field_orders.values() and String(button.get_meta("command_kind", "")) == "ORDER":
+						pictured_orders += 1
 				if pictured_orders != 4:
 					validation_errors.append("field_order_art_missing:%d_expected_4" % pictured_orders)
-			if selected_kind == "hero":
+			if selected_kind == "hero" and reliquary:
+				var rally_tile_found := false
+				for button in hud._cmd_panel.find_children("*", "Button", true, false):
+					if String(button.get("ability_id")) == "rally" and String(button.get("glyph_name")) == "rally":
+						rally_tile_found = true
+				if not rally_tile_found:
+					validation_errors.append("rally_glyph_tile_missing")
+			elif selected_kind == "hero":
 				var rally_art = hud._cmd_panel.find_child("CommandEmblem", true, false) as Control
 				if not is_instance_valid(rally_art) or rally_art.get("icon_kind") != "rally" or rally_art.get("visual_faction") != player_race:
 					validation_errors.append("rally_art_missing")
@@ -507,7 +525,10 @@ func _run() -> void:
 					validation_errors.append("construction_progress_did_not_refresh")
 			var expected_words: Array[String] = []
 			if selected_kind == "hero":
-				expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
+				if reliquary:
+					expected_words = ["Rallying Cry", "Mana: 40", "Cooldown: 18s", "Attack Move", "Stop", "Hold", "Patrol"]
+				else:
+					expected_words = ["Rallying Cry", "40 mana", "18s CD", "Attack Move", "Stop", "Hold", "Patrol"]
 			elif selected_kind == "worker":
 				expected_words = ["timber", "stone", "LOCKED", "READY"]
 				for building_id in root.get_node("GameData").buildings_for_race(instance.world.commanders[0].race):
