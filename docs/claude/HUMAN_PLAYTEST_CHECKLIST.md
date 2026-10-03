@@ -62,6 +62,14 @@ Endless Road from the main menu, then March On.
 - **The tutorial.** Play "How to Play" as if for the first time. Is "Raise a War Hall" clear?
 - **Orders beside buildings.** Right-click the ground right next to one of your buildings: does the soldier stop where you clicked?
 
+## 7. New since 2026-10-02 (plans 101 to 104)
+
+- **How each difficulty opens.** Play the same skirmish on Easy, Normal and Hard. The first enemy should reach your hall at about 5:30 on Easy (four to six soldiers), about 4:00 on Normal (five to eight, then waves with pauses) and a little after 3:00 on Hard (eight to eleven, without pause). Does each feel like its name?
+- **Attacking an enemy base.** The enemy hero now comes to defend it when it has soldiers beside it. Is taking a base harder in a good way?
+- **Your hero falling.** Let your hero fall once it has gained a few battle levels. It should come back at the hall with about half of them, and the message should say at which level. Does losing a hero still hurt enough?
+- **Orders beside your hall.** Stand a soldier against the hall and right-click the far side; send a worker to mend a house that stands close to another building. Do they walk round and arrive?
+- **The edge of the map.** Right-click the very edge: the soldier should go to the nearest ground inside it.
+
 ## What to send back
 
 For each section, one line each on: the best moment, the worst moment, and anything confusing. Screenshots help. The questions that matter most:
