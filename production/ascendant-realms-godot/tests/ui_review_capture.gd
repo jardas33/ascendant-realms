@@ -162,6 +162,21 @@ func _run() -> void:
 		instance.hud._on_idle_military_count(128)
 		for index in 2:
 			await process_frame
+	# Review aid: give the selected hero a spell set so the deck's spell tiles
+	# (ready, recovering, short of mana) can be judged without a saved profile.
+	var review_spells := OS.get_environment("ASCENDANT_UI_HERO_SPELLS")
+	if not review_spells.is_empty() and not instance.rts.selected.is_empty() and bool(instance.rts.selected[0].get("is_hero")):
+		var review_hero = instance.rts.selected[0]
+		for spell_id in review_spells.split(",", false):
+			review_hero.abilities[spell_id] = 1
+			review_hero.ability_cd[spell_id] = 0.0
+		if review_hero.abilities.has("slam"):
+			review_hero.ability_cd["slam"] = 9.0
+		review_hero.mana_regen = 0.0
+		review_hero.mana = 64.0
+		instance.hud._rebuild_selection(instance.rts.selected)
+		for index in 3:
+			await process_frame
 	var tooltip_target_found := false
 	if OS.get_environment("ASCENDANT_UI_TOOLTIP_CHECK") == "1":
 		var wanted_title := OS.get_environment("ASCENDANT_UI_TOOLTIP_TITLE")

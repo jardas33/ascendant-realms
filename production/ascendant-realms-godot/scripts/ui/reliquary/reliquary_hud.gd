@@ -13,6 +13,7 @@ const RQ_RIBBON := preload("res://scripts/ui/reliquary/rq_ribbon.gd")
 const RQ_MEDALLION := preload("res://scripts/ui/reliquary/rq_medallion.gd")
 const RQ_BAR := preload("res://scripts/ui/reliquary/rq_bar.gd")
 const RQ_TOOLTIP := preload("res://scripts/ui/reliquary/rq_tooltip.gd")
+const RQ_SITE := preload("res://scripts/ui/reliquary/rq_site.gd")
 
 # Layout at the 1920x1080 reference canvas.
 const RQ_DECK_HEIGHT := 172.0
@@ -1063,6 +1064,41 @@ func _rq_draw_socket(socket: Control) -> void:
 	if g:
 		var px := 30.0
 		socket.draw_texture_rect(g, Rect2(tile.get_center() - Vector2(px, px) * 0.5, Vector2(px, px)), false, Color(lume.r, lume.g, lume.b, 0.16 + 0.05 * RqKit.age))
+
+
+func _build_building_card(b) -> void:
+	if b.is_built:
+		super._build_building_card(b)
+		return
+	# A build site: the dossier already names it and shows its HP, so the card
+	# shows the stages of the work and who is doing it.
+	_add_context_hints(["BUILD SITE", "AWAIT COMPLETION"])
+	_add_command_section("Construction", "Raising the %s" % String(b.def.get("name", "building")).to_lower())
+	var site = RQ_SITE.new()
+	site.name = "ConstructionProgress"
+	site.custom_minimum_size = Vector2(400, 112)
+	site.set_progress(float(b.build_progress))
+	site.set_builders(_rq_site_builders(b))
+	_cmd_body.add_child(site)
+	var t := Timer.new()
+	t.wait_time = 0.2
+	t.autostart = true
+	site.add_child(t)
+	var site_b_id: int = b.get_instance_id()
+	t.timeout.connect(func():
+		var cb = instance_from_id(site_b_id)
+		if is_instance_valid(cb) and is_instance_valid(site):
+			site.set_progress(float(cb.build_progress))
+			site.set_builders(_rq_site_builders(cb))
+	)
+
+
+func _rq_site_builders(b) -> int:
+	var count := 0
+	for u in get_tree().get_nodes_in_group("units"):
+		if is_instance_valid(u) and u.get("is_worker") and not u.get("is_dead") and u.get("_build_target") == b:
+			count += 1
+	return count
 
 
 func _build_military_card() -> void:
