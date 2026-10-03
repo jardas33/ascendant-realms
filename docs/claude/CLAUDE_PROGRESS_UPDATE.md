@@ -1036,6 +1036,14 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **A crash in the test tools, hardened in the game:** selecting a soldier that had just died and been removed crashed the engine outright; the selection code now ignores such a unit.
   - **The regression suite was blind in two ways.** A check counted as failed only when its process ended with an error code, and a script error does not change that code. Script errors now count as failures, three old checks that always reported success now test what they print, and nineteen sped-up checks keep their physics clock in step with the frame clock when the machine is busy (the AI thinks on frames, units move on physics steps; under load the enemy had been running ahead of the test). One more check (43 in all): nobody arrives at the player's hall before 5:00 on Easy.
 
+- **Plan 104 (in progress): balance on the smarter AI**
+  - **The smarter AI moved the balance.** Over four six-map checks after plans 102 and 103 (360 matches, 72 for each people), the peoples that defend well won about two matches in three: Lioraen 48-23, Karak 46-25, Sunspear 45-25, Sylvan 45-25. The aggressive ones lost: Grimtusk 28-44, Barrosan 22-44, Hollow 19-49 (Vorthak 35-34, Wyldkin 30-38, Frostborn 28-39 in between). AI heroes now defend their bases and turn back when hurt, so early raids that used to pay now die at the gates; a person playing those peoples would meet the same thing.
+  - **Changes so far:** Karak health bonus +10% (was +14%) after it led three of four checks; then Barrosan +5% damage (was none), Grimtusk +15% (was +12%), Hollow +8% health and 11% lifesteal (was 9%), Sylvan +3% damage (was +6%), Sunspear healing 1.5 a second (was 2), Lioraen +4% damage (was +8%).
+  - **Tried and dropped:** letting the Hollow AI wait for two more soldiers before each wave. It changed nothing (4-13 either way), so it was undone.
+  - **AI heroes turn back sooner when deep in enemy ground.** A Barrosan hero at 2% health was still in the enemy base half a minute after it should have left, died, and came back at level one to face a level-five enemy hero. Far from home (over 110 metres) a hero now turns back at half health instead of 40%, and is sent home again if something turned it round on the way. Hero deaths fell from about 3 a match to about 2.5.
+  - **The difficulty descriptions** in the skirmish setup now say when each level starts attacking (Easy after five minutes, Normal from about the fourth, Hard from the third and without pause).
+  - Two checks on the new numbers are running.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
@@ -1169,7 +1177,7 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
 - **Human playtest.** Nothing here has been played by a person since the audit passes. `docs/claude/HUMAN_PLAYTEST_CHECKLIST.md` lists what to try; section 5 covers everything new since 2026-10-01.
 - **Sound.** The sixteen procedural sounds of plan 86 were checked numerically only. Emanuel should say if any is unpleasant.
 - **Models (Codex's lane).** Seven peoples borrow another people's unit and building models. The Moon Bear uses the ogre model; the Stone Mortar and Sun Scorpion use the Barrosan ballista; `wyldkin_denhold.glb` is rough.
-- **Balance.** Two six-map checks pooled (plan 101, 180 matches): every people between 12 and 24 wins of 36, which is inside what chance allows; nothing tuned. Frostborn and Grimtusk are the two to watch.
+- **Balance.** The smarter AI of plans 102 and 103 favours the defensive peoples (about 64% for Lioraen, Karak, Sunspear and Sylvan, 28 to 39% for Hollow, Barrosan and Grimtusk over 360 matches). Plan 104 nudges both ends; two checks on the new numbers are running.
 - **Corner.** Fixed in plan 98. Over the four checks since, the first seat has won 197 of 357 matches (55%).
 - **AI strength for a human.** The AI is much stronger than a week ago (its heroes fight and defend, its armies obey, its workers survive). Since plan 103 the first enemy reaches an idle player's hall at about 5:35 on Easy (4 to 6 soldiers), 4:00 on Normal (5 to 8) and 3:05 to 3:45 on Hard (8 to 11). Whether each level feels right needs a human playtest.
 - **Terrain.** Crags are the only terrain that shapes play besides the river. There is no high ground.
