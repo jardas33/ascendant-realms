@@ -31,6 +31,9 @@ func configure(p_kind: String, p_amount: int) -> void:
 		ModelUtils.scale_to_height(m, 2.4 if kind != "food" else 1.8)
 		ModelUtils.ground_model(m)
 		m.position += Vector3(3.2, 0, 0)
+		_model = m
+		if is_inside_tree():
+			_join_model()
 	# A slowly turning rune ring marks an unclaimed vein in its resource's colour.
 	_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
@@ -47,6 +50,21 @@ func configure(p_kind: String, p_amount: int) -> void:
 	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_ring.position.y = 0.08
 	add_child(_ring)
+
+## The vein's model is a dozen or more loose pieces; once it stands in the
+## world they are joined into one mesh for each material.
+var _model: Node3D = null
+
+var _model_joined := false
+
+func _ready() -> void:
+	_join_model()
+
+func _join_model() -> void:
+	if _model_joined or not is_instance_valid(_model):
+		return
+	_model_joined = true
+	load("res://scripts/world/static_batcher.gd").batch(_model)
 
 func display_name() -> String:
 	return String(NAMES.get(kind, "Vein"))

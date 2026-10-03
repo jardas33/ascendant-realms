@@ -12,6 +12,8 @@ static func batch(layer: Node3D) -> int:
 	if not is_instance_valid(layer):
 		return 0
 	var groups := {}
+	var group_material := {}
+	var group_shadow := {}
 	var merged := 0
 	for node in layer.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
@@ -20,11 +22,16 @@ static func batch(layer: Node3D) -> int:
 		var xform := layer.global_transform.affine_inverse() * mi.global_transform
 		for surface in mi.mesh.get_surface_count():
 			var mat := mi.get_active_material(surface)
-			var key := [mat, mi.cast_shadow]
+			# By what the material looks like, not by which copy it is: every
+			# rock of a crag carried its own copy of one material, so a ridge
+			# of 38 rocks "merged" into 38 meshes.
+			var key := "%d|%s" % [int(mi.cast_shadow), material_signature(mat)]
 			if not groups.has(key):
 				var st := SurfaceTool.new()
 				st.begin(Mesh.PRIMITIVE_TRIANGLES)
 				groups[key] = st
+				group_material[key] = mat
+				group_shadow[key] = mi.cast_shadow
 			(groups[key] as SurfaceTool).append_from(mi.mesh, surface, xform)
 		mi.queue_free()
 		merged += 1
@@ -33,10 +40,18 @@ static func batch(layer: Node3D) -> int:
 		var out := MeshInstance3D.new()
 		out.name = "StaticBatch"
 		out.mesh = st.commit()
-		out.material_override = key[0]
-		out.cast_shadow = key[1]
+		out.material_override = group_material[key]
+		out.cast_shadow = group_shadow[key]
 		layer.add_child(out)
 	return merged
+
+
+## Two materials with the same signature draw the same and may share a batch.
+static func material_signature(mat: Material) -> String:
+	if mat is BaseMaterial3D:
+		var b := mat as BaseMaterial3D
+		return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s" % [b.get_class(), str(b.albedo_texture), str(b.albedo_color), str(b.roughness), str(b.roughness_texture), str(b.metallic), str(b.metallic_texture), str(b.normal_enabled), str(b.normal_texture), str(b.transparency), str(b.cull_mode), str(b.emission_enabled) + str(b.emission) + str(b.emission_texture), str(b.uv1_scale) + str(b.uv1_offset), str(b.shading_mode) + str(b.vertex_color_use_as_albedo) + str(b.texture_filter), str(b.ao_enabled) + str(b.ao_texture)]
+	return "id:%d" % (mat.get_instance_id() if mat != null else 0)
 
 
 static func _batchable(mi: MeshInstance3D, layer: Node3D) -> bool:
