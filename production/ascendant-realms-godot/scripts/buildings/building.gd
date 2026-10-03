@@ -280,10 +280,7 @@ const MERGE_PARTS_OVER := 24
 static var _merged_parts_cache := {}
 
 static func _material_signature(mat: Material) -> String:
-	if mat is BaseMaterial3D:
-		var b := mat as BaseMaterial3D
-		return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s" % [b.get_class(), str(b.albedo_texture), str(b.albedo_color), str(b.roughness), str(b.roughness_texture), str(b.metallic), str(b.metallic_texture), str(b.normal_enabled), str(b.normal_texture), str(b.transparency), str(b.cull_mode), str(b.emission_enabled) + str(b.emission) + str(b.emission_texture), str(b.uv1_scale) + str(b.uv1_offset), str(b.shading_mode) + str(b.vertex_color_use_as_albedo) + str(b.texture_filter), str(b.ao_enabled) + str(b.ao_texture)]
-	return "id:%d" % mat.get_instance_id()
+	return load("res://scripts/world/static_batcher.gd").material_signature(mat)
 
 static func _transform_up_to(node: Node, ancestor: Node) -> Transform3D:
 	var xf := Transform3D.IDENTITY

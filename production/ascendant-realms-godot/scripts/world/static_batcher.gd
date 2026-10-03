@@ -49,11 +49,30 @@ static func batch(layer: Node3D, hidden_too: bool = false) -> int:
 
 
 ## Two materials with the same signature draw the same and may share a batch.
+## Every stored property counts (texture, colour, normal strength, emission
+## energy, and whatever else the material has): the first version compared a
+## chosen fifteen, and two materials that differed only in normal strength or
+## emission energy were joined as one (found by Codex's review).
+static var _signature_cache := {}
+
 static func material_signature(mat: Material) -> String:
-	if mat is BaseMaterial3D:
-		var b := mat as BaseMaterial3D
-		return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s" % [b.get_class(), str(b.albedo_texture), str(b.albedo_color), str(b.roughness), str(b.roughness_texture), str(b.metallic), str(b.metallic_texture), str(b.normal_enabled), str(b.normal_texture), str(b.transparency), str(b.cull_mode), str(b.emission_enabled) + str(b.emission) + str(b.emission_texture), str(b.uv1_scale) + str(b.uv1_offset), str(b.shading_mode) + str(b.vertex_color_use_as_albedo) + str(b.texture_filter), str(b.ao_enabled) + str(b.ao_texture)]
-	return "id:%d" % (mat.get_instance_id() if mat != null else 0)
+	if mat == null:
+		return "null"
+	var id := mat.get_instance_id()
+	var cached = _signature_cache.get(id)
+	if cached != null and (cached[0] as WeakRef).get_ref() == mat:
+		return cached[1]
+	var parts: PackedStringArray = [mat.get_class()]
+	for prop in mat.get_property_list():
+		if int(prop["usage"]) & PROPERTY_USAGE_STORAGE == 0:
+			continue
+		var prop_name := String(prop["name"])
+		if prop_name in ["resource_name", "resource_path", "resource_local_to_scene", "resource_scene_unique_id", "script"]:
+			continue
+		parts.append("%s=%s" % [prop_name, str(mat.get(prop_name))])
+	var signature := "|".join(parts)
+	_signature_cache[id] = [weakref(mat), signature]
+	return signature
 
 
 static func _batchable(mi: MeshInstance3D, layer: Node3D, hidden_too: bool = false) -> bool:
