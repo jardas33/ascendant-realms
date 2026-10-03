@@ -3180,6 +3180,18 @@ func _state_build(delta: float) -> void:
 			var interaction_threshold := float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2))
 			agent.target_desired_distance = maxf(0.05, interaction_threshold - _building_route_clearance())
 		_set_agent_target(_move_target, "build")
+		# The last step is taken straight. A route from the grid planner ends
+		# on a cell centre, which can lie a little short of the builder's
+		# place: on Thornwild a worker sent to two of its side's eight veins
+		# stopped 1.4 m from the site (it needs 1.2), had "arrived", and stood
+		# there building nothing for the rest of the match.
+		var gap := Vector2(_move_target.x - global_position.x, _move_target.z - global_position.z).length()
+		if gap > 0.05 and gap < 2.5 and (_navigation_waypoints.is_empty() or global_position.distance_to(_navigation_waypoints[_navigation_waypoints.size() - 1]) < 0.9):
+			var step := Vector3(_move_target.x - global_position.x, 0.0, _move_target.z - global_position.z).normalized()
+			velocity = step * minf(move_speed, gap / maxf(delta, 0.001))
+			move_and_slide()
+			_face(_build_target.global_position)
+			return
 		_move_along_path(delta)
 	else:
 		_hold_worker_interaction(_build_target.global_position)
