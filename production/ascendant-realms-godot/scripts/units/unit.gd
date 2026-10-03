@@ -504,7 +504,8 @@ func _apply_race_passive() -> void:
 			# at +4% in an 18-match A/B, so the bonus is gone: the clans rely
 			# on Fortify (cur_armor) and their cheap, sturdy levy.
 			# 22-44 over the four six-map checks on the AI of plans 102 to 104 (360 matches), once AI heroes defended their bases: +5%.
-			base_dmg *= 1.05
+			# Still 12-21 over the next two: +8%.
+			base_dmg *= 1.08
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.
@@ -531,7 +532,9 @@ func _apply_race_passive() -> void:
 			# (Plan 85: their blunt weapons are 10% weak against the light
 			# and unarmoured swarms, so the warrior and ironbreaker also got
 			# +2 damage in unit_defs: 4-11-3 became 9-5-4 over 18 matches.)
-			base_dmg *= 1.08
+			# 24-12 over the two checks after the +10% health step: +5%
+			# damage (was +8%).
+			base_dmg *= 1.05
 			# 22-43-7 over four pooled checks: +14% health (was +8%).
 			# Then 51-21 over the four six-map checks of plans 100 to 103,
 			# first or second in three of them: +10%.
@@ -583,7 +586,9 @@ func _apply_race_passive() -> void:
 		"lioraen":                        # Grove-blessed — sturdier than they look
 			# 2-7 in the vein-economy round robin; the Groveheart aura alone
 			# did not carry them away from home.
-			max_hp *= 1.10
+			# 26-10 over two checks even at +4% damage, with the fewest hero
+			# and worker deaths of anyone: +6% health (was +10%).
+			max_hp *= 1.06
 			# 2-7 and 1-6 in both checks with the new spells (their signature
 			# only heals): a little more bite. 3-3-3 and 3-5-1 after: +8%.
 			# 48-23 over the four six-map checks on the AI of plans 102 to 104 (360 matches), first or second in three of them: +4%.

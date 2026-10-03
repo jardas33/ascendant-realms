@@ -430,6 +430,24 @@ func _caravan_trade() -> void:
 			world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + pile})
 			if pile_amt > 900:
 				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + pile})
+	# The store this people spends most on is the one that limits its army.
+	# A Compaña AI (its dead cost food and little else) sat at minute twelve on
+	# 300 food, 1,450 stone, 1,080 timber and 880 gold with eleven soldiers:
+	# no store was under 150, so the caravan never traded. With gold to spare
+	# it now buys that store below 400, and a dead pile of another store is
+	# sold to pay for it.
+	var main_kind := ""
+	var main_share := 0.0
+	for k in ["food", "timber", "stone"]:
+		if float(_gather_share.get(k, 0.0)) > main_share:
+			main_share = float(_gather_share.get(k, 0.0))
+			main_kind = k
+	var main_short: bool = main_kind != "" and int(commander.resources.get(main_kind, 0)) < 400
+	if main_short and int(commander.resources.get("gold", 0)) < 450:
+		for k in ["stone", "timber", "food"]:
+			if k != main_kind and int(commander.resources.get(k, 0)) > 900:
+				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + k})
+				break
 	for i in 2:
 		var price: int = commander.trade_price()
 		low = ""
@@ -438,6 +456,9 @@ func _caravan_trade() -> void:
 			if int(commander.resources.get(k, 0)) < low_amt:
 				low = k
 				low_amt = int(commander.resources.get(k, 0))
+		if low == "" and main_kind != "" and int(commander.resources.get(main_kind, 0)) < 400 and int(commander.resources.get("gold", 0)) >= price + 300:
+			low = main_kind
+			low_amt = int(commander.resources.get(main_kind, 0))
 		if low == "":
 			return
 		# An empty store is worth the gold at once; otherwise keep a little
@@ -1290,7 +1311,11 @@ func _manage_production() -> void:
 	# ran out the clock. Wealth it cannot spend becomes more barracks.
 	var food_now := int(commander.resources.get("food", 0))
 	var timber_now := int(commander.resources.get("timber", 0))
-	var flush: bool = food_now > 900 and timber_now > 500
+	# A bank of every kind counts too: a Compaña AI held 4,400 of all four at
+	# minute twelve with 700 food and two barracks, never "flush" because its
+	# food stayed under 900.
+	var bank_total: int = food_now + timber_now + int(commander.resources.get("stone", 0)) + int(commander.resources.get("gold", 0))
+	var flush: bool = (food_now > 900 and timber_now > 500) or (bank_total > 2500 and food_now > 400)
 	var want_barracks := 2
 	# Six peoples train from two kinds of hall (a barracks and a spire or
 	# grove); the other four have the barracks alone and so trained a third
