@@ -1061,6 +1061,11 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Last step:** Karak was the one people outside the band (33%) after two trims; its damage bonus is back at +8%.
   - **Confirmation (90 more matches, 270 pooled on the final AI):** Sylvan 31-18, Lioraen 31-19, Vorthak 30-23, Hollow 30-24, Sunspear 27-27, Karak 24-25, Barrosan 21-28, Wyldkin 22-32, Grimtusk 22-32, Frostborn 21-31. All ten peoples are between 40% and 63%; the first seat won 133 of 259. A single 90-match check still swings a people by ten points either way (Wyldkin went 10-8, 8-10, 4-14 in the three), so nothing more is tuned on this.
 
+- **Plan 105 (done): the campaign and a full skirmish on the final AI**
+  - **Campaign soak again.** All 44 chapters played to the end with the AI in the player's seat: every one decided, none stuck, no script errors. (That AI, with no levelled hero or gear, won 17 of them; it was 14 before plan 102.)
+  - **An AI fielded ten siege engines.** A spire that trains one caster and one engine picked the engine half the time: in the campaign a Vorthak AI had eight Fracture Engines at once, a Compaña AI ten Passing Bells. An AI now keeps at most four engines (and no more than a fifth of its army), counting those already ordered.
+  - **A skirmish through the menus** (main menu, setup, loading, match, result screen), Careto against a Hard Compaña at three times speed: every milestone reached, the result saved to the profile, no errors. Frame rate with the probe's screenshots running was 18 a second on average, against 10 to 13 in the release audit.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
