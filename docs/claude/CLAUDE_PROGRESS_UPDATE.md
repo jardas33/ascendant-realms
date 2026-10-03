@@ -1042,7 +1042,10 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Tried and dropped:** letting the Hollow AI wait for two more soldiers before each wave. It changed nothing (4-13 either way), so it was undone.
   - **AI heroes turn back sooner when deep in enemy ground.** A Barrosan hero at 2% health was still in the enemy base half a minute after it should have left, died, and came back at level one to face a level-five enemy hero. Far from home (over 110 metres) a hero now turns back at half health instead of 40%, and is sent home again if something turned it round on the way. Hero deaths fell from about 3 a match to about 2.5.
   - **The difficulty descriptions** in the skirmish setup now say when each level starts attacking (Easy after five minutes, Normal from about the fourth, Hard from the third and without pause).
-  - Two checks on the new numbers are running.
+  - **After those changes (180 matches):** Lioraen 26-10, Karak 24-12, Sunspear 21-15, Sylvan 20-15, Grimtusk 15-18, Wyldkin 15-21, Vorthak 14-18, Hollow 13-21, Frostborn 12-21, Barrosan 12-21 (eight undecided). The gap closed from 28-67% to 33-72%; Hollow rose from 24% to 36%. The first seat won 87 of 172.
+  - **Why the Hollow stayed last through three stat changes.** Every Hollow soldier costs food and little else. A Hollow AI at minute twelve held 300 food, 1,450 stone, 1,080 timber and 880 gold with eleven soldiers and two barracks. Two rules kept it there: the caravan only bought a store once it fell under 150, and more barracks were raised only above 900 food. The AI now buys the store its people spends most on whenever that is under 400 and it has gold to spare, sells a dead pile of another store to pay for it, and counts a large bank of all four kinds (2,500 and more) as wealth to turn into barracks. This holds for every people's AI.
+  - **Second round of numbers:** Karak +5% damage (was +8%), Lioraen +6% health (was +10%), Barrosan +8% damage (was +5%).
+  - Two checks on these are running.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
