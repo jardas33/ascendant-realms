@@ -974,6 +974,15 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		status_label.offset_right = -8.0
 		status_label.offset_top = card_height - 19
 		status_label.offset_bottom = card_height - 2
+		# On a train card the cost line runs the width of the card ("70 food,
+		# 20 timber, 10 stone" ended under the word LOCKED). A soldier's name
+		# is short, so the state sits beside it on the top line instead.
+		if command_kind == "TRAIN":
+			status_label.offset_top = 7.0
+			status_label.offset_bottom = 24.0
+			if not hotkey.is_empty():
+				status_label.offset_left = -144.0
+				status_label.offset_right = -38.0
 		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(status_label)

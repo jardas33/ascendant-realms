@@ -1076,6 +1076,8 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **Trees stood on veins.** Three to eight trees or boulders per map grew within seven metres of a vein; an oak covered the log stack of an old-growth grove completely, and a tree in the ring is in the outpost's way. Scenery now keeps clear of veins (the other trees stay where they were).
   - **Still heavy:** the timber stacks beside a hall (33 surfaces each) and the food and gold deposits; they change as they are gathered, so they need more care.
   - One more check in the regression suite (46 in all): no tree or boulder within seven metres of a vein on four maps.
+  - **Train buttons.** A soldier whose cost names three resources ("70 food, 20 timber, 10 stone") ran into the word LOCKED or READY at the end of the same line. The state now sits beside the soldier's name on the top line.
+  - **An Endless Road stage through the menus** (three Brutal opponents on the Crucible, twenty minutes at three times speed): every milestone reached, no errors.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
