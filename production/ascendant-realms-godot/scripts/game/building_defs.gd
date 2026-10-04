@@ -53,7 +53,11 @@ static func get_all() -> Dictionary:
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["lioraen_worker"], "drop_off": true, "is_hq": true,
-		"heal_aura": 6.0, "heal_aura_range": 16.0,
+		# 6 a second healed the workers at the home deposits about as fast
+		# as a raider could hurt them: the Moura Court lost 17.5 workers a
+		# match against 22 to 30 for everyone else and won 37 of 52 over the
+		# three checks of plan 114 (270 matches). 4.
+		"heal_aura": 4.0, "heal_aura_range": 16.0,
 		"desc": "Living heart of the grove. Trains Seedkeepers and heals nearby allies.",
 	},
 	"lioraen_lifewell": {

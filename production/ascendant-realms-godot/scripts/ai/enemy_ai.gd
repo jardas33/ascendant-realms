@@ -93,7 +93,10 @@ func _apply_personality() -> void:
 			# Early swarms win AI wars (the swarm factions took 42 of 72 pooled
 			# games); Ironmaw, with the cheapest army, led every run (13-17 wins).
 			# It now masses one soldier more before marching.
-			_army_attack_size = maxi(4, _army_attack_size - 2)
+			# That was the old AI. With siege engines capped at four the
+			# Ironmaw won 16 of its 65 decided matches marching two short
+			# (hero lost 3.6 times a match) and 14 of 33 at the usual size.
+			pass
 		"sunspear", "karak", "sylvan":
 			# Massing four extra soldiers lost the first fights to swarm
 			# factions before the big army ever marched (1-7 records).
@@ -314,7 +317,13 @@ func _manage_veins() -> void:
 	# store. It now trades what it has for the timber and stone of one
 	# outpost and spends those two stores on nothing else until it stands.
 	var outpost_cost: Dictionary = GameData.get_building(oid).get("cost", {})
-	_saving_for_outpost = outposts.is_empty() and not building_one and not dry_kinds.is_empty() and home_workers >= 1 and not commander.can_afford(outpost_cost)
+	# Only when what is missing cannot be gathered at home any more: an AI
+	# short of timber with trees still standing by its hall is not stranded.
+	var cut_off := false
+	for k in outpost_cost:
+		if int(commander.resources.get(k, 0)) < int(outpost_cost[k]) and dry_kinds.has(String(k)):
+			cut_off = true
+	_saving_for_outpost = outposts.is_empty() and not building_one and cut_off and home_workers >= 1
 	if _saving_for_outpost:
 		_trade_for_outpost(outpost_cost)
 	# Only open another outpost once the last ones are mostly staffed.
