@@ -272,6 +272,10 @@ func _send_vein_raid() -> void:
 ## gatherers it can spare (always keeping six at home), and expands them when
 ## stores pile up. Enemy outposts are buildings, so its waves raid them too.
 var _vein_timer := 0.0
+## True while the AI holds no outpost, something has run dry at home and it
+## cannot pay for an outpost: nothing else is built or trained out of timber
+## or stone until one stands.
+var _saving_for_outpost := false
 
 func _manage_veins() -> void:
 	_vein_timer += _think_interval
@@ -305,11 +309,19 @@ func _manage_veins() -> void:
 		if not _home_has(k):
 			dry_kinds.append(k)
 	var max_outposts := clampi(1 + int(float(world.get("match_time")) / 240.0) + dry_kinds.size(), 1, 6)
+	# Stranded: in four-player matches an AI that lost its outposts with under
+	# 80 timber sat for fifteen minutes with sixteen idle workers and food in
+	# store. It now trades what it has for the timber and stone of one
+	# outpost and spends those two stores on nothing else until it stands.
+	var outpost_cost: Dictionary = GameData.get_building(oid).get("cost", {})
+	_saving_for_outpost = outposts.is_empty() and not building_one and not dry_kinds.is_empty() and home_workers >= 1 and not commander.can_afford(outpost_cost)
+	if _saving_for_outpost:
+		_trade_for_outpost(outpost_cost)
 	# Only open another outpost once the last ones are mostly staffed.
 	var empty_slots := 0
 	for ob in outposts:
 		empty_slots += ob.outpost_slots() - ob.garrison.size()
-	if not building_one and empty_slots <= 1 and outposts.size() < max_outposts and home_workers >= 8 and commander.can_afford(GameData.get_building(oid).get("cost", {})):
+	if not building_one and empty_slots <= 1 and outposts.size() < max_outposts and (home_workers >= 8 or not dry_kinds.is_empty()) and commander.can_afford(outpost_cost):
 		var best = null
 		var best_d := INF
 		for v in get_tree().get_nodes_in_group("veins"):
@@ -318,7 +330,8 @@ func _manage_veins() -> void:
 			var d: float = v.global_position.distance_to(_base_pos)
 			var nearer_enemy := false
 			for i in world.commanders.size():
-				if i == commander.team:
+				# A beaten rival's corner is free ground.
+				if i == commander.team or world.commanders[i].defeated:
 					continue
 				var es: Vector3 = world.map.get("start_positions", [])[i] if i < world.map.get("start_positions", []).size() else Vector3.INF
 				# Well on our side of the field, not merely nearer to us: an
@@ -393,6 +406,35 @@ func _manage_veins() -> void:
 			continue
 		spare.sort_custom(func(a, b): return a.global_position.distance_squared_to(ob.global_position) < b.global_position.distance_squared_to(ob.global_position))
 		world.command_bus.execute({"type": "garrison", "units": spare.slice(0, can_send), "target": ob})
+
+## Raise the price of one outpost at the caravan: buy the timber or stone that
+## is short if there is the gold, otherwise sell a batch of anything not
+## needed for the outpost itself.
+func _trade_for_outpost(cost: Dictionary) -> void:
+	if not commander.has_method("trade_gold_for"):
+		return
+	var hq = null
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead and b.is_built and bool(b.def.get("is_hq", false)):
+			hq = b
+			break
+	if hq == null:
+		return
+	for k in cost:
+		if int(commander.resources.get(k, 0)) >= int(cost[k]) or not ["food", "timber", "stone"].has(String(k)):
+			continue
+		if int(commander.resources.get("gold", 0)) >= commander.trade_price():
+			world.command_bus.execute({"type": "trade", "target": hq, "id": String(k)})
+			continue
+		for other in ["food", "stone", "timber"]:
+			if other != String(k) and int(commander.resources.get(other, 0)) >= commander.SELL_BATCH + int(cost.get(other, 0)):
+				world.command_bus.execute({"type": "trade", "target": hq, "id": "sell_" + other})
+				break
+		return
+
+## Does this cost draw on the stores an outpost is paid from?
+func _draws_on_outpost_stores(cost: Dictionary) -> bool:
+	return int(cost.get("timber", 0)) > 0 or int(cost.get("stone", 0)) > 0
 
 ## Spend a gold hoard at the caravan on whatever store is running dry. A
 ## Karak AI won the early war, then stalled on 1 stone and 20 timber with
@@ -1365,6 +1407,8 @@ func _choose_unit(choices: Array) -> String:
 	var legal := []
 	for c in choices:
 		var d := GameData.get_unit(c)
+		if _saving_for_outpost and _draws_on_outpost_stores(d.get("cost", {})):
+			continue
 		if int(d.get("tier", 1)) <= commander.tier and commander.can_afford(d.get("cost", {})) and commander.has_pop_for(d):
 			legal.append(c)
 	if legal.is_empty():
@@ -1732,6 +1776,8 @@ func _try_build(kind: String) -> void:
 		return
 	var bdef := GameData.get_building(bid)
 	if not commander.can_afford(bdef.get("cost", {})):
+		return
+	if _saving_for_outpost and _draws_on_outpost_stores(bdef.get("cost", {})):
 		return
 	# Finish what is already laid out before starting more sites.
 	# ...except a house when the population is capped: a Barrosan AI sat at

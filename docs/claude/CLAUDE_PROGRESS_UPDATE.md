@@ -1118,6 +1118,15 @@ Last updated: 2026-10-03. Claude updates this file after every pass. (Earlier en
   - **Every vein on all 24 maps can be claimed by one worker**, including the ones on the far side (the earlier check covered only the near half). On three maps a few far veins could not be finished because the enemy killed the worker first, which is expected.
   - **Not benchmarked independently**; windowed loading also uploads textures, which the headless figure leaves out.
 
+- **Plan 114 (done): four-player matches, and an AI that could strand itself**
+  - **First four-player test.** Four AIs (Barrosan, Vorthak, Lioraen, Karak) on Bloomvale, Autumn Reach and Crucible with a new probe, `claude_ffa.gd` (economy line every minute, veins and outposts every three). No script errors and no stuck units.
+  - **Found: an AI could strand itself for good.** On Autumn Reach the Lioraen AI sat from minute 10 to minute 25 with 16 idle workers, 2 timber and 12 stone. It had lost its outposts, an outpost costs 80 timber and 40 stone, and the deposits round its hall were spent. A second case: an AI down to 5 workers with 102 timber and 183 stone never raised an outpost, because the rule asked for 8 workers at home.
+  - **The map itself does not run out.** After 27 minutes with four players the veins still held 3,000 to 15,000 of each kind. The fault was the AI's, not the economy's.
+  - **Fix (enemy_ai.gd):** with no outpost, something dry at home and too little to pay for one, the AI now trades at the caravan for the timber and stone of one outpost (buys if it has the gold, otherwise sells a batch of something else) and spends timber and stone on nothing else until it stands. The 8-worker rule no longer applies once a kind has run dry at home. A beaten rival's corner no longer counts as enemy ground when choosing a vein.
+  - **Check:** new probe `claude_stranded.gd` takes an AI's outposts, empties the deposits round its hall, leaves it six workers, 600 food and almost nothing else. Before: no outpost in five minutes (Hard and Normal). After: an outpost built and crewed in 45 to 85 seconds (Normal, Hard, Brutal; Lioraen and Grimtusk). It is in the regression suite (52 checks).
+  - **After the fix** four four-player matches (the three maps and Goldreach) all played to a finish in 20 to 27 minutes with nobody left idle.
+  - **Not yet measured:** whether this moves one-on-one balance (a 90-match matrix is the next step). The buttons check flaked once in the suite (a skill-tree button reported covered) and passed twice alone; same family as the hero-creation flake noted under plan 112.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
