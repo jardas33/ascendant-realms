@@ -515,9 +515,9 @@ func _apply_race_passive() -> void:
 			base_dmg *= 1.15
 			# With the AI held to four siege engines the Ironmaw fell to 16-49
 			# in its 72 matches (it had been winning on massed Slag Throwers:
-			# 21-13 with the cap lifted). Its troops get +8% health as well
-			# (11-25 by itself; the AI now also marches at the usual size).
-			max_hp *= 1.08
+			# 21-13 with the cap lifted). +8% health did next to nothing
+			# (11-25, then 11-23 with the usual wave size) and is gone again;
+			# a cheaper Breaker did (20-14, see unit_defs).
 		"sylvan":                         # Precision — keener sight and reach
 			# Was +7% damage and +2 reach: 7-1 in the vein-economy round robin.
 			vision += 5.0

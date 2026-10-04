@@ -236,7 +236,10 @@ static func get_all() -> Dictionary:
 		"model": _char("orc_grunt"), "height": 1.9,
 		"hp": 100, "dmg": 11, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.0, "speed": 4.0, "vision": 20.0,
-		"cost": {"food": 50, "gold": 5}, "build_time": 10, "pop": 1, "produced_by": "grimtusk_warcamp",
+		# "Cheap, fearless and everywhere" at 55 for 100 health, when a Clan
+		# Levy gave 130 health for the same 55. 40 food and 8 seconds:
+		# 20-14 over 35 matches where the Ironmaw had been 11-23.
+		"cost": {"food": 40}, "build_time": 8, "pop": 1, "produced_by": "grimtusk_warcamp",
 		"desc": "Iron in the jaw, chains wrapped round the fists. Cheap, fearless and everywhere.",
 	},
 	"grimtusk_bowcrusha": {

@@ -1136,6 +1136,13 @@ Last updated: 2026-10-03. Claude updates this file after every pass. (Earlier en
   - **Known gap:** a human player can still mass Slag Throwers; the cap only binds the AI. Whether the unit itself needs a cost in food is an open design question.
   - 52 regression checks pass.
 
+- **Plan 116 (done, matrix running): a cheaper Ironmaw Breaker**
+  - **Check of plan 115 (90 matches):** Ironmaw 6-12, so 11-23 over the two checks since the wave-size change. Moura Court 11-6 after the healing trim. Everyone else between 6-11 and 12-6.
+  - **The Breaker did not match its own description.** "Cheap, fearless and everywhere" cost 55 for 100 health; a Barrosan Clan Levy gives 130 health for the same 55. The Breaker now costs 40 food and trains in 8 seconds (was 50 food and 5 gold, 10 seconds).
+  - **Measured:** 20-14 over 35 focus matches with the cheaper Breaker (hero lost 2.2 times a match, down from 3.2; workers lost 18.9, down from 30).
+  - **The +8% health of plan 115 is removed again:** it moved nothing by itself (11-25) and the cheaper Breaker does the work. This exact combination (cheaper Breaker, no health bonus) is being measured by a 90-match matrix now.
+  - 52 regression checks pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
