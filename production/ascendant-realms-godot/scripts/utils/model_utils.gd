@@ -169,6 +169,22 @@ static func add_cached_per_part_convex_collision(node: Node3D, collision_layer: 
 		var mesh_key := String(mi.mesh.resource_path)
 		var cache_key := "%s|%s|%s" % [cache_namespace, mesh_key, String(mi.name)]
 		var cached = _convex_shape_cache.get(cache_key)
+		if cached == null:
+			# Not made yet this session: take the hull baked with the game if
+			# it was made from this very mesh.
+			var baked = baked_hulls().get(_baked_hull_key(cache_namespace, mi))
+			if baked is Dictionary and baked.get("points") is PackedVector3Array:
+				var baked_shape := ConvexPolygonShape3D.new()
+				baked_shape.points = baked["points"]
+				cached = {
+					"shape": baked_shape,
+					"body_name": baked.get("body_name", "StaticBody3D"),
+					"body_transform": baked.get("body_transform", Transform3D.IDENTITY),
+					"shape_name": baked.get("shape_name", "CollisionShape3D"),
+					"shape_transform": baked.get("shape_transform", Transform3D.IDENTITY),
+					"baked_key": _baked_hull_key(cache_namespace, mi),
+				}
+				_convex_shape_cache[cache_key] = cached
 		if cached is Dictionary and cached.get("shape") is Shape3D:
 			var body := StaticBody3D.new()
 			body.name = String(cached.get("body_name", "StaticBody3D"))
@@ -184,6 +200,7 @@ static func add_cached_per_part_convex_collision(node: Node3D, collision_layer: 
 			cache_hits += 1
 			continue
 		cache_misses += 1
+		hulls_generated += 1
 		mi.create_convex_collision(true, true)
 		var generated_body: StaticBody3D = null
 		for child_idx in range(mi.get_child_count() - 1, -1, -1):
@@ -202,8 +219,50 @@ static func add_cached_per_part_convex_collision(node: Node3D, collision_layer: 
 					"body_transform": generated_body.transform,
 					"shape_name": generated_shape.name,
 					"shape_transform": generated_shape.transform,
+					"baked_key": _baked_hull_key(cache_namespace, mi),
 				}
 	return {"cache_hits": cache_hits, "cache_misses": cache_misses, "parts": filtered.size()}
+
+## How many hulls had to be worked out from a mesh this session (the baked
+## file should leave this at nought for every shipped building).
+static var hulls_generated := 0
+const BAKED_HULLS_PATH := "res://assets/cache/building_hulls.res"
+static var _baked_hulls_loaded := false
+static var _baked_hulls: Dictionary = {}
+
+static func baked_hulls() -> Dictionary:
+	if not _baked_hulls_loaded:
+		_baked_hulls_loaded = true
+		if ResourceLoader.exists(BAKED_HULLS_PATH):
+			var res = load(BAKED_HULLS_PATH)
+			if res is Resource and res.get("entries") is Dictionary:
+				_baked_hulls = res.get("entries")
+	return _baked_hulls
+
+## A baked hull is found by the model, the part's name and a stamp of the mesh
+## (its bounds and the size of each surface), never by the mesh's resource id,
+## which changes whenever the model is imported again.
+static func _baked_hull_key(cache_namespace: String, mi: MeshInstance3D) -> String:
+	var mesh := mi.mesh
+	var stamp := str(mesh.get_aabb())
+	if mesh is ArrayMesh:
+		for surface in mesh.get_surface_count():
+			stamp += "/%d" % (mesh as ArrayMesh).surface_get_array_len(surface)
+	return "%s|%s|%s" % [cache_namespace, String(mi.name), stamp]
+
+## Everything in this session's hull cache in the form the baked file stores.
+static func hulls_for_baking() -> Dictionary:
+	var out := {}
+	for entry in _convex_shape_cache.values():
+		if entry is Dictionary and entry.get("shape") is ConvexPolygonShape3D and String(entry.get("baked_key", "")) != "":
+			out[String(entry["baked_key"])] = {
+				"points": (entry["shape"] as ConvexPolygonShape3D).points,
+				"body_name": String(entry.get("body_name", "StaticBody3D")),
+				"body_transform": entry.get("body_transform", Transform3D.IDENTITY),
+				"shape_name": String(entry.get("shape_name", "CollisionShape3D")),
+				"shape_transform": entry.get("shape_transform", Transform3D.IDENTITY),
+			}
+	return out
 
 static var _prewarmed_scenes: Array = []
 

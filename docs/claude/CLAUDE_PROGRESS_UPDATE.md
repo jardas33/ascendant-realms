@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-10-03. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -1108,6 +1108,15 @@ Last updated: 2026-10-01. Claude updates this file after every pass. (Earlier en
   - **A stale cache.** The fix of plan 111 remembered each material's signature. If a material was changed after it was first seen, the old signature was still returned: in Codex's fixture two red materials are signed, the second is turned blue, and the pair came out of the batcher as one red mesh. The signature is now read from the material every time it is asked for, with no cache.
   - **The fixture is in the regression suite.** It fails on the previous commit (one red batch) and passes now (one red, one blue). Joined building surfaces and draw calls are unchanged; I did not measure the effect on loading time.
   - **Known and left for Codex's menu pass:** the buttons check sometimes reports the "<" appearance button on the hero creation screen as covered by a container (about one suite run in three, never when run alone). That screen is among the files Codex is working on, so it is noted here and not touched.
+
+- **Plan 113 (done): match loading, and a claim check on every vein**
+  - **Loading a match took about 10.6 s; it now takes about 7.1 s** (Bloomvale, Barrosan against Vorthak, headless, mean of three runs each, measured with `claude_loadtime.gd`). A stage-by-stage timing showed about 3.5 s went on working out the collision hulls of the building models from their meshes, every first match of a session.
+  - **The hulls now ship with the game** in `assets/cache/building_hulls.res` (138 hulls, 76 building models, 90 KB). Each is found by model, part name and a stamp of the mesh (bounds and surface sizes); a mesh that has changed simply gets a fresh hull as before, so a stale file costs time, never correctness. Rebake with `tests/bake_building_hulls.gd` after changing a building model. The stored points are the ones the engine generated, so collision is unchanged.
+  - **New regression check `claude_hullcheck`:** fails if any shipped building needs a hull that is not in the file (51 checks now, all passing).
+  - **Plan 112's open question answered:** reading material signatures fresh costs about 0.5 s of loading (10.0 s with the old cache, 10.6 s without, four runs each). Small next to the 3.5 s saved here.
+  - **Where the remaining 7 s goes** (not yet worked on): about 1.9 s compiling and loading the match scene, 1.2 s scattering decoration, 1.5 s preparing building models for the two peoples, 1 s after the world is ready (overview bake, combat prewarm).
+  - **Every vein on all 24 maps can be claimed by one worker**, including the ones on the far side (the earlier check covered only the near half). On three maps a few far veins could not be finished because the enemy killed the worker first, which is expected.
+  - **Not benchmarked independently**; windowed loading also uploads textures, which the headless figure leaves out.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
