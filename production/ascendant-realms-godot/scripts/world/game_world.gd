@@ -2426,6 +2426,11 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 			outside_bodies = p
 	return outside_bodies if outside_bodies != null else requested
 
+## The nearest ground to `point` that is inside the battlefield and clear of
+## every blocker's margin (or at least of every solid body).
+func open_ground_near(point: Vector3, clearance: float) -> Vector3:
+	return _out_of_route_margins(clamp_to_playable_bounds(point), clearance)
+
 ## Where a gatherer should stand at `node`. `wanted` is the side it comes
 ## from; if that spot lies in the walking margin of a building, crag or prop
 ## the route planner cannot end a route there (it stopped the worker at a

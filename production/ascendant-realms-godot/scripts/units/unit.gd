@@ -182,6 +182,7 @@ const ORDINARY_MOVE_PROGRESS_THRESHOLD := 0.05
 var _ordinary_move_best_distance := INF
 var _ordinary_move_stalled_elapsed := 0.0
 var _boundary_recovery_active := false
+var _boundary_recovery_pressed := 0.0
 var _boundary_recovery_target := Vector3.ZERO
 var _boundary_resume_state := State.IDLE
 var _boundary_recovery_reason := ""
@@ -2410,6 +2411,33 @@ func _state_boundary_recovery(delta: float) -> void:
 		if remaining > _boundary_recovery_distance_last + 0.05:
 			_record_navigation_event("boundary_recovery_distance_increased", {"previous": _boundary_recovery_distance_last, "current": remaining})
 		_boundary_recovery_distance_last = remaining
+	# The way back in can be walled off: the dressing behind a base on the
+	# map edge reaches the edge, and a soldier squeezed out beside it pushed
+	# at that wall for the rest of the match. After three seconds of that it
+	# is set down on the nearest open ground inside and its order ends.
+	_boundary_recovery_pressed = _boundary_recovery_pressed + delta if _pressed_against_static() else maxf(0.0, _boundary_recovery_pressed - delta)
+	if _boundary_recovery_pressed >= 3.0 and world and world.has_method("open_ground_near"):
+		_boundary_recovery_pressed = 0.0
+		global_position = world.open_ground_near(_boundary_recovery_target, agent.radius if agent else 0.5)
+		reset_physics_interpolation()
+		_boundary_recovery_active = false
+		_boundary_recovery_reason = ""
+		_navigation_invalid_consecutive = 0
+		_navigation_waypoints.clear()
+		_navigation_waypoint_index = 0
+		_navigation_effective_target = global_position
+		_navigation_last_target = global_position
+		_navigation_target_pending = false
+		_move_target = global_position
+		_attack_move_ordered = false
+		_attack_move_destination = Vector3.ZERO
+		velocity = Vector3.ZERO
+		if agent:
+			agent.target_position = global_position
+			agent.set_velocity(Vector3.ZERO)
+		state = State.IDLE
+		_record_navigation_event("boundary_recovery_completed", {"reason": "set_down_on_open_ground"})
+		return
 	var recovery_speed := move_speed
 	if _slow > 0.0: recovery_speed *= 0.5
 	var direction := to_safe.normalized()
@@ -2719,7 +2747,8 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	# Farther off than that it only counts while the unit is pressed against
 	# something that will never move (a wall, a building, the dressing), so a
 	# column held up by its own comrades keeps marching.
-	var blocked_arrival := ordinary_move and distance > settle_radius and (distance <= BLOCKED_ARRIVAL_RADIUS or _pressed_against_static())
+	# An attack-move pressed against a wall on its last leg has arrived as well.
+	var blocked_arrival := distance > settle_radius and ((ordinary_move and distance <= BLOCKED_ARRIVAL_RADIUS) or _pressed_against_static())
 	if distance > settle_radius and not crowded_arrival and not blocked_arrival:
 		_reset_ordinary_move_settlement()
 		return false

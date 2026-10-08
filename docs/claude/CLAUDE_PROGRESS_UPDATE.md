@@ -1187,6 +1187,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** the probe is in the regression suite (53 checks, all passing). No balance matrix on this build: the changes only act where a unit was already stuck.
   - **For Codex or the art side:** the dressing blocks are far larger than what is drawn there in places. Tighter blocks would let units walk between the houses.
 
+- **Plan 123 (done, matrix running): the same walks with soldiers and attack-moves**
+  - Soldiers on plain moves: no failures (140 walks, three maps). Attack-moves: 2 failures in 240 walks, both left the unit in attack-move for good.
+  - **An attack-move pressed against a wall on its last leg** now counts as arrived, as a plain move already did.
+  - **A soldier squeezed out past the map edge** beside the dressing of an edge base (Hollowspan) walked back toward the nearest point inside, which was the dressing's wall. After three seconds of pushing at it the unit is set down on the nearest open ground inside the map and its order ends. This is the one place a unit is moved without walking, by a few metres, and only when it is already out of bounds and walled off.
+  - **After:** 360 attack-move walks on six map runs (Goldreach twice, Hollowspan twice, Cinderpeak, Dune Bastion), none failed. 53 regression checks pass. A 90-match matrix is running because unit movement and so the AI's armies are touched.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
