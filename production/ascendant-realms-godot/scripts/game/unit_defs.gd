@@ -239,7 +239,8 @@ static func get_all() -> Dictionary:
 		# "Cheap, fearless and everywhere" at 55 for 100 health, when a Clan
 		# Levy gave 130 health for the same 55. 40 food and 8 seconds:
 		# 20-14 over 35 matches where the Ironmaw had been 11-23.
-		"cost": {"food": 40}, "build_time": 8, "pop": 1, "produced_by": "grimtusk_warcamp",
+		# Then 23-11 over the two full checks of plans 116 and 117: 45 food.
+		"cost": {"food": 45}, "build_time": 8, "pop": 1, "produced_by": "grimtusk_warcamp",
 		"desc": "Iron in the jaw, chains wrapped round the fists. Cheap, fearless and everywhere.",
 	},
 	"grimtusk_bowcrusha": {
