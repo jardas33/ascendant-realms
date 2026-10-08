@@ -1269,6 +1269,13 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Not reviewed:** Codex's Ironmaw Slinger source work (six rounds in Blender, R13 to R18). It is not in the game yet; Claude will review it there.
   - 55 regression checks pass.
 
+- **Plan 135 (done): a second authored map, to prove the system carries**
+  - **Rabagao Gorge** (id `rabagao_gorge`, autumn theme, saga 2-1 "The Dam at Salto"): 440 m. The river runs north to south through a gorge between rock walls. The Dominion's half-built dam stands across it at the centre as two wings of stone with the works between them, the only crossing for a long way; the water pools above it and the old plunge pool lies below. A ford far to the north and one far to the south turn the flanks. Eight woods, two knolls, two castro ruins, two farmsteads, 18 veins, five sites.
+  - **What it cost:** about ten minutes of layout data and no new engine code. That is the point of the pilot: the features made for Salto Valley (rivers with fords, tarns, woods, ridges, hills, ruins, farmsteads) are a kit.
+  - **The map check earned its place:** the first layout put all five sites within nine metres of terrain and left one lookout unreachable from a start. The check named each one; they were moved; it passes.
+  - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
+  - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

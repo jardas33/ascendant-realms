@@ -76,6 +76,7 @@ static func _specs() -> Array:
 		# Authored battlefields: laid out by hand, larger than the generated
 		# ones, built round the place the saga gives them.
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
+		{"id":"rabagao_gorge","name":"Rabagao Gorge","theme":"autumn","authored":"gorge"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -130,7 +131,7 @@ static func _assemble(s: Dictionary) -> Dictionary:
 ## already keeps clear of a crag (routes, orders, buildings, scenery) keeps
 ## clear of a wood or a river as well.
 static func _assemble_authored(s: Dictionary) -> Dictionary:
-	var a: Dictionary = _salto_valley()
+	var a: Dictionary = _rabagao_gorge() if String(s["authored"]) == "gorge" else _salto_valley()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -369,6 +370,84 @@ static func _salto_valley() -> Dictionary:
 			{"at": Vector2(-92, -28), "yaw": 0.4}, {"at": Vector2(92, 28), "yaw": 0.4 + PI},
 			{"at": Vector2(-60, -166), "yaw": -0.9}, {"at": Vector2(60, 166), "yaw": -0.9 + PI},
 		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Rabagao Gorge (saga 2-1, "The Dam at Salto"). 440 m across. The river
+## runs north to south through a gorge down the middle of the map, between
+## rock walls, and the Dominion's half-built dam stands across it at the
+## centre: two wings of stone with the works between them, the only crossing
+## for a long way either side. Above the dam the water has begun to pool;
+## below it lies the old plunge pool. A ford far to the north and one far to
+## the south turn the flanks. Each pair of facing starts has the same ground.
+static func _rabagao_gorge() -> Dictionary:
+	var rivers: Array = [{
+		"points": [Vector2(12, -234), Vector2(-4, -172), Vector2(8, -120), Vector2(-3, -40), Vector2(0, 0),
+			Vector2(3, 40), Vector2(-8, 120), Vector2(4, 172), Vector2(-12, 234)],
+		"width": 14.0,
+		"fords": [{"at": Vector2(-4, -172), "half": 11.0}, {"at": Vector2(0, 0), "half": 17.0}, {"at": Vector2(4, 172), "half": 11.0}],
+	}]
+	var ridges: Array = []
+	for line in [
+		# The gorge walls below the dam, either side of the river.
+		[Vector2(-30, -128), Vector2(-24, -90), Vector2(-27, -52)],
+		[Vector2(30, -134), Vector2(36, -96), Vector2(27, -60)],
+		# The dam: two wings of stone reaching in from the gorge sides.
+		[Vector2(-62, -3), Vector2(-40, 2), Vector2(-17, 0)],
+		# A spur that shelters each walled start from the open plateau.
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 0.4
+	for wood in [[-92, -40, 24, 18], [-150, 30, 26, 20], [-62, -196, 18, 14], [-70, 96, 22, 26]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.3
+	# The water pooling above the dam, and the plunge pool below it.
+	var lakes: Array = [
+		{"at": Vector2(2, 62), "radii": Vector2(22, 30), "seed": 1.1},
+		{"at": Vector2(-2, -62), "radii": Vector2(22, 30), "seed": 1.1 + PI},
+	]
+	var hills: Array = [
+		{"at": Vector2(-118, 104), "radii": Vector2(18, 13), "height": 10.0, "seed": 0.9},
+		{"at": Vector2(118, -104), "radii": Vector2(18, 13), "height": 10.0, "seed": 0.9 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -52, 26)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -60, -20)
+	_pair_point(deposits, "stone", -66, 162)
+	_pair_point(deposits, "timber", -120, 0)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Dam Works", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "Church of Salto", "benefit": "heal", "pos": Vector3(-152, 0, -36), "model": RUIN},
+		{"name": "Surveyors' Camp", "benefit": "heal", "pos": Vector3(152, 0, 36), "model": RUIN},
+		{"name": "North Lookout", "benefit": "vision", "pos": Vector3(-34, 0, 148), "model": WATCH},
+		{"name": "South Lookout", "benefit": "vision", "pos": Vector3(34, 0, -148), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -100, -112), Vector4(-100, -112, -70, -16), Vector4(-70, -16, 0, 0), Vector4(-100, -112, -4, -172),
+		Vector4(160, 150, 100, 112), Vector4(100, 112, 70, 16), Vector4(70, 16, 0, 0), Vector4(100, 112, 4, 172),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-130, -18), "radius": 8.0, "seed": 7}, {"at": Vector2(130, 18), "radius": 8.0, "seed": 8}],
+		"farmsteads": [{"at": Vector2(-126, -62), "yaw": 0.8}, {"at": Vector2(126, 62), "yaw": 0.8 + PI}],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
