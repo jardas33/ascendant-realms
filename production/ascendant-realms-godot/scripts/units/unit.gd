@@ -178,6 +178,10 @@ const CROWDED_ARRIVAL_WINDOW := 2.0
 ## against the village dressing behind a base for the rest of the match).
 const BLOCKED_ARRIVAL_RADIUS := 8.0
 const BLOCKED_ARRIVAL_WINDOW := 3.0
+const FINAL_LEG_STALL_WINDOW := 6.0
+var _final_leg_target := Vector3.INF
+var _final_leg_best := INF
+var _final_leg_stalled := 0.0
 const ORDINARY_MOVE_PROGRESS_THRESHOLD := 0.05
 var _ordinary_move_best_distance := INF
 var _ordinary_move_stalled_elapsed := 0.0
@@ -2736,6 +2740,23 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 		_reset_ordinary_move_settlement()
 		return false
 	var distance := global_position.distance_to(target)
+	# Whatever the cause (a wall the planner did not know, avoidance shoving
+	# it back and forth): a unit on its last leg that has not come half a
+	# metre nearer in FINAL_LEG_STALL_WINDOW seconds has gone as far as it
+	# will. One circled in front of a house for a minute before this.
+	if _final_leg_target.distance_to(target) > 0.05:
+		_final_leg_target = target
+		_final_leg_best = distance
+		_final_leg_stalled = 0.0
+	elif _final_leg_best - distance >= 0.5:
+		_final_leg_best = distance
+		_final_leg_stalled = 0.0
+	else:
+		_final_leg_stalled += delta
+	var stalled_arrival := _final_leg_stalled >= FINAL_LEG_STALL_WINDOW
+	if stalled_arrival:
+		_final_leg_target = Vector3.INF
+		_final_leg_stalled = 0.0
 	# An attack-moving army is sent to one point and cannot all stand on it.
 	# Soldiers that stopped two or three metres short kept pressing toward it
 	# for the rest of the match, never idle, so their AI never gave them
@@ -2749,19 +2770,20 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	# column held up by its own comrades keeps marching.
 	# An attack-move pressed against a wall on its last leg has arrived as well.
 	var blocked_arrival := distance > settle_radius and ((ordinary_move and distance <= BLOCKED_ARRIVAL_RADIUS) or _pressed_against_static())
-	if distance > settle_radius and not crowded_arrival and not blocked_arrival:
-		_reset_ordinary_move_settlement()
-		return false
-	if _ordinary_move_best_distance == INF:
-		_ordinary_move_best_distance = distance
-		return false
-	if _ordinary_move_best_distance - distance >= ORDINARY_MOVE_PROGRESS_THRESHOLD:
-		_ordinary_move_best_distance = distance
-		_ordinary_move_stalled_elapsed = 0.0
-		return false
-	_ordinary_move_stalled_elapsed += delta
-	if _ordinary_move_stalled_elapsed < (BLOCKED_ARRIVAL_WINDOW if blocked_arrival else (CROWDED_ARRIVAL_WINDOW if crowded_arrival else ORDINARY_MOVE_SETTLE_WINDOW)):
-		return false
+	if not stalled_arrival:
+		if distance > settle_radius and not crowded_arrival and not blocked_arrival:
+			_reset_ordinary_move_settlement()
+			return false
+		if _ordinary_move_best_distance == INF:
+			_ordinary_move_best_distance = distance
+			return false
+		if _ordinary_move_best_distance - distance >= ORDINARY_MOVE_PROGRESS_THRESHOLD:
+			_ordinary_move_best_distance = distance
+			_ordinary_move_stalled_elapsed = 0.0
+			return false
+		_ordinary_move_stalled_elapsed += delta
+		if _ordinary_move_stalled_elapsed < (BLOCKED_ARRIVAL_WINDOW if blocked_arrival else (CROWDED_ARRIVAL_WINDOW if crowded_arrival else ORDINARY_MOVE_SETTLE_WINDOW)):
+			return false
 	_navigation_waypoints.clear()
 	_navigation_waypoint_index = 0
 	_navigation_effective_target = global_position

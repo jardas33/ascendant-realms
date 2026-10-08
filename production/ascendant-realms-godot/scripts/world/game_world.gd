@@ -1078,6 +1078,14 @@ func _rebuild_navigation_soft_blockers() -> void:
 		var bounds := _visible_world_xz_bounds(node as Node3D)
 		if bounds.is_empty():
 			continue
+		# A house or a wall that stands at an angle is covered by a few small
+		# rectangles along its own lines, not by one square round all of it.
+		var tiles := _oriented_blocker_tiles(node as Node3D)
+		if tiles.size() > 1:
+			var tile_id := String(node.get_meta("navigation_blocker_id", node.name))
+			for tile_index in tiles.size():
+				_register_navigation_obstacle(node, "%s_tile%d" % [tile_id, tile_index], tiles[tile_index][0], tiles[tile_index][1], 3.0, "ENVIRONMENT_PROP", "environment_world_blocker", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
+			continue
 		_navigation_soft_blockers.append({
 			"node": node,
 			"object_id": String(node.get_meta("navigation_blocker_id", node.name)),
@@ -1315,6 +1323,71 @@ func _on_resource_depleted_navigation_blocker(node: ResourceNode) -> void:
 		_invalidate_route_result_cache()
 	_unregister_world_blocker(node)
 
+
+## Blockers are rectangles along the map's axes. One rectangle round a house
+## that stands at 45 degrees is twice the house, and round a garden wall at an
+## angle it was a 10 by 13 m block for a wall a metre thick: units refused
+## open ground beside both. This measures the thing along its own axes and,
+## when that is much smaller than the square round it, returns small
+## rectangles laid along it ([centre, half extents] each). An empty list means
+## one rectangle does as well.
+func _oriented_blocker_tiles(root: Node3D) -> Array:
+	var points: PackedVector2Array = []
+	var meshes: Array[Node] = []
+	if root is MeshInstance3D:
+		meshes.append(root)
+	meshes.append_array(root.find_children("*", "MeshInstance3D", true, false))
+	for child in meshes:
+		var mesh_instance := child as MeshInstance3D
+		if not mesh_instance or not mesh_instance.mesh or not mesh_instance.visible:
+			continue
+		var mesh_aabb := mesh_instance.mesh.get_aabb()
+		for x in [mesh_aabb.position.x, mesh_aabb.end.x]:
+			for z in [mesh_aabb.position.z, mesh_aabb.end.z]:
+				var world_point: Vector3 = mesh_instance.global_transform * Vector3(x, 0.0, z)
+				points.append(Vector2(world_point.x, world_point.z))
+	if points.is_empty():
+		return []
+	# The frame the thing fits best: the turn (in steps of five degrees)
+	# that gives the smallest rectangle round all of it.
+	var best_turn := 0.0
+	var best_area := INF
+	var best_lo := Vector2.ZERO
+	var best_hi := Vector2.ZERO
+	var square_area := 0.0
+	for step in 18:
+		var turn := deg_to_rad(5.0 * float(step))
+		var lo := Vector2(INF, INF)
+		var hi := Vector2(-INF, -INF)
+		for point in points:
+			var turned := point.rotated(-turn)
+			lo = Vector2(minf(lo.x, turned.x), minf(lo.y, turned.y))
+			hi = Vector2(maxf(hi.x, turned.x), maxf(hi.y, turned.y))
+		var turned_area := (hi.x - lo.x) * (hi.y - lo.y)
+		if step == 0:
+			square_area = turned_area
+		if turned_area < best_area:
+			best_area = turned_area
+			best_turn = turn
+			best_lo = lo
+			best_hi = hi
+	var size := best_hi - best_lo
+	if best_turn < deg_to_rad(12.0) or best_turn > deg_to_rad(78.0) or size.x > 28.0 or size.y > 28.0 or best_area < 6.0 or square_area < best_area * 1.35:
+		return []
+	var cell := clampf(minf(size.x, size.y) / 3.0, 2.5, 4.0)
+	var across := clampi(int(round(size.x / cell)), 1, 6)
+	var along := clampi(int(round(size.y / cell)), 1, 6)
+	var half_local := Vector2(size.x / float(across), size.y / float(along)) * 0.5
+	var c := absf(cos(best_turn))
+	var n := absf(sin(best_turn))
+	var half_world := Vector2(c * half_local.x + n * half_local.y, n * half_local.x + c * half_local.y)
+	var tiles: Array = []
+	for ix in across:
+		for iz in along:
+			var local_centre := Vector2(best_lo.x + (float(ix) + 0.5) * half_local.x * 2.0, best_lo.y + (float(iz) + 0.5) * half_local.y * 2.0)
+			var centre := local_centre.rotated(best_turn)
+			tiles.append([Vector3(centre.x, 0.0, centre.y), half_world])
+	return tiles
 
 func _visible_world_xz_bounds(root: Node3D) -> Dictionary:
 	var min_x := INF
@@ -2386,7 +2459,10 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 	# the spot back unchanged, inside the dressing, and the unit walked into
 	# its wall up to fifty metres from where it was sent.
 	var outside_bodies = null
-	for _try in 40:
+	var seen := {}
+	# (A house at an angle is nine overlapping rectangles: stepping out of
+	# one lands in the next a good many times before open ground turns up.)
+	for _try in 160:
 		if open.is_empty():
 			break
 		# Nearest to the spot asked for; between equals (the dead centre of a
@@ -2411,10 +2487,13 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 				in_a_body = true
 			var c2: Vector3 = rect[0]
 			var h2: Vector2 = rect[1]
-			open.append(Vector3(c2.x - h2.x - 0.05, p.y, p.z))
-			open.append(Vector3(c2.x + h2.x + 0.05, p.y, p.z))
-			open.append(Vector3(p.x, p.y, c2.z - h2.y - 0.05))
-			open.append(Vector3(p.x, p.y, c2.z + h2.y + 0.05))
+			# Each spot once: stepping out of one rectangle into its neighbour
+			# and back again used up every try without getting anywhere.
+			for step_out in [Vector3(c2.x - h2.x - 0.05, p.y, p.z), Vector3(c2.x + h2.x + 0.05, p.y, p.z), Vector3(p.x, p.y, c2.z - h2.y - 0.05), Vector3(p.x, p.y, c2.z + h2.y + 0.05)]:
+				var key := Vector2i(int(round(step_out.x * 10.0)), int(round(step_out.z * 10.0)))
+				if not seen.has(key):
+					seen[key] = true
+					open.append(step_out)
 		if free:
 			# A way out that lies beyond the edge of the battlefield is no
 			# way out: clamping it back put the spot inside the blocker again

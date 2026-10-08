@@ -1185,13 +1185,21 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - The corner solver could give a leg from one corner of a hall straight through the hall. Every finished route is now checked against the solid bodies; if a leg crosses one, the grid planner's route is used instead.
   - **After:** 0 units left moving in 540 walks on the final build (480 on Goldreach, Hollowspan twice, Ashen Vale, Frostmere Basin and Dune Bastion, 60 on Cinderpeak in the suite). Orders into the middle of the dressing end at its edge (up to 12 m from the click, since the blocks are that large); a pocket walled in between the dressing and the map edge cannot be reached at all and the unit stops at the near face.
   - **Checks:** the probe is in the regression suite (53 checks, all passing). No balance matrix on this build: the changes only act where a unit was already stuck.
-  - **For Codex or the art side:** the dressing blocks are far larger than what is drawn there in places. Tighter blocks would let units walk between the houses.
+  - **The dressing blocks were far larger than what is drawn there.** First put down to the art; it was the way they were measured, fixed in plan 124.
 
-- **Plan 123 (done, matrix running): the same walks with soldiers and attack-moves**
+- **Plan 123 (done): the same walks with soldiers and attack-moves**
   - Soldiers on plain moves: no failures (140 walks, two maps). Attack-moves: 2 failures in 240 walks, both left the unit in attack-move for good.
   - **An attack-move pressed against a wall on its last leg** now counts as arrived, as a plain move already did.
   - **A soldier squeezed out past the map edge** beside the dressing of an edge base (Hollowspan) walked back toward the nearest point inside, which was the dressing's wall. After three seconds of pushing at it the unit is set down on the nearest open ground inside the map and its order ends. This is the one place a unit is moved without walking, by a few metres, and only when it is already out of bounds and walled off.
   - **After:** 360 attack-move walks on six map runs (Goldreach twice, Hollowspan twice, Cinderpeak, Dune Bastion), none failed. 53 regression checks pass. A 90-match matrix is running because unit movement and so the AI's armies are touched.
+  - **90-match check of plan 123:** no people moved out of its recent range (Lioraen Concord 13-4, see plan 125). Five matches reported a unit that had not moved for a minute, against one to three in the three matrices before; 36 further matches recording the details found none. From now on every matrix writes those details to `matrix_stuck.log`.
+
+- **Plan 124 (done): the dressing behind a base blocks what it draws**
+  - **Why it blocked so much.** Blockers are rectangles along the map's axes. On corner starts the hamlet houses stand at 45 degrees, so the rectangle round a house was 17 by 17 m for a house about 12.7 m across, and round the garden wall (a metre thick, at an angle) it was 10.6 by 13.1 m. I had put this down to the art in plan 122; it was the measuring.
+  - **Fix (game_world.gd):** each dressing piece is measured along the angle it fits best (tried in steps of five degrees). When that is much smaller than the square round it, the piece is covered by small rectangles laid along it: nine per house, four per croft, six for the wall. A Barrosan base goes from 5 dressing blockers to 35.
+  - **Effect:** the ground in the corners of those squares and beside the wall is walkable again. The walk that used to stop 12 m short on Goldreach now ends 2.2 m from the click, between the houses.
+  - **Two more faults this exposed, both older than the change:** the search for open ground near a blocked spot revisited the same points (out of one rectangle into its neighbour and back) until its tries ran out, then gave the blocked spot back; it now visits each point once. And a unit on its last leg that does not come half a metre nearer in six seconds now stops, whatever holds it (one circled in front of a house for a minute, pushed back by avoidance, touching nothing).
+  - **Checks:** 480 base walks on six map runs, one failed (a worker on Goldreach that stopped 6 m from its start beside the enemy hall; not reproduced on the empty map, left open). 53 regression checks pass. Twelve AI matches after: no stuck units, simulation still keeps up at 6x.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
