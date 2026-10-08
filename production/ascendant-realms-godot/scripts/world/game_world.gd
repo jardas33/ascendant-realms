@@ -409,6 +409,7 @@ func _ready() -> void:
 	_scatter_environment()
 	_build_crags()
 	_build_rivers()
+	_build_lakes()
 	_build_woods()
 	_m20_end(decoration_stage)
 	var commanders_stage := _m20_begin("GAMEWORLD_COMMANDERS", "GAMEWORLD_READY", 1)
@@ -1060,12 +1061,10 @@ func _build_rivers() -> void:
 	for river in rivers:
 		var samples: PackedVector2Array = river["samples"]
 		var width: float = float(river["width"])
-		var bed := _ribbon(samples, width * 0.5 + 2.2, 0.03)
+		# Wet earth under and beside the water, fading into the grass.
+		var bed := _ribbon(samples, width * 0.5 + 4.5, 0.03, width * 0.5 + 0.5)
 		bed.name = "RiverBed"
-		var bed_material := StandardMaterial3D.new()
-		bed_material.albedo_color = Color(0.19, 0.20, 0.16)
-		bed_material.roughness = 1.0
-		bed.material_override = bed_material
+		bed.material_override = _bank_material()
 		layer.add_child(bed)
 		var water := _ribbon(samples, width * 0.5, 0.09)
 		water.name = "RiverWater"
@@ -1112,33 +1111,97 @@ func _build_rivers() -> void:
 				_prep_decor(stone)
 		load("res://scripts/world/static_batcher.gd").batch(stones)
 
+## Wet earth that fades out at its edge (the fade is in the vertex colours).
+func _bank_material() -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.20, 0.19, 0.14)
+	material.roughness = 1.0
+	material.vertex_color_use_as_albedo = true
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	return material
+
 ## A flat strip `half_width` either side of a line of points, at height `y`.
-func _ribbon(samples: PackedVector2Array, half_width: float, y: float) -> MeshInstance3D:
+## With `solid_half` set, the strip is solid out to that distance from the
+## line and fades to nothing at `half_width` (for banks).
+func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_half: float = -1.0) -> MeshInstance3D:
 	var tool := SurfaceTool.new()
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var run := 0.0
-	var left: Array = []
-	var right: Array = []
+	# Offsets across the strip, as a share of half_width, with the alpha there.
+	var columns: Array = [[-1.0, 1.0], [1.0, 1.0]]
+	if solid_half > 0.0:
+		var share := clampf(solid_half / half_width, 0.05, 0.95)
+		columns = [[-1.0, 0.0], [-share, 1.0], [share, 1.0], [1.0, 0.0]]
+	var rows: Array = []
 	var runs: Array = []
 	for i in samples.size():
 		var ahead: Vector2 = (samples[mini(i + 1, samples.size() - 1)] - samples[maxi(i - 1, 0)]).normalized()
 		var side := Vector2(-ahead.y, ahead.x) * half_width
 		if i > 0:
 			run += samples[i].distance_to(samples[i - 1])
-		left.append(Vector3(samples[i].x + side.x, y, samples[i].y + side.y))
-		right.append(Vector3(samples[i].x - side.x, y, samples[i].y - side.y))
+		var row: Array = []
+		for column in columns:
+			row.append(Vector3(samples[i].x + side.x * float(column[0]), y, samples[i].y + side.y * float(column[0])))
+		rows.append(row)
 		runs.append(run)
 	for i in samples.size() - 1:
-		for corner in [[left[i], 0.0, runs[i]], [right[i], 1.0, runs[i]], [left[i + 1], 0.0, runs[i + 1]],
-				[right[i], 1.0, runs[i]], [right[i + 1], 1.0, runs[i + 1]], [left[i + 1], 0.0, runs[i + 1]]]:
-			tool.set_normal(Vector3.UP)
-			# Along the strip in U, across it in V (what the water shader expects).
-			tool.set_uv(Vector2(float(corner[2]) / (half_width * 2.0), float(corner[1])))
-			tool.add_vertex(corner[0])
+		for c in columns.size() - 1:
+			for corner in [[i, c], [i, c + 1], [i + 1, c], [i, c + 1], [i + 1, c + 1], [i + 1, c]]:
+				var column: Array = columns[corner[1]]
+				tool.set_normal(Vector3.UP)
+				tool.set_color(Color(1.0, 1.0, 1.0, float(column[1])))
+				# Along the strip in U, across it in V (what the water shader expects).
+				tool.set_uv(Vector2(float(runs[corner[0]]) / (half_width * 2.0), (float(column[0]) + 1.0) * 0.5))
+				tool.add_vertex(rows[corner[0]][corner[1]])
 	var strip := MeshInstance3D.new()
 	strip.mesh = tool.commit()
 	strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return strip
+
+## Tarns: still water inside an uneven shore, with the same wet earth round it.
+func _build_lakes() -> void:
+	var lakes: Array = map.get("lakes", [])
+	if lakes.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "Lakes"
+	add_child(layer)
+	var shader_path := "res://assets/shaders/ford_water.gdshader"
+	for lake in lakes:
+		var centre: Vector2 = lake["at"]
+		var radii: Vector2 = lake["radii"]
+		for pass_index in 2:
+			# First the shore (wider, fading out), then the water.
+			var grow := 1.45 if pass_index == 0 else 1.0
+			var tool := SurfaceTool.new()
+			tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+			var steps := 40
+			for k in steps:
+				var a0 := TAU * float(k) / float(steps)
+				var a1 := TAU * float(k + 1) / float(steps)
+				var r0 := MapDefs.wood_reach(lake, a0) * grow
+				var r1 := MapDefs.wood_reach(lake, a1) * grow
+				var y := 0.04 if pass_index == 0 else 0.09
+				# Wound so the face looks up.
+				for corner in [[Vector2.ZERO, 0.5, 1.0], [Vector2(cos(a0) * radii.x * r0, sin(a0) * radii.y * r0), 1.0, 0.0], [Vector2(cos(a1) * radii.x * r1, sin(a1) * radii.y * r1), 1.0, 0.0]]:
+					var offset: Vector2 = corner[0]
+					tool.set_normal(Vector3.UP)
+					tool.set_color(Color(1.0, 1.0, 1.0, float(corner[2]) if pass_index == 0 else 1.0))
+					tool.set_uv(Vector2(float(k) / float(steps), float(corner[1])))
+					tool.add_vertex(Vector3(centre.x + offset.x, y, centre.y + offset.y))
+			var sheet := MeshInstance3D.new()
+			sheet.name = "TarnShore" if pass_index == 0 else "TarnWater"
+			sheet.mesh = tool.commit()
+			sheet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			if pass_index == 0:
+				sheet.material_override = _bank_material()
+			elif ResourceLoader.exists(shader_path):
+				var water_material := ShaderMaterial.new()
+				water_material.shader = load(shader_path)
+				water_material.set_shader_parameter("flow_speed", 0.05)
+				sheet.material_override = water_material
+			layer.add_child(sheet)
+		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.3)
 
 const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
 

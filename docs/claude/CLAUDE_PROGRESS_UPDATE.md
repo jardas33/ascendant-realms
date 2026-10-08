@@ -1230,6 +1230,13 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Honest state.** This is a foundation, not a finished map. The shape, size, river, gates and woods are in and play. It still has too much open grass, hard brown river banks, no village or ruins of its own, no bridge, and no height. New probes: `claude_terrainshot.gd` (pictures from above and at game angle), `claude_mapcheck.gd`. 54 regression checks pass.
   - **Next on the map:** dress it (Salto village, the spring, ruins, field walls, lakes), soften the banks, add a bridge, then decide with Emanuel whether this is the direction before authoring the other 23.
 
+- **Plan 129 (done): first dressing of Salto Valley**
+  - **River banks** are wet earth that fades into the grass (the hard brown stripe is gone).
+  - **Tarns:** a new kind of feature, still water inside an uneven shore, blocked like the river. One below the western ford and its twin.
+  - **The Spring of Seven Mouths** has a model of its own instead of the generic ruined chapel: a round pool lit by the Lume inside a stone rim, with seven carved waystones at the edge. It is the healing site north of Salto's gate.
+  - The map check still passes (208 terrain rectangles now); 54 regression checks pass.
+  - **Still to do on the pilot:** Salto as a real village, ruins and field walls in the open country, a bridge, hills, and the triangle count in battle.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

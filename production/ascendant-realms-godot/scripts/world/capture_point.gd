@@ -28,6 +28,8 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 	add_child(root)
 	if model_path == "composed:ruin_chapel":
 		_build_ruin_chapel(root)
+	elif model_path == "composed:seven_mouths":
+		_build_seven_mouths(root)
 	elif model_path == "composed:highland_watch":
 		_build_highland_watch(root)
 	elif model_path != "" and ResourceLoader.exists(model_path):
@@ -87,7 +89,68 @@ func _build_ruin_chapel(root: Node3D) -> void:
 	root.add_child(glow)
 	footprint = 3.0
 
+## The Spring of Seven Mouths: a round pool with seven standing stones at
+## its rim, each one a mouth of the spring, and the Lume's light in the water.
+## Only the stones collide; the pool is ankle deep.
+func _build_seven_mouths(root: Node3D) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7707
+	var pool := MeshInstance3D.new()
+	pool.name = "SpringPool"
+	var disc := CylinderMesh.new()
+	disc.top_radius = 5.4
+	disc.bottom_radius = 5.4
+	disc.height = 0.08
+	disc.radial_segments = 28
+	pool.mesh = disc
+	var water := StandardMaterial3D.new()
+	water.albedo_color = Color(0.16, 0.42, 0.44)
+	water.roughness = 0.12
+	water.metallic = 0.2
+	water.emission_enabled = true
+	water.emission = Color(0.20, 0.75, 0.55)
+	water.emission_energy_multiplier = 0.22
+	pool.material_override = water
+	pool.position.y = 0.06
+	pool.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	root.add_child(pool)
+	var rim := MeshInstance3D.new()
+	rim.name = "SpringRim"
+	var ring := TorusMesh.new()
+	ring.inner_radius = 5.3
+	ring.outer_radius = 6.3
+	ring.rings = 28
+	ring.ring_segments = 6
+	rim.mesh = ring
+	var stone := StandardMaterial3D.new()
+	stone.albedo_color = Color(0.42, 0.42, 0.40)
+	stone.roughness = 0.95
+	rim.material_override = stone
+	rim.scale.y = 0.55
+	rim.position.y = 0.1
+	root.add_child(rim)
+	for i in 7:
+		var a := TAU * float(i) / 7.0 + 0.22
+		# The carved spring waystones, one for each mouth.
+		var mouth: Node3D = load(_WAYSTONE if ResourceLoader.exists(_WAYSTONE) else _PILLAR).instantiate()
+		root.add_child(mouth)
+		mouth.position = Vector3(cos(a), 0.0, sin(a)) * 6.6
+		ModelUtils.scale_to_height(mouth, rng.randf_range(2.6, 3.4))
+		ModelUtils.ground_model(mouth)
+		mouth.rotation.y = rng.randf() * TAU
+		for body in mouth.find_children("*", "CollisionObject3D", true, false):
+			body.queue_free()
+	var glow := OmniLight3D.new()
+	glow.light_color = Color(0.45, 1.0, 0.75)
+	glow.light_energy = 2.0
+	glow.omni_range = 9.0
+	glow.shadow_enabled = false
+	glow.position = Vector3(0, 1.4, 0)
+	root.add_child(glow)
+	footprint = 3.0
+
 const _OUTCROP := "res://assets/environment/rocks/highland_rock_cluster.glb"
+const _WAYSTONE := "res://assets/environment/visual_convergence/lioraen_moonstone.glb"
 const _BRAZIER := "res://assets/environment/visual_convergence/barrosan_settlement/barrosan_watch_brazier_lod1.glb"
 
 func _build_highland_watch(root: Node3D) -> void:

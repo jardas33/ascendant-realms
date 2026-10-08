@@ -13,6 +13,8 @@ const LUME := "res://assets/environment/structures/lume_spire_ruin.glb"
 const RUIN := "composed:ruin_chapel"
 # Vision sites were the gold-mine model, which read as a resource node.
 const WATCH := "composed:highland_watch"
+# The Spring of Seven Mouths (saga 1-1): seven stone spouts round a pool.
+const SPRING := "composed:seven_mouths"
 const GOLD_MINE := "res://assets/environment/rocks/gold_mine_lumevein.glb"
 const BRIDGE := "res://assets/environment/structures/highland_crossing_bridge.glb"
 
@@ -164,6 +166,13 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 	for wood in a["woods"]:
 		woods.append(wood)
 		crags.append_array(_wood_tiles(wood))
+	# A tarn is shaped like a wood and filled with water.
+	var lakes: Array = []
+	for lake in a.get("lakes", []):
+		lakes.append(lake)
+		for tile in _wood_tiles(lake):
+			tile["kind"] = "water"
+			crags.append(tile)
 	for ridge in a["ridges"]:
 		var thickness: float = float(ridge["thickness"])
 		var samples := _smooth(ridge["points"], thickness * 0.8)
@@ -184,6 +193,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"rivers": rivers,
 		"fords": fords,
 		"woods": woods,
+		"lakes": lakes,
 		"roads": a["roads"],
 		"authored": true,
 	}
@@ -297,6 +307,11 @@ static func _salto_valley() -> Dictionary:
 		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
 		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
 		wood_seed += 1.7
+	# A tarn below the western ford, and its twin.
+	var lakes: Array = [
+		{"at": Vector2(-183, -22), "radii": Vector2(11, 8), "seed": 0.6},
+		{"at": Vector2(183, 22), "radii": Vector2(11, 8), "seed": 0.6 + PI},
+	]
 	var veins: Array = []
 	_pair_point(veins, "gold", -141, -70)
 	_pair_point(veins, "food", -70, -120)
@@ -314,7 +329,7 @@ static func _salto_valley() -> Dictionary:
 	_pair_point(deposits, "food", -20, -90)
 	var sites: Array = [
 		{"name": "Hollowspan Spire", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
-		{"name": "Spring of Seven Mouths", "benefit": "heal", "pos": Vector3(-120, 0, -40), "model": RUIN},
+		{"name": "Spring of Seven Mouths", "benefit": "heal", "pos": Vector3(-120, 0, -40), "model": SPRING},
 		{"name": "Chapel of the Pass", "benefit": "heal", "pos": Vector3(120, 0, 40), "model": RUIN},
 		{"name": "Larouco Watch", "benefit": "vision", "pos": Vector3(-50, 0, 120), "model": WATCH},
 		{"name": "Salto Watch", "benefit": "vision", "pos": Vector3(50, 0, -120), "model": WATCH},
@@ -328,7 +343,7 @@ static func _salto_valley() -> Dictionary:
 	return {
 		"size": 220.0,
 		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(160, 0, -150), Vector3(-160, 0, 150)],
-		"rivers": rivers, "ridges": ridges, "woods": woods,
+		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes,
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
