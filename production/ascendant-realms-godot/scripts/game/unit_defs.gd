@@ -633,7 +633,10 @@ static func get_all() -> Dictionary:
 		"model": _char("frostborn_warrior"), "height": 1.9,
 		"hp": 130, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.7, "vision": 20.0,
-		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "frostborn_war_hall",
+		# 70 for the stats a Clan Levy has for 55, and the Careto Host won
+		# 16 of 52 over the three checks of plans 116 to 118 (270 matches).
+		# 55 food and 11 seconds: 15-17 over 36 focus matches.
+		"cost": {"food": 55}, "build_time": 11, "pop": 1, "produced_by": "frostborn_war_hall",
 		"desc": "Red-and-green fringes, iron cowbells and a horned mask. Chases winter out of the villages.",
 	},
 	"frostborn_shieldmaiden": {

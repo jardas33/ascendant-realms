@@ -1149,10 +1149,17 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Change:** their +4% damage is removed (they keep +6% health and the Groveheart). Measured on the test copy first: 20-16 over 36 focus matches.
   - 52 regression checks pass. No full matrix on this build yet; the next one will include it.
 
-- **Plan 118 (done, checks running): after the full check of plan 117**
+- **Plan 118 (done): after the full check of plan 117**
   - **90-match check of plan 117:** Moura Court 12-6 (32-22 with the focus run since the damage bonus went: acceptable, left alone). Ironmaw 13-5, so 23-11 over the two full checks with the 40-food Breaker: too much. The Breaker costs 45 food now (still 8 seconds).
   - **Watching, not changed:** Careto Host (Frostborn) 10-24 and Barrosan 12-22 over those two checks. Both were at 44 to 47% in the three checks before; one more matrix before touching either.
   - **Four-player matches, second look.** Six more matches with elimination order and each AI's target logged every three minutes. Targets are spread across neighbours and shift as outposts go up; no seat is ganged up on (the first seat won two of six, fell first in three). All six played to a finish or to the 30-minute limit with no errors and no stuck units.
+  - 52 regression checks pass.
+  - **Checks of plan 118:** ladder Normal over Easy 10-0, Hard over Normal 10-4 with 6 undecided. 90-match matrix: Ironmaw 8-10 at 45 food.
+
+- **Plan 119 (done): a cheaper Careto Runner; Barrosan still open**
+  - **Pooled over the three matrices of plans 116 to 118 (270 matches):** eight peoples between 46% and 57% (Moura Court 31-20, Ironmaw 31-21). Barrosan 18-33 and Careto Host (Frostborn) 16-36, low in all three.
+  - **Careto Host:** the Careto Runner cost 70 (60 food, 10 timber) for the same health and damage a Clan Levy has for 55. It costs 55 food and trains in 11 seconds (was 12). Focus run: 15-17 over 36 matches.
+  - **Barrosan, tried and rejected:** marching at the usual wave size, which fixed the Ironmaw, changed nothing (11-22 over 36). Four traced matches show nothing unusual in what the AI builds. Their hero falls 3.4 times a match and kills 1.2, the worst ratio of the ten. Next test: damage +12% (was +8%).
   - 52 regression checks pass.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
