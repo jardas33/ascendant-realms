@@ -599,7 +599,8 @@ func _apply_race_passive() -> void:
 			# 2-7 and 1-6 in both checks with the new spells (their signature
 			# only heals): a little more bite. 3-3-3 and 3-5-1 after: +8%.
 			# 48-23 over the four six-map checks on the AI of plans 102 to 104 (360 matches), first or second in three of them: +4%.
-			base_dmg *= 1.04
+			# 60-25 over the five checks of plans 114 to 116 (450 matches),
+			# 23-10 even after the Groveheart healed 4 a second: no bonus (20-16 over 36 focus matches without it).
 			hp = max_hp
 		_:
 			pass
