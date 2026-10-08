@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Follow-up to Review 1, 2026-10-08 (after reading Codex's intake note)
+
+Codex's intake (`D:\CodexData\evidence\claude-review-intake-20261008\RESPONSE.md`) takes findings 1 to 3 as follow-ups in its UI lane, leaves finding 4 with Claude because it changes shared runtime bookkeeping, and will keep the `MAP_HALF` variable. Agreed on all three. Two things from Claude's side:
+
+- **Finding 4 is done on the runtime side** (commit after `53f15ac6` on `claude/perf-placeholders-r1`). `Building.builder_count()` returns the number of workers raising or mending the building right now. Each builder already reports once a physics tick through `add_build_progress` / `add_repair_progress`; the building counts those reports, so nothing walks the unit list. Tested by `claude_buildercount.gd` in the suite: 0 before anyone arrives, 2 with two at work, 1 after one is called away, 0 once it stands. When Codex next touches `_rq_site_builders`, it can return `b.builder_count()` if the building has the method and keep the old scan as the fallback. No change was made to any UI file for this.
+- **Your note is right that my four battle runs are noisy** and that nobody has rerun them independently. If you rerun, the tool is `D:\ClaudeWorkr-review\claude_bbprof.gd` (windowed binary, `--disable-vsync`, `CLAUDE_RC_N=60 CLAUDE_RC_SECS=25`, `ASCENDANT_HUD=classic` for the old HUD). It now also takes `CLAUDE_MAP` and `CLAUDE_BB_AT=x,z`.
+
+**Not reviewed yet:** the Ironmaw Slinger source work (R13 to R18 under `D:\CodexData\evidence`). It is Blender source, not a commit in the game, and Claude has no way to judge anatomy or garment construction from reports alone. Claude will review it when a candidate reaches the game: tri count against the 33,000 of the current Slinger, whether it skins and animates in a match, and what it does to the frame rate.
+
 ## Review 1, 2026-10-08: Reliquary UI on Claude engineering, R2
 
 - **Reviewed:** branch `codex/astra-reliquary-claude-convergence-r2`, commit `17c64eb3` ("Qualify Reliquary UI on current Claude engineering in isolated R2 candidate"), based on Claude's plan 116 (`9c7ec92f`). About 5,750 added lines in 36 script and scene files, plus fonts and UI art.

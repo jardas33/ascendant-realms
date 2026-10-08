@@ -1262,6 +1262,13 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Limits, plainly:** this is a shape set on flat ground, not terrain. Units still fight on one level; there is no high ground to hold, and the foot of the hill meets the meadow at a visible edge. Real height (slopes units walk, range and sight from above) would be an engine change across movement, projectiles, fog and the camera, and is a decision for Emanuel, not something to slip in.
   - Map check passes; 54 regression checks pass.
 
+- **Plan 134 (done): checks on the new map, and the second round with Codex**
+  - **Salto Valley, more checks:** a four-player match (four AIs) ran 31 minutes to a finish with no stuck units. First enemy at an idle player's hall: Easy 6:16 (first wave of 4 leaves at 4:37), so the quiet opening holds on the larger map. The HUD and minimap work at 440 m (picture taken, checked by eye).
+  - **Codex read Review 1 the same day** and answered in its evidence folder: it takes the act card, the profile save and the redraws as follow-ups, keeps the `MAP_HALF` change, and left the builder count to Claude as shared runtime.
+  - **Builder count done:** `Building.builder_count()` is exact and free (each builder already reports every tick; the building counts the reports). New test `claude_buildercount.gd` in the suite. The follow-up note for Codex is at the top of `CODEX_REVIEW_FEEDBACK.md`.
+  - **Not reviewed:** Codex's Ironmaw Slinger source work (six rounds in Blender, R13 to R18). It is not in the game yet; Claude will review it there.
+  - 55 regression checks pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

@@ -1241,6 +1241,28 @@ func _build_damage_status_visual() -> void:
 	_damage_status_fill.visible = false
 	add_child(_damage_status_fill)
 
+## How many workers are at work on this building (raising or mending it)
+## right now. Each one reports once a physics tick, so this is the number of
+## reports in the last full tick: exact, and nothing has to go looking for
+## builders. (The HUD used to walk every unit on the map five times a second.)
+var _builders_tick := -1
+var _builders_in_tick := 0
+var _builders_last_tick := 0
+
+func builder_count() -> int:
+	var tick := Engine.get_physics_frames()
+	if tick == _builders_tick:
+		return maxi(_builders_in_tick, _builders_last_tick)
+	return _builders_in_tick if tick == _builders_tick + 1 else 0
+
+func _note_builder_at_work() -> void:
+	var tick := Engine.get_physics_frames()
+	if tick != _builders_tick:
+		_builders_last_tick = _builders_in_tick if tick == _builders_tick + 1 else 0
+		_builders_tick = tick
+		_builders_in_tick = 0
+	_builders_in_tick += 1
+
 func add_build_progress(delta: float, worker) -> void:
 	if is_built or is_dead:
 		return
@@ -1248,6 +1270,7 @@ func add_build_progress(delta: float, worker) -> void:
 		return
 	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != team or (worker.has_method("_is_defeated_remnant") and worker._is_defeated_remnant()) or worker.state != worker.State.BUILDING or worker.get("_build_target") != self:
 		return
+	_note_builder_at_work()
 	build_progress += delta / max(0.1, build_time)
 	hp = max_hp * (0.15 + 0.85 * build_progress)
 	_set_construction_visual(build_progress)
@@ -1259,6 +1282,7 @@ func add_repair_progress(delta: float, worker) -> void:
 		return
 	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != team or (worker.has_method("_is_defeated_remnant") and worker._is_defeated_remnant()) or (world and not world.game_running):
 		return
+	_note_builder_at_work()
 	# Reuse the established construction HP work rate: the same max HP fraction
 	# restored per effective build second, with no new resource economy.
 	var repair_amount := max_hp * 0.85 * delta / maxf(0.1, build_time)
