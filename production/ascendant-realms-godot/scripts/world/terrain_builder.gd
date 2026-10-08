@@ -60,6 +60,15 @@ func build(map: Dictionary) -> void:
 		_build_lake()
 		if map.has("bridge"):
 			_build_ford(map)
+	# The scenery (ground sheet, mountain ring, lake) is laid out round a
+	# 280 m battlefield. A larger one pushes all of it outward by the same
+	# factor; heights stay as they are.
+	var k := float(map.get("size", MapDefs.MAP_SIZE)) / MapDefs.MAP_SIZE
+	if k > 1.01:
+		for child in get_children():
+			if child is Node3D:
+				child.scale = Vector3(child.scale.x * k, child.scale.y, child.scale.z * k)
+				child.position = Vector3(child.position.x * k, child.position.y, child.position.z * k)
 
 
 # ---------------------------------------------------------------------------
@@ -161,6 +170,9 @@ func _make_ground_material(map: Dictionary) -> Material:
 		segs.append(Vector4(s.x, s.z, 0.0, 0.0))
 	# ring road linking the contested middle expansions
 	segs.append(Vector4(-30, -20, 30, 20))
+	# An authored map names its own roads.
+	if map.has("roads"):
+		segs = (map["roads"] as Array).duplicate()
 	var arr: Array = []
 	for i in range(8):
 		arr.append(segs[i] if i < segs.size() else Vector4(9999, 9999, 9999, 9999))

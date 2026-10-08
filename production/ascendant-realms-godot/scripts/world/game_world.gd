@@ -408,6 +408,8 @@ func _ready() -> void:
 	var decoration_stage := _m20_begin("GAMEWORLD_DECORATION", "GAMEWORLD_READY", 1)
 	_scatter_environment()
 	_build_crags()
+	_build_rivers()
+	_build_woods()
 	_m20_end(decoration_stage)
 	var commanders_stage := _m20_begin("GAMEWORLD_COMMANDERS", "GAMEWORLD_READY", 1)
 	_setup_commanders()
@@ -781,6 +783,8 @@ func _scatter_environment() -> void:
 	var half: float = map["size"]
 	var starts: Array = map.get("start_positions", [])
 	var density: float = float(_theme.get("decor_density", 1.0))
+	# A larger battlefield gets its share of scattered trees and stones.
+	density *= pow(float(map["size"]) / MapDefs.MAP_SIZE, 2.0)
 	var has_water: bool = _theme.get("water", {}).get("enabled", false)
 
 	# Dense perimeter belt of woodland ringing the play field.
@@ -875,6 +879,11 @@ const BRIDGE_HALF_WIDTH := 6.5
 ## True when `pos` (with `margin` metres to spare) stands in the river water
 ## and not on the bridge deck.
 func in_ford(pos: Vector3, margin: float = 0.0) -> bool:
+	for ford in map.get("fords", []):
+		var offset := Vector2(pos.x - ford["pos"].x, pos.z - ford["pos"].z)
+		var along: Vector2 = ford["dir"]
+		if absf(offset.dot(along)) <= float(ford["half"]) + margin and absf(offset.dot(Vector2(-along.y, along.x))) <= float(ford["width"]) * 0.5 + margin:
+			return true
 	if not map.has("bridge") or not bool(map.get("water", {}).get("enabled", false)):
 		return false
 	var ov: Dictionary = map.get("overview", {})
@@ -958,7 +967,10 @@ func _build_crags() -> void:
 		holder.name = "Crag%d" % i
 		layer.add_child(holder)
 		holder.position = pos
-		if not models.is_empty():
+		var crag_kind := String(crags[i].get("kind", "rock"))
+		# Water and woods are drawn whole (_build_rivers, _build_woods); the
+		# rectangles here only keep feet out of them.
+		if crag_kind == "rock" and not models.is_empty():
 			# The body: tall rock clusters shoulder to shoulder, so the ridge
 			# reads as a wall and not as a row of boulders with gaps.
 			var nx := maxi(1, roundi(half.x * 2.0 / 3.0))
@@ -1002,6 +1014,17 @@ func _build_crags() -> void:
 		var disc = record.get("obstacle")
 		if is_instance_valid(disc):
 			disc.radius = thin + 0.5
+		# An authored map lays hundreds of small rectangles along its rivers,
+		# woods and ridges. A steering disc on each one made every soldier
+		# weigh hundreds of obstacles every tick (a 120-unit battle ran at 15
+		# frames a second, 45 on a generated map). The solid bodies and the
+		# route planner keep feet out; the discs are left off.
+		if bool(map.get("authored", false)):
+			if is_instance_valid(disc):
+				disc.queue_free()
+				record["obstacle"] = null
+			clear_ground_cover(pos, thin + 1.5)
+			continue
 		var along := Vector3(1, 0, 0) if half.x >= half.y else Vector3(0, 0, 1)
 		var reach := maxf(half.x, half.y) - thin
 		var discs := int(ceil(reach / maxf(1.0, thin * 1.5)))
@@ -1022,6 +1045,154 @@ func _build_crags() -> void:
 	for holder in layer.get_children():
 		if holder is Node3D:
 			batcher.batch(holder)
+
+## A river: a ribbon of moving water along its course over a darker bed,
+## wider than the water so the banks show. It runs on through the fords,
+## where stones break the surface and soldiers wade.
+func _build_rivers() -> void:
+	var rivers: Array = map.get("rivers", [])
+	if rivers.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "Rivers"
+	add_child(layer)
+	var shader_path := "res://assets/shaders/ford_water.gdshader"
+	for river in rivers:
+		var samples: PackedVector2Array = river["samples"]
+		var width: float = float(river["width"])
+		var bed := _ribbon(samples, width * 0.5 + 2.2, 0.03)
+		bed.name = "RiverBed"
+		var bed_material := StandardMaterial3D.new()
+		bed_material.albedo_color = Color(0.19, 0.20, 0.16)
+		bed_material.roughness = 1.0
+		bed.material_override = bed_material
+		layer.add_child(bed)
+		var water := _ribbon(samples, width * 0.5, 0.09)
+		water.name = "RiverWater"
+		if ResourceLoader.exists(shader_path):
+			var water_material := ShaderMaterial.new()
+			water_material.shader = load(shader_path)
+			water.material_override = water_material
+		layer.add_child(water)
+		for sample in samples:
+			clear_ground_cover(Vector3(sample.x, 0.0, sample.y), width * 0.5 + 2.5)
+	# A ford shows: the water over it is pale and shallow from bank to bank.
+	for ford in map.get("fords", []):
+		var ford_dir: Vector2 = ford["dir"]
+		var ford_at := Vector2(ford["pos"].x, ford["pos"].z)
+		var reach: float = float(ford["half"])
+		var shallows := _ribbon(PackedVector2Array([ford_at - ford_dir * reach, ford_at - ford_dir * reach * 0.5, ford_at, ford_at + ford_dir * reach * 0.5, ford_at + ford_dir * reach]), float(ford["width"]) * 0.5, 0.11)
+		shallows.name = "FordShallows"
+		if ResourceLoader.exists(shader_path):
+			var shallow_material := ShaderMaterial.new()
+			shallow_material.shader = load(shader_path)
+			shallow_material.set_shader_parameter("deep_tint", Color(0.36, 0.50, 0.42))
+			shallow_material.set_shader_parameter("shallow_tint", Color(0.50, 0.58, 0.44))
+			shallows.material_override = shallow_material
+		layer.add_child(shallows)
+	# Stepping stones at each ford.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 90210
+	var stone_path: String = CRAG_ROCKS[CRAG_ROCKS.size() - 1]
+	if ResourceLoader.exists(stone_path):
+		var stones := Node3D.new()
+		stones.name = "FordStones"
+		layer.add_child(stones)
+		for ford in map.get("fords", []):
+			var along: Vector2 = ford["dir"]
+			var across := Vector2(-along.y, along.x)
+			for k in int(float(ford["half"]) * 1.6):
+				var stone: Node3D = load(stone_path).instantiate()
+				stones.add_child(stone)
+				ModelUtils.scale_to_height(stone, rng.randf_range(0.35, 0.8))
+				ModelUtils.ground_model(stone)
+				var offset: Vector2 = along * rng.randf_range(-1.0, 1.0) * float(ford["half"]) * 0.9 + across * rng.randf_range(-1.0, 1.0) * float(ford["width"]) * 0.5
+				stone.position = ford["pos"] + Vector3(offset.x, stone.position.y, offset.y)
+				stone.rotation.y = rng.randf() * TAU
+				_prep_decor(stone)
+		load("res://scripts/world/static_batcher.gd").batch(stones)
+
+## A flat strip `half_width` either side of a line of points, at height `y`.
+func _ribbon(samples: PackedVector2Array, half_width: float, y: float) -> MeshInstance3D:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var run := 0.0
+	var left: Array = []
+	var right: Array = []
+	var runs: Array = []
+	for i in samples.size():
+		var ahead: Vector2 = (samples[mini(i + 1, samples.size() - 1)] - samples[maxi(i - 1, 0)]).normalized()
+		var side := Vector2(-ahead.y, ahead.x) * half_width
+		if i > 0:
+			run += samples[i].distance_to(samples[i - 1])
+		left.append(Vector3(samples[i].x + side.x, y, samples[i].y + side.y))
+		right.append(Vector3(samples[i].x - side.x, y, samples[i].y - side.y))
+		runs.append(run)
+	for i in samples.size() - 1:
+		for corner in [[left[i], 0.0, runs[i]], [right[i], 1.0, runs[i]], [left[i + 1], 0.0, runs[i + 1]],
+				[right[i], 1.0, runs[i]], [right[i + 1], 1.0, runs[i + 1]], [left[i + 1], 0.0, runs[i + 1]]]:
+			tool.set_normal(Vector3.UP)
+			# Along the strip in U, across it in V (what the water shader expects).
+			tool.set_uv(Vector2(float(corner[2]) / (half_width * 2.0), float(corner[1])))
+			tool.add_vertex(corner[0])
+	var strip := MeshInstance3D.new()
+	strip.mesh = tool.commit()
+	strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return strip
+
+const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
+
+## Woods: trees too close to pass between inside an uneven outline, tallest
+## toward the middle, with a few stragglers beyond the edge.
+func _build_woods() -> void:
+	var woods: Array = map.get("woods", [])
+	if woods.is_empty():
+		return
+	var trees: Array = []
+	for path in WOOD_TREES:
+		if ResourceLoader.exists(path):
+			trees.append(path)
+	if trees.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "Woods"
+	add_child(layer)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4471
+	var batcher = load("res://scripts/world/static_batcher.gd")
+	for wood in woods:
+		var holder := Node3D.new()
+		holder.name = "Wood"
+		layer.add_child(holder)
+		var centre: Vector2 = wood["at"]
+		var radii: Vector2 = wood["radii"]
+		holder.position = Vector3(centre.x, 0.0, centre.y)
+		var spacing := 4.3
+		var x := -radii.x * 1.3
+		while x <= radii.x * 1.3:
+			var z := -radii.y * 1.3
+			while z <= radii.y * 1.3:
+				var px := x + rng.randf_range(-1.5, 1.5)
+				var pz := z + rng.randf_range(-1.5, 1.5)
+				var local := Vector2(px / radii.x, pz / radii.y)
+				var edge := MapDefs.wood_reach(wood, local.angle())
+				var depth := edge - local.length()
+				# Inside the outline, or now and then a straggler just outside it.
+				if depth > 0.0 or (depth > -0.12 and rng.randf() < 0.25):
+					var tree: Node3D = load(trees[rng.randi() % trees.size()]).instantiate()
+					holder.add_child(tree)
+					var tall := rng.randf_range(5.6, 7.4) + clampf(depth, 0.0, 0.6) * 4.0
+					ModelUtils.scale_to_height(tree, tall)
+					ModelUtils.ground_model(tree)
+					tree.position = Vector3(px, tree.position.y, pz)
+					tree.rotation.y = rng.randf() * TAU
+					# One tone for the whole wood: a tone per tree height gave
+					# every tree a material of its own and nothing could be joined.
+					_prep_decor(tree)
+				z += spacing
+			x += spacing
+		clear_ground_cover(holder.position, minf(radii.x, radii.y) * 0.8)
+		batcher.batch(holder)
 
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
@@ -2347,8 +2518,41 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 		if frame != _blocker_snapshot_frame:
 			_blocker_snapshot_cache = _build_navigation_blocker_snapshots(null)
 			_blocker_snapshot_frame = frame
+			_blocker_buckets_frame = -1
 		return _blocker_snapshot_cache
 	return _build_navigation_blocker_snapshots(building_snapshot)
+
+## The blockers that could matter to something standing at `pos`: every one
+## whose rectangle, widened by BLOCKER_BUCKET_PAD, covers it. An authored map
+## has some 230 blockers and every moving unit used to look at all of them
+## every tick (8 ms a tick in a 120-unit battle; 3 on a generated map).
+const BLOCKER_BUCKET_CELL := 24.0
+const BLOCKER_BUCKET_PAD := 6.0
+var _blocker_buckets: Dictionary = {}
+var _blocker_buckets_frame := -1
+const _NO_BLOCKERS: Array = []
+
+func _blockers_near(pos: Vector3) -> Array:
+	var blockers := _navigation_blocker_snapshots()
+	var frame := Engine.get_physics_frames()
+	if frame != _blocker_buckets_frame:
+		_blocker_buckets_frame = frame
+		_blocker_buckets.clear()
+		for blocker in blockers:
+			var center: Vector3 = blocker["center"]
+			var half: Vector2 = blocker.get("half_extents", Vector2.ONE)
+			var x0 := int(floor((center.x - half.x - BLOCKER_BUCKET_PAD) / BLOCKER_BUCKET_CELL))
+			var x1 := int(floor((center.x + half.x + BLOCKER_BUCKET_PAD) / BLOCKER_BUCKET_CELL))
+			var z0 := int(floor((center.z - half.y - BLOCKER_BUCKET_PAD) / BLOCKER_BUCKET_CELL))
+			var z1 := int(floor((center.z + half.y + BLOCKER_BUCKET_PAD) / BLOCKER_BUCKET_CELL))
+			for bx in range(x0, x1 + 1):
+				for bz in range(z0, z1 + 1):
+					var key := Vector2i(bx, bz)
+					if _blocker_buckets.has(key):
+						_blocker_buckets[key].append(blocker)
+					else:
+						_blocker_buckets[key] = [blocker]
+	return _blocker_buckets.get(Vector2i(int(floor(pos.x / BLOCKER_BUCKET_CELL)), int(floor(pos.z / BLOCKER_BUCKET_CELL))), _NO_BLOCKERS)
 
 func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
 	var blockers: Array[Dictionary] = []
@@ -2606,7 +2810,7 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	if speed < 0.01:
 		return requested_velocity
 	var step_end: Vector3 = origin + requested_velocity * maxf(delta, 0.016)
-	var blockers := _navigation_blocker_snapshots()
+	var blockers := _blockers_near(origin)
 	# Cheap reject before the per-blocker rectangle work: a blocker whose
 	# largest possible padded extent cannot reach this step is skipped.
 	var reach := (step_end - origin).length() + clearance + ROUTE_BLOCKER_MARGIN

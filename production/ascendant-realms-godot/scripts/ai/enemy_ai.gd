@@ -1894,8 +1894,8 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 		var ang := toward + _rng.randf_range(-1.0, 1.0) * (0.9 + attempt * 0.03)
 		var dist := 12.0 + attempt * 1.05 + _rng.randf() * 14.0
 		var p := _base_pos + Vector3(cos(ang) * dist, 0, sin(ang) * dist)
-		p.x = clamp(p.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
-		p.z = clamp(p.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
+		p.x = clamp(p.x, -_map_half() + 8, _map_half() - 8)
+		p.z = clamp(p.z, -_map_half() + 8, _map_half() - 8)
 		if _spot_clear(p, footprint):
 			return p
 	# A crowded base: look in a wider arc and further out, still by the rules.
@@ -1906,8 +1906,8 @@ func _find_build_spot(footprint: float = 4.0) -> Vector3:
 		var ang2 := toward + _rng.randf_range(-2.2, 2.2)
 		var dist2 := 22.0 + _rng.randf() * 50.0
 		var p2 := _base_pos + Vector3(cos(ang2) * dist2, 0, sin(ang2) * dist2)
-		p2.x = clamp(p2.x, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
-		p2.z = clamp(p2.z, -MapDefs.MAP_SIZE + 8, MapDefs.MAP_SIZE - 8)
+		p2.x = clamp(p2.x, -_map_half() + 8, _map_half() - 8)
+		p2.z = clamp(p2.z, -_map_half() + 8, _map_half() - 8)
 		if _spot_clear(p2, footprint):
 			return p2
 	# Nowhere legal this time: a point no placement accepts, so the caller
@@ -1946,6 +1946,10 @@ func _spot_clear(p: Vector3, footprint: float = 4.0) -> bool:
 	if _segment_distance_xz(p, _base_pos, exit_end) < footprint + 6.0:
 		return false
 	return true
+
+## Half the width of this battlefield (they are not all the same size).
+func _map_half() -> float:
+	return float(world.map.get("size", MapDefs.MAP_SIZE))
 
 static func _segment_distance_xz(p: Vector3, a: Vector3, b: Vector3) -> float:
 	var pa := Vector2(p.x - a.x, p.z - a.z)

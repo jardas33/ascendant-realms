@@ -1430,7 +1430,8 @@ func _spawn_unit(unit_id: String) -> bool:
 			var angle := atan2(forward.z, forward.x) + TAU * float(i) / 12.0
 			candidates.append(global_position + Vector3(cos(angle), 0, sin(angle)) * radius)
 	for candidate in candidates:
-		if abs(candidate.x) > MapDefs.MAP_SIZE - 4.0 or abs(candidate.z) > MapDefs.MAP_SIZE - 4.0:
+		var map_half := float(world.map.get("size", MapDefs.MAP_SIZE)) if world else MapDefs.MAP_SIZE
+		if abs(candidate.x) > map_half - 4.0 or abs(candidate.z) > map_half - 4.0:
 			continue
 		var blocked := false
 		for b in world.all_buildings():

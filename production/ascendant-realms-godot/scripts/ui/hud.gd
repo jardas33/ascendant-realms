@@ -35,7 +35,7 @@ const COMMAND_CRESTS := {
 	"lioraen": LIORAEN_COMMAND_CREST,
 	"vorthak": VORTHAK_COMMAND_CREST,
 }
-const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
+var MAP_HALF := 140.0                  # half the battlefield; set from the map in setup()
 const MINIMAP_SIZE := 252.0 # Readable survey at the compact supported resolution.
 const MINIMAP_RASTER_SIZE := 160
 const MINIMAP_BACKGROUND_RASTER_SIZE := 320
@@ -222,6 +222,8 @@ func setup(p_world, p_rts) -> void:
 	var stage := _m20_begin("HUD_SETUP")
 	world = p_world
 	rts = p_rts
+	if world and world.map is Dictionary:
+		MAP_HALF = float(world.map.get("size", MAP_HALF))
 	_commander = world.player_commander if world else null
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

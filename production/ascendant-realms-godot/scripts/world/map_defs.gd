@@ -71,12 +71,17 @@ static func _specs() -> Array:
 		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","layout":"edges","spread":104,"rich":0.6,"cap":"single","crags":"pillars"},
 		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","layout":"corners","spread":116,"rich":1.0,"cap":"triple","bridge":true,"crags":"walls"},
 		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","layout":"corners","spread":96,"rich":1.1,"cap":"quad","crags":"islands"},
+		# Authored battlefields: laid out by hand, larger than the generated
+		# ones, built round the place the saga gives them.
+		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
 	]
 
 # ---------------------------------------------------------------------------
 # Assembly
 # ---------------------------------------------------------------------------
 static func _assemble(s: Dictionary) -> Dictionary:
+	if s.has("authored"):
+		return _assemble_authored(s)
 	var spread: float = float(s["spread"])
 	var starts: Array = _corners(spread) if s["layout"] == "corners" else _edges(spread)
 	var res := []
@@ -113,6 +118,219 @@ static func _assemble(s: Dictionary) -> Dictionary:
 		m["veins"] = _veins_off_water(m["veins"], m["overview"])
 	m["crags"] = _crags(String(s.get("crags", "")), m)
 	return m
+
+# ---------------------------------------------------------------------------
+# Authored battlefields
+# ---------------------------------------------------------------------------
+## An authored map gives everything outright: its size, its starts, and every
+## deposit, vein, site, ridge, wood and stretch of water. Ridges, woods and
+## water all travel in "crags" (a "kind" tells them apart), so everything that
+## already keeps clear of a crag (routes, orders, buildings, scenery) keeps
+## clear of a wood or a river as well.
+static func _assemble_authored(s: Dictionary) -> Dictionary:
+	var a: Dictionary = _salto_valley()
+	var size: float = float(a["size"])
+	var starts: Array = a["starts"]
+	var res: Array = []
+	for c in starts:
+		res += _cluster(c, 1.0)
+	res += a["deposits"]
+	# Rivers, woods and ridges are drawn with natural outlines and blocked by
+	# many small rectangles laid along them.
+	var crags: Array = []
+	var rivers: Array = []
+	var fords: Array = []
+	for river in a["rivers"]:
+		var samples := _smooth(river["points"], 4.0)
+		rivers.append({"samples": samples, "width": float(river["width"])})
+		var width: float = float(river["width"])
+		for i in range(0, samples.size(), 2):
+			var here: Vector2 = samples[i]
+			var forded := false
+			for ford in river["fords"]:
+				if here.distance_to(ford["at"]) < float(ford["half"]):
+					forded = true
+			if not forded:
+				crags.append({"pos": Vector3(here.x, 0.0, here.y), "half": Vector2(width * 0.5, width * 0.5), "kind": "water"})
+		for ford in river["fords"]:
+			# The way the river runs at the ford, from the samples either side.
+			var nearest := 0
+			for i in samples.size():
+				if samples[i].distance_to(ford["at"]) < samples[nearest].distance_to(ford["at"]):
+					nearest = i
+			var ahead: Vector2 = samples[mini(nearest + 2, samples.size() - 1)] - samples[maxi(nearest - 2, 0)]
+			fords.append({"pos": Vector3(ford["at"].x, 0.0, ford["at"].y), "half": float(ford["half"]), "width": width, "dir": ahead.normalized()})
+	var woods: Array = []
+	for wood in a["woods"]:
+		woods.append(wood)
+		crags.append_array(_wood_tiles(wood))
+	for ridge in a["ridges"]:
+		var thickness: float = float(ridge["thickness"])
+		var samples := _smooth(ridge["points"], thickness * 0.8)
+		for point in samples:
+			crags.append({"pos": Vector3(point.x, 0.0, point.y), "half": Vector2(thickness * 0.5, thickness * 0.5), "kind": "rock"})
+	var th := theme(s["theme"])
+	var m := {
+		"id": s["id"],
+		"name": s["name"],
+		"theme": s["theme"],
+		"size": size,
+		"max_players": starts.size(),
+		"start_positions": starts,
+		"resources": res,
+		"capture_points": a["sites"],
+		"veins": a["veins"],
+		"crags": crags,
+		"rivers": rivers,
+		"fords": fords,
+		"woods": woods,
+		"roads": a["roads"],
+		"authored": true,
+	}
+	m["water"] = th.get("water", {"enabled": false})
+	var k := size / MAP_SIZE
+	var overview_roads: Array = []
+	for road in a["roads"]:
+		overview_roads.append([Vector3(road.x, 0.0, road.y), Vector3(road.z, 0.0, road.w)])
+	m["overview"] = {
+		"layout": "corners",
+		"water_axis": "north_bay",
+		"water_center_z": 118.0 * k,
+		"water_width": 34.0 * k,
+		"roads": overview_roads,
+	}
+	return m
+
+## A smooth line through `points` (Catmull-Rom), as points about `step` apart.
+static func _smooth(points: Array, step: float) -> PackedVector2Array:
+	var out: PackedVector2Array = []
+	if points.size() < 2:
+		return out
+	for i in points.size() - 1:
+		var p0: Vector2 = points[maxi(i - 1, 0)]
+		var p1: Vector2 = points[i]
+		var p2: Vector2 = points[i + 1]
+		var p3: Vector2 = points[mini(i + 2, points.size() - 1)]
+		var pieces := maxi(1, int(ceil(p1.distance_to(p2) / step)))
+		for k in pieces:
+			var t := float(k) / float(pieces)
+			out.append(0.5 * ((2.0 * p1) + (p2 - p0) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t * t + (3.0 * p1 - p0 - 3.0 * p2 + p3) * t * t * t))
+	out.append(points[points.size() - 1])
+	return out
+
+## How far a wood reaches from its middle in direction `angle`, as a share of
+## its radii: an uneven edge, the same every time for the same wood.
+static func wood_reach(wood: Dictionary, angle: float) -> float:
+	var seed := float(wood.get("seed", 0.0))
+	return 1.0 + 0.16 * sin(3.0 * angle + seed) + 0.09 * sin(7.0 * angle + seed * 2.3)
+
+static func in_wood(wood: Dictionary, x: float, z: float) -> bool:
+	var c: Vector2 = wood["at"]
+	var r: Vector2 = wood["radii"]
+	var d := Vector2((x - c.x) / r.x, (z - c.y) / r.y)
+	return d.length() <= wood_reach(wood, d.angle())
+
+## Rectangles that cover a wood: one for each run of 6 m cells inside it.
+static func _wood_tiles(wood: Dictionary) -> Array:
+	var out: Array = []
+	var c: Vector2 = wood["at"]
+	var r: Vector2 = wood["radii"]
+	var cell := 6.0
+	var reach := 1.3
+	var z := c.y - r.y * reach
+	while z <= c.y + r.y * reach:
+		var run_start := INF
+		var x := c.x - r.x * reach
+		while x <= c.x + r.x * reach + cell:
+			var inside := in_wood(wood, x, z) and x <= c.x + r.x * reach
+			if inside and run_start == INF:
+				run_start = x
+			elif not inside and run_start != INF:
+				var run_end := x - cell
+				out.append({"pos": Vector3((run_start + run_end) * 0.5, 0.0, z), "half": Vector2((run_end - run_start) * 0.5 + cell * 0.5, cell * 0.5), "kind": "forest"})
+				run_start = INF
+			x += cell
+		z += cell
+	return out
+
+## A feature and its twin on the far side of the centre (a half turn), so the
+## two seats that face each other across the map have the same ground.
+static func _twin_points(points: Array) -> Array:
+	var out: Array = []
+	for p in points:
+		out.append(Vector2(-p.x, -p.y))
+	return out
+
+static func _pair_point(out: Array, kind: String, x: float, z: float) -> void:
+	out.append({"kind": kind, "pos": Vector3(x, 0.0, z)})
+	out.append({"kind": kind, "pos": Vector3(-x, 0.0, -z)})
+
+## Salto Valley (saga 1-1, "The Spring of Seven Mouths"). 440 m across, two
+## and a half times the ground of a generated map. The river runs through it
+## in a long S and can be forded in three places: the Hollowspan shallows at
+## the centre, where the Lume Spire stands, and a ford toward either end.
+## Salto lies in the south-west behind the Wolf-Trap ridge, with a gate to the
+## north and one to the east; the raiders' camp in the north-east mirrors it
+## below the pass. The other two starts sit in open country beside the woods.
+static func _salto_valley() -> Dictionary:
+	var rivers: Array = [{
+		"points": [Vector2(-232, 44), Vector2(-150, 34), Vector2(-96, 36), Vector2(-60, 15), Vector2(-22, 3), Vector2(0, 0),
+			Vector2(22, -3), Vector2(60, -15), Vector2(96, -36), Vector2(150, -34), Vector2(232, -44)],
+		"width": 15.0,
+		"fords": [{"at": Vector2(-150, 34), "half": 11.0}, {"at": Vector2(0, 0), "half": 17.0}, {"at": Vector2(150, -34), "half": 11.0}],
+	}]
+	var ridges: Array = []
+	for line in [
+		# The Wolf-Trap ridge north of Salto, in two lengths with a gate between.
+		[Vector2(-222, -100), Vector2(-190, -93), Vector2(-153, -99)],
+		[Vector2(-129, -98), Vector2(-108, -92), Vector2(-87, -100)],
+		# The spur east of the village.
+		[Vector2(-99, -190), Vector2(-102, -160), Vector2(-95, -131)],
+		# A bluff that narrows the way to the shallows.
+		[Vector2(-56, -30), Vector2(-40, -24), Vector2(-26, -31)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 1.0
+	for wood in [[-60, -72, 30, 22], [0, -150, 26, 32], [-122, 92, 26, 18], [100, -172, 15, 24]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.7
+	var veins: Array = []
+	_pair_point(veins, "gold", -141, -70)
+	_pair_point(veins, "food", -70, -120)
+	_pair_point(veins, "stone", -190, -50)
+	_pair_point(veins, "timber", -40, -190)
+	_pair_point(veins, "gold", -160, 80)
+	_pair_point(veins, "food", -70, 150)
+	_pair_point(veins, "stone", -200, 100)
+	_pair_point(veins, "timber", -60, 100)
+	_pair_point(veins, "gold", -24, 40)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -30, 60)
+	_pair_point(deposits, "stone", -110, -10)
+	_pair_point(deposits, "timber", -185, 5)
+	_pair_point(deposits, "food", -20, -90)
+	var sites: Array = [
+		{"name": "Hollowspan Spire", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "Spring of Seven Mouths", "benefit": "heal", "pos": Vector3(-120, 0, -40), "model": RUIN},
+		{"name": "Chapel of the Pass", "benefit": "heal", "pos": Vector3(120, 0, 40), "model": RUIN},
+		{"name": "Larouco Watch", "benefit": "vision", "pos": Vector3(-50, 0, 120), "model": WATCH},
+		{"name": "Salto Watch", "benefit": "vision", "pos": Vector3(50, 0, -120), "model": WATCH},
+	]
+	# Worn roads (at most eight): each walled start to its gate, the gates to
+	# the fords and to the shallows, the fords on to the open-country starts.
+	var roads: Array = [
+		Vector4(-160, -150, -141, -90), Vector4(-141, -90, -150, 34), Vector4(-150, 34, -160, 150), Vector4(-141, -90, 0, 0),
+		Vector4(160, 150, 141, 90), Vector4(141, 90, 150, -34), Vector4(150, -34, 160, -150), Vector4(141, 90, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(160, 0, -150), Vector3(-160, 0, 150)],
+		"rivers": rivers, "ridges": ridges, "woods": woods,
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
 
 # ---------------------------------------------------------------------------
 # Crags: impassable rock ridges that give a battlefield lanes, gates and flanks

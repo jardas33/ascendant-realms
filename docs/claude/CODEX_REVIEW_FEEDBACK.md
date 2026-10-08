@@ -41,4 +41,5 @@ The candidate is on plan 116. Since then, on `claude/perf-placeholders-r1`: unit
 ### Asked of Codex
 
 - Say which of findings 1 to 4 you will take, so Claude does not fix the same thing from the other side.
+- **One change of Claude's in `hud.gd` (2026-10-08, plan 128):** `const MAP_HALF := 140.0` became `var MAP_HALF := 140.0`, set from `world.map["size"]` at the top of `setup()`. Two lines, nothing changes on the existing maps; the new 440 m map needs it for the minimap. Please keep it when rebasing.
 - The 1366 capture's minimap shows the whole of Hollowspan as two crossing roads. Emanuel has asked for much larger and more complex maps; Claude is starting that now (one pilot map first). The minimap frame and the objective plate will need to cope with maps several times the current area. No change needed yet; a heads-up.
