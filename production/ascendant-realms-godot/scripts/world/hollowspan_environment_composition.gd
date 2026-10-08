@@ -45,6 +45,11 @@ const NAVIGATION_BLOCKER_IDS := {
 	"wall": "astra_wall",
 	"guard_tower": "astra_guard_tower",
 	"covered_supply_wagon": "astra_supply_wagon",
+	# The standing stones round a Lioraen hall (three to four metres tall)
+	# were scenery only: soldiers walked straight through them. (The charred
+	# walls round a Vorthak hall stay scenery: seven of them, thirteen metres
+	# each, on a ring of fifteen would wall the hall in.)
+	"moonstone": "lioraen_moonstone",
 }
 
 # The source assembly is authored in a Blender Z-up plane. These placements

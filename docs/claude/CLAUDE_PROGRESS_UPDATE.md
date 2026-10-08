@@ -1201,11 +1201,18 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Two more faults this exposed, both older than the change:** the search for open ground near a blocked spot revisited the same points (out of one rectangle into its neighbour and back) until its tries ran out, then gave the blocked spot back; it now visits each point once. And a unit on its last leg that does not come half a metre nearer in six seconds now stops, whatever holds it (one circled in front of a house for a minute, pushed back by avoidance, touching nothing).
   - **Checks:** 480 base walks on six map runs, one failed (a worker on Goldreach that stopped 6 m from its start beside the enemy hall; not reproduced on the empty map, left open). 53 regression checks pass. Twelve AI matches after: no stuck units, simulation still keeps up at 6x.
 
-- **Plan 125 (done, matrix running): Lioraen Concord health, and marching units that stand still**
+- **Plan 125 (done): Lioraen Concord health, and marching units that stand still**
   - **Lioraen Concord:** 36-16 over the three matrices of plans 120 to 123 (270 matches) with the damage bonus already gone. Their health bonus goes from +6% to +2%. Focus run: 22-25 over 54 matches.
   - **Two stuck units with details, from the first matrices that record them:** a Cinder Spitter standing still in attack-move 110 m from its goal, and a Longbow creeping at a tenth of walking pace 32 m from its own. Neither was on its last leg or pressed against a wall, so the rules of plans 122 to 124 did not cover them.
   - **Rule (unit.gd):** a unit on the march that stays within a metre of one spot for ten seconds stops there. Its AI then gives it a new order like any idle soldier; a player sees it stop instead of twitching.
   - 53 regression checks pass. A 90-match matrix is running, since this touches every marching unit, and the ladder check follows it.
+  - **Checks of plan 125:** 90-match matrix, all ten peoples between 6-11 and 12-6 (Lioraen Concord 9-7). Ladder: Normal over Easy 10-0, Hard over Normal 14-2 with 4 undecided, the clearest it has been.
+
+- **Plan 126 (done): standing stones are solid; builders that twitch let go**
+  - **Soldiers walked through the standing stones round a Lioraen hall** (seven stones, three to four metres tall, scenery only). They are blockers now, each about 2.5 m across. Base walks at Lioraen bases on four maps: 320 walks, none failed. A Lioraen-only run of 36 matches after: 21-14, so their own economy is not hurt by it.
+  - **Left as scenery on purpose:** the seven charred walls round a Vorthak hall are thirteen metres each on a ring of fifteen. Solid, they would wall the hall in. Soldiers still pass through them; shortening or regrouping them is a layout job for another pass.
+  - **What the stuck-unit log showed in its first full matrix** (6 reports in 90 matches): two were builders standing at their site and building, which the reporter wrongly counted (fixed in the tool). One was a builder twitching 33 m from its site: a builder that stays within a metre for ten seconds on the way now lets the job go. The other three were soldiers their AI kept sending to the same spot; they stop and are re-ordered, which the reporter reads as stuck. Not harmful, left as is.
+  - 53 regression checks pass.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;

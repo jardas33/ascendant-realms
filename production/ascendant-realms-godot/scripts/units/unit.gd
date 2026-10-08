@@ -3324,6 +3324,20 @@ func _state_build(delta: float) -> void:
 			_face(_build_target.global_position)
 			return
 		_move_along_path(delta)
+		# A builder that has stayed within a metre of one spot for ten
+		# seconds on its way to the site lets the job go (one twitched 33 m
+		# from its site for the last minute of a match); it is free for the
+		# next order, and the site is still there for another builder.
+		if _pressed_in_place_too_long(delta):
+			_release_build_collision_exception()
+			_build_target = null
+			_repair_target = false
+			_navigation_waypoints.clear()
+			_navigation_waypoint_index = 0
+			_navigation_target_pending = false
+			_move_target = global_position
+			velocity = Vector3.ZERO
+			state = State.IDLE
 	else:
 		_hold_worker_interaction(_build_target.global_position)
 		_play("build")
