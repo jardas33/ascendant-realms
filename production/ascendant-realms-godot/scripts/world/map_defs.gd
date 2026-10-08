@@ -166,6 +166,13 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 	for wood in a["woods"]:
 		woods.append(wood)
 		crags.append_array(_wood_tiles(wood))
+	# A hill is shaped like a wood too: high ground nobody can climb.
+	var hills: Array = []
+	for hill in a.get("hills", []):
+		hills.append(hill)
+		for tile in _wood_tiles(hill):
+			tile["kind"] = "hill"
+			crags.append(tile)
 	# A tarn is shaped like a wood and filled with water.
 	var lakes: Array = []
 	for lake in a.get("lakes", []):
@@ -194,6 +201,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"fords": fords,
 		"woods": woods,
 		"lakes": lakes,
+		"hills": hills,
 		"bridges": a.get("bridges", []),
 		"ruins": a.get("ruins", []),
 		"farmsteads": a.get("farmsteads", []),
@@ -299,8 +307,6 @@ static func _salto_valley() -> Dictionary:
 		[Vector2(-129, -98), Vector2(-108, -92), Vector2(-87, -100)],
 		# The spur east of the village.
 		[Vector2(-99, -190), Vector2(-102, -160), Vector2(-95, -131)],
-		# A bluff that narrows the way to the shallows.
-		[Vector2(-56, -30), Vector2(-40, -24), Vector2(-26, -31)],
 	]:
 		ridges.append({"points": line, "thickness": 9.0})
 		ridges.append({"points": _twin_points(line), "thickness": 9.0})
@@ -347,6 +353,11 @@ static func _salto_valley() -> Dictionary:
 		"size": 220.0,
 		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(160, 0, -150), Vector3(-160, 0, 150)],
 		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes,
+		# A knoll between the road and the river on either side of the shallows.
+		"hills": [
+			{"at": Vector2(-66, -18), "radii": Vector2(17, 10), "height": 9.0, "seed": 2.2},
+			{"at": Vector2(66, 18), "radii": Vector2(17, 10), "height": 9.0, "seed": 2.2 + PI},
+		],
 		# A bridge over each of the two outer fords (the river runs east to
 		# west there, so the deck lies north to south). The centre stays a ford.
 		"bridges": [Vector3(-150, 0, 34), Vector3(150, 0, -34)],

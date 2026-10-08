@@ -410,6 +410,7 @@ func _ready() -> void:
 	_build_crags()
 	_build_rivers()
 	_build_lakes()
+	_build_hills()
 	_build_woods()
 	_build_authored_structures()
 	_m20_end(decoration_stage)
@@ -1291,6 +1292,97 @@ func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_hal
 	strip.mesh = tool.commit()
 	strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return strip
+
+## Hills: rounded high ground with rock showing through the turf and a few
+## pines on top. Nobody climbs them; they are there to be gone round and to
+## give the valley a shape.
+func _build_hills() -> void:
+	var hills: Array = map.get("hills", [])
+	if hills.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "Hills"
+	add_child(layer)
+	var turf := StandardMaterial3D.new()
+	var grass_path := "res://assets/textures/nature/highland_meadow_grass_r5.png"
+	if ResourceLoader.exists(grass_path):
+		turf.albedo_texture = load(grass_path)
+	# Matched by eye to the meadow the hill stands in.
+	turf.albedo_color = Color(0.92, 0.86, 0.50)
+	turf.roughness = 1.0
+	turf.uv1_triplanar = true
+	turf.uv1_scale = Vector3(0.14, 0.14, 0.14)
+	turf.vertex_color_use_as_albedo = true
+	var noise := FastNoiseLite.new()
+	noise.seed = 811
+	noise.frequency = 0.07
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5521
+	for hill in hills:
+		var centre: Vector2 = hill["at"]
+		var radii: Vector2 = hill["radii"]
+		var height: float = float(hill.get("height", 8.0))
+		var tool := SurfaceTool.new()
+		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var rings := 7
+		var spokes := 40
+		# Height at a share `t` of the way out (0 the top, 1 the foot) in direction `a`.
+		var point := func(t: float, a: float) -> Vector3:
+			var reach := MapDefs.wood_reach(hill, a) * 1.12
+			var x := cos(a) * radii.x * reach * t
+			var z := sin(a) * radii.y * reach * t
+			var rise := height * pow(maxf(0.0, 1.0 - t * t), 1.4) * (0.82 + 0.36 * noise.get_noise_2d(centre.x + x, centre.y + z))
+			return Vector3(centre.x + x, maxf(rise, 0.0) - 0.05, centre.y + z)
+		for ring in rings:
+			var t0 := float(ring) / float(rings)
+			var t1 := float(ring + 1) / float(rings)
+			for spoke in spokes:
+				var a0 := TAU * float(spoke) / float(spokes)
+				var a1 := TAU * float(spoke + 1) / float(spokes)
+				var quad: Array = [point.call(t0, a0), point.call(t0, a1), point.call(t1, a0), point.call(t1, a1)]
+				for index in [0, 2, 1, 1, 2, 3]:
+					var v: Vector3 = quad[index]
+					# Steeper and higher ground shows more rock (darker, greyer).
+					var shade := clampf(v.y / height, 0.0, 1.0)
+					tool.set_color(Color(1.0, 1.0, 1.0).lerp(Color(0.80, 0.78, 0.74), shade * 0.5))
+					tool.add_vertex(v)
+		tool.generate_normals()
+		var mound := MeshInstance3D.new()
+		mound.name = "Hill"
+		mound.mesh = tool.commit()
+		mound.material_override = turf
+		mound.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		layer.add_child(mound)
+		# Rock outcrops on the flanks and a few pines near the top.
+		var dress := Node3D.new()
+		dress.name = "HillDressing"
+		layer.add_child(dress)
+		for k in 9:
+			var a := rng.randf() * TAU
+			var t := rng.randf_range(0.35, 0.85)
+			var at: Vector3 = point.call(t, a)
+			if ResourceLoader.exists(CRAG_ROCKS[0]):
+				var rock: Node3D = load(CRAG_ROCKS[0]).instantiate()
+				dress.add_child(rock)
+				ModelUtils.scale_to_height(rock, rng.randf_range(2.2, 3.8))
+				ModelUtils.ground_model(rock)
+				rock.position = Vector3(at.x, at.y + rock.position.y - 0.4, at.z)
+				rock.rotation.y = rng.randf() * TAU
+				_prep_decor(rock)
+		for k in 5:
+			var a := rng.randf() * TAU
+			var t := rng.randf_range(0.0, 0.45)
+			var at: Vector3 = point.call(t, a)
+			if ResourceLoader.exists(WOOD_TREES[0]):
+				var pine: Node3D = load(WOOD_TREES[0]).instantiate()
+				dress.add_child(pine)
+				ModelUtils.scale_to_height(pine, rng.randf_range(5.0, 7.0))
+				ModelUtils.ground_model(pine)
+				pine.position = Vector3(at.x, at.y + pine.position.y - 0.2, at.z)
+				pine.rotation.y = rng.randf() * TAU
+				_prep_decor(pine)
+		load("res://scripts/world/static_batcher.gd").batch(dress)
+		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.15)
 
 ## Tarns: still water inside an uneven shore, with the same wet earth round it.
 func _build_lakes() -> void:

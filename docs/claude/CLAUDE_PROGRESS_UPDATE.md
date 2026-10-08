@@ -1256,6 +1256,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **After all the dressing:** map check passes, 80 base walks with none failed, and three more AI matches (six peoples) all finished in 15 to 20 minutes with no stuck units. 54 regression checks pass.
   - **What Salto Valley has now:** 440 m, a river with soft banks, three fords, two bridges, two tarns, eight woods, eight ridge lengths with gates, 18 veins, five sites (one with its own model), two ruined castros, four farmsteads, the peoples' own village dressing at each start. **What it still lacks:** hills or any height, a look of its own for the ground between features (it is still a lot of grass), ambient life, and a pass that reads as a mountain pass.
 
+- **Plan 133 (done): the first hills**
+  - **A new kind of feature:** a hill is rounded high ground, nine metres at the top, turfed like the meadow it stands in with rock outcrops on its flanks and pines near the summit. Nobody climbs it (it blocks like a wood); it is there to be gone round and to give the valley a shape.
+  - **On Salto Valley** a knoll stands between the road and the river on either side of the central shallows. They replace the two rock bluffs that stood there (one of which, I found, lay across the road to the centre).
+  - **Limits, plainly:** this is a shape set on flat ground, not terrain. Units still fight on one level; there is no high ground to hold, and the foot of the hill meets the meadow at a visible edge. Real height (slopes units walk, range and sight from above) would be an engine change across movement, projectiles, fog and the camera, and is a decision for Emanuel, not something to slip in.
+  - Map check passes; 54 regression checks pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
