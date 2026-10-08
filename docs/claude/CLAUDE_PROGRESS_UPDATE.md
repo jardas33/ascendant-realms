@@ -1250,6 +1250,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **A ruined castro** in the open country south-east of the centre, and its twin: two broken rings of old pillars round a cairn, every pillar solid, with ways in on all sides.
   - Map check passes; 54 regression checks pass.
 
+- **Plan 132 (done): farmsteads; the dressed map still plays**
+  - **Four farmsteads** outside the walls (one by the Spring of Seven Mouths, one beyond the east gate, and their twins): a croft, a field wall, a fence, a woodpile and a cairn. The croft and the wall are solid.
+  - **Castro stones** made stout; at the model's own proportions they read as fence posts from the game's height.
+  - **After all the dressing:** map check passes, 80 base walks with none failed, and three more AI matches (six peoples) all finished in 15 to 20 minutes with no stuck units. 54 regression checks pass.
+  - **What Salto Valley has now:** 440 m, a river with soft banks, three fords, two bridges, two tarns, eight woods, eight ridge lengths with gates, 18 veins, five sites (one with its own model), two ruined castros, four farmsteads, the peoples' own village dressing at each start. **What it still lacks:** hills or any height, a look of its own for the ground between features (it is still a lot of grass), ambient life, and a pass that reads as a mountain pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

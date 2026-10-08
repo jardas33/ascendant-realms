@@ -1155,7 +1155,8 @@ func _build_rivers() -> void:
 func _build_authored_structures() -> void:
 	var bridges: Array = map.get("bridges", [])
 	var ruins: Array = map.get("ruins", [])
-	if bridges.is_empty() and ruins.is_empty():
+	var farmsteads: Array = map.get("farmsteads", [])
+	if bridges.is_empty() and ruins.is_empty() and farmsteads.is_empty():
 		return
 	var layer := Node3D.new()
 	layer.name = "AuthoredStructures"
@@ -1210,6 +1211,38 @@ func _build_authored_structures() -> void:
 			ModelUtils.ground_model(cairn)
 			_register_environment_world_blocker(cairn, "castro_cairn", "presentation")
 		clear_ground_cover(centre, radius + 1.5)
+
+	# Farmsteads: a croft with a field wall on its windward side, a fence, a
+	# woodpile and a cairn. The croft and the wall are solid.
+	var croft_path := "res://assets/environment/buildings/barrosan_clan_croft.glb"
+	if not farmsteads.is_empty() and ResourceLoader.exists(croft_path):
+		var kit = load("res://scripts/world/hollowspan_environment_composition.gd").new()
+		for farm in farmsteads:
+			var at := Vector3(farm["at"].x, 0.0, farm["at"].y)
+			var yaw: float = float(farm.get("yaw", 0.0))
+			var forward := Vector3(sin(yaw), 0.0, cos(yaw))
+			var right := Vector3(forward.z, 0.0, -forward.x)
+			var holder := Node3D.new()
+			holder.name = "Farmstead"
+			layer.add_child(holder)
+			var croft: Node3D = load(croft_path).instantiate()
+			holder.add_child(croft)
+			croft.position = at
+			croft.rotation.y = yaw
+			ModelUtils.scale_to_height(croft, 7.4)
+			ModelUtils.ground_model(croft)
+			for body in croft.find_children("*", "CollisionObject3D", true, false):
+				body.queue_free()
+			croft.add_to_group("navigation_soft_blockers")
+			croft.set_meta("navigation_blocker_id", "farm_croft")
+			croft.set_meta("navigation_blocker_class", "ASTRA_LARGE")
+			kit._place_asset(holder, "wall", at - forward * 9.0 + right * 2.0, yaw + PI * 0.5)
+			kit._place_asset(holder, "fence", at + right * 8.5 + forward * 2.0, yaw)
+			kit._place_asset(holder, "logs", at - right * 6.5 + forward * 3.5, yaw + 0.7)
+			kit._place_asset(holder, "cairn", at + forward * 9.0 - right * 4.0, yaw)
+			clear_ground_cover(at, 7.0)
+		kit.free()
+		_rebuild_navigation_soft_blockers()
 
 ## Wet earth that fades out at its edge (the fade is in the vertex colours).
 func _bank_material() -> StandardMaterial3D:

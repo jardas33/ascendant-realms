@@ -196,6 +196,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"lakes": lakes,
 		"bridges": a.get("bridges", []),
 		"ruins": a.get("ruins", []),
+		"farmsteads": a.get("farmsteads", []),
 		"roads": a["roads"],
 		"authored": true,
 	}
@@ -351,6 +352,12 @@ static func _salto_valley() -> Dictionary:
 		"bridges": [Vector3(-150, 0, 34), Vector3(150, 0, -34)],
 		# What is left of an old castro in the open country, and its twin.
 		"ruins": [{"at": Vector2(48, -68), "radius": 9.0, "seed": 3}, {"at": Vector2(-48, 68), "radius": 9.0, "seed": 4}],
+		# Farmsteads outside the walls: a croft, a field wall, a woodpile.
+		# One by the spring and one beyond the east gate, and their twins.
+		"farmsteads": [
+			{"at": Vector2(-92, -28), "yaw": 0.4}, {"at": Vector2(92, 28), "yaw": 0.4 + PI},
+			{"at": Vector2(-60, -166), "yaw": -0.9}, {"at": Vector2(60, 166), "yaw": -0.9 + PI},
+		],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
