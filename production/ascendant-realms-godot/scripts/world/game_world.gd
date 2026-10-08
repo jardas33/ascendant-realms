@@ -905,9 +905,36 @@ func terrain_speed_mult(pos: Vector3) -> float:
 # lanes, gates and flanks: units route around them and nothing is built on them.
 const CRAG_ROCKS := ["res://assets/environment/rocks/highland_rock_cluster.glb", "res://assets/environment/rocks/mossy_boulder.glb"]
 
+## The crags near `pos`: all whose rectangle, widened by CRAG_BUCKET_PAD,
+## covers it. Crags never move, so this is worked out once. (An authored map
+## has two hundred of them, and every order and every step of a march asked
+## about each one.)
+const CRAG_BUCKET_CELL := 24.0
+const CRAG_BUCKET_PAD := 8.0
+var _crag_buckets: Dictionary = {}
+var _crag_buckets_built := false
+
+func _crags_near(pos: Vector3, margin: float) -> Array:
+	var crags: Array = map.get("crags", [])
+	if margin > CRAG_BUCKET_PAD or crags.size() < 24:
+		return crags
+	if not _crag_buckets_built:
+		_crag_buckets_built = true
+		for c in crags:
+			var p: Vector3 = c["pos"]
+			var h: Vector2 = c["half"]
+			for bx in range(int(floor((p.x - h.x - CRAG_BUCKET_PAD) / CRAG_BUCKET_CELL)), int(floor((p.x + h.x + CRAG_BUCKET_PAD) / CRAG_BUCKET_CELL)) + 1):
+				for bz in range(int(floor((p.z - h.y - CRAG_BUCKET_PAD) / CRAG_BUCKET_CELL)), int(floor((p.z + h.y + CRAG_BUCKET_PAD) / CRAG_BUCKET_CELL)) + 1):
+					var key := Vector2i(bx, bz)
+					if _crag_buckets.has(key):
+						_crag_buckets[key].append(c)
+					else:
+						_crag_buckets[key] = [c]
+	return _crag_buckets.get(Vector2i(int(floor(pos.x / CRAG_BUCKET_CELL)), int(floor(pos.z / CRAG_BUCKET_CELL))), _NO_BLOCKERS)
+
 ## True when `pos` lies within `margin` metres of a crag.
 func in_crag(pos: Vector3, margin: float = 0.0) -> bool:
-	for c in map.get("crags", []):
+	for c in _crags_near(pos, margin):
 		var p: Vector3 = c["pos"]
 		var h: Vector2 = c["half"]
 		if absf(pos.x - p.x) < h.x + margin and absf(pos.z - p.z) < h.y + margin:
@@ -917,7 +944,7 @@ func in_crag(pos: Vector3, margin: float = 0.0) -> bool:
 ## `pos` itself, or the nearest open ground if it lies in a crag: an order
 ## given onto the rocks sends the troops to their foot.
 func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF) -> Vector3:
-	for c in map.get("crags", []):
+	for c in _crags_near(pos, margin):
 		var p: Vector3 = c["pos"]
 		var h: Vector2 = c["half"]
 		var dx := pos.x - p.x
@@ -974,8 +1001,12 @@ func _build_crags() -> void:
 		if crag_kind == "rock" and not models.is_empty():
 			# The body: tall rock clusters shoulder to shoulder, so the ridge
 			# reads as a wall and not as a row of boulders with gaps.
-			var nx := maxi(1, roundi(half.x * 2.0 / 3.0))
-			var nz := maxi(1, roundi(half.y * 2.0 / 3.0))
+			# An authored ridge is many small lengths side by side: two rock
+			# clusters across each is a wall already (three made 540 clusters
+			# of 4,500 triangles on Salto Valley).
+			var rock_pitch := 4.4 if bool(map.get("authored", false)) else 3.0
+			var nx := maxi(1, roundi(half.x * 2.0 / rock_pitch))
+			var nz := maxi(1, roundi(half.y * 2.0 / rock_pitch))
 			var cell := Vector2(half.x * 2.0 / float(nx), half.y * 2.0 / float(nz))
 			for ix in nx:
 				for iz in nz:
@@ -1230,7 +1261,8 @@ func _build_woods() -> void:
 		var centre: Vector2 = wood["at"]
 		var radii: Vector2 = wood["radii"]
 		holder.position = Vector3(centre.x, 0.0, centre.y)
-		var spacing := 4.3
+		# Under the canopy nobody sees the trunks: fewer, larger trees.
+		var spacing := 5.1
 		var x := -radii.x * 1.3
 		while x <= radii.x * 1.3:
 			var z := -radii.y * 1.3
@@ -1244,7 +1276,7 @@ func _build_woods() -> void:
 				if depth > 0.0 or (depth > -0.12 and rng.randf() < 0.25):
 					var tree: Node3D = load(trees[rng.randi() % trees.size()]).instantiate()
 					holder.add_child(tree)
-					var tall := rng.randf_range(5.6, 7.4) + clampf(depth, 0.0, 0.6) * 4.0
+					var tall := rng.randf_range(6.4, 8.2) + clampf(depth, 0.0, 0.6) * 4.0
 					ModelUtils.scale_to_height(tree, tall)
 					ModelUtils.ground_model(tree)
 					tree.position = Vector3(px, tree.position.y, pz)
@@ -2581,7 +2613,6 @@ func _navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary
 		if frame != _blocker_snapshot_frame:
 			_blocker_snapshot_cache = _build_navigation_blocker_snapshots(null)
 			_blocker_snapshot_frame = frame
-			_blocker_buckets_frame = -1
 		return _blocker_snapshot_cache
 	return _build_navigation_blocker_snapshots(building_snapshot)
 
@@ -2597,9 +2628,12 @@ const _NO_BLOCKERS: Array = []
 
 func _blockers_near(pos: Vector3) -> Array:
 	var blockers := _navigation_blocker_snapshots()
-	var frame := Engine.get_physics_frames()
-	if frame != _blocker_buckets_frame:
-		_blocker_buckets_frame = frame
+	# Rebuilt only when a blocker has come or gone (every placement, death and
+	# registration bumps the route generation), not every frame.
+	# (And every half second regardless, in case one came as another went.)
+	var stamp := (_route_cache_generation * 4096 + blockers.size()) * 64 + (Engine.get_physics_frames() / 30) % 64
+	if stamp != _blocker_buckets_frame:
+		_blocker_buckets_frame = stamp
 		_blocker_buckets.clear()
 		for blocker in blockers:
 			var center: Vector3 = blocker["center"]
@@ -2621,7 +2655,7 @@ func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dict
 	var blockers: Array[Dictionary] = []
 	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
 	var registered_buildings: Array = []
-	var registered_soft_owners: Array = []
+	var registered_by_owner: Dictionary = {}
 	for world_blocker in _world_route_blockers:
 		var owner = world_blocker.get("owner")
 		if owner is Building and is_instance_valid(owner):
@@ -2641,19 +2675,21 @@ func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dict
 		var owner = blocker.get("owner")
 		if is_instance_valid(route_node) and is_instance_valid(owner) and (not owner is ResourceNode or not owner.depleted):
 			blockers.append(blocker)
-			registered_soft_owners.append({
-				"owner": owner,
-				"center": blocker.get("center", Vector3.INF),
-				"half_extents": blocker.get("half_extents", Vector2.INF),
-			})
+			# Kept by owner: this list is made anew every physics frame, and
+			# matching every soft blocker against every registered one was
+			# thousands of comparisons a frame on a map with 230 blockers.
+			if registered_by_owner.has(owner):
+				registered_by_owner[owner].append(blocker)
+			else:
+				registered_by_owner[owner] = [blocker]
 	for blocker in _navigation_soft_blockers:
 		var node = blocker.get("node")
 		if is_instance_valid(node) and (not node is ResourceNode or not node.depleted):
 			var duplicate := false
 			var center: Vector3 = blocker.get("center", Vector3.INF)
 			var half_extents: Vector2 = blocker.get("half_extents", Vector2.INF)
-			for registered in registered_soft_owners:
-				if registered.get("owner") == node and center.distance_to(registered.get("center", Vector3.INF)) <= 0.01 and half_extents.distance_to(registered.get("half_extents", Vector2.INF)) <= 0.01:
+			for registered in registered_by_owner.get(node, _NO_BLOCKERS):
+				if center.distance_to(registered.get("center", Vector3.INF)) <= 0.01 and half_extents.distance_to(registered.get("half_extents", Vector2.INF)) <= 0.01:
 					duplicate = true
 					break
 			if not duplicate:

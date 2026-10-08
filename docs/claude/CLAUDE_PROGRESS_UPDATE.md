@@ -1237,6 +1237,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - The map check still passes (208 terrain rectangles now); 54 regression checks pass.
   - **Still to do on the pilot:** Salto as a real village, ruins and field walls in the open country, a bridge, hills, and the triangle count in battle.
 
+- **Plan 130 (done): the new map runs as fast as the old ones**
+  - **Result:** a 120-unit battle on open ground of Salto Valley now runs at 39.5 and 40.1 fps (two runs; 1% lows 18.5 and 20.0), against 41.7 on Hollowspan in the same session (1% low 18.8). It was 36 after plan 128 and 15 at the start.
+  - **What it was, found by timing functions on a test copy:** fewer triangles made no difference (5.2 million down to 3.8 million, same frame rate), so the cost was not drawing. Three things in the simulation step: orders and marching steps asked about each of the map's 208 crags in turn (now a lookup by place, worked out once); the index of nearby blockers was rebuilt every frame (now only when a blocker comes or goes); and the list of blockers, made anew every physics frame, matched every soft blocker against every registered one (thousands of comparisons a frame; now matched by owner).
+  - **Also thinner scenery** on authored maps: trees in a wood stand 5.1 m apart and a little taller (were 4.3 m), and a ridge is two rock clusters across each length, not three.
+  - Generated maps take the same code paths and are unchanged in behaviour; 54 regression checks pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
