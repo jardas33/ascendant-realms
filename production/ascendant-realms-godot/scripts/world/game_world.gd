@@ -2000,8 +2000,49 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 		var grid_alternative := _grid_route(origin, final_target, all_blockers)
 		if not grid_alternative.is_empty() and grid_alternative.back().distance_to(Vector3(final_target.x, 0.0, final_target.z)) <= 0.3 and (patched_together or _route_length(origin, grid_alternative) < corner_length * 0.85):
 			points = grid_alternative
+	# Last check on a corner route: no leg may run through a solid body, and
+	# no waypoint may lie beyond the edge of the battlefield (a unit refuses
+	# one, retries four times and gives up where it stands). The corner
+	# solver gave a worker a leg from one corner of its own hall straight
+	# through the hall to the far side. The grid planner takes over then.
+	var needs_grid := _route_crosses_a_body(origin, points, all_blockers, target_blocker)
+	for point in points:
+		if not is_inside_playable_bounds(point):
+			needs_grid = true
+	if needs_grid:
+		var safe_route := _grid_route(origin, final_target, all_blockers)
+		if not safe_route.is_empty():
+			points = safe_route
+	for point_index in points.size():
+		if not is_inside_playable_bounds(points[point_index]):
+			points[point_index] = clamp_to_playable_bounds(points[point_index])
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+## Does any leg of this route pass through the solid part of a blocker (not
+## merely its walking margin)? A blocker that holds the start or the end of a
+## leg is left out: a unit may stand against a wall, and the thing it was sent
+## to is its own business.
+func _route_crosses_a_body(origin: Vector3, points: Array, blockers: Array[Dictionary], target_blocker = null) -> bool:
+	var from := origin
+	for point in points:
+		var to: Vector3 = point
+		for blocker in blockers:
+			var node = blocker.get("node")
+			if not is_instance_valid(node) or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+				continue
+			if is_instance_valid(target_blocker) and (node == target_blocker or blocker.get("owner") == target_blocker):
+				continue
+			var centre: Vector3 = blocker.get("center", node.global_position)
+			var body: Vector2 = blocker.get("half_extents", Vector2(1.0, 1.0))
+			# Half a metre inside the body: grazing a wall is not crossing it.
+			var core := Vector2(maxf(0.3, body.x - 0.5), maxf(0.3, body.y - 0.5))
+			if _point_inside_route_rectangle(from, centre, body) or _point_inside_route_rectangle(to, centre, body):
+				continue
+			if _segment_enters_route_rectangle(from, to, centre, core):
+				return true
+		from = to
+	return false
 
 func _route_length(origin: Vector3, points: Array) -> float:
 	var total := 0.0
@@ -2115,6 +2156,18 @@ func _ensure_grid(blockers: Array[Dictionary]) -> void:
 		var solid := Rect2i(lo, hi - lo + Vector2i.ONE).intersection(_grid.region)
 		if solid.size.x > 0 and solid.size.y > 0:
 			_grid.fill_solid_region(solid, true)
+	# The rim between the playable edge and the edge of the map is not ground
+	# a unit may walk: a route along it squeezed a worker out of bounds
+	# between the edge and the dressing behind a base, where it stayed.
+	var cells_across: int = _grid.region.size.x
+	var first_open := int(ceil((playable_min.x + 0.5 + _grid_half) / GRID_CELL - 0.5))
+	var last_open := int(floor((playable_max.x - 0.5 + _grid_half) / GRID_CELL - 0.5))
+	if first_open > 0:
+		_grid.fill_solid_region(Rect2i(0, 0, first_open, cells_across), true)
+		_grid.fill_solid_region(Rect2i(0, 0, cells_across, first_open), true)
+	if last_open < cells_across - 1:
+		_grid.fill_solid_region(Rect2i(last_open + 1, 0, cells_across - last_open - 1, cells_across), true)
+		_grid.fill_solid_region(Rect2i(0, last_open + 1, cells_across, cells_across - last_open - 1), true)
 	_grid_generation = _route_cache_generation
 
 ## The free cell nearest to `cell` (itself if free), or (-1, -1).
@@ -2322,12 +2375,18 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 		var c: Vector3 = blocker.get("center", node.global_position)
 		var h: Vector2 = _route_blocker_half_extents(blocker, clearance)
 		if absf(requested.x - c.x) <= h.x + 12.0 and absf(requested.z - c.z) <= h.y + 12.0:
-			rects.append([c, h])
+			rects.append([c, h, blocker.get("half_extents", h)])
 	# Margins overlap (a hall and the hamlet behind it), so stepping out of
 	# one can land in the next. Try the nearest candidate first, and from a
 	# candidate that is still inside something, step out of that in turn.
 	var open: Array = [requested]
-	for _try in 24:
+	# The nearest candidate that at least stands outside every solid body,
+	# in case no spot clear of all the margins turns up: where the margins of
+	# a hall and of the dressing behind it overlap, the search used to give
+	# the spot back unchanged, inside the dressing, and the unit walked into
+	# its wall up to fifty metres from where it was sent.
+	var outside_bodies = null
+	for _try in 40:
 		if open.is_empty():
 			break
 		# Nearest to the spot asked for; between equals (the dead centre of a
@@ -2343,10 +2402,13 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 		var p: Vector3 = open[best]
 		open.remove_at(best)
 		var free := true
+		var in_a_body := false
 		for rect in rects:
 			if not _point_inside_route_rectangle(p, rect[0], rect[1]):
 				continue
 			free = false
+			if _point_inside_route_rectangle(p, rect[0], rect[2]):
+				in_a_body = true
 			var c2: Vector3 = rect[0]
 			var h2: Vector2 = rect[1]
 			open.append(Vector3(c2.x - h2.x - 0.05, p.y, p.z))
@@ -2354,8 +2416,15 @@ func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker 
 			open.append(Vector3(p.x, p.y, c2.z - h2.y - 0.05))
 			open.append(Vector3(p.x, p.y, c2.z + h2.y + 0.05))
 		if free:
-			return clamp_to_playable_bounds(p) if p != requested else requested
-	return requested
+			# A way out that lies beyond the edge of the battlefield is no
+			# way out: clamping it back put the spot inside the blocker again
+			# and the unit pushed against it for good. Try the next side.
+			if p != requested and not is_inside_playable_bounds(p):
+				continue
+			return p
+		elif not in_a_body and outside_bodies == null and is_inside_playable_bounds(p):
+			outside_bodies = p
+	return outside_bodies if outside_bodies != null else requested
 
 ## Where a gatherer should stand at `node`. `wanted` is the side it comes
 ## from; if that spot lies in the walking margin of a building, crag or prop
@@ -2395,12 +2464,19 @@ func _route_rectangle_corners(center: Vector3, half_extents: Vector2) -> Array[V
 	# movement. Put route waypoints beyond that stop distance so a unit settling
 	# at a corner cannot still overlap the visible AABB it is clearing.
 	var corner_extents := half_extents + Vector2(ROUTE_WAYPOINT_STOP_MARGIN, ROUTE_WAYPOINT_STOP_MARGIN)
-	return [
+	# A corner beyond the edge of the battlefield is no way round: a unit
+	# refuses a waypoint out there, retries four times and gives up where it
+	# stands (a base in a corner of Goldreach, the village dressing behind it).
+	var corners: Array[Vector3] = []
+	for corner in [
 		center + Vector3(-corner_extents.x, 0.0, -corner_extents.y),
 		center + Vector3(corner_extents.x, 0.0, -corner_extents.y),
 		center + Vector3(corner_extents.x, 0.0, corner_extents.y),
 		center + Vector3(-corner_extents.x, 0.0, corner_extents.y),
-	]
+	]:
+		if is_inside_playable_bounds(corner):
+			corners.append(corner)
+	return corners
 
 func _point_inside_route_rectangle(point: Vector3, center: Vector3, half_extents: Vector2) -> bool:
 	return point.x >= center.x - half_extents.x and point.x <= center.x + half_extents.x and point.z >= center.z - half_extents.y and point.z <= center.z + half_extents.y

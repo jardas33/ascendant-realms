@@ -172,6 +172,12 @@ var _navigation_last_command := ""
 const ORDINARY_MOVE_SETTLE_WINDOW := 0.75
 const CROWDED_ARRIVAL_RADIUS := 7.0
 const CROWDED_ARRIVAL_WINDOW := 2.0
+## A unit on the last leg of a plain move that is within this distance of its
+## spot and has made no progress for BLOCKED_ARRIVAL_WINDOW seconds has gone as
+## far as it can: something solid stands between (it used to stay "moving"
+## against the village dressing behind a base for the rest of the match).
+const BLOCKED_ARRIVAL_RADIUS := 8.0
+const BLOCKED_ARRIVAL_WINDOW := 3.0
 const ORDINARY_MOVE_PROGRESS_THRESHOLD := 0.05
 var _ordinary_move_best_distance := INF
 var _ordinary_move_stalled_elapsed := 0.0
@@ -2656,6 +2662,18 @@ func _state_move(delta: float, attack_move: bool) -> void:
 	var arrived := _move_along_path(delta)
 	if not arrived and _try_near_destination_settlement(delta, attack_move):
 		return
+	if not arrived and _pressed_in_place_too_long(delta):
+		arrived = true
+		_navigation_waypoints.clear()
+		_navigation_waypoint_index = 0
+		_navigation_effective_target = global_position
+		_navigation_last_target = global_position
+		_navigation_target_pending = false
+		_move_target = global_position
+		velocity = Vector3.ZERO
+		if agent:
+			agent.target_position = global_position
+			agent.set_velocity(Vector3.ZERO)
 	if arrived:
 		_reset_ordinary_move_settlement()
 		_attack_move_ordered = false
@@ -2698,7 +2716,11 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	# Right at the spot a short pause is enough; a little way off (the place
 	# is taken by comrades who arrived first) it takes a longer one.
 	var crowded_arrival := attack_move_travel and distance > settle_radius and distance <= CROWDED_ARRIVAL_RADIUS
-	if distance > settle_radius and not crowded_arrival:
+	# Farther off than that it only counts while the unit is pressed against
+	# something that will never move (a wall, a building, the dressing), so a
+	# column held up by its own comrades keeps marching.
+	var blocked_arrival := ordinary_move and distance > settle_radius and (distance <= BLOCKED_ARRIVAL_RADIUS or _pressed_against_static())
+	if distance > settle_radius and not crowded_arrival and not blocked_arrival:
 		_reset_ordinary_move_settlement()
 		return false
 	if _ordinary_move_best_distance == INF:
@@ -2709,7 +2731,7 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 		_ordinary_move_stalled_elapsed = 0.0
 		return false
 	_ordinary_move_stalled_elapsed += delta
-	if _ordinary_move_stalled_elapsed < (CROWDED_ARRIVAL_WINDOW if crowded_arrival else ORDINARY_MOVE_SETTLE_WINDOW):
+	if _ordinary_move_stalled_elapsed < (BLOCKED_ARRIVAL_WINDOW if blocked_arrival else (CROWDED_ARRIVAL_WINDOW if crowded_arrival else ORDINARY_MOVE_SETTLE_WINDOW)):
 		return false
 	_navigation_waypoints.clear()
 	_navigation_waypoint_index = 0
@@ -2728,6 +2750,35 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 	state = State.IDLE
 	_reset_ordinary_move_settlement()
 	return true
+
+## On any leg of a march: a unit that has been pressed against something
+## solid without moving half a metre for WALL_PRESS_WINDOW seconds stops where
+## it is. Whatever route it was given cannot be walked, and a unit that stays
+## "moving" for the rest of the match is never given another order by its AI.
+const WALL_PRESS_WINDOW := 4.0
+var _wall_press_anchor := Vector3.INF
+var _wall_press_elapsed := 0.0
+
+func _pressed_in_place_too_long(delta: float) -> bool:
+	if _wall_press_anchor == Vector3.INF or global_position.distance_to(_wall_press_anchor) > 0.5 or not _pressed_against_static():
+		if _wall_press_anchor == Vector3.INF or global_position.distance_to(_wall_press_anchor) > 0.5:
+			_wall_press_anchor = global_position
+			_wall_press_elapsed = 0.0
+		return false
+	_wall_press_elapsed += delta
+	if _wall_press_elapsed < WALL_PRESS_WINDOW:
+		return false
+	_wall_press_anchor = Vector3.INF
+	_wall_press_elapsed = 0.0
+	return true
+
+## Did the last step slide along a body that never moves (not the ground)?
+func _pressed_against_static() -> bool:
+	for i in get_slide_collision_count():
+		var hit := get_slide_collision(i)
+		if hit.get_collider() is StaticBody3D and absf(hit.get_normal().y) < 0.7:
+			return true
+	return false
 
 func _state_patrol(delta: float) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
