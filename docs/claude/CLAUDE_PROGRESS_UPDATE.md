@@ -1162,11 +1162,14 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Barrosan, tried and rejected:** marching at the usual wave size, which fixed the Ironmaw, changed nothing (11-22 over 36). Four traced matches show nothing unusual in what the AI builds. Their hero falls 3.4 times a match and kills 1.2, the worst ratio of the ten. Next test: damage +12% (was +8%).
   - 52 regression checks pass.
 
-- **Plan 120 (done, matrix running): Barrosan damage +12%**
+- **Plan 120 (done): Barrosan damage +12%; balance round closed**
   - Focus run at +12% damage (was +8%): 16-19 over 36 matches, up from 18-33. Shipped.
   - **Pattern worth a closer look:** the four peoples whose hero fights at range (Lioraen Concord, Vorthak, Compaña, Moura Court) lose their hero 1.3 to 2.3 times a match; the six with a melee hero lose it 2.5 to 3.4 times. The hero's battle level follows (4.3 to 4.7 against 3.8 to 4.1). This may be the root of several of the per-people corrections above, and is the next thing to test.
   - 52 regression checks pass. A 90-match matrix of this build is running.
   - **Correction (2026-10-08):** plans 115 to 119 first called the Lioraen Concord "the Moura Court" in this file, in one code comment and in the thread. The Moura Court is the Sylvan people and was not changed. The entries above are corrected.
+  - **90-match check of plan 120:** all ten peoples between 5-12 and 12-6 (Lioraen Concord 12-6, Careto Host 10-6, Barrosan 7-11, Moura Court 5-12). No people outside the band for the first time since the siege cap.
+  - **The ranged-hero pattern, tested and closed.** Over the three matrices of plans 116 to 118 the ranged-hero peoples won 82 of 140 matches against melee-hero peoples (59%). On the plan 120 build it is 24 of 48 (50%): the per-people fixes had already closed it. A variant with +20% health for the six melee heroes gave 23 of 45 (51%), no different, and was not shipped. New tool: `crosstype.py` scores this from any matrix log.
+  - **State of balance:** closed for now. The next matrix is due after the next change that touches AI or unit numbers, not before.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
