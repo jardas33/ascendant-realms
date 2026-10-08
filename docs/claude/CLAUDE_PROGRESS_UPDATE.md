@@ -1127,45 +1127,46 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **After the fix** four four-player matches (the three maps and Goldreach) all played to a finish in 20 to 27 minutes with nobody left idle.
   - **One-on-one balance, measured after:** two 90-match matrices. Nine peoples stayed in their usual range; the Ironmaw were at about 20%. That turned out to be older than this plan (see plan 115). The rule was also narrowed: the AI only saves for an outpost when the store it lacks can no longer be gathered at home. The buttons check flaked once in the suite (a skill-tree button reported covered) and passed twice alone; same family as the hero-creation flake noted under plan 112.
 
-- **Plan 115 (done): the Ironmaw had been winning on siege engines alone; the Moura Court trimmed**
+- **Plan 115 (done): the Ironmaw had been winning on siege engines alone; the Lioraen Concord trimmed**
   - **What the matrices showed.** After plan 114 the Ironmaw (Grimtusk) won 7 of 32 decided matches over 180; they had been at 47% two days before.
   - **How the cause was found.** A new tool, `claude_focusmatrix.sh`, plays one people against the other nine in both seats, twice (36 matches, about 25 minutes), on a variant of the code in the test copy. Four variants: the code before plan 114, 9-24 (so plan 114 was not the cause); the cap of four siege engines from 2026-10-03 lifted, 21-13; +8% health, 11-25; marching at the usual wave size instead of two soldiers short, 14-19.
   - **The finding.** The cap on siege engines (added because AIs fielded eight to ten at once) was committed without a matrix after it. The Ironmaw AI had been winning on massed Slag Throwers, which cost timber and gold and no food. Capped, its ordinary army was as weak as it had always been (their damage bonus had already been raised three times).
   - **Changes.** The cap stays. The Ironmaw AI marches at the usual wave size (it lost its hero 3.6 times a match marching two short), and Ironmaw troops get +8% health. In the 90-match check after: 5-11-2. Better than 3-13 and 4-12, still last; more work is needed here and it is the next balance item.
-  - **Moura Court (Lioraen).** 37 wins in 52 decided matches over the three matrices (270 matches, 69%), losing 17.5 workers a match against 22 to 30 for everyone else. The Groveheart's healing goes from 6 to 4 a second. Not yet measured after the change.
+  - **Lioraen Concord.** 37 wins in 52 decided matches over the three matrices (270 matches, 69%), losing 17.5 workers a match against 22 to 30 for everyone else. The Groveheart's healing goes from 6 to 4 a second. Not yet measured after the change.
   - **Known gap:** a human player can still mass Slag Throwers; the cap only binds the AI. Whether the unit itself needs a cost in food is an open design question.
   - 52 regression checks pass.
 
 - **Plan 116 (done): a cheaper Ironmaw Breaker**
-  - **Check of plan 115 (90 matches):** Ironmaw 6-12, so 11-23 over the two checks since the wave-size change. Moura Court 11-6 after the healing trim. Everyone else between 6-11 and 12-6.
+  - **Check of plan 115 (90 matches):** Ironmaw 6-12, so 11-23 over the two checks since the wave-size change. Lioraen Concord 11-6 after the healing trim. Everyone else between 6-11 and 12-6.
   - **The Breaker did not match its own description.** "Cheap, fearless and everywhere" cost 55 for 100 health; a Barrosan Clan Levy gives 130 health for the same 55. The Breaker now costs 40 food and trains in 8 seconds (was 50 food and 5 gold, 10 seconds).
   - **Measured:** 20-14 over 35 focus matches with the cheaper Breaker (hero lost 2.2 times a match, down from 3.2; workers lost 18.9, down from 30).
   - **The +8% health of plan 115 is removed again:** it moved nothing by itself (11-25) and the cheaper Breaker does the work. This exact combination (cheaper Breaker, no health bonus) is being measured by a 90-match matrix now.
   - 52 regression checks pass.
-  - **Check of plan 116 (90 matches):** Ironmaw 10-6-2, in range. Everyone else between 5-11 and 10-8 except the Moura Court at 12-4.
+  - **Check of plan 116 (90 matches):** Ironmaw 10-6-2, in range. Everyone else between 5-11 and 10-8 except the Lioraen Concord at 12-4.
 
-- **Plan 117 (done): the Moura Court lose their damage bonus**
+- **Plan 117 (done): the Lioraen Concord lose their damage bonus**
   - **Still too strong after the healing trim:** 60-25 over the five matrices of plans 114 to 116 (450 matches), and 23-10 in the two after the Groveheart went to 4 a second.
   - **Change:** their +4% damage is removed (they keep +6% health and the Groveheart). Measured on the test copy first: 20-16 over 36 focus matches.
   - 52 regression checks pass. No full matrix on this build yet; the next one will include it.
 
 - **Plan 118 (done): after the full check of plan 117**
-  - **90-match check of plan 117:** Moura Court 12-6 (32-22 with the focus run since the damage bonus went: acceptable, left alone). Ironmaw 13-5, so 23-11 over the two full checks with the 40-food Breaker: too much. The Breaker costs 45 food now (still 8 seconds).
+  - **90-match check of plan 117:** Lioraen Concord 12-6 (32-22 with the focus run since the damage bonus went: acceptable, left alone). Ironmaw 13-5, so 23-11 over the two full checks with the 40-food Breaker: too much. The Breaker costs 45 food now (still 8 seconds).
   - **Watching, not changed:** Careto Host (Frostborn) 10-24 and Barrosan 12-22 over those two checks. Both were at 44 to 47% in the three checks before; one more matrix before touching either.
   - **Four-player matches, second look.** Six more matches with elimination order and each AI's target logged every three minutes. Targets are spread across neighbours and shift as outposts go up; no seat is ganged up on (the first seat won two of six, fell first in three). All six played to a finish or to the 30-minute limit with no errors and no stuck units.
   - 52 regression checks pass.
   - **Checks of plan 118:** ladder Normal over Easy 10-0, Hard over Normal 10-4 with 6 undecided. 90-match matrix: Ironmaw 8-10 at 45 food.
 
 - **Plan 119 (done): a cheaper Careto Runner; Barrosan still open**
-  - **Pooled over the three matrices of plans 116 to 118 (270 matches):** eight peoples between 46% and 57% (Moura Court 31-20, Ironmaw 31-21). Barrosan 18-33 and Careto Host (Frostborn) 16-36, low in all three.
+  - **Pooled over the three matrices of plans 116 to 118 (270 matches):** eight peoples between 46% and 57% (Lioraen Concord 31-20, Ironmaw 31-21). Barrosan 18-33 and Careto Host (Frostborn) 16-36, low in all three.
   - **Careto Host:** the Careto Runner cost 70 (60 food, 10 timber) for the same health and damage a Clan Levy has for 55. It costs 55 food and trains in 11 seconds (was 12). Focus run: 15-17 over 36 matches.
   - **Barrosan, tried and rejected:** marching at the usual wave size, which fixed the Ironmaw, changed nothing (11-22 over 36). Four traced matches show nothing unusual in what the AI builds. Their hero falls 3.4 times a match and kills 1.2, the worst ratio of the ten. Next test: damage +12% (was +8%).
   - 52 regression checks pass.
 
 - **Plan 120 (done, matrix running): Barrosan damage +12%**
   - Focus run at +12% damage (was +8%): 16-19 over 36 matches, up from 18-33. Shipped.
-  - **Pattern worth a closer look:** the four peoples whose hero fights at range (Moura Court, Vorthak, Compaña, Moura of the Sylvan Court) lose their hero 1.3 to 2.3 times a match; the six with a melee hero lose it 2.5 to 3.4 times. The hero's battle level follows (4.3 to 4.7 against 3.8 to 4.1). This may be the root of several of the per-people corrections above, and is the next thing to test.
+  - **Pattern worth a closer look:** the four peoples whose hero fights at range (Lioraen Concord, Vorthak, Compaña, Moura Court) lose their hero 1.3 to 2.3 times a match; the six with a melee hero lose it 2.5 to 3.4 times. The hero's battle level follows (4.3 to 4.7 against 3.8 to 4.1). This may be the root of several of the per-people corrections above, and is the next thing to test.
   - 52 regression checks pass. A 90-match matrix of this build is running.
+  - **Correction (2026-10-08):** plans 115 to 119 first called the Lioraen Concord "the Moura Court" in this file, in one code comment and in the thread. The Moura Court is the Sylvan people and was not changed. The entries above are corrected.
 
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
