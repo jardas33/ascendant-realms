@@ -1201,6 +1201,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Two more faults this exposed, both older than the change:** the search for open ground near a blocked spot revisited the same points (out of one rectangle into its neighbour and back) until its tries ran out, then gave the blocked spot back; it now visits each point once. And a unit on its last leg that does not come half a metre nearer in six seconds now stops, whatever holds it (one circled in front of a house for a minute, pushed back by avoidance, touching nothing).
   - **Checks:** 480 base walks on six map runs, one failed (a worker on Goldreach that stopped 6 m from its start beside the enemy hall; not reproduced on the empty map, left open). 53 regression checks pass. Twelve AI matches after: no stuck units, simulation still keeps up at 6x.
 
+- **Plan 125 (done, matrix running): Lioraen Concord health, and marching units that stand still**
+  - **Lioraen Concord:** 36-16 over the three matrices of plans 120 to 123 (270 matches) with the damage bonus already gone. Their health bonus goes from +6% to +2%. Focus run: 22-25 over 54 matches.
+  - **Two stuck units with details, from the first matrices that record them:** a Cinder Spitter standing still in attack-move 110 m from its goal, and a Longbow creeping at a tenth of walking pace 32 m from its own. Neither was on its last leg or pressed against a wall, so the rules of plans 122 to 124 did not cover them.
+  - **Rule (unit.gd):** a unit on the march that stays within a metre of one spot for ten seconds stops there. Its AI then gives it a new order like any idle soldier; a player sees it stop instead of twitching.
+  - 53 regression checks pass. A 90-match matrix is running, since this touches every marching unit, and the ladder check follows it.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

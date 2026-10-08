@@ -609,7 +609,9 @@ func _apply_race_passive() -> void:
 			# did not carry them away from home.
 			# 26-10 over two checks even at +4% damage, with the fewest hero
 			# and worker deaths of anyone: +6% health (was +10%).
-			max_hp *= 1.06
+			# 36-16 over the three checks of plans 120 to 123 (270 matches)
+			# with the damage bonus already gone: +2% (22-25 over 54 focus matches).
+			max_hp *= 1.02
 			# 2-7 and 1-6 in both checks with the new spells (their signature
 			# only heals): a little more bite. 3-3-3 and 3-5-1 after: +8%.
 			# 48-23 over the four six-map checks on the AI of plans 102 to 104 (360 matches), first or second in three of them: +4%.
@@ -2807,10 +2809,28 @@ func _try_near_destination_settlement(delta: float, attack_move: bool) -> bool:
 ## it is. Whatever route it was given cannot be walked, and a unit that stays
 ## "moving" for the rest of the match is never given another order by its AI.
 const WALL_PRESS_WINDOW := 4.0
+## And whatever the cause: a unit on the march that has stayed within a metre
+## of one spot for MARCH_STALL_WINDOW seconds stops there. (A Cinder Spitter
+## stood still in attack-move 110 m from its goal for a minute; a Longbow
+## crept at a tenth of walking pace 32 m from its own.)
+const MARCH_STALL_WINDOW := 10.0
 var _wall_press_anchor := Vector3.INF
 var _wall_press_elapsed := 0.0
+var _march_stall_anchor := Vector3.INF
+var _march_stall_elapsed := 0.0
 
 func _pressed_in_place_too_long(delta: float) -> bool:
+	if _march_stall_anchor == Vector3.INF or global_position.distance_to(_march_stall_anchor) > 1.0:
+		_march_stall_anchor = global_position
+		_march_stall_elapsed = 0.0
+	else:
+		_march_stall_elapsed += delta
+		if _march_stall_elapsed >= MARCH_STALL_WINDOW:
+			_march_stall_anchor = Vector3.INF
+			_march_stall_elapsed = 0.0
+			_wall_press_anchor = Vector3.INF
+			_wall_press_elapsed = 0.0
+			return true
 	if _wall_press_anchor == Vector3.INF or global_position.distance_to(_wall_press_anchor) > 0.5 or not _pressed_against_static():
 		if _wall_press_anchor == Vector3.INF or global_position.distance_to(_wall_press_anchor) > 0.5:
 			_wall_press_anchor = global_position
