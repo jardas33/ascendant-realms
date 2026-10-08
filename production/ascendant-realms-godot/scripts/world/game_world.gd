@@ -173,7 +173,9 @@ func _pick_bounty() -> void:
 	rng.seed = sim_seed_for(4242)
 	var options := [
 		{"id": "hero", "text": "Bounty: slay an enemy hero."},
-		{"id": "swift", "minutes": 12 + rng.randi() % 7, "text": ""},
+		# On a larger battlefield the armies have further to walk (AI matches
+		# run 15 to 24 minutes on a 440 m map, 10 to 17 on a 280 m one).
+		{"id": "swift", "minutes": int(round(float(12 + rng.randi() % 7) * pow(float(map.get("size", MapDefs.MAP_SIZE)) / MapDefs.MAP_SIZE, 0.7))), "text": ""},
 		{"id": "thrift", "losses": 8 + rng.randi() % 8, "text": ""},
 		{"id": "raze", "count": 4 + rng.randi() % 5, "text": ""},
 	]

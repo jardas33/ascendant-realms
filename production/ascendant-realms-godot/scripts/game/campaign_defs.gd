@@ -21,7 +21,7 @@ const JARS_TOTAL := 7
 
 const CHAPTERS := [
 	# ------------------------------------------------------------------ ACT I
-	{"id": "1-1", "act": 0, "title": "The Spring of Seven Mouths", "map": "hollowspan",
+	{"id": "1-1", "act": 0, "title": "The Spring of Seven Mouths", "map": "salto_valley",
 		"opponents": [{"race": "vorthak", "difficulty": "easy"}], "difficulty": "Easy", "unlocks": ["1-2"],
 		"briefing": "Salto, on the night of the Ascension. The Vorthak came over the pass with violet fire and chains, and you fell at the Spring of Seven Mouths with a raider's blade in your side.\n\nThen the spring blazed. You stood up with fire in your eyes, and the Lume, the living memory of the highlands, burned in your hands.\n\nThe village calls you Jardas now. Avó Brites calls you nothing at all; she only watches. Drive the raiders out of Salto before dawn.\n\nBeyond the walls the old veins of the valley still run with gold and grain. Raise a mine on one, send the village in to work it, and Salto will feed your war.",
 		"opening": "The spring chose you. Now show the raiders what that means.",
@@ -76,7 +76,7 @@ const CHAPTERS := [
 		"taunts": ["Malrec: \"I was a Jardas once, you know. Seventy-seven years ago.\"", "Malrec: \"You have your mother's stubbornness. Leonor never listened either.\""],
 		"victory": "Beaten, Malrec took off his mask. Half his face was violet glass. The other half was an old highland farmer's. \"Ask your grandmother why the spring never shows your face,\" he said, and the ash took him away."},
 	# ----------------------------------------------------------------- ACT II
-	{"id": "2-1", "act": 1, "title": "The Dam at Salto", "map": "sunspire_delta",
+	{"id": "2-1", "act": 1, "title": "The Dam at Salto", "map": "rabagao_gorge",
 		"opponents": [{"race": "sunspear", "difficulty": "normal"}], "difficulty": "Normal", "unlocks": ["2-2"],
 		"briefing": "Dominion engineers are surveying the river gorge below Salto. Stakes and ropes mark where the water will rise, right up to the church door.\n\nThe Aurean Dominion won the last Ascension war and never left. Scatter their surveyors before the stakes become a wall.\n\nThe Dominion wants the gorge for its mines. Every vein you hold is one their engineers cannot drown.",
 		"opening": "They are measuring our valley for a grave.",
@@ -273,7 +273,7 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "They are singing Malrec's name. And mine.",
 		"taunts": ["The Glass Choir: \"Furna remembers. Furna ascends.\"", "Malrec's voice, from the glass: \"Be stronger than me, Jardas. Please.\""],
 		"victory": "The choir fell silent. In the quiet you could hear, very far north, the spring of Salto running over."},
-	{"id": "5-5", "act": 4, "title": "Salto Remembers", "map": "hollowspan",
+	{"id": "5-5", "act": 4, "title": "Salto Remembers", "map": "salto_valley",
 		"opponents": [{"race": "hollow", "difficulty": "brutal"}, {"race": "frostborn", "difficulty": "hard"}], "difficulty": "Brutal", "unlocks": ["5-6"],
 		"briefing": "You come home. Salto is empty. The communal oven is warm, and bread is baking, and nobody is there.\n\nThe village has gone to the spring. The Compaña is walking through the streets, and the Caretos are ringing their bells against it one last time.",
 		"opening": "The oven is warm. Somebody is still baking. Somebody still remembers.",

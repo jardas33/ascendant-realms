@@ -1276,6 +1276,13 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 136 (done): three chapters now play on the hand-built maps**
+  - **Decision taken without waiting,** on Emanuel's standing word that Claude decides design questions and that he has no time to test builds: the two hand-built maps are the direction. If he objects, the change below is three words in `campaign_defs.gd`.
+  - **Chapters moved:** 1-1 "The Spring of Seven Mouths" and 5-5 "Salto Remembers" to Salto Valley (both were on Hollowspan), 2-1 "The Dam at Salto" to Rabagao Gorge (was Sunspire Delta). Hollowspan and Sunspire Delta stay as skirmish maps.
+  - **Played through twice each by the stand-in AI:** no errors, no stuck units. 1-1 won in 17 and 19 minutes. 2-1 was undecided at the 30-minute limit both times (Normal against Normal across the dam, four siege engines each): a chapter to watch, since a stalemate for the AI may be a slog for a player. 5-5 lost both times, as most Hard chapters are by that stand-in.
+  - **The "win within N minutes" bounty** scales with the size of the map (12 to 18 minutes on a 280 m map, 16 to 25 on a 440 m one).
+  - 56 regression checks pass (the buttons check flaked once on a skill-tree button and passed alone, the known flake).
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
