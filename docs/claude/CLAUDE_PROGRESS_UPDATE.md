@@ -1214,6 +1214,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **What the stuck-unit log showed in its first full matrix** (6 reports in 90 matches): two were builders standing at their site and building, which the reporter wrongly counted (fixed in the tool). One was a builder twitching 33 m from its site: a builder that stays within a metre for ten seconds on the way now lets the job go. The other three were soldiers reported in a moving state at full speed but in the same place a minute apart. My reading, not traced: they stop under the new rule and their AI sends them to the same spot again. Left open.
   - 53 regression checks pass.
 
+- **Plan 127 (done): first review of Codex's work; two new standing directions from Emanuel (2026-10-08)**
+  - **Directions:** review Codex's work every cycle and leave written feedback; and the maps are too small and simple, each should be a large, complex terrain tied to the story, as in Warlords Battlecry but more beautiful. Maps are now the main workstream.
+  - **Review 1** is in `docs/claude/CODEX_REVIEW_FEEDBACK.md`: Codex's Reliquary UI on plan 116 (`17c64eb3`, about 5,750 new lines). Compiles; 52 of Claude's 53 regression checks pass on a copy; no measurable frame-rate cost in a 120-unit battle against the classic HUD. Five findings, none blocking: the act card can only be dismissed with a mouse click (the one failing check), the saga map saves the profile on every open, three places redraw every frame, a per-unit scan five times a second, and the smallest text at 1366x768.
+  - **Tooling:** `claude_regress_fast.sh` and `claude_run_one.sh` take `CLAUDE_PROJECT`, so the suite runs against any copy of the game.
+  - **Parked:** regrouping the charred walls round Vorthak halls so they can be solid.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
