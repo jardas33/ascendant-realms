@@ -505,7 +505,10 @@ func _apply_race_passive() -> void:
 			# on Fortify (cur_armor) and their cheap, sturdy levy.
 			# 22-44 over the four six-map checks on the AI of plans 102 to 104 (360 matches), once AI heroes defended their bases: +5%.
 			# Still 12-21 over the next two: +8%.
-			base_dmg *= 1.08
+			# 18-33 over the three checks of plans 116 to 118 (270 matches).
+			# Marching at the usual wave size changed nothing (11-22); +12%
+			# gave 16-19 over 36 focus matches.
+			base_dmg *= 1.12
 		"grimtusk":                       # Bloodfury — harder-hitting green tide
 			# Was +12%: 7-1-1 in the plan 39 round robin. Then +8%: 12-4-2 over
 			# the two clean plan 80-81 checks, top both times.

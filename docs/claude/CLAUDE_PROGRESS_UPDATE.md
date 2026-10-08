@@ -1162,6 +1162,11 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Barrosan, tried and rejected:** marching at the usual wave size, which fixed the Ironmaw, changed nothing (11-22 over 36). Four traced matches show nothing unusual in what the AI builds. Their hero falls 3.4 times a match and kills 1.2, the worst ratio of the ten. Next test: damage +12% (was +8%).
   - 52 regression checks pass.
 
+- **Plan 120 (done, matrix running): Barrosan damage +12%**
+  - Focus run at +12% damage (was +8%): 16-19 over 36 matches, up from 18-33. Shipped.
+  - **Pattern worth a closer look:** the four peoples whose hero fights at range (Moura Court, Vorthak, Compaña, Moura of the Sylvan Court) lose their hero 1.3 to 2.3 times a match; the six with a melee hero lose it 2.5 to 3.4 times. The hero's battle level follows (4.3 to 4.7 against 3.8 to 4.1). This may be the root of several of the per-people corrections above, and is the next thing to test.
+  - 52 regression checks pass. A 90-match matrix of this build is running.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
