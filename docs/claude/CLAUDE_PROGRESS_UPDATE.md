@@ -1171,6 +1171,11 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **The ranged-hero pattern, tested and closed.** Over the three matrices of plans 116 to 118 the ranged-hero peoples won 82 of 140 matches against melee-hero peoples (59%). On the plan 120 build it is 24 of 48 (50%): the per-people fixes had already closed it. A variant with +20% health for the six melee heroes gave 23 of 45 (51%), no different, and was not shipped. New tool: `crosstype.py` scores this from any matrix log.
   - **State of balance:** closed for now. The next matrix is due after the next change that touches AI or unit numbers, not before.
 
+- **Plan 121 (done): campaign soak on the new numbers**
+  - **All 44 chapters played to the end with no script errors.** One chapter reached the 30-minute limit undecided (2-3); the rest ended.
+  - **The stand-in AI won fewer chapters, and it is not a regression.** The Normal AI playing the player's side won 10 chapters (15 and 17 in the two soaks of 2 and 3 October). Replaying six of the lost chapters on the scripts of 3 October, in the same project, lost five of the six as well; chapter 5-3 was lost and won in two runs of the same build. The soak's win count swings by that much between runs, so it is a check for errors and stuck units, not a difficulty measure. Noted in the tool.
+  - **One stuck unit in 56 chapter runs:** an Ironmaw Slinger on Cinderpeak (chapter 4-2) spent a minute moving without getting nearer to a spot 15 m away, its first waypoint lying behind it. The same walk on the empty map takes 4 seconds (`claude_movecheck.gd`, new), so buildings standing there at the time were part of it. Not reproduced; left open.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;
