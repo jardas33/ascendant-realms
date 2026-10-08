@@ -194,6 +194,8 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"fords": fords,
 		"woods": woods,
 		"lakes": lakes,
+		"bridges": a.get("bridges", []),
+		"ruins": a.get("ruins", []),
 		"roads": a["roads"],
 		"authored": true,
 	}
@@ -344,6 +346,11 @@ static func _salto_valley() -> Dictionary:
 		"size": 220.0,
 		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(160, 0, -150), Vector3(-160, 0, 150)],
 		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes,
+		# A bridge over each of the two outer fords (the river runs east to
+		# west there, so the deck lies north to south). The centre stays a ford.
+		"bridges": [Vector3(-150, 0, 34), Vector3(150, 0, -34)],
+		# What is left of an old castro in the open country, and its twin.
+		"ruins": [{"at": Vector2(48, -68), "radius": 9.0, "seed": 3}, {"at": Vector2(-48, 68), "radius": 9.0, "seed": 4}],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

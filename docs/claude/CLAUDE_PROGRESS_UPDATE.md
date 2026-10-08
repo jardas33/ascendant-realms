@@ -1243,6 +1243,13 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Also thinner scenery** on authored maps: trees in a wood stand 5.1 m apart and a little taller (were 4.3 m), and a ridge is two rock clusters across each length, not three.
   - Generated maps take the same code paths and are unchanged in behaviour; 54 regression checks pass.
 
+- **Plan 131 (done): bridges, a ruined castro, better fords; and a fault of mine put right**
+  - **Fault:** the commits of plans 129 and 130 (9954cfb5, b0a834c8) shipped Salto Valley with its river invisible. The bank change in plan 129 rebuilt the strip the water is drawn on with its faces pointing down, and the one picture I took after it (the tarn) did not have the river in frame. The river still blocked movement; it was not drawn. Fixed here, and the pictures of this plan show the river, a ford and a bridge. Lesson: after touching a shared drawing helper, look at everything drawn with it.
+  - **Bridges** over the two outer fords (the existing Hollowspan bridge model, with its side rails solid). A unit on the deck walks at full pace; beside it, in the ford, it wades at 62%. A worker crosses 90 m over the bridge in 25 s.
+  - **Fords** now fade from pale shallows into deep water up and down stream, where they were a hard-edged pale rectangle.
+  - **A ruined castro** in the open country south-east of the centre, and its twin: two broken rings of old pillars round a cairn, every pillar solid, with ways in on all sides.
+  - Map check passes; 54 regression checks pass.
+
 - **AI playtest fixes (plan item 1):** 20-minute AI-vs-AI soaks on Hollowspan and Autumn Reach found and fixed:
   - the new timber, food and gold models had wide collision that walled workers out of the gather ring (a regression from the model pass), so the AI economy starved;
   - builders could freeze beside their sites when the route solver returned a path that ended short; units now re-plan once a second in that case;

@@ -411,6 +411,7 @@ func _ready() -> void:
 	_build_rivers()
 	_build_lakes()
 	_build_woods()
+	_build_authored_structures()
 	_m20_end(decoration_stage)
 	var commanders_stage := _m20_begin("GAMEWORLD_COMMANDERS", "GAMEWORLD_READY", 1)
 	_setup_commanders()
@@ -880,6 +881,10 @@ const BRIDGE_HALF_WIDTH := 6.5
 ## True when `pos` (with `margin` metres to spare) stands in the river water
 ## and not on the bridge deck.
 func in_ford(pos: Vector3, margin: float = 0.0) -> bool:
+	# Dry-shod on a bridge deck.
+	for bridge_pos in map.get("bridges", []):
+		if absf(pos.x - bridge_pos.x) <= 4.3 and absf(pos.z - bridge_pos.z) <= 13.0:
+			return false
 	for ford in map.get("fords", []):
 		var offset := Vector2(pos.x - ford["pos"].x, pos.z - ford["pos"].z)
 		var along: Vector2 = ford["dir"]
@@ -1106,19 +1111,23 @@ func _build_rivers() -> void:
 		layer.add_child(water)
 		for sample in samples:
 			clear_ground_cover(Vector3(sample.x, 0.0, sample.y), width * 0.5 + 2.5)
-	# A ford shows: the water over it is pale and shallow from bank to bank.
+	# A ford shows: the water over it is pale and shallow from bank to bank,
+	# deepening again up and down stream (the strip is laid across the river
+	# and fades along it).
 	for ford in map.get("fords", []):
 		var ford_dir: Vector2 = ford["dir"]
+		var ford_across := Vector2(-ford_dir.y, ford_dir.x)
 		var ford_at := Vector2(ford["pos"].x, ford["pos"].z)
 		var reach: float = float(ford["half"])
-		var shallows := _ribbon(PackedVector2Array([ford_at - ford_dir * reach, ford_at - ford_dir * reach * 0.5, ford_at, ford_at + ford_dir * reach * 0.5, ford_at + ford_dir * reach]), float(ford["width"]) * 0.5, 0.11)
+		var half_river: float = float(ford["width"]) * 0.5
+		var shallows := _ribbon(PackedVector2Array([ford_at - ford_across * half_river, ford_at, ford_at + ford_across * half_river]), reach * 1.25, 0.11, reach * 0.6)
 		shallows.name = "FordShallows"
-		if ResourceLoader.exists(shader_path):
-			var shallow_material := ShaderMaterial.new()
-			shallow_material.shader = load(shader_path)
-			shallow_material.set_shader_parameter("deep_tint", Color(0.36, 0.50, 0.42))
-			shallow_material.set_shader_parameter("shallow_tint", Color(0.50, 0.58, 0.44))
-			shallows.material_override = shallow_material
+		var shallow_material := StandardMaterial3D.new()
+		shallow_material.albedo_color = Color(0.62, 0.72, 0.58, 0.62)
+		shallow_material.roughness = 0.25
+		shallow_material.vertex_color_use_as_albedo = true
+		shallow_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		shallows.material_override = shallow_material
 		layer.add_child(shallows)
 	# Stepping stones at each ford.
 	var rng := RandomNumberGenerator.new()
@@ -1141,6 +1150,63 @@ func _build_rivers() -> void:
 				stone.rotation.y = rng.randf() * TAU
 				_prep_decor(stone)
 		load("res://scripts/world/static_batcher.gd").batch(stones)
+
+## Bridges and ruins of an authored map.
+func _build_authored_structures() -> void:
+	var bridges: Array = map.get("bridges", [])
+	var ruins: Array = map.get("ruins", [])
+	if bridges.is_empty() and ruins.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "AuthoredStructures"
+	add_child(layer)
+	for bridge_pos in bridges:
+		if not ResourceLoader.exists(MapDefs.BRIDGE):
+			break
+		var bridge: Node3D = load(MapDefs.BRIDGE).instantiate()
+		layer.add_child(bridge)
+		bridge.position = bridge_pos
+		ModelUtils.scale_to_height(bridge, 8.0)
+		ModelUtils.ground_model(bridge)
+		_tint_hollowspan_bridge(bridge)
+		_register_bridge_structural_blockers(bridge)
+	var pillar_path := "res://assets/environment/structures/ancient_ruin_pillar.glb"
+	var cairn_path := "res://assets/environment/visual_convergence/small_stone_cairn.glb"
+	for ruin in ruins:
+		if not ResourceLoader.exists(pillar_path):
+			break
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 6100 + int(ruin.get("seed", 0))
+		var centre := Vector3(ruin["at"].x, 0.0, ruin["at"].y)
+		var radius: float = float(ruin.get("radius", 9.0))
+		var holder := Node3D.new()
+		holder.name = "CastroRuin"
+		layer.add_child(holder)
+		holder.position = centre
+		# Two broken rings of pillars: most standing, some short, one in three
+		# gone, so there are ways in from every side.
+		for ring in [[radius, 11], [radius * 0.55, 6]]:
+			var count: int = ring[1]
+			for i in count:
+				if rng.randf() < 0.34:
+					continue
+				var a := TAU * float(i) / float(count) + rng.randf_range(-0.12, 0.12)
+				var pillar: Node3D = load(pillar_path).instantiate()
+				holder.add_child(pillar)
+				pillar.position = Vector3(cos(a), 0.0, sin(a)) * float(ring[0])
+				ModelUtils.scale_to_height(pillar, rng.randf_range(3.2, 5.6) if rng.randf() < 0.7 else rng.randf_range(1.2, 2.2))
+				ModelUtils.ground_model(pillar)
+				pillar.rotation = Vector3(rng.randf_range(-0.07, 0.07), rng.randf() * TAU, rng.randf_range(-0.07, 0.07))
+				for body in pillar.find_children("*", "CollisionObject3D", true, false):
+					body.queue_free()
+				_register_environment_world_blocker(pillar, "castro_pillar", "presentation")
+		if ResourceLoader.exists(cairn_path):
+			var cairn: Node3D = load(cairn_path).instantiate()
+			holder.add_child(cairn)
+			ModelUtils.scale_to_height(cairn, 1.8)
+			ModelUtils.ground_model(cairn)
+			_register_environment_world_blocker(cairn, "castro_cairn", "presentation")
+		clear_ground_cover(centre, radius + 1.5)
 
 ## Wet earth that fades out at its edge (the fade is in the vertex colours).
 func _bank_material() -> StandardMaterial3D:
@@ -1177,7 +1243,8 @@ func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_hal
 		runs.append(run)
 	for i in samples.size() - 1:
 		for c in columns.size() - 1:
-			for corner in [[i, c], [i, c + 1], [i + 1, c], [i, c + 1], [i + 1, c + 1], [i + 1, c]]:
+			# (Wound so the faces look up.)
+			for corner in [[i, c], [i + 1, c], [i, c + 1], [i, c + 1], [i + 1, c], [i + 1, c + 1]]:
 				var column: Array = columns[corner[1]]
 				tool.set_normal(Vector3.UP)
 				tool.set_color(Color(1.0, 1.0, 1.0, float(column[1])))
