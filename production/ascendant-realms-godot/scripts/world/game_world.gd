@@ -1195,6 +1195,9 @@ func _build_authored_structures() -> void:
 				holder.add_child(pillar)
 				pillar.position = Vector3(cos(a), 0.0, sin(a)) * float(ring[0])
 				ModelUtils.scale_to_height(pillar, rng.randf_range(3.2, 5.6) if rng.randf() < 0.7 else rng.randf_range(1.2, 2.2))
+				# Stout, as a castro's stones are: at the model's own
+				# proportions they read as fence posts from the game's height.
+				pillar.scale = Vector3(pillar.scale.x * 2.1, pillar.scale.y, pillar.scale.z * 2.1)
 				ModelUtils.ground_model(pillar)
 				pillar.rotation = Vector3(rng.randf_range(-0.07, 0.07), rng.randf() * TAU, rng.randf_range(-0.07, 0.07))
 				for body in pillar.find_children("*", "CollisionObject3D", true, false):
