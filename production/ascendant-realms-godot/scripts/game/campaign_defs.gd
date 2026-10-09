@@ -145,7 +145,7 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "Wake up, old stones. The war you are fighting is over.",
 		"taunts": ["A guardian: \"The walls must hold. The walls must hold.\"", "Carvalho: \"Careful. Some of them are my grandfathers.\""],
 		"victory": "When the last guardian knelt, the castro went quiet, and the stones settled back into walls. Carvalho stayed behind a long time, reading names cut into the gate that no one else could see."},
-	{"id": "3-2", "act": 2, "title": "The Eldest Mask", "map": "glacier_pass",
+	{"id": "3-2", "act": 2, "title": "The Eldest Mask", "map": "larouco_road",
 		"opponents": [{"race": "frostborn", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-3", "3-S1"],
 		"briefing": "The Careto Host has come down from the Larouco in red and green fringes, with iron cowbells and horned masks. They block the only road to the Castro of Carvalhelhos.\n\nThey laugh while they fight. They have been laughing at you since the Act began.",
 		"opening": "Cowbells in the snow. The Caretos are coming.",

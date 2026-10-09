@@ -983,12 +983,14 @@ func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF
 		return best
 	return pos
 
-## Scorched themes have no moss and no green: ridge rock, hill turf and the
-## trees of a wood are toned to the ground they stand on.
+## Scorched and snowbound themes have no moss and no green: ridge rock, hill
+## turf and trees are toned to the ground they stand on.
 func _scorched_tone(what: String) -> Color:
 	var tones: Dictionary = {
 		"volcanic": {"rock": Color(0.62, 0.40, 0.35), "turf": Color(0.34, 0.25, 0.23), "tree": Color(0.50, 0.38, 0.30)},
 		"ashen": {"rock": Color(0.62, 0.56, 0.62), "turf": Color(0.36, 0.34, 0.38), "tree": Color(0.52, 0.48, 0.50)},
+		# Under snow: cold rock with the moss greyed, white hills, frosted trees.
+		"snow": {"rock": Color(0.78, 0.80, 1.0), "turf": Color(0.385, 0.385, 0.39), "tree": Color(0.60, 0.76, 0.74)},
 	}
 	var theme_name := str(map.get("theme", "highland"))
 	if not tones.has(theme_name):
@@ -1326,7 +1328,8 @@ func _build_hills() -> void:
 	var scorched := _scorched_tone("turf") != Color.WHITE
 	if scorched:
 		# A cinder cone: bare slag, no grass.
-		var slag_path := "res://assets/textures/ground/vorthak_volcanic_ash_r1.png" if str(map.get("theme", "")) == "volcanic" else "res://assets/textures/stone/highland_rock.png"
+		var slag_by_theme: Dictionary = {"volcanic": "res://assets/textures/ground/vorthak_volcanic_ash_r1.png", "snow": "res://assets/textures/nature/frostmere_windswept_snow_r1.png"}
+		var slag_path: String = slag_by_theme.get(str(map.get("theme", "")), "res://assets/textures/stone/highland_rock.png")
 		turf.albedo_texture = load(slag_path) if ResourceLoader.exists(slag_path) else null
 		turf.albedo_color = _scorched_tone("turf") * 2.6
 	turf.roughness = 1.0
@@ -1389,7 +1392,7 @@ func _build_hills() -> void:
 				rock.position = Vector3(at.x, at.y + rock.position.y - 0.4, at.z)
 				rock.rotation.y = rng.randf() * TAU
 				_prep_decor(rock, _scorched_tone("rock"))
-		for k in (0 if scorched else 5):
+		for k in (0 if scorched and str(map.get("theme", "")) != "snow" else 5):
 			var a := rng.randf() * TAU
 			var t := rng.randf_range(0.0, 0.45)
 			var at: Vector3 = point.call(t, a)

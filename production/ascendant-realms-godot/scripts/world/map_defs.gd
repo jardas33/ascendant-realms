@@ -87,6 +87,7 @@ static func _specs() -> Array:
 		{"id":"furna_reservoir","name":"Furna Below the Water","theme":"wetland","authored":"furna"},
 		{"id":"envoys_field","name":"The Envoy's Field","theme":"highland","authored":"envoy"},
 		{"id":"boticas","name":"Boticas","theme":"ashen","authored":"boticas"},
+		{"id":"larouco_road","name":"The Larouco Road","theme":"snow","authored":"larouco"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -154,6 +155,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"furna": a = _furna_reservoir()
 		"envoy": a = _envoys_field()
 		"boticas": a = _boticas()
+		"larouco": a = _larouco_road()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1066,6 +1068,70 @@ static func _boticas() -> Dictionary:
 			{"at": Vector2(4, -64), "radius": 8.0, "seed": 83}, {"at": Vector2(-4, 64), "radius": 8.0, "seed": 84},
 		],
 		"farmsteads": farmsteads,
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Larouco Road (saga 3-2, "The Eldest Mask"). 440 m across, under snow.
+## The only road to the castro climbs in a switchback between two mountain
+## walls that cross the whole map. Each wall has one gate wide enough for an
+## army and one postern far off at its other end, and the gates are at
+## opposite ends, so the road runs the length of the shelf between the
+## walls. The Caretos hold that shelf.
+static func _larouco_road() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		# The southern wall: rim to postern, postern to gate, gate to rim.
+		[Vector2(-226, -36), Vector2(-192, -42), Vector2(-164, -38)],
+		[Vector2(-136, -42), Vector2(-80, -36), Vector2(-10, -44), Vector2(56, -38)],
+		[Vector2(100, -42), Vector2(160, -36), Vector2(226, -44)],
+		# A spur that shelters the walled start.
+		[Vector2(-120, -100), Vector2(-150, -92), Vector2(-178, -102)],
+	]:
+		ridges.append({"points": line, "thickness": 12.0})
+		ridges.append({"points": _twin_points(line), "thickness": 12.0})
+	var woods: Array = []
+	var wood_seed := 12.6
+	for wood in [[-30, -112, 22, 16], [-100, 98, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 2.1
+	var hills: Array = [
+		{"at": Vector2(150, -94), "radii": Vector2(16, 12), "height": 10.0, "seed": 7.3},
+		{"at": Vector2(-150, 94), "radii": Vector2(16, 12), "height": 10.0, "seed": 7.3 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -112, -74)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -200, -72)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 72)
+	_pair_point(veins, "gold", -40, 10)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -62, -18)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -120, 0)
+	_pair_point(deposits, "food", -196, 4)
+	var sites: Array = [
+		{"name": "The Eldest Mask", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Bell Ringers' Fire", "benefit": "heal", "pos": Vector3(-60, 0, -86), "model": RUIN},
+		{"name": "The Castro Road Shrine", "benefit": "heal", "pos": Vector3(60, 0, 86), "model": RUIN},
+		{"name": "South Gate Watch", "benefit": "vision", "pos": Vector3(122, 0, -68), "model": WATCH},
+		{"name": "North Gate Watch", "benefit": "vision", "pos": Vector3(-122, 0, 68), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -40, -128), Vector4(-40, -128, 62, -76), Vector4(62, -76, 78, -40), Vector4(78, -40, 44, 0), Vector4(44, 0, 0, 0),
+		Vector4(160, 150, 40, 128), Vector4(40, 128, -62, 76), Vector4(-62, 76, -78, 40), Vector4(-78, 40, -44, 0), Vector4(-44, 0, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-150, 6), "radius": 8.0, "seed": 91}, {"at": Vector2(150, -6), "radius": 8.0, "seed": 92}],
+		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
