@@ -1276,6 +1276,11 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 168 (done): the confirmation run for plan 167**
+  - The same 90 pairings on the same six hand-built maps as the first run of plan 165, with the two damage bonuses in. 87 ended inside 30 minutes.
+  - **Result:** Barrosan Clans 12-5, The Compaña 11-7, Moura Court 9-8, Lioraen Concord 9-8, Careto Host 9-8, Aurean Dominion 8-9, Wolfveil Clans 8-9, Granitborn 8-10, Vorthak Cabal 7-11, Ironmaw Horde 6-12.
+  - **Reading it:** the two peoples that were last (5-13 and 6-12 on these maps in the first run) are in the middle of the table. The spread is 6-12 to 12-5. This is one run of 18 matches a people, so the order in the middle means nothing; what it shows is that neither is at the bottom any more and nobody has run away. The Ironmaw Horde at 6-12 here was 15-18 over the 180 pooled matches; one run does not make it weak.
+  - **Seats:** first seat 46, second 41.
 - **Plan 167 (done): the two weak peoples on the big maps get a damage bonus; why they are weak there; a seat unevenness I am leaving**
   - **Why they are weak on big ground.** The Lioraen Concord and the Aurean Dominion are the only two of the ten peoples with no tier-three fighter: their only tier-three unit is a siege engine, where every other people has a heavy fighter or a caster as well. Matches on the hand-built maps last longer (19 minutes against 16), reach tier three more often, and are fought further from home, where the Lioraen grove's healing and the Dominion's steady regeneration count for less. Both had been cut back on the small maps, where they were on top.
   - **Tests** (36 matches each, the people against the other nine in both seats; "new" is six hand-built maps, "old" the six small maps used all along):
