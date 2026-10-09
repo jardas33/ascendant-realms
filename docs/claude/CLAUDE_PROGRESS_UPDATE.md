@@ -1276,6 +1276,10 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 142 (done): The Bread Fountain, an island map (chapter 2-3)**
+  - **The map,** 440 m, verdant: the fountain stands on an island. Its stream runs in a closed ring round it (a river whose line ends where it began; no new world code was needed) and four fords cross it, one facing each start. Stoneworks terraces outside the ring, four crofts, six woods. Chapter 2-3 plays on it (was Bloomvale, which 5-3 still uses).
+  - **Checked:** soundness; 60 worker and 60 soldier walks, none failed; 17 of 17 outposts built (one more interrupted by the enemy); two AI matches ended in 24 and 27 minutes, no stuck units. Chapter 2-3 by the stand-in: won once in 26 minutes, lost once in 21.
+  - **Nine hand-built maps now carry ten chapters:** 1-1 to 1-6, 2-1 to 2-3 and 5-5.
 - **Plan 141 (done): Grove of Seven Fountains (chapter 2-2), and woods that are properly green**
   - **The map,** 440 m, verdant: old forest in twelve broad belts with glades and rides between them; six fountain pools in a ring round the seventh at the heart of the grove (the Spring of Seven Mouths model from 1-1, which is the income site). Chapter 2-2 plays on it (was Verdant Hollows).
   - **Woods were pale:** trees inside a wood had no foliage tone and looked washed-out mint beside the deep green scattered trees. They now use the same two tones (one per kind of tree). This changes every hand-built map for the better; it does not touch the older maps, which have no woods.

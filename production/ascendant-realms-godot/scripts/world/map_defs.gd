@@ -83,6 +83,7 @@ static func _specs() -> Array:
 		{"id":"tourem_crossing","name":"Tourem Crossing","theme":"highland","authored":"tourem"},
 		{"id":"malrecs_pyre","name":"Malrec's Pyre","theme":"volcanic","authored":"pyre"},
 		{"id":"seven_fountains","name":"Grove of Seven Fountains","theme":"verdant","authored":"grove"},
+		{"id":"bread_fountain","name":"The Bread Fountain","theme":"verdant","authored":"fountain"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -146,6 +147,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"tourem": a = _tourem_crossing()
 		"pyre": a = _malrecs_pyre()
 		"grove": a = _seven_fountains()
+		"fountain": a = _bread_fountain()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -792,6 +794,76 @@ static func _seven_fountains() -> Dictionary:
 		"bridges": [],
 		"ruins": [{"at": Vector2(-176, -62), "radius": 8.0, "seed": 51}, {"at": Vector2(176, 62), "radius": 8.0, "seed": 52}],
 		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Bread Fountain (saga 2-3, "Where the Bread Was Left"). 440 m across.
+## The fountain stands on an island: its water runs out in a ring before it
+## finds the valley, and the island can be reached by four fords, one facing
+## each start. The Dominion's stoneworks stand on the terraces outside the
+## ring, and two crofts of the women who leave the bread lie on each side.
+static func _bread_fountain() -> Dictionary:
+	# The ring stream: sixteen points round the island, closed on itself.
+	var ring: Array = []
+	for k in 17:
+		var angle := PI * 0.25 + TAU * float(k) / 16.0
+		ring.append(Vector2(cos(angle), sin(angle)) * (60.0 + 5.0 * cos(angle * 4.0)))
+	var fords: Array = []
+	for k in 4:
+		var angle := deg_to_rad(45.0 + 90.0 * float(k))
+		fords.append({"at": Vector2(cos(angle), sin(angle)) * 55.0, "half": 12.0})
+	var rivers: Array = [{"points": ring, "width": 12.0, "fords": fords}]
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+		# The stoneworks terraces.
+		[Vector2(-150, 20), Vector2(-140, 44), Vector2(-124, 60)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 8.8
+	for wood in [[-30, -114, 22, 18], [-192, 40, 12, 16], [-70, 100, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.3
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -98, 20)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -78, -52)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -126, -6)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Bread Fountain", "benefit": "income", "pos": Vector3.ZERO, "model": SPRING},
+		{"name": "The Mason's Yard", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Washing Stones", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Terrace Watch", "benefit": "vision", "pos": Vector3(-40, 0, 132), "model": WATCH},
+		{"name": "South Terrace Watch", "benefit": "vision", "pos": Vector3(40, 0, -132), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -39, -39), Vector4(-39, -39, 0, 0), Vector4(160, 150, 39, 39), Vector4(39, 39, 0, 0),
+		Vector4(-160, 150, -39, 39), Vector4(-39, 39, 0, 0), Vector4(160, -150, 39, -39), Vector4(39, -39, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": [], "hills": [],
+		"bridges": [],
+		"ruins": [],
+		"farmsteads": [
+			{"at": Vector2(-106, -20), "yaw": 1.2}, {"at": Vector2(106, 20), "yaw": 1.2 + PI},
+			{"at": Vector2(10, -94), "yaw": 0.2}, {"at": Vector2(-10, 94), "yaw": 0.2 + PI},
+		],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

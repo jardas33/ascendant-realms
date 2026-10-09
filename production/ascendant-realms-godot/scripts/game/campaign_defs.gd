@@ -94,7 +94,7 @@ const CHAPTERS := [
 		"opening": "Nobody on this path has a name tonight. Keep it that way.",
 		"taunts": ["A Dominion officer: \"Smuggling is theft from the Regent.\"", "An old smuggler: \"The mountain has more paths than the Regent has soldiers.\""],
 		"victory": "The last family crossed at dawn. The old smuggler pressed a worn tin compass into your hand. 'It always points home,' he said. 'Mine is gone. Yours is not.'"},
-	{"id": "2-3", "act": 1, "title": "Where the Bread Was Left", "map": "bloomvale",
+	{"id": "2-3", "act": 1, "title": "Where the Bread Was Left", "map": "bread_fountain",
 		"opponents": [{"race": "sunspear", "difficulty": "normal"}], "difficulty": "Normal", "unlocks": ["2-4", "2-S1"],
 		"briefing": "At the fountain where highland women still leave bread for the Mouras, Dominion soldiers are pouring stone into the spring.\n\nFight beside the Lioraen. And ask them, at last, what they really are.",
 		"opening": "Ilduara: \"Fight with us, Jardas. We will tell you everything.\"",
