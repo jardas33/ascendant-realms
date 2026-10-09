@@ -356,7 +356,9 @@ const EVENTS := {
 	"4-3": {"allies": {"units": ["grimtusk_grunt", "grimtusk_grunt", "grimtusk_berserker", "grimtusk_bowcrusha"], "line": "Warboss Brasa: \"The Ironmaw keep their word. Point us at the bronze.\""},
 		"waves": [{"at": 420, "team": 1, "units": ["sunspear_phalanx", "sunspear_phalanx", "sunspear_charioteer", "sunspear_charioteer"], "line": "A legate: \"The Wall's garrison marches!\""}]},
 	"4-S1": {"allies": {"units": ["barrosan_clan_levy", "barrosan_clan_levy"], "line": "Covelo's young men cheer for your bull."}},
-	"5-2": {"allies": {"units": ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_crag_archer"], "line": "The castellan of Montalto: \"This keep has never opened its gates to an enemy. Not today.\""}},
+	"5-2": {"allies": {"units": ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_crag_archer"], "line": "The castellan of Montalto: \"This keep has never opened its gates to an enemy. Not today.\""},
+		# A watchtower inside each of the keep's three gates.
+		"towers": [Vector3(8, 0, 34), Vector3(-52, 0, -42), Vector3(52, 0, -42)]},
 	"5-5": {"allies": {"units": ["frostborn_reaver", "frostborn_reaver", "frostborn_berserker"], "line": "O Velho: \"Last dance, cousin. We dance it together.\""}},
 	"5-7": {"allies": {"units": ["wyldkin_clawwarrior", "wyldkin_clawwarrior", "wyldkin_direwolf", "wyldkin_direwolf"], "line": "Sétimo: \"The wolves remember who freed them.\""},
 		"waves": [{"at": 180, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_charioteer"], "line": "The Dominion's last legion comes up the road."},

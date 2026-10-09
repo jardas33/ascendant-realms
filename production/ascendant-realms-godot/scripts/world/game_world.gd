@@ -4979,6 +4979,21 @@ func _start_saga_events() -> void:
 		get_tree().create_timer(8.0, false).timeout.connect(func():
 			if game_running:
 				emit_signal("alert", String(ev["allies"]["line"]), Vector3.ZERO))
+	# Standing defences: towers of the player's own people, already built,
+	# at the places a chapter names (the gates of Montalto's keep).
+	if ev.has("towers") and is_instance_valid(player_commander):
+		var tower_id := ""
+		var all_buildings_defs: Dictionary = BuildingDefs.get_all()
+		for building_id in all_buildings_defs:
+			var tower_def: Dictionary = all_buildings_defs[building_id]
+			if String(tower_def.get("race", "")) == String(player_commander.race) and String(tower_def.get("kind", "")) == "tower":
+				tower_id = String(building_id)
+				break
+		if tower_id != "":
+			for tower_pos in ev["towers"]:
+				var tower_bdef: Dictionary = (all_buildings_defs[tower_id] as Dictionary).duplicate()
+				tower_bdef["id"] = tower_id
+				_create_building(tower_bdef, player_team, open_ground_near(tower_pos, 2.0), true)
 	for wave in ev.get("waves", []):
 		get_tree().create_timer(float(wave["at"]), false).timeout.connect(func(): _spawn_saga_wave(wave))
 
