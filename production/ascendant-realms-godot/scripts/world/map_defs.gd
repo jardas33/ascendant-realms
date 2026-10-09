@@ -92,6 +92,8 @@ static func _specs() -> Array:
 		{"id":"candle_road","name":"The Candle Road","theme":"wetland","authored":"candle"},
 		{"id":"leonors_cross","name":"Leonor's Cross","theme":"ashen","authored":"cross"},
 		{"id":"four_peaks","name":"The Four Peaks of the Larouco","theme":"snow","authored":"peaks"},
+		{"id":"geira_road","name":"The Geira Road","theme":"highland","authored":"geira"},
+		{"id":"ironmaw_mines","name":"The Lume-Iron Mines","theme":"volcanic","authored":"mines"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -164,6 +166,8 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"candle": a = _candle_road()
 		"cross": a = _leonors_cross()
 		"peaks": a = _four_peaks()
+		"geira": a = _geira_road()
+		"mines": a = _ironmaw_mines()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1396,6 +1400,137 @@ static func _four_peaks() -> Dictionary:
 		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
 		"bridges": [],
 		"ruins": [{"at": Vector2(-150, 8), "radius": 8.0, "seed": 121}, {"at": Vector2(150, -8), "radius": 8.0, "seed": 122}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Geira Road (saga 4-1). 440 m across. The old road runs dead straight
+## from the north rim to the south, over two rivers by two bridges, past
+## milestones older than the Dominion. The rivers cut the map into three
+## bands: two starts in the south band, two in the north, and the gold of
+## the southern veins in the band between. Each river can also be waded far
+## out on either wing.
+static func _geira_road() -> Dictionary:
+	var south: Array = [Vector2(-232, -64), Vector2(-150, -72), Vector2(-80, -66), Vector2(-30, -70), Vector2(0, -70),
+		Vector2(30, -70), Vector2(80, -74), Vector2(150, -68), Vector2(232, -76)]
+	var north: Array = []
+	for index in range(south.size() - 1, -1, -1):
+		north.append(-south[index])
+	var rivers: Array = [
+		{"points": south, "width": 14.0, "fords": [{"at": Vector2(-150, -72), "half": 11.0}, {"at": Vector2(0, -70), "half": 13.0}, {"at": Vector2(150, -68), "half": 11.0}]},
+		{"points": north, "width": 14.0, "fords": [{"at": Vector2(150, 72), "half": 11.0}, {"at": Vector2(0, 70), "half": 13.0}, {"at": Vector2(-150, 68), "half": 11.0}]},
+	]
+	var woods: Array = []
+	var wood_seed := 17.2
+	for wood in [[-204, -30, 12, 16], [-60, 26, 16, 12], [-40, -132, 18, 12], [-206, -176, 10, 10], [206, -176, 10, 10]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.3
+	var hills: Array = [
+		{"at": Vector2(-162, 24), "radii": Vector2(14, 10), "height": 8.0, "seed": 2.4},
+		{"at": Vector2(162, -24), "radii": Vector2(14, 10), "height": 8.0, "seed": 2.4 + PI},
+	]
+	var veins: Array = []
+	for side in [-1.0, 1.0]:
+		_pair_point(veins, "gold", 110 * side, -118)
+		_pair_point(veins, "food", 62 * side, -152)
+		_pair_point(veins, "stone", 204 * side, -112)
+		_pair_point(veins, "timber", 130 * side, -202)
+	# The southern veins: the band between the rivers is rich in gold.
+	_pair_point(veins, "gold", -60, -20)
+	_pair_point(veins, "gold", -122, 20)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -92, 12)
+	_pair_point(deposits, "stone", -40, 162)
+	_pair_point(deposits, "timber", -184, 0)
+	_pair_point(deposits, "food", -24, -40)
+	var sites: Array = [
+		{"name": "The Golden Milestone", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Muleteers' Well", "benefit": "heal", "pos": Vector3(-100, 0, -26), "model": RUIN},
+		{"name": "The Legionaries' Well", "benefit": "heal", "pos": Vector3(100, 0, 26), "model": RUIN},
+		{"name": "West Ford Stone", "benefit": "vision", "pos": Vector3(-152, 0, -102), "model": WATCH},
+		{"name": "East Ford Stone", "benefit": "vision", "pos": Vector3(152, 0, 102), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(0, -212, 0, -70), Vector4(0, -70, 0, 70), Vector4(0, 70, 0, 212),
+		Vector4(-160, -150, 0, -128), Vector4(160, -150, 0, -128), Vector4(160, 150, 0, 128), Vector4(-160, 150, 0, 128),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": rivers, "ridges": [], "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [Vector3(0, 0, -70), Vector3(0, 0, 70)],
+		# Milestones beside the road.
+		"ruins": [
+			{"at": Vector2(12, -108), "radius": 5.0, "seed": 131}, {"at": Vector2(-12, 108), "radius": 5.0, "seed": 132},
+			{"at": Vector2(12, -34), "radius": 5.0, "seed": 133}, {"at": Vector2(-12, 34), "radius": 5.0, "seed": 134},
+		],
+		"farmsteads": [
+			{"at": Vector2(-38, -104), "yaw": 1.2}, {"at": Vector2(38, 104), "yaw": 1.2 + PI},
+			{"at": Vector2(38, -104), "yaw": -1.2}, {"at": Vector2(-38, 104), "yaw": -1.2 + PI},
+		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Lume-Iron Mines (saga 4-2, "Ironmaw Rising"). 440 m across, on
+## volcanic ground. The workings are cut into nine chambers by four rock
+## walls, two running east to west and two north to south, and every wall
+## between two chambers has one wide gate in the middle of it. A start in each
+## corner chamber; the seam in the centre chamber, between two slag pits.
+## Three armies cannot all hold the same gate.
+static func _ironmaw_mines() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		# The southern cross wall, with a gate into each chamber it bounds.
+		[Vector2(-226, -50), Vector2(-192, -52), Vector2(-159, -50)],
+		[Vector2(-117, -50), Vector2(-70, -48), Vector2(-21, -50)],
+		[Vector2(21, -50), Vector2(70, -52), Vector2(117, -50)],
+		[Vector2(159, -50), Vector2(192, -48), Vector2(226, -50)],
+		# The western long wall.
+		[Vector2(-56, -226), Vector2(-58, -190), Vector2(-56, -156)],
+		[Vector2(-56, -114), Vector2(-54, -68), Vector2(-56, -21)],
+		[Vector2(-56, 21), Vector2(-58, 68), Vector2(-56, 114)],
+		[Vector2(-56, 156), Vector2(-54, 190), Vector2(-56, 226)],
+	]:
+		ridges.append({"points": line, "thickness": 10.0})
+		ridges.append({"points": _twin_points(line), "thickness": 10.0})
+	# Slag pits.
+	var lakes: Array = [
+		{"at": Vector2(-28, 26), "radii": Vector2(10, 8), "seed": 6.2}, {"at": Vector2(28, -26), "radii": Vector2(10, 8), "seed": 6.2 + PI},
+		{"at": Vector2(30, -172), "radii": Vector2(16, 10), "seed": 7.4}, {"at": Vector2(-30, 172), "radii": Vector2(16, 10), "seed": 7.4 + PI},
+		{"at": Vector2(-178, 30), "radii": Vector2(12, 10), "seed": 8.6}, {"at": Vector2(178, -30), "radii": Vector2(12, 10), "seed": 8.6 + PI},
+	]
+	var veins: Array = []
+	for sign in [-1.0, 1.0]:
+		_pair_point(veins, "gold", -98, 82 * sign)
+		_pair_point(veins, "food", -92, 192 * sign)
+		_pair_point(veins, "stone", -200, 92 * sign)
+		_pair_point(veins, "timber", -198, 198 * sign)
+	_pair_point(veins, "gold", -150, -16)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -100, 18)
+	_pair_point(deposits, "stone", -22, -128)
+	_pair_point(deposits, "timber", -198, -22)
+	_pair_point(deposits, "food", 22, -150)
+	var sites: Array = [
+		{"name": "The Lume-Iron Seam", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Slave Pens", "benefit": "heal", "pos": Vector3(0, 0, -98), "model": RUIN},
+		{"name": "Brasa's Forge", "benefit": "heal", "pos": Vector3(0, 0, 98), "model": RUIN},
+		{"name": "West Gallery Watch", "benefit": "vision", "pos": Vector3(-96, 0, -16), "model": WATCH},
+		{"name": "East Gallery Watch", "benefit": "vision", "pos": Vector3(96, 0, 16), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -56, -135), Vector4(-56, -135, 0, -100), Vector4(0, -100, 0, 0),
+		Vector4(160, 150, 56, 135), Vector4(56, 135, 0, 100), Vector4(0, 100, 0, 0),
+		Vector4(-160, 150, -138, 50), Vector4(-138, 50, -56, 0), Vector4(-56, 0, 0, 0),
+		Vector4(160, -150, 138, -50), Vector4(138, -50, 56, 0), Vector4(56, 0, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": [], "lakes": lakes, "hills": [],
+		"bridges": [],
+		"ruins": [{"at": Vector2(-30, -78), "radius": 7.0, "seed": 141}, {"at": Vector2(30, 78), "radius": 7.0, "seed": 142}],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}

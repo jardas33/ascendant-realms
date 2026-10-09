@@ -1444,6 +1444,15 @@ func _build_lakes() -> void:
 			sheet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			if pass_index == 0:
 				sheet.material_override = _bank_material()
+			elif str(map.get("theme", "")) == "volcanic":
+				# On volcanic ground a tarn is a pool of molten slag.
+				var slag := StandardMaterial3D.new()
+				slag.albedo_color = Color(0.80, 0.22, 0.04)
+				slag.emission_enabled = true
+				slag.emission = Color(1.0, 0.30, 0.04)
+				slag.emission_energy_multiplier = 1.15
+				slag.roughness = 0.55
+				sheet.material_override = slag
 			elif ResourceLoader.exists(shader_path):
 				var water_material := ShaderMaterial.new()
 				water_material.shader = load(shader_path)
@@ -2447,7 +2456,12 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	# whole shore at once, so it is asked first.
 	if bool(map.get("authored", false)) and _terrain_between(origin, requested):
 		var terrain_route := _grid_route(origin, requested, _navigation_blocker_snapshots(building_snapshot))
-		if not terrain_route.is_empty():
+		# Only out in the open. The grid keeps a hand's breadth from a wall
+		# where the corner search keeps a unit's full clearance, and a route
+		# that brushes past a hall leaves a soldier pushing against it (one
+		# did, in its own base on the mines map). Among buildings the corner
+		# search plans as before.
+		if not terrain_route.is_empty() and building_snapshot == null and _route_clear_of_built_things(origin, terrain_route, clearance, target_blocker):
 			_route_result_cache_store(route_cache_key, origin, requested, terrain_route)
 			return terrain_route
 	var points: Array = []
@@ -2688,6 +2702,38 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 			points[point_index] = clamp_to_playable_bounds(points[point_index])
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+## Does every leg of `points` keep a unit's full clearance from buildings and
+## dressing? (Terrain tiles and resource nodes are not counted: the grid has
+## already gone round them.)
+func _route_clear_of_built_things(origin: Vector3, points: Array, clearance: float, target_blocker = null) -> bool:
+	var box_lo := origin
+	var box_hi := origin
+	for point in points:
+		box_lo = Vector3(minf(box_lo.x, point.x), 0.0, minf(box_lo.z, point.z))
+		box_hi = Vector3(maxf(box_hi.x, point.x), 0.0, maxf(box_hi.z, point.z))
+	var built: Array = []
+	for blocker in _blockers_in_region(box_lo - Vector3(6.0, 0.0, 6.0), box_hi + Vector3(6.0, 0.0, 6.0)):
+		if String(blocker.get("source", "")) == "crag_world_blocker" or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
+			continue
+		var node = blocker.get("node")
+		if not is_instance_valid(node):
+			continue
+		if is_instance_valid(target_blocker) and (node == target_blocker or blocker.get("owner") == target_blocker):
+			continue
+		built.append(blocker)
+	if built.is_empty():
+		return true
+	var from := origin
+	for point in points:
+		var to: Vector3 = point
+		for blocker in built:
+			var centre: Vector3 = blocker["center"]
+			var reach: Vector2 = _route_blocker_half_extents(blocker, clearance)
+			if _point_inside_route_rectangle(from, centre, reach) or _point_inside_route_rectangle(to, centre, reach) or _segment_enters_route_rectangle(from, to, centre, reach):
+				return false
+		from = to
+	return true
 
 ## Does the straight line from `a` to `b` cross water, a wood, a ridge or a
 ## hill? Sampled every three metres, which no terrain tile is thinner than.
