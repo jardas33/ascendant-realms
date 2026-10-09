@@ -2581,6 +2581,11 @@ func _physics_process(delta: float) -> void:
 		var at_work: bool = state == State.GATHERING or state == State.RETURNING
 		if agent.avoidance_enabled == at_work:
 			agent.avoidance_enabled = not at_work
+	elif agent and _crowd_push_left > 0.0:
+		# (Shouldering through a crowd of friends: see CROWD_STUCK_WINDOW.)
+		_crowd_push_left -= delta
+		if _crowd_push_left <= 0.0:
+			agent.avoidance_enabled = true
 	if state == State.IDLE and not _order_queue.is_empty():
 		var queued: Dictionary = _order_queue.pop_front()
 		_running_queued_order = true
@@ -2818,8 +2823,29 @@ var _wall_press_anchor := Vector3.INF
 var _wall_press_elapsed := 0.0
 var _march_stall_anchor := Vector3.INF
 var _march_stall_elapsed := 0.0
+## Hemmed in by friends standing still: crowd-avoidance will not let a unit
+## walk through its own side, and four idle soldiers within a metre held an
+## ogre at its muster point until the stall rule stopped it (and the AI sent
+## it again, and again). A unit that has not moved a metre in three
+## seconds, with no wall against it, shoulders through for a moment.
+const CROWD_STUCK_WINDOW := 3.0
+const CROWD_PUSH_SECONDS := 2.5
+var _crowd_anchor := Vector3.INF
+var _crowd_elapsed := 0.0
+var _crowd_push_left := 0.0
 
 func _pressed_in_place_too_long(delta: float) -> bool:
+	if not is_worker and agent and _crowd_push_left <= 0.0:
+		if _crowd_anchor == Vector3.INF or global_position.distance_to(_crowd_anchor) > 1.0:
+			_crowd_anchor = global_position
+			_crowd_elapsed = 0.0
+		else:
+			_crowd_elapsed += delta
+			if _crowd_elapsed >= CROWD_STUCK_WINDOW and agent.avoidance_enabled and not _pressed_against_static():
+				_crowd_anchor = Vector3.INF
+				_crowd_elapsed = 0.0
+				_crowd_push_left = CROWD_PUSH_SECONDS
+				agent.avoidance_enabled = false
 	if _march_stall_anchor == Vector3.INF or global_position.distance_to(_march_stall_anchor) > 1.0:
 		_march_stall_anchor = global_position
 		_march_stall_elapsed = 0.0
