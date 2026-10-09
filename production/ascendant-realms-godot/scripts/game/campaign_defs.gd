@@ -106,7 +106,7 @@ const CHAPTERS := [
 		"opening": "Do not take the candle, whatever they offer. Everyone knows that.",
 		"taunts": ["The procession sings, and none of the voices are loud enough to hear.", "The Cross-Bearer: \"...not yet. Not yet, my love.\""],
 		"victory": "The Compaña parted around you without a single blade touching you, as if you were one of them. Where the Cross-Bearer had stood, a third clay jar waited in the mud."},
-	{"id": "2-4", "act": 1, "title": "Furna Below the Water", "map": "duskwater",
+	{"id": "2-4", "act": 1, "title": "Furna Below the Water", "map": "furna_reservoir",
 		"opponents": [{"race": "vorthak", "difficulty": "normal"}, {"race": "sunspear", "difficulty": "normal"}], "difficulty": "Hard", "unlocks": ["2-5"],
 		"briefing": "The summer has been dry, and the reservoir has fallen. The roofs of Furna, a village drowned by the Dominion's oldest dam seventy-seven years ago, have come up out of the water.\n\nThe Vorthak come here to mourn. The Dominion comes to stop them. You come for answers.",
 		"opening": "Church bells under the water. Someone is still ringing them.",

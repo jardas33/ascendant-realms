@@ -84,6 +84,7 @@ static func _specs() -> Array:
 		{"id":"malrecs_pyre","name":"Malrec's Pyre","theme":"volcanic","authored":"pyre"},
 		{"id":"seven_fountains","name":"Grove of Seven Fountains","theme":"verdant","authored":"grove"},
 		{"id":"bread_fountain","name":"The Bread Fountain","theme":"verdant","authored":"fountain"},
+		{"id":"furna_reservoir","name":"Furna Below the Water","theme":"wetland","authored":"furna"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -148,6 +149,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"pyre": a = _malrecs_pyre()
 		"grove": a = _seven_fountains()
 		"fountain": a = _bread_fountain()
+		"furna": a = _furna_reservoir()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -863,6 +865,67 @@ static func _bread_fountain() -> Dictionary:
 		"farmsteads": [
 			{"at": Vector2(-106, -20), "yaw": 1.2}, {"at": Vector2(106, 20), "yaw": 1.2 + PI},
 			{"at": Vector2(10, -94), "yaw": 0.2}, {"at": Vector2(-10, 94), "yaw": 0.2 + PI},
+		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Furna Below the Water (saga 2-4). 440 m across. The reservoir has fallen
+## and what is left of it lies in two broad sheets with the old village
+## street dry between them: a causeway through the middle of the map with
+## the bell tower of Furna standing in it, and the roofs of four crofts by
+## its two mouths. Everything else must go the long way round the water.
+static func _furna_reservoir() -> Dictionary:
+	var lakes: Array = [
+		{"at": Vector2(-76, 0), "radii": Vector2(52, 54), "seed": 3.3},
+		{"at": Vector2(76, 0), "radii": Vector2(52, 54), "seed": 3.3 + PI},
+	]
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 9.9
+	for wood in [[-170, 36, 14, 18], [-30, -122, 20, 14], [-90, 110, 22, 16]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.5
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -74, 80)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -84, -80)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -152, -12)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Bell Tower of Furna", "benefit": "income", "pos": Vector3.ZERO, "model": WATCH},
+		{"name": "Furna Churchyard", "benefit": "heal", "pos": Vector3(-112, 0, -66), "model": RUIN},
+		{"name": "The Mourners' Camp", "benefit": "heal", "pos": Vector3(112, 0, 66), "model": RUIN},
+		{"name": "North Shore Watch", "benefit": "vision", "pos": Vector3(-40, 0, 132), "model": WATCH},
+		{"name": "South Shore Watch", "benefit": "vision", "pos": Vector3(40, 0, -132), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -30, -94), Vector4(-30, -94, 0, -52), Vector4(0, -52, 0, 52), Vector4(0, 52, 30, 94), Vector4(30, 94, 160, 150),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": [],
+		"bridges": [],
+		"ruins": [{"at": Vector2(-144, -38), "radius": 8.0, "seed": 61}, {"at": Vector2(144, 38), "radius": 8.0, "seed": 62}],
+		"farmsteads": [
+			{"at": Vector2(-32, -72), "yaw": 0.5}, {"at": Vector2(32, 72), "yaw": 0.5 + PI},
+			{"at": Vector2(-32, 72), "yaw": 2.6}, {"at": Vector2(32, -72), "yaw": 2.6 + PI},
 		],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
