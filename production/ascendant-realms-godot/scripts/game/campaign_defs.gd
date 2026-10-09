@@ -151,7 +151,7 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "Cowbells in the snow. The Caretos are coming.",
 		"taunts": ["O Velho: \"Welcome, cousin of the road!\"", "O Velho: \"How does it feel to walk without a shadow, cousin?\""],
 		"victory": "O Velho took off his mask. Beneath it was another mask, and beneath that another. \"We chase the dead back into the earth each spring,\" he said. \"This year, cousin, we will have to chase you.\""},
-	{"id": "3-3", "act": 2, "title": "The Castro Ledger", "map": "iron_tundra",
+	{"id": "3-3", "act": 2, "title": "The Castro Ledger", "map": "castro_carvalhelhos",
 		"opponents": [{"race": "karak", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-4"],
 		"briefing": "The Granitborn of Carvalhelhos turned themselves to stone so they could remember every Ascension. Their ledger of the dead holds every name the highlands ever lost.\n\nThey will not open it for a living person. Make them.",
 		"opening": "Stone forgets nothing. That is exactly what I am afraid of.",

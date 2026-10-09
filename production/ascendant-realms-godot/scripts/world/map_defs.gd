@@ -88,6 +88,7 @@ static func _specs() -> Array:
 		{"id":"envoys_field","name":"The Envoy's Field","theme":"highland","authored":"envoy"},
 		{"id":"boticas","name":"Boticas","theme":"ashen","authored":"boticas"},
 		{"id":"larouco_road","name":"The Larouco Road","theme":"snow","authored":"larouco"},
+		{"id":"castro_carvalhelhos","name":"The Castro of Carvalhelhos","theme":"snow","authored":"castro"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -156,6 +157,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"envoy": a = _envoys_field()
 		"boticas": a = _boticas()
 		"larouco": a = _larouco_road()
+		"castro": a = _castro_carvalhelhos()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1131,6 +1133,73 @@ static func _larouco_road() -> Dictionary:
 		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
 		"bridges": [],
 		"ruins": [{"at": Vector2(-150, 6), "radius": 8.0, "seed": 91}, {"at": Vector2(150, -6), "radius": 8.0, "seed": 92}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Castro of Carvalhelhos (saga 3-3, "The Castro Ledger"). 440 m across,
+## under snow. The Granitborn's hill fort fills the middle of the map: two
+## rings of stone, the outer with gates at the four corners and the inner
+## with gates at the four sides, so nobody walks straight in. The ledger of
+## the dead stands at the centre; the ground between the rings holds gold.
+static func _castro_carvalhelhos() -> Dictionary:
+	var ridges: Array = []
+	# Each ring is four arcs with a gate between each pair.
+	for ring in [[80.0, 57.0, 123.0], [40.0, 22.0, 68.0]]:
+		for quarter in 4:
+			var line: Array = []
+			for step in 6:
+				var angle := deg_to_rad(lerpf(ring[1], ring[2], float(step) / 5.0) + 90.0 * float(quarter))
+				line.append(Vector2(cos(angle), sin(angle)) * float(ring[0]))
+			ridges.append({"points": line, "thickness": 8.0})
+	for line in [
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 13.7
+	for wood in [[-30, -120, 20, 14], [-104, 98, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 2.3
+	var hills: Array = [
+		{"at": Vector2(150, -94), "radii": Vector2(16, 12), "height": 10.0, "seed": 8.1},
+		{"at": Vector2(-150, 94), "radii": Vector2(16, 12), "height": 10.0, "seed": 8.1 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -56, 22)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -22, -56)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -124, 0)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Ledger of the Dead", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Stone Sleepers", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Chiselled Names", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Rampart Watch", "benefit": "vision", "pos": Vector3(-40, 0, 134), "model": WATCH},
+		{"name": "South Rampart Watch", "benefit": "vision", "pos": Vector3(40, 0, -134), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -57, -57), Vector4(-57, -57, -42, 0), Vector4(-42, 0, 0, 0),
+		Vector4(160, 150, 57, 57), Vector4(57, 57, 42, 0), Vector4(42, 0, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-150, 6), "radius": 8.0, "seed": 95}, {"at": Vector2(150, -6), "radius": 8.0, "seed": 96}],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
