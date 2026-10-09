@@ -1276,13 +1276,19 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 139 (done): Tourem Crossing, the bridge village (chapter 1-5)**
+  - **What it is:** 440 m. The border river runs west to east through the middle; the smugglers' village of Tourem (eight crofts, a market and a smugglers' yard as the two income sites) straddles it at the one bridge. Two starts on each bank. A ford far out on each wing with a watch post beside it. Chapter 1-5 plays on it (was Duskwater Shore, which two side chapters still use).
+  - **Checked:** soundness passed first time; 60 worker and 60 soldier attack-move walks through AI bases, none failed; 18 of 18 outposts built; three AI matches between different peoples ended in 14, 22 and 29 minutes with no stuck units. 60 regression checks pass.
+  - **Chapter 1-5 by the stand-in AI** (one against two): undecided at the 30-minute limit both times. Not compared against the old map.
+  - **The stuck archer from plan 138** did not happen again in three reruns of the same match. It was a defender inside its own base, not an attacker as first written. Left as a note.
+  - **Act one's main line now plays on hand-built maps except 1-6.**
 - **Plan 138 (done): two more hand-built maps, Garrano Pass (chapter 1-3) and Ashfen Mire (chapter 1-4)**
   - **Garrano Pass,** 440 m: a mountain wall runs east to west through the middle of the high pasture, two ridge lines deep, with three ways through: the pass at the centre between two tall shoulders, and a gap far out on each wing with a watch post beside it. Tarns, woods, a croft and a ruin on each side. Chapter 1-3 "Garrano Run" plays on it (was Goldreach).
   - **Ashfen Mire,** 440 m: sixteen black pools with firm ground winding between them. Four pools ring the ash-glass harvest at the centre and leave four causeways in. Chapter 1-4 plays on it (was Mirefen Swamp).
   - **Both are layout data only,** no new world code. Five of the six chapters on the main line of act one now play on hand-built maps (1-5 and 1-6 remain).
   - **Checked on each:** soundness; 60 worker walks and 60 soldier attack-move walks through AI bases, none failed; 18 of 18 outposts built by one worker; AI matches between different peoples (five on the pass, three on the mire) all ended, in 11 to 23 minutes.
   - **Chapter results by the stand-in AI:** 1-4 on the mire was won twice, in 22 and 26 minutes. 1-3 on the pass was undecided at the 30-minute limit twice. For comparison the same chapter on its old map was lost three times out of three in 20 to 24 minutes, so the pass is not harder for the stand-in, only longer. A chapter to watch for length, like 2-1.
-  - **One stuck unit in seven matches on the pass:** a Moura longbow on attack-move inside the enemy base, moving between two route points about 30 m apart without arriving. Not traced yet.
+  - **One stuck unit in seven matches on the pass:** a Moura longbow on attack-move inside its own base, moving between two route points about 30 m apart without arriving. Not traced yet.
   - **Correction to plan 137:** the four-player match on the village map does run (by the end of the run two of the four peoples had no army left). The earlier "printed no result line" was my output filter, not the game.
   - **Looks:** the tall shoulders of the pass are very dark on their shaded side, and the mire has no reeds or dead trees yet. Both are on the list.
 - **Plan 137 (done): a third hand-built map, Salto, the Lower Quarter (chapter 1-2, "The Burning Oven")**

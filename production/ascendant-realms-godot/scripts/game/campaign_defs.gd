@@ -57,7 +57,7 @@ const CHAPTERS := [
 		"opening": "Owls and toads and witches... keep the fire burning.",
 		"taunts": ["A warlock: \"Old words, old woman. Old words cannot stop us.\"", "Avó Brites: \"Hold them, child. I am nearly done. Do not look into the bowl.\""],
 		"victory": "The esconjuro was spoken. When the blue flame rose from the bowl, every face around it was reflected in the brandy but yours. At the bottom of the bowl lay a second clay jar."},
-	{"id": "1-5", "act": 0, "title": "Tourém Crossing", "map": "duskwater",
+	{"id": "1-5", "act": 0, "title": "Tourém Crossing", "map": "tourem_crossing",
 		"opponents": [{"race": "vorthak", "difficulty": "normal"}, {"race": "sunspear", "difficulty": "easy"}], "difficulty": "Normal", "unlocks": ["1-6", "1-S3"],
 		"briefing": "Tourém, the smugglers' village on the border, has sold your location to both sides: to the Vorthak, and to strangers in bronze who pay in southern gold.\n\nHold the bridge. And find out who the men in bronze are.",
 		"opening": "Two armies. One bridge. Someone in Tourém got very rich today.",

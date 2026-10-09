@@ -80,6 +80,7 @@ static func _specs() -> Array:
 		{"id":"salto_lower_quarter","name":"Salto, the Lower Quarter","theme":"highland","authored":"quarter"},
 		{"id":"garrano_pass","name":"Garrano Pass","theme":"highland","authored":"pass"},
 		{"id":"ashfen_mire","name":"Ashfen Mire","theme":"wetland","authored":"mire"},
+		{"id":"tourem_crossing","name":"Tourem Crossing","theme":"highland","authored":"tourem"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -140,6 +141,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"quarter": a = _salto_lower_quarter()
 		"pass": a = _garrano_pass()
 		"mire": a = _ashfen_mire()
+		"tourem": a = _tourem_crossing()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -586,6 +588,76 @@ static func _ashfen_mire() -> Dictionary:
 		"bridges": [],
 		"ruins": [{"at": Vector2(-150, 34), "radius": 8.0, "seed": 21}, {"at": Vector2(150, -34), "radius": 8.0, "seed": 22}],
 		"farmsteads": [{"at": Vector2(-126, -62), "yaw": 0.8}, {"at": Vector2(126, 62), "yaw": 0.8 + PI}],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Tourem Crossing (saga 1-5). 440 m across. The border river runs west to
+## east through the middle of the map and the smugglers' village of Tourem
+## straddles it at the one bridge. Two starts lie on the south bank and two
+## on the north. Far out on each wing the river can be waded; the bridge is
+## the short road and the village is what is fought over.
+static func _tourem_crossing() -> Dictionary:
+	var rivers: Array = [{
+		"points": [Vector2(-232, -60), Vector2(-150, -50), Vector2(-90, -24), Vector2(-40, -4), Vector2(0, 0),
+			Vector2(40, 4), Vector2(90, 24), Vector2(150, 50), Vector2(232, 60)],
+		"width": 15.0,
+		"fords": [{"at": Vector2(-150, -50), "half": 11.0}, {"at": Vector2(0, 0), "half": 13.0}, {"at": Vector2(150, 50), "half": 11.0}],
+	}]
+	var ridges: Array = []
+	for line in [
+		# A spur that shelters each walled start from the river road.
+		[Vector2(-116, -104), Vector2(-146, -96), Vector2(-176, -104)],
+		[Vector2(-116, 104), Vector2(-146, 98), Vector2(-176, 106)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 5.3
+	for wood in [[-204, 50, 14, 20], [-30, -124, 22, 16], [-10, 182, 16, 14], [-206, -168, 12, 12]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.4
+	var hills: Array = [
+		{"at": Vector2(-112, 56), "radii": Vector2(15, 11), "height": 9.0, "seed": 1.3},
+		{"at": Vector2(112, -56), "radii": Vector2(15, 11), "height": 9.0, "seed": 1.3 + PI},
+	]
+	# Tourem: crofts on both banks by the bridge.
+	var farmsteads: Array = []
+	for croft in [[-36, 44, 2.4], [-74, 26, 1.9], [-12, 74, 3.0], [30, 30, 3.6]]:
+		farmsteads.append({"at": Vector2(croft[0], croft[1]), "yaw": croft[2]})
+		farmsteads.append({"at": Vector2(-croft[0], -croft[1]), "yaw": croft[2] + PI})
+	var veins: Array = []
+	_pair_point(veins, "gold", -96, -152)
+	_pair_point(veins, "food", -204, -122)
+	_pair_point(veins, "stone", -130, -204)
+	_pair_point(veins, "timber", -62, -196)
+	_pair_point(veins, "gold", -96, 152)
+	_pair_point(veins, "food", -204, 122)
+	_pair_point(veins, "stone", -130, 204)
+	_pair_point(veins, "timber", -62, 196)
+	_pair_point(veins, "gold", -150, 10)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -44, -72)
+	_pair_point(deposits, "stone", -60, 120)
+	_pair_point(deposits, "timber", -178, 20)
+	_pair_point(deposits, "food", -70, 80)
+	var sites: Array = [
+		{"name": "Tourem Market", "benefit": "income", "pos": Vector3(-62, 0, 62), "model": LUME},
+		{"name": "The Smugglers' Yard", "benefit": "income", "pos": Vector3(62, 0, -62), "model": LUME},
+		{"name": "West Ford Watch", "benefit": "vision", "pos": Vector3(-150, 0, -20), "model": WATCH},
+		{"name": "East Ford Watch", "benefit": "vision", "pos": Vector3(150, 0, 20), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -60, -80), Vector4(-60, -80, 0, -30), Vector4(0, -30, 0, 30), Vector4(0, 30, 60, 80), Vector4(60, 80, 160, 150),
+		Vector4(-160, 150, -150, 30), Vector4(-150, 30, -150, -50), Vector4(160, -150, 150, -30), Vector4(150, -30, 150, 50),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [Vector3(0, 0, 0)],
+		"ruins": [{"at": Vector2(-196, -24), "radius": 8.0, "seed": 31}, {"at": Vector2(196, 24), "radius": 8.0, "seed": 32}],
+		"farmsteads": farmsteads,
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
