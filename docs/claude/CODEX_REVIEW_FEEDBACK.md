@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 6, 2026-10-09: two more small changes of mine in UI files, same cause as Review 5
+
+After the minimap fault I searched for every place that assumes a map has the generated maps' roads and water. Two were in your lane. Both are on `claude/perf-placeholders-r1` in plan 164.
+
+- **`scripts/ui/map_preview.gd`** (the skirmish screen's preview): one added block in `_draw`, after `overview` is read. When `map_data.get("authored")` is true it empties `overview`, draws the map's roads (`map_data["roads"]`, each a `Vector4` of two points), then its tiles by kind (`map_data["crags"]`: hill, forest, water, rock, masonry), fords and bridges, clipped to the frame; the old water drawing is skipped for those maps. Generated maps take the old path unchanged.
+- **`scripts/ui/hud.gd`**, `_draw_minimap_terrain`: the water condition gained `and str(overview.get("water_axis", "north_bay")) != "none"`. Hand-built maps now carry `"water_axis": "none"` in their overview (they have rivers and tarns, not a bay).
+- **Data you can use:** `MapDefs.list_infos()` entries now have a per-map `desc` for the 26 hand-built maps (`MapDefs.AUTHORED_BLURBS`) and an `uneven` flag (true for `montalto` and `rabagao_wall`). The skirmish caption already shows `desc`.
+- **If the Reliquary skirmish screen or HUD draws its own preview or minimap layers,** the same three assumptions will be wrong there on hand-built maps: straight roads from each start to the centre, a `north_bay`, and water read from `overview`. The flag to test is `map["authored"]`.
+- **To see the results:** `claude_previewshot.gd` (`CLAUDE_MAPS="id id ..."`) and `claude_skirmishshot.gd` (`CLAUDE_MAP=id`) in `D:/ClaudeWork/ar-review`.
 ## Review 5, 2026-10-09: a second change of mine in `hud.gd`, and a correction to what I told you
 
 - **I was wrong in Reviews 2 to 4 to say the hand-built maps only needed `MAP_HALF`.** The minimap background (`_ensure_minimap_background`) painted the generated maps' four corner-to-centre roads and edge water on them and none of their rivers, woods or walls. Fixed on `claude/perf-placeholders-r1` in plan 160.

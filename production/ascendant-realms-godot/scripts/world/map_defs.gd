@@ -33,6 +33,37 @@ static func get_map(id: String) -> Dictionary:
 			return _assemble(s)
 	return _assemble(_specs()[0])
 
+## One line on each hand-built battlefield for the skirmish picker: what the
+## ground is, in the story's own terms.
+const AUTHORED_BLURBS := {
+	"salto_valley": "The valley of Salto: a river in a long S with three fords, the Wolf-Trap ridge, and the Spring of Seven Mouths at the middle ford.",
+	"rabagao_gorge": "The river runs through a gorge and the Dominion's half-built dam stands across it. The dam is the only crossing for a long way.",
+	"salto_lower_quarter": "A village fight. The communal oven stands in the square with crofts round it; whoever holds the oven is fed by it.",
+	"garrano_pass": "A mountain wall across the high pasture. The pass in the middle is the short road; a gap on each wing is the long way round.",
+	"ashfen_mire": "A bog of black pools with firm ground winding between them, and the ash-glass harvest at its heart.",
+	"tourem_crossing": "The smugglers' village of Tourem straddles the border river at its one bridge. Far out on each wing the river can be waded.",
+	"malrecs_pyre": "The Emberfall rift between two rock walls, the pyre at its centre. Each wall has two gaps for those who will not walk down the middle.",
+	"seven_fountains": "Old forest in broad belts with glades between, and six pools ringing the seventh fountain. There is always another ride round.",
+	"bread_fountain": "The fountain stands on an island ringed by its own stream. Four fords cross to it, one facing each camp.",
+	"furna_reservoir": "The reservoir has fallen and the street of drowned Furna is dry between two sheets of water. The bell tower still stands in it.",
+	"envoys_field": "Four old hill forts, one in each corner, each with three gates. Whoever comes out first is seen coming.",
+	"boticas": "A dead town on old granite: one street, eight houses, and the Wine of the Dead buried under the middle of it.",
+	"larouco_road": "The road to the castro climbs between two mountain walls, each with one gate, at opposite ends. Snow lies on all of it.",
+	"castro_carvalhelhos": "The Granitborn hill fort: two rings of stone with their gates out of line, and the ledger of the dead at the centre.",
+	"candle_road": "Two long meres across the marsh. The road of the dead crosses each on a narrow causeway; an army goes round.",
+	"leonors_cross": "A grey massif fills the middle and nothing crosses it. The road runs in a ring round its foot, through the tombs.",
+	"four_peaks": "Four peaks round a high saddle where the winter is burned. The only ways up are the four passes between them.",
+	"geira_road": "The old road runs dead straight over two rivers by two bridges. The gold of the southern veins lies between the rivers.",
+	"ironmaw_mines": "Nine chambers cut from the rock, a gate in every wall between them, and pools of molten slag. The seam is in the middle one.",
+	"plains_of_bronze": "Open desert before the Wall. Low dunes, nothing to hide behind, and the shortest march of any field.",
+	"glass_heart": "Two walls of ash-glass coiled round the heart. There are two ways in, and each runs a quarter turn between the coils.",
+	"regents_canyon": "Six mesas in two rows: a broad canyon between the rows, narrow ones between the mesas, open rim outside.",
+	"rabagao_wall": "The Wall crosses the whole field with three sluice gates. Two camps lie behind it by the reservoir and two before it in the lowlands. Not an even field.",
+	"montalto": "The old keep in the middle, inside a rampart with three gates, and three camps round it. Made for one against three. Not an even field.",
+	"fojo": "Two stone wolf-traps mouth to mouth: each camp looks down a funnel that narrows to the pit, with a narrow door at the waist.",
+	"junias": "A walled valley with a bridged stream. The ruins of the monastery stand on both banks: cloister to the west, archive to the east.",
+}
+
 static func list_infos() -> Array:
 	var out := []
 	for s in _specs():
@@ -42,7 +73,7 @@ static func list_infos() -> Array:
 		if bool(s.get("saga", false)):
 			continue
 		out.append({"id": s["id"], "name": s["name"], "theme": s["theme"],
-			"players": s.get("players", 4), "desc": _theme_blurb(s["theme"]), "uneven": bool(s.get("uneven", false))})
+			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false))})
 	return out
 
 ## Back-compat: original default map.
@@ -316,9 +347,12 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 	var overview_roads: Array = []
 	for road in a["roads"]:
 		overview_roads.append([Vector3(road.x, 0.0, road.y), Vector3(road.z, 0.0, road.w)])
+	# (No "north_bay": a hand-built map's water is its rivers and tarns. The
+	# bay that was named here was never drawn, but the grass was kept off it
+	# and the minimap drew its shore.)
 	m["overview"] = {
 		"layout": "corners",
-		"water_axis": "north_bay",
+		"water_axis": "none",
 		"water_center_z": 118.0 * k,
 		"water_width": 34.0 * k,
 		"roads": overview_roads,

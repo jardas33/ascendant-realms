@@ -60,10 +60,19 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 	for s in starts:
 		roads.append([Vector2(s.x, s.z), Vector2.ZERO])
 	roads.append([Vector2(-30, -20), Vector2(30, 20)])
+	# A hand-built map names its own roads. (The grass used to be kept off
+	# four straight lines from the starts to the centre that are not there,
+	# and grew over the roads that are.)
+	if bool(map.get("authored", false)):
+		roads.clear()
+		for road in map.get("roads", []):
+			roads.append([Vector2(road.x, road.y), Vector2(road.z, road.w)])
 	var water: Dictionary = map.get("water", {})
 	var overview: Dictionary = map.get("overview", {})
 	var water_on := bool(water.get("enabled", false))
 	var crossing := str(overview.get("water_axis", "")) == "crossing"
+	if str(overview.get("water_axis", "")) == "none":
+		water_on = false
 	var water_z := float(overview.get("water_center_z", 118.0))
 	var water_half := float(overview.get("water_width", 34.0)) * 0.5
 

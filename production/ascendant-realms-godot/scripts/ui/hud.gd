@@ -1813,7 +1813,7 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	# board-game overlay that has no spatial correspondence to the world.
 	var water: Dictionary = world.map.get("water", {})
 	var overview: Dictionary = world.map.get("overview", {})
-	if bool(water.get("enabled", false)):
+	if bool(water.get("enabled", false)) and str(overview.get("water_axis", "north_bay")) != "none":
 		var axis := str(overview.get("water_axis", "north_bay"))
 		var center_z := float(overview.get("water_center_z", 118.0))
 		var half_width := float(overview.get("water_width", 34.0)) * 0.5

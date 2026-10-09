@@ -59,7 +59,57 @@ func _draw() -> void:
 		var inset := side * 0.02 * i
 		draw_rect(Rect2(rect.position + Vector2(inset, inset), rect.size - Vector2(inset, inset) * 2.0), Color(0, 0, 0, 0.05), false, side * 0.02)
 	var overview: Dictionary = map_data.get("overview", {})
-	if map_data.get("water", {}).get("enabled", false) and not overview.is_empty():
+	# A hand-built battlefield is drawn from its own terrain: its roads, then
+	# hills, woods, water, rock and built walls from the tiles that block the
+	# ground, the shallows of each ford, and the bridges. (It has none of the
+	# generated maps' roads or edge water, which were drawn here before.)
+	var authored := bool(map_data.get("authored", false))
+	if authored:
+		overview = {}
+		var theme_name := str(map_data.get("theme", "highland"))
+		var tints := {"hill": ground.lightened(0.16), "forest": Color(0.11, 0.24, 0.11), "water": Color(0.16, 0.40, 0.58), "rock": Color(0.33, 0.31, 0.29), "masonry": Color(0.76, 0.74, 0.70)}
+		match theme_name:
+			"volcanic":
+				tints["water"] = Color(0.92, 0.42, 0.10)
+				tints["forest"] = Color(0.20, 0.15, 0.12)
+				tints["rock"] = Color(0.22, 0.14, 0.12)
+				tints["hill"] = Color(0.24, 0.16, 0.14)
+			"ashen":
+				tints["forest"] = Color(0.21, 0.19, 0.20)
+				tints["hill"] = Color(0.22, 0.21, 0.24)
+			"snow":
+				tints["forest"] = Color(0.26, 0.38, 0.36)
+				tints["rock"] = Color(0.40, 0.42, 0.50)
+				tints["hill"] = Color(0.95, 0.96, 1.0)
+			"desert", "badlands":
+				tints["rock"] = Color(0.52, 0.40, 0.28)
+				tints["hill"] = Color(0.86, 0.72, 0.50)
+				tints["forest"] = Color(0.36, 0.34, 0.18)
+		for road in map_data.get("roads", []):
+			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.010), true)
+		for kind in ["hill", "forest", "water", "rock", "masonry"]:
+			for crag in map_data.get("crags", []):
+				if String(crag.get("kind", "rock")) != kind:
+					continue
+				var tile_pos: Vector3 = crag["pos"]
+				var tile_half: Vector2 = crag["half"]
+				var corner_a: Vector2 = to_px.call(tile_pos - Vector3(tile_half.x, 0, tile_half.y))
+				var corner_b: Vector2 = to_px.call(tile_pos + Vector3(tile_half.x, 0, tile_half.y))
+				# (A river or a wall may run on past the edge of the field.)
+				var tile_rect := Rect2(corner_a, corner_b - corner_a).intersection(rect)
+				if tile_rect.size.x > 0.0 and tile_rect.size.y > 0.0:
+					draw_rect(tile_rect, tints[kind])
+		for ford in map_data.get("fords", []):
+			var ford_at: Vector2 = to_px.call(ford["pos"])
+			var ford_r: float = float(ford["half"]) / (half * 2.0) * side
+			draw_circle(ford_at, maxf(2.5, ford_r * 0.8), Color(0.62, 0.72, 0.62) if theme_name != "volcanic" else Color(0.30, 0.20, 0.17))
+		var turned := bool(map_data.get("bridges_turned", false))
+		for bridge_pos in map_data.get("bridges", []):
+			var deck := Vector3(13.0, 0, 4.3) if turned else Vector3(4.3, 0, 13.0)
+			var deck_a: Vector2 = to_px.call(bridge_pos - deck)
+			var deck_b: Vector2 = to_px.call(bridge_pos + deck)
+			draw_rect(Rect2(deck_a, deck_b - deck_a), Color(0.70, 0.68, 0.64))
+	if not authored and map_data.get("water", {}).get("enabled", false) and not overview.is_empty():
 		var wz := float(overview.get("water_center_z", 52.0))
 		var ww := float(overview.get("water_width", 22.0))
 		var water := Color(0.16, 0.34, 0.44)
