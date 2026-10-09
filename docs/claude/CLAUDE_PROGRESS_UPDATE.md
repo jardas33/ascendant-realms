@@ -1276,6 +1276,12 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 170 (done): the final numbers checked on the small maps; the Lioraen bonus is kept, knowingly uneven**
+  - **Regression on the final state:** 91 checks pass.
+  - **Lioraen Concord on the six small maps, 36 matches each, today's build:** no bonus 20-16 (56%); +5% damage 22-11 (67%). On the big maps: no bonus 10-25 over the 180-match pool (29%); +6% 15-20 (43%); +5% 9-8 in the one confirmation run.
+  - **So there is no fair single number.** Without the bonus they are about right on small maps and last by a distance on big ones; with it they are about right on big maps and too strong on small ones. Averaged over the two kinds of map, no bonus gives about 42% and +5% about 54%. I kept +5%: it is the nearer to even overall, it is a measured setting, and the saga is played on the big maps. The cost is a Lioraen AI that wins about two matches in three on the 24 small skirmish maps.
+  - **What would actually fix it:** finding why they lose the middle of a match on big ground. That is open (plan 169).
+  - **Aurean Dominion** needs nothing more: +6% gave 18-17 on small maps and 16-20 on big.
 - **Plan 169 (done): my explanation in plan 167 was wrong, and a test showed it. The damage bonuses stay; the new units do not go in**
   - **What I had claimed:** that the Lioraen Concord and the Aurean Dominion are weak on the big maps because they alone have no tier-three fighter.
   - **The test:** I wrote one for each (an Elder Oak and a Bronze Immortal, from existing models, with the other peoples' heavy fighters' numbers), took the damage bonus out, and ran the Lioraen through 36 matches on each kind of map. Big maps: 10-24, the same as with nothing at all (10-25). Small maps: 20-13. So the fighter helps where they were already fine and does nothing where they are weak. The explanation is refuted.
