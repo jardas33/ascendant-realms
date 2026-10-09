@@ -85,6 +85,7 @@ static func _specs() -> Array:
 		{"id":"seven_fountains","name":"Grove of Seven Fountains","theme":"verdant","authored":"grove"},
 		{"id":"bread_fountain","name":"The Bread Fountain","theme":"verdant","authored":"fountain"},
 		{"id":"furna_reservoir","name":"Furna Below the Water","theme":"wetland","authored":"furna"},
+		{"id":"envoys_field","name":"The Envoy's Field","theme":"highland","authored":"envoy"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -150,6 +151,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"grove": a = _seven_fountains()
 		"fountain": a = _bread_fountain()
 		"furna": a = _furna_reservoir()
+		"envoy": a = _envoys_field()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -927,6 +929,75 @@ static func _furna_reservoir() -> Dictionary:
 			{"at": Vector2(-32, -72), "yaw": 0.5}, {"at": Vector2(32, 72), "yaw": 0.5 + PI},
 			{"at": Vector2(-32, 72), "yaw": 2.6}, {"at": Vector2(32, -72), "yaw": 2.6 + PI},
 		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Envoy's Field (saga 2-5). 440 m across. Four old hill forts, one in
+## each corner: every start stands inside a ring of rampart with three
+## gates, to the two neighbours and to the field. Between them lies open
+## parley ground with the envoy's pavilion at the centre. A fort is easy to
+## hold and hard to leave: whoever comes out first is seen coming.
+static func _envoys_field() -> Dictionary:
+	var ridges: Array = []
+	# The rampart round the start at (-160, -150), as arcs between the gates
+	# (angles in degrees from east, the field lying to the north-east).
+	var fort := Vector2(-160, -150)
+	for arc in [[-72.0, -12.0], [12.0, 31.0], [55.0, 78.0], [102.0, 142.0]]:
+		var line: Array = []
+		for step in 4:
+			var angle := deg_to_rad(lerpf(arc[0], arc[1], float(step) / 3.0))
+			line.append(fort + Vector2(cos(angle), sin(angle)) * 72.0)
+		# The same rampart round the start to the north, mirrored.
+		var mirrored: Array = []
+		for point in line:
+			mirrored.append(Vector2(point.x, -point.y))
+		for wall in [line, mirrored]:
+			ridges.append({"points": wall, "thickness": 9.0})
+			ridges.append({"points": _twin_points(wall), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 10.4
+	for wood in [[-20, -86, 20, 14], [-90, 56, 18, 16]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.7
+	var hills: Array = [
+		{"at": Vector2(-30, 96), "radii": Vector2(14, 10), "height": 8.0, "seed": 6.6},
+		{"at": Vector2(30, -96), "radii": Vector2(14, 10), "height": 8.0, "seed": 6.6 + PI},
+	]
+	var lakes: Array = [
+		{"at": Vector2(-152, 0), "radii": Vector2(14, 9), "seed": 2.2},
+		{"at": Vector2(152, 0), "radii": Vector2(14, 9), "seed": 2.2 + PI},
+	]
+	var veins: Array = []
+	for sign in [-1.0, 1.0]:
+		_pair_point(veins, "gold", -150, 62 * sign)
+		_pair_point(veins, "food", -62, 150 * sign)
+		_pair_point(veins, "stone", -196, 40 * sign)
+		_pair_point(veins, "timber", -130, 200 * sign)
+	_pair_point(veins, "gold", -52, 26)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -60, -20)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -120, 0)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Envoy's Pavilion", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Ledger Stone", "benefit": "heal", "pos": Vector3(-104, 0, -62), "model": RUIN},
+		{"name": "The Legion's Well", "benefit": "heal", "pos": Vector3(104, 0, 62), "model": RUIN},
+		{"name": "North Field Post", "benefit": "vision", "pos": Vector3(-40, 0, 132), "model": WATCH},
+		{"name": "South Field Post", "benefit": "vision", "pos": Vector3(40, 0, -132), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -107, -101), Vector4(-107, -101, 0, 0), Vector4(160, 150, 107, 101), Vector4(107, 101, 0, 0),
+		Vector4(-160, 150, -107, 101), Vector4(-107, 101, 0, 0), Vector4(160, -150, 107, -101), Vector4(107, -101, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-40, -64), "radius": 7.0, "seed": 71}, {"at": Vector2(40, 64), "radius": 7.0, "seed": 72}],
+		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

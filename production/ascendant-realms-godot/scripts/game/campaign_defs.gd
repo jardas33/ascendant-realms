@@ -112,7 +112,7 @@ const CHAPTERS := [
 		"opening": "Church bells under the water. Someone is still ringing them.",
 		"taunts": ["A Vorthak thrall: \"This was my grandmother's house.\"", "A Dominion officer: \"Burn the Vorthak shrines. No martyrs.\""],
 		"victory": "In the drowned church you found the parish roll of Furna. The last Jardas of Furna was named Malrique. Below it, in a child's hand, his little sister had written her own name: Brites."},
-	{"id": "2-5", "act": 1, "title": "The Regent's Envoy", "map": "goldreach",
+	{"id": "2-5", "act": 1, "title": "The Regent's Envoy", "map": "envoys_field",
 		"opponents": [{"race": "sunspear", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["2-6", "2-S2"],
 		"briefing": "Sun Regent Aurelia Vess sends an envoy with a sealed offer: surrender the Lume, and no more highland valleys will be drowned. Refuse, and her legions march.\n\nThe envoy brings a ledger of the dead of every Ascension war. The numbers rise every time.\n\nYou refuse. The legions march.",
 		"opening": "She is not wrong about the numbers. She is wrong about the answer.",
