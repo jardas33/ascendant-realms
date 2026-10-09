@@ -1149,7 +1149,9 @@ func paint_minimap_terrain(image: Image, map_half: float) -> void:
 	var theme_name := str(map.get("theme", "highland"))
 	var water_colours: Dictionary = map.get("water", {})
 	var tints: Dictionary = {
-		"water": (water_colours.get("deep", Color(0.05, 0.22, 0.34)) as Color).lerp(water_colours.get("shallow", Color(0.16, 0.48, 0.58)), 0.45),
+		# (Pulled half way to a plain blue: wetland water is so murky that on the
+		# minimap a mere could not be told from a wood.)
+		"water": (water_colours.get("deep", Color(0.05, 0.22, 0.34)) as Color).lerp(water_colours.get("shallow", Color(0.16, 0.48, 0.58)), 0.45).lerp(Color(0.14, 0.44, 0.70), 0.5),
 		"forest": Color(0.11, 0.24, 0.11),
 		"rock": Color(0.36, 0.34, 0.31),
 		"hill": Color(0.47, 0.45, 0.36),
@@ -2536,8 +2538,28 @@ func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> 
 	copy.metallic_specular = 0.35
 	copy.emission_enabled = false
 	copy.albedo_color *= tint
+	# A tint cannot take the green out of moss painted into a rock's texture:
+	# on scorched, snowbound and sand maps the texture itself is greyed first.
+	if tint != Color.WHITE and copy.albedo_texture != null and _scorched_tone("rock") != Color.WHITE:
+		copy.albedo_texture = _greyed_texture(copy.albedo_texture)
 	_decor_material_cache[key] = copy
 	return copy
+
+var _greyed_textures: Dictionary = {}
+
+func _greyed_texture(texture: Texture2D) -> Texture2D:
+	if _greyed_textures.has(texture):
+		return _greyed_textures[texture]
+	var image: Image = texture.get_image()
+	if image == null:
+		return texture
+	if image.is_compressed():
+		image.decompress()
+	image.adjust_bcs(1.0, 1.0, 0.18)
+	image.generate_mipmaps()
+	var greyed := ImageTexture.create_from_image(image)
+	_greyed_textures[texture] = greyed
+	return greyed
 
 func _build_navigation() -> void:
 	var stage := _m20_begin("GAMEWORLD_NAVMESH", "GAMEWORLD_NAVIGATION", 2)
