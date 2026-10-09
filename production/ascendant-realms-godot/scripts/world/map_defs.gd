@@ -81,6 +81,7 @@ static func _specs() -> Array:
 		{"id":"garrano_pass","name":"Garrano Pass","theme":"highland","authored":"pass"},
 		{"id":"ashfen_mire","name":"Ashfen Mire","theme":"wetland","authored":"mire"},
 		{"id":"tourem_crossing","name":"Tourem Crossing","theme":"highland","authored":"tourem"},
+		{"id":"malrecs_pyre","name":"Malrec's Pyre","theme":"volcanic","authored":"pyre"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -142,6 +143,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"pass": a = _garrano_pass()
 		"mire": a = _ashfen_mire()
 		"tourem": a = _tourem_crossing()
+		"pyre": a = _malrecs_pyre()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -658,6 +660,72 @@ static func _tourem_crossing() -> Dictionary:
 		"bridges": [Vector3(0, 0, 0)],
 		"ruins": [{"at": Vector2(-196, -24), "radius": 8.0, "seed": 31}, {"at": Vector2(196, 24), "radius": 8.0, "seed": 32}],
 		"farmsteads": farmsteads,
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Malrec's Pyre (saga 1-6, the end of act one). 440 m across. The Emberfall
+## rift runs corner to corner between two long rock walls, with the pyre at
+## its centre and the ash-glass forges either side of it. The two facing
+## starts look straight down the rift at each other. Each wall has two gaps,
+## so the camp can be entered from the flanks, and cinder cones stand out on
+## the open ground beyond the walls.
+static func _malrecs_pyre() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		# The north-west wall of the rift, in three lengths with two gaps.
+		[Vector2(-119, -48), Vector2(-97, -21), Vector2(-68, -1)],
+		[Vector2(-46, 20), Vector2(-13, 43), Vector2(12, 75)],
+		[Vector2(34, 95), Vector2(44, 107), Vector2(56, 116)],
+	]:
+		ridges.append({"points": line, "thickness": 12.0})
+		ridges.append({"points": _twin_points(line), "thickness": 12.0})
+	# Cinder cones on the open ground beyond the walls.
+	var hills: Array = [
+		{"at": Vector2(-75, 80), "radii": Vector2(20, 15), "height": 14.0, "seed": 4.4},
+		{"at": Vector2(75, -80), "radii": Vector2(20, 15), "height": 14.0, "seed": 4.4 + PI},
+		{"at": Vector2(-18, -127), "radii": Vector2(16, 12), "height": 9.0, "seed": 2.9},
+		{"at": Vector2(18, 127), "radii": Vector2(16, 12), "height": 9.0, "seed": 2.9 + PI},
+	]
+	var woods: Array = []
+	var wood_seed := 6.1
+	for wood in [[-196, 26, 14, 18], [-20, 178, 16, 12]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.6
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -39, -9)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -60, -22)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -122, 2)
+	_pair_point(deposits, "food", -170, -6)
+	var sites: Array = [
+		{"name": "Malrec's Pyre", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Thrall Pens", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Slag Heaps", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Rim Watch", "benefit": "vision", "pos": Vector3(-40, 0, 130), "model": WATCH},
+		{"name": "South Rim Watch", "benefit": "vision", "pos": Vector3(40, 0, -130), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -87, -82), Vector4(-87, -82, 0, 0), Vector4(160, 150, 87, 82), Vector4(87, 82, 0, 0),
+		Vector4(-160, 150, -120, 40), Vector4(-120, 40, -57, 8), Vector4(160, -150, 120, -40), Vector4(120, -40, 57, -8),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		# The ash-glass forges, in ruins of an older castro.
+		"ruins": [{"at": Vector2(-42, -58), "radius": 8.0, "seed": 41}, {"at": Vector2(42, 58), "radius": 8.0, "seed": 42}],
+		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

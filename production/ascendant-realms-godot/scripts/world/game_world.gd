@@ -983,6 +983,18 @@ func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF
 		return best
 	return pos
 
+## Scorched themes have no moss and no green: ridge rock, hill turf and the
+## trees of a wood are toned to the ground they stand on.
+func _scorched_tone(what: String) -> Color:
+	var tones: Dictionary = {
+		"volcanic": {"rock": Color(0.62, 0.40, 0.35), "turf": Color(0.34, 0.25, 0.23), "tree": Color(0.50, 0.38, 0.30)},
+		"ashen": {"rock": Color(0.62, 0.56, 0.62), "turf": Color(0.36, 0.34, 0.38), "tree": Color(0.52, 0.48, 0.50)},
+	}
+	var theme_name := str(map.get("theme", "highland"))
+	if not tones.has(theme_name):
+		return Color.WHITE
+	return tones[theme_name][what]
+
 func _build_crags() -> void:
 	var crags: Array = map.get("crags", [])
 	if crags.is_empty():
@@ -1029,7 +1041,7 @@ func _build_crags() -> void:
 					rock.position = Vector3(-half.x + (float(ix) + 0.5) * cell.x + rng.randf_range(-0.4, 0.4), rock.position.y,
 						-half.y + (float(iz) + 0.5) * cell.y + rng.randf_range(-0.4, 0.4))
 					rock.rotation.y = rng.randf() * TAU
-					_prep_decor(rock)
+					_prep_decor(rock, _scorched_tone("rock"))
 					# Unlike scattered boulders, a ridge needs its shadow to read as a wall.
 					for mesh in rock.find_children("*", "MeshInstance3D", true, false):
 						(mesh as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -1045,7 +1057,7 @@ func _build_crags() -> void:
 				boulder.position = Vector3(rng.randf_range(-half.x, half.x) if on_x else edge * (half.x - 0.4), boulder.position.y,
 					edge * (half.y - 0.4) if on_x else rng.randf_range(-half.y, half.y))
 				boulder.rotation.y = rng.randf() * TAU
-				_prep_decor(boulder)
+				_prep_decor(boulder, _scorched_tone("rock"))
 		_register_navigation_obstacle(holder, "crag", pos, half, 4.0, "ENVIRONMENT_PROP", "crag_world_blocker", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
 		# The avoidance disc of a long ridge must not swell to its length and
 		# close the gates beside it: thin discs along the ridge instead.
@@ -1311,6 +1323,12 @@ func _build_hills() -> void:
 		turf.albedo_texture = load(grass_path)
 	# Matched by eye to the meadow the hill stands in.
 	turf.albedo_color = Color(0.92, 0.86, 0.50)
+	var scorched := _scorched_tone("turf") != Color.WHITE
+	if scorched:
+		# A cinder cone: bare slag, no grass.
+		var slag_path := "res://assets/textures/ground/vorthak_volcanic_ash_r1.png" if str(map.get("theme", "")) == "volcanic" else "res://assets/textures/stone/highland_rock.png"
+		turf.albedo_texture = load(slag_path) if ResourceLoader.exists(slag_path) else null
+		turf.albedo_color = _scorched_tone("turf") * 2.6
 	turf.roughness = 1.0
 	turf.uv1_triplanar = true
 	turf.uv1_scale = Vector3(0.14, 0.14, 0.14)
@@ -1370,8 +1388,8 @@ func _build_hills() -> void:
 				ModelUtils.ground_model(rock)
 				rock.position = Vector3(at.x, at.y + rock.position.y - 0.4, at.z)
 				rock.rotation.y = rng.randf() * TAU
-				_prep_decor(rock)
-		for k in 5:
+				_prep_decor(rock, _scorched_tone("rock"))
+		for k in (0 if scorched else 5):
 			var a := rng.randf() * TAU
 			var t := rng.randf_range(0.0, 0.45)
 			var at: Vector3 = point.call(t, a)
@@ -1480,7 +1498,7 @@ func _build_woods() -> void:
 					tree.rotation.y = rng.randf() * TAU
 					# One tone for the whole wood: a tone per tree height gave
 					# every tree a material of its own and nothing could be joined.
-					_prep_decor(tree)
+					_prep_decor(tree, _scorched_tone("tree"))
 				z += spacing
 			x += spacing
 		clear_ground_cover(holder.position, minf(radii.x, radii.y) * 0.8)

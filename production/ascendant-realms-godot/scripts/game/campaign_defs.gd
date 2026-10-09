@@ -69,7 +69,7 @@ const CHAPTERS := [
 		"opening": "Trovão is ours. All of ours.",
 		"taunts": ["A raider: \"A bull? You march an army for a bull?\"", "Somewhere ahead, a great bellow shakes the pines."],
 		"victory": "Trovão came home through the square with the whole village walking beside him. Avó Brites put a ribbon on his horns and said nothing about the scar on his flank, shaped like a violet flame."},
-	{"id": "1-6", "act": 0, "title": "Malrec's Pyre", "map": "emberfall_rift",
+	{"id": "1-6", "act": 0, "title": "Malrec's Pyre", "map": "malrecs_pyre",
 		"opponents": [{"race": "vorthak", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["2-1"],
 		"briefing": "The Vorthak camp burns in the Emberfall rift: ash-glass forges, chained thralls, and at the center, Malrec's pyre.\n\nBreak the camp. Face the Ash-Masked. End the raids on Salto for good.",
 		"opening": "This ends tonight, Malrec.",
