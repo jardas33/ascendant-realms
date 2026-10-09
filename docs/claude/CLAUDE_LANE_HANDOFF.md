@@ -1,5 +1,34 @@
 # Claude lane handoff: performance, world art, lighting, worker
 
+## START HERE: handoff for a fresh session (written 2026-10-09, after plan 172)
+
+Everything below this section is older history. A cold session needs only this section, the memory index, and the top of `CLAUDE_PROGRESS_UPDATE.md` (newest plan first under "World and terrain").
+
+**State.** Branch `claude/perf-placeholders-r1`, pushed. Working tree clean. Nothing is running in the background. Last plan written up: 172. The next plan is 173.
+
+**Where things are.** Game project `D:\ClaudeWork\ar-lane\production\ascendant-realms-godot` (git root `D:\ClaudeWork\ar-lane`). Test copy `D:\ClaudeWork\ar-test\ascendant-realms-godot` (sync with `rm -rf $T/scripts; cp -r scripts $T/scripts`). Probes and scripts `D:\ClaudeWork\ar-review`. Patches, logs, pictures `D:\ClaudeWork\tmp` (pictures in `tmp\mapshot`, traces in `tmp\trace`). Godot `D:\ClaudeWork\godot\Godot_v4.6.3-stable_win64_console.exe` (windowed: `..._win64.exe`). Python `D:\ClaudeWork\pyenv\Scripts\python.exe`. Never write to disk C. Never edit `D:\CodexData` (reading is fine).
+
+**What exists now.** All 44 saga chapters play on hand-built maps: 26 layouts in `scripts/world/map_defs.gd` (one `static func _<name>()` each, assembled by `_assemble_authored`), plus variants that reuse a layout under another theme or seat order (`"saga": true` hides them from the skirmish list). Map features: rivers with fords, bridges (`bridges_turned` for a north-south river), tarns (slag on volcanic), woods, hills (`"shape": "mesa"`), ridges (`"style": "masonry"` for a built wall), ruins, farmsteads, sites (`composed:` models in `capture_point.gd`). Chapter extras in `CampaignDefs.EVENTS`: `allies`, `waves`, `towers`.
+
+**Open items, in priority order.**
+1. **Redo the multi-enemy chapter checks with the fixed probe** (plan 172). First: 5-2 Montalto (lost at 10 and 13 minutes against three working armies even with garrison and towers; probably needs the camps further out, fewer or weaker enemies early, or a bigger garrison). Then the four hold-outs (2-6, 5-7, 1-S2, 3-S2): their pressure figures were measured with idle extra enemies. Then one run of every other chapter with two or three enemies.
+2. **The Lioraen Concord gap between map sizes.** At +5% damage (shipped) they are mid-table on the 440 m maps and about 67% on the old small maps; with no bonus 29% and 56%. Cause unknown. Two explanations were tested and failed (worker losses; no tier-three fighter). Untested ideas: their early speed suits short marches; they were 0-4 on each of Bread Fountain, Geira Road and the mines (chokepoint maps) and 3-14 from the second seat. See memory `balance-map-size`.
+3. **Side seats have nearer veins** on 20 of the 26 layouts (19% on the standard skeleton). A blanket move collided with terrain on 17 maps; it needs doing map by map. Low value.
+4. **Review Codex each cycle.** Six notes are in `CODEX_REVIEW_FEEDBACK.md`. Codex has put nothing into the game since Review 1; by its own intake notes (`D:\CodexData\evidence\claude-review-intake-*`) its game work waits on Emanuel answering a tool question. Three small changes of mine sit in its UI files and are described there (`hud.gd` MAP_HALF and minimap terrain, `map_preview.gd`).
+
+**How to check a map or a change.**
+- Compile: `timeout 300 $G --headless --path . -s res://tests/claude_compileall.gd | grep COMPILEALL` must print `bad=[]`.
+- Regression: `sh /d/ClaudeWork/ar-review/claude_regress_fast.sh > log 2>&1; grep -v "exit=0" log` (92 checks, about 10 minutes; run it in the background). Afterwards `git checkout -- '*.import' artifacts`. Known flake: `claude_clickable`.
+- One map: `sh /d/ClaudeWork/ar-review/claude_mapbattery.sh <map> <chapter>` (soundness, walks, vein build, three matches, the chapter).
+- Matches: `sh claude_batch.sh m:<map>:<a>:<b> c:<chapter> ...` (nine at a time, traced). Balance: `CLAUDE_MAPS="..." CLAUDE_MINUTES=30 CLAUDE_JOBS=7 sh claude_matrix3.sh > log` (90 matches, about 55 minutes), `claude_focusmatrix3.sh` with `CLAUDE_FOCUS=<people>` (36 matches, about 22 minutes); tally with `python D:/ClaudeWork/tmp/tally.py log`. A balance change must be checked on both the hand-built and the old maps.
+- What the player sees: `claude_minimapdump.gd` (CLAUDE_MAP), `claude_previewshot.gd` (CLAUDE_MAPS), `claude_skirmishshot.gd`, `claude_startshot.gd` (CLAUDE_CHAPTER), `claude_terrainshot.gd` (CLAUDE_MAP, CLAUDE_SPOTS). Look at the pictures: soundness and matches do not see what a player sees.
+- Copy a probe into `tests/`, run it with `-s`, delete it and its `.uid`. Do not edit the real project's scripts while a matrix runs there; use the test copy with `CLAUDE_PROJECT`.
+
+**Working conventions.** Write patches as Python files with the Write tool (count-asserted replacements, CRLF-aware); bash heredocs mangle backslashes and apostrophes. Commit with `git -c user.name="Jardas33" -c user.email=...`, the Claude co-author trailer, and push with `timeout 100 git push -q https://github.com/jardas33/ascendant-realms.git claude/perf-placeholders-r1`; verify with `git ls-remote`. After each pushed plan: add the plan at the top of the list in `CLAUDE_PROGRESS_UPDATE.md`, copy that file to `D:\Code for projects\WB game like\tmp\` and send it, and reply briefly in the thread. State only what was measured; when a later result contradicts an earlier claim, say so in the write-up and in the thread.
+
+**Emanuel's standing directions.** Decide design questions without asking; he has no time to test builds. Keep going, plan after plan. Spend no money. Review Codex's work each cycle and leave written feedback. Maps must be big, varied and tied to the story. Use the cheaper model for routine runs.
+
+
 Branch `claude/perf-placeholders-r1`, based on local `codex/current-godot-baseline-next` at `ebef47ae`. It also merges Codex's ornate HUD branch at b6bcbe25.
 Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was touched. It's not merged or promoted.
 
