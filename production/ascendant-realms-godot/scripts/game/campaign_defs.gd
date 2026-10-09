@@ -27,7 +27,7 @@ const CHAPTERS := [
 		"opening": "The spring chose you. Now show the raiders what that means.",
 		"taunts": ["Malrec: \"A farmhand? The Lume chose a farmhand?\"", "Malrec: \"Keep burning, Jardas. I know how this ends.\""],
 		"victory": "The raiders fled up the pass. By the spring, your grandmother stood very still, staring at the water where your reflection should have been."},
-	{"id": "1-2", "act": 0, "title": "The Burning Oven", "map": "highland_gauntlet",
+	{"id": "1-2", "act": 0, "title": "The Burning Oven", "map": "salto_lower_quarter",
 		"opponents": [{"race": "vorthak", "difficulty": "easy"}], "difficulty": "Easy", "unlocks": ["1-3", "1-S1"],
 		"briefing": "The raiders did not leave. They took the lower quarter and fired the communal oven, the one every family in Salto has baked in for three hundred years.\n\nThe elders say a village is only as strong as what it shares. Every loaf baked in that oven fed the Lume. Put the fire out, and take back the square.",
 		"opening": "Save the oven. Save what we share.",

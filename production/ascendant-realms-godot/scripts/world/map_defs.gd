@@ -77,6 +77,7 @@ static func _specs() -> Array:
 		# ones, built round the place the saga gives them.
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
 		{"id":"rabagao_gorge","name":"Rabagao Gorge","theme":"autumn","authored":"gorge"},
+		{"id":"salto_lower_quarter","name":"Salto, the Lower Quarter","theme":"highland","authored":"quarter"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -131,7 +132,10 @@ static func _assemble(s: Dictionary) -> Dictionary:
 ## already keeps clear of a crag (routes, orders, buildings, scenery) keeps
 ## clear of a wood or a river as well.
 static func _assemble_authored(s: Dictionary) -> Dictionary:
-	var a: Dictionary = _rabagao_gorge() if String(s["authored"]) == "gorge" else _salto_valley()
+	var a: Dictionary = _salto_valley()
+	match String(s["authored"]):
+		"gorge": a = _rabagao_gorge()
+		"quarter": a = _salto_lower_quarter()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -370,6 +374,73 @@ static func _salto_valley() -> Dictionary:
 			{"at": Vector2(-92, -28), "yaw": 0.4}, {"at": Vector2(92, 28), "yaw": 0.4 + PI},
 			{"at": Vector2(-60, -166), "yaw": -0.9}, {"at": Vector2(60, 166), "yaw": -0.9 + PI},
 		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Salto, the Lower Quarter (saga 1-2, "The Burning Oven"). 380 m across: a
+## village fight. The communal oven stands in the square at the centre with
+## six crofts round it and streets between them. Terraced ridges fence each
+## walled start off from the fields, with one gate toward the square; woods
+## and a knoll break up the rest. No river: the quarter is fought house to
+## house, and whoever holds the oven is fed by it.
+static func _salto_lower_quarter() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		[Vector2(-118, -58), Vector2(-92, -66), Vector2(-70, -58)],
+		[Vector2(-58, -118), Vector2(-66, -92), Vector2(-58, -72)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 2.0
+	for wood in [[-150, 10, 16, 24], [10, -150, 24, 16], [-40, 92, 18, 14], [92, -36, 14, 18]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.1
+	var hills: Array = [
+		{"at": Vector2(-22, -96), "radii": Vector2(15, 10), "height": 8.0, "seed": 1.7},
+		{"at": Vector2(22, 96), "radii": Vector2(15, 10), "height": 8.0, "seed": 1.7 + PI},
+	]
+	# The square: six crofts on a ring round the oven, doors to the middle.
+	var farmsteads: Array = []
+	for k in 6:
+		var angle := deg_to_rad(30.0 + 60.0 * float(k))
+		farmsteads.append({"at": Vector2(cos(angle), sin(angle)) * 34.0, "yaw": atan2(-cos(angle), -sin(angle))})
+	# Outlying crofts on the lanes out to the fields.
+	for croft in [[6, -84, 0.0], [-84, 4, 1.57]]:
+		farmsteads.append({"at": Vector2(croft[0], croft[1]), "yaw": croft[2]})
+		farmsteads.append({"at": Vector2(-croft[0], -croft[1]), "yaw": croft[2] + PI})
+	var veins: Array = []
+	_pair_point(veins, "gold", -120, -22)
+	_pair_point(veins, "food", -30, -128)
+	_pair_point(veins, "stone", -172, -70)
+	_pair_point(veins, "timber", -100, -164)
+	_pair_point(veins, "gold", -122, 66)
+	_pair_point(veins, "food", -64, 152)
+	_pair_point(veins, "stone", -172, 74)
+	_pair_point(veins, "timber", -100, 104)
+	_pair_point(veins, "gold", -62, -12)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -68, 12)
+	_pair_point(deposits, "stone", -14, 66)
+	_pair_point(deposits, "timber", -178, -38)
+	_pair_point(deposits, "food", -52, -40)
+	var sites: Array = [
+		{"name": "The Communal Oven", "benefit": "income", "pos": Vector3.ZERO, "model": "res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb"},
+		{"name": "Chapel of the Lower Quarter", "benefit": "heal", "pos": Vector3(-96, 0, -20), "model": RUIN},
+		{"name": "The Threshing Floor", "benefit": "heal", "pos": Vector3(96, 0, 20), "model": RUIN},
+		{"name": "North Field Watch", "benefit": "vision", "pos": Vector3(-54, 0, 128), "model": WATCH},
+		{"name": "South Field Watch", "benefit": "vision", "pos": Vector3(54, 0, -128), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-140, -130, -64, -65), Vector4(-64, -65, 0, 0), Vector4(140, 130, 64, 65), Vector4(64, 65, 0, 0),
+		Vector4(-140, 130, 0, 0), Vector4(140, -130, 0, 0),
+	]
+	return {
+		"size": 190.0,
+		"starts": [Vector3(-140, 0, -130), Vector3(140, 0, 130), Vector3(-140, 0, 130), Vector3(140, 0, -130)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [], "ruins": [], "farmsteads": farmsteads,
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

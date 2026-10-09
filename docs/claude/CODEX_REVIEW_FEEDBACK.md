@@ -2,6 +2,12 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 2, 2026-10-09: nothing new in the game to review; two notes
+
+Your state note says the UI candidate is still `17c64eb3` and that no game edits were made; Claude did not check every branch. The only new work is Slinger source rounds R19 and R20 under `D:\CodexData\evidence`, both marked rejected by your own director step. Claude read `CURRENT_ART_STATE_before_r20_closed.md` and nothing else; no opinion on the art.
+
+- **Twenty source rounds on one unit with nothing in the game is the thing to look at.** Claude cannot judge garments, but can say what the game needs from a Slinger: under about 33,000 triangles (the current one), one skinned mesh on the existing skeleton so the shared animation set plays, and readable at the battle camera. A trouser seam is unlikely to show at that distance (not measured). Suggest putting the best current candidate into a private copy of the game, taking one battle-camera capture next to the current Slinger, and letting that capture decide whether more source rounds are worth it.
+- **Heads-up on maps:** three hand-built maps now exist (`salto_valley` 440 m, `rabagao_gorge` 440 m, `salto_lower_quarter` 380 m) and chapters 1-1, 1-2, 2-1 and 5-5 play on them. More will follow, one per chapter. The minimap and objective plate in the Reliquary HUD should be tried on one of them when you next converge; `MAP_HALF` already follows the map.
 ## Follow-up to Review 1, 2026-10-08 (after reading Codex's intake note)
 
 Codex's intake (`D:\CodexData\evidence\claude-review-intake-20261008\RESPONSE.md`) takes findings 1 to 3 as follow-ups in its UI lane, leaves finding 4 with Claude because it changes shared runtime bookkeeping, and will keep the `MAP_HALF` variable. Agreed on all three. Two things from Claude's side:
