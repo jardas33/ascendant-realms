@@ -410,6 +410,7 @@ func _ready() -> void:
 	var decoration_stage := _m20_begin("GAMEWORLD_DECORATION", "GAMEWORLD_READY", 1)
 	_scatter_environment()
 	_build_crags()
+	_build_walls()
 	_build_rivers()
 	_build_lakes()
 	_build_hills()
@@ -1138,6 +1139,87 @@ func _build_crags() -> void:
 		if holder is Node3D and not holder.has_meta("crag_batched"):
 			crag_batcher.batch(holder)
 
+## Built walls (the Rabagao Wall): dressed stone drawn whole along each
+## length, battered a little toward the top, with a parapet either side, a
+## buttress every few paces and a tower at each end where the gates are.
+## The ground is blocked by the same tiles a rock ridge uses.
+func _build_walls() -> void:
+	var walls: Array = map.get("walls", [])
+	if walls.is_empty():
+		return
+	var layer := Node3D.new()
+	layer.name = "Walls"
+	add_child(layer)
+	var stone := StandardMaterial3D.new()
+	var stone_path := "res://assets/textures/stone/highland_rock.png"
+	if ResourceLoader.exists(stone_path):
+		stone.albedo_texture = load(stone_path)
+	stone.albedo_color = Color(0.78, 0.76, 0.72)
+	stone.roughness = 1.0
+	stone.uv1_triplanar = true
+	stone.uv1_scale = Vector3(0.16, 0.16, 0.16)
+	stone.vertex_color_use_as_albedo = true
+	for wall in walls:
+		var samples: PackedVector2Array = wall["samples"]
+		if samples.size() < 2:
+			continue
+		var half: float = float(wall["thickness"]) * 0.5 - 0.6
+		var top: float = float(wall["height"])
+		var tool := SurfaceTool.new()
+		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+		# A box between two points across the wall's line, `wide` either side
+		# of it at the foot and `wide_top` at the head, from `low` to `high`.
+		var block := func(from: Vector2, to: Vector2, wide: float, wide_top: float, low: float, high: float, tint: Color) -> void:
+			var along := (to - from).normalized()
+			var across := Vector2(-along.y, along.x)
+			var foot: Array = [from - across * wide, from + across * wide, to + across * wide, to - across * wide]
+			var head: Array = [from - across * wide_top, from + across * wide_top, to + across * wide_top, to - across * wide_top]
+			var corners: Array = []
+			for corner in foot:
+				corners.append(Vector3(corner.x, low, corner.y))
+			for corner in head:
+				corners.append(Vector3(corner.x, high, corner.y))
+			# Top, then the four sides (wound so each faces outward).
+			for face in [[4, 5, 6, 7], [0, 4, 7, 3], [1, 2, 6, 5], [0, 1, 5, 4], [3, 7, 6, 2]]:
+				for index in [0, 2, 1, 0, 3, 2]:
+					var vertex: Vector3 = corners[face[index]]
+					tool.set_color(tint.darkened(0.22 * (1.0 - clampf(vertex.y / top, 0.0, 1.0))))
+					tool.add_vertex(vertex)
+		var pale := Color(1.0, 1.0, 1.0)
+		var walked := 0.0
+		for index in range(samples.size() - 1):
+			var from: Vector2 = samples[index]
+			var to: Vector2 = samples[index + 1]
+			var along := (to - from).normalized()
+			var across := Vector2(-along.y, along.x)
+			# The body, and the walk along its top between two parapets.
+			block.call(from, to, half, half - 0.9, 0.0, top, pale)
+			for side in [-1.0, 1.0]:
+				var edge: Vector2 = across * (half - 1.3) * side
+				block.call(from + edge, to + edge, 0.4, 0.4, top, top + 1.1, Color(0.94, 0.93, 0.90))
+			# A buttress on both faces every twelve metres or so.
+			walked += from.distance_to(to)
+			if walked >= 12.0:
+				walked = 0.0
+				for side in [-1.0, 1.0]:
+					var out: Vector2 = across * (half + 0.9) * side
+					block.call(from + out - along * 1.2, from + out + along * 1.2, 1.5, 0.5, 0.0, top * 0.8, Color(0.90, 0.88, 0.84))
+		# A tower at each end.
+		for end in [0, samples.size() - 1]:
+			var at: Vector2 = samples[end]
+			var facing: Vector2 = (samples[1] - samples[0]).normalized() if end == 0 else (samples[samples.size() - 1] - samples[samples.size() - 2]).normalized()
+			block.call(at - facing * (half + 1.0), at + facing * (half + 1.0), half + 1.0, half + 0.4, 0.0, top + 3.2, Color(0.96, 0.95, 0.92))
+			for merlon in 4:
+				var corner_at: Vector2 = at + facing * (half * 0.7) * (1.0 if merlon < 2 else -1.0) + Vector2(-facing.y, facing.x) * (half * 0.7) * (1.0 if merlon % 2 == 0 else -1.0)
+				block.call(corner_at - facing * 1.0, corner_at + facing * 1.0, 1.0, 1.0, top + 3.2, top + 4.5, Color(0.92, 0.91, 0.88))
+		tool.generate_normals()
+		var drawn := MeshInstance3D.new()
+		drawn.name = "Wall"
+		drawn.mesh = tool.commit()
+		drawn.material_override = stone
+		drawn.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		layer.add_child(drawn)
+
 ## A river: a ribbon of moving water along its course over a darker bed,
 ## wider than the water so the banks show. It runs on through the fords,
 ## where stones break the surface and soldiers wade.
@@ -1393,18 +1475,30 @@ func _build_hills() -> void:
 		var height: float = float(hill.get("height", 8.0))
 		var tool := SurfaceTool.new()
 		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-		var rings := 7
+		# A mesa: a flat top, a cliff all round it, and a skirt of scree.
+		var mesa := String(hill.get("shape", "")) == "mesa"
+		var rings := 12 if mesa else 7
 		var spokes := 40
 		# Height at a share `t` of the way out (0 the top, 1 the foot) in direction `a`.
 		var point := func(t: float, a: float) -> Vector3:
 			var reach := MapDefs.wood_reach(hill, a) * 1.12
 			var x := cos(a) * radii.x * reach * t
 			var z := sin(a) * radii.y * reach * t
-			var rise := height * pow(maxf(0.0, 1.0 - t * t), 1.4) * (0.82 + 0.36 * noise.get_noise_2d(centre.x + x, centre.y + z))
+			var rough := noise.get_noise_2d(centre.x + x, centre.y + z)
+			var rise := height * pow(maxf(0.0, 1.0 - t * t), 1.4) * (0.82 + 0.36 * rough)
+			if mesa:
+				var cliff := 1.0 - smoothstep(0.66, 0.80, t)
+				var scree := 0.16 * (1.0 - smoothstep(0.80, 1.0, t))
+				rise = height * (cliff * (0.84 + 0.05 * rough) + scree)
 			return Vector3(centre.x + x, maxf(rise, 0.0) - 0.05, centre.y + z)
+		# (Close rings down the cliff, so the beds of rock have rows to show in.)
+		var mesa_rings: Array = [0.0, 0.34, 0.58, 0.66, 0.68, 0.70, 0.72, 0.74, 0.76, 0.78, 0.80, 0.90, 1.0]
 		for ring in rings:
 			var t0 := float(ring) / float(rings)
 			var t1 := float(ring + 1) / float(rings)
+			if mesa:
+				t0 = float(mesa_rings[ring])
+				t1 = float(mesa_rings[ring + 1])
 			for spoke in spokes:
 				var a0 := TAU * float(spoke) / float(spokes)
 				var a1 := TAU * float(spoke + 1) / float(spokes)
@@ -1413,13 +1507,28 @@ func _build_hills() -> void:
 					var v: Vector3 = quad[index]
 					# Steeper and higher ground shows more rock (darker, greyer).
 					var shade := clampf(v.y / height, 0.0, 1.0)
-					tool.set_color(Color(1.0, 1.0, 1.0).lerp(Color(0.80, 0.78, 0.74), shade * 0.5))
+					var hue := Color(1.0, 1.0, 1.0).lerp(Color(0.80, 0.78, 0.74), shade * 0.5)
+					if mesa:
+						# Beds of rock show as bands up the cliff; the top is paler.
+						var bed := 0.5 + 0.5 * sin(v.y * 2.4)
+						hue = Color(1.0, 0.86, 0.72).lerp(Color(0.62, 0.40, 0.30), bed)
+						if shade > 0.8:
+							hue = Color(1.0, 0.92, 0.80)
+					tool.set_color(hue)
 					tool.add_vertex(v)
 		tool.generate_normals()
 		var mound := MeshInstance3D.new()
 		mound.name = "Hill"
 		mound.mesh = tool.commit()
 		mound.material_override = turf
+		if mesa:
+			# Bare rock, not sand: the stone texture under the banded colours.
+			var stone := turf.duplicate() as StandardMaterial3D
+			var stone_path := "res://assets/textures/stone/highland_rock.png"
+			stone.albedo_texture = load(stone_path) if ResourceLoader.exists(stone_path) else null
+			stone.albedo_color = Color(1.5, 1.2, 1.0)
+			stone.uv1_scale = Vector3(0.10, 0.10, 0.10)
+			mound.material_override = stone
 		mound.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		layer.add_child(mound)
 		# Rock outcrops on the flanks and a few pines near the top.

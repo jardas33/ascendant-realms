@@ -30,6 +30,8 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 		_build_ruin_chapel(root)
 	elif model_path == "composed:seven_mouths":
 		_build_seven_mouths(root)
+	elif model_path == "composed:bell_tower":
+		_build_bell_tower(root)
 	elif model_path == "composed:highland_watch":
 		_build_highland_watch(root)
 	elif model_path != "" and ResourceLoader.exists(model_path):
@@ -92,6 +94,73 @@ func _build_ruin_chapel(root: Node3D) -> void:
 ## The Spring of Seven Mouths: a round pool with seven standing stones at
 ## its rim, each one a mouth of the spring, and the Lume's light in the water.
 ## Only the stones collide; the pool is ankle deep.
+## The bell tower of a drowned village: a square stone shaft stained dark to
+## the old waterline, an open belfry of four piers under a broken slate cap,
+## and the bell still hanging in it.
+func _build_bell_tower(root: Node3D) -> void:
+	var stone := StandardMaterial3D.new()
+	var stone_path := "res://assets/textures/stone/highland_rock.png"
+	if ResourceLoader.exists(stone_path):
+		stone.albedo_texture = load(stone_path)
+	stone.albedo_color = Color(0.74, 0.72, 0.68)
+	stone.roughness = 1.0
+	stone.uv1_triplanar = true
+	stone.uv1_scale = Vector3(0.22, 0.22, 0.22)
+	var stained := stone.duplicate() as StandardMaterial3D
+	stained.albedo_color = Color(0.36, 0.40, 0.36)
+	var slate := StandardMaterial3D.new()
+	slate.albedo_color = Color(0.20, 0.22, 0.26)
+	slate.roughness = 0.9
+	var bronze := StandardMaterial3D.new()
+	bronze.albedo_color = Color(0.42, 0.30, 0.14)
+	bronze.metallic = 0.7
+	bronze.roughness = 0.45
+	var piece := func(mesh: Mesh, material: Material, at: Vector3, piece_name: String) -> MeshInstance3D:
+		var drawn := MeshInstance3D.new()
+		drawn.name = piece_name
+		drawn.mesh = mesh
+		drawn.material_override = material
+		drawn.position = at
+		root.add_child(drawn)
+		return drawn
+	# The shaft: the lower third was under water for seventy-seven years.
+	var foot := BoxMesh.new()
+	foot.size = Vector3(4.4, 3.4, 4.4)
+	piece.call(foot, stained, Vector3(0, 1.7, 0), "TowerFoot")
+	var shaft := BoxMesh.new()
+	shaft.size = Vector3(4.0, 6.4, 4.0)
+	piece.call(shaft, stone, Vector3(0, 6.6, 0), "TowerShaft")
+	var ledge := BoxMesh.new()
+	ledge.size = Vector3(4.6, 0.4, 4.6)
+	piece.call(ledge, stone, Vector3(0, 10.0, 0), "TowerLedge")
+	# The belfry: four piers, open on every side.
+	for corner in 4:
+		var pier := BoxMesh.new()
+		pier.size = Vector3(0.9, 2.8, 0.9)
+		piece.call(pier, stone, Vector3(1.55 * (1.0 if corner < 2 else -1.0), 11.6, 1.55 * (1.0 if corner % 2 == 0 else -1.0)), "BelfryPier%d" % corner)
+	var lintel := BoxMesh.new()
+	lintel.size = Vector3(4.4, 0.5, 4.4)
+	piece.call(lintel, stone, Vector3(0, 13.25, 0), "BelfryLintel")
+	# A four-sided cap, with one face fallen in.
+	var cap := CylinderMesh.new()
+	cap.top_radius = 0.0
+	cap.bottom_radius = 3.3
+	cap.height = 3.0
+	cap.radial_segments = 4
+	var roof: MeshInstance3D = piece.call(cap, slate, Vector3(0.25, 15.0, 0.0), "TowerCap")
+	roof.rotation = Vector3(0.0, PI * 0.25, 0.05)
+	# The bell and its beam.
+	var beam := BoxMesh.new()
+	beam.size = Vector3(3.4, 0.3, 0.3)
+	piece.call(beam, slate, Vector3(0, 12.7, 0), "BellBeam")
+	var bell := CylinderMesh.new()
+	bell.top_radius = 0.35
+	bell.bottom_radius = 0.85
+	bell.height = 1.3
+	bell.radial_segments = 14
+	piece.call(bell, bronze, Vector3(0, 11.9, 0), "Bell")
+	footprint = 3.2
+
 func _build_seven_mouths(root: Node3D) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7707

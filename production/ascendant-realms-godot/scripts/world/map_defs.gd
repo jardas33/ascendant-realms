@@ -275,11 +275,17 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		for tile in _wood_tiles(lake):
 			tile["kind"] = "water"
 			crags.append(tile)
+	# A ridge is rock unless it says it was built: a "masonry" ridge blocks
+	# the same ground and is drawn whole as a wall (GameWorld._build_walls).
+	var walls: Array = []
 	for ridge in a["ridges"]:
 		var thickness: float = float(ridge["thickness"])
 		var samples := _smooth(ridge["points"], thickness * 0.8)
+		var built := String(ridge.get("style", "")) == "masonry"
+		if built:
+			walls.append({"samples": _smooth(ridge["points"], 3.0), "thickness": thickness, "height": float(ridge.get("height", 9.0))})
 		for point in samples:
-			crags.append({"pos": Vector3(point.x, 0.0, point.y), "half": Vector2(thickness * 0.5, thickness * 0.5), "kind": "rock"})
+			crags.append({"pos": Vector3(point.x, 0.0, point.y), "half": Vector2(thickness * 0.5, thickness * 0.5), "kind": "masonry" if built else "rock"})
 	var th := theme(s["theme"])
 	var m := {
 		"id": s["id"],
@@ -297,6 +303,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"woods": woods,
 		"lakes": lakes,
 		"hills": hills,
+		"walls": walls,
 		"bridges": a.get("bridges", []),
 		"bridges_turned": a.get("bridges_turned", false),
 		"ruins": a.get("ruins", []),
@@ -985,7 +992,7 @@ static func _furna_reservoir() -> Dictionary:
 	_pair_point(deposits, "timber", -152, -12)
 	_pair_point(deposits, "food", -196, 6)
 	var sites: Array = [
-		{"name": "The Bell Tower of Furna", "benefit": "income", "pos": Vector3.ZERO, "model": WATCH},
+		{"name": "The Bell Tower of Furna", "benefit": "income", "pos": Vector3.ZERO, "model": "composed:bell_tower"},
 		{"name": "Furna Churchyard", "benefit": "heal", "pos": Vector3(-112, 0, -66), "model": RUIN},
 		{"name": "The Mourners' Camp", "benefit": "heal", "pos": Vector3(112, 0, 66), "model": RUIN},
 		{"name": "North Shore Watch", "benefit": "vision", "pos": Vector3(-40, 0, 132), "model": WATCH},
@@ -1703,8 +1710,8 @@ static func _regents_canyon() -> Dictionary:
 	var hills: Array = []
 	var mesa_seed := 1.1
 	for mesa in [[-96, -52], [-96, 52], [0, -52]]:
-		hills.append({"at": Vector2(mesa[0], mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed})
-		hills.append({"at": Vector2(-mesa[0], -mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed + PI})
+		hills.append({"at": Vector2(mesa[0], mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed, "shape": "mesa"})
+		hills.append({"at": Vector2(-mesa[0], -mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed + PI, "shape": "mesa"})
 		mesa_seed += 1.9
 	var woods: Array = []
 	var wood_seed := 18.4
@@ -1762,7 +1769,7 @@ static func _rabagao_wall() -> Dictionary:
 		[Vector2(21, 20), Vector2(60, 17), Vector2(99, 20)],
 		[Vector2(141, 20), Vector2(182, 22), Vector2(226, 18)],
 	]:
-		ridges.append({"points": line, "thickness": 16.0})
+		ridges.append({"points": line, "thickness": 16.0, "style": "masonry", "height": 11.0})
 	var lakes: Array = [
 		{"at": Vector2(-64, 98), "radii": Vector2(40, 30), "seed": 4.1},
 		{"at": Vector2(64, 98), "radii": Vector2(40, 30), "seed": 5.3},
