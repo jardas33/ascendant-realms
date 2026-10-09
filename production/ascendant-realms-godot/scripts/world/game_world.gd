@@ -179,6 +179,15 @@ func _pick_bounty() -> void:
 		{"id": "thrift", "losses": 8 + rng.randi() % 8, "text": ""},
 		{"id": "raze", "count": 4 + rng.randi() % 5, "text": ""},
 	]
+	# A hold-out ends on the clock, so "win within N minutes" would be won or
+	# lost before the match began; and nobody holds a keep against two or
+	# three armies for ten minutes losing fifteen soldiers (the stand-in
+	# player loses 15 to 17 in the six-minute hold-out and 31 to 67 in the
+	# ten-minute ones). No swift bounty there, and the thrift bounty allows
+	# one more loss for every twenty seconds of the hold.
+	if survival_remaining() >= 0.0:
+		options.remove_at(1)
+		options[1]["losses"] = int(options[1]["losses"]) + _survive_seconds / 20
 	bounty = options[rng.randi() % options.size()]
 	match String(bounty["id"]):
 		"swift": bounty["text"] = "Bounty: win within %d minutes." % int(bounty["minutes"])
@@ -1151,7 +1160,9 @@ func _build_crags() -> void:
 ## (called once by the HUD, which owns the picture): roads, then water, woods,
 ## rock, hills and built walls from the same tiles that block the ground, the
 ## pale shallows of each ford, and the bridges.
-func paint_minimap_terrain(image: Image, map_half: float) -> void:
+## strength below 1 lays the same strokes more thinly (over the baked picture
+## of the real field, where they only have to pick the structure out).
+func paint_minimap_terrain(image: Image, map_half: float, strength: float = 1.0) -> void:
 	var across := image.get_width()
 	var per_metre := float(across - 1) / (map_half * 2.0)
 	var theme_name := str(map.get("theme", "highland"))
@@ -1190,7 +1201,7 @@ func paint_minimap_terrain(image: Image, map_half: float) -> void:
 		var pz1 := clampi(int(ceil((maxf(z0, z1) + map_half) * per_metre)), 0, across - 1)
 		for px in range(px0, px1 + 1):
 			for pz in range(pz0, pz1 + 1):
-				image.set_pixel(px, pz, image.get_pixel(px, pz).lerp(tint, weight))
+				image.set_pixel(px, pz, image.get_pixel(px, pz).lerp(tint, weight * strength))
 	# Roads first, so that everything else lies over them.
 	var road_tint := Color(0.74, 0.58, 0.38) if not theme_name in ["snow", "volcanic", "ashen"] else Color(0.50, 0.46, 0.44)
 	for road in map.get("roads", []):
@@ -2427,6 +2438,15 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	# No lone trees or boulders in or against a crag.
 	if in_crag(pos, 3.0):
 		return
+	# Nor on a hand-built map's roads: an oak and a pine stood in the middle
+	# of the road through Montalto's north gate.
+	if bool(map.get("authored", false)):
+		var at := Vector2(pos.x, pos.z)
+		for road in map.get("roads", []):
+			var road_a := Vector2(road.x, road.y)
+			var road_b := Vector2(road.z, road.w)
+			if Geometry2D.get_closest_point_to_segment(at, road_a, road_b).distance_to(at) < 6.0:
+				return
 	# Keep trees and boulders out of the river ford on bridge maps.
 	if map.has("bridge") and _theme.get("water", {}).get("enabled", false):
 		var ov: Dictionary = map.get("overview", {})
@@ -4844,6 +4864,23 @@ func _bake_overview_texture() -> void:
 	vp.queue_free()
 	if img == null or img.is_empty():
 		return
+	# The picture is the real field seen from above, and at 200 pixels a
+	# night field is nearly black and a wall is a hair. Lift a dark picture to
+	# a readable level, then lay a hand-built map's roads, water, woods, rock
+	# and walls over it thinly, so the layout reads at minimap size.
+	var sample: Image = img.duplicate()
+	sample.resize(8, 8, Image.INTERPOLATE_BILINEAR)
+	var level := 0.0
+	for sx in 8:
+		for sy in 8:
+			level += sample.get_pixel(sx, sy).get_luminance()
+	level /= 64.0
+	if level > 0.01 and level < 0.24:
+		img.adjust_bcs(clampf(0.27 / level, 1.0, 2.4), 1.06, 1.05)
+	if bool(map.get("authored", false)):
+		if img.get_format() != Image.FORMAT_RGBA8:
+			img.convert(Image.FORMAT_RGBA8)
+		paint_minimap_terrain(img, half, 0.5)
 	img.generate_mipmaps()
 	overview_texture = ImageTexture.create_from_image(img)
 
@@ -5514,8 +5551,20 @@ func survival_remaining() -> float:
 		_survive_seconds = CampaignDefs.survive_seconds(chapter_id) if chapter_id != "" else 0
 	return maxf(0.0, float(_survive_seconds) - match_time) if _survive_seconds > 0 else -1.0
 
+var _survive_called := 0
+
 func _check_survival() -> void:
 	var left := survival_remaining()
+	# Two calls on the way: at the half, and with a minute to go. The clock
+	# is small and a siege keeps the eyes elsewhere.
+	if left > 0.0 and not match_ended:
+		if _survive_called == 0 and left <= float(_survive_seconds) * 0.5:
+			_survive_called = 1
+			emit_signal("alert", "Half the watch is kept. Hold.", Vector3.ZERO)
+		elif _survive_called == 1 and left <= 60.0:
+			_survive_called = 2
+			emit_signal("alert", "One minute more. Hold the line!", Vector3.ZERO)
+			Sfx.play("levelup", -8.0)
 	if left == 0.0 and not match_ended and is_instance_valid(player_commander) and not player_commander.defeated:
 		# A chapter may name its own closing line ("held").
 		_end_game(true, String(CampaignDefs.find(String(Match.get_config().get("campaign_chapter", ""))).get("held", "You held until dawn")))

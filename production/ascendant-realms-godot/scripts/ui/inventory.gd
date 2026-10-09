@@ -559,8 +559,12 @@ func _stat_value(key: String, value: float, signed: bool = true) -> String:
 		return "%s%d%%" % [sign_str, int(round(v * 100.0))]
 	if is_equal_approx(v, round(v)):
 		return "%s%d" % [sign_str, int(round(v))]
-	# Two decimals at most, without trailing zeros (0.26, 1.5).
-	return "%s%s" % [sign_str, ("%.2f" % v).rstrip("0").rstrip(".")]
+	# No more digits than the size of the number can carry: whole numbers
+	# from ten up (25.88 regen read as a typo), one decimal below ten, two
+	# below one (0.26), without trailing zeros.
+	if v >= 10.0:
+		return "%s%d" % [sign_str, int(round(v))]
+	return "%s%s" % [sign_str, (("%.1f" if v >= 1.0 else "%.2f") % v).rstrip("0").rstrip(".")]
 
 func _short_stat(key: String, value: float) -> String:
 	return "%s %s" % [_stat_value(key, value), _stat_name(key, true)]

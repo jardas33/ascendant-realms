@@ -354,8 +354,15 @@ func _build_battle_panel() -> Control:
 	map_opt.custom_minimum_size = Vector2(0, 38)
 	_map_infos = MapDefs.list_infos()
 	map_opt.add_item("Random Battlefield", 0)
-	for i in _map_infos.size():
-		map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
+	# Fifty names in one list is a long scroll: the hand-built battlefields
+	# of the saga come first under their own heading, then the open fields.
+	# Each item's id is its place in _map_infos plus one, so the headings
+	# (which take a row each) do not shift what a row means.
+	for group in [true, false]:
+		map_opt.add_separator("Battlefields of the saga" if group else "Open fields")
+		for i in _map_infos.size():
+			if bool(_map_infos[i].get("authored", false)) == group:
+				map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
 	var default_index := 0
 	var map_known: bool = _map_id == "__random__"
 	for i in _map_infos.size():
@@ -365,11 +372,12 @@ func _build_battle_panel() -> Control:
 		_map_id = "hollowspan"
 	for i in _map_infos.size():
 		if str(_map_infos[i]["id"]) == _map_id:
-			default_index = i + 1
+			default_index = map_opt.get_item_index(i + 1)
 	map_opt.select(default_index)
 	map_opt.item_selected.connect(func(idx):
 		Sfx.play("select")
-		_map_id = "__random__" if idx == 0 else str(_map_infos[idx - 1]["id"])
+		var picked_id: int = map_opt.get_item_id(idx)
+		_map_id = "__random__" if picked_id == 0 else str(_map_infos[picked_id - 1]["id"])
 		_refresh_map_preview())
 	v.add_child(map_opt)
 	# Beside the map on wide screens; below it on 4:3 and 5:4 screens, where a

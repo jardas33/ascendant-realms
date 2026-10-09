@@ -73,7 +73,7 @@ static func list_infos() -> Array:
 		if bool(s.get("saga", false)):
 			continue
 		out.append({"id": s["id"], "name": s["name"], "theme": s["theme"],
-			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false))})
+			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false)), "authored": s.has("authored")})
 	return out
 
 ## Back-compat: original default map.
@@ -149,7 +149,7 @@ static func _specs() -> Array:
 		{"id":"witches_saddle","name":"The Witches' Saddle","theme":"ashen","authored":"peaks","saga":true},
 		# The hold-outs: the same ground with the enemy seated near.
 		{"id":"grove_rising_water","name":"The Grove, Rising Water","theme":"verdant","authored":"grove","seats":[0,2,3,1],"saga":true},
-		{"id":"montalto_witches_night","name":"Montalto, the Night of the Witches","theme":"ashen","authored":"montalto","saga":true},
+		{"id":"montalto_witches_night","name":"Montalto on Witches' Night","theme":"ashen","authored":"montalto","saga":true},
 		{"id":"pilgrims_bridge","name":"The Pilgrims' Bridge","theme":"verdant","authored":"junias","seats":[0,3,2,1],"saga":true},
 	]
 
@@ -1069,8 +1069,8 @@ static func _envoys_field() -> Dictionary:
 		for point in line:
 			mirrored.append(Vector2(point.x, -point.y))
 		for wall in [line, mirrored]:
-			ridges.append({"points": wall, "thickness": 9.0})
-			ridges.append({"points": _twin_points(wall), "thickness": 9.0})
+			ridges.append({"points": wall, "thickness": 9.0, "style": "masonry", "height": 6.0})
+			ridges.append({"points": _twin_points(wall), "thickness": 9.0, "style": "masonry", "height": 6.0})
 	var woods: Array = []
 	var wood_seed := 10.4
 	for wood in [[-20, -86, 20, 14], [-90, 56, 18, 16]]:
@@ -1262,7 +1262,8 @@ static func _castro_carvalhelhos() -> Dictionary:
 			for step in 6:
 				var angle := deg_to_rad(lerpf(ring[1], ring[2], float(step) / 5.0) + 90.0 * float(quarter))
 				line.append(Vector2(cos(angle), sin(angle)) * float(ring[0]))
-			ridges.append({"points": line, "thickness": 8.0})
+			# The rings are the fort's own walls: built stone, not crag.
+			ridges.append({"points": line, "thickness": 8.0, "style": "masonry", "height": 6.0})
 	for line in [
 		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
 		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
@@ -1876,7 +1877,7 @@ static func _montalto() -> Dictionary:
 		for step in int(arc[2]) + 1:
 			var angle := deg_to_rad(lerpf(arc[0], arc[1], float(step) / float(arc[2])))
 			line.append(keep + Vector2(cos(angle), sin(angle)) * 70.0)
-		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": line, "thickness": 9.0, "style": "masonry", "height": 7.0})
 	var woods: Array = [
 		{"at": Vector2(-170, 120), "radii": Vector2(18, 14), "seed": 22.4}, {"at": Vector2(170, 120), "radii": Vector2(18, 14), "seed": 23.5},
 		{"at": Vector2(0, -216), "radii": Vector2(18, 10), "seed": 24.6},
@@ -1939,8 +1940,9 @@ static func _fojo() -> Dictionary:
 		[Vector2(-121.6, -33.9), Vector2(-70.0, -14.8), Vector2(-21.9, 2.1)],
 		[Vector2(-33.9, -121.6), Vector2(-14.8, -70.0), Vector2(2.1, -21.9)],
 	]:
-		ridges.append({"points": line, "thickness": 10.0})
-		ridges.append({"points": _twin_points(line), "thickness": 10.0})
+		# A fojo's funnel is dry-stone wall, a little over head height.
+		ridges.append({"points": line, "thickness": 10.0, "style": "masonry", "height": 4.5})
+		ridges.append({"points": _twin_points(line), "thickness": 10.0, "style": "masonry", "height": 4.5})
 	for line in [
 		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
 	]:
@@ -2086,6 +2088,11 @@ static func _rabagao_gorge() -> Dictionary:
 		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
 		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
 	]:
+		# The dam is built; the rest is the gorge's own rock.
+		if is_equal_approx((line[0] as Vector2).x, -62.0):
+			ridges.append({"points": line, "thickness": 9.0, "style": "masonry", "height": 10.0})
+			ridges.append({"points": _twin_points(line), "thickness": 9.0, "style": "masonry", "height": 10.0})
+			continue
 		ridges.append({"points": line, "thickness": 9.0})
 		ridges.append({"points": _twin_points(line), "thickness": 9.0})
 	var woods: Array = []

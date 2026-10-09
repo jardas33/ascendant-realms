@@ -575,7 +575,10 @@ func _apply_race_passive() -> void:
 			# less when the fight is a long march from home. +6% damage:
 			# 16-20 over 36 focus
 			# matches there, 18-17 over 36 on the old maps.
-			base_dmg *= 1.06
+			# Plan 174: their Sun Priests had never healed on the attack (a
+			# healer healed only while idle). With that mended the bonus is
+			# gone again: 8-10 on the hand-built maps and 13-5 on the old
+			# ones without it.
 			# 24-10 over the next two checks: +7% health (was +10%).
 			max_hp *= 1.07
 			hp = max_hp
@@ -632,7 +635,11 @@ func _apply_race_passive() -> void:
 			# families; the gap itself is not closed.
 			# (A tier-three fighter for them was tried in its place, plan 169:
 			# 10-24 on the new maps, no better than nothing; 20-13 on the old.)
-			base_dmg *= 1.05
+			# Plan 174 found the cause of that gap: their Canopy Menders
+			# healed only while idle, so the army was mended at home, which
+			# on a small map is where the fighting is, and never on the march.
+			# With healers healing in a fight and no damage bonus: 22-27 over
+			# 49 decided matches on the hand-built maps (29% before).
 			hp = max_hp
 		_:
 			pass
@@ -2987,7 +2994,11 @@ func _state_attack(delta: float) -> void:
 			_settled_zero_sent = true
 		_face(_target.global_position)
 		if _attack_timer <= 0.0:
-			_do_attack()
+			# A healer in a fight mends a wounded ally before it throws its own
+			# weak bolt. It used to heal only while idle, so on the attack it
+			# was a two-pop soldier doing 8 damage and its army went unhealed.
+			if not _heal_in_place_of_attack():
+				_do_attack()
 
 func _combat_reach(target) -> float:
 	if target is Building:
@@ -3513,7 +3524,8 @@ func _worker_build_target_velocity(avoidance_velocity: Vector3) -> Vector3:
 func _healer_tick(delta: float) -> void:
 	if is_dead or _is_defeated_remnant() or (world and not world.game_running):
 		return
-	# handled inside attack/idle by targeting wounded allies
+	# Idle or holding: heal whoever is wounded nearby. In a fight the attack
+	# branch calls _heal_in_place_of_attack.
 	if state == State.IDLE or state == State.HOLD:
 		var ally = world.find_wounded_ally(self, float(def.get("heal_range", 12.0))) if world else null
 		if ally:
@@ -3522,6 +3534,23 @@ func _healer_tick(delta: float) -> void:
 				_attack_timer = float(def.get("heal_cd", 1.2))
 				ally.heal(float(def.get("heal", 12.0)))
 				world.spawn_heal_fx(ally.global_position)
+	elif state == State.ATTACK_MOVE and _attack_timer <= 0.0:
+		# On the march between fights: mend without turning from the road
+		# (and look again in a third of a second if nobody needs it).
+		if not _heal_in_place_of_attack():
+			_attack_timer = 0.33
+
+## True when this unit is a healer and spent its turn on a wounded ally.
+func _heal_in_place_of_attack() -> bool:
+	if is_hero or heal_power <= 0.0 or world == null:
+		return false
+	var ally = world.find_wounded_ally(self, float(def.get("heal_range", 12.0)))
+	if ally == null:
+		return false
+	_attack_timer = float(def.get("heal_cd", 1.2))
+	ally.heal(float(def.get("heal", 12.0)))
+	world.spawn_heal_fx(ally.global_position)
+	return true
 
 # --------------------------------------------------------------------------
 # Movement helpers

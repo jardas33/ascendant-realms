@@ -87,18 +87,34 @@ func _draw() -> void:
 				tints["forest"] = Color(0.36, 0.34, 0.18)
 		for road in map_data.get("roads", []):
 			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.010), true)
+		# Each blocking tile is drawn as a disc a little wider than itself, so
+		# a run of tiles reads as one smooth wood, river or wall and not as a
+		# staircase of squares. Rock, walls and woods get a dark edge first,
+		# which lifts them off the ground. (A river or a wall may run on past
+		# the edge of the field: tiles at the frame stay square, clipped.)
 		for kind in ["hill", "forest", "water", "rock", "masonry"]:
-			for crag in map_data.get("crags", []):
-				if String(crag.get("kind", "rock")) != kind:
+			for pass_index in 2:
+				if pass_index == 0 and kind in ["hill", "water"]:
 					continue
-				var tile_pos: Vector3 = crag["pos"]
-				var tile_half: Vector2 = crag["half"]
-				var corner_a: Vector2 = to_px.call(tile_pos - Vector3(tile_half.x, 0, tile_half.y))
-				var corner_b: Vector2 = to_px.call(tile_pos + Vector3(tile_half.x, 0, tile_half.y))
-				# (A river or a wall may run on past the edge of the field.)
-				var tile_rect := Rect2(corner_a, corner_b - corner_a).intersection(rect)
-				if tile_rect.size.x > 0.0 and tile_rect.size.y > 0.0:
-					draw_rect(tile_rect, tints[kind])
+				for crag in map_data.get("crags", []):
+					if String(crag.get("kind", "rock")) != kind:
+						continue
+					var tile_pos: Vector3 = crag["pos"]
+					var tile_half: Vector2 = crag["half"]
+					var centre: Vector2 = to_px.call(tile_pos)
+					var radius: float = maxf(tile_half.x, tile_half.y) / (half * 2.0) * side * 1.22
+					var tint: Color = tints[kind]
+					if pass_index == 0:
+						tint = Color(tint.darkened(0.55), 0.9)
+						radius += maxf(1.0, side * 0.004)
+					if rect.grow(-radius).has_point(centre):
+						draw_circle(centre, radius, tint)
+					elif pass_index == 1:
+						var corner_a: Vector2 = to_px.call(tile_pos - Vector3(tile_half.x, 0, tile_half.y))
+						var corner_b: Vector2 = to_px.call(tile_pos + Vector3(tile_half.x, 0, tile_half.y))
+						var tile_rect := Rect2(corner_a, corner_b - corner_a).intersection(rect)
+						if tile_rect.size.x > 0.0 and tile_rect.size.y > 0.0:
+							draw_rect(tile_rect, tint)
 		for ford in map_data.get("fords", []):
 			var ford_at: Vector2 = to_px.call(ford["pos"])
 			var ford_r: float = float(ford["half"]) / (half * 2.0) * side

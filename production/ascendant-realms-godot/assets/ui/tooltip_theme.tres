@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=2 format=3]
+[gd_resource type="Theme" load_steps=5 format=3]
 
 [sub_resource type="StyleBoxFlat" id="tip_panel"]
 content_margin_left = 12.0
@@ -18,8 +18,48 @@ corner_radius_bottom_left = 3
 shadow_color = Color(0, 0, 0, 0.55)
 shadow_size = 6
 
+[sub_resource type="StyleBoxFlat" id="menu_panel"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.045, 0.045, 0.06, 0.98)
+border_width_left = 1
+border_width_top = 2
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.78, 0.62, 0.34, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="menu_hover"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.78, 0.62, 0.34, 0.22)
+border_width_left = 2
+border_color = Color(1, 0.86, 0.5, 0.9)
+
+[sub_resource type="StyleBoxLine" id="menu_rule"]
+color = Color(0.78, 0.62, 0.34, 0.55)
+grow_begin = -6.0
+grow_end = -6.0
+
 [resource]
 TooltipLabel/colors/font_color = Color(0.94, 0.9, 0.8, 1)
 TooltipLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
 TooltipLabel/font_sizes/font_size = 16
 TooltipPanel/styles/panel = SubResource("tip_panel")
+PopupMenu/styles/panel = SubResource("menu_panel")
+PopupMenu/styles/hover = SubResource("menu_hover")
+PopupMenu/styles/separator = SubResource("menu_rule")
+PopupMenu/styles/labeled_separator_left = SubResource("menu_rule")
+PopupMenu/styles/labeled_separator_right = SubResource("menu_rule")
+PopupMenu/colors/font_color = Color(0.88, 0.84, 0.74, 1)
+PopupMenu/colors/font_hover_color = Color(1, 0.93, 0.72, 1)
+PopupMenu/colors/font_separator_color = Color(0.86, 0.68, 0.36, 1)
+PopupMenu/colors/font_disabled_color = Color(0.5, 0.48, 0.44, 0.8)
+PopupMenu/constants/v_separation = 6

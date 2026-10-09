@@ -24,6 +24,8 @@ const CONTROLS := [
 	["UPGRADES", "The forge researches three ranks of weapons and armor and your people's own upgrades; the main hall researches economy and defense."],
 	["YOUR HERO", "Kills made near your hero raise its battle level, up to five in a battle: a tenth more health and 8% more damage each. If it falls, the Lume raises it at your hall after 45 seconds or more, with half of that experience. Without a hall it cannot return."],
 	["SIEGE", "From the Age of Lume most peoples can build an engine that outranges towers. Keep it behind your line: it is helpless up close."],
+	["HEALERS", "Four peoples train a healer in their arcane hall. It mends the most wounded ally within reach while it stands, while it marches on attack-move and in a fight, and throws its own weak bolt only when nobody near it is hurt."],
+	["HOLD-OUTS", "Some battles are won on the clock. The banner at the top right counts down: keep your hall standing until it runs out. You need not destroy anyone."],
 	["REACH RINGS", "Select a Barrosan Clanhold, a healing grove or your hero to see its reach on the ground: gold Fortify, green healing, blue command aura."],
 	["CAMERA","Arrows, W A S D or the screen edge move; hold the middle mouse button to drag. {cam_rot_l} / {cam_rot_r} rotate. Mouse wheel zooms."],
 	["SYSTEM", "F1 shows this manual in battle. F3 toggles debug information. Esc pauses the battle."],
