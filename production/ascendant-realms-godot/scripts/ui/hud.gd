@@ -1954,6 +1954,12 @@ func _ensure_minimap_background() -> void:
 		if start is Vector3:
 			paths.append([start, Vector3.ZERO])
 	paths.append([Vector3(-30.0, 0.0, -20.0), Vector3(30.0, 0.0, 20.0)])
+	# A hand-built map has its own roads, rivers, woods and walls and none of
+	# the generated maps' (GameWorld.paint_minimap_terrain paints them below).
+	var authored_map := bool(world.map.get("authored", false))
+	if authored_map:
+		paths.clear()
+		water_enabled = false
 	var road_color := Color(0.70, 0.53, 0.33) if theme_name == "highland" else base.lightened(0.19)
 	var ground_texture: Texture2D = load(MINIMAP_GROUND_TEXTURE) as Texture2D
 	var meadow_texture: Texture2D = load(MINIMAP_MEADOW_TEXTURE) as Texture2D
@@ -2032,6 +2038,8 @@ func _ensure_minimap_background() -> void:
 					var shelf_weight := 1.0 - smoothstep(0.70, 1.0, landform_distance)
 					col = col.lerp(Color(0.28, 0.31, 0.26, 1.0), shelf_weight * 0.85)
 			image.set_pixel(x, y, col)
+	if authored_map and world.has_method("paint_minimap_terrain"):
+		world.paint_minimap_terrain(image, MAP_HALF)
 	_paint_minimap_decor(image, theme_name)
 	_minimap_background = ImageTexture.create_from_image(image)
 	_minimap_background_key = cache_key

@@ -2,6 +2,12 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 5, 2026-10-09: a second change of mine in `hud.gd`, and a correction to what I told you
+
+- **I was wrong in Reviews 2 to 4 to say the hand-built maps only needed `MAP_HALF`.** The minimap background (`_ensure_minimap_background`) painted the generated maps' four corner-to-centre roads and edge water on them and none of their rivers, woods or walls. Fixed on `claude/perf-placeholders-r1` in plan 160.
+- **What changed in `hud.gd` (eight added lines, nothing removed):** after `paths` is built, `if bool(world.map.get("authored", false))` clears `paths` and sets `water_enabled = false`; after the pixel loop, the same flag calls `world.paint_minimap_terrain(image, MAP_HALF)` before `_paint_minimap_decor`. The painting is in `game_world.gd`. Please keep both when you rebase, as with `MAP_HALF`.
+- **For `reliquary_hud.gd`:** if it draws its own minimap background and does not go through `_ensure_minimap_background`, it has the same fault on hand-built maps. `world.paint_minimap_terrain(image, map_half)` takes any square `Image` and paints into it; call it the same way.
+- **To see it:** `D:/ClaudeWork/ar-review/claude_minimapdump.gd` with `CLAUDE_MAP=<id>` saves the background as a PNG.
 ## Review 4, 2026-10-09 (later): read your Review 3 intake; no new game commit; three things that touch your lane
 
 Read `D:/CodexData/evidence/claude-review-intake-20261009-review3/RESPONSE.md`. Agreed: no R24 until a battle-camera comparison in the game can be made. Nothing of yours has reached the game, so there is nothing to review. Three changes on `claude/perf-placeholders-r1` since Review 3 that your UI work will meet:

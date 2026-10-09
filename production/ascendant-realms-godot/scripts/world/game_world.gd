@@ -1139,6 +1139,84 @@ func _build_crags() -> void:
 		if holder is Node3D and not holder.has_meta("crag_batched"):
 			crag_batcher.batch(holder)
 
+## The terrain of a hand-built map, painted onto the minimap's background
+## (called once by the HUD, which owns the picture): roads, then water, woods,
+## rock, hills and built walls from the same tiles that block the ground, the
+## pale shallows of each ford, and the bridges.
+func paint_minimap_terrain(image: Image, map_half: float) -> void:
+	var across := image.get_width()
+	var per_metre := float(across - 1) / (map_half * 2.0)
+	var theme_name := str(map.get("theme", "highland"))
+	var water_colours: Dictionary = map.get("water", {})
+	var tints: Dictionary = {
+		"water": (water_colours.get("deep", Color(0.05, 0.22, 0.34)) as Color).lerp(water_colours.get("shallow", Color(0.16, 0.48, 0.58)), 0.45),
+		"forest": Color(0.11, 0.24, 0.11),
+		"rock": Color(0.36, 0.34, 0.31),
+		"hill": Color(0.47, 0.45, 0.36),
+		"masonry": Color(0.76, 0.74, 0.70),
+	}
+	match theme_name:
+		"volcanic":
+			tints["water"] = Color(0.95, 0.42, 0.10)
+			tints["forest"] = Color(0.20, 0.15, 0.12)
+			tints["rock"] = Color(0.24, 0.15, 0.13)
+			tints["hill"] = Color(0.22, 0.15, 0.14)
+		"ashen":
+			tints["forest"] = Color(0.21, 0.19, 0.20)
+			tints["rock"] = Color(0.27, 0.25, 0.28)
+			tints["hill"] = Color(0.24, 0.23, 0.26)
+		"snow":
+			tints["forest"] = Color(0.26, 0.38, 0.36)
+			tints["rock"] = Color(0.42, 0.44, 0.52)
+			tints["hill"] = Color(0.95, 0.96, 1.0)
+		"desert", "badlands":
+			tints["rock"] = Color(0.55, 0.42, 0.30)
+			tints["hill"] = Color(0.86, 0.72, 0.50)
+			tints["forest"] = Color(0.36, 0.34, 0.18)
+	var fill := func(x0: float, z0: float, x1: float, z1: float, tint: Color, weight: float) -> void:
+		var px0 := clampi(int(floor((minf(x0, x1) + map_half) * per_metre)), 0, across - 1)
+		var px1 := clampi(int(ceil((maxf(x0, x1) + map_half) * per_metre)), 0, across - 1)
+		var pz0 := clampi(int(floor((minf(z0, z1) + map_half) * per_metre)), 0, across - 1)
+		var pz1 := clampi(int(ceil((maxf(z0, z1) + map_half) * per_metre)), 0, across - 1)
+		for px in range(px0, px1 + 1):
+			for pz in range(pz0, pz1 + 1):
+				image.set_pixel(px, pz, image.get_pixel(px, pz).lerp(tint, weight))
+	# Roads first, so that everything else lies over them.
+	var road_tint := Color(0.74, 0.58, 0.38) if not theme_name in ["snow", "volcanic", "ashen"] else Color(0.50, 0.46, 0.44)
+	for road in map.get("roads", []):
+		var from := Vector2(road.x, road.y)
+		var to := Vector2(road.z, road.w)
+		var steps := maxi(1, int(ceil(from.distance_to(to) / 1.5)))
+		for step in range(steps + 1):
+			var at := from.lerp(to, float(step) / float(steps))
+			fill.call(at.x - 2.2, at.y - 2.2, at.x + 2.2, at.y + 2.2, road_tint, 0.55)
+	# The tiles, drawn a little small so a chain of them reads as one line.
+	for kind in ["hill", "forest", "water", "rock", "masonry"]:
+		for crag in map.get("crags", []):
+			if String(crag.get("kind", "rock")) != kind:
+				continue
+			var pos: Vector3 = crag["pos"]
+			var half: Vector2 = crag["half"]
+			var inset := 0.6 if kind in ["forest", "hill"] else 1.2
+			fill.call(pos.x - half.x + inset, pos.z - half.y + inset, pos.x + half.x - inset, pos.z + half.y - inset, tints[kind], 0.88 if kind != "hill" else 0.75)
+	# Fords: the pale shallows across the river.
+	for ford in map.get("fords", []):
+		var centre: Vector3 = ford["pos"]
+		var along: Vector2 = ford["dir"]
+		var reach: float = float(ford["half"])
+		var wide: float = float(ford["width"]) * 0.5
+		var steps := maxi(1, int(ceil(reach * 2.0 / 1.5)))
+		for step in range(steps + 1):
+			var at := Vector2(centre.x, centre.z) + along * lerpf(-reach, reach, float(step) / float(steps))
+			fill.call(at.x - wide * absf(along.y) - 1.0, at.y - wide * absf(along.x) - 1.0, at.x + wide * absf(along.y) + 1.0, at.y + wide * absf(along.x) + 1.0, Color(0.62, 0.72, 0.62) if theme_name != "volcanic" else Color(0.30, 0.20, 0.17), 0.7)
+	# Bridges: a bar of stone across the water.
+	var turned := bool(map.get("bridges_turned", false))
+	for bridge_pos in map.get("bridges", []):
+		if turned:
+			fill.call(bridge_pos.x - 13.0, bridge_pos.z - 4.3, bridge_pos.x + 13.0, bridge_pos.z + 4.3, Color(0.70, 0.68, 0.64), 0.95)
+		else:
+			fill.call(bridge_pos.x - 4.3, bridge_pos.z - 13.0, bridge_pos.x + 4.3, bridge_pos.z + 13.0, Color(0.70, 0.68, 0.64), 0.95)
+
 ## Built walls (the Rabagao Wall): dressed stone drawn whole along each
 ## length, battered a little toward the top, with a parapet either side, a
 ## buttress every few paces and a tower at each end where the gates are.
