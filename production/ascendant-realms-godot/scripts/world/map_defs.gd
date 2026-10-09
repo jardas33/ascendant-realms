@@ -78,6 +78,8 @@ static func _specs() -> Array:
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
 		{"id":"rabagao_gorge","name":"Rabagao Gorge","theme":"autumn","authored":"gorge"},
 		{"id":"salto_lower_quarter","name":"Salto, the Lower Quarter","theme":"highland","authored":"quarter"},
+		{"id":"garrano_pass","name":"Garrano Pass","theme":"highland","authored":"pass"},
+		{"id":"ashfen_mire","name":"Ashfen Mire","theme":"wetland","authored":"mire"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -136,6 +138,8 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 	match String(s["authored"]):
 		"gorge": a = _rabagao_gorge()
 		"quarter": a = _salto_lower_quarter()
+		"pass": a = _garrano_pass()
+		"mire": a = _ashfen_mire()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -441,6 +445,147 @@ static func _salto_lower_quarter() -> Dictionary:
 		"starts": [Vector3(-140, 0, -130), Vector3(140, 0, 130), Vector3(-140, 0, 130), Vector3(140, 0, -130)],
 		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
 		"bridges": [], "ruins": [], "farmsteads": farmsteads,
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Garrano Pass (saga 1-3, "Garrano Run"). 440 m across. A mountain wall
+## runs east to west through the middle of the high pasture and there are
+## three ways through it: the pass at the centre, between two tall shoulders,
+## and a narrower gap far out on either wing. Whoever holds the pass holds
+## the short road; the gaps are the long way round for a raid.
+static func _garrano_pass() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		# The wall, from the western rim to the west gap, then on to the pass.
+		[Vector2(-226, 6), Vector2(-200, -2), Vector2(-174, 2)],
+		[Vector2(-138, 4), Vector2(-100, -6), Vector2(-62, 2), Vector2(-50, 0)],
+		# A second line behind it so the wall has depth.
+		[Vector2(-128, 16), Vector2(-96, 8), Vector2(-66, 14)],
+		# A spur that shelters each walled start from the pasture.
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+	]:
+		ridges.append({"points": line, "thickness": 12.0})
+		ridges.append({"points": _twin_points(line), "thickness": 12.0})
+	# The shoulders of the pass.
+	var hills: Array = [
+		{"at": Vector2(-36, 0), "radii": Vector2(20, 15), "height": 17.0, "seed": 3.1},
+		{"at": Vector2(36, 0), "radii": Vector2(20, 15), "height": 17.0, "seed": 3.1 + PI},
+		{"at": Vector2(-150, 104), "radii": Vector2(16, 12), "height": 9.0, "seed": 0.6},
+		{"at": Vector2(150, -104), "radii": Vector2(16, 12), "height": 9.0, "seed": 0.6 + PI},
+	]
+	var woods: Array = []
+	var wood_seed := 3.4
+	for wood in [[-104, -94, 22, 16], [-40, -196, 18, 12], [-92, 84, 20, 16], [-204, 42, 12, 18]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 0.9
+	# Tarns on the high pasture where the garranos water.
+	var lakes: Array = [
+		{"at": Vector2(-70, -48), "radii": Vector2(16, 11), "seed": 2.6},
+		{"at": Vector2(70, 48), "radii": Vector2(16, 11), "seed": 2.6 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -52, 30)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -56, -24)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -96, -30)
+	_pair_point(deposits, "food", -180, 30)
+	var sites: Array = [
+		{"name": "The Garrano Pass", "benefit": "income", "pos": Vector3.ZERO, "model": WATCH},
+		{"name": "Shepherds' Fold", "benefit": "heal", "pos": Vector3(-104, 0, -58), "model": RUIN},
+		{"name": "Drovers' Rest", "benefit": "heal", "pos": Vector3(104, 0, 58), "model": RUIN},
+		{"name": "West Gap Watch", "benefit": "vision", "pos": Vector3(-156, 0, 30), "model": WATCH},
+		{"name": "East Gap Watch", "benefit": "vision", "pos": Vector3(156, 0, -30), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -70, -76), Vector4(-70, -76, 0, 0), Vector4(160, 150, 70, 76), Vector4(70, 76, 0, 0),
+		Vector4(160, -150, 156, -30), Vector4(156, -30, 156, 30), Vector4(-160, 150, -156, 30), Vector4(-156, 30, -156, -30),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-18, -62), "radius": 8.0, "seed": 11}, {"at": Vector2(18, 62), "radius": 8.0, "seed": 12}],
+		"farmsteads": [{"at": Vector2(-132, -38), "yaw": 0.6}, {"at": Vector2(132, 38), "yaw": 0.6 + PI}],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Ashfen Mire (saga 1-4). 440 m across. A bog of black pools with firm
+## ground winding between them. Four pools ring the ash-glass harvest at the
+## centre, leaving four causeways in; further out the pools are larger and
+## the ways between them wider. Nothing here is a wall, and nothing is a
+## straight line either.
+static func _ashfen_mire() -> Dictionary:
+	var lakes: Array = []
+	var pool_seed := 0.7
+	for pool in [
+		# The ring round the harvest.
+		[-36, -30, 18, 14], [-36, 30, 18, 14],
+		# The wider bog.
+		[-110, -20, 26, 16], [-190, 20, 18, 24], [-60, -190, 22, 12], [-108, 98, 24, 18],
+		[-20, -110, 18, 12], [-40, 100, 16, 20],
+	]:
+		lakes.append({"at": Vector2(pool[0], pool[1]), "radii": Vector2(pool[2], pool[3]), "seed": pool_seed})
+		lakes.append({"at": Vector2(-pool[0], -pool[1]), "radii": Vector2(pool[2], pool[3]), "seed": pool_seed + PI})
+		pool_seed += 0.8
+	var ridges: Array = []
+	for line in [
+		# A spur of firm rock that shelters each walled start.
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	# Alder carr on the drier ground.
+	var woods: Array = []
+	var wood_seed := 4.2
+	for wood in [[-100, 56, 20, 16], [-10, -170, 14, 18], [-208, 174, 12, 12]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.2
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -74, 24)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -72, -24)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -142, 12)
+	_pair_point(deposits, "food", -176, -58)
+	var sites: Array = [
+		{"name": "The Ash-Glass Harvest", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "Peat Cutters' Huts", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Drowned Shrine", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Reed Watch", "benefit": "vision", "pos": Vector3(-80, 0, 150), "model": WATCH},
+		{"name": "South Reed Watch", "benefit": "vision", "pos": Vector3(80, 0, -150), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -90, -70), Vector4(-90, -70, -62, 0), Vector4(-62, 0, 0, 0),
+		Vector4(160, 150, 90, 70), Vector4(90, 70, 62, 0), Vector4(62, 0, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": [],
+		"bridges": [],
+		"ruins": [{"at": Vector2(-150, 34), "radius": 8.0, "seed": 21}, {"at": Vector2(150, -34), "radius": 8.0, "seed": 22}],
+		"farmsteads": [{"at": Vector2(-126, -62), "yaw": 0.8}, {"at": Vector2(126, 62), "yaw": 0.8 + PI}],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
