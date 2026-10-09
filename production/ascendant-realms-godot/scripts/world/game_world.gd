@@ -885,8 +885,9 @@ const BRIDGE_HALF_WIDTH := 6.5
 ## and not on the bridge deck.
 func in_ford(pos: Vector3, margin: float = 0.0) -> bool:
 	# Dry-shod on a bridge deck.
+	var turned := bool(map.get("bridges_turned", false))
 	for bridge_pos in map.get("bridges", []):
-		if absf(pos.x - bridge_pos.x) <= 4.3 and absf(pos.z - bridge_pos.z) <= 13.0:
+		if absf(pos.x - bridge_pos.x) <= (13.0 if turned else 4.3) and absf(pos.z - bridge_pos.z) <= (4.3 if turned else 13.0):
 			return false
 	for ford in map.get("fords", []):
 		var offset := Vector2(pos.x - ford["pos"].x, pos.z - ford["pos"].z)
@@ -1193,6 +1194,8 @@ func _build_authored_structures() -> void:
 		var bridge: Node3D = load(MapDefs.BRIDGE).instantiate()
 		layer.add_child(bridge)
 		bridge.position = bridge_pos
+		if bool(map.get("bridges_turned", false)):
+			bridge.rotation.y = PI * 0.5
 		ModelUtils.scale_to_height(bridge, 8.0)
 		ModelUtils.ground_model(bridge)
 		_tint_hollowspan_bridge(bridge)
@@ -1810,9 +1813,11 @@ func _register_bridge_structural_blockers(bridge: Node3D) -> void:
 		return
 	# The bridge deck stays open. Two narrow side strips model the substantial
 	# rails/supports that units must not pass through while crossing Hollowspan.
+	# (On a map whose river runs north to south the bridge lies east to west.)
+	var turned := bool(map.get("bridges_turned", false))
 	for side in [-1, 1]:
-		var center := bridge.global_position + Vector3(5.35 * float(side), 0.0, 0.0)
-		_register_navigation_obstacle(bridge, "bridge_structure_%s" % ("west" if side < 0 else "east"), center, Vector2(1.0, 13.0), 3.6, "BRIDGE_STRUCTURE", "hollowspan_bridge_structure", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
+		var center := bridge.global_position + (Vector3(0.0, 0.0, 5.35 * float(side)) if turned else Vector3(5.35 * float(side), 0.0, 0.0))
+		_register_navigation_obstacle(bridge, "bridge_structure_%s" % ("west" if side < 0 else "east"), center, Vector2(13.0, 1.0) if turned else Vector2(1.0, 13.0), 3.6, "BRIDGE_STRUCTURE", "hollowspan_bridge_structure", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
 
 
 func _resource_core_half_extents(kind: String, visible_half: Vector2) -> Vector2:
@@ -2953,7 +2958,10 @@ func _grid_route(origin: Vector3, requested: Vector3, blockers: Array[Dictionary
 	var to := _grid_free_near(_grid_cell(requested))
 	if from.x < 0 or to.x < 0:
 		return []
-	var cells: Array[Vector2i] = _grid.get_id_path(from, to)
+	# (The last argument: when the goal is cut off, the way to the nearest
+	# cell that can be reached. A unit sent into an enclosed pocket used to be
+	# given a straight line through whatever enclosed it.)
+	var cells: Array[Vector2i] = _grid.get_id_path(from, to, true)
 	if cells.is_empty():
 		return []
 	var pts: Array[Vector3] = []
@@ -3349,6 +3357,12 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 		if absf(origin.x - center.x) > limit or absf(origin.z - center.z) > limit:
 			continue
 		var half_extents: Vector2 = _route_blocker_half_extents(blocker, clearance)
+		# Round water, woods and rock the grid planner leads a unit to within
+		# GRID_BODY of the edge. Steering used to insist on the full clearance
+		# there, so a unit following such a route was pushed off it, walked
+		# back on, and shuffled at the bank until it gave up.
+		if String(blocker.get("source", "")) == "crag_world_blocker":
+			half_extents = base_half + Vector2(GRID_BODY - 0.1, GRID_BODY - 0.1)
 		var radial: Vector3 = origin - center
 		radial.y = 0.0
 		if _point_inside_route_rectangle(origin, center, half_extents):

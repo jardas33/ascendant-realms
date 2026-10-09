@@ -104,6 +104,13 @@ static func _specs() -> Array:
 		{"id":"furna_in_ashes","name":"Furna in Ashes","theme":"ashen","authored":"furna"},
 		{"id":"salto_ascendant","name":"Salto, the Ascension","theme":"ashen","authored":"salto"},
 		{"id":"montalto","name":"Montalto","theme":"highland","authored":"montalto"},
+		# The side roads.
+		{"id":"fojo","name":"The Wolf-Trap Walls","theme":"highland","authored":"fojo"},
+		{"id":"fojo_in_winter","name":"The Fojo in Winter","theme":"snow","authored":"fojo"},
+		{"id":"junias","name":"The Monastery of the Junias","theme":"verdant","authored":"junias"},
+		{"id":"castro_lesenho","name":"The Castro of Lesenho","theme":"highland","authored":"castro"},
+		{"id":"covelo","name":"Covelo","theme":"autumn","authored":"quarter"},
+		{"id":"witches_saddle","name":"The Witches' Saddle","theme":"ashen","authored":"peaks"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -183,6 +190,8 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"canyon": a = _regents_canyon()
 		"wall": a = _rabagao_wall()
 		"montalto": a = _montalto()
+		"fojo": a = _fojo()
+		"junias": a = _junias()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -214,6 +223,25 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 					nearest = i
 			var ahead: Vector2 = samples[mini(nearest + 2, samples.size() - 1)] - samples[maxi(nearest - 2, 0)]
 			fords.append({"pos": Vector3(ford["at"].x, 0.0, ford["at"].y), "half": float(ford["half"]), "width": width, "dir": ahead.normalized()})
+	# Beside a bridge the river is deep again. The shallows of the ford a
+	# bridge stands on used to stay open either side of its rails: a strip a
+	# few metres wide that the planner took for a way across and no unit
+	# could walk, so soldiers wedged themselves into it.
+	var bridges_turned: bool = bool(a.get("bridges_turned", false))
+	for bridge_pos in a.get("bridges", []):
+		for ford in fords:
+			if Vector2(bridge_pos.x, bridge_pos.z).distance_to(Vector2(ford["pos"].x, ford["pos"].z)) > 6.0:
+				continue
+			var strip: float = float(ford["half"]) - 6.35 + 2.0
+			if strip <= 0.0:
+				continue
+			for side in [-1.0, 1.0]:
+				var along: float = (6.35 + strip * 0.5) * side
+				var across: float = float(ford["width"]) * 0.5
+				crags.append({
+					"pos": bridge_pos + (Vector3(0.0, 0.0, along) if bridges_turned else Vector3(along, 0.0, 0.0)),
+					"half": Vector2(across, strip * 0.5) if bridges_turned else Vector2(strip * 0.5, across),
+					"kind": "water"})
 	var woods: Array = []
 	for wood in a["woods"]:
 		woods.append(wood)
@@ -255,6 +283,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"lakes": lakes,
 		"hills": hills,
 		"bridges": a.get("bridges", []),
+		"bridges_turned": a.get("bridges_turned", false),
 		"ruins": a.get("ruins", []),
 		"farmsteads": a.get("farmsteads", []),
 		"roads": a["roads"],
@@ -1837,6 +1866,140 @@ static func _montalto() -> Dictionary:
 		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
 		"bridges": [],
 		"ruins": [{"at": Vector2(-125, -25), "radius": 7.0, "seed": 171}, {"at": Vector2(125, -25), "radius": 7.0, "seed": 172}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Wolf-Trap Walls (side roads 1-S1 and, in winter, 3-S1). 440 m across.
+## A fojo is a stone funnel for driving wolves into a pit. This is two of
+## them mouth to mouth, an hourglass lying corner to corner: each facing
+## start looks into a mouth 120 m wide that narrows to the pit at the
+## centre. At the waist there is a narrow door on either side, which is the
+## short way in for anyone coming from the other two corners.
+static func _fojo() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		[Vector2(-121.6, -33.9), Vector2(-70.0, -14.8), Vector2(-21.9, 2.1)],
+		[Vector2(-33.9, -121.6), Vector2(-14.8, -70.0), Vector2(2.1, -21.9)],
+	]:
+		ridges.append({"points": line, "thickness": 10.0})
+		ridges.append({"points": _twin_points(line), "thickness": 10.0})
+	for line in [
+		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 26.1
+	for wood in [[-150, 30, 22, 18], [-62, -196, 18, 12], [-70, 96, 20, 22]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.3
+	var hills: Array = [
+		{"at": Vector2(-118, 104), "radii": Vector2(18, 13), "height": 10.0, "seed": 0.9},
+		{"at": Vector2(118, -104), "radii": Vector2(18, 13), "height": 10.0, "seed": 0.9 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -52, 30)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -64, -52)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -120, 6)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Pit of the Fojo", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Drovers' Fire", "benefit": "heal", "pos": Vector3(-108, 0, -70), "model": RUIN},
+		{"name": "The Wolves' Stone", "benefit": "heal", "pos": Vector3(108, 0, 70), "model": RUIN},
+		{"name": "North Wall Watch", "benefit": "vision", "pos": Vector3(-40, 0, 130), "model": WATCH},
+		{"name": "South Wall Watch", "benefit": "vision", "pos": Vector3(40, 0, -130), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -78, -78), Vector4(-78, -78, 0, 0), Vector4(160, 150, 78, 78), Vector4(78, 78, 0, 0),
+		Vector4(-160, 150, -14, 14), Vector4(-14, 14, 0, 0), Vector4(160, -150, 14, -14), Vector4(14, -14, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-160, -20), "radius": 7.0, "seed": 181}, {"at": Vector2(160, 20), "radius": 7.0, "seed": 182}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Monastery of the Junias (side road 4-S2). 440 m across. A stream runs
+## north to south down a valley, bridged at the monastery and fordable far
+## up and far down. For 120 m either side of the bridge the valley is shut
+## in by rock on both flanks, so the ruins can only be come at along the
+## water, from the north end or the south. Cloister on the west bank,
+## archive on the east.
+static func _junias() -> Dictionary:
+	var rivers: Array = [{
+		"points": [Vector2(12, -234), Vector2(-4, -172), Vector2(8, -120), Vector2(-3, -40), Vector2(0, 0),
+			Vector2(3, 40), Vector2(-8, 120), Vector2(4, 172), Vector2(-12, 234)],
+		"width": 12.0,
+		"fords": [{"at": Vector2(-4, -172), "half": 11.0}, {"at": Vector2(0, 0), "half": 12.0}, {"at": Vector2(4, 172), "half": 11.0}],
+	}]
+	var ridges: Array = []
+	for line in [
+		[Vector2(-100, -62), Vector2(-106, 0), Vector2(-100, 62)],
+		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
+	]:
+		ridges.append({"points": line, "thickness": 10.0})
+		ridges.append({"points": _twin_points(line), "thickness": 10.0})
+	var woods: Array = []
+	var wood_seed := 27.2
+	for wood in [[-198, 66, 10, 14], [-62, -198, 16, 12], [-72, 112, 20, 16]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.6
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -70, -42)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -78, 12)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -132, 0)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Cloister", "benefit": "income", "pos": Vector3(-34, 0, 8), "model": LUME},
+		{"name": "The Archive of the Surveyors", "benefit": "income", "pos": Vector3(34, 0, -8), "model": LUME},
+		{"name": "The Pilgrims' Spring", "benefit": "heal", "pos": Vector3(-60, 0, -112), "model": RUIN},
+		{"name": "The Millers' Weir", "benefit": "heal", "pos": Vector3(60, 0, 112), "model": RUIN},
+		{"name": "West Ridge Watch", "benefit": "vision", "pos": Vector3(-132, 0, 30), "model": WATCH},
+		{"name": "East Ridge Watch", "benefit": "vision", "pos": Vector3(132, 0, -30), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -40, -112), Vector4(-40, -112, -24, -40), Vector4(-24, -40, -24, 0), Vector4(-24, 0, 24, 0),
+		Vector4(160, 150, 40, 112), Vector4(40, 112, 24, 40), Vector4(24, 40, 24, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": [], "hills": [],
+		"bridges": [Vector3(0, 0, 0)],
+		"bridges_turned": true,
+		# What stands of the monastery.
+		"ruins": [
+			{"at": Vector2(-52, 30), "radius": 8.0, "seed": 191}, {"at": Vector2(52, -30), "radius": 8.0, "seed": 192},
+			{"at": Vector2(-56, -14), "radius": 7.0, "seed": 193}, {"at": Vector2(56, 14), "radius": 7.0, "seed": 194},
+			{"at": Vector2(-30, 44), "radius": 6.0, "seed": 195}, {"at": Vector2(30, -44), "radius": 6.0, "seed": 196},
+		],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
