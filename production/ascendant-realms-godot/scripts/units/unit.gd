@@ -572,8 +572,8 @@ func _apply_race_passive() -> void:
 			regen += 1.5
 			# 12-23 over the two checks on the hand-built 440 m maps (180
 			# matches, plans 165 and 166), next to last: healing counts for
-			# less when the fight is a long march from home, and the Dominion
-			# has no tier-three fighter. +6% damage: 16-20 over 36 focus
+			# less when the fight is a long march from home. +6% damage:
+			# 16-20 over 36 focus
 			# matches there, 18-17 over 36 on the old maps.
 			base_dmg *= 1.06
 			# 24-10 over the next two checks: +7% health (was +10%).
@@ -624,13 +624,14 @@ func _apply_race_passive() -> void:
 			# 60-25 over the five checks of plans 114 to 116 (450 matches),
 			# 23-10 even after the Groveheart healed 4 a second: no bonus (20-16 over 36 focus matches without it).
 			# On the hand-built 440 m maps that left them last: 10-25 over
-			# 180 matches (plans 165 and 166). They are quick early and have
-			# no tier-three fighter, so short marches suit them and long
-			# ones do not: every setting tried scored some twenty points
+			# 180 matches (plans 165 and 166). Every setting tried scored
+			# some twenty points
 			# higher on the old maps than on the new (+6% damage: 15-20 new,
 			# 22-12 old; +8% with +4% health and half the Groveheart's
 			# healing: 22-11 new, 28-7 old). +5% sits between the two
 			# families; the gap itself is not closed.
+			# (A tier-three fighter for them was tried in its place, plan 169:
+			# 10-24 on the new maps, no better than nothing; 20-13 on the old.)
 			base_dmg *= 1.05
 			hp = max_hp
 		_:
