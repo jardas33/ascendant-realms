@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -1276,6 +1276,15 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 173 (done): the Montalto siege becomes a ten-minute hold-out; every other chapter with two or three enemies measured again with the fixed test tool**
+  - **Montalto (chapter 5-2) as it was:** ten runs by the stand-in player against three working armies (Brutal, Hard and Normal). Lost every time, between 11 and 14 minutes, and the defence was already broken by minute eight. No other chapter is close to that harsh.
+  - **Decision taken:** the chapter is now a hold-out, like the finale. The briefing already said "Hold the old keep" and the victory text already said "Montalto held", but the rules asked the player to destroy three armies on the saga's largest field, alone. Now the player wins by keeping the keep standing for ten minutes, until the queimada is lit at nightfall. The briefing says so, the clock shows on screen, and the closing line reads "Montalto held" (a chapter can now name its own closing line).
+  - **The keep has two watchtowers inside each gate,** one either side of the road (it had one). Pictures of all three gates checked.
+  - **Measured after:** with one tower a gate the keep was overrun by minute eight. With two, twelve runs out of twelve were still standing at ten minutes with a working economy (three of them with the stand-in at Hard). Six confirmation runs on the final build: held six of six, losing 51 to 67 units. Left to run on, the same defence breaks at 11 to 13 minutes and is wiped out at 14 to 15, so ten minutes is a hold-out won under real pressure, not a wait. For comparison the finale (5-7, three Brutal enemies, ten minutes) costs the stand-in 31 to 54 units.
+  - **The four other hold-outs with the fixed tool, two runs each:** all held. Units lost: 1-S2 15 and 17; 2-6 36 and 38; 3-S2 25 and 40; 5-7 31 and 54. The figures of plans 157 and 171 (measured with idle extra enemies) were of the same size, so those chapters need nothing.
+  - **The fourteen other chapters with two enemies, two runs each, stand-in at Normal:** the two Normal chapters (1-5, 2-S3) and the three Hard ones (2-4, 3-5, 4-2) were undecided at 30 minutes, except 4-2 lost once at 22. The Brutal chapters were lost at 17 to 27 minutes or undecided at 30 (3-6, 4-5, 4-6A, 4-6B, 5-3, 5-S1, 5-4, 5-5, 5-6). None collapses the way Montalto did, and none is won by a Normal stand-in. That is the range I had reported before, now actually measured.
+  - **Still unmeasured by a person:** how hard any of this is for a human with a levelled hero. The stand-in has no hero levels, no retinue and no upgrades from the War Chest.
+  - **Checked:** 92 regression checks pass. One of the two runs of 2-4 was cut off by the probe's own time limit and is not counted.
 - **Plan 172 (done): a fault in my own test tool. In every test with more than one enemy, the extra enemies sat idle. Fixed; what it invalidates is listed here**
   - **Found by:** a four-player test on eight hand-built maps. The third and fourth players were knocked out at about six minutes on every map, whoever they were, and on an old map too. Their minute-by-minute lines showed three workers, one building and untouched resources: they had no AI.
   - **Cause:** the match probe frees the game's own AIs and makes new ones so that no seat has a head start. It made them for the first two seats only. And in a chapter it gave the enemy the stand-in player's difficulty (Normal), not the chapter's (Hard or Brutal). The game itself is not affected: it gives every opponent an AI at the right difficulty. Only my measurements were wrong.

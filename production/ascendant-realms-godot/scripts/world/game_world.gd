@@ -5517,7 +5517,8 @@ func survival_remaining() -> float:
 func _check_survival() -> void:
 	var left := survival_remaining()
 	if left == 0.0 and not match_ended and is_instance_valid(player_commander) and not player_commander.defeated:
-		_end_game(true, "You held until dawn")
+		# A chapter may name its own closing line ("held").
+		_end_game(true, String(CampaignDefs.find(String(Match.get_config().get("campaign_chapter", ""))).get("held", "You held until dawn")))
 
 # --- Domination --------------------------------------------------------------
 # A second way to win a skirmish: hold every Lume site on the field at once

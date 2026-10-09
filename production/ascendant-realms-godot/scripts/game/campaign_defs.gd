@@ -249,9 +249,9 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "The dead are walking in the sun. It has begun.",
 		"taunts": ["The Compaña, all at once: \"Come home. Come home. Come home.\"", "Leonor: \"I am still here. I am still holding the cross.\""],
 		"victory": "The Geira burned out behind you. Every milestone pointed the same way: north, to Salto."},
-	{"id": "5-2", "act": 4, "title": "Montalto Besieged", "map": "montalto",
+	{"id": "5-2", "survive": 600, "held": "Montalto held", "act": 4, "title": "Montalto Besieged", "map": "montalto",
 		"opponents": [{"race": "sunspear", "difficulty": "brutal"}, {"race": "vorthak", "difficulty": "hard"}, {"race": "grimtusk", "difficulty": "normal"}], "difficulty": "Brutal", "unlocks": ["5-3"],
-		"briefing": "Every army you broke on the road is at Montalto's walls: the Dominion's remnants, the Vorthak who hated Malrec's deal, and the Ironmaw, whatever you did at the Wall.\n\nThey all want the Lume before it ascends. Hold the old keep.",
+		"briefing": "Every army you broke on the road is at Montalto's walls: the Dominion's remnants, the Vorthak who hated Malrec's deal, and the Ironmaw, whatever you did at the Wall.\n\nThey all want the Lume before it ascends. Hold the old keep until nightfall, when the queimada is lit on the tower.",
 		"opening": "Every enemy I made, all at once. Fair enough.",
 		"taunts": ["A Dominion legate: \"Give us the Lume and we will end this!\"", "Warboss Brasa: \"Nothing personal, dead thing. Everyone needs a win.\""],
 		"victory": "Montalto held. On the tower, as always on the thirteenth, someone had lit the queimada."},
@@ -363,8 +363,10 @@ const EVENTS := {
 		"waves": [{"at": 420, "team": 1, "units": ["sunspear_phalanx", "sunspear_phalanx", "sunspear_charioteer", "sunspear_charioteer"], "line": "A legate: \"The Wall's garrison marches!\""}]},
 	"4-S1": {"allies": {"units": ["barrosan_clan_levy", "barrosan_clan_levy"], "line": "Covelo's young men cheer for your bull."}},
 	"5-2": {"allies": {"units": ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_crag_archer"], "line": "The castellan of Montalto: \"This keep has never opened its gates to an enemy. Not today.\""},
-		# A watchtower inside each of the keep's three gates.
-		"towers": [Vector3(8, 0, 34), Vector3(-52, 0, -42), Vector3(52, 0, -42)]},
+		# Two watchtowers inside each of the keep's three gates, one either
+		# side of the road. With one a gate the keep was overrun by minute
+		# eight against three working armies; with two it stands at ten.
+		"towers": [Vector3(8, 0, 34), Vector3(-8, 0, 34), Vector3(-52, 0, -42), Vector3(-43, 0, -55), Vector3(52, 0, -42), Vector3(43, 0, -55)]},
 	"5-5": {"allies": {"units": ["frostborn_reaver", "frostborn_reaver", "frostborn_berserker"], "line": "O Velho: \"Last dance, cousin. We dance it together.\""}},
 	"5-7": {"allies": {"units": ["wyldkin_clawwarrior", "wyldkin_clawwarrior", "wyldkin_direwolf", "wyldkin_direwolf"], "line": "Sétimo: \"The wolves remember who freed them.\""},
 		"waves": [{"at": 180, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_charioteer"], "line": "The Dominion's last legion comes up the road."},
