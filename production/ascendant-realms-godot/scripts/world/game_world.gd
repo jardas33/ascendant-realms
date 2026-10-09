@@ -2367,16 +2367,33 @@ func _route_result_cache_store(cache_key: String, origin: Vector3, requested: Ve
 		"failed": failed,
 	}
 
-func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clearance: float, blockers: Array[Dictionary], target_blocker = null) -> Dictionary:
+var _max_extent_stamp := -1
+var _max_extent_by_clearance: Dictionary = {}
+
+func _route_search_blocker_broadphase(origin: Vector3, requested: Vector3, clearance: float, blockers: Array[Dictionary], target_blocker = null, shared_snapshot: bool = false) -> Dictionary:
 	var max_expanded_extent := 0.0
-	for blocker in blockers:
-		var expanded: Vector2 = _route_blocker_half_extents(blocker, clearance)
-		max_expanded_extent = maxf(max_expanded_extent, maxf(expanded.x, expanded.y))
+	var clearance_key := roundi(clearance * 100.0)
+	if shared_snapshot:
+		_blockers_near(origin)
+		if _max_extent_stamp != _blocker_buckets_frame:
+			_max_extent_stamp = _blocker_buckets_frame
+			_max_extent_by_clearance.clear()
+	if shared_snapshot and _max_extent_by_clearance.has(clearance_key):
+		max_expanded_extent = float(_max_extent_by_clearance[clearance_key])
+	else:
+		for blocker in blockers:
+			var expanded: Vector2 = _route_blocker_half_extents(blocker, clearance)
+			max_expanded_extent = maxf(max_expanded_extent, maxf(expanded.x, expanded.y))
+		if shared_snapshot:
+			_max_extent_by_clearance[clearance_key] = max_expanded_extent
 	var margin := maxf(clearance + ROUTE_BLOCKER_MARGIN + ROUTE_WAYPOINT_STOP_MARGIN, max_expanded_extent + ROUTE_WAYPOINT_STOP_MARGIN)
 	var region_min := Vector3(minf(origin.x, requested.x) - margin, 0.0, minf(origin.z, requested.z) - margin)
 	var region_max := Vector3(maxf(origin.x, requested.x) + margin, 0.0, maxf(origin.z, requested.z) + margin)
 	var filtered: Array[Dictionary] = []
 	var excluded: Array[Dictionary] = []
+	# (Nothing reads "excluded" when the shared snapshot is narrowed first.)
+	if shared_snapshot:
+		blockers = _blockers_in_region(region_min - Vector3(4.0, 0.0, 4.0), region_max + Vector3(4.0, 0.0, 4.0))
 	for blocker in blockers:
 		var node = blocker.get("node")
 		var owner = blocker.get("owner")
@@ -2423,6 +2440,16 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	var cached_points := _route_result_cache_lookup(route_cache_key, origin, requested)
 	if not cached_points.is_empty():
 		return cached_points
+	# Terrain in the way (water, a wood, a ridge, a hill): on a hand-built map
+	# such things are made of dozens of small blockers, and the corner search
+	# walks round them one at a time until its time is up (3 ms a route in a
+	# battle on Ashfen Mire, against 0.6 on Hollowspan). The grid sees the
+	# whole shore at once, so it is asked first.
+	if bool(map.get("authored", false)) and _terrain_between(origin, requested):
+		var terrain_route := _grid_route(origin, requested, _navigation_blocker_snapshots(building_snapshot))
+		if not terrain_route.is_empty():
+			_route_result_cache_store(route_cache_key, origin, requested, terrain_route)
+			return terrain_route
 	var points: Array = []
 	var current := origin
 	var fail_closed := false
@@ -2433,7 +2460,7 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	var final_target := requested
 	_active_route_segment_cache.clear()
 	var all_blockers: Array[Dictionary] = _navigation_blocker_snapshots(building_snapshot)
-	var broadphase := _route_search_blocker_broadphase(origin, requested, clearance, all_blockers, target_blocker)
+	var broadphase := _route_search_blocker_broadphase(origin, requested, clearance, all_blockers, target_blocker, building_snapshot == null)
 	var blockers: Array[Dictionary] = broadphase["blockers"]
 	for _step in range(8):
 		if Time.get_ticks_usec() - solver_started_usec > ROUTE_SOLVER_BUDGET_USEC:
@@ -2640,7 +2667,15 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 	# one, retries four times and gives up where it stands). The corner
 	# solver gave a worker a leg from one corner of its own hall straight
 	# through the hall to the far side. The grid planner takes over then.
-	var needs_grid := _route_crosses_a_body(origin, points, all_blockers, target_blocker)
+	var body_check: Array[Dictionary] = all_blockers
+	if building_snapshot == null:
+		var box_lo := origin
+		var box_hi := origin
+		for point in points:
+			box_lo = Vector3(minf(box_lo.x, point.x), 0.0, minf(box_lo.z, point.z))
+			box_hi = Vector3(maxf(box_hi.x, point.x), 0.0, maxf(box_hi.z, point.z))
+		body_check = _blockers_in_region(box_lo - Vector3(2.0, 0.0, 2.0), box_hi + Vector3(2.0, 0.0, 2.0))
+	var needs_grid := _route_crosses_a_body(origin, points, body_check, target_blocker)
 	for point in points:
 		if not is_inside_playable_bounds(point):
 			needs_grid = true
@@ -2653,6 +2688,16 @@ func _solve_navigation_waypoints(origin: Vector3, requested: Vector3, clearance:
 			points[point_index] = clamp_to_playable_bounds(points[point_index])
 	_route_result_cache_store(route_cache_key, origin, requested, points)
 	return points
+
+## Does the straight line from `a` to `b` cross water, a wood, a ridge or a
+## hill? Sampled every three metres, which no terrain tile is thinner than.
+func _terrain_between(a: Vector3, b: Vector3) -> bool:
+	var span := Vector2(b.x - a.x, b.z - a.z).length()
+	var steps := maxi(1, int(ceil(span / 3.0)))
+	for step in range(1, steps):
+		if in_crag(a.lerp(b, float(step) / float(steps)), 0.0):
+			return true
+	return false
 
 ## Does any leg of this route pass through the solid part of a blocker (not
 ## merely its walking margin)? A blocker that holds the start or the end of a
@@ -2947,6 +2992,32 @@ func _blockers_near(pos: Vector3) -> Array:
 						_blocker_buckets[key] = [blocker]
 	return _blocker_buckets.get(Vector2i(int(floor(pos.x / BLOCKER_BUCKET_CELL)), int(floor(pos.z / BLOCKER_BUCKET_CELL))), _NO_BLOCKERS)
 
+## The blockers whose rectangle could reach into the box from `lo` to `hi`,
+## each once. A route request used to read every blocker on the map two or
+## three times over (about 1.5 ms a request on a hand-built map with 400 of
+## them, for a ten-metre step in a fight). A box wider than eight buckets a
+## side gets the whole list, as before.
+var _blocker_region_query := 0
+
+func _blockers_in_region(lo: Vector3, hi: Vector3) -> Array[Dictionary]:
+	_blockers_near(lo)
+	var x0 := int(floor(lo.x / BLOCKER_BUCKET_CELL))
+	var x1 := int(floor(hi.x / BLOCKER_BUCKET_CELL))
+	var z0 := int(floor(lo.z / BLOCKER_BUCKET_CELL))
+	var z1 := int(floor(hi.z / BLOCKER_BUCKET_CELL))
+	if x1 - x0 > 7 or z1 - z0 > 7:
+		return _navigation_blocker_snapshots()
+	_blocker_region_query += 1
+	var found: Array[Dictionary] = []
+	for bx in range(x0, x1 + 1):
+		for bz in range(z0, z1 + 1):
+			for blocker in _blocker_buckets.get(Vector2i(bx, bz), _NO_BLOCKERS):
+				if int(blocker.get("region_query", -1)) == _blocker_region_query:
+					continue
+				blocker["region_query"] = _blocker_region_query
+				found.append(blocker)
+	return found
+
 func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dictionary]:
 	var blockers: Array[Dictionary] = []
 	var buildings: Array = all_buildings() if building_snapshot == null else building_snapshot
@@ -3038,7 +3109,7 @@ func _resource_navigation_approach_point(blocker: Dictionary, center: Vector3, f
 ## unit was sent to (a building to attack or enter, a resource) is left alone.
 func _out_of_route_margins(requested: Vector3, clearance: float, target_blocker = null, origin: Vector3 = Vector3.INF) -> Vector3:
 	var rects: Array = []
-	for blocker in _navigation_blocker_snapshots():
+	for blocker in _blockers_in_region(requested - Vector3(18.0, 0.0, 18.0), requested + Vector3(18.0, 0.0, 18.0)):
 		var node = blocker.get("node")
 		if not is_instance_valid(node) or String(blocker.get("object_class", "")) == "RESOURCE_NODE":
 			continue
