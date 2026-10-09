@@ -386,6 +386,14 @@ func _ready() -> void:
 	if mood != "":
 		_theme = _theme.duplicate(true)
 		_theme.merge(CampaignDefs.MOODS[mood], true)
+		# Dark ground under a dark hour: the three darkest chapters opened at a
+		# quarter of a daytime chapter's brightness and workers could hardly be
+		# picked out. On volcanic and ashen ground the hour keeps its colour
+		# but not all of its darkness.
+		if str(map.get("theme", "")) in ["volcanic", "ashen"]:
+			_theme["ambient_energy"] = maxf(float(_theme.get("ambient_energy", 0.4)), 0.60)
+			_theme["sun_energy"] = maxf(float(_theme.get("sun_energy", 0.8)), 1.05)
+			_theme["grade_brightness"] = maxf(float(_theme.get("grade_brightness", 1.0)), 1.10)
 	_projectile_container = Node3D.new()
 	_projectile_container.name = "Projectiles"
 	add_child(_projectile_container)

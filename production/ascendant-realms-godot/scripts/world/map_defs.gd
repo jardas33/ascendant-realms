@@ -42,7 +42,7 @@ static func list_infos() -> Array:
 		if bool(s.get("saga", false)):
 			continue
 		out.append({"id": s["id"], "name": s["name"], "theme": s["theme"],
-			"players": s.get("players", 4), "desc": _theme_blurb(s["theme"])})
+			"players": s.get("players", 4), "desc": _theme_blurb(s["theme"]), "uneven": bool(s.get("uneven", false))})
 	return out
 
 ## Back-compat: original default map.
@@ -102,13 +102,13 @@ static func _specs() -> Array:
 		{"id":"plains_of_bronze","name":"The Plains Before the Wall","theme":"desert","authored":"plains"},
 		{"id":"glass_heart","name":"The Glass Heart","theme":"volcanic","authored":"heart"},
 		{"id":"regents_canyon","name":"The Regent's Canyons","theme":"badlands","authored":"canyon"},
-		{"id":"rabagao_wall","name":"The Rabagao Wall","theme":"highland","authored":"wall"},
+		{"id":"rabagao_wall","name":"The Rabagao Wall","theme":"highland","authored":"wall","uneven":true},
 		# Act five returns to four places the saga has been, changed.
 		{"id":"burning_geira","name":"The Burning Geira","theme":"volcanic","authored":"geira","saga":true},
 		{"id":"last_spring","name":"The Last Spring","theme":"autumn","authored":"grove","saga":true},
 		{"id":"furna_in_ashes","name":"Furna in Ashes","theme":"ashen","authored":"furna","saga":true},
 		{"id":"salto_ascendant","name":"Salto, the Ascension","theme":"ashen","authored":"salto","saga":true},
-		{"id":"montalto","name":"Montalto","theme":"highland","authored":"montalto"},
+		{"id":"montalto","name":"Montalto","theme":"highland","authored":"montalto","uneven":true},
 		# The side roads.
 		{"id":"fojo","name":"The Wolf-Trap Walls","theme":"highland","authored":"fojo"},
 		{"id":"fojo_in_winter","name":"The Fojo in Winter","theme":"snow","authored":"fojo","saga":true},

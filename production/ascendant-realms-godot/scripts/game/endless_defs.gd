@@ -49,6 +49,10 @@ static func stage(depth: int, player_race: String, salt: int = 0) -> Dictionary:
 	rng.seed = 77_000_077 + depth * 7_919 + salt * 104_729
 	var maps: Array = []
 	for info in MapDefs.list_infos():
+		# Not the two fields built for one saga chapter where the seats are not
+		# alike (a keep ringed by three camps; a wall with attacker and defender).
+		if bool(info.get("uneven", false)):
+			continue
 		maps.append(info)
 	var foes_wanted := 1 + mini(2, (depth - 1) / 4)
 	var pool: Array = maps.filter(func(m): return int(m.get("players", 4)) >= foes_wanted + 1)
