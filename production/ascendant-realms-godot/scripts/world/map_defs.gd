@@ -90,6 +90,8 @@ static func _specs() -> Array:
 		{"id":"larouco_road","name":"The Larouco Road","theme":"snow","authored":"larouco"},
 		{"id":"castro_carvalhelhos","name":"The Castro of Carvalhelhos","theme":"snow","authored":"castro"},
 		{"id":"candle_road","name":"The Candle Road","theme":"wetland","authored":"candle"},
+		{"id":"leonors_cross","name":"Leonor's Cross","theme":"ashen","authored":"cross"},
+		{"id":"four_peaks","name":"The Four Peaks of the Larouco","theme":"snow","authored":"peaks"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -160,6 +162,8 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"larouco": a = _larouco_road()
 		"castro": a = _castro_carvalhelhos()
 		"candle": a = _candle_road()
+		"cross": a = _leonors_cross()
+		"peaks": a = _four_peaks()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1269,6 +1273,129 @@ static func _candle_road() -> Dictionary:
 		"bridges": [],
 		# Wayside shrines by the causeway mouths.
 		"ruins": [{"at": Vector2(-16, -82), "radius": 7.0, "seed": 101}, {"at": Vector2(16, 82), "radius": 7.0, "seed": 102}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Leonor's Cross (saga 3-5, "The Cross-Bearer"). 440 m across. A grey
+## massif stands in the middle of the map and nothing crosses it. The road
+## of the dead runs in a ring round its foot through a field of broken
+## tombs, with the cross on the south side and the drowned pasture on the
+## north: two prizes, out of sight of each other.
+static func _leonors_cross() -> Dictionary:
+	var hills: Array = [{"at": Vector2(0, 0), "radii": Vector2(48, 34), "height": 17.0, "seed": 9.4}]
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 15.9
+	for wood in [[-30, -126, 20, 14], [-106, 98, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 2.7
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -84, 8)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -72, -72)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -128, 0)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Cross of the Procession", "benefit": "income", "pos": Vector3(0, 0, -62), "model": LUME},
+		{"name": "The Drowned Pasture", "benefit": "income", "pos": Vector3(0, 0, 62), "model": LUME},
+		{"name": "The Sexton's Lantern", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Mourners' Bench", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Tomb Watch", "benefit": "vision", "pos": Vector3(-40, 0, 134), "model": WATCH},
+		{"name": "South Tomb Watch", "benefit": "vision", "pos": Vector3(40, 0, -134), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(0, -62, 68, -36), Vector4(68, -36, 68, 36), Vector4(68, 36, 0, 62),
+		Vector4(0, 62, -68, 36), Vector4(-68, 36, -68, -36), Vector4(-68, -36, 0, -62),
+		Vector4(-160, -150, -68, -36), Vector4(160, 150, 68, 36),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		# The tomb field.
+		"ruins": [
+			{"at": Vector2(-92, -34), "radius": 8.0, "seed": 111}, {"at": Vector2(92, 34), "radius": 8.0, "seed": 112},
+			{"at": Vector2(-92, 46), "radius": 8.0, "seed": 113}, {"at": Vector2(92, -46), "radius": 8.0, "seed": 114},
+			{"at": Vector2(-40, -92), "radius": 7.0, "seed": 115}, {"at": Vector2(40, 92), "radius": 7.0, "seed": 116},
+		],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Four Peaks of the Larouco (saga 3-6, "Chase Out the Winter"). 440 m
+## across, under snow. Four peaks stand round a high saddle where the winter
+## is burned; the only ways onto the saddle are the four passes between
+## them, one facing each start. Three armies meet there.
+static func _four_peaks() -> Dictionary:
+	var hills: Array = [
+		{"at": Vector2(-72, 0), "radii": Vector2(30, 24), "height": 18.0, "seed": 1.9},
+		{"at": Vector2(72, 0), "radii": Vector2(30, 24), "height": 18.0, "seed": 1.9 + PI},
+		{"at": Vector2(0, -66), "radii": Vector2(30, 22), "height": 16.0, "seed": 4.8},
+		{"at": Vector2(0, 66), "radii": Vector2(30, 22), "height": 16.0, "seed": 4.8 + PI},
+	]
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 16.3
+	for wood in [[-30, -128, 20, 14], [-106, 98, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 2.9
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -62, 56)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -98, -48)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -134, 6)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Burning of Winter", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Bell Ringers' Camp", "benefit": "heal", "pos": Vector3(-108, 0, -72), "model": RUIN},
+		{"name": "The Mother's Halt", "benefit": "heal", "pos": Vector3(108, 0, 72), "model": RUIN},
+		{"name": "North Peak Watch", "benefit": "vision", "pos": Vector3(-44, 0, 134), "model": WATCH},
+		{"name": "South Peak Watch", "benefit": "vision", "pos": Vector3(44, 0, -134), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -44, -42), Vector4(-44, -42, 0, 0), Vector4(160, 150, 44, 42), Vector4(44, 42, 0, 0),
+		Vector4(-160, 150, -44, 42), Vector4(-44, 42, 0, 0), Vector4(160, -150, 44, -42), Vector4(44, -42, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-150, 8), "radius": 8.0, "seed": 121}, {"at": Vector2(150, -8), "radius": 8.0, "seed": 122}],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
