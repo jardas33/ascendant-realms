@@ -82,6 +82,7 @@ static func _specs() -> Array:
 		{"id":"ashfen_mire","name":"Ashfen Mire","theme":"wetland","authored":"mire"},
 		{"id":"tourem_crossing","name":"Tourem Crossing","theme":"highland","authored":"tourem"},
 		{"id":"malrecs_pyre","name":"Malrec's Pyre","theme":"volcanic","authored":"pyre"},
+		{"id":"seven_fountains","name":"Grove of Seven Fountains","theme":"verdant","authored":"grove"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -144,6 +145,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"mire": a = _ashfen_mire()
 		"tourem": a = _tourem_crossing()
 		"pyre": a = _malrecs_pyre()
+		"grove": a = _seven_fountains()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -725,6 +727,70 @@ static func _malrecs_pyre() -> Dictionary:
 		"bridges": [],
 		# The ash-glass forges, in ruins of an older castro.
 		"ruins": [{"at": Vector2(-42, -58), "radius": 8.0, "seed": 41}, {"at": Vector2(42, 58), "radius": 8.0, "seed": 42}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Grove of Seven Fountains (saga 2-2). 440 m across. Old forest in
+## broad belts with glades and rides between them. Six fountain pools stand
+## in a ring round the seventh at the heart of the grove, and the ways in
+## pass between the pools. The forest hides the flanks: there is always
+## another ride round.
+static func _seven_fountains() -> Dictionary:
+	var lakes: Array = []
+	for k in 3:
+		var angle := deg_to_rad(30.0 + 60.0 * float(k))
+		var at := Vector2(cos(angle), sin(angle)) * 50.0
+		lakes.append({"at": at, "radii": Vector2(10, 8), "seed": 1.0 + float(k)})
+		lakes.append({"at": -at, "radii": Vector2(10, 8), "seed": 1.0 + float(k) + PI})
+	var woods: Array = []
+	var wood_seed := 7.7
+	for wood in [[-90, -20, 34, 22], [-24, -112, 22, 22], [-104, 96, 26, 22], [-204, 30, 12, 26], [-70, 60, 18, 14], [-60, -190, 20, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.1
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var hills: Array = [
+		{"at": Vector2(-150, 40), "radii": Vector2(14, 10), "height": 8.0, "seed": 5.2},
+		{"at": Vector2(150, -40), "radii": Vector2(14, 10), "height": 8.0, "seed": 5.2 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -80, 34)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -48, -70)
+	_pair_point(deposits, "stone", -56, 160)
+	_pair_point(deposits, "timber", -142, -4)
+	_pair_point(deposits, "food", -176, -10)
+	var sites: Array = [
+		{"name": "The Seventh Fountain", "benefit": "income", "pos": Vector3.ZERO, "model": SPRING},
+		{"name": "The Mouras' Table", "benefit": "heal", "pos": Vector3(-108, 0, -68), "model": RUIN},
+		{"name": "The Bread Stone", "benefit": "heal", "pos": Vector3(108, 0, 68), "model": RUIN},
+		{"name": "North Ride Watch", "benefit": "vision", "pos": Vector3(-40, 0, 130), "model": WATCH},
+		{"name": "South Ride Watch", "benefit": "vision", "pos": Vector3(40, 0, -130), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -60, -72), Vector4(-60, -72, -25, -43), Vector4(-25, -43, 0, 0),
+		Vector4(160, 150, 60, 72), Vector4(60, 72, 25, 43), Vector4(25, 43, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-176, -62), "radius": 8.0, "seed": 51}, {"at": Vector2(176, 62), "radius": 8.0, "seed": 52}],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}

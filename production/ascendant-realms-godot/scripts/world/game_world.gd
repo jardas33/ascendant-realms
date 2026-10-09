@@ -1489,7 +1489,8 @@ func _build_woods() -> void:
 				var depth := edge - local.length()
 				# Inside the outline, or now and then a straggler just outside it.
 				if depth > 0.0 or (depth > -0.12 and rng.randf() < 0.25):
-					var tree: Node3D = load(trees[rng.randi() % trees.size()]).instantiate()
+					var tree_path: String = trees[rng.randi() % trees.size()]
+					var tree: Node3D = load(tree_path).instantiate()
 					holder.add_child(tree)
 					var tall := rng.randf_range(6.4, 8.2) + clampf(depth, 0.0, 0.6) * 4.0
 					ModelUtils.scale_to_height(tree, tall)
@@ -1498,7 +1499,9 @@ func _build_woods() -> void:
 					tree.rotation.y = rng.randf() * TAU
 					# One tone for the whole wood: a tone per tree height gave
 					# every tree a material of its own and nothing could be joined.
-					_prep_decor(tree, _scorched_tone("tree"))
+					# (Two tones at most: one per kind of tree, as scattered trees have.)
+					var tone := _scorched_tone("tree")
+					_prep_decor(tree, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(tree_path.get_file(), Color.WHITE))
 				z += spacing
 			x += spacing
 		clear_ground_cover(holder.position, minf(radii.x, radii.y) * 0.8)

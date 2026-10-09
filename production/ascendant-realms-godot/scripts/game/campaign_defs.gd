@@ -82,7 +82,7 @@ const CHAPTERS := [
 		"opening": "They are measuring our valley for a grave.",
 		"taunts": ["An engineer: \"Nothing personal. The water has to go somewhere.\"", "A centurion: \"The Regent builds for a thousand years. You will not stop it.\""],
 		"victory": "The surveyors fled, but their plans were already sealed and sent south. The dam would be built. The question was where the water would go."},
-	{"id": "2-2", "act": 1, "title": "Grove of Seven Fountains", "map": "verdant_hollows",
+	{"id": "2-2", "act": 1, "title": "Grove of Seven Fountains", "map": "seven_fountains",
 		"opponents": [{"race": "lioraen", "difficulty": "normal"}], "difficulty": "Normal", "unlocks": ["2-3", "2-S3"],
 		"briefing": "The Lioraen, the fairy-folk of the springs, have come out of the groves in force. They attack on sight: they believe you are a thief carrying stolen Lume.\n\nYou need them as allies. First, they need to lose.",
 		"opening": "They think I stole it. Maybe I did.",
