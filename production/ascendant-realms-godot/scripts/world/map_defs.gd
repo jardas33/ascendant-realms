@@ -94,6 +94,10 @@ static func _specs() -> Array:
 		{"id":"four_peaks","name":"The Four Peaks of the Larouco","theme":"snow","authored":"peaks"},
 		{"id":"geira_road","name":"The Geira Road","theme":"highland","authored":"geira"},
 		{"id":"ironmaw_mines","name":"The Lume-Iron Mines","theme":"volcanic","authored":"mines"},
+		{"id":"plains_of_bronze","name":"The Plains Before the Wall","theme":"desert","authored":"plains"},
+		{"id":"glass_heart","name":"The Glass Heart","theme":"volcanic","authored":"heart"},
+		{"id":"regents_canyon","name":"The Regent's Canyons","theme":"badlands","authored":"canyon"},
+		{"id":"rabagao_wall","name":"The Rabagao Wall","theme":"highland","authored":"wall"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -168,6 +172,10 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"peaks": a = _four_peaks()
 		"geira": a = _geira_road()
 		"mines": a = _ironmaw_mines()
+		"plains": a = _plains_of_bronze()
+		"heart": a = _glass_heart()
+		"canyon": a = _regents_canyon()
+		"wall": a = _rabagao_wall()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1532,6 +1540,231 @@ static func _ironmaw_mines() -> Dictionary:
 		"bridges": [],
 		"ruins": [{"at": Vector2(-30, -78), "radius": 7.0, "seed": 141}, {"at": Vector2(30, 78), "radius": 7.0, "seed": 142}],
 		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Plains Before the Wall (saga 4-3, "The Bronze Legions"). 440 m across,
+## desert. Open ground with low dunes and nothing to hide behind: the briefing
+## says there is no clever way through, and there is none. The four starts
+## stand at the four sides, not the corners, so the two the chapter uses face
+## each other straight across the plain.
+static func _plains_of_bronze() -> Dictionary:
+	var hills: Array = []
+	var dune_seed := 3.0
+	for dune in [[-112, -46, 18, 10, 6.0], [-30, -72, 16, 10, 5.0], [-70, 112, 16, 12, 6.0], [150, -150, 20, 14, 8.0]]:
+		hills.append({"at": Vector2(dune[0], dune[1]), "radii": Vector2(dune[2], dune[3]), "height": dune[4], "seed": dune_seed})
+		hills.append({"at": Vector2(-dune[0], -dune[1]), "radii": Vector2(dune[2], dune[3]), "height": dune[4], "seed": dune_seed + PI})
+		dune_seed += 1.4
+	var veins: Array = []
+	# Home veins for the west start, and the same turned a quarter for the south one.
+	for home in [["gold", -140, -84], ["food", -140, 84], ["stone", -206, -80], ["timber", -206, 80]]:
+		_pair_point(veins, home[0], home[1], home[2])
+		_pair_point(veins, home[0], -home[2], home[1])
+	_pair_point(veins, "gold", -60, -10)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -96, -96)
+	_pair_point(deposits, "stone", -96, 96)
+	_pair_point(deposits, "timber", -110, 24)
+	_pair_point(deposits, "food", -24, -112)
+	var sites: Array = [
+		{"name": "The Standard of the Legions", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Surgeons' Tents", "benefit": "heal", "pos": Vector3(-62, 0, -44), "model": RUIN},
+		{"name": "The Water Carts", "benefit": "heal", "pos": Vector3(62, 0, 44), "model": RUIN},
+		{"name": "North Picket", "benefit": "vision", "pos": Vector3(-44, 0, 62), "model": WATCH},
+		{"name": "South Picket", "benefit": "vision", "pos": Vector3(44, 0, -62), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-170, 0, 0, 0), Vector4(170, 0, 0, 0), Vector4(0, -170, 0, 0), Vector4(0, 170, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-170, 0, 0), Vector3(170, 0, 0), Vector3(0, 0, 170), Vector3(0, 0, -170)],
+		"rivers": [], "ridges": [], "woods": [], "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Glass Heart (saga 4-4, "Malrec's Last Offer"). 440 m across, volcanic.
+## Two walls of ash-glass coil round the heart, each three quarters of a
+## turn, one starting in the west and one in the east. The only ways in are
+## the two mouths where a coil begins, and from a mouth the way runs a
+## quarter turn between the coils before it opens on the heart.
+static func _glass_heart() -> Dictionary:
+	var ridges: Array = []
+	for start_angle in [180.0, 0.0]:
+		var line: Array = []
+		for step in 19:
+			var turned := 270.0 * float(step) / 18.0
+			var angle := deg_to_rad(start_angle + turned)
+			line.append(Vector2(cos(angle), sin(angle)) * (110.0 - 64.0 * turned / 270.0))
+		ridges.append({"points": line, "thickness": 9.0})
+	var lakes: Array = [
+		{"at": Vector2(0, -152), "radii": Vector2(18, 12), "seed": 2.7}, {"at": Vector2(0, 152), "radii": Vector2(18, 12), "seed": 2.7 + PI},
+	]
+	var hills: Array = [
+		{"at": Vector2(-150, 98), "radii": Vector2(14, 10), "height": 9.0, "seed": 5.9},
+		{"at": Vector2(150, -98), "radii": Vector2(14, 10), "height": 9.0, "seed": 5.9 + PI},
+	]
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -152)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -64, -45)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -18, -24)
+	_pair_point(deposits, "stone", -44, 152)
+	_pair_point(deposits, "timber", -112, -122)
+	_pair_point(deposits, "food", -184, 40)
+	var sites: Array = [
+		{"name": "Malrec's Glass Heart", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Thralls' Fire", "benefit": "heal", "pos": Vector3(-112, 0, -72), "model": RUIN},
+		{"name": "The Unmasked", "benefit": "heal", "pos": Vector3(112, 0, 72), "model": RUIN},
+		{"name": "West Mouth Watch", "benefit": "vision", "pos": Vector3(-140, 0, 20), "model": WATCH},
+		{"name": "East Mouth Watch", "benefit": "vision", "pos": Vector3(140, 0, -20), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -150, -24), Vector4(-150, -24, -88, 0), Vector4(-88, 0, -64, -45), Vector4(-64, -45, -24, -58), Vector4(-24, -58, 0, 0),
+		Vector4(160, 150, 150, 24), Vector4(150, 24, 88, 0), Vector4(88, 0, 64, 45), Vector4(64, 45, 24, 58), Vector4(24, 58, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": [], "lakes": lakes, "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-176, -90), "radius": 7.0, "seed": 151}, {"at": Vector2(176, 90), "radius": 7.0, "seed": 152}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Regent's Canyons (saga 4-5, "The Sun Regent"). 440 m across, badlands.
+## Six mesas stand in two rows of three. Between the rows runs the broad
+## canyon where the Regent waits; between the mesas of a row run two narrow
+## ones. Round the outside lies the open rim. A column in a narrow canyon
+## can be met head on by very few.
+static func _regents_canyon() -> Dictionary:
+	var hills: Array = []
+	var mesa_seed := 1.1
+	for mesa in [[-96, -52], [-96, 52], [0, -52]]:
+		hills.append({"at": Vector2(mesa[0], mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed})
+		hills.append({"at": Vector2(-mesa[0], -mesa[1]), "radii": Vector2(32, 27), "height": 15.0, "seed": mesa_seed + PI})
+		mesa_seed += 1.9
+	var woods: Array = []
+	var wood_seed := 18.4
+	for wood in [[-30, -142, 16, 12], [-202, 60, 12, 16]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.5
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -66)
+	_pair_point(veins, "food", -66, -156)
+	_pair_point(veins, "stone", -198, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -164, 74)
+	_pair_point(veins, "gold", -150, 4)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -30, -104)
+	_pair_point(deposits, "stone", -44, 152)
+	_pair_point(deposits, "timber", -160, 34)
+	_pair_point(deposits, "food", -198, 6)
+	var sites: Array = [
+		{"name": "The Regent's Pavilion", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Legion Surgeons", "benefit": "heal", "pos": Vector3(-124, 0, -104), "model": RUIN},
+		{"name": "The Mouras' Pool", "benefit": "heal", "pos": Vector3(124, 0, 104), "model": RUIN},
+		{"name": "North Rim Post", "benefit": "vision", "pos": Vector3(-40, 0, 122), "model": WATCH},
+		{"name": "South Rim Post", "benefit": "vision", "pos": Vector3(40, 0, -122), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -150, -30), Vector4(-150, -30, -132, 0), Vector4(-132, 0, 0, 0),
+		Vector4(160, 150, 150, 30), Vector4(150, 30, 132, 0), Vector4(132, 0, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": [], "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-180, -96), "radius": 7.0, "seed": 161}, {"at": Vector2(180, 96), "radius": 7.0, "seed": 162}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Rabagao Wall (saga 4-6, both roads). 440 m across. Not a fair field,
+## and not meant as one: the Wall crosses the whole map from west to east
+## with three sluice gates in it, the reservoir lies behind it to the north
+## in two sheets, and the lowland towns lie before it to the south. The
+## Dominion and its ally hold the north; the attacker comes up from the
+## lowlands and must take a gate.
+static func _rabagao_wall() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		[Vector2(-226, 22), Vector2(-182, 18), Vector2(-141, 20)],
+		[Vector2(-99, 20), Vector2(-60, 23), Vector2(-21, 20)],
+		[Vector2(21, 20), Vector2(60, 17), Vector2(99, 20)],
+		[Vector2(141, 20), Vector2(182, 22), Vector2(226, 18)],
+	]:
+		ridges.append({"points": line, "thickness": 16.0})
+	var lakes: Array = [
+		{"at": Vector2(-64, 98), "radii": Vector2(40, 30), "seed": 4.1},
+		{"at": Vector2(64, 98), "radii": Vector2(40, 30), "seed": 5.3},
+	]
+	var woods: Array = [
+		{"at": Vector2(-204, -60), "radii": Vector2(12, 16), "seed": 19.1},
+		{"at": Vector2(204, -60), "radii": Vector2(12, 16), "seed": 20.2},
+		{"at": Vector2(0, 190), "radii": Vector2(18, 12), "seed": 21.3},
+	]
+	var veins: Array = []
+	for side in [-1.0, 1.0]:
+		# The lowland starts.
+		veins.append({"kind": "gold", "pos": Vector3(110 * side, 0.0, -118)})
+		veins.append({"kind": "food", "pos": Vector3(62 * side, 0.0, -154)})
+		veins.append({"kind": "stone", "pos": Vector3(204 * side, 0.0, -112)})
+		veins.append({"kind": "timber", "pos": Vector3(130 * side, 0.0, -202)})
+		# The starts behind the Wall.
+		veins.append({"kind": "gold", "pos": Vector3(146 * side, 0.0, 92)})
+		veins.append({"kind": "food", "pos": Vector3(64 * side, 0.0, 160)})
+		veins.append({"kind": "stone", "pos": Vector3(204 * side, 0.0, 112)})
+		veins.append({"kind": "timber", "pos": Vector3(130 * side, 0.0, 202)})
+		# Before and behind the outer gates.
+		veins.append({"kind": "gold", "pos": Vector3(64 * side, 0.0, -14)})
+	var deposits: Array = []
+	for side in [-1.0, 1.0]:
+		deposits.append({"kind": "gold", "pos": Vector3(92 * side, 0.0, -84)})
+		deposits.append({"kind": "stone", "pos": Vector3(30 * side, 0.0, -156)})
+		deposits.append({"kind": "timber", "pos": Vector3(200 * side, 0.0, -24)})
+		deposits.append({"kind": "food", "pos": Vector3(170 * side, 0.0, 56)})
+	var sites: Array = [
+		{"name": "The Great Sluice", "benefit": "income", "pos": Vector3(0, 0, -16), "model": LUME},
+		{"name": "The Lowland Chapel", "benefit": "heal", "pos": Vector3(-156, 0, -58), "model": RUIN},
+		{"name": "The Wall Garrison", "benefit": "heal", "pos": Vector3(120, 0, 52), "model": RUIN},
+		{"name": "Reservoir Watch", "benefit": "vision", "pos": Vector3(0, 0, 146), "model": WATCH},
+		{"name": "Lowland Watch", "benefit": "vision", "pos": Vector3(0, 0, -128), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -120, -40), Vector4(-120, -40, -120, 48), Vector4(-120, 48, -160, 150),
+		Vector4(160, -150, 120, -40), Vector4(120, -40, 120, 48), Vector4(120, 48, 160, 150),
+		Vector4(0, -128, 0, -16), Vector4(0, -16, 0, 146),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": [],
+		"bridges": [],
+		"ruins": [],
+		# The lowland towns the flood would take.
+		"farmsteads": [
+			{"at": Vector2(-62, -62), "yaw": 0.6}, {"at": Vector2(62, -62), "yaw": -0.6},
+			{"at": Vector2(-24, -98), "yaw": 1.4}, {"at": Vector2(26, -92), "yaw": -1.2},
+			{"at": Vector2(-112, -34), "yaw": 2.2}, {"at": Vector2(150, -16), "yaw": -2.0},
+		],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 
