@@ -98,6 +98,12 @@ static func _specs() -> Array:
 		{"id":"glass_heart","name":"The Glass Heart","theme":"volcanic","authored":"heart"},
 		{"id":"regents_canyon","name":"The Regent's Canyons","theme":"badlands","authored":"canyon"},
 		{"id":"rabagao_wall","name":"The Rabagao Wall","theme":"highland","authored":"wall"},
+		# Act five returns to four places the saga has been, changed.
+		{"id":"burning_geira","name":"The Burning Geira","theme":"volcanic","authored":"geira"},
+		{"id":"last_spring","name":"The Last Spring","theme":"autumn","authored":"grove"},
+		{"id":"furna_in_ashes","name":"Furna in Ashes","theme":"ashen","authored":"furna"},
+		{"id":"salto_ascendant","name":"Salto, the Ascension","theme":"ashen","authored":"salto"},
+		{"id":"montalto","name":"Montalto","theme":"highland","authored":"montalto"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -176,6 +182,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"heart": a = _glass_heart()
 		"canyon": a = _regents_canyon()
 		"wall": a = _rabagao_wall()
+		"montalto": a = _montalto()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1765,6 +1772,72 @@ static func _rabagao_wall() -> Dictionary:
 			{"at": Vector2(-24, -98), "yaw": 1.4}, {"at": Vector2(26, -92), "yaw": -1.2},
 			{"at": Vector2(-112, -34), "yaw": 2.2}, {"at": Vector2(150, -16), "yaw": -2.0},
 		],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Montalto (saga 5-2, "Montalto Besieged"). 500 m across, the largest
+## field in the saga, so that a siege has time to gather. One against
+## three, and built for it: the old keep stands near the middle inside a ring
+## of rampart with three gates, and the three besieging armies camp round it
+## a third of a turn apart, one before each gate. Each camp is nearer the
+## keep than it is to either of the others. The keep's own veins lie outside
+## its walls, so holding the keep is not enough to feed it.
+static func _montalto() -> Dictionary:
+	var keep := Vector2(0, -20)
+	var ridges: Array = []
+	for arc in [[104.0, 197.0, 10], [225.0, 315.0, 10], [343.0, 436.0, 10]]:
+		var line: Array = []
+		for step in int(arc[2]) + 1:
+			var angle := deg_to_rad(lerpf(arc[0], arc[1], float(step) / float(arc[2])))
+			line.append(keep + Vector2(cos(angle), sin(angle)) * 70.0)
+		ridges.append({"points": line, "thickness": 9.0})
+	var woods: Array = [
+		{"at": Vector2(-170, 120), "radii": Vector2(18, 14), "seed": 22.4}, {"at": Vector2(170, 120), "radii": Vector2(18, 14), "seed": 23.5},
+		{"at": Vector2(0, -216), "radii": Vector2(18, 10), "seed": 24.6},
+	]
+	var hills: Array = [
+		{"at": Vector2(-216, 60), "radii": Vector2(14, 10), "height": 8.0, "seed": 3.7},
+		{"at": Vector2(216, 60), "radii": Vector2(14, 10), "height": 8.0, "seed": 4.9},
+	]
+	var veins: Array = []
+	for side in [-1.0, 1.0]:
+		# The keep's veins, outside its walls.
+		veins.append({"kind": "gold" if side < 0.0 else "food", "pos": Vector3(90 * side, 0.0, 30)})
+		veins.append({"kind": "stone" if side < 0.0 else "timber", "pos": Vector3(50 * side, 0.0, -120)})
+		# The northern camp.
+		veins.append({"kind": "gold" if side < 0.0 else "food", "pos": Vector3(60 * side, 0.0, 162)})
+		veins.append({"kind": "stone" if side < 0.0 else "timber", "pos": Vector3(110 * side, 0.0, 225)})
+		# The south-western camp and the south-eastern one.
+		veins.append({"kind": "gold", "pos": Vector3(190 * side, 0.0, -82)})
+		veins.append({"kind": "food", "pos": Vector3(135 * side, 0.0, -220)})
+		veins.append({"kind": "stone", "pos": Vector3(236 * side, 0.0, -60)})
+		veins.append({"kind": "timber", "pos": Vector3(170 * side, 0.0, -220)})
+		# Between the camps.
+		veins.append({"kind": "gold", "pos": Vector3(140 * side, 0.0, 70)})
+	var deposits: Array = []
+	for side in [-1.0, 1.0]:
+		deposits.append({"kind": "gold", "pos": Vector3(160 * side, 0.0, 10)})
+		deposits.append({"kind": "stone", "pos": Vector3(30 * side, 0.0, -190)})
+		deposits.append({"kind": "timber", "pos": Vector3(170 * side, 0.0, 170)})
+		deposits.append({"kind": "food", "pos": Vector3(110 * side, 0.0, 115)})
+	var sites: Array = [
+		{"name": "The Field Before the North Gate", "benefit": "income", "pos": Vector3(0, 0, 74), "model": LUME},
+		{"name": "West Sally Port", "benefit": "heal", "pos": Vector3(-82, 0, -72), "model": RUIN},
+		{"name": "East Sally Port", "benefit": "heal", "pos": Vector3(82, 0, -72), "model": RUIN},
+		{"name": "The South Postern Watch", "benefit": "vision", "pos": Vector3(0, 0, -142), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(0, -20, 0, 50), Vector4(0, 50, 0, 225),
+		Vector4(0, -20, -60, -56), Vector4(-60, -56, -200, -170),
+		Vector4(0, -20, 60, -56), Vector4(60, -56, 200, -170),
+	]
+	return {
+		"size": 250.0,
+		"starts": [Vector3(0, 0, -20), Vector3(0, 0, 225), Vector3(-200, 0, -170), Vector3(200, 0, -170)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
+		"bridges": [],
+		"ruins": [{"at": Vector2(-125, -25), "radius": 7.0, "seed": 171}, {"at": Vector2(125, -25), "radius": 7.0, "seed": 172}],
+		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

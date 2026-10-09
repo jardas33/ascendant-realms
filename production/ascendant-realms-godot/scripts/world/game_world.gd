@@ -1124,7 +1124,10 @@ func _build_rivers() -> void:
 		layer.add_child(bed)
 		var water := _ribbon(samples, width * 0.5, 0.09)
 		water.name = "RiverWater"
-		if ResourceLoader.exists(shader_path):
+		if str(map.get("theme", "")) == "volcanic":
+			# A river of fire.
+			water.material_override = _slag_material()
+		elif ResourceLoader.exists(shader_path):
 			var water_material := ShaderMaterial.new()
 			water_material.shader = load(shader_path)
 			water.material_override = water_material
@@ -1144,6 +1147,9 @@ func _build_rivers() -> void:
 		shallows.name = "FordShallows"
 		var shallow_material := StandardMaterial3D.new()
 		shallow_material.albedo_color = Color(0.62, 0.72, 0.58, 0.62)
+		if str(map.get("theme", "")) == "volcanic":
+			# Where the fire can be crossed it has crusted over.
+			shallow_material.albedo_color = Color(0.16, 0.10, 0.09, 0.88)
 		shallow_material.roughness = 0.25
 		shallow_material.vertex_color_use_as_albedo = true
 		shallow_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -1450,13 +1456,7 @@ func _build_lakes() -> void:
 				sheet.material_override = _bank_material()
 			elif str(map.get("theme", "")) == "volcanic":
 				# On volcanic ground a tarn is a pool of molten slag.
-				var slag := StandardMaterial3D.new()
-				slag.albedo_color = Color(0.80, 0.22, 0.04)
-				slag.emission_enabled = true
-				slag.emission = Color(1.0, 0.30, 0.04)
-				slag.emission_energy_multiplier = 1.15
-				slag.roughness = 0.55
-				sheet.material_override = slag
+				sheet.material_override = _slag_material()
 			elif ResourceLoader.exists(shader_path):
 				var water_material := ShaderMaterial.new()
 				water_material.shader = load(shader_path)
@@ -1465,6 +1465,18 @@ func _build_lakes() -> void:
 			layer.add_child(sheet)
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.3)
 	_build_reeds(layer, lakes)
+
+var _slag: StandardMaterial3D = null
+
+func _slag_material() -> StandardMaterial3D:
+	if _slag == null:
+		_slag = StandardMaterial3D.new()
+		_slag.albedo_color = Color(0.80, 0.22, 0.04)
+		_slag.emission_enabled = true
+		_slag.emission = Color(1.0, 0.30, 0.04)
+		_slag.emission_energy_multiplier = 1.15
+		_slag.roughness = 0.55
+	return _slag
 
 ## Reed beds along the shore of every tarn: stands of rush and reedmace in
 ## uneven stretches, some in the shallows and some on the bank. One clump is
