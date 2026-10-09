@@ -89,6 +89,7 @@ static func _specs() -> Array:
 		{"id":"boticas","name":"Boticas","theme":"ashen","authored":"boticas"},
 		{"id":"larouco_road","name":"The Larouco Road","theme":"snow","authored":"larouco"},
 		{"id":"castro_carvalhelhos","name":"The Castro of Carvalhelhos","theme":"snow","authored":"castro"},
+		{"id":"candle_road","name":"The Candle Road","theme":"wetland","authored":"candle"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -158,6 +159,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"boticas": a = _boticas()
 		"larouco": a = _larouco_road()
 		"castro": a = _castro_carvalhelhos()
+		"candle": a = _candle_road()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -1200,6 +1202,73 @@ static func _castro_carvalhelhos() -> Dictionary:
 		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": hills,
 		"bridges": [],
 		"ruins": [{"at": Vector2(-150, 6), "radius": 8.0, "seed": 95}, {"at": Vector2(150, -6), "radius": 8.0, "seed": 96}],
+		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## The Candle Road (saga 3-4). 440 m across. Two long meres lie across the
+## marsh, one south of the middle and one north, and the road of the dead
+## crosses each on a narrow causeway where the mere is broken in two. The
+## causeways are the short way and take a column a few abreast; an army
+## goes round the ends of the water.
+static func _candle_road() -> Dictionary:
+	var lakes: Array = []
+	var mere_seed := 5.5
+	for mere in [
+		# The southern mere, in two lengths with the causeway between.
+		[-94, -46, 38, 13], [12, -46, 38, 13],
+		# Smaller water out in the marsh.
+		[-172, 22, 14, 18], [-62, 122, 16, 12],
+	]:
+		lakes.append({"at": Vector2(mere[0], mere[1]), "radii": Vector2(mere[2], mere[3]), "seed": mere_seed})
+		lakes.append({"at": Vector2(-mere[0], -mere[1]), "radii": Vector2(mere[2], mere[3]), "seed": mere_seed + PI})
+		mere_seed += 0.9
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -98), Vector2(-150, -90), Vector2(-178, -100)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+	]:
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	var woods: Array = []
+	var wood_seed := 14.8
+	for wood in [[-30, -122, 20, 14], [-106, 98, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 2.5
+	var veins: Array = []
+	_pair_point(veins, "gold", -152, -66)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "gold", -74, 12)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -70, -16)
+	_pair_point(deposits, "stone", -34, 152)
+	_pair_point(deposits, "timber", -124, 0)
+	_pair_point(deposits, "food", -200, -6)
+	var sites: Array = [
+		{"name": "The Head of the Procession", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The First Candle", "benefit": "heal", "pos": Vector3(-106, 0, -78), "model": RUIN},
+		{"name": "The Last Candle", "benefit": "heal", "pos": Vector3(106, 0, 78), "model": RUIN},
+		{"name": "North Mere Watch", "benefit": "vision", "pos": Vector3(-24, 0, 110), "model": WATCH},
+		{"name": "South Mere Watch", "benefit": "vision", "pos": Vector3(24, 0, -110), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -41, -84), Vector4(-41, -84, -41, -18), Vector4(-41, -18, 0, 0),
+		Vector4(160, 150, 41, 84), Vector4(41, 84, 41, 18), Vector4(41, 18, 0, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": lakes, "hills": [],
+		"bridges": [],
+		# Wayside shrines by the causeway mouths.
+		"ruins": [{"at": Vector2(-16, -82), "radius": 7.0, "seed": 101}, {"at": Vector2(16, 82), "radius": 7.0, "seed": 102}],
 		"farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}

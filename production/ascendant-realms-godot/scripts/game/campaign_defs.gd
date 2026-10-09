@@ -163,7 +163,7 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "Sétimo: \"The wolves never howl at the dead, Jardas.\"",
 		"taunts": ["A Dominion hunter: \"Wolf pelts pay well in the capital.\"", "Sétimo: \"Free my pack, and we run at your side until the moon falls.\""],
 		"victory": "The Wolfveil swore to you under the full moon. Sétimo dug a fifth jar out of the wolf-trap's floor with his bare hands."},
-	{"id": "3-4", "act": 2, "title": "The Candle Road, Again", "map": "blightmarsh",
+	{"id": "3-4", "act": 2, "title": "The Candle Road, Again", "map": "candle_road",
 		"opponents": [{"race": "hollow", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-5", "3-S2"],
 		"briefing": "Now you know what you are, the Compaña will not part for you any more. It will wait for you to join it.\n\nHunt the procession to its heart, and find the woman who carries the cross.",
 		"opening": "I am dead. I am still walking. So are they.",
