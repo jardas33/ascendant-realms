@@ -5084,13 +5084,20 @@ func _spawn_saga_wave(wave: Dictionary) -> void:
 	var from: Vector3 = map.get("start_positions", [Vector3.ZERO, Vector3.ZERO])[team]
 	var target: Vector3 = map.get("start_positions", [Vector3.ZERO])[player_team]
 	var toward := (target - from).normalized()
+	# On a large field a reserve that set out from the enemy camp was still on
+	# the road when a hold-out ended. It comes onto the field no more than
+	# 190 m from where it is going. The smaller maps are left as they were.
+	var muster: Vector3 = from + toward * 16.0
+	if float(map.get("size", 140.0)) > 200.0:
+		muster = from + toward * maxf(16.0, Vector2(target.x - from.x, target.z - from.z).length() - 190.0)
+		muster = out_of_crags(muster, 6.0, target)
 	var k := 0
 	for uid in wave["units"]:
-		var u = spawn_unit(String(uid), team, from + toward * 16.0 + Vector3(toward.z, 0, -toward.x) * (float(k) - 2.0) * 2.0)
+		var u = spawn_unit(String(uid), team, muster + Vector3(toward.z, 0, -toward.x) * (float(k) - 2.0) * 2.0)
 		if u:
 			u.command_move(target, true)
 		k += 1
-	emit_signal("alert", String(wave.get("line", "Enemy reinforcements arrive!")), from + toward * 16.0)
+	emit_signal("alert", String(wave.get("line", "Enemy reinforcements arrive!")), muster)
 
 func _start_saga_voices() -> void:
 	var chapter_id := String(Match.get_config().get("campaign_chapter", ""))

@@ -111,6 +111,9 @@ static func _specs() -> Array:
 		{"id":"castro_lesenho","name":"The Castro of Lesenho","theme":"highland","authored":"castro"},
 		{"id":"covelo","name":"Covelo","theme":"autumn","authored":"quarter"},
 		{"id":"witches_saddle","name":"The Witches' Saddle","theme":"ashen","authored":"peaks"},
+		# The hold-outs: the same ground with the enemy seated near.
+		{"id":"montalto_witches_night","name":"Montalto, the Night of the Witches","theme":"ashen","authored":"montalto"},
+		{"id":"pilgrims_bridge","name":"The Pilgrims' Bridge","theme":"verdant","authored":"junias","seats":[0,3,2,1]},
 	]
 
 # ---------------------------------------------------------------------------
@@ -194,6 +197,13 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"junias": a = _junias()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
+	# A hold-out chapter wants its enemies near: a spec may seat the players in
+	# another order (seat 0 is the player, the opponents follow).
+	if s.has("seats"):
+		var seated: Array = []
+		for seat in s["seats"]:
+			seated.append(starts[int(seat)])
+		starts = seated
 	var res: Array = []
 	for c in starts:
 		res += _cluster(c, 1.0)
