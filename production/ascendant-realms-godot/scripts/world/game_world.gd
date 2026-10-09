@@ -1448,6 +1448,77 @@ func _build_lakes() -> void:
 				sheet.material_override = water_material
 			layer.add_child(sheet)
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.3)
+	_build_reeds(layer, lakes)
+
+## Reed beds along the shore of every tarn: stands of rush and reedmace in
+## uneven stretches, some in the shallows and some on the bank. One clump is
+## modelled here and drawn many times in a single call.
+func _build_reeds(layer: Node3D, lakes: Array) -> void:
+	if _scorched_tone("turf") != Color.WHITE:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7741
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var root_tone := Color(0.10, 0.17, 0.07)
+	var tip_tone := Color(0.40, 0.50, 0.20)
+	var head_tone := Color(0.20, 0.12, 0.07)
+	for blade in 11:
+		var foot := Vector3(rng.randf_range(-0.38, 0.38), 0.0, rng.randf_range(-0.38, 0.38))
+		var tall := rng.randf_range(1.2, 2.3)
+		var tip := foot + Vector3(rng.randf_range(-0.28, 0.28), tall, rng.randf_range(-0.28, 0.28))
+		# Two crossed slivers per stalk, so it shows from every side.
+		for turn in 2:
+			var side := Vector3(0.07, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, 0.07)
+			for corner in [[foot - side, root_tone], [foot + side, root_tone], [tip, tip_tone]]:
+				tool.set_normal(Vector3.UP)
+				tool.set_color(corner[1])
+				tool.add_vertex(corner[0])
+		# One stalk in three carries a reedmace head.
+		if blade % 3 == 0:
+			var low := foot.lerp(tip, 0.74)
+			var high := foot.lerp(tip, 0.93)
+			for turn in 2:
+				var side := Vector3(0.055, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, 0.055)
+				for corner in [low - side, low + side, high + side, low - side, high + side, high - side]:
+					tool.set_normal(Vector3.UP)
+					tool.set_color(head_tone)
+					tool.add_vertex(corner)
+	var clump := tool.commit()
+	var material := StandardMaterial3D.new()
+	material.vertex_color_use_as_albedo = true
+	material.vertex_color_is_srgb = true
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.roughness = 1.0
+	var spots: Array = []
+	for lake in lakes:
+		var centre: Vector2 = lake["at"]
+		var radii: Vector2 = lake["radii"]
+		var around := PI * (radii.x + radii.y)
+		var phase := float(lake.get("seed", 0.0)) * 1.7
+		for k in int(around / 0.42):
+			var angle := rng.randf() * TAU
+			# Beds, not a fringe: reeds grow along some stretches of shore and not others.
+			if sin(angle * 3.0 + phase) + rng.randf_range(-0.5, 0.5) < -0.15:
+				continue
+			var reach := MapDefs.wood_reach(lake, angle) * rng.randf_range(0.84, 1.10)
+			spots.append(Vector3(centre.x + cos(angle) * radii.x * reach, 0.03, centre.y + sin(angle) * radii.y * reach))
+	if spots.is_empty():
+		return
+	var beds := MultiMesh.new()
+	beds.transform_format = MultiMesh.TRANSFORM_3D
+	beds.mesh = clump
+	beds.instance_count = spots.size()
+	for index in spots.size():
+		var grown := rng.randf_range(0.8, 1.6)
+		var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(grown, grown * rng.randf_range(0.85, 1.2), grown))
+		beds.set_instance_transform(index, Transform3D(basis, spots[index]))
+	var reeds := MultiMeshInstance3D.new()
+	reeds.name = "Reeds"
+	reeds.multimesh = beds
+	reeds.material_override = material
+	reeds.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	layer.add_child(reeds)
 
 const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
 

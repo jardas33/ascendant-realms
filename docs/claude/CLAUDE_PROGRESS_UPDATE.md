@@ -1276,6 +1276,9 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 145 (done): reed beds along the shore of every tarn and pool**
+  - Ashfen Mire and Furna looked like grass with puddles. Every tarn on a hand-built map now has stands of rush and reedmace along uneven stretches of its shore, some in the shallows, some on the bank. One clump is modelled in code and drawn many times in a single draw call; no new asset. Not on volcanic or ashen maps.
+  - Seen on Ashfen Mire and Furna in pictures. 65 regression checks pass. Frame rate was not measured for this change.
 - **Plan 144 (done): The Envoy's Field, four hill forts (chapter 2-5)**
   - **The map,** 440 m, highland: every start stands inside a ring of rampart 72 m out with three gates, one to each neighbour and one to the field. Open parley ground between the forts with the envoy's pavilion at the centre, two woods, two knolls, two tarns. It is the first map with walled starts, and it is the same for all four seats. Chapter 2-5 plays on it (was Goldreach).
   - **Checked:** soundness first time; 60 worker and 60 soldier walks through AI bases built inside the ramparts, none failed; 18 of 18 outposts; four AI matches ended in 15 to 24 minutes, no stuck units, so the AI builds, gathers and attacks through the gates. Chapter 2-5 (Hard) by the stand-in: undecided at 30 minutes, once.
