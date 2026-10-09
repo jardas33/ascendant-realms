@@ -1001,6 +1001,8 @@ func _scorched_tone(what: String) -> Color:
 		return Color.WHITE
 	return tones[theme_name][what]
 
+const CRAG_VARIANTS := 6
+
 func _build_crags() -> void:
 	var crags: Array = map.get("crags", [])
 	if crags.is_empty():
@@ -1014,6 +1016,13 @@ func _build_crags() -> void:
 	add_child(layer)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5309 + crags.size()
+	# A hand-built map has some two hundred lengths of rock wall, each of
+	# thirteen rocks placed, measured, toned and merged one by one: 17 of the
+	# 23 seconds the mines map took to load. Six lengths of each size are now
+	# built that way and the rest are copies of those six, turned.
+	var crag_batcher = load("res://scripts/world/static_batcher.gd")
+	var crag_variants: Dictionary = {}
+	var authored_map := bool(map.get("authored", false))
 	for i in crags.size():
 		var pos: Vector3 = crags[i]["pos"]
 		var half: Vector2 = crags[i]["half"]
@@ -1022,9 +1031,26 @@ func _build_crags() -> void:
 		layer.add_child(holder)
 		holder.position = pos
 		var crag_kind := String(crags[i].get("kind", "rock"))
+		var variant_key := "%.1f|%.1f" % [half.x, half.y]
+		var variants: Array = crag_variants.get(variant_key, [])
+		var reuse: bool = authored_map and crag_kind == "rock" and variants.size() >= CRAG_VARIANTS
+		if reuse:
+			var turned := Node3D.new()
+			turned.name = "Rocks"
+			holder.add_child(turned)
+			# A square length can be turned any quarter; an oblong one end for end.
+			turned.rotation.y = PI * 0.5 * float(rng.randi() % 4) if is_equal_approx(half.x, half.y) else PI * float(rng.randi() % 2)
+			for piece in variants[rng.randi() % variants.size()]:
+				var copy := MeshInstance3D.new()
+				copy.mesh = piece.mesh
+				copy.material_override = piece.material_override
+				copy.cast_shadow = piece.cast_shadow
+				copy.transform = piece.transform
+				turned.add_child(copy)
+			holder.set_meta("crag_batched", true)
 		# Water and woods are drawn whole (_build_rivers, _build_woods); the
 		# rectangles here only keep feet out of them.
-		if crag_kind == "rock" and not models.is_empty():
+		if crag_kind == "rock" and not models.is_empty() and not reuse:
 			# The body: tall rock clusters shoulder to shoulder, so the ridge
 			# reads as a wall and not as a row of boulders with gaps.
 			# An authored ridge is many small lengths side by side: two rock
@@ -1064,6 +1090,15 @@ func _build_crags() -> void:
 					edge * (half.y - 0.4) if on_x else rng.randf_range(-half.y, half.y))
 				boulder.rotation.y = rng.randf() * TAU
 				_prep_decor(boulder, _scorched_tone("rock"))
+			if authored_map:
+				var built := holder.get_child_count()
+				crag_batcher.batch(holder)
+				var pieces: Array = []
+				for index in range(built, holder.get_child_count()):
+					pieces.append(holder.get_child(index))
+				variants.append(pieces)
+				crag_variants[variant_key] = variants
+				holder.set_meta("crag_batched", true)
 		_register_navigation_obstacle(holder, "crag", pos, half, 4.0, "ENVIRONMENT_PROP", "crag_world_blocker", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
 		# The avoidance disc of a long ridge must not swell to its length and
 		# close the gates beside it: thin discs along the ridge instead.
@@ -1099,10 +1134,9 @@ func _build_crags() -> void:
 		clear_ground_cover(pos, thin + 1.5)
 	# One merged mesh per crag, not one for all of them: a crag off screen is
 	# then culled instead of every ridge on the map being drawn every frame.
-	var batcher = load("res://scripts/world/static_batcher.gd")
 	for holder in layer.get_children():
-		if holder is Node3D:
-			batcher.batch(holder)
+		if holder is Node3D and not holder.has_meta("crag_batched"):
+			crag_batcher.batch(holder)
 
 ## A river: a ribbon of moving water along its course over a darker bed,
 ## wider than the water so the banks show. It runs on through the fords,
@@ -1570,7 +1604,32 @@ func _build_woods() -> void:
 	add_child(layer)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 4471
-	var batcher = load("res://scripts/world/static_batcher.gd")
+	# One tree of each kind is built, measured and toned; every tree in every
+	# wood is then drawn from those (one MultiMesh per kind per wood). Each
+	# tree used to be built and the wood merged into one mesh, some six
+	# hundred trees and four seconds of loading on a wooded map.
+	var kinds: Array = []
+	for path in trees:
+		var proto: Node3D = load(path).instantiate()
+		layer.add_child(proto)
+		ModelUtils.scale_to_height(proto, 1.0)
+		ModelUtils.ground_model(proto)
+		var tone := _scorched_tone("tree")
+		_prep_decor(proto, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(String(path).get_file(), Color.WHITE))
+		var pieces: Array = []
+		var meshes: Array = proto.find_children("*", "MeshInstance3D", true, false)
+		if proto is MeshInstance3D:
+			meshes.append(proto)
+		for node in meshes:
+			var source := node as MeshInstance3D
+			if source.mesh == null:
+				continue
+			var drawn: Mesh = source.mesh.duplicate()
+			for surface in drawn.get_surface_count():
+				drawn.surface_set_material(surface, source.get_active_material(surface))
+			pieces.append({"mesh": drawn, "local": layer.global_transform.affine_inverse() * source.global_transform})
+		kinds.append(pieces)
+		proto.queue_free()
 	for wood in woods:
 		var holder := Node3D.new()
 		holder.name = "Wood"
@@ -1578,6 +1637,9 @@ func _build_woods() -> void:
 		var centre: Vector2 = wood["at"]
 		var radii: Vector2 = wood["radii"]
 		holder.position = Vector3(centre.x, 0.0, centre.y)
+		var placed: Array = []
+		for kind in kinds:
+			placed.append([])
 		# Under the canopy nobody sees the trunks: fewer, larger trees.
 		var spacing := 5.1
 		var x := -radii.x * 1.3
@@ -1591,23 +1653,28 @@ func _build_woods() -> void:
 				var depth := edge - local.length()
 				# Inside the outline, or now and then a straggler just outside it.
 				if depth > 0.0 or (depth > -0.12 and rng.randf() < 0.25):
-					var tree_path: String = trees[rng.randi() % trees.size()]
-					var tree: Node3D = load(tree_path).instantiate()
-					holder.add_child(tree)
+					var kind_index := rng.randi() % kinds.size()
 					var tall := rng.randf_range(6.4, 8.2) + clampf(depth, 0.0, 0.6) * 4.0
-					ModelUtils.scale_to_height(tree, tall)
-					ModelUtils.ground_model(tree)
-					tree.position = Vector3(px, tree.position.y, pz)
-					tree.rotation.y = rng.randf() * TAU
-					# One tone for the whole wood: a tone per tree height gave
-					# every tree a material of its own and nothing could be joined.
-					# (Two tones at most: one per kind of tree, as scattered trees have.)
-					var tone := _scorched_tone("tree")
-					_prep_decor(tree, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(tree_path.get_file(), Color.WHITE))
+					placed[kind_index].append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(tall, tall, tall)), Vector3(px, 0.0, pz)))
 				z += spacing
 			x += spacing
 		clear_ground_cover(holder.position, minf(radii.x, radii.y) * 0.8)
-		batcher.batch(holder)
+		for kind_index in kinds.size():
+			var stands: Array = placed[kind_index]
+			if stands.is_empty():
+				continue
+			for piece in kinds[kind_index]:
+				var grove := MultiMesh.new()
+				grove.transform_format = MultiMesh.TRANSFORM_3D
+				grove.mesh = piece["mesh"]
+				grove.instance_count = stands.size()
+				for index in stands.size():
+					grove.set_instance_transform(index, stands[index] * piece["local"])
+				var drawn_trees := MultiMeshInstance3D.new()
+				drawn_trees.name = "Trees"
+				drawn_trees.multimesh = grove
+				drawn_trees.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				holder.add_child(drawn_trees)
 
 ## The player's Graphics Quality setting: "low", "medium" or "high".
 func graphics_quality() -> String:
