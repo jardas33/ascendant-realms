@@ -1276,6 +1276,10 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 146 (done): Boticas, the dead town (chapter 3-1), and dead trees on scorched ground**
+  - **The map,** 440 m, ashen: one street west to east with four houses on each side and the Wine of the Dead under the middle of it; broken cellars (pillar rings) at both ends of the street and behind the houses; granite outcrops close the town on four sides so every way in is a corner. The contested vein is stone, as the chapter's briefing promises. Chapter 3-1 plays on it (was Ruins of Vael, which 3-5 and 4-S2 still use).
+  - **Scattered trees on volcanic and ashen maps were bright green.** They now take the same dead tone as the woods there. This changes the older scorched maps too.
+  - **Checked:** soundness first time; 60 worker and 60 soldier walks, none failed; 18 of 18 outposts; three AI matches ended in 13, 21 and 28 minutes, no stuck units. Chapter 3-1 (Hard) by the stand-in: won once in 22 minutes, undecided once at 30.
 - **Plan 145 (done): reed beds along the shore of every tarn and pool**
   - Ashfen Mire and Furna looked like grass with puddles. Every tarn on a hand-built map now has stands of rush and reedmace along uneven stretches of its shore, some in the shallows, some on the bank. One clump is modelled in code and drawn many times in a single draw call; no new asset. Not on volcanic or ashen maps.
   - Seen on Ashfen Mire and Furna in pictures. 65 regression checks pass. Frame rate was not measured for this change.

@@ -131,7 +131,7 @@ const CHAPTERS := [
 		"taunts": ["A Dominion engineer: \"Open the second sluice!\"", "Ilduara: \"Hold, Jardas. Hold. I can hear my sisters dreaming.\""],
 		"victory": "The water stopped at the roots. Ilduara, already half bark, touched your face with a hand like cold wood. \"You are cold, little one,\" she whispered. \"The living are never this cold.\""},
 	# ---------------------------------------------------------------- ACT III
-	{"id": "3-1", "act": 2, "title": "Boticas Cellars", "map": "ruins_of_vael",
+	{"id": "3-1", "act": 2, "title": "Boticas Cellars", "map": "boticas",
 		"opponents": [{"race": "hollow", "difficulty": "hard"}], "difficulty": "Hard", "unlocks": ["3-2", "3-S3"],
 		"briefing": "In the last war, the elders of Boticas buried their Lume in clay jars under the cellar floors to hide it from the invaders. They called it the Wine of the Dead.\n\nThe jars are still down there. So are the dead who guard them.\n\nBoticas sits on old granite. Raise outposts on its veins and the valley's stone will pay for the digging.
 

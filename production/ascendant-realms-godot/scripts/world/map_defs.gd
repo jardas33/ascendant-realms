@@ -86,6 +86,7 @@ static func _specs() -> Array:
 		{"id":"bread_fountain","name":"The Bread Fountain","theme":"verdant","authored":"fountain"},
 		{"id":"furna_reservoir","name":"Furna Below the Water","theme":"wetland","authored":"furna"},
 		{"id":"envoys_field","name":"The Envoy's Field","theme":"highland","authored":"envoy"},
+		{"id":"boticas","name":"Boticas","theme":"ashen","authored":"boticas"},
 	]
 
 # ---------------------------------------------------------------------------
@@ -152,6 +153,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"fountain": a = _bread_fountain()
 		"furna": a = _furna_reservoir()
 		"envoy": a = _envoys_field()
+		"boticas": a = _boticas()
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	var res: Array = []
@@ -998,6 +1000,72 @@ static func _envoys_field() -> Dictionary:
 		"bridges": [],
 		"ruins": [{"at": Vector2(-40, -64), "radius": 7.0, "seed": 71}, {"at": Vector2(40, 64), "radius": 7.0, "seed": 72}],
 		"farmsteads": [],
+		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+	}
+
+## Boticas (saga 3-1, "Boticas Cellars"). 440 m across. A dead town on old
+## granite: one street running west to east with four houses on each side,
+## the Wine of the Dead buried under the middle of it, and broken cellars at
+## both ends of the street and behind the houses. Granite outcrops close
+## the town to north, south, east and west, so every way in is a corner.
+static func _boticas() -> Dictionary:
+	var ridges: Array = []
+	for line in [
+		[Vector2(-120, -96), Vector2(-150, -88), Vector2(-178, -98)],
+		[Vector2(-96, -200), Vector2(-92, -170), Vector2(-100, -140)],
+		# The outcrops round the town.
+		[Vector2(-132, -30), Vector2(-124, -4), Vector2(-132, 22)],
+		[Vector2(-40, -98), Vector2(-10, -106), Vector2(20, -98)],
+	]:
+		ridges.append({"points": line, "thickness": 10.0})
+		ridges.append({"points": _twin_points(line), "thickness": 10.0})
+	var woods: Array = []
+	var wood_seed := 11.5
+	for wood in [[-172, 42, 14, 18], [-70, 112, 18, 14]]:
+		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
+		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
+		wood_seed += 1.9
+	# The street: houses facing each other across it.
+	var farmsteads: Array = []
+	for house_x in [-62, -31, 31, 62]:
+		farmsteads.append({"at": Vector2(house_x, 24), "yaw": PI})
+		farmsteads.append({"at": Vector2(-house_x, -24), "yaw": 0.0})
+	var veins: Array = []
+	_pair_point(veins, "gold", -150, -62)
+	_pair_point(veins, "food", -62, -150)
+	_pair_point(veins, "stone", -196, -40)
+	_pair_point(veins, "timber", -130, -200)
+	_pair_point(veins, "gold", -110, 150)
+	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "stone", -60, 196)
+	_pair_point(veins, "timber", -160, 70)
+	_pair_point(veins, "stone", -92, -48)
+	var deposits: Array = []
+	_pair_point(deposits, "gold", -58, -62)
+	_pair_point(deposits, "stone", -40, 150)
+	_pair_point(deposits, "timber", -154, -2)
+	_pair_point(deposits, "food", -196, 6)
+	var sites: Array = [
+		{"name": "The Wine of the Dead", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "The Elders' Cellar", "benefit": "heal", "pos": Vector3(-108, 0, -70), "model": RUIN},
+		{"name": "The Sexton's Cellar", "benefit": "heal", "pos": Vector3(108, 0, 70), "model": RUIN},
+		{"name": "North Outcrop Watch", "benefit": "vision", "pos": Vector3(-40, 0, 134), "model": WATCH},
+		{"name": "South Outcrop Watch", "benefit": "vision", "pos": Vector3(40, 0, -134), "model": WATCH},
+	]
+	var roads: Array = [
+		Vector4(-160, -150, -92, -60), Vector4(-92, -60, -84, 0), Vector4(-84, 0, 84, 0),
+		Vector4(160, 150, 92, 60), Vector4(92, 60, 84, 0),
+	]
+	return {
+		"size": 220.0,
+		"starts": [Vector3(-160, 0, -150), Vector3(160, 0, 150), Vector3(-160, 0, 150), Vector3(160, 0, -150)],
+		"rivers": [], "ridges": ridges, "woods": woods, "lakes": [], "hills": [],
+		"bridges": [],
+		"ruins": [
+			{"at": Vector2(-98, 4), "radius": 9.0, "seed": 81}, {"at": Vector2(98, -4), "radius": 9.0, "seed": 82},
+			{"at": Vector2(4, -64), "radius": 8.0, "seed": 83}, {"at": Vector2(-4, 64), "radius": 8.0, "seed": 84},
+		],
+		"farmsteads": farmsteads,
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
 

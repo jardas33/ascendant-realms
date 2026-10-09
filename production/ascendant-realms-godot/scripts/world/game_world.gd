@@ -2161,7 +2161,11 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	if discard:
 		inst.queue_free()
 		return
-	_prep_decor(inst, DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE), h if is_tree else 0.0)
+	# On scorched ground a scattered tree is as dead as the woods.
+	var leaf_tone: Color = DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE)
+	if is_tree and _scorched_tone("tree") != Color.WHITE:
+		leaf_tone = _scorched_tone("tree")
+	_prep_decor(inst, leaf_tone, h if is_tree else 0.0)
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 
