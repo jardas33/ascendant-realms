@@ -124,7 +124,7 @@ const CHAPTERS := [
 		"opening": "Ilduara: \"They were the most beautiful of us. They still are.\"",
 		"taunts": ["A silver Moura: \"Fading is a choice, sister. We chose not to.\"", "A silver Moura: \"The Jardas is dead, you know. Can you not smell it?\""],
 		"victory": "The Moura Court withdrew. One silver sister stayed behind, weeping, and left a fourth jar at Ilduara's feet. \"For when you need to remember everything,\" she said."},
-	{"id": "2-6", "survive": 480, "act": 1, "title": "Rising Water", "map": "thornwild",
+	{"id": "2-6", "survive": 480, "act": 1, "title": "Rising Water", "map": "grove_rising_water",
 		"opponents": [{"race": "sunspear", "difficulty": "hard"}, {"race": "sylvan", "difficulty": "normal"}], "difficulty": "Hard", "unlocks": ["3-1"],
 		"briefing": "The Dominion has opened the sluices. The water is rising toward the Grove of Seven Fountains, and if the grove drowns, the Lioraen die with it.\n\nHold the grove until the Dominion's engineers are dead or gone.",
 		"opening": "Ilduara: \"If the water reaches the roots, we sleep forever.\"",
@@ -285,7 +285,7 @@ The Ascension is pushing the old jars up out of the fields again. Where the Lume
 		"opening": "It has my face. Of course it has my face.",
 		"taunts": ["The Ascendant, in your voice: \"We were forgotten. You died forgotten. Why defend them?\"", "The Ascendant: \"Every one of your seventy-six ancestors said no. Every one of them is inside me.\""],
 		"victory": "The Ascendant knelt at the spring. It did not die; it waited. All seven mouths of the spring opened at once. The last battle was not against anyone. It was about what the highlands would become."},
-	{"id": "5-7", "survive": 600, "act": 4, "title": "The Seventy-Seventh Oath", "map": "hollowspan",
+	{"id": "5-7", "survive": 600, "act": 4, "title": "The Seventy-Seventh Oath", "map": "salto_ascendant",
 		"opponents": [{"race": "sunspear", "difficulty": "brutal"}, {"race": "hollow", "difficulty": "brutal"}, {"race": "vorthak", "difficulty": "brutal"}], "difficulty": "Brutal", "unlocks": [],
 		"briefing": "Every realm comes to Salto for the end: the Dominion to drown it, the dead to claim it, the ash-glass to burn it. Hold the Spring of Seven Mouths until the Oath is spoken.\n\nWhat Oath you speak depends on everything you have done.",
 		"opening": "Avó Brites: \"Owls and toads and witches... and one more oath. Hold them, child.\"",
@@ -351,7 +351,13 @@ static func survive_seconds(id: String) -> int:
 ## join the player at the start. Unit ids from unit_defs.
 const EVENTS := {
 	"1-6": {"waves": [{"at": 300, "team": 1, "units": ["vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_gloom_hound", "vorthak_gloom_hound"], "line": "Malrec: \"Release the kennels!\""}]},
-	"2-6": {"waves": [{"at": 240, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_legion", "sunspear_bowman", "sunspear_bowman"], "line": "A Dominion engineer: \"Open the second sluice! Send the reserve!\""}]},
+	# (On the Grove the camps are far apart, so the sluice crews come in four
+	# waves where the small map had one.)
+	"2-6": {"waves": [
+		{"at": 120, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_legion", "sunspear_bowman", "sunspear_bowman"], "line": "A Dominion engineer: \"First sluice open. Clear the grove before the water does.\""},
+		{"at": 210, "team": 2, "units": ["sylvan_bladesinger", "sylvan_bladesinger", "sylvan_bladesinger", "sylvan_longbow", "sylvan_longbow"], "line": "The Moura Court: \"Our sisters chose to fade. Let them.\""},
+		{"at": 300, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_phalanx", "sunspear_phalanx", "sunspear_bowman", "sunspear_bowman"], "line": "A Dominion engineer: \"Open the second sluice! Send the reserve!\""},
+		{"at": 390, "team": 2, "units": ["sylvan_warden", "sylvan_warden", "sylvan_windrunner", "sylvan_windrunner", "sylvan_longbow"], "line": "The water is at the roots of the first fountain."}]},
 	"3-6": {"allies": {"units": ["frostborn_reaver", "frostborn_reaver", "frostborn_reaver", "frostborn_shieldmaiden"], "line": "O Velho: \"The Caretos ride with you, cousin!\""}},
 	"4-3": {"allies": {"units": ["grimtusk_grunt", "grimtusk_grunt", "grimtusk_berserker", "grimtusk_bowcrusha"], "line": "Warboss Brasa: \"The Ironmaw keep their word. Point us at the bronze.\""},
 		"waves": [{"at": 420, "team": 1, "units": ["sunspear_phalanx", "sunspear_phalanx", "sunspear_charioteer", "sunspear_charioteer"], "line": "A legate: \"The Wall's garrison marches!\""}]},
@@ -363,7 +369,11 @@ const EVENTS := {
 	"5-7": {"allies": {"units": ["wyldkin_clawwarrior", "wyldkin_clawwarrior", "wyldkin_direwolf", "wyldkin_direwolf"], "line": "Sétimo: \"The wolves remember who freed them.\""},
 		"waves": [{"at": 180, "team": 1, "units": ["sunspear_legion", "sunspear_legion", "sunspear_charioteer"], "line": "The Dominion's last legion comes up the road."},
 			{"at": 360, "team": 2, "units": ["hollow_skeleton", "hollow_skeleton", "hollow_skeleton", "hollow_wraith", "hollow_wraith"], "line": "The Compaña: \"Remember us... remember us...\""},
-			{"at": 480, "team": 3, "units": ["vorthak_rift_blade", "vorthak_rift_blade", "vorthak_veil_warlock"], "line": "The Glass Choir sings from the ruins of Furna."}]},
+			{"at": 480, "team": 3, "units": ["vorthak_rift_blade", "vorthak_rift_blade", "vorthak_veil_warlock"], "line": "The Glass Choir sings from the ruins of Furna."},
+			# (Salto is wide ground: three more waves keep the spring under siege.)
+			{"at": 100, "team": 2, "units": ["hollow_skeleton", "hollow_skeleton", "hollow_skeleton", "hollow_bonearcher", "hollow_bonearcher"], "line": "Candles on the north road. The procession has come early."},
+			{"at": 270, "team": 3, "units": ["vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_ash_thrall", "vorthak_gloom_hound", "vorthak_gloom_hound"], "line": "The kennels of Furna are open."},
+			{"at": 420, "team": 1, "units": ["sunspear_phalanx", "sunspear_phalanx", "sunspear_legion", "sunspear_legion", "sunspear_bowman", "sunspear_bowman"], "line": "A legate: \"For the Regent. One last time.\""}]},
 }
 
 ## A relic from each side road, given the first time it is won. Items use

@@ -1276,6 +1276,11 @@ Last updated: 2026-10-08. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 171 (done): the last two chapters move to hand-built maps; all 44 now play on them**
+  - **The problem from plan 157:** the hold-out chapters 2-6 and 5-7 lost a third to a half of their pressure on big ground, measured as units the stand-in player loses before the clock runs out.
+  - **Fix:** more scripted enemy waves, each with a line of its own. 2-6 "Rising Water" plays on the Grove of Seven Fountains with both enemies seated in the near corners and four waves (it had one). 5-7 "The Seventy-Seventh Oath" plays on Salto in ashes, round the Spring of Seven Mouths where the briefing sets it, with six waves (it had three). Waves enter within 190 m of the player's base (plan 157).
+  - **Measured, four runs each:** 2-6 lost 48, 47, 46 and 29 units (small map: 54 and 53; big map before: about 33). 5-7 lost 55, 38, 57 and 35 (small map: 61 and 62; before: about 32). Not quite the small-map pressure, but most of it, and on the ground the story names. The stand-in held out every time, as it did on the small maps.
+  - Thornwild and Hollowspan stay as skirmish maps. 92 regression checks pass.
 - **Plan 170 (done): the final numbers checked on the small maps; the Lioraen bonus is kept, knowingly uneven**
   - **Regression on the final state:** 91 checks pass.
   - **Lioraen Concord on the six small maps, 36 matches each, today's build:** no bonus 20-16 (56%); +5% damage 22-11 (67%). On the big maps: no bonus 10-25 over the 180-match pool (29%); +6% 15-20 (43%); +5% 9-8 in the one confirmation run.

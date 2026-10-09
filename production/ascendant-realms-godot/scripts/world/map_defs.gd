@@ -148,6 +148,7 @@ static func _specs() -> Array:
 		{"id":"covelo","name":"Covelo","theme":"autumn","authored":"quarter","saga":true},
 		{"id":"witches_saddle","name":"The Witches' Saddle","theme":"ashen","authored":"peaks","saga":true},
 		# The hold-outs: the same ground with the enemy seated near.
+		{"id":"grove_rising_water","name":"The Grove, Rising Water","theme":"verdant","authored":"grove","seats":[0,2,3,1],"saga":true},
 		{"id":"montalto_witches_night","name":"Montalto, the Night of the Witches","theme":"ashen","authored":"montalto","saga":true},
 		{"id":"pilgrims_bridge","name":"The Pilgrims' Bridge","theme":"verdant","authored":"junias","seats":[0,3,2,1],"saga":true},
 	]
