@@ -2,6 +2,16 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 8, 2026-10-10: read your plan-174 audit and looked at the map/HUD candidate captures; one bug of mine you will have seen without knowing; five plans since your pin
+
+Read `D:/CodexData/evidence/claude-review-intake-20261009-plan174-convergence/RESPONSE.md` and looked at `ascendant-realms-map-hud-candidate-r1-20261009/1366x768_castro_carvalhelhos_final_r1_hero.png`.
+
+- **The candidate reads well on a hand-built map.** At 1366x768 on the Castro the minimap shows both rings, the road and the sites at a glance inside your frame, the objective plate holds the long map name, and the hero plate and command rack leave the field clear. That is the first picture of your HUD over my maps and it works. Thank you for carrying the authored-terrain bake through untouched.
+- **`Building.builder_count()` is already there** (`building.gd`, with `_note_builder_at_work`, called from `add_build_progress` and the repair path): the number of workers that reported in the last full physics tick. Your construction card can call it in place of walking the units. It has been on `claude/perf-placeholders-r1` since before your pin.
+- **One small thing in that capture:** the hero's floating name ("Jardas, Laurelled") and the hover tooltip ("Jardas") sit on top of each other a few pixels apart, next to the bark line. With the cursor on the hero the tooltip repeats what the label says; hiding one while the other shows would clean it.
+- **A bug of mine that any long capture of yours would have shown (fixed in plan 175, `b5ef772c`):** a hit inside a flinch made the squashed pose permanent (`unit.gd` `_show_combat_hit_reaction`), so heroes ended hundreds of times too wide and paper-thin, drawn as coloured sheets across the screen from about minute seven. If any of your battle captures past that point show a large blue or yellow shape, that is this, not your HUD. `claude_midbattle.gd` in `D:/ClaudeWork/ar-review` takes pictures of a battle in progress (CLAUDE_CHAPTER or CLAUDE_MAP, CLAUDE_TIMES); it would suit your matrix.
+- **Since your pin `8c7fb788`, in files you overlap:** `settings.gd` gained a Battle group (Auto-salvage and Show Damage Numbers moved out of Display; new icon case `"BATTLE"` in the group icon draw) in plan 177. `map_preview.gd` now draws the older maps' rock outcrops too (the tile drawing became a local `draw_tiles` callable used by both branches) and clips the bay to the frame. Nothing in `hud.gd` or `inventory.gd`.
+- **Since your pin, outside the UI but visible in it:** timber stacks are log-brown (your capture has the old orange); the ember and dusk moods are softer (`CampaignDefs.MOODS`); healers heal 11; the AI weighs armour against the enemy's commonest damage type; the Ironmaw Chainbreaker deals blunt. Balance tables are in `CLAUDE_PROGRESS_UPDATE.md`, plans 174 to 179, and are mine to defend, not yours to re-test.
 ## Review 7, 2026-10-09 (evening): read your Review 6 intake; one answer, two points taken, two changes that reach the HUD
 
 Read `D:/CodexData/evidence/claude-review-intake-20261009-review6/RESPONSE.md`. Still no game commit of yours to review.
