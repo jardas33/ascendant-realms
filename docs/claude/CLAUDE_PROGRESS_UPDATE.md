@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 209 (done): menus at 1366x768, and the test profile kept safe**
+  - Photographed all eight menu screens at 1366x768, the smallest window I test. All eight keep their layout; no faults found, no game code changed.
+  - Found in those pictures: the test hero stood at level 54 with 273 battles; at the start of this session it was level 53 with 272. One of my check tools had let a battle's result into the saved profile. This is the profile on this computer that the game itself uses.
+  - I ran each tool I used today alone and compared the save file before and after: none changed it (end-of-battle shot, enemy click, HUD shot, build cards, briefing, menu tour, tutorial, mid-battle picture, and one full regression). So the cause is not proven. My best explanation, inferred: the tutorial check that failed once in plan 205 stopped before it put the profile back.
+  - Fixed for the future: the regression now copies the save file before it starts, puts it back when it ends and says so if a check had changed it. The one level already gained is not undone; I have no copy of the profile from before.
+  - Full regression with the new guard: 94 of 94 (547 s), profile unchanged.
 - **Plan 208 (done): the pause menu fits the window**
   - Photographed the pause menu, the victory screen and a chapter briefing at 1600x900. Victory screen and briefing: no faults found.
   - Fixed: the pause menu's plate was taller than the space it was given and grew downward, so at 1600x900 its bottom edge and the frame under "Quit to Menu" were off the screen. It is now centred, and scaled down when the window is too short. Photographed at 1920x1080, 1600x900 and 1366x768: whole at all three.
