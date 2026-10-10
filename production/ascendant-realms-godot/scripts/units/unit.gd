@@ -208,6 +208,14 @@ var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
 var _r15_lethal_cue_time := 0.0
 var _combat_reaction_tween: Tween
+## The model's size and lean when it is not flinching. A second hit inside
+## the quarter second of a flinch used to take the squashed, tilted pose it
+## found as the pose to return to, so every such hit left the model 12%
+## wider and 12% shorter for good. A hero, hit hundreds of times in a
+## battle, ended four hundred times too wide and thin as paper, drawn
+## across the whole screen.
+var _reaction_settled_scale := Vector3.ONE
+var _reaction_settled_rotation_z := 0.0
 var _production_arrival_tween: Tween
 var _attack_settled := false
 var _attack_target_anchor := Vector3.ZERO
@@ -1687,10 +1695,14 @@ func _show_combat_hit_reaction(from) -> void:
 	# navigation, collision, timing, and combat outcome remain untouched.
 	if is_dead or not is_instance_valid(model_root):
 		return
-	if is_instance_valid(_combat_reaction_tween):
+	if is_instance_valid(_combat_reaction_tween) and _combat_reaction_tween.is_running():
+		# Mid-flinch: the pose to return to is the one already remembered.
 		_combat_reaction_tween.kill()
-	var settled_scale := model_root.scale
-	var settled_rotation_z := model_root.rotation.z
+	else:
+		_reaction_settled_scale = model_root.scale
+		_reaction_settled_rotation_z = model_root.rotation.z
+	var settled_scale := _reaction_settled_scale
+	var settled_rotation_z := _reaction_settled_rotation_z
 	var source_unit = from if from is Unit and is_instance_valid(from) else from.get("source_unit", null) if from is Dictionary and is_instance_valid(from.get("source_unit", null)) else null
 	var incoming := Vector3.ZERO
 	if is_instance_valid(source_unit):
@@ -1706,6 +1718,16 @@ func _show_combat_hit_reaction(from) -> void:
 	_combat_reaction_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_combat_reaction_tween.tween_property(model_root, "scale", settled_scale, COMBAT_HIT_REACTION_DURATION)
 	_combat_reaction_tween.tween_property(model_root, "rotation:z", settled_rotation_z, COMBAT_HIT_REACTION_DURATION)
+
+## Ends a flinch at once and puts the model back to its settled size and
+## lean. For anything else that is about to read or animate the model's
+## size (the Avatar power): a size read in mid-flinch is not the real one.
+func settle_presentation() -> void:
+	if is_instance_valid(_combat_reaction_tween) and _combat_reaction_tween.is_running():
+		_combat_reaction_tween.kill()
+		if is_instance_valid(model_root):
+			model_root.scale = _reaction_settled_scale
+			model_root.rotation.z = _reaction_settled_rotation_z
 
 ## Research bonuses already folded into this unit, so each refresh applies
 ## only the difference.

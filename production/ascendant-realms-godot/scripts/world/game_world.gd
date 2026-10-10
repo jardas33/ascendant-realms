@@ -1258,6 +1258,12 @@ func _build_walls() -> void:
 	stone.uv1_triplanar = true
 	stone.uv1_scale = Vector3(0.16, 0.16, 0.16)
 	stone.vertex_color_use_as_albedo = true
+	# On a field under snow the snow lies on the walls too: a white cap on
+	# the walk, the parapets and the towers.
+	var snowed := str(map.get("theme", "")) == "snow"
+	var snow := StandardMaterial3D.new()
+	snow.albedo_color = Color(0.90, 0.93, 0.98)
+	snow.roughness = 0.85
 	for wall in walls:
 		var samples: PackedVector2Array = wall["samples"]
 		if samples.size() < 2:
@@ -1266,6 +1272,18 @@ func _build_walls() -> void:
 		var top: float = float(wall["height"])
 		var tool := SurfaceTool.new()
 		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var caps := SurfaceTool.new()
+		caps.begin(Mesh.PRIMITIVE_TRIANGLES)
+		# A flat sheet of snow between two points, `wide` either side, at `high`.
+		var cap := func(from: Vector2, to: Vector2, wide: float, high: float) -> void:
+			if not snowed:
+				return
+			var along := (to - from).normalized()
+			var across := Vector2(-along.y, along.x)
+			var sheet: Array = [from - across * wide, from + across * wide, to + across * wide, to - across * wide]
+			for index in [0, 2, 1, 0, 3, 2]:
+				caps.set_normal(Vector3.UP)
+				caps.add_vertex(Vector3(sheet[index].x, high + 0.05, sheet[index].y))
 		# A box between two points across the wall's line, `wide` either side
 		# of it at the foot and `wide_top` at the head, from `low` to `high`.
 		var block := func(from: Vector2, to: Vector2, wide: float, wide_top: float, low: float, high: float, tint: Color) -> void:
@@ -1293,9 +1311,11 @@ func _build_walls() -> void:
 			var across := Vector2(-along.y, along.x)
 			# The body, and the walk along its top between two parapets.
 			block.call(from, to, half, half - 0.9, 0.0, top, pale)
+			cap.call(from, to, half - 1.7, top)
 			for side in [-1.0, 1.0]:
 				var edge: Vector2 = across * (half - 1.3) * side
 				block.call(from + edge, to + edge, 0.4, 0.4, top, top + 1.1, Color(0.94, 0.93, 0.90))
+				cap.call(from + edge, to + edge, 0.4, top + 1.1)
 			# A buttress on both faces every twelve metres or so.
 			walked += from.distance_to(to)
 			if walked >= 12.0:
@@ -1308,9 +1328,11 @@ func _build_walls() -> void:
 			var at: Vector2 = samples[end]
 			var facing: Vector2 = (samples[1] - samples[0]).normalized() if end == 0 else (samples[samples.size() - 1] - samples[samples.size() - 2]).normalized()
 			block.call(at - facing * (half + 1.0), at + facing * (half + 1.0), half + 1.0, half + 0.4, 0.0, top + 3.2, Color(0.96, 0.95, 0.92))
+			cap.call(at - facing * (half + 0.4), at + facing * (half + 0.4), half + 0.4, top + 3.2)
 			for merlon in 4:
 				var corner_at: Vector2 = at + facing * (half * 0.7) * (1.0 if merlon < 2 else -1.0) + Vector2(-facing.y, facing.x) * (half * 0.7) * (1.0 if merlon % 2 == 0 else -1.0)
 				block.call(corner_at - facing * 1.0, corner_at + facing * 1.0, 1.0, 1.0, top + 3.2, top + 4.5, Color(0.92, 0.91, 0.88))
+				cap.call(corner_at - facing * 1.0, corner_at + facing * 1.0, 1.0, top + 4.5)
 		tool.generate_normals()
 		var drawn := MeshInstance3D.new()
 		drawn.name = "Wall"
@@ -1318,6 +1340,13 @@ func _build_walls() -> void:
 		drawn.material_override = stone
 		drawn.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		layer.add_child(drawn)
+		if snowed:
+			var capped := MeshInstance3D.new()
+			capped.name = "WallSnow"
+			capped.mesh = caps.commit()
+			capped.material_override = snow
+			capped.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			layer.add_child(capped)
 
 ## A river: a ribbon of moving water along its course over a darker bed,
 ## wider than the water so the banks show. It runs on through the fords,
@@ -6131,25 +6160,40 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 						u.apply_root(4.0)
 			spawn_ring_fx(target_pos, Color(0.4, 0.8, 0.4), ab.get("range", 16.0))
 		"avatar":
-			hero.max_hp *= 1.5
+			# One Avatar at a time. Cast again while it lasts and it is only
+			# renewed: the bonuses used to stack with each cast.
+			var avatar_serial: int = (int(hero.get_meta("avatar_serial")) if hero.has_meta("avatar_serial") else 0) + 1
+			hero.set_meta("avatar_serial", avatar_serial)
+			if not (hero.has_meta("avatar_on") and bool(hero.get_meta("avatar_on"))):
+				hero.set_meta("avatar_on", true)
+				hero.max_hp *= 1.5
+				hero.base_dmg *= 1.6
+				if hero.model_root:
+					# The size to come back to, read while the model is not
+					# flinching from a hit (a flinch squashes it for a moment).
+					hero.settle_presentation()
+					hero.set_meta("avatar_scale", hero.model_root.scale)
+					var t := create_tween()
+					t.tween_property(hero.model_root, "scale", hero.model_root.scale * 1.4, 0.4)
 			hero.hp = hero.max_hp
-			hero.base_dmg *= 1.6
-			if hero.model_root:
-				var t := create_tween()
-				t.tween_property(hero.model_root, "scale", hero.model_root.scale * 1.4, 0.4)
 			spawn_ring_fx(hero.global_position, Color(1, 0.5, 0.9), 6.0)
 			CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.55, 0.95), 2.0)
 			emit_signal("camera_shake", 0.5, hero.global_position)
 			var avatar_id: int = hero.get_instance_id()
 			get_tree().create_timer(12.0).timeout.connect(func():
 				var hero_now = instance_from_id(avatar_id)
-				if is_instance_valid(hero_now) and not hero_now.is_dead:
-					hero_now.max_hp /= 1.5
-					hero_now.hp = min(hero_now.hp, hero_now.max_hp)
-					hero_now.base_dmg /= 1.6
-					if hero_now.model_root:
-						var t2 = hero_now.create_tween()
-						t2.tween_property(hero_now.model_root, "scale", hero_now.model_root.scale / 1.4, 0.4)
+				if not is_instance_valid(hero_now) or hero_now.is_dead:
+					return
+				if not hero_now.has_meta("avatar_serial") or int(hero_now.get_meta("avatar_serial")) != avatar_serial:
+					return
+				hero_now.set_meta("avatar_on", false)
+				hero_now.max_hp /= 1.5
+				hero_now.hp = min(hero_now.hp, hero_now.max_hp)
+				hero_now.base_dmg /= 1.6
+				if hero_now.model_root and hero_now.has_meta("avatar_scale"):
+					hero_now.settle_presentation()
+					var t2 = hero_now.create_tween()
+					t2.tween_property(hero_now.model_root, "scale", hero_now.get_meta("avatar_scale"), 0.4)
 			)
 
 ## The ten signature spells, one per people (SkillDefs.SIGNATURE). Each
