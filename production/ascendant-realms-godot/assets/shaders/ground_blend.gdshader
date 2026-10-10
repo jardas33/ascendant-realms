@@ -62,6 +62,11 @@ uniform float relief_scale = 0.018;
 // beyond it is drawn darker and greyer: it looked as walkable as the field,
 // and an army sent there stopped at a line nobody could see.
 uniform float field_half = 0.0;
+// The seats (x, z). Round each the ground keeps its light even past the
+// edge: on maps whose seats stand at the edge, the cottages behind a keep
+// are beyond it, and the shade ran through the player's own village.
+uniform vec2 field_seats[6];
+uniform int field_seat_count = 0;
 // Faction ground: scorched ash yards around Vorthak holdfasts. xy = centre,
 // z = radius, w = strength. Blended in the ground itself so the edge is a
 // noisy burn fade, not a pasted decal.
@@ -335,6 +340,9 @@ void fragment() {
 	if (field_half > 0.0) {
 		float past = max(abs(wxz.x), abs(wxz.y)) - field_half + (fbm(wxz * 0.11 + 5.0) - 0.5) * 3.0;
 		float beyond = smoothstep(0.0, 8.0, past);
+		for (int i = 0; i < field_seat_count; i++) {
+			beyond *= smoothstep(40.0, 58.0, distance(wxz, field_seats[i]));
+		}
 		ALBEDO = mix(ALBEDO, mix(ALBEDO, vec3(dot(ALBEDO, vec3(0.299, 0.587, 0.114))), 0.4) * 0.64, beyond);
 	}
 	ALBEDO *= 1.0 - cloud_shadow_strength * cloud_shadow(wxz, TIME);

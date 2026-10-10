@@ -2532,7 +2532,7 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	# Beyond the edge of the battlefield the ground is drawn in shade (see
 	# `field_half` in the ground shader), and what stands there with it.
 	var field_edge: float = float(map.get("size", MapDefs.MAP_SIZE))
-	if absf(pos.x) > field_edge or absf(pos.z) > field_edge:
+	if (absf(pos.x) > field_edge or absf(pos.z) > field_edge) and not _near_any_start(pos, map.get("start_positions", []), 50.0):
 		leaf_tone = Color(leaf_tone.r * 0.7, leaf_tone.g * 0.7, leaf_tone.b * 0.7)
 	_prep_decor(inst, leaf_tone, h if is_tree else (-h if toned_rock else 0.0))
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
