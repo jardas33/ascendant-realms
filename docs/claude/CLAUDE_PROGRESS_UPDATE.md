@@ -1276,6 +1276,9 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 202 (done): oaks of dry country are dry**
+  - On sand and badlands maps the oaks were as green as on a meadow. They are now a dry olive-brown, lone ones and woods alike. Pines keep their dark green: the tone can only darken a picture, and theirs is green through and through. Pictures of the Dune Sea Bastion and the Kaelmoor Badlands checked.
+  - **Checked:** the quick regression set passes (two colour values changed; the full set passed on the plan before).
 - **Plan 201 (done): sand and badlands maps looked over; a fault in my own edge shade fixed**
   - **Looked at:** the Dune Sea Bastion (sand) and the Kaelmoor Badlands, at a base, in open ground and at a corner. Ground, boulders (now sand- and clay-toned), woods and the mountain foot all sit together.
   - **The fault:** on maps whose seats stand at the edge of the field (the Dune Sea Bastion is one), the cottages behind a keep are past the edge, and the shade I added in plan 197 ran through the player's own village. The ground now keeps its light round every seat, and the shade bows out round the village.

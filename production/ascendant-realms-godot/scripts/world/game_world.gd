@@ -1012,8 +1012,8 @@ func _scorched_tone(what: String) -> Color:
 		"ashen": {"rock": Color(0.62, 0.56, 0.62), "turf": Color(0.27, 0.255, 0.28), "tree": Color(0.52, 0.48, 0.50)},
 		# Under snow: cold rock with the moss greyed, white hills, frosted trees.
 		# Sand country: pale rock, dunes for hills, dry scrub for trees.
-		"desert": {"rock": Color(1.0, 0.84, 0.62), "turf": Color(0.30, 0.25, 0.16), "tree": Color(0.78, 0.72, 0.42)},
-		"badlands": {"rock": Color(0.96, 0.64, 0.46), "turf": Color(0.34, 0.23, 0.17), "tree": Color(0.72, 0.60, 0.38)},
+		"desert": {"rock": Color(1.0, 0.84, 0.62), "turf": Color(0.30, 0.25, 0.16), "tree": Color(0.92, 0.64, 0.30)},
+		"badlands": {"rock": Color(0.96, 0.64, 0.46), "turf": Color(0.34, 0.23, 0.17), "tree": Color(0.86, 0.54, 0.30)},
 		"snow": {"rock": Color(0.78, 0.80, 1.0), "turf": Color(0.35, 0.36, 0.385), "tree": Color(0.60, 0.76, 0.74)},
 	}
 	var theme_name := str(map.get("theme", "highland"))
