@@ -1276,6 +1276,14 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 185 (done): the computer no longer over-trains healers. The most even table so far: all ten peoples between 40% and 66%**
+  - **Careto Host on the small maps first:** six traced matches there went three wins, two losses and one undecided, and showed nothing wrong with them. I changed nothing for them.
+  - **What the traces did show:** an Aurean AI marching with 11 Sun Priests in an army of 36. Three peoples' halls train a healer and nothing else, so the computer went on training healers for as long as there was gold. An army that is a third healers cannot kill anything.
+  - **Change:** the computer keeps no more than one healer to every three other soldiers (counting those already ordered), the same kind of rule it has for siege engines.
+  - **Measured, 180 matches on that build (36 each, both kinds of map):** Barrosan Clans 23-12, Careto Host 18-15, Lioraen Concord 18-16, Vorthak Cabal 18-17, The Compaña 17-18, Aurean Dominion 17-19, Moura Court 17-19, Wolfveil Clans 16-18, Ironmaw Horde 15-18, Granitborn 14-21. Nine peoples between 40% and 55%. The Barrosan 66% does not repeat (54%, 48% and 53% in the three runs before), so I leave it.
+  - **Where today's work leaves the balance:** this morning's first run had the small maps running from 4-14 to 13-5 and the Lioraen at 29% on big maps. Now nobody is below 40% or, over the last four runs together, above 60%.
+  - **Timber vein sites** take the same log-brown as timber piles (they had kept the old orange).
+  - **Checked:** 94 regression checks pass.
 - **Plan 184 (done): the Careto Host level on the big maps (12-22 to 17-17); still low on the small ones**
   - **First try, refuted:** 20% more damage in place of 15%. 72 matches: 24-43, no better than before. Taken out again.
   - **What they lacked** was what the Ironmaw lacked before plan 179: nothing below the third age that is strong against heavy armour, now that the computer armours up against swords and arrows. The Wild Careto, their second-age fighter, lays about him with a staff and iron bells; his blows now count as blunt. His description says so.

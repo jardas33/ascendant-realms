@@ -1440,6 +1440,25 @@ func _choose_unit(choices: Array) -> String:
 			for item in b.queue:
 				if String(item.get("kind", "")) == "unit" and String(GameData.get_unit(String(item.get("id", ""))).get("role", "")) == "siege":
 					engines_now += 1
+	# Healers the same way: one to every three other soldiers is a field
+	# hospital; more is an army that cannot kill. A hall that trains nothing
+	# but healers (the Aurean temple, the Moura and Wolfveil halls) went on
+	# training them for as long as there was gold, and an Aurean AI marched
+	# with 11 Sun Priests among 36.
+	var healers_now := 0
+	for u in commander.units:
+		if is_instance_valid(u) and not u.is_dead and not u.is_hero and float(u.def.get("heal", 0.0)) > 0.0:
+			healers_now += 1
+	for b in commander.buildings:
+		if is_instance_valid(b) and not b.is_dead:
+			for item in b.queue:
+				if String(item.get("kind", "")) == "unit" and float(GameData.get_unit(String(item.get("id", ""))).get("heal", 0.0)) > 0.0:
+					healers_now += 1
+	if healers_now >= 2 and healers_now * 4 >= soldiers_now:
+		var no_healers := legal.filter(func(c): return float(GameData.get_unit(c).get("heal", 0.0)) <= 0.0)
+		if no_healers.is_empty():
+			return ""
+		legal = no_healers
 	if engines_now >= 4 or (engines_now >= 2 and engines_now * 5 > soldiers_now):
 		var no_engines := legal.filter(func(c): return String(GameData.get_unit(c).get("role", "")) != "siege")
 		if no_engines.is_empty():
