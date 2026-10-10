@@ -557,8 +557,11 @@ func _apply_race_passive() -> void:
 			# were first by a distance in three runs of 180 (25-10, 27-9 and,
 			# with this change already in, 24-11 under an AI that has since
 			# been corrected). No damage bonus, and +0.5 reach (was +1.5).
-			if atk_range > 0.0:
-				atk_range += 0.5
+			# Plan 181: with the Silver Colossus brought into line they
+			# were level on the hand-built maps (16-19) and still 24-11 on
+			# the small ones, where reach counts for more. No extra reach:
+			# 19-16 there. Their keener sight is what is left, and their
+			# Longbows already outrange every other people's archers by one.
 		"karak":                          # Stone Resolve — armored and hardy
 			# 2 wins in the plan 34 round robin: a touch more bite.
 			base_armor += 1.0
