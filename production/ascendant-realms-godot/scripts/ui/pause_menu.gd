@@ -9,6 +9,25 @@ var _panel: PanelContainer
 var _resume_button: Button
 var _music_button: Button
 var _quit_button: Button
+var _crest: Control
+
+## The plate is taller than its 600 px design; it grew downward from a fixed
+## top and ran off the bottom of a 900 px window. Centre it under its crest,
+## and scale both down when the window is too short for it.
+func _fit() -> void:
+	if not is_instance_valid(_panel) or not is_instance_valid(_crest) or size.y <= 0.0:
+		return
+	var need := _panel.get_combined_minimum_size().y
+	var crest_rise := 48.0
+	var k := minf(1.0, (size.y - 20.0) / (need + crest_rise))
+	_panel.pivot_offset = Vector2.ZERO
+	_panel.scale = Vector2(k, k)
+	_panel.size = Vector2(740.0, need)
+	_panel.position = Vector2((size.x - 740.0 * k) * 0.5, (size.y - (need + crest_rise) * k) * 0.5 + crest_rise * k)
+	_crest.pivot_offset = Vector2.ZERO
+	_crest.scale = Vector2(k, k)
+	_crest.size = Vector2(64.0, 74.0)
+	_crest.position = Vector2((size.x - 64.0 * k) * 0.5, _panel.position.y - crest_rise * k)
 
 func setup() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -55,6 +74,8 @@ func setup() -> void:
 	crest.offset_top = -348.0
 	crest.offset_bottom = -274.0
 	add_child(crest)
+	_crest = crest
+	resized.connect(_fit)
 
 	var col: Color = GameData.RACES.get(race_id, {}).get("color", Color(0.7, 0.6, 0.4))
 	crest.draw.connect(func():
@@ -254,6 +275,9 @@ func set_shown(s: bool) -> void:
 	visible = s
 	_update_chapter_line()
 	_update_battle_so_far()
+	if s:
+		# After the lines above have their text, so the height is the real one.
+		_fit.call_deferred()
 
 var _subtitle: Label
 

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 208 (done): the pause menu fits the window**
+  - Photographed the pause menu, the victory screen and a chapter briefing at 1600x900. Victory screen and briefing: no faults found.
+  - Fixed: the pause menu's plate was taller than the space it was given and grew downward, so at 1600x900 its bottom edge and the frame under "Quit to Menu" were off the screen. It is now centred, and scaled down when the window is too short. Photographed at 1920x1080, 1600x900 and 1366x768: whole at all three.
+  - Full regression: 94 of 94 (548 s).
 - **Plan 207 (done): clicked enemies show their whole name**
   - Photographed the panel after clicking an enemy hero, soldier, worker and hall. The new backdrop of plan 206 shows for all four. An enemy shows health and kind only; no orders, queue or stats (checked in the pictures).
   - Fixed: every enemy's name was cut to its first word ("HOSTILE · Silver ...") because of the word HOSTILE in front. The prefix is gone; the red name, the red badge and the line "Hostile · Infantry" under the health still say it.
