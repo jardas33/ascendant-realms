@@ -343,10 +343,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 90, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "sylvan_bladehall",
 		"desc": "A blur of silver that crosses a battlefield like water.",
 	},
+	# 265 health and 31 damage (was 310 and 35, against 245 to 255 and 30
+	# for every other people's tier-three fighter). The Moura Court were
+	# first in five balance runs of six, 17-1 on the small maps in the last
+	# (plan 180).
 	"sylvan_silver_colossus": {
 		"race": "sylvan", "name": "Silver Colossus", "role": "antiarmor", "tier": 3,
 		"model": _char("barrosan_anvil_breaker"), "height": 2.2,
-		"hp": 310, "dmg": 35, "dmg_type": "arcane", "armor_class": "heavy", "armor": 4,
+		"hp": 265, "dmg": 31, "dmg_type": "arcane", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.7, "speed": 2.7, "vision": 22.0,
 		"cost": {"food": 110, "stone": 40, "gold": 50}, "build_time": 28, "pop": 3, "produced_by": "sylvan_bladehall",
 		"desc": "A Moura's guardian woken from a silver-veined rock. It walks slowly and never forgets an insult.",
