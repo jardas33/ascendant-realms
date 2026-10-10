@@ -296,7 +296,7 @@ func _fit_to_viewport() -> void:
 			# activity line; workers keep their more compact economy dossier.
 			requested_selection_height = 244.0 if _tracked_single.is_hero else (210.0 if _tracked_single.is_worker else 224.0)
 		elif _tracked_single is Building:
-			requested_selection_height = 196.0 if not _tracked_single.is_built else 176.0
+			requested_selection_height = 196.0 if not _tracked_single.is_built else 190.0
 	# Give the selected entity and two-column command deck enough room to be read
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
@@ -915,6 +915,12 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		glyph_plate.position = Vector2(4, 4) if featured_ability else Vector2(6, 6 if not painted_emblem and not field_order_art else 4)
 		glyph_plate.size = Vector2(68, 68) if featured_ability else (Vector2(52, 52) if painted_emblem else (Vector2(44, 44) if field_order_art else Vector2(38, 38)))
 		glyph_plate.custom_minimum_size = glyph_plate.size
+		# In a train or research list a row without painted art keeps its small
+		# glyph, centred in the slot the painted rows use, so every title in the
+		# list starts on the same line.
+		var list_row_plain := command_kind in ["TRAIN", "RESEARCH"] and not painted_emblem
+		if list_row_plain:
+			glyph_plate.position = Vector2(11, 11)
 		glyph_plate.add_theme_stylebox_override("panel", _command_icon_stylebox(accent, ability_card))
 		if not unit_art_definition.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var unit_art: Control = load(ENTITY_PORTRAIT_SCRIPT).new()
@@ -936,7 +942,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 			glyph_plate.add_child(glyph)
 		btn.add_child(glyph_plate)
 		var text_col := VBoxContainer.new()
-		text_col.position = Vector2(82, 8) if featured_ability else (Vector2(65, 6) if painted_emblem else (Vector2(55, 6) if field_order_art else Vector2(50, 6)))
+		text_col.position = Vector2(82, 8) if featured_ability else (Vector2(65, 6) if painted_emblem or list_row_plain else (Vector2(55, 6) if field_order_art else Vector2(50, 6)))
 		var text_height := card_height - 10
 		var text_width := 288 if command_kind in ["TRAIN", "RESEARCH"] else (230 if ability_card else 112)
 		text_col.size = Vector2(text_width, text_height)
@@ -2808,7 +2814,8 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	# The building dossier is a compact partner to the action deck. Giving it a
 	# hero-sized height leaves a large blank slab over the battlefield.
 	if is_instance_valid(_sel_panel):
-		_sel_panel.custom_minimum_size.y = 196.0 if not b.is_built else 176.0
+		# 190: the queue line under the status ("Idle") was cut by the frame at 176.
+		_sel_panel.custom_minimum_size.y = 196.0 if not b.is_built else 190.0
 	if not read_only and b.has_signal("construction_completed"):
 		b.construction_completed.connect(_on_tracked_building_construction_completed)
 		_watched_construction_building = b
@@ -3008,7 +3015,7 @@ func _refresh_queue() -> void:
 	# Queue slots need a taller dossier than the idle building. Resize only on a
 	# state transition so frequent production ticks do not relayout the HUD.
 	if is_instance_valid(_sel_panel):
-		var queue_height := 220.0 if not b.queue.is_empty() else 176.0
+		var queue_height := 220.0 if not b.queue.is_empty() else 190.0
 		if not is_equal_approx(_sel_panel.custom_minimum_size.y, queue_height):
 			_sel_panel.custom_minimum_size.y = queue_height
 			call_deferred("_fit_to_viewport")

@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 204 (done): the in-match HUD at three window shapes**
+  - Photographed a battle at 1920x823 (wide), 1440x1080 (4:3) and 1280x720, with nothing selected, with five units selected and with the hall selected. The bars, the minimap, the objective plate and both panels keep their places and overlap nothing at all three shapes.
+  - Fixed: with a hall selected, the small "Idle" line under its status was cut by the panel frame; the panel is 14 px taller.
+  - Fixed: in the hall's research list, rows without painted art (Sharpened Tools, Wider Baskets) started their titles further left than the rows with art; all titles now start on one line.
+  - Full regression: 94 of 94 (613 s).
+  - Found, for plan 205: for the Careto Host the build cards show a cropped fragment of each building (a piece of roof or cloth), and three cards show what looks like the same tower. I have not yet checked the other peoples.
 - **Plan 203 (done): every menu screen, page by page**
   - Photographed all eight menu screens at 1600x900 and read each one. Main menu, war chest, settings, skirmish setup and hero creation: no faults found.
   - Saga map: the line under the title (hero, level, jars) was in small capitals under a heavy outline and hard to read; it is now in the plain body face. The names on sealed chapters were dark grey on mid grey; the ribbon is lighter and the ink darker.
