@@ -1276,6 +1276,11 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 183 (done): the whole table confirmed on the build of plan 182. Nine peoples between 37% and 56%**
+  - **180 matches, every pairing both ways, six hand-built maps and six old ones:** Wolfveil Clans 25-11, Moura Court 20-16, Ironmaw Horde 19-16, Barrosan Clans 19-16, The Compaña 19-17, Vorthak Cabal 17-18, Aurean Dominion 16-20, Granitborn 16-20, Lioraen Concord 13-21, Careto Host 13-22.
+  - **Read with care.** In a run like this each people plays 36 matches, and I have now seen untouched peoples move by 20 points between two such runs. So I act only on what repeats. Over the last three runs (540 matches) nobody is outside 39% to 63%, and the three that were (Moura Court high, Ironmaw and Compaña low) are the ones fixed in plans 179 to 182 and sit at 53% to 56% here.
+  - **What repeats and is not fixed:** the Careto Host, 37% here and 42% over the three runs. 72 Careto matches with more damage are running (plan 184). The Wolfveil Clans' 69% does not repeat (47% and 53% in the two runs before); left alone. The Lioraen Concord are 38% here but 53% to 62% in their three dedicated runs of 36; left alone and watched.
+  - **For comparison, the table before this session** (plans 165 and 166, big maps): from 29% (Lioraen) to 69% (Granitborn), with the Lioraen 20 points apart between map sizes and healers not healing.
 - **Plan 182 (done): The Compaña level (28-44 to 37-33)**
   - **Why they had fallen:** their gift is that every warrior drains a little life with each blow. Since plan 174 four other peoples have healers that mend in a fight, and a healer out-mends an 11% drain: The Compaña lost 1-7 to the Lioraen Concord and 1-7 to the Wolfveil Clans.
   - **Change:** the drain is 16% (it was 11%).
