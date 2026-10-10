@@ -1276,6 +1276,11 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 191 (done): balance measured again after the outposts moved. All ten peoples between 44% and 62%**
+  - **180 matches on the twelve hand-built maps I measure on** (the build of plan 189): Barrosan Clans 21-13, Wolfveil Clans 19-16, Aurean Dominion 18-16, Moura Court 17-17, Ironmaw Horde 17-17, Careto Host 16-17, Vorthak Cabal 15-17, Granitborn 15-18, Lioraen Concord 15-18, The Compaña 16-20. The narrowest spread of any run so far, so moving the outposts cost nothing.
+  - **One thing now repeats:** the Barrosan Clans, 62% here and 66% in the run before (63% over the two, 360 matches). Everyone else is between 43% and 52% over the two. 72 Barrosan matches with a smaller damage bonus (7%, from 12%) are running; that is plan 192.
+  - **Checked:** 94 regression checks pass on the build of plan 190.
+  - **No game change in this plan.**
 - **Plan 190 (done): the last two maps with uneven outposts**
   - **Salto Valley** (the first map of the saga, and the Ascension variants of it): the side seats' four nearest veins were 335 m away against 407 m for the others, 18% less. Two veins moved: 390 m against 407 m, 4%.
   - **Salto, the Lower Quarter:** 257 m against 340 m, 24% less, the most uneven of all. Four veins moved a little each: 340 m against 340 m.
