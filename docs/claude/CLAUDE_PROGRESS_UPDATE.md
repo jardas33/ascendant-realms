@@ -1276,6 +1276,11 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 190 (done): the last two maps with uneven outposts**
+  - **Salto Valley** (the first map of the saga, and the Ascension variants of it): the side seats' four nearest veins were 335 m away against 407 m for the others, 18% less. Two veins moved: 390 m against 407 m, 4%.
+  - **Salto, the Lower Quarter:** 257 m against 340 m, 24% less, the most uneven of all. Four veins moved a little each: 340 m against 340 m.
+  - **So every hand-built map is now even to within 4%,** except the Junias and the Regent's Canyons at 8% and Montalto, which is built uneven on purpose.
+  - **Checked:** soundness on the three maps; every outpost built by a worker on both layouts; the quick regression set passes. The full set runs with the next plan.
 - **Plan 189 (done): the side seats no longer have nearer outposts (15 maps evened, 2 improved)**
   - **The fault, open since plan 166:** on most hand-built maps the two side seats had their nearest gold and food veins much closer than the two seats on the main diagonal: 304 m of walking against 360 m over the four resources, 16% less. It matters in three- and four-player skirmishes, where two players started with an easier economy.
   - **Change:** those two veins moved outward on every layout that shares them. Fifteen layouts are now even to within 1% (357 m against 360 m). On two (the Monastery of the Junias, the Regent's Canyons) the new food spot lies in a wood, so only the gold moved: 8% apart, from 16%. A blanket move had failed in plan 166 because I moved all four veins; two were enough.
