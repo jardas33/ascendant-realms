@@ -423,8 +423,9 @@ static func _twin_points(points: Array) -> Array:
 ## (Plan 189: on the standard skeleton the side seats' nearest gold and food
 ## veins stood 50 and 64 m from them, against 89 and 98 m for the seats on
 ## the main diagonal: 304 m against 360 m over the four kinds. They are now
-## at (-84, 160) and (-206, 72), 357 m, on every layout where that ground is
-## free.)
+## at (-84, 160) and (-206, 72), 357 m. On the Junias and in the Regent's
+## Canyons a wood stood on that ground; the wood and the vein changed places
+## in plan 194.)
 static func _pair_point(out: Array, kind: String, x: float, z: float) -> void:
 	out.append({"kind": kind, "pos": Vector3(x, 0.0, z)})
 	out.append({"kind": kind, "pos": Vector3(-x, 0.0, -z)})
@@ -1756,7 +1757,7 @@ static func _regents_canyon() -> Dictionary:
 		mesa_seed += 1.9
 	var woods: Array = []
 	var wood_seed := 18.4
-	for wood in [[-30, -142, 16, 12], [-202, 60, 12, 16]]:
+	for wood in [[-30, -142, 16, 12], [-204, 104, 10, 13]]:
 		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
 		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
 		wood_seed += 1.5
@@ -1766,7 +1767,7 @@ static func _regents_canyon() -> Dictionary:
 	_pair_point(veins, "stone", -198, -40)
 	_pair_point(veins, "timber", -130, -200)
 	_pair_point(veins, "gold", -84, 160)
-	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "food", -206, 72)
 	_pair_point(veins, "stone", -60, 196)
 	_pair_point(veins, "timber", -164, 74)
 	_pair_point(veins, "gold", -150, 4)
@@ -2021,7 +2022,7 @@ static func _junias() -> Dictionary:
 		ridges.append({"points": _twin_points(line), "thickness": 10.0})
 	var woods: Array = []
 	var wood_seed := 27.2
-	for wood in [[-198, 66, 10, 14], [-62, -198, 16, 12], [-72, 112, 20, 16]]:
+	for wood in [[-200, 108, 10, 14], [-62, -198, 16, 12], [-72, 112, 20, 16]]:
 		woods.append({"at": Vector2(wood[0], wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed})
 		woods.append({"at": Vector2(-wood[0], -wood[1]), "radii": Vector2(wood[2], wood[3]), "seed": wood_seed + PI})
 		wood_seed += 1.6
@@ -2031,7 +2032,7 @@ static func _junias() -> Dictionary:
 	_pair_point(veins, "stone", -196, -40)
 	_pair_point(veins, "timber", -130, -200)
 	_pair_point(veins, "gold", -84, 160)
-	_pair_point(veins, "food", -200, 100)
+	_pair_point(veins, "food", -206, 72)
 	_pair_point(veins, "stone", -60, 196)
 	_pair_point(veins, "timber", -160, 70)
 	_pair_point(veins, "gold", -70, -42)

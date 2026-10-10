@@ -1,6 +1,6 @@
 # Ascendant Realms: Claude progress update
 
-Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
+Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier entries were stamped 2026-09-29 by mistake; all of this work happened on 2026-09-25 to 27.)
 
 ## Where the work is
 
@@ -1276,6 +1276,11 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 194 (done): snow on the woods and boulders of snow fields; the last two uneven maps evened**
+  - **Woods on the snow maps** stood dark green among white trees: plan 193 had snowed only the lone trees. A wood's trees are now drawn the same way as lone ones on every map, so they carry snow where there is snow, and everywhere they move in the wind and are shaded under the crown. Pictures of the Four Peaks and of Salto Valley checked.
+  - **Lone boulders on the snow maps** kept their bright green moss. Under snow the moss is now grey and snow lies on top of the stone.
+  - **The Junias and the Regent's Canyons** were the last two maps where two seats had nearer outposts than the other two (8% apart). A wood stood where the food vein had to go; the wood and the vein changed places. Both maps are now even (1% and 0%). The only uneven map left is Montalto, which is uneven by design (a siege).
+  - **Checked:** all 94 checks of the full regression pass; both changed maps pass the soundness check, and one worker can raise an outpost on every vein of each.
 - **Plan 193 (done): snow on the trees of snow fields; menus checked at four window shapes**
   - **Trees on the snow maps** were summer green on white ground. Their crowns now carry snow: it lies on whatever faces the sky, heaviest at the top, and the trunks and undersides stay dark. Pictures of the Four Peaks checked.
   - **Settings and the Skirmish page** photographed at 16:9, 16:10, 21:9 and 4:3 after this session's changes to them (a new Battle section, a grouped map picker, two more field-manual entries): everything fits at all four.

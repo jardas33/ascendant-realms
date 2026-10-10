@@ -1859,7 +1859,9 @@ func _build_woods() -> void:
 		ModelUtils.scale_to_height(proto, 1.0)
 		ModelUtils.ground_model(proto)
 		var tone := _scorched_tone("tree")
-		_prep_decor(proto, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(String(path).get_file(), Color.WHITE))
+		# Drawn as trees (wind, a shaded underside, snow on the crown), like the
+		# lone ones: under snow the woods stood green among white trees.
+		_prep_decor(proto, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(String(path).get_file(), Color.WHITE), 8.0)
 		var pieces: Array = []
 		var meshes: Array = proto.find_children("*", "MeshInstance3D", true, false)
 		if proto is MeshInstance3D:
@@ -2518,7 +2520,10 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	var leaf_tone: Color = DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE)
 	if is_tree and _scorched_tone("tree") != Color.WHITE:
 		leaf_tone = _scorched_tone("tree")
-	_prep_decor(inst, leaf_tone, h if is_tree else 0.0)
+	# Under snow a boulder is snowed on too and its moss is greyed (a negative
+	# height asks for the tree material without the wind).
+	var snowed_rock: bool = not is_tree and str(map.get("theme", "")) == "snow"
+	_prep_decor(inst, leaf_tone, h if is_tree else (-h if snowed_rock else 0.0))
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 
@@ -2543,7 +2548,7 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.
 			if mesh.get_surface_override_material(surface) != null:
 				continue
 			var source := mesh.mesh.surface_get_material(surface)
-			var fixed := _foliage_wind_material(source, tint, tree_height) if tree_height > 0.0 else _dielectric_decor_material(source, tint)
+			var fixed := _foliage_wind_material(source, tint, tree_height) if tree_height != 0.0 else _dielectric_decor_material(source, tint)
 			if fixed != source:
 				mesh.set_surface_override_material(surface, fixed)
 	# R14 is presentation-only: mute secondary decoration while preserving its
@@ -2571,8 +2576,9 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	var standard := source as StandardMaterial3D
 	if standard.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
 		return _dielectric_decor_material(source, tint)
-	var band := snappedf(tree_height, 1.0)
-	var key := [standard, tint, band]
+	var still := tree_height < 0.0
+	var band := maxf(snappedf(absf(tree_height), 1.0), 1.0)
+	var key := [standard, tint, band, still]
 	if _decor_material_cache.has(key):
 		return _decor_material_cache[key]
 	var m := ShaderMaterial.new()
@@ -2587,6 +2593,10 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	# Under snow the crowns carry it (the material cache is rebuilt for each
 	# battle, so one field's snow does not follow into the next).
 	m.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
+	if still:
+		m.set_shader_parameter("sway", 0.0)
+		m.set_shader_parameter("flutter", 0.0)
+		m.set_shader_parameter("leafless", 1.0)
 	_decor_material_cache[key] = m
 	return m
 
