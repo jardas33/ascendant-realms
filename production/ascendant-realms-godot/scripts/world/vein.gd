@@ -31,6 +31,20 @@ func configure(p_kind: String, p_amount: int) -> void:
 		ModelUtils.scale_to_height(m, 2.4 if kind != "food" else 1.8)
 		ModelUtils.ground_model(m)
 		m.position += Vector3(3.2, 0, 0)
+		# A timber vein's stack takes the same log-brown as a timber pile
+		# (resource_node.gd): untoned it was the old glaring orange.
+		if kind == "timber":
+			for mesh_node in m.find_children("*", "MeshInstance3D", true, false):
+				var mesh: Mesh = mesh_node.mesh
+				if mesh == null:
+					continue
+				for surface in mesh.get_surface_count():
+					var source: Material = mesh.surface_get_material(surface)
+					if source is StandardMaterial3D:
+						var toned: StandardMaterial3D = (source as StandardMaterial3D).duplicate()
+						toned.albedo_color = toned.albedo_color.lerp(Color(0.36, 0.23, 0.13, 1.0), 0.58)
+						toned.roughness = maxf(toned.roughness, 0.78)
+						mesh_node.set_surface_override_material(surface, toned)
 		_model = m
 		if is_inside_tree():
 			_join_model()
