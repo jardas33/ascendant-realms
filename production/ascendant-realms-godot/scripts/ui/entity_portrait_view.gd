@@ -215,7 +215,14 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		ModelUtils.ground_model(model)
 		if path == "res://assets/environment/buildings/barrosan_houses_a03.glb":
 			ModelUtils.recenter_a03_house_a_visual_only(model)
-		if is_building or bool(definition.get("is_siege", false)):
+		if is_building:
+			# Frame the body of the building: a model that is not centred on its
+			# origin, or carries a small far-off part, was shown as a corner or
+			# as a speck.
+			var focus := _building_focus(model, target_height)
+			model.position -= Vector3(focus.position.x + focus.size.x * 0.5, 0.0, focus.position.z + focus.size.z * 0.5)
+			model_radius = maxf(focus.size.x, focus.size.z) * 0.5
+		elif bool(definition.get("is_siege", false)):
 			model_radius = ModelUtils.measure_radius(model)
 		if not is_building:
 			_pose_and_tint_unit(model, path, definition)
@@ -238,17 +245,23 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	_compact_building_fill.visible = is_building or (compact_card and _active_portrait_path.is_empty())
 	_compact_building_fill.light_energy = (2.4 if not is_building else 1.4) if compact_card else 1.0
 	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else 2.65)
-	if is_building and not compact_card:
+	# Every building, also on the small build cards: those fell through to the
+	# waist-up unit camera below and showed a piece of roof or wall.
+	if is_building:
 		# Broad structures need a three-quarter architectural view. A slender
 		# tower occupies only a few pixels with that same camera, so let its live
 		# model fill the portrait aperture without cropping the roof or footing.
 		var narrow_structure := model_radius < target_height * 0.16
 		# A stray far-off mesh in a borrowed model gave a huge radius and left
 		# the building a speck in its frame (the Ledger Stone): cap the reach.
-		distance = 2.3 if narrow_structure else maxf(3.55, minf(model_radius, target_height * 0.8) * 2.55 + 0.5)
+		distance = 2.3 if narrow_structure else maxf(3.55, minf(model_radius, target_height * 1.4) * 2.2 + 0.5)
 		_camera.position = Vector3(distance * (0.34 if narrow_structure else 0.48), target_height * (1.05 if narrow_structure else 1.48), distance)
 		_camera.fov = 50.0 if narrow_structure else 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+		if compact_card:
+			# The same view from closer: at card size the model must fill the frame.
+			var aim := Vector3(0.0, target_height * 0.48, 0.0)
+			_camera.position = aim + (_camera.position - aim) * (0.8 if narrow_structure else 0.68)
 	elif compact_card and bool(definition.get("is_siege", false)):
 		distance = maxf(3.1, model_radius * 2.4 + 0.45)
 		_camera.position = Vector3(distance * 0.3, target_height * 0.8, distance)
@@ -267,6 +280,28 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 
 ## A rendered unit portrait stood in its bind pose (arms straight out) and in
 ## its lender's colours. Put it in its idle stance and its people's palette.
+## The bounds, in the pivot's space, of the building's largest part and of
+## every part whose centre lies near it.
+func _building_focus(model: Node3D, target_height: float) -> AABB:
+	var boxes: Array = []
+	var to_pivot := _pivot.global_transform.affine_inverse()
+	for child in model.find_children("*", "MeshInstance3D"):
+		var part := child as MeshInstance3D
+		if part and part.mesh:
+			boxes.append((to_pivot * part.global_transform) * part.mesh.get_aabb())
+	if boxes.is_empty():
+		return AABB(Vector3(-0.5, 0.0, -0.5), Vector3(1.0, target_height, 1.0))
+	var body: AABB = boxes[0]
+	for box in boxes:
+		if box.get_volume() > body.get_volume():
+			body = box
+	var core := body.get_center()
+	for box in boxes:
+		var c: Vector3 = box.get_center()
+		if Vector2(c.x - core.x, c.z - core.z).length() < target_height * 1.2:
+			body = body.merge(box)
+	return body
+
 func _pose_and_tint_unit(model: Node3D, path: String, definition: Dictionary) -> void:
 	var race := str(definition.get("race", ""))
 	var tint: Color = Unit.PEOPLE_PALETTES.get(race, Color.WHITE) if not path.get_file().begins_with(race) else Color.WHITE

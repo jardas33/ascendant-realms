@@ -906,6 +906,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		text_col.add_child(detail_label)
 		btn.add_child(text_col)
+		# A name of two lines over two lines of cost ran into the state word at
+		# the foot of the card: every build card sets its lines a little closer.
+		title_label.add_theme_constant_override("line_spacing", -4)
+		detail_label.add_theme_constant_override("line_spacing", -3)
+		text_col.offset_top = 5.0
 	else:
 		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
 		var featured_ability := command_kind == "ABILITY"

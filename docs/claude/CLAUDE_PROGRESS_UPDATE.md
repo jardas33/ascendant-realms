@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 205 (done): build cards show the whole building**
+  - Cause: on the small build cards, buildings without painted art were photographed with the camera meant for a soldier's head and shoulders, so the card showed a piece of roof or wall. This applied to every people except the Barrosan Clans and the Lioraen Concord, whose buildings have painted art.
+  - Fixed: buildings always get the building camera, closer on small cards. The picture is centred on the body of the building, so the Aurean palace (not centred in its file) is whole and the Ledger Stone and Treasury (which carry a small far-off part) are no longer specks.
+  - Fixed: on build cards a two-line name over two lines of cost ran into the word READY (Candle Chapel, Regent's Palace and others). The lines are set closer on every build card.
+  - Looked at the build menus of six peoples after the change. Still poor: the Village Oven's picture is dark and partly cut.
+  - Seen and not yet checked: one picture of a selected tower shows the selection panel without its dark background.
+  - Full regression: 93 of 94 (610 s). The one failure was the tutorial walk-through, which did not reach its last step; run alone twice afterwards it passed both times, and nothing in this plan touches the tutorial. I count it as a timing failure under load, not proven; it is watched in the next run.
 - **Plan 204 (done): the in-match HUD at three window shapes**
   - Photographed a battle at 1920x823 (wide), 1440x1080 (4:3) and 1280x720, with nothing selected, with five units selected and with the hall selected. The bars, the minimap, the objective plate and both panels keep their places and overlap nothing at all three shapes.
   - Fixed: with a hall selected, the small "Idle" line under its status was cut by the panel frame; the panel is 14 px taller.
