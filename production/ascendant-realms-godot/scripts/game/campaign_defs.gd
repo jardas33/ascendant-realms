@@ -428,12 +428,15 @@ const ORIGIN_OPENINGS := {
 const MOODS := {
 	"night": {"sun_energy": 0.62, "sun_color": Color(0.62, 0.70, 0.98), "sun_pitch": -42.0, "ambient_energy": 0.46,
 		"fog_color": Color(0.24, 0.30, 0.46), "fog_density": 0.0007, "grade_contrast": 1.06, "grade_saturation": 0.8, "grade_brightness": 1.0},
-	"ember": {"sun_energy": 0.85, "sun_color": Color(1.0, 0.56, 0.32), "sun_pitch": -24.0, "ambient_energy": 0.36,
-		"fog_color": Color(0.55, 0.30, 0.22), "fog_density": 0.0010, "grade_contrast": 1.1, "grade_saturation": 1.08, "grade_brightness": 0.95},
+	# (Firelight, but not one shade of red: at sun 1.0/0.56/0.32 with little
+	# ambient light the ground, the roofs and the red enemy's soldiers were
+	# all the same colour and a battle could not be read.)
+	"ember": {"sun_energy": 0.9, "sun_color": Color(1.0, 0.70, 0.50), "sun_pitch": -24.0, "ambient_energy": 0.50,
+		"fog_color": Color(0.50, 0.36, 0.30), "fog_density": 0.0008, "grade_contrast": 1.08, "grade_saturation": 0.96, "grade_brightness": 1.0},
 	"storm": {"sun_energy": 0.62, "sun_color": Color(0.74, 0.80, 0.86), "ambient_energy": 0.44,
 		"fog_color": Color(0.46, 0.52, 0.58), "fog_density": 0.0016, "grade_contrast": 1.04, "grade_saturation": 0.72, "grade_brightness": 0.93},
-	"dusk": {"sun_energy": 0.8, "sun_color": Color(1.0, 0.70, 0.46), "sun_pitch": -18.0, "ambient_energy": 0.38,
-		"fog_color": Color(0.78, 0.58, 0.48), "fog_density": 0.0008, "grade_contrast": 1.06, "grade_saturation": 1.05, "grade_brightness": 0.97},
+	"dusk": {"sun_energy": 0.84, "sun_color": Color(1.0, 0.77, 0.58), "sun_pitch": -18.0, "ambient_energy": 0.47,
+		"fog_color": Color(0.72, 0.60, 0.54), "fog_density": 0.0007, "grade_contrast": 1.06, "grade_saturation": 0.95, "grade_brightness": 1.0},
 }
 const CHAPTER_MOODS := {
 	"1-1": "night", "1-2": "ember", "1-S2": "night", "1-6": "ember",

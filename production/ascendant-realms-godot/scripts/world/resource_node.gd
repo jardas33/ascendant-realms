@@ -184,7 +184,10 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 func _resource_albedo(source: Color) -> Color:
 	match resource_kind:
 		"stone": return source.lerp(Color(0.30, 0.34, 0.34, 1.0), 0.58)
-		"timber": return source.lerp(Color(0.34, 0.18, 0.07, 1.0), 0.20).lightened(0.04)
+		# (Cut logs, not traffic cones: at a fifth of the way to brown the
+		# stack stayed a saturated orange that outshone everything near it,
+		# worst of all on ash and lava ground.)
+		"timber": return source.lerp(Color(0.36, 0.23, 0.13, 1.0), 0.58)
 		"gold": return source.lerp(Color(0.50, 0.31, 0.08, 1.0), 0.18).lightened(0.05)
 		"food": return source.lerp(Color(0.48, 0.34, 0.12, 1.0), 0.24).lightened(0.06)
 		_: return source.lightened(0.08)

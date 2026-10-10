@@ -183,9 +183,11 @@ func _pick_bounty() -> void:
 	# lost before the match began; and nobody holds a keep against two or
 	# three armies for ten minutes losing fifteen soldiers (the stand-in
 	# player loses 15 to 17 in the six-minute hold-out and 31 to 67 in the
-	# ten-minute ones). No swift bounty there, and the thrift bounty allows
-	# one more loss for every twenty seconds of the hold.
+	# ten-minute ones). Nor does anyone holding a keep march out to raze six
+	# buildings in a camp 250 m away. No swift or raze bounty there, and the
+	# thrift bounty allows one more loss for every twenty seconds of the hold.
 	if survival_remaining() >= 0.0:
+		options.remove_at(3)
 		options.remove_at(1)
 		options[1]["losses"] = int(options[1]["losses"]) + _survive_seconds / 20
 	bounty = options[rng.randi() % options.size()]
