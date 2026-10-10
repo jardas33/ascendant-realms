@@ -2526,7 +2526,14 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	# material without the wind).
 	var toned_rock: bool = not is_tree and _scorched_tone("rock") != Color.WHITE
 	if toned_rock:
-		leaf_tone = _scorched_tone("rock")
+		# (Under snow the rock tone is a cold blue meant for the crags' own
+		# picture; on a greyed boulder it came out violet.)
+		leaf_tone = Color(0.86, 0.88, 0.94) if str(map.get("theme", "")) == "snow" else _scorched_tone("rock")
+	# Beyond the edge of the battlefield the ground is drawn in shade (see
+	# `field_half` in the ground shader), and what stands there with it.
+	var field_edge: float = float(map.get("size", MapDefs.MAP_SIZE))
+	if absf(pos.x) > field_edge or absf(pos.z) > field_edge:
+		leaf_tone = Color(leaf_tone.r * 0.7, leaf_tone.g * 0.7, leaf_tone.b * 0.7)
 	_prep_decor(inst, leaf_tone, h if is_tree else (-h if toned_rock else 0.0))
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")

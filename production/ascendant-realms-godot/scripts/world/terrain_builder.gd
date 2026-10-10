@@ -191,6 +191,7 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("dirt_bias", float(_theme.get("dirt_bias", 0.0)))
 	sm.set_shader_parameter("rock_bias", float(_theme.get("rock_bias", 0.0)))
 	sm.set_shader_parameter("snow_amt", float(_theme.get("snow", 0.0)))
+	sm.set_shader_parameter("field_half", float(map.get("size", MapDefs.MAP_SIZE)))
 	sm.set_shader_parameter("volcanic_surface", 1.0 if String(map.get("theme", "")) == "volcanic" else 0.0)
 	# R19 material hierarchy: calm the walkable plane first, then let roads
 	# carry a restrained value shift.  This is presentation-only and does not

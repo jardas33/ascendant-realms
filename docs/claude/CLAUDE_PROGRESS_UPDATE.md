@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 197 (done): the edge of the battlefield can be seen**
+  - **Before:** at the edge of a map the screen shows some sixty metres of ground beyond it, drawn exactly like the field, with trees and stones. Nothing showed where the field ended; an army sent there stopped at a line nobody could see.
+  - **Now:** the ground beyond the edge lies in shade (darker and a little greyer, along a soft uneven line), and the trees and boulders that stand out there are shaded with it. Inside the field nothing changed. Pictures at an edge checked on Salto Valley, the Four Peaks and Thornwild.
+  - **Boulders under snow** came out violet after plan 196 (the snow rock tone is a cold blue made for the crags). They are now a plain cold grey.
+  - **Checked:** all 94 checks of the full regression pass.
 - **Plan 196 (done): repeating patterns in snow and volcanic ground; boulders that did not belong**
   - **Snow and volcanic ground** showed a lattice of diamonds across the whole field: the ground picture is mirrored at each edge to hide its seams, and both layers of it lay square to the map. Each layer is now turned a different way and the blend between them wanders, so the lattice is gone. Pictures of the Four Peaks and Malrec's Pyre checked.
   - **Lone boulders** were the same pale stone with bright green moss on every map: on black volcanic ground and grey ashen ground they shone. On scorched, ashen, sand and snow maps a boulder now takes the tone of that map's rock and its moss is greyed. Pictures of Malrec's Pyre and Boticas checked.

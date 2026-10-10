@@ -58,6 +58,10 @@ uniform float field_strength = 0.0;
 uniform float cloud_shadow_strength = 0.2;
 uniform float relief_strength = 0.0;
 uniform float relief_scale = 0.018;
+// Half the width of the battlefield in metres (0 = not given). The ground
+// beyond it is drawn darker and greyer: it looked as walkable as the field,
+// and an army sent there stopped at a line nobody could see.
+uniform float field_half = 0.0;
 // Faction ground: scorched ash yards around Vorthak holdfasts. xy = centre,
 // z = radius, w = strength. Blended in the ground itself so the edge is a
 // noisy burn fade, not a pasted decal.
@@ -324,6 +328,11 @@ void fragment() {
 		NORMAL = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
 		// Cavity darkening in the hollows of the relief.
 		ALBEDO *= mix(0.88, 1.03, smoothstep(-0.6, 0.6, hc));
+	}
+	if (field_half > 0.0) {
+		float past = max(abs(wxz.x), abs(wxz.y)) - field_half + (fbm(wxz * 0.11 + 5.0) - 0.5) * 3.0;
+		float beyond = smoothstep(0.0, 8.0, past);
+		ALBEDO = mix(ALBEDO, mix(ALBEDO, vec3(dot(ALBEDO, vec3(0.299, 0.587, 0.114))), 0.4) * 0.64, beyond);
 	}
 	ALBEDO *= 1.0 - cloud_shadow_strength * cloud_shadow(wxz, TIME);
 	ROUGHNESS = mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0));
