@@ -1390,7 +1390,9 @@ func _build_rivers() -> void:
 		var ford_at := Vector2(ford["pos"].x, ford["pos"].z)
 		var reach: float = float(ford["half"])
 		var half_river: float = float(ford["width"]) * 0.5
-		var shallows := _ribbon(PackedVector2Array([ford_at - ford_across * half_river, ford_at, ford_at + ford_across * half_river]), reach * 1.25, 0.11, reach * 0.6)
+		# (It fades out over the last stretch at each bank as well: it used to
+		# end there in a ruled line, a pale slab laid across the river.)
+		var shallows := _ribbon(PackedVector2Array([ford_at - ford_across * half_river * 1.3, ford_at - ford_across * half_river * 0.8, ford_at, ford_at + ford_across * half_river * 0.8, ford_at + ford_across * half_river * 1.3]), reach * 1.25, 0.11, reach * 0.6, true)
 		shallows.name = "FordShallows"
 		var shallow_material := StandardMaterial3D.new()
 		shallow_material.albedo_color = Color(0.62, 0.72, 0.58, 0.62)
@@ -1531,7 +1533,9 @@ func _bank_material() -> StandardMaterial3D:
 ## A flat strip `half_width` either side of a line of points, at height `y`.
 ## With `solid_half` set, the strip is solid out to that distance from the
 ## line and fades to nothing at `half_width` (for banks).
-func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_half: float = -1.0) -> MeshInstance3D:
+## fade_ends: the first and last rows are fully clear, so the strip has no
+## hard end.
+func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_half: float = -1.0, fade_ends: bool = false) -> MeshInstance3D:
 	var tool := SurfaceTool.new()
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var run := 0.0
@@ -1558,7 +1562,8 @@ func _ribbon(samples: PackedVector2Array, half_width: float, y: float, solid_hal
 			for corner in [[i, c], [i + 1, c], [i, c + 1], [i, c + 1], [i + 1, c], [i + 1, c + 1]]:
 				var column: Array = columns[corner[1]]
 				tool.set_normal(Vector3.UP)
-				tool.set_color(Color(1.0, 1.0, 1.0, float(column[1])))
+				var end_alpha := 0.0 if fade_ends and (corner[0] == 0 or corner[0] == samples.size() - 1) else 1.0
+				tool.set_color(Color(1.0, 1.0, 1.0, float(column[1]) * end_alpha))
 				# Along the strip in U, across it in V (what the water shader expects).
 				tool.set_uv(Vector2(float(runs[corner[0]]) / (half_width * 2.0), (float(column[0]) + 1.0) * 0.5))
 				tool.add_vertex(rows[corner[0]][corner[1]])

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 186 (done): act one looked at in mid-battle; fords no longer end in a ruled line**
+  - **Pictures:** the six main chapters of act one, at four and a half and at nine minutes, following the hero (twelve pictures). No stray shapes, no oversized units, the HUD and minimap read on all six fields, and the night of chapter 1-1 is dark but readable.
+  - **One fault found:** where a river can be forded the water is pale and shallow, and that pale strip ended at each bank in a straight edge, so the ford at the Spring of Seven Mouths, the first thing a new player fights over, looked like a slab laid across the river. The shallows now fade out over the last stretch at each bank. This is every ford on the eight maps that have rivers.
+  - **Checked:** the quick regression set passes; pictures of two fords.
 - **Plan 185 (done): the computer no longer over-trains healers. The most even table so far: all ten peoples between 40% and 66%**
   - **Careto Host on the small maps first:** six traced matches there went three wins, two losses and one undecided, and showed nothing wrong with them. I changed nothing for them.
   - **What the traces did show:** an Aurean AI marching with 11 Sun Priests in an army of 36. Three peoples' halls train a healer and nothing else, so the computer went on training healers for as long as there was gold. An army that is a third healers cannot kill anything.
