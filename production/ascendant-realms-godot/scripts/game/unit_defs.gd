@@ -266,10 +266,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 70, "gold": 15}, "build_time": 14, "pop": 1, "produced_by": "grimtusk_warcamp",
 		"desc": "Rides a pit-bred war-hound through the Dominion's own mine tunnels. Runs down the fleeing.",
 	},
+	# The Chainbreaker "fights with the chain that held him": blunt, not
+	# slash (plan 179). Every Ironmaw soldier below the third age cut or
+	# pierced, both weak against heavy armour, and once the computer learned
+	# to wear what the enemy's weapons bite least the Horde fell to 9-27.
 	"grimtusk_berserker": {
 		"race": "grimtusk", "name": "Chainbreaker", "role": "melee", "tier": 2,
 		"model": _char("orc_grunt"), "height": 2.0,
-		"hp": 165, "dmg": 23, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
+		"hp": 165, "dmg": 23, "dmg_type": "blunt", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 0.9, "speed": 4.5, "vision": 22.0,
 		"cost": {"food": 90, "gold": 40}, "build_time": 18, "pop": 2, "produced_by": "grimtusk_warcamp",
 		"desc": "Fights with the chain that held him. Blood-drunk, nearly impossible to bring down.",

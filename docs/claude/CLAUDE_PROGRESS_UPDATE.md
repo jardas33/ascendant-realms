@@ -1276,6 +1276,12 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 179 (done): the Ironmaw Horde back in the field (9-27 to 31-36)**
+  - **Why they had fallen:** every Ironmaw soldier below the third age cuts or pierces, and both are weak against heavy armour. Once the computer learned to wear what the enemy's weapons bite least (plans 177 and 178), everyone answered the Horde with heavy troops and the Horde had no reply until its ogres.
+  - **The reply was already in the story.** The Chainbreaker "fights with the chain that held him". A chain is a blunt weapon, and blunt is the one thing that is strong against heavy armour. His damage type was slash; it is blunt now. The Ironmaw AI picks him when the enemy armours up.
+  - **Also 8% more health** for the Horde.
+  - **Measured, 72 Ironmaw matches each time (36 on hand-built maps, 36 on old):** 9-27 before (from the 180-match run of plan 178); with the health alone 23-45; with the chain as well 31-36 (16-18 on the hand-built maps, 15-18 on the old).
+  - **Checked:** 94 regression checks pass. A full 180-match run on this build is running to confirm the whole table.
 - **Plan 178 (done): nine of the ten peoples within reach of even; a correction to the computer's new armour sense**
   - **A correction to plan 177.** Traced matches after it showed the computer overdoing its new rule: swords and arrows are both weak against heavy armour, so heavy armour won almost every comparison and a Granitborn AI fielded 13 slow Ironbreakers in an army of 25 and could not finish a match it was winning. That is why the Granitborn fell to the bottom in plan 177's table. The armour consideration now carries half the weight. The same pairings afterwards gave mixed armies (crossbows, Hammerers, a few guards).
   - **The Moura Court** were first by a distance in three runs of 180 (25-10, 27-9, 24-11), since their healers began to heal in a fight. Their damage bonus is gone and their extra reach is +0.5 (it was +1.5).

@@ -535,6 +535,11 @@ func _apply_race_passive() -> void:
 			# (28-59 over 450 matches): back to +12%.
 			# 28-44 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +15%.
 			base_dmg *= 1.15
+			# 9-27 over 180 matches after the healer and AI changes of plans
+			# 174 to 178. +8% health alone: 23-45 over 72 focus matches.
+			# With the Chainbreaker's blunt chain as well: see unit_defs.
+			max_hp *= 1.08
+			hp = max_hp
 			# With the AI held to four siege engines the Ironmaw fell to 16-49
 			# in its 72 matches (it had been winning on massed Slag Throwers:
 			# 21-13 with the cap lifted). +8% health did next to nothing
