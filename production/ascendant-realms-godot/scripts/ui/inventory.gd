@@ -890,7 +890,7 @@ func _button(text: String, cb: Callable) -> Button:
 	b.clip_text = false
 	b.custom_minimum_size = Vector2(210, 48)
 	b.focus_mode = Control.FOCUS_NONE
-	b.add_theme_font_override("font", ThemeDB.fallback_font)
+	b.add_theme_font_override("font", _title_font())
 	b.add_theme_font_size_override("font_size", 18)
 	b.pressed.connect(cb)
 	return b

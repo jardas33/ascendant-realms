@@ -20,7 +20,7 @@ func setup() -> void:
 		theme = theme_res
 
 	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.6)
+	dim.color = Color(0, 0, 0, 0.7)
 	add_child(dim)
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -40,6 +40,9 @@ func setup() -> void:
 	_panel.offset_right = 370.0
 	_panel.offset_top = -300.0
 	_panel.offset_bottom = 300.0
+	# Taller content grows the plate both ways, so it stays centred.
+	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 
 	# Your faction's shield hangs over the top edge of the plate.
 	var race_id := String(Match.get_config().get("player_race", "barrosan"))
@@ -55,6 +58,14 @@ func setup() -> void:
 	crest.offset_top = -348.0
 	crest.offset_bottom = -274.0
 	add_child(crest)
+	# The shield follows the plate's top edge whatever height it grows to.
+	var follow := func():
+		var top := _panel.position.y - size.y * 0.5
+		crest.offset_top = top - 48.0
+		crest.offset_bottom = top + 26.0
+	_panel.resized.connect(follow)
+	_panel.item_rect_changed.connect(follow)
+	resized.connect(follow)
 
 	var col: Color = GameData.RACES.get(race_id, {}).get("color", Color(0.7, 0.6, 0.4))
 	crest.draw.connect(func():
@@ -173,7 +184,8 @@ func setup() -> void:
 	_add_key_row(system, KeyBinds.label("idle_worker"), "Select idle worker", font)
 	_add_key_row(system, KeyBinds.label("cycle_hero"), "Focus hero", font)
 	_add_key_row(system, "BACKSPACE", "Jump to latest alert", font)
-	_add_key_row(system, KeyBinds.fill("{ability_1} {ability_2} {ability_3} {ability_4} {ability_5} {ability_6} {ability_7}  ·  {ability_sig} {ability_p1} {ability_p2}"), "Hero spells  ·  people spells", font)
+	_add_key_row(system, KeyBinds.fill("{ability_1} {ability_2} {ability_3} {ability_4} {ability_5} {ability_6} {ability_7}"), "Hero spells", font)
+	_add_key_row(system, KeyBinds.fill("{ability_sig} {ability_p1} {ability_p2}"), "Spells of your people", font)
 	_add_key_row(system, "ESC", "Pause / resume", font)
 	_add_key_row(system, "F1", "Every hotkey (field manual)", font)
 	_add_key_row(system, KeyBinds.fill("WHEEL / {cam_rot_l} {cam_rot_r}"), "Zoom / rotate camera", font)
@@ -226,7 +238,7 @@ func _add_key_row(parent: VBoxContainer, key: String, description: String, font:
 	parent.add_child(row)
 	var key_label := Label.new()
 	key_label.text = key
-	key_label.custom_minimum_size = Vector2(104, 0)
+	key_label.custom_minimum_size = Vector2(128, 0)
 	key_label.add_theme_font_size_override("font_size", 14)
 	key_label.add_theme_color_override("font_color", Color(0.98, 0.87, 0.56))
 	key_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

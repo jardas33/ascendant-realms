@@ -459,7 +459,7 @@ func _button(text: String, col: Color, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.clip_text = false
-	b.add_theme_font_override("font", _body_font())
+	b.add_theme_font_override("font", _title_font())
 	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.custom_minimum_size = Vector2(220, 50)
 	b.focus_mode = Control.FOCUS_NONE

@@ -277,14 +277,22 @@ func _refresh() -> void:
 	var wk_best := ProfileManager.endless_fastest_key("w%d" % load("res://scripts/game/endless_defs.gd").week_number())
 	if wk_best > 0.0:
 		record_line.text += "    ·    ROAD OF THE WEEK %d:%02d" % [int(wk_best) / 60, int(wk_best) % 60]
-	record_line.add_theme_font_override("font", _body_font())
-	record_line.add_theme_color_override("font_color", Color(0.98, 0.80, 0.45))
-	record_line.add_theme_font_size_override("font_size", 16)
-	identity.add_child(record_line)
-	saga_line.add_theme_font_override("font", _body_font())
-	saga_line.add_theme_color_override("font_color", Color(0.86, 0.72, 0.95))
-	saga_line.add_theme_font_size_override("font_size", 16)
-	identity.add_child(saga_line)
+	# The record as a ledger: each number large, its name small beneath, so
+	# the page reads at a glance instead of as two lines of capitals.
+	var cells: Array = [
+		["Endless stage", str(ProfileManager.endless_best())],
+		["Battles", str(int(st.get("battles", 0)))],
+		["Victories", str(int(st.get("victories", 0)))],
+		["Foes slain", str(int(st.get("units_killed", 0)))],
+		["Elites", str(int(st.get("elites_slain", 0)))],
+		["Tyrants", str(int(st.get("tyrants_slain", 0)))],
+		["Saga chapters", "%d/%d" % [saga_state["cleared"].size(), load("res://scripts/game/campaign_defs.gd").CHAPTERS.size()]],
+		["Wine of the Dead", "%d/7" % saga_state["jars"].size()],
+		["Heroic laurels", str(saga_state["heroic"].size())],
+		["Retinue", "%d/%d" % [saga_state["retinue"].size(), ProfileManager.retinue_cap()]]]
+	if wk_best > 0.0:
+		cells.append(["Road of the Week", "%d:%02d" % [int(wk_best) / 60, int(wk_best) % 60]])
+	identity.add_child(_ledger(cells))
 	identity_row.add_child(identity)
 
 	var lvl := int(h.get("level", 1))
@@ -330,7 +338,7 @@ func _refresh() -> void:
 	progression_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	progression_row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	progression_row.add_child(pts)
-	var constellation_button := _nav_button("Skill Constellation", func(): _goto("res://scenes/ui/skill_tree.tscn"))
+	var constellation_button := _nav_button("The Star Chart", func(): _goto("res://scenes/ui/skill_tree.tscn"))
 	constellation_button.custom_minimum_size = Vector2(250, 46)
 	progression_row.add_child(constellation_button)
 	# Waiting talent picks sit low on the page; a header button jumps to them.
@@ -789,10 +797,35 @@ func _label_button(b: Button, text: String, col: Color) -> void:
 	b.add_theme_color_override("font_color", col)
 	b.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 
+func _ledger(cells: Array) -> Control:
+	var box := Control.new()
+	box.custom_minimum_size = Vector2(0, 68)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.draw.connect(func():
+		var n := cells.size()
+		var cw := box.size.x / n
+		var vf := _title_font()
+		var lf := _body_font()
+		box.draw_line(Vector2(0, 2), Vector2(box.size.x, 2), Color(0.85, 0.68, 0.36, 0.28), 1.0)
+		box.draw_line(Vector2(0, box.size.y - 2), Vector2(box.size.x, box.size.y - 2), Color(0.85, 0.68, 0.36, 0.28), 1.0)
+		for i in n:
+			var cx := cw * (i + 0.5)
+			var v := String(cells[i][1])
+			var vw := vf.get_string_size(v, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
+			box.draw_string(vf, Vector2(cx - vw * 0.5, 34), v, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color(0.98, 0.86, 0.55))
+			var l := String(cells[i][0])
+			var lw := lf.get_string_size(l, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
+			box.draw_string(lf, Vector2(cx - minf(lw, cw - 8.0) * 0.5, 56), l, HORIZONTAL_ALIGNMENT_LEFT, cw - 8.0, 13, Color(0.74, 0.70, 0.62))
+			if i > 0:
+				var d := Vector2(cw * i, 34)
+				box.draw_colored_polygon(PackedVector2Array([d + Vector2(0, -3), d + Vector2(3, 0), d + Vector2(0, 3), d + Vector2(-3, 0)]), Color(0.85, 0.68, 0.36, 0.6)))
+	return box
+
 func _nav_button(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.custom_minimum_size = Vector2(230, 50)
 	b.focus_mode = Control.FOCUS_NONE
 	_label_button(b, text, Color(0.96, 0.92, 0.8))
+	b.add_theme_font_override("font", _title_font())
 	b.pressed.connect(cb)
 	return b

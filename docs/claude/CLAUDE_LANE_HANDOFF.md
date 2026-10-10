@@ -33,6 +33,8 @@ Everything below this section is older history. A cold session needs only this s
 Branch `claude/perf-placeholders-r1`, based on local `codex/current-godot-baseline-next` at `ebef47ae`. It also merges Codex's ornate HUD branch at b6bcbe25.
 Worked in an isolated clone at `D:\ClaudeWork\ar-lane`, so no Codex worktree was touched. It's not merged or promoted.
 
+> **UI overhaul (Reliquary HUD and the screens after it):** full plan, decisions, current step and how to verify are in `docs/claude/UI_RELIQUARY.md` on branch `claude/project-thread-h7p2wb`. Start there to continue the UI work.
+
 ## What changed
 
 | Commit | Change | Files |
