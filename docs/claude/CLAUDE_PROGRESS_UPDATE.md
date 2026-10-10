@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 207 (done): clicked enemies show their whole name**
+  - Photographed the panel after clicking an enemy hero, soldier, worker and hall. The new backdrop of plan 206 shows for all four. An enemy shows health and kind only; no orders, queue or stats (checked in the pictures).
+  - Fixed: every enemy's name was cut to its first word ("HOSTILE · Silver ...") because of the word HOSTILE in front. The prefix is gone; the red name, the red badge and the line "Hostile · Infantry" under the health still say it.
+  - Fixed: the caption over a unit's portrait (WAR HOST, WORKFORCE) stuck out above the new backdrop; the backdrop reaches over it.
+  - Fixed: the player's own hero with a long title ("O Velho, the Eldest Mask") ended in dots in the selection column. It shows "O Velho" there; the full title is in the command header beside it.
+  - Correction to my own first pictures in this plan: my first probe put enemies straight into the selection, which the game never does, and showed enemy orders. That was the probe, not the game; the probe now uses the real click path.
+  - Full regression: 94 of 94 (542 s).
 - **Plan 206 (done): a selection without orders has a backdrop**
   - It was not a fade. The dark plate behind the selection panel and the command panel is one drawing, shown only when both panels show. Anything selected that has no orders (a tower; I expect also enemy units and buildings, not photographed) stood as bare text and a portrait over the ground.
   - Fixed: when the selection panel stands alone it carries its own dark plate with a bronze edge. Photographed with a Granitborn tower selected, and with a forge selected to see that the joined plate is unchanged.

@@ -346,15 +346,20 @@ func _fit_to_viewport() -> void:
 		# show. A selection without orders (a tower, an enemy) stood as bare
 		# text over the ground: alone, the selection panel carries its own plate.
 		var alone: bool = _sel_panel.visible and not _cmd_panel.visible
-		if alone != bool(_sel_panel.get_meta("lone_plate", false)):
-			_sel_panel.set_meta("lone_plate", alone)
+		var plate_kind: String = "" if not alone else ("unit" if _tracked_single is Unit else "other")
+		if plate_kind != String(_sel_panel.get_meta("lone_plate", "")):
+			_sel_panel.set_meta("lone_plate", plate_kind)
 			var plate := _hud_stylebox()
 			if alone:
+				# Room at the top for the caption that stands over a unit's portrait.
+				plate.expand_margin_top = 26.0 if plate_kind == "unit" else 6.0
 				plate.bg_color = Color(0.035, 0.045, 0.05, 0.94)
 				plate.border_color = Color(0.64, 0.46, 0.26, 0.85)
 				plate.set_border_width_all(2)
 				plate.set_corner_radius_all(6)
-				plate.set_expand_margin_all(6)
+				plate.expand_margin_left = 6.0
+				plate.expand_margin_right = 6.0
+				plate.expand_margin_bottom = 6.0
 			_sel_panel.add_theme_stylebox_override("panel", plate)
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -100.0
@@ -2485,9 +2490,15 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	identity_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Give short hero and unit names presence without sacrificing the full names
 	# of workers and longer troops in the compact selected-entity column.
-	var identity_font_size := 16 if uname.length() > 13 or read_only else 18
-	var identity_name := _mk_label(("HOSTILE · " if read_only else "") + uname, identity_font_size, identity_color)
+	# A hostile is told by the red name, the red badge and the line under the
+	# health; a "HOSTILE" prefix cut every enemy's name to its first word.
+	# A hero's long title ("O Velho, the Eldest Mask") ended in dots here: this
+	# column shows the name before the comma; the command header has it whole.
+	var shown_name := uname.get_slice(", ", 0) if uname.length() > 17 else uname
+	var identity_font_size := 18 if shown_name.length() <= 13 else (16 if shown_name.length() <= 17 else 14)
+	var identity_name := _mk_label(shown_name, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity_name.tooltip_text = uname
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
@@ -2870,7 +2881,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	identity_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	identity.add_child(identity_info)
 	var identity_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.95, 0.85, 0.55)
-	var identity_text := ("HOSTILE · " if read_only else "") + String(b.def.get("name", "Building"))
+	var identity_text := String(b.def.get("name", "Building"))
 	var building_header := HBoxContainer.new()
 	building_header.add_theme_constant_override("separation", 6)
 	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
