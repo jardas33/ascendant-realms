@@ -247,8 +247,10 @@ func _refresh() -> void:
 		medals.add_child(medal)
 		var ml := Label.new()
 		ml.text = String(tr["name"]).get_slice(" ", 0) if tier_k == 0 else String(ach.title(tr, tier_k))
-		ml.add_theme_font_size_override("font_size", 12)
-		ml.add_theme_color_override("font_color", mc.lightened(0.2) if tier_k > 0 else Color(0.55, 0.56, 0.58))
+		# Plain body face: the theme's small capitals close up at this size.
+		ml.add_theme_font_override("font", _body_font())
+		ml.add_theme_font_size_override("font_size", 13)
+		ml.add_theme_color_override("font_color", mc.lightened(0.35) if tier_k > 0 else Color(0.66, 0.67, 0.70))
 		ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		ml.tooltip_text = String(next_goals[k])
 		ml.mouse_filter = Control.MOUSE_FILTER_PASS

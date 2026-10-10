@@ -637,6 +637,12 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			if not branch_pts.has(br):
 				branch_pts[br] = []
 			branch_pts[br].append(_orb_center(n))
+	# The first stars drift a little off the grid; their names do not, so the
+	# headings of all the paths stand on one line.
+	var top_line := INF
+	for br in branch_pts:
+		for p3 in branch_pts[br]:
+			top_line = minf(top_line, p3.y)
 	for br in branch_pts:
 		var pts: Array = branch_pts[br]
 		var bc: Color = _branch_color(br)
@@ -656,7 +662,7 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
-		var title_pos := top + Vector2(-tw2 * 0.5, -70.0)
+		var title_pos := Vector2(top.x - tw2 * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
 		canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 6, Color(0.01, 0.015, 0.03, 0.85))
 		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.25), 0.8))
 	# Links: faint for locked, bright for open paths, with motes of light

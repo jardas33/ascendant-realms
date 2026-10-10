@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 203 (done): every menu screen, page by page**
+  - Photographed all eight menu screens at 1600x900 and read each one. Main menu, war chest, settings, skirmish setup and hero creation: no faults found.
+  - Saga map: the line under the title (hero, level, jars) was in small capitals under a heavy outline and hard to read; it is now in the plain body face. The names on sealed chapters were dark grey on mid grey; the ribbon is lighter and the ink darker.
+  - Hero sheet: the names beside the nine deed medals were small capitals at size 12 in dim colours; now the body face at 13, brighter.
+  - Skill tree: the eight path headings stood at eight slightly different heights (they followed the drift of each first star); they now stand on one line.
+  - Full regression on this build: 94 of 94 (585 s). The last edit, the saga map header face, was made while the regression ran; after it only the compile check and a new picture were run.
 - **Plan 202 (done): oaks of dry country are dry**
   - On sand and badlands maps the oaks were as green as on a meadow. They are now a dry olive-brown, lone ones and woods alike. Pines keep their dark green: the tone can only darken a picture, and theirs is green through and through. Pictures of the Dune Sea Bastion and the Kaelmoor Badlands checked.
   - **Checked:** the quick regression set passes (two colour values changed; the full set passed on the plan before).

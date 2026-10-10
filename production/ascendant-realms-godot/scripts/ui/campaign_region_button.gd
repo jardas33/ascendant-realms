@@ -74,7 +74,7 @@ func _draw() -> void:
 	var ry := RIBBON_Y
 	var rh := RIBBON_H
 	var inset := 18.0
-	var parch_hi := Color(0.86, 0.78, 0.60) if route_open or route_cleared else Color(0.46, 0.46, 0.48)
+	var parch_hi := Color(0.86, 0.78, 0.60) if route_open or route_cleared else Color(0.56, 0.57, 0.60)
 	var parch_lo := parch_hi.darkened(0.28)
 	var tail := 16.0
 	var left_tail := PackedVector2Array([Vector2(inset - tail, ry + 6), Vector2(inset + 6, ry + 6), Vector2(inset + 6, ry + rh + 6), Vector2(inset - tail, ry + rh + 6), Vector2(inset - tail + 8, ry + rh * 0.5 + 6)])

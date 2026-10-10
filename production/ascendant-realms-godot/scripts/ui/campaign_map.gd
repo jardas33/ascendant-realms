@@ -116,7 +116,9 @@ func _build() -> void:
 		choice = "  ·  The Wall is broken"
 	elif String(s["choice"]) == "seize":
 		choice = "  ·  The Wall is yours"
-	var banner := _label("%s  ·  %s%s" % [hero_line, jars, choice], 16, Color(0.85, 0.78, 0.5), true)
+	var banner := _label("%s  ·  %s%s" % [hero_line, jars, choice], 17, Color(0.96, 0.88, 0.62))
+	# Plain body face: the title face's small capitals close up under the
+	# map labels' dark outline at this size.
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	banner.offset_top = 60.0
@@ -819,7 +821,7 @@ func _build_node(c: Dictionary) -> void:
 	btn.jar_found = id in s["jars"]
 	btn.is_next = id == _next_id
 	# The chapter's name rides the parchment ribbon under its seal.
-	var name_lbl := _label(String(c["title"]), 17, Color(0.13, 0.07, 0.02) if (available or cleared) else Color(0.16, 0.17, 0.20), true)
+	var name_lbl := _label(String(c["title"]), 17, Color(0.13, 0.07, 0.02) if (available or cleared) else Color(0.05, 0.06, 0.08), true)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -830,7 +832,7 @@ func _build_node(c: Dictionary) -> void:
 	name_lbl.add_theme_constant_override("line_spacing", -4)
 	# A hairline outline in the ink colour thickens the engraved letters so
 	# they stay legible when the page is scaled down.
-	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85))
+	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85) if (available or cleared) else Color(0.05, 0.06, 0.08, 0.85))
 	name_lbl.add_theme_constant_override("outline_size", 1)
 	name_lbl.position = Vector2(26.0, btn.RIBBON_Y)
 	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.RIBBON_H)
