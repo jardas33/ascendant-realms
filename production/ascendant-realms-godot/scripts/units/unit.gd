@@ -611,7 +611,10 @@ func _apply_race_passive() -> void:
 		"hollow":                         # Undying — every warrior drains life on hit
 			# 26-44 over the four six-map checks of plans 100 to 103, in the
 			# bottom three every time: 11% (was 9%).
-			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.11)
+			# 28-44 over the two runs of plans 178 and 180, and 1-7 against
+			# each of the two peoples whose healers now mend in a fight and
+			# out-mend an 11% drain: 16%.
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.16)
 			# Still 19-49 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +8% health.
 			max_hp *= 1.08
 			hp = max_hp

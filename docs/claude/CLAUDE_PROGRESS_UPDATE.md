@@ -1276,6 +1276,11 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 182 (done): The Compaña level (28-44 to 37-33)**
+  - **Why they had fallen:** their gift is that every warrior drains a little life with each blow. Since plan 174 four other peoples have healers that mend in a fight, and a healer out-mends an 11% drain: The Compaña lost 1-7 to the Lioraen Concord and 1-7 to the Wolfveil Clans.
+  - **Change:** the drain is 16% (it was 11%).
+  - **Measured, 72 Compaña matches:** 20-15 on the hand-built maps and 17-18 on the small ones. They were 28-44 over the two runs before.
+  - **Checked:** 94 regression checks pass. A 180-match run of the whole table on this build is running, to confirm today's six balance changes together.
 - **Plan 181 (done): the Moura Court level on both kinds of map; the Lioraen question answered**
   - **Lioraen Concord on the second set of hand-built maps** (where they went 5-13 in the confirmation run): 36 Lioraen matches there gave 21-13. The 5-13 was chance (18 matches, two opponents a map). With the 19-16 on the first set they are level on all twelve hand-built maps measured. Nothing changed.
   - **Moura Court:** their last extra reach is gone (it was +1.5 before today, then +0.5). Their Longbows still outrange every other people's archers by one, and they keep their keener sight. **72 matches: 19-16 on the hand-built maps and 19-16 on the small ones.** They were 27-8 two plans ago and first in five balance runs of six.
