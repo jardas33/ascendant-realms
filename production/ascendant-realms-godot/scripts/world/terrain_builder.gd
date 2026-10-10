@@ -20,10 +20,16 @@ const GROUND_SHADER := "res://assets/shaders/ground_blend.gdshader"
 # scenery geometry (world metres, all beyond the ±140 play walls)
 const GROUND_SIZE := 640.0
 const GROUND_CENTER := Vector3(0, 0, -90)
-const MTN_INNER := 196.0
+# (The foot stood at 196 m with ten of wander, and the corner of the
+# battlefield is 198 m out: a flat tongue of rock lay across every corner,
+# in sight of a corner base. At 212 the corners are open ground.)
+const MTN_INNER := 212.0
+# The foot starts this far under the ground, so the rock comes up out of
+# the turf along an uneven line and not as a flat sheet lying on it.
+const MTN_FOOT_DEPTH := 2.5
 const MTN_OUTER := 312.0
 const MTN_PEAK := 60.0
-const MTN_COLS := 132
+const MTN_COLS := 176
 const MTN_ROWS := 12
 # northern bay left open for the lake (angles measured atan2(z,x), radians)
 const BAY_MIN := 1.01229   # 58°
@@ -347,23 +353,33 @@ func _mtn_vertex(ang: float, t: float, noise: FastNoiseLite, ridge: FastNoiseLit
 	var h: float = MTN_PEAK * prof * (0.4 + 0.85 * n + 0.35 * rg)
 	# jitter radius slightly so the footprint isn't a perfect circle
 	var rr: float = r + noise.get_noise_2d(cz * r, cx * r) * 10.0
-	return Vector3(cos(ang) * rr, h, sin(ang) * rr)
+	return Vector3(cos(ang) * rr, h - MTN_FOOT_DEPTH, sin(ang) * rr)
 
 
 func _add_tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
-	st.set_uv(Vector2(a.x, a.z) * 0.03); st.add_vertex(a)
-	st.set_uv(Vector2(b.x, b.z) * 0.03); st.add_vertex(b)
-	st.set_uv(Vector2(c.x, c.z) * 0.03); st.add_vertex(c)
+	# Darker where the rock meets the ground, as under any slope's foot.
+	for v in [a, b, c]:
+		var shade: float = lerpf(0.72, 1.0, smoothstep(-MTN_FOOT_DEPTH, 16.0, v.y))
+		st.set_color(Color(shade, shade, shade))
+		st.set_uv(Vector2(v.x, v.z) * 0.03)
+		st.add_vertex(v)
 
 
 func _make_rock_material() -> Material:
 	var m := StandardMaterial3D.new()
 	if ResourceLoader.exists(GROUND_TEX["rock"]):
 		m.albedo_texture = load(GROUND_TEX["rock"])
-		m.uv1_scale = Vector3(1, 1, 1)
+		# Laid on in world metres. (It was laid by the mesh's own coordinates,
+		# one tile to 33 m and more on a large field: each stone of the
+		# texture was drawn ten metres wide.)
+		m.uv1_triplanar = true
+		m.uv1_world_triplanar = true
+		m.uv1_scale = Vector3(0.07, 0.07, 0.07)
+		m.uv1_blend_sharpness = 4.0
 	else:
 		m.albedo_color = Color(0.38, 0.36, 0.34)
 	m.albedo_color = _theme.get("rock_tint", Color(0.72, 0.72, 0.7))
+	m.vertex_color_use_as_albedo = true
 	m.roughness = 1.0
 	m.metallic = 0.0
 	return m

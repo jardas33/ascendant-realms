@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 195 (done): the corners of every battlefield, where the mountains begin**
+  - **What a player saw from a corner base:** forty metres from the keep the grass stopped at a straight zig-zag line, and beyond it lay a flat grey sheet of cobbles, each stone ten metres wide. It was the foot of the ring of mountains round the field: it began two metres inside each corner of the playable square, lay flat on the ground there, and its rock picture was stretched to 33 m a tile (52 m on the large maps).
+  - **Now:** the ring begins beyond the corners on every map, large and small. Its foot starts under the turf, so the rock rises out of the ground along an uneven line. The rock is drawn at a true scale and is a little darker at the foot. Pictures checked on Salto Valley, the Four Peaks, Thornwild and Hollowspan (with its river running to the ring).
+  - Nothing a unit can walk on changed: the ring was always outside the walkable field and still is.
+  - **Checked:** all 94 checks of the full regression pass.
 - **Plan 194 (done): snow on the woods and boulders of snow fields; the last two uneven maps evened**
   - **Woods on the snow maps** stood dark green among white trees: plan 193 had snowed only the lone trees. A wood's trees are now drawn the same way as lone ones on every map, so they carry snow where there is snow, and everywhere they move in the wind and are shaded under the crown. Pictures of the Four Peaks and of Salto Valley checked.
   - **Lone boulders on the snow maps** kept their bright green moss. Under snow the moss is now grey and snow lies on top of the stone.
