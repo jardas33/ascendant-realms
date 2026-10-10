@@ -1276,6 +1276,9 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 198 (done): rocky ground drawn at a believable scale**
+  - Every green, ashen and sand map has patches of rocky ground in its fields. Each stone in them was drawn three metres wide, wider than a soldier is tall, so a patch read as a square paved with giant flagstones. The stones are now about a metre and a half, and the picture is laid two ways and blended so it does not repeat in a grid. Pictures of Hollowspan, Thornwild and Boticas checked.
+  - **Checked:** the quick regression set passes (a one-line change to how the ground is drawn; the full set passed on the plan before).
 - **Plan 197 (done): the edge of the battlefield can be seen**
   - **Before:** at the edge of a map the screen shows some sixty metres of ground beyond it, drawn exactly like the field, with trees and stones. Nothing showed where the field ended; an army sent there stopped at a line nobody could see.
   - **Now:** the ground beyond the edge lies in shade (darker and a little greyer, along a soft uneven line), and the trees and boulders that stand out there are shaded with it. Inside the field nothing changed. Pictures at an edge checked on Salto Valley, the Four Peaks and Thornwild.

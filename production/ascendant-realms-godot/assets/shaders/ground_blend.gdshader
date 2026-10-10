@@ -211,9 +211,12 @@ void fragment() {
 	ground = mix(ground, dirt, dirt_m * 0.85);
 
 	// scattered rocky ground where a second noise field peaks (rock_bias -> stony biome)
+	// (Drawn at about a metre and a half a stone. At half this scale each
+	// stone was three metres wide, wider than a soldier is tall, and a rocky
+	// patch read as a square paved with giant flags.)
 	vec3 rock = volcanic_surface > 0.5
 		? texture(tex_volcanic, mirrored_uv(rot * wxz * tile_volcanic * 1.09 + 0.61)).rgb * vec3(0.89, 0.94, 1.02)
-		: texture(tex_rock, wxz * tile_rock * 0.52).rgb;
+		: mix(texture(tex_rock, wxz * tile_rock).rgb, texture(tex_rock, rot * wxz * tile_rock * 0.81 + 0.43).rgb, tile_mix);
 	float rock_m = clamp(smoothstep(0.62, 0.80, fbm(wxz * 0.02 + 21.0)) + rock_bias, 0.0, 1.0);
 	ground = mix(ground, rock, rock_m);
 
