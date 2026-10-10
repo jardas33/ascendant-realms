@@ -342,6 +342,20 @@ func _fit_to_viewport() -> void:
 		var portrait_rect := _selection_portrait.get_global_rect() if portrait_ready else Rect2()
 		_command_chassis.configure(selected_rect, command_rect, portrait_rect, portrait_ready)
 		_command_chassis.visible = _sel_panel.visible and _cmd_panel.visible
+		# The chassis is the backdrop of both panels and is drawn only when both
+		# show. A selection without orders (a tower, an enemy) stood as bare
+		# text over the ground: alone, the selection panel carries its own plate.
+		var alone: bool = _sel_panel.visible and not _cmd_panel.visible
+		if alone != bool(_sel_panel.get_meta("lone_plate", false)):
+			_sel_panel.set_meta("lone_plate", alone)
+			var plate := _hud_stylebox()
+			if alone:
+				plate.bg_color = Color(0.035, 0.045, 0.05, 0.94)
+				plate.border_color = Color(0.64, 0.46, 0.26, 0.85)
+				plate.set_border_width_all(2)
+				plate.set_corner_radius_all(6)
+				plate.set_expand_margin_all(6)
+			_sel_panel.add_theme_stylebox_override("panel", plate)
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -100.0
 		_menu_button.offset_right = -12.0

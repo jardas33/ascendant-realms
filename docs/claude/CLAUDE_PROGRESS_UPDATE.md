@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 206 (done): a selection without orders has a backdrop**
+  - It was not a fade. The dark plate behind the selection panel and the command panel is one drawing, shown only when both panels show. Anything selected that has no orders (a tower; I expect also enemy units and buildings, not photographed) stood as bare text and a portrait over the ground.
+  - Fixed: when the selection panel stands alone it carries its own dark plate with a bronze edge. Photographed with a Granitborn tower selected, and with a forge selected to see that the joined plate is unchanged.
+  - Full regression: 94 of 94 (566 s). The tutorial walk-through that failed once in the plan 205 run passed here.
 - **Plan 205 (done): build cards show the whole building**
   - Cause: on the small build cards, buildings without painted art were photographed with the camera meant for a soldier's head and shoulders, so the card showed a piece of roof or wall. This applied to every people except the Barrosan Clans and the Lioraen Concord, whose buildings have painted art.
   - Fixed: buildings always get the building camera, closer on small cards. The picture is centred on the body of the building, so the Aurean palace (not centred in its file) is whole and the Ledger Stone and Treasury (which carry a small far-off part) are no longer specks.
