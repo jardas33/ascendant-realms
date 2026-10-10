@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 199 (done): snow on the roofs; battles photographed on today's changed maps**
+  - **Battles in progress** photographed at five and seven minutes on the Four Peaks (snow), Malrec's Pyre (volcanic) and Salto Valley (green), to see today's ground, edges, woods and boulders with bases and armies on them. Nothing drawn at a wrong size; the new ground reads well under units.
+  - **What the snow pictures showed:** every building stood with a bare brown roof on white ground. On snow maps the snow now lies on roofs and on whatever else of a building faces the sky, in uneven drifts, and not on the lowest metre. A building going up gets its snow only as far as it is built. Picture of a Careto base checked.
+  - It is one extra drawing pass for each building, on snow maps only (the Four Peaks, the Castro of Carvalhelhos and the other snow fields).
+  - **Checked:** all 94 checks of the full regression pass. (The run took 639 s against 534 to 577 s earlier today; the checks use no snow map, so I do not think the roofs are the cause, but I have not found one.)
 - **Plan 198 (done): rocky ground drawn at a believable scale**
   - Every green, ashen and sand map has patches of rocky ground in its fields. Each stone in them was drawn three metres wide, wider than a soldier is tall, so a patch read as a square paved with giant flagstones. The stones are now about a metre and a half, and the picture is laid two ways and blended so it does not repeat in a grid. Pictures of Hollowspan, Thornwild and Boticas checked.
   - **Checked:** the quick regression set passes (a one-line change to how the ground is drawn; the full set passed on the plan before).

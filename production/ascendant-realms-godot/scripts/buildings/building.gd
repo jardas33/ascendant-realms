@@ -434,6 +434,22 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
 	_add_selection_pick_shape()
+	_lay_roof_snow()
+
+static var _roof_snow_material: ShaderMaterial
+
+## On a field under snow the snow lies on the roofs too: one shared material
+## drawn over each part's own (bare roofs stood on white ground). It follows
+## the work line of a building going up, so none hangs over an unbuilt wall.
+func _lay_roof_snow() -> void:
+	if world == null or str(world.map.get("theme", "")) != "snow":
+		return
+	if _roof_snow_material == null:
+		_roof_snow_material = ShaderMaterial.new()
+		_roof_snow_material.shader = load("res://assets/shaders/roof_snow.gdshader")
+	for mi in _mesh_instances:
+		if is_instance_valid(mi):
+			mi.material_overlay = _roof_snow_material
 
 
 static var _banner_material: ShaderMaterial
