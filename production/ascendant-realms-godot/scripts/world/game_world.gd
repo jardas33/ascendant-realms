@@ -4911,8 +4911,8 @@ func _bake_overview_texture() -> void:
 		for sy in 8:
 			level += sample.get_pixel(sx, sy).get_luminance()
 	level /= 64.0
-	if level > 0.01 and level < 0.24:
-		img.adjust_bcs(clampf(0.27 / level, 1.0, 2.4), 1.06, 1.05)
+	if level > 0.01 and level < 0.28:
+		img.adjust_bcs(clampf(0.32 / level, 1.0, 3.2), 1.06, 1.05)
 	if bool(map.get("authored", false)):
 		if img.get_format() != Image.FORMAT_RGBA8:
 			img.convert(Image.FORMAT_RGBA8)

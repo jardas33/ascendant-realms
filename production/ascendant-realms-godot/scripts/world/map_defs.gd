@@ -2445,9 +2445,11 @@ static func theme(name: String) -> Dictionary:
 			"ground_tint": Color(0.84, 0.84, 0.88), "dirt_bias": 0.2, "rock_bias": 0.22, "snow": 0.0,
 			"rock_tint": Color(0.55, 0.55, 0.58),
 			"fog_color": Color(0.55, 0.56, 0.61), "fog_density": 0.00074,
-			"sun_color": Color(0.88, 0.86, 0.86), "sun_energy": 0.96, "ambient_energy": 0.48,
+			# (Brighter than it was, sun 0.96 and ambient 0.48: on the dark ash
+			# of Boticas a fight in the open could barely be seen.)
+			"sun_color": Color(0.92, 0.90, 0.90), "sun_energy": 1.15, "ambient_energy": 0.72,
 			"fog_aerial_perspective": 0.35, "ssao": true, "glow": true, "sun_pitch": -44.0,
-			"grade_contrast": 1.08, "grade_saturation": 0.95, "grade_brightness": 1.0,
+			"grade_contrast": 1.06, "grade_saturation": 0.95, "grade_brightness": 1.08,
 			"decor_density": 0.7,
 			"water": {"enabled": false},
 		},
