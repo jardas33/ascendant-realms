@@ -1454,12 +1454,16 @@ func _choose_unit(choices: Array) -> String:
 	# soldier but one wears light armour, a Granitborn AI answered with 22
 	# crossbows in an army of 25 (pierce does 1.3 to light and 0.7 to heavy),
 	# and the Lioraen AI went on training light troops into them.
+	# (Half weight, the square root: at full weight heavy armour won almost
+	# every comparison, since both swords and arrows are weak against it, and
+	# a Granitborn AI fielded 13 slow Ironbreakers in an army of 25 and could
+	# not finish a match it was winning.)
 	var incoming := _dominant_enemy_damage()
 	legal.sort_custom(func(a, b):
 		var da := GameData.get_unit(a)
 		var db := GameData.get_unit(b)
-		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1))) / GameData.damage_multiplier(incoming, String(da.get("armor_class", "light")))
-		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1))) / GameData.damage_multiplier(incoming, String(db.get("armor_class", "light")))
+		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1))) / sqrt(GameData.damage_multiplier(incoming, String(da.get("armor_class", "light"))))
+		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1))) / sqrt(GameData.damage_multiplier(incoming, String(db.get("armor_class", "light"))))
 		return sa > sb)
 	# Keep about a third of the army at range. All-melee armies (Barrosan,
 	# Karak, Frostborn picks) could not answer archers raiding their workers.

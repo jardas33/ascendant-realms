@@ -548,9 +548,12 @@ func _apply_race_passive() -> void:
 			# AI (overbuilt houses, starved of food, too many workers), fixed
 			# in enemy_ai.gd; the stats get only a little more reach (+1.5).
 			# 45-25 over the four six-map checks on the AI of plans 102 to 104 (360 matches): +3% (was +6%).
-			base_dmg *= 1.03
+			# Plan 178: with their Silver Choristers healing in a fight they
+			# were first by a distance in three runs of 180 (25-10, 27-9 and,
+			# with this change already in, 24-11 under an AI that has since
+			# been corrected). No damage bonus, and +0.5 reach (was +1.5).
 			if atk_range > 0.0:
-				atk_range += 1.5
+				atk_range += 0.5
 		"karak":                          # Stone Resolve — armored and hardy
 			# 2 wins in the plan 34 round robin: a touch more bite.
 			base_armor += 1.0
