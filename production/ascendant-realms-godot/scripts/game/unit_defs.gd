@@ -670,13 +670,18 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "frostborn_war_hall",
 		"desc": "Hunts on the Larouco where no one else can breathe.",
 	},
+	# The Wild Careto strikes with staff and cowbells: blunt, not slash
+	# (plan 184). Like the Ironmaw before plan 179, the Host had nothing
+	# below its third age that was strong against heavy armour: 37% and 42%
+	# in the runs of plans 178 to 183, and 20% more damage changed nothing
+	# (24-43 over 71 matches).
 	"frostborn_berserker": {
 		"race": "frostborn", "name": "Wild Careto", "role": "melee", "tier": 2,
 		"model": _char("frostborn_warrior"), "height": 2.0,
-		"hp": 162, "dmg": 24, "dmg_type": "slash", "armor_class": "medium", "armor": 2,
+		"hp": 162, "dmg": 24, "dmg_type": "blunt", "armor_class": "medium", "armor": 2,
 		"range": 0.0, "attack_cd": 0.9, "speed": 4.4, "vision": 22.0,
 		"cost": {"food": 90, "gold": 40}, "build_time": 18, "pop": 2, "produced_by": "frostborn_war_hall",
-		"desc": "A masker who has danced so long that the mask has danced back.",
+		"desc": "A masker who has danced so long that the mask has danced back. He lays about him with his staff and his iron bells.",
 	},
 	"frostborn_jotun": {
 		"race": "frostborn", "name": "Winter Giant", "role": "antiarmor", "tier": 3,
