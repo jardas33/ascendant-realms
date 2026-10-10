@@ -179,11 +179,16 @@ void fragment() {
 	// a visible grid across the battlefield.
 	float tile_mix = smoothstep(0.3, 0.7, fbm2(wxz * 0.021 + 7.0));
 	mat2 rot = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
+	// A second turn for the mirrored tiles (volcanic rock, snow). Laid
+	// square to the map at a fixed mix, their mirror lines drew a lattice of
+	// diamonds across the field; each sample is turned a different way and
+	// the mix wanders.
+	mat2 turn = mat2(vec2(0.9553, 0.2955), vec2(-0.2955, 0.9553));
 	vec3 ground;
 	if (volcanic_surface > 0.5) {
-		vec3 basalt_a = texture(tex_volcanic, mirrored_uv(wxz * tile_volcanic)).rgb;
+		vec3 basalt_a = texture(tex_volcanic, mirrored_uv(turn * wxz * tile_volcanic)).rgb;
 		vec3 basalt_b = texture(tex_volcanic, mirrored_uv(rot * wxz * tile_volcanic * 0.73 + 0.37)).rgb;
-		ground = mix(basalt_a, basalt_b, 0.10 + 0.12 * tile_mix);
+		ground = mix(basalt_a, basalt_b, mix(0.15, 0.65, tile_mix));
 	} else {
 		vec3 grass_a = mix(texture(tex_grass, wxz * tile_grass * 0.42).rgb,
 			texture(tex_grass, rot * wxz * tile_grass * 0.29 + 0.37).rgb, tile_mix);
@@ -252,9 +257,9 @@ void fragment() {
 		snow_surface *= mix(0.92, 1.04, snow_micro) * mix(1.0, 0.94, snow_variation_strength * (1.0 - snow_value));
 		// Mirrored UVs keep the generated albedo continuous at tile boundaries;
 		// broad procedural grade masks the mirrored repeat at gameplay scale.
-		vec2 snow_uv = 1.0 - abs(fract(wxz * tile_snow) * 2.0 - 1.0);
-		vec2 snow_uv_detail = 1.0 - abs(fract(wxz * tile_snow * 1.37 + vec2(0.31, 0.57)) * 2.0 - 1.0);
-		vec3 snow_albedo = mix(texture(tex_snow, snow_uv).rgb, texture(tex_snow, snow_uv_detail).rgb, 0.36);
+		vec2 snow_uv = mirrored_uv(turn * wxz * tile_snow);
+		vec2 snow_uv_detail = mirrored_uv(rot * wxz * tile_snow * 0.71 + vec2(0.31, 0.57));
+		vec3 snow_albedo = mix(texture(tex_snow, snow_uv).rgb, texture(tex_snow, snow_uv_detail).rgb, mix(0.2, 0.8, tile_mix));
 		snow_surface = mix(snow_surface, snow_albedo, 0.87);
 		snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));

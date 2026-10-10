@@ -2520,10 +2520,14 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	var leaf_tone: Color = DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE)
 	if is_tree and _scorched_tone("tree") != Color.WHITE:
 		leaf_tone = _scorched_tone("tree")
-	# Under snow a boulder is snowed on too and its moss is greyed (a negative
-	# height asks for the tree material without the wind).
-	var snowed_rock: bool = not is_tree and str(map.get("theme", "")) == "snow"
-	_prep_decor(inst, leaf_tone, h if is_tree else (-h if snowed_rock else 0.0))
+	# Nor does moss stay green there: on scorched, sand and snow ground a
+	# boulder takes the tone of the theme's rock and its moss is greyed, and
+	# under snow it is snowed on (a negative height asks for the tree
+	# material without the wind).
+	var toned_rock: bool = not is_tree and _scorched_tone("rock") != Color.WHITE
+	if toned_rock:
+		leaf_tone = _scorched_tone("rock")
+	_prep_decor(inst, leaf_tone, h if is_tree else (-h if toned_rock else 0.0))
 	if _is_substantial_environment_asset(path) and is_inside_playable_bounds(pos, 1.0):
 		_register_environment_world_blocker(inst, "decor_%s" % str(inst.get_instance_id()), "vegetation" if "/environment/vegetation/" in path else "rocks")
 

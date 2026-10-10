@@ -375,7 +375,7 @@ func _make_rock_material() -> Material:
 		m.uv1_triplanar = true
 		m.uv1_world_triplanar = true
 		m.uv1_scale = Vector3(0.07, 0.07, 0.07)
-		m.uv1_blend_sharpness = 4.0
+		m.uv1_triplanar_sharpness = 4.0
 	else:
 		m.albedo_color = Color(0.38, 0.36, 0.34)
 	m.albedo_color = _theme.get("rock_tint", Color(0.72, 0.72, 0.7))
