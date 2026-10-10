@@ -83,10 +83,14 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 50}, "build_time": 12, "pop": 1,
 		"desc": "Tends the springs and grows living halls from seed. Village women still leave bread for them at the fountains.",
 	},
+	# 125 health and 1 armour (was 115 and 0, the frailest soldier at its
+	# price): without heroes or healers the Lioraen's tier-one army lost
+	# equal-cost open fights 1-5 to the Aurean Dominion and 0-6 to the
+	# Granitborn and the Moura Court (plan 174).
 	"lioraen_bloomdancer": {
 		"race": "lioraen", "name": "Bloomdancer", "role": "melee", "tier": 1,
 		"model": _char("lioraen_bloomdancer"), "height": 1.8,
-		"hp": 115, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 0,
+		"hp": 125, "dmg": 14, "dmg_type": "slash", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 0.95, "speed": 4.2, "vision": 20.0,
 		"cost": {"food": 60, "timber": 10}, "build_time": 12, "pop": 1, "produced_by": "barracks",
 		"desc": "A spring-dancer of the Concord who strikes and is gone like light on water.",
@@ -115,12 +119,15 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 90, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "barracks",
 		"desc": "The fastest rider in the highlands, a lancer on a stag of living wood.",
 	},
+	# Healers heal 11 a cast (was 14) now that they heal in a fight and not
+	# only at rest (plan 174): at 14 the three other healer peoples won 13-5
+	# each on the small maps.
 	"lioraen_canopy_mender": {
 		"race": "lioraen", "name": "Canopy Mender", "role": "healer", "tier": 2,
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
 		"hp": 95, "dmg": 8, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
-		"heal": 14.0, "heal_range": 13.0, "heal_cd": 1.2,
+		"heal": 11.0, "heal_range": 13.0, "heal_cd": 1.2,
 		"cost": {"food": 80, "gold": 30}, "build_time": 20, "pop": 2, "produced_by": "arcane",
 		"desc": "Sings the wounded whole with the old spring songs. Turns every skirmish into a war you outlast.",
 	},
@@ -345,7 +352,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
 		"hp": 110, "dmg": 10, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
-		"heal": 14.0, "heal_range": 13.0, "heal_cd": 1.2,
+		"heal": 11.0, "heal_range": 13.0, "heal_cd": 1.2,
 		"cost": {"food": 80, "gold": 30}, "build_time": 20, "pop": 2, "produced_by": "sylvan_arcanum",
 		"desc": "Mends wounds with bought light. It never quite feels warm.",
 	},
@@ -476,7 +483,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
 		"hp": 95, "dmg": 8, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
-		"heal": 14.0, "heal_range": 13.0, "heal_cd": 1.2,
+		"heal": 11.0, "heal_range": 13.0, "heal_cd": 1.2,
 		"cost": {"food": 80, "gold": 30}, "build_time": 20, "pop": 2, "produced_by": "sunspear_temple",
 		"desc": "Preaches a world without Ascensions, and heals those who fight for it.",
 	},
@@ -542,7 +549,7 @@ static func get_all() -> Dictionary:
 		"model": _char("lioraen_canopy_mender"), "height": 1.8,
 		"hp": 95, "dmg": 8, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
-		"heal": 14.0, "heal_range": 13.0, "heal_cd": 1.2,
+		"heal": 11.0, "heal_range": 13.0, "heal_cd": 1.2,
 		"cost": {"food": 80, "gold": 30}, "build_time": 20, "pop": 2, "produced_by": "wyldkin_shaman_grove",
 		"desc": "Howls the pack into a frenzy under the full moon.",
 	},

@@ -120,12 +120,14 @@ func _build() -> void:
 	var quality_names := ["low", "medium", "high"]
 	display.add_child(_option_row("Graphics Quality", ["Low", "Medium", "High"], maxi(0, quality_names.find(String(s.get("graphics", "high")))), func(index):
 		ProfileManager.update_setting("graphics", quality_names[index])))
+	# Two settings about the battle, not the screen, had lived under Display.
+	var battle := _group(left, "BATTLE")
 	# Loot piles up over a long campaign; melt low tiers into experience on drop.
 	var salvage_names := ["none", "common", "uncommon", "rare"]
-	display.add_child(_option_row("Auto-salvage Loot", ["Off", "Common", "Up to Uncommon", "Up to Rare"], maxi(0, salvage_names.find(String(s.get("auto_salvage", "none")))), func(index):
+	battle.add_child(_option_row("Auto-salvage Loot", ["Off", "Common", "Up to Uncommon", "Up to Rare"], maxi(0, salvage_names.find(String(s.get("auto_salvage", "none")))), func(index):
 		ProfileManager.update_setting("auto_salvage", salvage_names[index])))
 	# Floating damage numbers can crowd a big melee; some players prefer them off.
-	display.add_child(_toggle_row("Show Damage Numbers", bool(s.get("damage_numbers", true)), func(on):
+	battle.add_child(_toggle_row("Show Damage Numbers", bool(s.get("damage_numbers", true)), func(on):
 		ProfileManager.update_setting("damage_numbers", on)))
 
 	var camera := _group(left, "CAMERA")
@@ -293,6 +295,12 @@ func _draw_section_emblem(ci: Control, kind: String) -> void:
 		"DISPLAY":
 			ci.draw_rect(Rect2(c + Vector2(-8, -6), Vector2(16, 11)), gold, false, 1.6)
 			ci.draw_line(c + Vector2(-4, 8), c + Vector2(4, 8), gold, 1.6, true)
+		"BATTLE":
+			# Crossed swords.
+			ci.draw_line(c + Vector2(-7, 7), c + Vector2(7, -7), gold, 1.8, true)
+			ci.draw_line(c + Vector2(7, 7), c + Vector2(-7, -7), gold, 1.8, true)
+			ci.draw_line(c + Vector2(-8, 3), c + Vector2(-3, 8), gold, 1.6, true)
+			ci.draw_line(c + Vector2(8, 3), c + Vector2(3, 8), gold, 1.6, true)
 		"CAMERA":
 			ci.draw_arc(c, 6.0, 0.0, TAU, 20, gold, 1.6, true)
 			ci.draw_circle(c, 2.4, gold)

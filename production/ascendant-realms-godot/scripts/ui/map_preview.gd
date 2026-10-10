@@ -64,29 +64,26 @@ func _draw() -> void:
 	# ground, the shallows of each ford, and the bridges. (It has none of the
 	# generated maps' roads or edge water, which were drawn here before.)
 	var authored := bool(map_data.get("authored", false))
-	if authored:
-		overview = {}
-		var theme_name := str(map_data.get("theme", "highland"))
-		var tints := {"hill": ground.lightened(0.16), "forest": Color(0.11, 0.24, 0.11), "water": Color(0.16, 0.40, 0.58), "rock": Color(0.33, 0.31, 0.29), "masonry": Color(0.76, 0.74, 0.70)}
-		match theme_name:
-			"volcanic":
-				tints["water"] = Color(0.92, 0.42, 0.10)
-				tints["forest"] = Color(0.20, 0.15, 0.12)
-				tints["rock"] = Color(0.22, 0.14, 0.12)
-				tints["hill"] = Color(0.24, 0.16, 0.14)
-			"ashen":
-				tints["forest"] = Color(0.21, 0.19, 0.20)
-				tints["hill"] = Color(0.22, 0.21, 0.24)
-			"snow":
-				tints["forest"] = Color(0.26, 0.38, 0.36)
-				tints["rock"] = Color(0.40, 0.42, 0.50)
-				tints["hill"] = Color(0.95, 0.96, 1.0)
-			"desert", "badlands":
-				tints["rock"] = Color(0.52, 0.40, 0.28)
-				tints["hill"] = Color(0.86, 0.72, 0.50)
-				tints["forest"] = Color(0.36, 0.34, 0.18)
-		for road in map_data.get("roads", []):
-			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.010), true)
+	var theme_name := str(map_data.get("theme", "highland"))
+	var tints := {"hill": ground.lightened(0.16), "forest": Color(0.11, 0.24, 0.11), "water": Color(0.16, 0.40, 0.58), "rock": Color(0.33, 0.31, 0.29), "masonry": Color(0.76, 0.74, 0.70)}
+	match theme_name:
+		"volcanic":
+			tints["water"] = Color(0.92, 0.42, 0.10)
+			tints["forest"] = Color(0.20, 0.15, 0.12)
+			tints["rock"] = Color(0.22, 0.14, 0.12)
+			tints["hill"] = Color(0.24, 0.16, 0.14)
+		"ashen":
+			tints["forest"] = Color(0.21, 0.19, 0.20)
+			tints["hill"] = Color(0.22, 0.21, 0.24)
+		"snow":
+			tints["forest"] = Color(0.26, 0.38, 0.36)
+			tints["rock"] = Color(0.40, 0.42, 0.50)
+			tints["hill"] = Color(0.95, 0.96, 1.0)
+		"desert", "badlands":
+			tints["rock"] = Color(0.52, 0.40, 0.28)
+			tints["hill"] = Color(0.86, 0.72, 0.50)
+			tints["forest"] = Color(0.36, 0.34, 0.18)
+	var draw_tiles := func() -> void:
 		# Each blocking tile is drawn as a disc a little wider than itself, so
 		# a run of tiles reads as one smooth wood, river or wall and not as a
 		# staircase of squares. Rock, walls and woods get a dark edge first,
@@ -115,6 +112,11 @@ func _draw() -> void:
 						var tile_rect := Rect2(corner_a, corner_b - corner_a).intersection(rect)
 						if tile_rect.size.x > 0.0 and tile_rect.size.y > 0.0:
 							draw_rect(tile_rect, tint)
+	if authored:
+		overview = {}
+		for road in map_data.get("roads", []):
+			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.010), true)
+		draw_tiles.call()
 		for ford in map_data.get("fords", []):
 			var ford_at: Vector2 = to_px.call(ford["pos"])
 			var ford_r: float = float(ford["half"]) / (half * 2.0) * side
@@ -137,12 +139,25 @@ func _draw() -> void:
 				var bp: Vector2 = to_px.call(map_data["bridge"]["pos"])
 				draw_rect(Rect2(bp - Vector2(side * 0.025, (b.y - a.y) * 0.6), Vector2(side * 0.05, (b.y - a.y) * 1.2)), Color(0.46, 0.34, 0.22))
 		else:
-			draw_circle(to_px.call(Vector3(0, 0, wz)), ww / (half * 2.0) * side * 1.4, water)
+			# (Clipped to the frame: on Autumn Reach the bay hung out of the
+			# bottom of the map, over the border.)
+			var bay_at: Vector2 = to_px.call(Vector3(0, 0, wz))
+			var bay_r: float = ww / (half * 2.0) * side * 1.4
+			var bay := PackedVector2Array()
+			for step in 40:
+				bay.append(bay_at + Vector2(cos(TAU * step / 40.0), sin(TAU * step / 40.0)) * bay_r)
+			var frame_poly := PackedVector2Array([rect.position, rect.position + Vector2(rect.size.x, 0), rect.end, rect.position + Vector2(0, rect.size.y)])
+			for piece in Geometry2D.intersect_polygons(bay, frame_poly):
+				draw_colored_polygon(piece, water)
 	for road in overview.get("roads", []):
 		var pts := PackedVector2Array()
 		for p in road:
 			pts.append(to_px.call(p))
 		draw_polyline(pts, Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.012), true)
+	# The older maps have rock ridges too (since 2026-10-01), and the preview
+	# never showed them: the walls a player would have to march round.
+	if not authored:
+		draw_tiles.call()
 	for r in map_data.get("resources", []):
 		var c: Color = KIND_COLORS.get(str(r.get("kind", "")), Color.WHITE)
 		draw_circle(to_px.call(r["pos"]), maxf(2.5, side * 0.011), c)

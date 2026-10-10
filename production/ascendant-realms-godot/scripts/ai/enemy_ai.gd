@@ -1449,11 +1449,17 @@ func _choose_unit(choices: Array) -> String:
 	# the opposing army hardest (slash into Vorthak's unarmoured swarm, pierce
 	# into light troops), still leaning toward higher tiers, with some variety.
 	var dominant := _dominant_enemy_armor()
+	# And wear what the enemy's weapons bite least. An army chosen only by
+	# what it could hurt walked into whatever hurt it most: every Lioraen
+	# soldier but one wears light armour, a Granitborn AI answered with 22
+	# crossbows in an army of 25 (pierce does 1.3 to light and 0.7 to heavy),
+	# and the Lioraen AI went on training light troops into them.
+	var incoming := _dominant_enemy_damage()
 	legal.sort_custom(func(a, b):
 		var da := GameData.get_unit(a)
 		var db := GameData.get_unit(b)
-		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1)))
-		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1)))
+		var sa := GameData.damage_multiplier(String(da.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(da.get("tier", 1))) / GameData.damage_multiplier(incoming, String(da.get("armor_class", "light")))
+		var sb := GameData.damage_multiplier(String(db.get("dmg_type", "slash")), dominant) * (1.0 + 0.15 * float(db.get("tier", 1))) / GameData.damage_multiplier(incoming, String(db.get("armor_class", "light")))
 		return sa > sb)
 	# Keep about a third of the army at range. All-melee armies (Barrosan,
 	# Karak, Frostborn picks) could not answer archers raiding their workers.
@@ -1462,10 +1468,12 @@ func _choose_unit(choices: Array) -> String:
 	for u in commander.units:
 		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
 			army_now += 1
-			if float(u.atk_range) > 0.0:
+			# (A healer has a range and a weak bolt, but it is not an archer:
+			# it used to count toward the third, and to be picked to fill it.)
+			if float(u.atk_range) > 0.0 and float(u.def.get("heal", 0.0)) <= 0.0:
 				ranged_now += 1
 	if army_now >= 3 and float(ranged_now) / float(army_now) < 0.35:
-		var ranged_picks := legal.filter(func(c): return float(GameData.get_unit(c).get("range", 0.0)) > 0.0)
+		var ranged_picks := legal.filter(func(c): return float(GameData.get_unit(c).get("range", 0.0)) > 0.0 and float(GameData.get_unit(c).get("heal", 0.0)) <= 0.0)
 		if not ranged_picks.is_empty() and _rng.randf() < 0.75:
 			return ranged_picks[0]
 	# Bring a couple of siege engines once the war drags on. A Barrosan AI
@@ -1483,6 +1491,26 @@ func _choose_unit(choices: Array) -> String:
 	if _rng.randf() < 0.6:
 		return legal[0]
 	return legal[_rng.randi() % legal.size()]
+
+## The damage type most of the enemy's soldiers deal ("slash" when none are
+## in the field yet). Siege engines and healers are not counted: an engine
+## shoots at buildings and a healer's bolt is nothing to dress against.
+func _dominant_enemy_damage() -> String:
+	var counts := {}
+	for u in world.all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == commander.team or u.is_worker:
+			continue
+		if String(u.def.get("role", "")) == "siege" or float(u.def.get("heal", 0.0)) > 0.0:
+			continue
+		var dt := String(u.dmg_type)
+		counts[dt] = int(counts.get(dt, 0)) + 1
+	var best := "slash"
+	var best_n := 0
+	for k in counts:
+		if int(counts[k]) > best_n:
+			best = k
+			best_n = int(counts[k])
+	return best
 
 func _dominant_enemy_armor() -> String:
 	var counts := {}
