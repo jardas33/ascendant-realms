@@ -1276,6 +1276,10 @@ Last updated: 2026-10-09. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 193 (done): snow on the trees of snow fields; menus checked at four window shapes**
+  - **Trees on the snow maps** were summer green on white ground. Their crowns now carry snow: it lies on whatever faces the sky, heaviest at the top, and the trunks and undersides stay dark. Pictures of the Four Peaks checked.
+  - **Settings and the Skirmish page** photographed at 16:9, 16:10, 21:9 and 4:3 after this session's changes to them (a new Battle section, a grouped map picker, two more field-manual entries): everything fits at all four.
+  - **Checked:** the quick regression set passes.
 - **Plan 192 (done): a Barrosan reduction tested and refused. Nothing changed**
   - **The question from plan 191:** the Barrosan Clans were 62% and 66% in the last two full runs. Are they too strong?
   - **The test:** their damage bonus at 7% in place of 12%, 72 matches: 15-18 on the hand-built maps and 10-24 on the old ones, 37% together. A cut of five points of damage cost them some twenty-five points of wins.

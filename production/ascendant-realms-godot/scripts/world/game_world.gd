@@ -2584,6 +2584,9 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	m.set_shader_parameter("uv_scale", standard.uv1_scale)
 	m.set_shader_parameter("roughness_value", maxf(standard.roughness, 0.82))
 	m.set_shader_parameter("tree_height", band)
+	# Under snow the crowns carry it (the material cache is rebuilt for each
+	# battle, so one field's snow does not follow into the next).
+	m.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
 	_decor_material_cache[key] = m
 	return m
 

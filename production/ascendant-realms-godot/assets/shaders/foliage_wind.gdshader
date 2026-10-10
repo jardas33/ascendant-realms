@@ -13,6 +13,9 @@ uniform float roughness_value = 0.85;
 uniform float sway = 0.16;
 uniform float flutter = 0.035;
 uniform float tree_height = 9.0;
+// Snow lying on the crown: 0 none, 1 a field under snow. It settles on
+// whatever faces the sky, heaviest toward the top.
+uniform float snow = 0.0;
 
 varying float v_h;
 
@@ -33,7 +36,10 @@ void vertex() {
 void fragment() {
 	vec3 base = has_texture ? texture(albedo_tex, UV).rgb : vec3(1.0);
 	ALBEDO = base * albedo_color.rgb * mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h));
+	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
+	float lying = snow * smoothstep(0.15, 0.75, dot(normalize(NORMAL), up_view)) * smoothstep(0.25, 0.7, v_h);
+	ALBEDO = mix(ALBEDO, vec3(0.90, 0.93, 0.98), lying * 0.85);
 	ROUGHNESS = roughness_value;
 	SPECULAR = 0.3;
-	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h);
+	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h) * (1.0 - lying);
 }
