@@ -42,16 +42,16 @@ const AUTHORED_BLURBS := {
 	"garrano_pass": "A mountain wall across the high pasture. The pass in the middle is the short road; a gap on each wing is the long way round.",
 	"ashfen_mire": "A bog of black pools with firm ground winding between them, and the ash-glass harvest at its heart.",
 	"tourem_crossing": "The smugglers' village of Tourem straddles the border river at its one bridge. Far out on each wing the river can be waded.",
-	"malrecs_pyre": "The Emberfall rift between two rock walls, the pyre at its centre. Each wall has two gaps for those who will not walk down the middle.",
+	"malrecs_pyre": "The Emberfall rift between two rock walls, the pyre at its center. Each wall has two gaps for those who will not walk down the middle.",
 	"seven_fountains": "Old forest in broad belts with glades between, and six pools ringing the seventh fountain. There is always another ride round.",
 	"bread_fountain": "The fountain stands on an island ringed by its own stream. Four fords cross to it, one facing each camp.",
 	"furna_reservoir": "The reservoir has fallen and the street of drowned Furna is dry between two sheets of water. The bell tower still stands in it.",
 	"envoys_field": "Four old hill forts, one in each corner, each with three gates. Whoever comes out first is seen coming.",
 	"boticas": "A dead town on old granite: one street, eight houses, and the Wine of the Dead buried under the middle of it.",
 	"larouco_road": "The road to the castro climbs between two mountain walls, each with one gate, at opposite ends. Snow lies on all of it.",
-	"castro_carvalhelhos": "The Granitborn hill fort: two rings of stone with their gates out of line, and the ledger of the dead at the centre.",
+	"castro_carvalhelhos": "The Granitborn hill fort: two rings of stone with their gates out of line, and the ledger of the dead at the center.",
 	"candle_road": "Two long meres across the marsh. The road of the dead crosses each on a narrow causeway; an army goes round.",
-	"leonors_cross": "A grey massif fills the middle and nothing crosses it. The road runs in a ring round its foot, through the tombs.",
+	"leonors_cross": "A gray massif fills the middle and nothing crosses it. The road runs in a ring round its foot, through the tombs.",
 	"four_peaks": "Four peaks round a high saddle where the winter is burned. The only ways up are the four passes between them.",
 	"geira_road": "The old road runs dead straight over two rivers by two bridges. The gold of the southern veins lies between the rivers.",
 	"ironmaw_mines": "Nine chambers cut from the rock, a gate in every wall between them, and pools of molten slag. The seam is in the middle one.",
@@ -2473,5 +2473,5 @@ static func _theme_blurb(t: String) -> String:
 		"snow": return "Frozen snowfields"
 		"wetland": return "Foggy marsh & water"
 		"tropical": return "Turquoise island shores"
-		"ashen": return "Grey ruined wastes"
+		"ashen": return "Gray ruined wastes"
 	return ""

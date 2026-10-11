@@ -3371,7 +3371,7 @@ func _unit_tooltip(udef: Dictionary) -> String:
 	var role := String(udef.get("role", ""))
 	if role == "worker":
 		return text + ("\nGathers and builds · trains in %d s" % seconds if seconds > 0 else "")
-	var class_names := {"unarmored": "unarmoured troops", "light": "light armour", "medium": "medium armour", "heavy": "heavy armour", "fortified": "buildings"}
+	var class_names := {"unarmored": "unarmoured troops", "light": "light armor", "medium": "medium armor", "heavy": "heavy armor", "fortified": "buildings"}
 	var dmg_type := String(udef.get("dmg_type", ""))
 	if GameData.DAMAGE_TABLE.has(dmg_type):
 		var strong: Array = []
@@ -3387,11 +3387,11 @@ func _unit_tooltip(udef: Dictionary) -> String:
 			line += ": strong against %s" % " and ".join(strong)
 		if not weak.is_empty():
 			line += ("; weak against %s" if not strong.is_empty() else ": weak against %s") % " and ".join(weak)
-		text += "\n" + line.replace("medium armour and heavy armour", "medium and heavy armour") + "."
+		text += "\n" + line.replace("medium armor and heavy armor", "medium and heavy armor") + "."
 	var facts: Array = []
 	if float(udef.get("heal", 0.0)) > 0.0:
 		facts.append("Heals allies")
-	var wears := "%s armour" % String(udef.get("armor_class", "light")).replace("unarmored", "no")
+	var wears := "%s armor" % String(udef.get("armor_class", "light")).replace("unarmored", "no")
 	facts.append(wears if not facts.is_empty() else wears.left(1).to_upper() + wears.substr(1))
 	facts.append("reach %d" % int(round(float(udef.get("range", 0.0)))) if float(udef.get("range", 0.0)) > 3.0 else "melee")
 	if seconds > 0:
@@ -4677,7 +4677,7 @@ func _on_game_over(victory: bool) -> void:
 	if bool(recs.get("new_fastest", false)) or bool(recs.get("new_race_best", false)):
 		var parts: Array = []
 		if bool(recs.get("new_race_best", false)):
-			parts.append("deepest stage with this faction")
+			parts.append("deepest stage with this people")
 		if bool(recs.get("new_fastest", false)):
 			parts.append("fastest clear of this stage (%d:%02d)" % [int(result.get("time", 0)) / 60, int(result.get("time", 0)) % 60])
 		var rec_line := _mk_title_label("New record: " + " and ".join(parts), 16, Color(0.98, 0.78, 0.40))

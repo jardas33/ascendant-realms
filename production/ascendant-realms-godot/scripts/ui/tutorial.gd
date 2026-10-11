@@ -175,7 +175,7 @@ func _build_steps() -> void:
 		{"id": "vein", "title": "Claim a Vein", "text": "Veins glow between the bases. Select Workers and right-click a vein's ring: they raise an outpost, then go inside and gather in safety. Send more Workers in with a right-click on the outpost.", "success": "You claimed a vein.", "check": "vein"},
 		{"id": "hero", "title": "Command Your Hero", "text": "Press {cycle_hero} to focus your Hero. Move them into battle and press {ability_sig} for your people's signature spell. More spells come with levels and the skill constellation.", "success": "Order your Hero to move.", "check": "hero"},
 		{"id": "combat", "title": "Attack the Enemy", "text": "Press {cmd_attack}, then click the ground, for an attack-move, or right-click an enemy directly. Destroy their base to win!", "success": "Wound an enemy.", "check": "combat"},
-		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding strategic sites gives you gold and power. Good luck, Commander!", "success": "Capture the Lume Spire.", "check": "final"},
+		{"id": "final", "title": "Claim the Lume", "text": "Send units to the glowing Lume Spire in the center. Holding Lume sites gives you gold and power. Good luck, Commander!", "success": "Capture the Lume Spire.", "check": "final"},
 	]
 
 func _show_step() -> void:

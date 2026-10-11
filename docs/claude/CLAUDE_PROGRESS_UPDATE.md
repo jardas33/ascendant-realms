@@ -1276,6 +1276,14 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 222 (done): one spelling and one name for each thing in the game's text**
+  - The game's text is American ("armor", "color", "center") in hundreds of places. Six places were British, and the tooltips among them were mine from plan 212: "light armour", "medium armour", "heavy armour" in the soldiers' tooltips, "centre" in two map descriptions, "grey" in a map description and a mood name, "neighbours" in one chapter text. All are American now. I also searched for some fifty other British forms, doubled words and common misspellings: none found.
+  - Loading tips checked against the code. The numbers I checked are right: three kills for a veteran, 40% for a burning building, eight in a queue and five with Shift, eight seconds on a Lume surge, 90 seconds of a flare, spells at hero levels 10 and 25, a talent every tenth level, a feast every tenth stage and a Tyrant every 25th, 20 gold from Fool's Gold, the enemy hero at a third and two thirds. Not checked: the outpost levels tip.
+  - Three wording faults corrected:
+    - A tip said "Select your Clanhold". Only the Barrosan hall is called that; the other nine peoples have no Clanhold. It says "main hall" now.
+    - One tip and one result line said "faction". The game says "people" everywhere else.
+    - The same places were called "capture points" in a tip, "strategic sites" in the last lesson and "Lume sites" in ten other texts. They are "Lume sites" everywhere now.
+  - Full regression: 98 of 98 in 932 s, save unchanged.
 - **Plan 221 (done): the battle header in every chapter**
   - Measured in one battle, at 16:9, 21:9, 4:3 and 1280x720: the header with each of the 44 chapter titles, each chapter's title card, every pair of peoples in the "X vs Y" line (and "2 Hosts", "3 Hosts"), every objective line and every bounty line the game can write there. The lesson panel of "How to Play", the tooltips and the pause menu were measured at the same four shapes.
   - Nothing was cut off or written over anything with the values the game uses today.
