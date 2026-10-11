@@ -4206,8 +4206,9 @@ func _show_command_feedback(message: String, col: Color) -> void:
 func _build_alert_feed() -> void:
 	_alert_box = VBoxContainer.new()
 	_alert_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_alert_box.offset_left = -466
-	_alert_box.offset_right = -106
+	# As wide as the mission plate it hangs under: fewer lines break in two.
+	_alert_box.offset_left = -528
+	_alert_box.offset_right = -108
 	_alert_box.offset_top = 128
 	_alert_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_alert_box.alignment = BoxContainer.ALIGNMENT_BEGIN
@@ -4342,14 +4343,24 @@ func _on_alert(message: String, _pos: Vector3) -> void:
 	if message == "":
 		return
 	var low_msg := message.to_lower()
-	var alert_col := Color(0.95, 0.9, 0.75)
-	if low_msg.contains("attack") or low_msg.contains("lost") or low_msg.contains("destroyed") or low_msg.contains("fell"):
-		alert_col = Color(1.0, 0.55, 0.45)
-	elif low_msg.contains("jar") or low_msg.contains("flare") or low_msg.contains("lume"):
-		alert_col = Color(0.85, 0.72, 1.0)
-	elif low_msg.contains("complete") or low_msg.contains("ready") or low_msg.contains("dug up") or low_msg.contains("captured"):
-		alert_col = Color(0.72, 0.95, 0.66)
-	_push_alert(message, alert_col)
+	_push_alert(message, _alert_colour(low_msg))
+
+
+## Red for harm, green for gain, violet for the Lume's own events, parchment
+## for the rest. Harm and gain are asked first: "Your hero has fallen. The
+## Lume will raise them..." is a loss, and "Research complete: Lume-tempered
+## Steel" a gain, whatever else the line mentions.
+func _alert_colour(low_msg: String) -> Color:
+	for bad in ["under attack", "lost", "destroyed", "your hero has fallen", "the enemy seized", "the enemy dug up", "the enemy has raised", "or lose", "no longer hold", "enemy wins"]:
+		if low_msg.contains(bad):
+			return Color(1.0, 0.55, 0.45)
+	for good in ["complete", "ready", "dug up", "captured", "claimed", "defeated", "has fallen", " falls", "is slain", "is yours", "rises again", "expanded", "promoted", "reaches rank", "you win", "is broken"]:
+		if low_msg.contains(good):
+			return Color(0.72, 0.95, 0.66)
+	for lume in ["jar", "flare", "lume"]:
+		if low_msg.contains(lume):
+			return Color(0.85, 0.72, 1.0)
+	return Color(0.95, 0.9, 0.75)
 
 
 func _on_hero_leveled(level: int) -> void:
@@ -4372,7 +4383,7 @@ func _push_alert(message: String, col: Color) -> void:
 	# The dispatch's rail takes the alert's own colour: red for attacks and
 	# losses, gold for gains, and so on.
 	dispatch.accent = col if col.v > 0.3 else COMMAND_GOLD
-	dispatch.custom_minimum_size = Vector2(360, 60)
+	dispatch.custom_minimum_size = Vector2(420, 60)
 	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var padding := StyleBoxFlat.new()
 	padding.bg_color = Color.TRANSPARENT
@@ -4385,7 +4396,7 @@ func _push_alert(message: String, col: Color) -> void:
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	l.custom_minimum_size = Vector2(318, 42)
+	l.custom_minimum_size = Vector2(378, 42)
 	# One-line alerts sit in the middle of the dispatch, not at its top.
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
@@ -4395,13 +4406,14 @@ func _push_alert(message: String, col: Color) -> void:
 	_alert_box.add_child(dispatch)
 	# Arrives with a short pop so it is noticed without a sound for every line.
 	dispatch.modulate.a = 0.0
-	dispatch.pivot_offset = Vector2(180, 30)
+	dispatch.pivot_offset = Vector2(210, 30)
 	dispatch.scale = Vector2(1.06, 1.06)
 	var arrive := dispatch.create_tween().set_parallel(true)
 	arrive.tween_property(dispatch, "modulate:a", 1.0, 0.18)
 	arrive.tween_property(dispatch, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	var tw := dispatch.create_tween()
-	tw.tween_interval(3.2)
+	# A three-line message needs longer to read than "Unit ready".
+	tw.tween_interval(3.2 + 0.035 * maxf(0.0, float(message.length()) - 40.0))
 	tw.tween_property(dispatch, "modulate:a", 0.0, 0.8)
 	tw.tween_callback(func():
 		if is_instance_valid(dispatch):

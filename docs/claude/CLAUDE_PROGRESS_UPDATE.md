@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 214 (done): the alerts shown during a battle**
+  - Raised ten real alert lines, from "Unit ready" to the three-line Champion warning, and photographed the plate for each (new tool `claude_alertshot.gd`).
+  - Fixed: the colour was chosen by loose word matching, so "Your hero has fallen. The Lume will raise them..." showed in the violet of a Lume event and "Research complete: Lume-tempered Steel" likewise. Harm is now red and gain green before anything else is asked; an enemy people defeated, a fallen enemy hero and the Lume's gift show as gains.
+  - Changed: the plate is as wide as the mission plate above it (420, was 360), so fewer lines break in two, and a long message stays up longer (about five seconds for the longest, was three for all).
+  - Full regression: 94 of 94, 555 s, save unchanged.
 - **Plan 213 (done): the minimap and the top bar up close**
   - Photographed a skirmish at minutes 3, 5 and 7 and read the minimap, the resource readings, the age medallion and the mission plate at full size.
   - Changed: the age medallion read "PROGRESSION / AGE / Age II", the word three times and no name. It now reads "AGE / II OF III / Iron", using the names the locked cards already use (Iron, Lume). The first Age had no name shown anywhere; I named it Bronze (a design choice of mine; say if you want another name).
