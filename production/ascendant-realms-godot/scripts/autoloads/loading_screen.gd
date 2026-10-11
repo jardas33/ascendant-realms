@@ -401,6 +401,10 @@ func _build_ui() -> void:
 	band.add_child(vbox)
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	vbox.add_theme_constant_override("separation", 12)
+	# The tip can run to four lines with the hero's next goal under it, and
+	# the block is then taller than the band: it grows upward, not off the
+	# bottom of the window (under a tip of two lines the goal line was lost).
+	vbox.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
 	# A slowly turning Lume sigil over the status line.
 	var sigil := Control.new()

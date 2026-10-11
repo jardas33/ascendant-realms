@@ -134,6 +134,9 @@ func setup(p_world, p_rts) -> void:
 	_skip_button.offset_right = -12.0
 	_skip_button.offset_top = 10.0
 	_skip_button.offset_bottom = 44.0
+	# The button's last words are longer than its first ("Return to Main
+	# Menu"): it grows to the left, into the panel, not out of its right edge.
+	_skip_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_skip_button.pressed.connect(_on_skip_or_return)
 
 	_build_steps()
@@ -182,6 +185,9 @@ func _show_step() -> void:
 		if _success: _success.text = ""
 		_fit_panel.call_deferred()
 		_skip_button.text = "Return to Main Menu"
+		# The wider button takes more of the top row: the text column gives way.
+		if is_instance_valid(_vb):
+			_vb.offset_right = -(_skip_button.get_combined_minimum_size().x + 30.0)
 		return
 	if is_instance_valid(_dots):
 		_dots.queue_redraw()
