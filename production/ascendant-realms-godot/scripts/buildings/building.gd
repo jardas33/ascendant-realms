@@ -1679,22 +1679,24 @@ func _add_landmark_crown() -> void:
 	add_child(crown)
 	crown.position = Vector3(0.0, footprint * 1.35 + 3.0, 0.0)
 	var gem := MeshInstance3D.new()
-	var prism := PrismMesh.new()
-	prism.size = Vector3(1.0, 1.4, 1.0)
-	gem.mesh = prism
+	# An eight-faced crystal. The two flat prisms used before read as an
+	# orange board hanging over the roof from most camera angles.
+	var crystal := SphereMesh.new()
+	crystal.radius = 0.7
+	crystal.height = 2.6
+	crystal.radial_segments = 4
+	crystal.rings = 1
+	gem.mesh = crystal
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = tint
 	mat.emission_enabled = true
 	mat.emission = tint
-	mat.emission_energy_multiplier = 2.2
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.emission_energy_multiplier = 0.8
+	mat.roughness = 0.25
 	gem.material_override = mat
 	gem.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	gem.position.y = -0.7
 	crown.add_child(gem)
-	var under := gem.duplicate() as MeshInstance3D
-	under.rotation.x = PI
-	under.position.y = -1.4
-	crown.add_child(under)
 	var light := OmniLight3D.new()
 	light.light_color = tint
 	light.light_energy = 2.0
@@ -2122,11 +2124,20 @@ func _add_landmark_centrepiece() -> void:
 			dome.radius = 1.6
 			dome.height = 1.8
 			dome.is_hemisphere = true
-			_lm_piece(root, dome, Color(0.72, 0.50, 0.36), front + Vector3(0, 0.1, 0))
+			# A clay dome on a stone table, with a framed mouth, the fire inside
+			# it and a chimney: the bare dome alone read as a ball on the ground.
+			var clay := Color(0.72, 0.50, 0.36)
+			_lm_piece(root, _lm_cyl(1.85, 1.95, 0.6), stone, front + Vector3(0, 0.3, 0))
+			_lm_piece(root, dome, clay, front + Vector3(0, 0.6, 0))
+			_lm_piece(root, _lm_box(Vector3(0.9, 0.7, 0.5)), Color(0.06, 0.04, 0.03), front + Vector3(0, 0.95, 1.4))
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.2, 0.8, 0.6)), stone.lightened(0.1), front + Vector3(0.55 * s, 1.0, 1.4))
+			_lm_piece(root, _lm_box(Vector3(1.4, 0.2, 0.65)), stone.lightened(0.1), front + Vector3(0, 1.48, 1.4))
+			_lm_piece(root, _lm_cyl(0.2, 0.26, 1.2), clay.darkened(0.25), front + Vector3(0, 2.5, -0.5))
 			var glow := BrazierFire.new()
-			glow.flame_scale = 0.8
+			glow.flame_scale = 0.55
 			glow.light_range = 6.0
-			glow.position = front + Vector3(0, 0.4, 1.3)
+			glow.position = front + Vector3(0, 0.75, 1.5)
 			root.add_child(glow)
 
 

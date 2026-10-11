@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 210 (done): the Village Oven looks like an oven**
+  - Built the Barrosan landmark beside the hall and photographed it. Its centrepiece was a bare clay ball on the ground, and the "Lume crystal" turning over it was two flat prisms that looked like an orange board hanging over the roof.
+  - Fixed: the oven is a clay dome on a round stone table, with a dark mouth framed in stone, a small fire in it and a chimney.
+  - Fixed: the crystal over every people's landmark is now an eight-faced gem. I have only looked at it on the Village Oven so far.
+  - The oven's small picture on the build card is the forge model it borrows, seen in cool light; I left it.
+  - Full regression: 94 of 94 (587 s); the saved profile was not changed by it.
 - **Plan 209 (done): menus at 1366x768, and the test profile kept safe**
   - Photographed all eight menu screens at 1366x768, the smallest window I test. All eight keep their layout; no faults found, no game code changed.
   - Found in those pictures: the test hero stood at level 54 with 273 battles; at the start of this session it was level 53 with 272. One of my check tools had let a battle's result into the saved profile. This is the profile on this computer that the game itself uses.
