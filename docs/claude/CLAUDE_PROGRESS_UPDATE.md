@@ -1276,6 +1276,18 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 219 (done): text standing on other text, measured everywhere**
+  - The three measuring tools gained a new check: two pieces of text whose drawn letters share space. The earlier checks saw text cut off; this one sees text written over other text.
+  - The menu tool now also opens every choice a screen offers: all 10 peoples, all 51 maps and each enemy count in the skirmish setup, the 5 acts of the saga map, each of the 43 relics in the war chest, each people in hero creation. Nothing found. Briefings, tooltips, pause and result screens: nothing found.
+  - Found in the battle HUD, on the worker's build list:
+    - A landmark's price has three parts, and its third line was written over the word LOCKED ("140 gold" under "The Fountain of the Mouras").
+    - A building with a name of three lines had its cost written over READY ("Taken Overseer Tower" of the Ironmaw).
+    - Fixed: a build card now grows to fit its text, and the state word stays at the card's foot.
+  - A fault of mine on the way, caught before any push: my first version of that fix let the landmark card grow to several times the panel's height, and the measuring tool reported nothing because every other card had been pushed out of view. I saw it in the picture. The fix now waits for the card's width before sizing, and the tool flags any card taller than 170.
+  - The command list now starts at the top when the selection changes. Before, nothing reset it, so a list could open at the place the previous selection's list had been scrolled to. I read that from the code and did not reproduce it in play; the new check `claude_cardscroll.gd` passes with the change.
+  - All ten peoples measured after the fix: nothing left.
+  - A second fault of mine, in the tool and not the game: a change to make the new check faster made it print an error for every empty rectangle, so the menu check ran out of time in the first regression run (97 of 98) and was stopped before it put the profile back. The regression restored the save, as it is built to. The check is corrected (46 s shallow, 79 s with every choice) and the run was repeated.
+  - Full regression: 98 of 98 in 808 s, save unchanged.
 - **Plan 218 (done): briefings, tooltips, pause and result screens measured**
   - New tool `claude_overlayclip.gd`: the same measurement over all 44 chapter briefings, the tooltip of every card of the worker, hall and hero, the pause menu, and the victory and defeat screens.
   - Briefings, tooltips and the pause menu: nothing cut off, at 16:9 and at 21:9.

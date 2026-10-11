@@ -869,6 +869,19 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
+func _fit_build_card(btn: Button, copy: Control) -> void:
+	if not is_instance_valid(btn) or not is_instance_valid(copy):
+		return
+	# Before the card has its width the wrapped text reports one word a line:
+	# nothing is taken from that. The height follows the text both ways and
+	# never goes under the standard card.
+	if copy.size.x < 60.0:
+		return
+	var need := maxf(96.0, ceilf(copy.get_combined_minimum_size().y + 5.0 + 21.0))
+	if not is_equal_approx(need, btn.custom_minimum_size.y):
+		btn.custom_minimum_size.y = need
+
+
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "", emblem_id: String = "", unit_art_definition: Dictionary = {}) -> Button:
 	var has_preview := not preview_definition.is_empty()
 	# The card is intentionally a scan surface. Hero abilities provide their
@@ -934,6 +947,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		title_label.add_theme_constant_override("line_spacing", -4)
 		detail_label.add_theme_constant_override("line_spacing", -3)
 		text_col.offset_top = 5.0
+		# A name of three lines, or a price of three parts, needs more than the
+		# 96 px: the card grows to its text so the cost never runs into the
+		# READY or LOCKED word below it.
+		text_col.minimum_size_changed.connect(_fit_build_card.bind(btn, text_col))
+		text_col.resized.connect(_fit_build_card.bind(btn, text_col))
 	else:
 		var painted_emblem := not emblem_id.is_empty() or not unit_art_definition.is_empty()
 		var featured_ability := command_kind == "ABILITY"
@@ -1030,8 +1048,10 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		build_status.anchor_right = 1.0
 		build_status.offset_left = 95.0
 		build_status.offset_right = -8.0
-		build_status.offset_top = card_height - 18
-		build_status.offset_bottom = card_height - 2
+		build_status.anchor_top = 1.0
+		build_status.anchor_bottom = 1.0
+		build_status.offset_top = -18.0
+		build_status.offset_bottom = -2.0
 		build_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		build_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(build_status)
@@ -2357,6 +2377,13 @@ func _rebuild_selection(sel: Array) -> void:
 	for s in sel:
 		if is_instance_valid(s) and not (("is_dead" in s) and s.is_dead):
 			valid.append(s)
+
+	# A new selection reads its command list from the top: the list kept the
+	# place the last selection's list had been scrolled to.
+	var was: Array = _card_selection.filter(func(x): return is_instance_valid(x))
+	if is_instance_valid(_cmd_scroll) and was != valid:
+		_cmd_scroll.scroll_vertical = 0
+		_cmd_scroll.set_deferred("scroll_vertical", 0)
 
 	if valid.is_empty():
 		_sel_panel.visible = false
