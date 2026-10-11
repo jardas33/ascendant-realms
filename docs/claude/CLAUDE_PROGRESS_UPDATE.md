@@ -1276,6 +1276,16 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 227 (done): what a pause must not let happen**
+  - A few things in the game were timed by a clock that keeps running while the game is paused. I found them by reading every timer in the battle code, and measured each before and after:
+    - Avatar. Take the form, pause for longer than its 12 seconds, and it was gone when play resumed (measured: off, health back to x1.00 after 2 s of play and 14 s of pause). Now it is still on (x1.50) and ends after its own 12 seconds of play.
+    - A blow in mid-swing. A sword blow lands a quarter second after the swing starts; pause in that quarter second and the blow landed during the pause (measured: the enemy lost health while paused). Now nothing lands until play resumes.
+    - The enemy AI gives up a building site whose progress has not moved for 75 seconds. That was counted by the clock on the wall, so a player who paused for more than 75 seconds made the AI abandon every site its builder had not yet reached. Counted in game time now.
+    - The Iron Abbot (a Road Tyrant) heals when it has not been struck for 3 seconds: after any pause it healed at once on resume. Game time now.
+    - The AI's "worker under fire runs home" check used the wall clock too; moved to game time for the same reason (no change in play without a pause).
+  - Not affected, checked: every other timer in battle code already stops with the game; what still reads the wall clock is display only (pulses, pings, double-press detection).
+  - New test `claude_pausetime.gd`, in the regression: a swing caught at its start and paused, Avatar through a 14 second pause, and an enemy site through a pause (kept) and then past 75 seconds of play (given up). It failed two checks before the fix.
+  - Full regression: 102 of 102 checks pass, save unchanged.
 - **Plan 226 (done): stars and researches that added nothing to each other**
   - Kill bounty. Three stars of the economy branch promise it ("Killing enemy units returns a little gold", then twice "Kill bounties and a further ... starting gold"). The second and third can only be bought after the first, and the bounty was a yes/no switch, so their "kill bounties" added nothing. Measured before the fix: 3 gold a kill with one star or with all three, and 0 for a kill by a tower.
     - Now: 3 gold a kill with the first star, 4 with the second, 6 with the third, and the texts say those numbers. A kill by a tower or a spell pays the same as a kill by a soldier (measured: 6 and 6).

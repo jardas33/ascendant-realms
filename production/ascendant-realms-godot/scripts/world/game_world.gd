@@ -5288,7 +5288,8 @@ func _boss_tick() -> void:
 					CombatVfx.lume_pillar(_fx_container, b.global_position, Color(0.6, 0.2, 0.9))
 		"regen":
 			# Heals 3% a second once it has gone 3 seconds without being hit.
-			if Time.get_ticks_msec() - int(b.get("_last_damaged_msec")) > int(3000.0 / maxf(0.01, Engine.time_scale)):
+			# In game time: after a pause it used to heal at once.
+			if match_time - float(b.get("_last_damaged_at")) > 3.0:
 				b.hp = minf(b.max_hp, b.hp + b.max_hp * 0.03)
 
 ## The Moura Queen takes half damage while any of her court still stands.
@@ -6244,7 +6245,8 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.55, 0.95), 2.0)
 			emit_signal("camera_shake", 0.5, hero.global_position)
 			var avatar_id: int = hero.get_instance_id()
-			get_tree().create_timer(20.0 if level >= 3 else (16.0 if level >= 2 else 12.0)).timeout.connect(func():
+			# The timer stops with the game: Avatar used to run out during a pause.
+			get_tree().create_timer(20.0 if level >= 3 else (16.0 if level >= 2 else 12.0), false).timeout.connect(func():
 				var hero_now = instance_from_id(avatar_id)
 				if not is_instance_valid(hero_now) or hero_now.is_dead:
 					return

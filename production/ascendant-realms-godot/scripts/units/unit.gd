@@ -3084,13 +3084,15 @@ func _do_attack() -> void:
 		# A target can be queue_freed during the windup; resolving the ID at hit
 		# time lets the existing validity guard run before any stale dereference.
 		var captured_target_runtime_id: int = _target.get_instance_id()
-		get_tree().create_timer(WEAPON_ARC_CUE_LEAD_TIME).timeout.connect(func():
+		# These two timers stop with the game (the second argument): a blow
+		# begun just before a pause used to land while the game stood still.
+		get_tree().create_timer(WEAPON_ARC_CUE_LEAD_TIME, false).timeout.connect(func():
 			var arc_tgt = instance_from_id(captured_target_runtime_id)
 			if is_dead or not _can_attack_target(arc_tgt):
 				return
 			_start_weapon_arc_cue(arc_tgt)
 		)
-		get_tree().create_timer(0.25).timeout.connect(func():
+		get_tree().create_timer(0.25, false).timeout.connect(func():
 			var tgt = instance_from_id(captured_target_runtime_id)
 			# Revalidate the captured target before reading its transform. A target
 			# can be queue_freed during the windup, and stale closures must not
@@ -3844,12 +3846,17 @@ func _face(target_pos: Vector3) -> void:
 # Damage / death / heal
 # --------------------------------------------------------------------------
 var _last_damaged_msec := -100000
+## The same moment in game time (seconds of the match), which stands still
+## during a pause.
+var _last_damaged_at := -1000.0
 ## Who hit this unit last (a unit or building), for AI defence: archers
 ## out-ranged the old "enemy within 14 m" check and killed workers unanswered.
 var last_attacker = null
 
 func take_damage(amount: float, from = null) -> void:
 	_last_damaged_msec = Time.get_ticks_msec()
+	if world:
+		_last_damaged_at = float(world.get("match_time"))
 	if from is Node and is_instance_valid(from) and from.get("team") != null and int(from.get("team")) != team:
 		last_attacker = from
 	if is_dead or (world and not world.game_running):

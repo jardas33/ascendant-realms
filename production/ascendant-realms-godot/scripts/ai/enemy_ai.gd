@@ -1573,9 +1573,9 @@ func _manage_defense() -> void:
 					break
 	# Workers under fire run home instead of dying at the field: raiders
 	# killed 36 of one Barrosan AI's workers in a single match.
-	var now := Time.get_ticks_msec()
+	var now: float = float(world.get("match_time"))
 	for u in commander.units:
-		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and now - int(u.get("_last_damaged_msec")) < int(2500.0 / maxf(0.01, Engine.time_scale)):
+		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING and now - float(u.get("_last_damaged_at")) < 2.5:
 			var raider = world.find_enemy_near(u.global_position, 14.0, commander.team)
 			# Archers shoot from beyond 14 m: answer whoever actually hit the worker.
 			var hitter = u.get("last_attacker")
@@ -1867,7 +1867,8 @@ func _try_build(kind: String) -> void:
 		return
 	var b = world.place_building(bid, commander.team, pos)
 	if b:
-		b.set_meta("ai_placed_msec", Time.get_ticks_msec())
+		# Game time, not the clock on the wall: see _cancel check below.
+		b.set_meta("ai_placed_msec", int(float(world.get("match_time")) * 1000.0))
 		worker.command_build(b)
 		# Houses are the bottleneck when the population is capped: send a second
 		# builder (the Barrosan AI sat capped for minutes waiting on one).
@@ -1898,11 +1899,14 @@ func _cancel_dead_sites() -> void:
 		# A site a builder touched once and then could not reach again sat at a
 		# sliver of progress forever, and the AI counted it as a working
 		# barracks. Cancel any site whose progress has not moved for 75 s.
-		var now := Time.get_ticks_msec()
+		# Counted in game time. It was counted by the clock on the wall, so
+		# a player who paused for more than 75 s made the AI cancel every
+		# site its builder had not yet reached.
+		var now := int(float(world.get("match_time")) * 1000.0)
 		if b.build_progress > float(b.get_meta("ai_last_progress", -1.0)) + 0.001:
 			b.set_meta("ai_last_progress", b.build_progress)
 			b.set_meta("ai_progress_msec", now)
-		var stalled := float(now - int(b.get_meta("ai_progress_msec", b.get_meta("ai_placed_msec")))) / 1000.0 * Engine.time_scale
+		var stalled := float(now - int(b.get_meta("ai_progress_msec", b.get_meta("ai_placed_msec")))) / 1000.0
 		if stalled > 75.0:
 			commander.refund(b.def.get("cost", {}), clampf(1.0 - b.build_progress, 0.0, 1.0))
 			b._destroy(null)
