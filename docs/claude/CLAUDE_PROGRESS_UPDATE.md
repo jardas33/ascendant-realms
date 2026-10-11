@@ -1276,6 +1276,28 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 223 (done): skill stars that did nothing now do what they say**
+  - I compared what the game's text promises with what the code does: all 138 stars of the skill constellation, the 37 spells, the 20 talents and their five pairings, the relic set powers.
+  - Found: the higher levels of six hero spells were never read by the code. A player spent skill points on these stars and got nothing but the mana or heal power printed beside them:
+    - Rally, levels two and three ("also grants bonus armor", "huge area, huge buff"). Level one also promised a speed boost that did not exist.
+    - Slam, level three (it was the same as level two). Level two said it damages buildings; it does not.
+    - Charge, level three (the same as level two).
+    - Heal Wave, level two ("a wider area").
+    - Roots, levels two and three ("hold longer and affect more enemies").
+    - Avatar, levels two and three ("longer duration and increased champion stats", "a near-immortal form").
+  - Fixed in the code, and each star now says exactly what it does:
+    - Rally: level two gives +3 armor for 8 seconds; level three reaches and heals half again as much, gives +5 armor and 15% faster attacks.
+    - Slam: level three reaches 70% farther than level one, hits twice as hard and stuns for 2.2 seconds instead of 1.5.
+    - Charge: level three hits 80% harder than level one.
+    - Heal Wave: level two reaches 30% farther and heals a quarter more.
+    - Roots: 4 seconds within 16 m, then 5.5 within 20 m, then 7 within 24 m.
+    - Avatar: 12, 16 and 20 seconds, with health x1.5, x1.65, x1.8 and damage x1.6, x1.75, x1.9.
+  - Two texts were corrected instead of the code, to leave level-one play as it was: Rally level one says "heal nearby allies" (no speed boost), and Slam level two says what it does (40% more reach, half again the damage) and no longer mentions buildings.
+  - What this changes outside the player's hero: enemy heroes on Hard and Brutal cast their first two spells at level two, so their Rally now gives armor, their Roots hold 5.5 seconds and their Heal Wave is wider. Normal and Easy enemy heroes cast at level one and are unchanged. I did not rerun the difficulty ladder; the change makes Hard and Brutal a little stronger, which is the side the ladder was weak on.
+  - New test `claude_spelllevels.gd`, in the regression (99 checks): it casts each spell at each level and measures who was healed, hit or rooted at what distance and for how long, and that Avatar gives back exactly what it took. All 15 checks pass.
+  - Everything else matched: the talents, the nine signature spells, the people spells, the relic set powers. One keystone ("Legate of the South") described itself in words only; it now lists its numbers like the others.
+  - Not touched: talents say "per rank" but each further rank is worth slightly less than the one before (the game computes rank to the power 0.9). The text is true for the first rank and rounds up after it.
+  - Full regression: 99 of 99 checks pass, save unchanged.
 - **Plan 222 (done): one spelling and one name for each thing in the game's text**
   - The game's text is American ("armor", "color", "center") in hundreds of places. Six places were British, and the tooltips among them were mine from plan 212: "light armour", "medium armour", "heavy armour" in the soldiers' tooltips, "centre" in two map descriptions, "grey" in a map description and a mood name, "neighbours" in one chapter text. All are American now. I also searched for some fifty other British forms, doubled words and common misspellings: none found.
   - Loading tips checked against the code. The numbers I checked are right: three kills for a veteran, 40% for a burning building, eight in a queue and five with Shift, eight seconds on a Lume surge, 90 seconds of a flare, spells at hero levels 10 and 25, a talent every tenth level, a feast every tenth stage and a Tyrant every 25th, 20 gold from Fool's Gold, the enemy hero at a third and two thirds. Not checked: the outpost levels tip.

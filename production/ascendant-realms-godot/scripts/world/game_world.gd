@@ -6145,21 +6145,26 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 		return
 	match id:
 		"rally":
-			heal_allies_near(hero.global_position, ab.get("range", 14.0), (40.0 + hero.heal_power) * power, hero.team)
-			for u in commander_for_team(hero.team).units:
-				if is_instance_valid(u) and not u.is_dead:
-					if u.global_position.distance_to(hero.global_position) <= ab.get("range", 14.0):
-						u.apply_slow(-1.0)  # no-op clear
-			spawn_ring_fx(hero.global_position, Color(1, 0.9, 0.4), ab.get("range", 14.0))
-			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(1.0, 0.82, 0.38))
+			# The second and third stars of Rally did nothing (the level was
+			# never read). Level two hardens the allies it reaches; level
+			# three reaches and heals half again as much and quickens them.
+			var rally_r: float = float(ab.get("range", 14.0)) * (1.5 if level >= 3 else 1.0)
+			heal_allies_near(hero.global_position, rally_r, (40.0 + hero.heal_power) * (1.5 if level >= 3 else 1.0) * power, hero.team)
+			if level >= 2:
+				for u in commander_for_team(hero.team).units:
+					if is_instance_valid(u) and not u.is_dead and u.global_position.distance_to(hero.global_position) <= rally_r:
+						u.apply_spell_buff(1.0, 5.0 if level >= 3 else 3.0, 1.15 if level >= 3 else 1.0, 8.0)
+			spawn_ring_fx(hero.global_position, Color(1, 0.9, 0.4), rally_r)
+			_ability_motes_on_allies(hero, rally_r, Color(1.0, 0.82, 0.38))
 		"slam":
-			var dmg = ab.get("dmg", 60) * (1.5 if level >= 2 else 1.0) * power
-			var rng = ab.get("range", 8.0) * (1.4 if level >= 2 else 1.0)
+			# Level three was the same as level two.
+			var dmg = ab.get("dmg", 60) * (2.0 if level >= 3 else (1.5 if level >= 2 else 1.0)) * power
+			var rng = ab.get("range", 8.0) * (1.7 if level >= 3 else (1.4 if level >= 2 else 1.0))
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
 					if u.global_position.distance_to(hero.global_position) <= rng:
 						u.take_damage(GameData.compute_damage(dmg, "blunt", u.armor_class, u.cur_armor()), hero)
-						u.apply_stun(1.5)
+						u.apply_stun(2.2 if level >= 3 else 1.5)
 			spawn_ring_fx(hero.global_position, Color(0.9, 0.6, 0.2), rng)
 			CombatVfx.slam(_fx_container, hero.global_position, rng)
 			emit_signal("camera_shake", 0.9, hero.global_position)
@@ -6168,7 +6173,7 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			dir.y = 0
 			var dist = min(dir.length(), ab.get("range", 18.0))
 			var dest = hero.global_position + dir.normalized() * dist
-			var dmg = ab.get("dmg", 50) * (1.4 if level >= 2 else 1.0) * power
+			var dmg = ab.get("dmg", 50) * (1.8 if level >= 3 else (1.4 if level >= 2 else 1.0)) * power
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
 					if _point_near_segment(u.global_position, hero.global_position, dest, 3.0):
@@ -6186,15 +6191,20 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 					hit.append(tgt)
 					spawn_projectile(hero.global_position + Vector3.UP * 1.5, tgt, float(ab.get("dmg", 70)) * power, "arcane", hero.team, "lume_bolt", 0.0, hero)
 		"heal":
-			heal_allies_near(hero.global_position, ab.get("range", 14.0), (float(ab.get("heal", 120)) + hero.heal_power) * power, hero.team)
-			spawn_ring_fx(hero.global_position, Color(0.4, 1.0, 0.6), ab.get("range", 14.0))
-			_ability_motes_on_allies(hero, ab.get("range", 14.0), Color(0.45, 1.0, 0.6))
+			# The second star promised a wider wave: the level was never read.
+			var heal_r: float = float(ab.get("range", 14.0)) * (1.3 if level >= 2 else 1.0)
+			heal_allies_near(hero.global_position, heal_r, (float(ab.get("heal", 120)) * (1.25 if level >= 2 else 1.0) + hero.heal_power) * power, hero.team)
+			spawn_ring_fx(hero.global_position, Color(0.4, 1.0, 0.6), heal_r)
+			_ability_motes_on_allies(hero, heal_r, Color(0.45, 1.0, 0.6))
 		"root":
+			# Longer and wider with each star (both stars did nothing before).
+			var root_r: float = float(ab.get("range", 16.0)) * (1.5 if level >= 3 else (1.25 if level >= 2 else 1.0))
+			var root_secs := 7.0 if level >= 3 else (5.5 if level >= 2 else 4.0)
 			for u in all_units():
 				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
-					if u.global_position.distance_to(target_pos) <= ab.get("range", 16.0):
-						u.apply_root(4.0)
-			spawn_ring_fx(target_pos, Color(0.4, 0.8, 0.4), ab.get("range", 16.0))
+					if u.global_position.distance_to(target_pos) <= root_r:
+						u.apply_root(root_secs)
+			spawn_ring_fx(target_pos, Color(0.4, 0.8, 0.4), root_r)
 		"avatar":
 			# One Avatar at a time. Cast again while it lasts and it is only
 			# renewed: the bonuses used to stack with each cast.
@@ -6202,8 +6212,13 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			hero.set_meta("avatar_serial", avatar_serial)
 			if not (hero.has_meta("avatar_on") and bool(hero.get_meta("avatar_on"))):
 				hero.set_meta("avatar_on", true)
-				hero.max_hp *= 1.5
-				hero.base_dmg *= 1.6
+				# Stronger with each star, and undone by the same amounts.
+				var avatar_hp := 1.8 if level >= 3 else (1.65 if level >= 2 else 1.5)
+				var avatar_dmg := 1.9 if level >= 3 else (1.75 if level >= 2 else 1.6)
+				hero.set_meta("avatar_hp_mult", avatar_hp)
+				hero.set_meta("avatar_dmg_mult", avatar_dmg)
+				hero.max_hp *= avatar_hp
+				hero.base_dmg *= avatar_dmg
 				if hero.model_root:
 					# The size to come back to, read while the model is not
 					# flinching from a hit (a flinch squashes it for a moment).
@@ -6216,16 +6231,16 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 			CombatVfx.motes(_fx_container, hero.global_position, Color(1.0, 0.55, 0.95), 2.0)
 			emit_signal("camera_shake", 0.5, hero.global_position)
 			var avatar_id: int = hero.get_instance_id()
-			get_tree().create_timer(12.0).timeout.connect(func():
+			get_tree().create_timer(20.0 if level >= 3 else (16.0 if level >= 2 else 12.0)).timeout.connect(func():
 				var hero_now = instance_from_id(avatar_id)
 				if not is_instance_valid(hero_now) or hero_now.is_dead:
 					return
 				if not hero_now.has_meta("avatar_serial") or int(hero_now.get_meta("avatar_serial")) != avatar_serial:
 					return
 				hero_now.set_meta("avatar_on", false)
-				hero_now.max_hp /= 1.5
+				hero_now.max_hp /= float(hero_now.get_meta("avatar_hp_mult")) if hero_now.has_meta("avatar_hp_mult") else 1.5
 				hero_now.hp = min(hero_now.hp, hero_now.max_hp)
-				hero_now.base_dmg /= 1.6
+				hero_now.base_dmg /= float(hero_now.get_meta("avatar_dmg_mult")) if hero_now.has_meta("avatar_dmg_mult") else 1.6
 				if hero_now.model_root and hero_now.has_meta("avatar_scale"):
 					hero_now.settle_presentation()
 					var t2 = hero_now.create_tween()
