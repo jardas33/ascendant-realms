@@ -1276,6 +1276,14 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 217 (done): the menus measured, and the HUD in late-battle states**
+  - New tool `claude_menuclip.gd`: the same measurement over seven menu screens at three window shapes (16:9, 21:9, 4:3). Nothing cut off, nothing ending in dots. The skill tree is left out: it is a canvas the player pans, so most of it is off screen by design.
+  - The in-battle HUD measured at 21:9, 4:3 and 1280x720 for two peoples: nothing cut off.
+  - Extended the HUD measurement with the states a longer battle brings: the last Age, training and research under way, a building site, and an empty purse. That found two faults, both on every people:
+    - A building site's dossier was too short: the "Construction progress" line showed but the bar under it was cut away. The dossier is taller for a site.
+    - With research under way, "Researching: Weapons 30%" ended in dots beside the queue slots, and the last slot ran 3 pixels over the panel. The line now reads "Weapons 30%" (the row is headed Queue and has its bar) and the slots are a little narrower.
+  - Both tools are in the regression (97 checks). Still not measured: tooltips, the pause and result screens, the chapter briefing.
+  - Full regression: 97 of 97, 648 s, save unchanged.
 - **Plan 216 (done): every HUD panel measured for cut-off content**
   - New tool `claude_hudclip.gd`: selects in turn nothing, a worker, the hall, each kind of building, the hero, each kind of soldier, a squad and a mixed group, and after each walks every visible part of the HUD. It flags a one-line text wider than its label (it ends in dots), a wrapped text showing fewer lines than it has, and anything standing outside the area that clips it or outside the window.
   - Ran it for five peoples before the fix: 20 flags. Nothing stood outside its panel. What it found were texts ending in dots: the squad summary with four or more kinds of soldier (every people), building names over 176 wide ("Temple of the Still Water", "Fountain of the Mouras", "Castro Quarry-Works"), "Dominion Engineer", and seven soldier names in the squad grid that my narrower cells of plan 215 had cut again ("Bloomdancer", "Thornthrower", "Trap-Breaker" and others).

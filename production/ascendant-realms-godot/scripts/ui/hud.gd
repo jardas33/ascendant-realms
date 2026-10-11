@@ -300,7 +300,7 @@ func _fit_to_viewport() -> void:
 			# activity line; workers keep their more compact economy dossier.
 			requested_selection_height = 244.0 if _tracked_single.is_hero else (210.0 if _tracked_single.is_worker else 224.0)
 		elif _tracked_single is Building:
-			requested_selection_height = 196.0 if not _tracked_single.is_built else 190.0
+			requested_selection_height = 218.0 if not _tracked_single.is_built else 190.0
 	# Give the selected entity and two-column command deck enough room to be read
 	# at the game's native 1920x1080 layout size. Overflow remains scrollable.
 	# Four simple orders need a shorter deck than a hero or builder. Size to the
@@ -2882,7 +2882,8 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	# hero-sized height leaves a large blank slab over the battlefield.
 	if is_instance_valid(_sel_panel):
 		# 190: the queue line under the status ("Idle") was cut by the frame at 176.
-		_sel_panel.custom_minimum_size.y = 196.0 if not b.is_built else 190.0
+		# A site carries a progress line and its bar under the dossier.
+		_sel_panel.custom_minimum_size.y = 218.0 if not b.is_built else 190.0
 	if not read_only and b.has_signal("construction_completed"):
 		b.construction_completed.connect(_on_tracked_building_construction_completed)
 		_watched_construction_building = b
@@ -3107,8 +3108,14 @@ func _refresh_queue() -> void:
 	if is_instance_valid(_production_progress_bar):
 		_production_progress_bar.value = active_prog
 		_production_progress_bar.visible = true
+	# "Researching: Weapons 30%" beside two queue slots ended in dots. The row
+	# is headed "Queue" and has its bar: the name and the percentage are enough.
 	var active_verb := "Training" if active_kind == "unit" else "Researching"
-	_production_status_label.text = "%s: %s %d%%" % [active_verb, active_display, roundi(active_prog * 100.0)]
+	_production_status_label.text = "%s %d%%" % [active_display, roundi(active_prog * 100.0)]
+	_production_status_label.tooltip_text = "%s: %s" % [active_verb, active_name]
+	_production_status_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	_production_status_label.add_theme_font_size_override("font_size", 12)
+	_shrink_label_to(_production_status_label, 106.0, 9)
 	# One slot per run of the same item ("Worker ×7"), so a long queue fits the
 	# dossier: two slots, then how many more wait. Clicking a slot cancels the
 	# last item of its run (the one in training keeps its progress).
@@ -3132,7 +3139,7 @@ func _refresh_queue() -> void:
 			_queue_container.add_child(_mk_label("+%d" % (b.queue.size() - idx), 13, COMMAND_GOLD))
 			break
 		var slot := _mk_button("", 12)
-		slot.custom_minimum_size = Vector2(68, 28)
+		slot.custom_minimum_size = Vector2(64, 28)
 		slot.add_theme_font_size_override("font_size", 10)
 		var disp_name := ""
 		if kind == "unit":
@@ -3158,10 +3165,10 @@ Click to cancel one" % disp_name
 		# Godot does not repeatedly warn about conflicting opposite anchors while
 		# production_updated rebuilds the queue row.
 		pbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		pbar.custom_minimum_size = Vector2(64, 5)
+		pbar.custom_minimum_size = Vector2(60, 5)
 		pbar.value = prog
 		pbar.position = Vector2(2, 20)
-		pbar.size = Vector2(64, 5)
+		pbar.size = Vector2(60, 5)
 		slot.add_child(pbar)
 		_queue_container.add_child(slot)
 		prev_key = key
