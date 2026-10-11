@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 211 (done): the other nine landmarks**
+  - Built and photographed each of the other nine peoples' landmarks. The new crystal shows as a gem over all nine. Fountain, rift gate, war drum, loom, standing stones, sun dial, bell and bonfire: no faults found.
+  - Fixed: the Wolfveil Howling Stone was a plain grey box with a white ball on top, like a post with a lamp. It is now a tapered six-sided standing stone between two smaller ones, with a pale moon ring cut into its face.
+  - Full regression: 94 of 94 (592 s); the saved profile was not changed by it.
 - **Plan 210 (done): the Village Oven looks like an oven**
   - Built the Barrosan landmark beside the hall and photographed it. Its centrepiece was a bare clay ball on the ground, and the "Lume crystal" turning over it was two flat prisms that looked like an orange board hanging over the roof.
   - Fixed: the oven is a clay dome on a round stone table, with a dark mouth framed in stone, a small fire in it and a chimney.

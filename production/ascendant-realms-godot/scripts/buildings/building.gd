@@ -2101,12 +2101,34 @@ func _add_landmark_centrepiece() -> void:
 			for i in 9:
 				_lm_piece(root, _lm_box(Vector3(0.05, 2.6, 0.05)), Color(1.0, 0.82, 0.3), front + Vector3(-1.2 + 0.3 * float(i), 1.85, 0), Vector3.ONE, 1.5)
 		"howl":
-			var menhir := _lm_piece(root, _lm_box(Vector3(1.7, 6.0, 1.2)), Color(0.46, 0.48, 0.55), front + Vector3(0, 3.0, 0))
-			menhir.rotation = Vector3(0.08, 0.4, -0.06)
-			var moon := SphereMesh.new()
-			moon.radius = 0.35
-			moon.height = 0.7
-			_lm_piece(root, moon, Color(0.7, 0.8, 1.0), front + Vector3(0, 6.4, 0), Vector3.ONE * 1.6, 2.0)
+			# A tapered six-sided menhir between two lesser stones, with a moon
+			# ring cut into its face. The plain box with a white ball on top read
+			# as a post with a lamp.
+			var rock := Color(0.46, 0.48, 0.55)
+			var shaft := CylinderMesh.new()
+			shaft.top_radius = 0.5
+			shaft.bottom_radius = 1.05
+			shaft.height = 5.8
+			shaft.radial_segments = 6
+			shaft.rings = 1
+			var menhir := _lm_piece(root, shaft, rock, front + Vector3(0, 2.9, 0))
+			menhir.rotation = Vector3(0.07, 0.4, -0.05)
+			for side in [[-1.7, 2.6, 0.5], [1.5, 1.9, -0.35]]:
+				var lesser := CylinderMesh.new()
+				lesser.top_radius = 0.3
+				lesser.bottom_radius = 0.62
+				lesser.height = float(side[1])
+				lesser.radial_segments = 5
+				lesser.rings = 1
+				var stone_piece := _lm_piece(root, lesser, rock.darkened(0.12), front + Vector3(float(side[0]), float(side[1]) * 0.5, 0.3))
+				stone_piece.rotation = Vector3(0.0, float(side[2]) * 2.0, float(side[2]) * 0.35)
+			var moon := TorusMesh.new()
+			moon.inner_radius = 0.34
+			moon.outer_radius = 0.5
+			moon.rings = 24
+			moon.ring_segments = 6
+			var ring_piece := _lm_piece(root, moon, Color(0.7, 0.8, 1.0), front + Vector3(0, 3.9, 0.78), Vector3(1, 0.5, 1), 2.0)
+			ring_piece.rotation.x = PI * 0.5 - 0.09
 		"rift":
 			var ring := TorusMesh.new()
 			ring.inner_radius = 1.3
