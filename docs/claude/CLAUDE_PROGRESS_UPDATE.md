@@ -1276,6 +1276,18 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 225 (done): the two "range" stars do what a player would expect**
+  - Two stars of the skill constellation that any hero can buy add range, and both went wrong for the six heroes who fight hand to hand:
+    - Hawk's Gaze, "+4 attack range". A hero with a sword then struck from 4 m away with no missile, lost the arc that shows its swing, and was treated as an archer by Thornhide (no damage reflected onto it).
+    - Lume Mastery, "+3 ability range". It added 3 to attack range, not to spells: nothing a spell did reached any farther, and a sword hero struck from 3 m away (7 m with both stars).
+  - Fixed:
+    - Lume Mastery now adds 3 m to the reach of every spell the hero casts (Rally heals to 17 m, not 14; I measured an ally healed at 16 m). It no longer touches attack range. Its text says "every spell reaches 3 farther".
+    - Hawk's Gaze still gives a hero who shoots the full +4. A hand-to-hand hero reaches 1 m farther with its weapon (2.6 m, was 1.6) and stays a hand-to-hand fighter. Its text says so.
+  - The three Moura Court stars that add attack range are unchanged: that hero shoots.
+  - Checked and found right: every other kind of power a star can grant is read by the code somewhere (kill bounties, starting gold, Last Stand, Unstoppable, the siege aura, Fortify and the rest).
+  - Noted, not changed: a kill by a tower pays no kill bounty (only kills by soldiers and the hero do).
+  - The spell test now also checks both stars (18 checks).
+  - Full regression: 100 of 100 checks pass, save unchanged.
 - **Plan 224 (done): life drain and Cleave now work for everyone who shoots**
   - Difficulty ladder after plan 223 (20 matches a step, the same people on both sides): the harder side won 15 to 3 from Normal to Hard and 15 to 3 from Hard to Brutal, with 2 undecided each. Before plan 223 it was 13 to 7 and 12 to 6. The steps are a little clearer now; nothing to correct.
   - I went on comparing text with code: the 42 researches, the 10 landmarks, the six Road Tyrants, the nine deed tracks. All of those match. What I found was underneath them:

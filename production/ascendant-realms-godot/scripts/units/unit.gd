@@ -477,7 +477,15 @@ func _apply_hero_stats() -> void:
 	base_armor += float(hs.get("bonus_armor", 0.0))
 	move_speed += float(hs.get("bonus_speed", 0.0))
 	vision += float(hs.get("bonus_vision", 0.0))
-	atk_range += float(hs.get("bonus_range", 0.0))
+	# Attack range from the stars. A hero who shoots gets all of it. One who
+	# fights hand to hand used to strike from 4 metres away with no missile
+	# (and stopped drawing its weapon arc): it reaches a quarter as much
+	# farther with its weapon instead.
+	if atk_range > 0.0:
+		atk_range += float(hs.get("bonus_range", 0.0))
+	else:
+		_melee_reach = float(hs.get("bonus_range", 0.0)) * 0.25
+	spell_range = float(hs.get("spell_range", 0.0))
 	# Attack speed never stops paying. The swing time used to be
 	# cd * (1 - speed) with a hard floor of 0.35 s, so every point of Agility
 	# or gear past roughly 70% was thrown away. Up to 50% it works as before;
@@ -2738,6 +2746,10 @@ const ACQUIRE_INTERVAL := 0.2
 var spawn_serial := 0
 ## Extra spell strength from the Lorecraft mastery (0.06 = +6%).
 var spell_power := 0.0
+## Metres added to the reach of every spell (the Lume Mastery star).
+var spell_range := 0.0
+## Extra reach of a hand-to-hand hero's weapon (see _apply_hero_stats).
+var _melee_reach := 0.0
 var _max_abs_x := -1.0
 var _max_abs_z := -1.0
 var _acquire_timer := 0.0
@@ -2969,7 +2981,7 @@ func _state_follow(delta: float) -> void:
 		_play("idle")
 
 func _engage_range() -> float:
-	return atk_range if atk_range > 0.0 else 1.6
+	return atk_range if atk_range > 0.0 else 1.6 + _melee_reach
 
 func _state_attack(delta: float) -> void:
 	if is_dead or (world and not world.game_running):
@@ -4184,7 +4196,7 @@ func _hero_ability_target_is_valid(id: String, target_pos: Vector3) -> bool:
 	match id:
 		"root":
 			var planar_target := Vector3(target_pos.x, global_position.y, target_pos.z)
-			var root_range := float(SkillDefs.get_abilities().get(id, {}).get("range", 0.0))
+			var root_range := float(SkillDefs.get_abilities().get(id, {}).get("range", 0.0)) + spell_range
 			return global_position.distance_to(planar_target) <= root_range
 		"bolt":
 			# Bolt's existing authoritative range semantics are the nearest live

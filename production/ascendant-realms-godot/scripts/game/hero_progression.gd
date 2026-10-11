@@ -17,7 +17,7 @@ static func compute(hero: Dictionary) -> Dictionary:
 	var out := {
 		"bonus_hp": 0.0, "bonus_dmg": 0.0, "bonus_armor": 0.0, "bonus_speed": 0.0,
 		"attack_speed": 0.0, "bonus_vision": 0.0, "bonus_range": 0.0,
-		"max_mana": 100.0, "mana_regen": 5.0, "heal_power": 0.0, "spell_power": 0.0,
+		"max_mana": 100.0, "mana_regen": 5.0, "heal_power": 0.0, "spell_power": 0.0, "spell_range": 0.0,
 		"aura_dmg": 0.0, "aura_armor": 0.0, "aura_range": 0.0,
 		"regen": 0.0,
 		"flags": {}, "abilities": {},
@@ -150,6 +150,7 @@ static func _apply_effect(out: Dictionary, eff: Dictionary) -> void:
 				"attack_speed": out["attack_speed"] += v
 				"vision": out["bonus_vision"] += v
 				"range": out["bonus_range"] += v
+				"spell_range": out["spell_range"] += v
 				"mana": out["max_mana"] += v
 				"mana_regen": out["mana_regen"] += v
 				"heal_power": out["heal_power"] += v

@@ -6135,6 +6135,11 @@ func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> 
 	# damage (levels, gear, mastery) over the unit's base damage.
 	var power := maxf(1.0, float(hero.cur_dmg()) / maxf(1.0, float(hero.def.get("dmg", 30)))) * (1.0 + float(hero.get("spell_power") if hero.get("spell_power") != null else 0.0))
 	var ab := SkillDefs.get_abilities().get(id, {})
+	# Lume Mastery: every spell of this hero reaches farther.
+	var spell_reach := float(hero.get("spell_range")) if hero.get("spell_range") != null else 0.0
+	if spell_reach > 0.0 and ab.has("range"):
+		ab = ab.duplicate()
+		ab["range"] = float(ab["range"]) + spell_reach
 	if int(hero.team) == player_team:
 		spells_cast_by_player += 1
 	# A signature spell sounds its people's horn; summons stamp the ground.

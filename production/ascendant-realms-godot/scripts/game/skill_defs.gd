@@ -117,7 +117,7 @@ static func get_tree() -> Array:
 			"req": ["mob_12"], "keystone": true, "effect": {"stat": {"speed": 2.0, "attack_speed": 0.20}, "ability": {"id": "charge", "level": 3}},
 			"desc": "KEYSTONE: +2.0 speed, +20% attack speed, and Charge hits 80% harder."},
 		{"id": "mob_14", "branch": "mobility", "name": "Hawk's Gaze", "cost": 2, "pos": Vector2(2.5, 9),
-			"req": ["mob_11"], "effect": {"stat": {"vision": 12, "range": 4}}, "desc": "+12 vision and +4 attack range."},
+			"req": ["mob_11"], "effect": {"stat": {"vision": 12, "range": 4}}, "desc": "+12 vision and +4 attack range (+1 for a hero who fights hand to hand)."},
 	]
 
 	# ============ ACTIVE ABILITIES — column x=3 ============
@@ -179,7 +179,7 @@ static func get_tree() -> Array:
 		{"id": "mag_9", "branch": "magic", "name": "Greater Heal", "cost": 2, "pos": Vector2(4, 8),
 			"req": ["mag_7"], "effect": {"ability": {"id": "heal", "level": 2}, "stat": {"heal_power": 30}}, "desc": "Heal Wave reaches 30% farther and restores a quarter more health. +30 heal power."},
 		{"id": "mag_10", "branch": "magic", "name": "Lume Mastery", "cost": 1, "pos": Vector2(4.5, 6),
-			"req": ["mag_6"], "effect": {"stat": {"mana_regen": 2.5, "range": 3}}, "desc": "+2.5 mana regen and +3 ability range."},
+			"req": ["mag_6"], "effect": {"stat": {"mana_regen": 2.5, "spell_range": 3}}, "desc": "+2.5 mana regen, and every spell reaches 3 farther."},
 		{"id": "mag_11", "branch": "magic", "name": "Spellweaver", "cost": 2, "pos": Vector2(4.5, 7),
 			"req": ["mag_10"], "effect": {"stat": {"mana": 80, "mana_regen": 2.0, "heal_power": 20}}, "desc": "+80 mana, +2 regen, +20 heal power."},
 		{"id": "mag_12", "branch": "magic", "name": "Grand Weaving", "cost": 2, "pos": Vector2(4, 9),
