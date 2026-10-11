@@ -4378,6 +4378,11 @@ func _update_survival_label() -> void:
 				_survival_label.text = "DOMINATION · %d of %d sites yours" % [int(dom["held"]), int(dom["total"])]
 				if float(dom.get("opens_in", 0.0)) > 0.0:
 					_survival_label.text += " · opens %d:%02d" % [int(dom["opens_in"]) / 60, int(dom["opens_in"]) % 60]
+				# With ten or more sites and the opening clock the line is wider
+				# than the header: it is set a little smaller, never cut.
+				_survival_label.add_theme_font_size_override("font_size", 15)
+				if _survival_label.size.x > 40.0:
+					_shrink_label_to(_survival_label, _survival_label.size.x - 2.0, 11)
 				_survival_label.add_theme_color_override("font_color", Color(0.91, 0.84, 0.66))
 			elif int(dom["team"]) == int(world.player_team):
 				_survival_label.text = "DOMINATION · You win in %s" % clock

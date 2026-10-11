@@ -169,6 +169,11 @@ func _tick_lume_surge(elapsed: int) -> void:
 	get_tree().create_timer(1.0, false).timeout.connect(_tick_lume_surge.bind(elapsed + 1))
 
 func _pick_bounty() -> void:
+	# "How to Play" has no bounty: six seconds into the first lesson (move the
+	# camera) it told a new player to win losing no more than twelve units,
+	# and the lesson ends at the Lume Spire, not with a victory to pay it on.
+	if String(Match.get_config().get("mode", "")) == "tutorial":
+		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sim_seed_for(4242)
 	var options := [
