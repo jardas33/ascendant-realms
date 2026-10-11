@@ -2742,6 +2742,9 @@ func _build_multi(units: Array) -> void:
 		if row_count == 1:
 			_sel_panel.custom_minimum_size.y = 180.0
 			_sel_panel.set_meta("multi_selection_height", 188.0)
+		elif row_count == 2:
+			# Two rows in the standard height lost the second row's health bars.
+			_sel_panel.set_meta("multi_selection_height", 248.0)
 		elif row_count > 2:
 			_sel_panel.set_meta("multi_selection_height", 52.0 + float(row_count) * 72.0)
 		_fit_to_viewport()
@@ -2788,7 +2791,10 @@ func _build_multi(units: Array) -> void:
 		var cell: BoxContainer = HBoxContainer.new() if expanded_pair else VBoxContainer.new()
 		# On wide screens the six columns have room for whole names
 		# ("Seedkeeper" was cut to "Seedkee..." in a 54 px cell).
-		var cell_w := 74.0 if get_viewport_rect().size.x >= 1800.0 else 54.0
+		# ...but never wider than a sixth of the panel: at 74 the sixth column
+		# stood outside it and every sixth soldier's portrait was cut away.
+		var room := floorf((_sel_body.size.x - 5.0 * 4.0 - 10.0) / 6.0)
+		var cell_w := clampf(room, 54.0, 74.0) if get_viewport_rect().size.x >= 1800.0 else 54.0
 		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, 64)
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE

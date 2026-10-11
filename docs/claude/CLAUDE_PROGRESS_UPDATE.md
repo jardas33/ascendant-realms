@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 215 (done): a fight up close, and the squad panel**
+  - Staged a fight of eight soldiers a side and photographed it up close, plain and with the squad selected (new tool `claude_fightshot.gd`). Health bars, selection rings and damage numbers: no faults found.
+  - Found and fixed a fault of my own: with six or more soldiers selected at 1920x1080, the sixth portrait of every row stood outside the panel and was cut away, so the player saw five of six, ten of twelve. It has been so since a change of mine on 30 September (commit 381b0a3f) that widened the portrait cells so names would fit, without measuring the panel. The cells are now sized from the panel's real width.
+  - Fixed: with seven to twelve selected, the second row's health bars were cut off at the panel's bottom. The panel is taller for two rows.
+  - New regression check `claude_squadgrid.gd`: selects 3 to 26 soldiers and fails if any portrait stands outside the panel. It fails on the old code and passes on the new. The regression now has 95 checks.
+  - Full regression: 95 of 95, 593 s, save unchanged.
 - **Plan 214 (done): the alerts shown during a battle**
   - Raised ten real alert lines, from "Unit ready" to the three-line Champion warning, and photographed the plate for each (new tool `claude_alertshot.gd`).
   - Fixed: the colour was chosen by loose word matching, so "Your hero has fallen. The Lume will raise them..." showed in the violet of a Lume event and "Research complete: Lume-tempered Steel" likewise. Harm is now red and gain green before anything else is asked; an enemy people defeated, a fallen enemy hero and the Lume's gift show as gains.
