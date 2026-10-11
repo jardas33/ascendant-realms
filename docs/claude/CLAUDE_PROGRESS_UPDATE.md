@@ -1276,6 +1276,20 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 224 (done): life drain and Cleave now work for everyone who shoots**
+  - Difficulty ladder after plan 223 (20 matches a step, the same people on both sides): the harder side won 15 to 3 from Normal to Hard and 15 to 3 from Hard to Brutal, with 2 undecided each. Before plan 223 it was 13 to 7 and 12 to 6. The steps are a little clearer now; nothing to correct.
+  - I went on comparing text with code: the 42 researches, the 10 landmarks, the six Road Tyrants, the nine deed tracks. All of those match. What I found was underneath them:
+  - Life drain only ever worked for a blow struck by hand. An arrow, a bolt or a spell bolt drained nothing. So:
+    - The Compaña's own trait ("every warrior drains life") did nothing for its Grave Archers, Dirge-Singers, Passing Bell and its hero, the Candle-King, who shoots.
+    - Four of the ten heroes shoot (Lioraen, Vorthak, Moura Court, Compaña). For them every life-drain star, set power and legendary power did nothing. That includes the Vorthak people's own keystone (20% drain) and both Compaña stars.
+    - The researches Grave Hunger, Furna Remembered, The Seventh Son and The Procession Without End say "all soldiers heal for..."; archers did not.
+    - Two legendary powers, the lightning on every fourth blow and the quicker attacks after a kill, never fired for those four heroes either.
+  - Fixed: a blow that lands by arrow or bolt now counts as a blow dealt. Cleave moved to the same place, so it works for a hero who shoots.
+  - Balance: I measured the Compaña with the fix and without, 36 matches each against the nine others: 17 wins to 19 with it, 16 to 18 (2 undecided) without. No difference I can see, so the 16% drain stays as it is.
+  - Two Road Tyrants warned with a ring smaller than what they hit: the Tarasca showed 5 m of a 7 m fire, the Bruxa 4.5 m of a 9 m drain. The rings now show the whole area.
+  - The Ossuary Bell's text now says its risen skeleton lasts 40 seconds.
+  - New test `claude_rangedrain.gd`, in the regression: an archer with drain gains health and one without gains none, a swordsman still drains, and a lone archer with Cleave hurts the enemy beside its target (it fails when Cleave is switched off).
+  - Full regression: 100 of 100 checks pass, save unchanged.
 - **Plan 223 (done): skill stars that did nothing now do what they say**
   - I compared what the game's text promises with what the code does: all 138 stars of the skill constellation, the 37 spells, the 20 talents and their five pairings, the relic set powers.
   - Found: the higher levels of six hero spells were never read by the code. A player spent skill points on these stars and got nothing but the mana or heal power printed beside them:

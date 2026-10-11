@@ -4239,6 +4239,11 @@ func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: in
 		var source_payload = {"source_unit": source_unit, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dtype, ac), "calculated_damage_before_clamp":dmg * GameData.damage_multiplier(dtype, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":final, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
 		var hp_before := float(target.hp) if "hp" in target else -1.0
 		target.take_damage(final, source_payload)
+		# A blow that lands by arrow or bolt is a blow dealt. Life drain and
+		# the on-hit powers only ever ran for melee, so archers, casters and
+		# the four heroes who shoot never drained a point.
+		if is_instance_valid(source_unit) and not _is_dead(source_unit) and source_unit.has_method("_on_dealt_damage"):
+			source_unit._on_dealt_damage(final, target)
 		# Physical pierce projectiles request one impact cue only after the target's
 		# authoritative HP actually falls. Keep arcane/siege and launch routing intact.
 		if kind in ["arrow", "bolt", "thorn"] and dtype == "pierce" and hp_before >= 0.0 and is_instance_valid(target) and float(target.hp) < hp_before and is_player_visible(target):
@@ -5227,7 +5232,9 @@ func _boss_tick() -> void:
 		"pulse":
 			# A ring of fire every 8 seconds, with a second's warning flare.
 			if int(_boss_clock) % 8 == 7:
-				spawn_ring_fx(b.global_position, Color(1.0, 0.45, 0.15), 5.0)
+				# The warning shows the whole reach of the fire (it showed 5 m
+				# of the 7 that burn).
+				spawn_ring_fx(b.global_position, Color(1.0, 0.45, 0.15), 7.0)
 			elif int(_boss_clock) % 8 == 0:
 				apply_splash(b.global_position, 7.0, b.cur_dmg() * 1.2, "magic", b.team, null, b, "fire")
 				spawn_hit_fx(b.global_position + Vector3.UP, "fire")
@@ -5266,7 +5273,8 @@ func _boss_tick() -> void:
 			# Every 10 seconds she drinks the life of everyone within 9 metres,
 			# after a second's violet warning ring.
 			if int(_boss_clock) % 10 == 9:
-				spawn_ring_fx(b.global_position, Color(0.7, 0.3, 1.0), 4.5)
+				# As wide as the drain itself (it showed half of it).
+				spawn_ring_fx(b.global_position, Color(0.7, 0.3, 1.0), 9.0)
 			elif int(_boss_clock) % 10 == 0:
 				var drunk := 0.0
 				for u in all_units():

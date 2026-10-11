@@ -3106,10 +3106,6 @@ func _do_attack() -> void:
 					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
 				if splash > 0.0:
 					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
-				# Cleave (a skill-tree node and a legendary power) was granted but
-				# never implemented: half damage to enemies around the target.
-				if bool(hero_flags.get("cleave", false)) and is_instance_valid(tgt):
-					world.apply_splash(tgt.global_position, 2.5, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 			_dying_blow = false
 		)
 
@@ -3124,6 +3120,11 @@ func _on_dealt_damage(dealt: float, tgt) -> void:
 	# lifesteal
 	if hero_flags.get("lifesteal", 0.0) > 0.0:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
+	# Cleave (a skill-tree node and a legendary power): half damage to the
+	# enemies around the target. Here, not in the melee blow, so that it
+	# also works for a hero who shoots.
+	if bool(hero_flags.get("cleave", false)) and is_instance_valid(tgt) and world:
+		world.apply_splash(tgt.global_position, 2.5, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 	# Stormcall (legendary power): every fourth blow arcs lightning into the
 	# enemies around the target. A counter, not a dice roll, so it replays
 	# identically in a shared (online) simulation.

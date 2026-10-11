@@ -483,7 +483,7 @@ static func _add_landmarks(defs: Dictionary) -> void:
 			"desc": "When enemies come near, the stone howls and two spectral wolves answer (at most every 30 seconds)."},
 		"hollow_ossuary_bell": {"race": "hollow", "name": "The Ossuary Bell", "model": _b("vorthak_warlock_spire"),
 			"cost": {"timber": 200, "stone": 180, "gold": 140}, "landmark": "bell", "reach": 22.0,
-			"desc": "It tolls for every death nearby. One in three of your soldiers who fall near it rises again as a skeleton."},
+			"desc": "It tolls for every death nearby. One in three of your soldiers who fall near it rises again as a skeleton for 40 seconds."},
 		"frostborn_entrudo_bonfire": {"race": "frostborn", "name": "The Entrudo Bonfire", "model": _b("barrosan_iron_forge"),
 			"cost": {"timber": 260, "stone": 140, "gold": 120}, "landmark": "bonfire", "reach": 18.0,
 			"desc": "The winter effigy burns all Carnival. Enemies near it are scorched; your soldiers near it hit 20% harder."},
