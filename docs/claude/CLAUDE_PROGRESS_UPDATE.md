@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 213 (done): the minimap and the top bar up close**
+  - Photographed a skirmish at minutes 3, 5 and 7 and read the minimap, the resource readings, the age medallion and the mission plate at full size.
+  - Changed: the age medallion read "PROGRESSION / AGE / Age II", the word three times and no name. It now reads "AGE / II OF III / Iron", using the names the locked cards already use (Iron, Lume). The first Age had no name shown anywhere; I named it Bronze (a design choice of mine; say if you want another name).
+  - No faults found on the minimap (own blue, enemy red, view frame, river and roads all readable) or the resource readings. The mission plate is full with four lines but nothing is cut.
+  - Full regression: 94 of 94, 580 s, save unchanged.
 - **Plan 212 (done): the tooltips on command cards**
   - Hovered every card of the worker, hall, each building, hero and a soldier for three peoples and photographed each tooltip (new tool `claude_tipshot.gd`, which also prints every tooltip's text and size).
   - Fixed: after a long tooltip, the next shorter one kept the long one's height, leaving a half-empty box. The box now fits its text every time.

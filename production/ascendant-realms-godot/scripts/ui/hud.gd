@@ -90,7 +90,10 @@ const LIORAEN_BUILD_ART := {
 	"lioraen_spirit_glade": "res://assets/ui/construction_art/lioraen_r1/spirit_glade.png",
 	"lioraen_bloom_spire": "res://assets/ui/construction_art/lioraen_r1/bloom_spire.png",
 }
-const TIER_NAMES := {1: "Age I", 2: "Age II", 3: "Age III"}
+## The medallion reads AGE / I OF III / Bronze: the word "Age" once, the
+## Age by its name, as the cards that ask for it name it.
+const TIER_NAMES := {1: "Bronze", 2: "Iron", 3: "Lume"}
+const TIER_COUNTS := {1: "I of III", 2: "II of III", 3: "III of III"}
 const UNIT_ROLE_FOOTERS := {
 	"caster": "CASTER",
 	"flanker": "FLANKER",
@@ -114,6 +117,7 @@ var _opponent_count_label: Label = null
 var _idle_worker_label: Label = null
 var _idle_military_label: Label = null
 var _tier_label: Label = null
+var _tier_caption: Label = null
 var _top_panel: PanelContainer = null
 var _force_panel: PanelContainer = null
 var _age_panel: PanelContainer = null
@@ -1312,11 +1316,12 @@ func _build_top_bar() -> void:
 	_age_panel.add_theme_stylebox_override("panel", age_inset)
 	add_child(_age_panel)
 	# Progression is a separate medallion rather than another telemetry column.
-	var progression := _top_group("PROGRESSION", COMMAND_GOLD, 132.0)
+	var progression := _top_group("AGE", COMMAND_GOLD, 132.0)
 	var progression_metrics: HBoxContainer = progression["metrics"]
-	var tier_metric := _top_metric_surface("Age", COMMAND_GOLD, 122.0, "Current Age", false)
+	var tier_metric := _top_metric_surface(TIER_COUNTS[1], COMMAND_GOLD, 122.0, "The Age of Bronze, first of three. The next Age is opened at your hall.", false)
+	_tier_caption = (tier_metric["surface"] as Control).get_child(0) as Label
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
-	_tier_label = _mk_label("Age I", 29, Color(0.98, 0.88, 0.55))
+	_tier_label = _mk_label(TIER_NAMES[1], 29, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(122, 0)
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_cell.add_child(_tier_label)
@@ -1523,6 +1528,9 @@ func _on_tier_changed(tier: int) -> void:
 	_card_force_refresh = true   # a new Age unlocks buildings, soldiers and research
 	if is_instance_valid(_tier_label):
 		_tier_label.text = TIER_NAMES.get(tier, "Age %d" % tier)
+	if is_instance_valid(_tier_caption):
+		_tier_caption.text = String(TIER_COUNTS.get(tier, "")).to_upper()
+		(_tier_caption.get_parent() as Control).tooltip_text = "The Age of %s, %s of three.%s" % [TIER_NAMES.get(tier, "?"), ["first", "second", "third"][clampi(tier, 1, 3) - 1], " The next Age is opened at your hall." if tier < 3 else ""]
 
 
 func _refresh_opponent_count() -> void:
