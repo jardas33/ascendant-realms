@@ -2507,6 +2507,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_name := _mk_label(shown_name, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_name.tooltip_text = uname
+	_shrink_label_to(identity_name, 142.0, 12)
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
@@ -2700,6 +2701,17 @@ func _refresh_single_live() -> void:
 				emblem.modulate = Color(0.55, 0.55, 0.6)
 
 
+## Steps a one-line label's type down until its text fits `width`, so a long
+## name is shown whole and smaller instead of ending in dots.
+func _shrink_label_to(label: Label, width: float, smallest: int) -> void:
+	var font := label.get_theme_font("font")
+	var font_size := label.get_theme_font_size("font_size")
+	var shown := label.text.to_upper() if label.uppercase else label.text
+	while font_size > smallest and font.get_string_size(shown, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > width:
+		font_size -= 1
+	label.add_theme_font_size_override("font_size", font_size)
+
+
 func _selection_type_summary(units: Array) -> String:
 	var counts: Dictionary = {}
 	var order: Array[String] = []
@@ -2717,9 +2729,18 @@ func _selection_type_summary(units: Array) -> String:
 			counts[label] = 0
 			order.append(label)
 		counts[label] = int(counts[label]) + 1
+	# Six kinds on one line ran off the panel: the three most numerous are
+	# named and the rest counted.
+	if order.size() > 3:
+		order.sort_custom(func(a: String, c: String) -> bool: return int(counts[a]) > int(counts[c]))
 	var parts: Array[String] = []
-	for label in order:
+	for label in order.slice(0, 3):
 		parts.append("%s x%d" % [label, int(counts[label])])
+	if order.size() > 3:
+		var rest := 0
+		for label in order.slice(3):
+			rest += int(counts[label])
+		parts.append("+%d more" % rest)
 	return " · ".join(parts)
 
 
@@ -2826,6 +2847,8 @@ func _build_multi(units: Array) -> void:
 		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + card_name, 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		if not expanded_pair:
+			_shrink_label_to(nm, cell_w, 8)
 		details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
 		bar.custom_minimum_size = Vector2(70, 8) if expanded_pair else Vector2(50, 8)
@@ -2900,6 +2923,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	building_header.add_theme_constant_override("separation", 6)
 	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var building_name := _mk_label(identity_text, 18, identity_color)
+	_shrink_label_to(building_name, 176.0, 13)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
 	var building_badge_text := "BUILDING" if b.is_built else "BUILD SITE"

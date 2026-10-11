@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 216 (done): every HUD panel measured for cut-off content**
+  - New tool `claude_hudclip.gd`: selects in turn nothing, a worker, the hall, each kind of building, the hero, each kind of soldier, a squad and a mixed group, and after each walks every visible part of the HUD. It flags a one-line text wider than its label (it ends in dots), a wrapped text showing fewer lines than it has, and anything standing outside the area that clips it or outside the window.
+  - Ran it for five peoples before the fix: 20 flags. Nothing stood outside its panel. What it found were texts ending in dots: the squad summary with four or more kinds of soldier (every people), building names over 176 wide ("Temple of the Still Water", "Fountain of the Mouras", "Castro Quarry-Works"), "Dominion Engineer", and seven soldier names in the squad grid that my narrower cells of plan 215 had cut again ("Bloomdancer", "Thornthrower", "Trap-Breaker" and others).
+  - Fixed: a long name steps its type size down until it fits (`_shrink_label_to`), and the squad summary names the three most numerous kinds and counts the rest ("+3 more"). After the fix all ten peoples: 0 flags.
+  - The tool is now in the regression (96 checks) and fails on any flag.
+  - Not covered by the tool: tooltips, the build menu's hover text, the pause and result screens.
+  - Full regression: 96 of 96, 595 s, save unchanged.
 - **Plan 215 (done): a fight up close, and the squad panel**
   - Staged a fight of eight soldiers a side and photographed it up close, plain and with the squad selected (new tool `claude_fightshot.gd`). Health bars, selection rings and damage numbers: no faults found.
   - Found and fixed a fault of my own: with six or more soldiers selected at 1920x1080, the sixth portrait of every row stood outside the panel and was cut away, so the player saw five of six, ten of twelve. It has been so since a change of mine on 30 September (commit 381b0a3f) that widened the portrait cells so names would fit, without measuring the panel. The cells are now sized from the panel's real width.
