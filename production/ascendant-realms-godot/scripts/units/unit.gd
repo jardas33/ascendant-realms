@@ -4119,8 +4119,16 @@ func _die(from = null) -> void:
 			credit_source.gain_veterancy()
 		if credit_source is Unit and credit_source.is_hero and world and credit_source.team == world.player_team and team != world.player_team:
 			world.hero_kills += 1
-		if credit_source is Unit and credit_source.commander and credit_source.commander.build_flags.get("bounty", false):
-			credit_source.commander.add_resources("gold", 3)
+	# Kill bounty (the Spoils stars): paid to the side that struck the last
+	# blow, whether a soldier, a tower or a spell did it. A kill by a tower
+	# paid nothing, and the second and third bounty stars added nothing.
+	if world and _last_damage_source_team >= 0 and _last_damage_source_team != team and world.has_method("commander_for_team"):
+		var bounty_cmd = world.commander_for_team(_last_damage_source_team)
+		if bounty_cmd:
+			var bounty = bounty_cmd.build_flags.get("bounty", 0)
+			var bounty_gold := 3 if bounty is bool and bounty else (int(bounty) if (bounty is float or bounty is int) else 0)
+			if bounty_gold > 0:
+				bounty_cmd.add_resources("gold", bounty_gold)
 	if is_hero:
 		# heroes are downed, not deleted from the profile — just removed from field
 		pass

@@ -1858,9 +1858,14 @@ func _aura_tick(delta: float) -> void:
 		return
 	var rng := float(def.get("heal_aura_range", 16.0))
 	var amt := float(def.get("heal_aura", 5.0)) * 0.5
-	if commander and commander.build_flags.get("bloom_boost", false):
+	# Deep Roots, The Seven Mouths Open and the Lioraen keystone star each
+	# promise a stronger grove. They were one yes/no switch, so whichever
+	# came second or third added nothing. The first widens the aura and
+	# doubles it; each one after adds half the grove's own healing again.
+	var bloom := float(commander.build_flags.get("bloom_boost", 0.0)) if commander else 0.0
+	if bloom > 0.0:
 		rng *= 1.4
-		amt *= 2.0
+		amt *= 2.0 + 0.5 * (bloom - 1.0)
 	world.heal_allies_near(global_position, rng, amt, team)
 
 func cur_armor() -> float:

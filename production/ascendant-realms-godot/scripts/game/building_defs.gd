@@ -406,7 +406,7 @@ static func get_all() -> Dictionary:
 		"hp": 960, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["frostborn_reaver", "frostborn_shieldmaiden", "frostborn_hunter", "frostborn_berserker", "frostborn_jotun", "frostborn_pyre_cart"],
-		"desc": "Where the Entrudo is rehearsed: runners, shields, snow hunters, Wild Caretos and the winter giants are readied for the chase.",
+		"desc": "Where the Entrudo is rehearsed: runners, shields, snow hunters, Wild Caretos, the winter giants and the Entrudo Pyre are readied for the chase.",
 	},
 	"frostborn_runeforge": {
 		"race": "frostborn", "name": "Bell Forge", "kind": "economy", "model": _b("barrosan_iron_forge"),

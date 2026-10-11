@@ -1276,6 +1276,18 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 226 (done): stars and researches that added nothing to each other**
+  - Kill bounty. Three stars of the economy branch promise it ("Killing enemy units returns a little gold", then twice "Kill bounties and a further ... starting gold"). The second and third can only be bought after the first, and the bounty was a yes/no switch, so their "kill bounties" added nothing. Measured before the fix: 3 gold a kill with one star or with all three, and 0 for a kill by a tower.
+    - Now: 3 gold a kill with the first star, 4 with the second, 6 with the third, and the texts say those numbers. A kill by a tower or a spell pays the same as a kill by a soldier (measured: 6 and 6).
+  - The Lioraen grove. Deep Roots, The Seven Mouths Open and the Lioraen keystone star each promise a stronger healing grove, and were one yes/no switch: whichever came second or third added nothing. A player with the keystone star got nothing for the grove from either research. Now the first widens the aura and doubles its healing as before, and each one after adds half the grove's own healing again.
+    - This touches the Lioraen AI a little: it researches both, so its grove now heals 2.5 times the base near its hall instead of 2 times. I did not run a balance check for that; it only acts at home.
+  - Three texts that said something untrue:
+    - The Quarreler's bolts "crack armor like slate", and the line under it says pierce is weak against heavy armor. It now says they split light armor.
+    - The Windstrider was "the fastest rider in the highlands". Four riders are faster (it runs at 5.8; the Direwolf at 6.3). It is "a swift lancer" now.
+    - The Careto war hall listed five of the six soldiers it trains; the Entrudo Pyre is named now.
+  - Checked and found right: every other building's list of what it trains, the soldiers' "strong against" lines (they are computed from the damage table), the attribute and forge texts on the hero sheet.
+  - New test `claude_bounty.gd`, in the regression: the three stars add up, a kill by a soldier and by a tower each pay the bounty, and each source of a stronger grove counts. It failed three of its checks before the fix.
+  - Full regression: 101 of 101 checks pass, save unchanged.
 - **Plan 225 (done): the two "range" stars do what a player would expect**
   - Two stars of the skill constellation that any hero can buy add range, and both went wrong for the six heroes who fight hand to hand:
     - Hawk's Gaze, "+4 attack range". A hero with a sword then struck from 4 m away with no missile, lost the arc that shows its swing, and was treated as an archer by Thornhide (no damage reflected onto it).

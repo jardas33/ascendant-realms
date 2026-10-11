@@ -117,7 +117,7 @@ static func get_all() -> Dictionary:
 		"hp": 130, "dmg": 18, "dmg_type": "pierce", "armor_class": "light", "armor": 1,
 		"range": 0.0, "attack_cd": 0.9, "speed": 5.8, "vision": 28.0,
 		"cost": {"food": 90, "gold": 20}, "build_time": 18, "pop": 2, "produced_by": "barracks",
-		"desc": "The fastest rider in the highlands, a lancer on a stag of living wood.",
+		"desc": "A swift lancer of the Concord, riding a stag of living wood.",
 	},
 	# Healers heal 11 a cast (was 14) now that they heal in a fight and not
 	# only at rest (plan 174): at 14 the three other healer peoples won 13-5
@@ -403,7 +403,7 @@ static func get_all() -> Dictionary:
 		"hp": 90, "dmg": 17, "dmg_type": "pierce", "armor_class": "light", "armor": 0,
 		"range": 17.0, "attack_cd": 1.4, "speed": 3.5, "vision": 24.0, "projectile": "bolt",
 		"cost": {"food": 50, "timber": 30}, "build_time": 16, "pop": 1, "produced_by": "karak_warforge",
-		"desc": "A stone-skinned crossbowman whose bolts crack armor like slate.",
+		"desc": "A stone-skinned crossbowman whose bolts split light armor like slate.",
 	},
 	"karak_castro_rider": {
 		"race": "karak", "name": "Castro Rider", "role": "flanker", "tier": 2,

@@ -239,7 +239,7 @@ static func get_tree() -> Array:
 		{"id": "eco_4", "branch": "economy", "name": "Efficient Training", "cost": 2, "pos": Vector2(6, 3),
 			"req": ["eco_2"], "effect": {"flag": {"train_speed": 0.08}}, "desc": "Units train 8% faster."},
 		{"id": "eco_5", "branch": "economy", "name": "Spoils of War", "cost": 2, "pos": Vector2(6, 4),
-			"req": ["eco_3"], "effect": {"flag": {"bounty": true}}, "desc": "Killing enemy units returns a little gold."},
+			"req": ["eco_3"], "effect": {"flag": {"bounty": 3}}, "desc": "Every enemy your side kills returns 3 gold."},
 		{"id": "eco_6", "branch": "economy", "name": "Industrial Might", "cost": 3, "pos": Vector2(6, 5),
 			"req": ["eco_4", "eco_5"], "keystone": true, "effect": {"flag": {"gather_bonus": 0.10, "train_speed": 0.08, "build_speed": 0.10}},
 			"desc": "KEYSTONE: a further +10% gathering, +8% training speed and +10% building speed."},
@@ -251,7 +251,7 @@ static func get_tree() -> Array:
 		{"id": "eco_9", "branch": "economy", "name": "Rapid Assembly", "cost": 2, "pos": Vector2(6, 8),
 			"req": ["eco_7"], "effect": {"flag": {"build_speed": 0.10, "train_speed": 0.08}}, "desc": "A further +10% building speed and +8% training speed."},
 		{"id": "eco_10", "branch": "economy", "name": "Merchant Prince", "cost": 1, "pos": Vector2(6.5, 6),
-			"req": ["eco_6"], "effect": {"flag": {"bounty": true, "start_gold": 50}}, "desc": "Kill bounties and a further +50 starting gold."},
+			"req": ["eco_6"], "effect": {"flag": {"bounty": 1, "start_gold": 50}}, "desc": "Every kill returns 1 more gold, and a further +50 starting gold."},
 		{"id": "eco_11", "branch": "economy", "name": "War Economy", "cost": 2, "pos": Vector2(6.5, 7),
 			"req": ["eco_10"], "effect": {"flag": {"gather_bonus": 0.05, "train_speed": 0.06}}, "desc": "A further +5% gathering and +6% training speed."},
 		{"id": "eco_12", "branch": "economy", "name": "Empire's Engine", "cost": 2, "pos": Vector2(6, 9),
@@ -260,7 +260,7 @@ static func get_tree() -> Array:
 			"req": ["eco_12"], "keystone": true, "effect": {"flag": {"gather_bonus": 0.15, "train_speed": 0.10, "build_speed": 0.10, "start_gold": 200}},
 			"desc": "KEYSTONE: Golden Age. A further +15% gathering, +10% training speed, +10% building speed and +200 starting gold."},
 		{"id": "eco_14", "branch": "economy", "name": "Plunder",  "cost": 2, "pos": Vector2(6.5, 9),
-			"req": ["eco_11"], "effect": {"flag": {"bounty": true, "start_gold": 100}}, "desc": "Kill bounties and a further +100 starting gold."},
+			"req": ["eco_11"], "effect": {"flag": {"bounty": 2, "start_gold": 100}}, "desc": "Every kill returns 2 more gold, and a further +100 starting gold."},
 	]
 
 	# ============ RACE-SPECIFIC — columns x=7 and x=8 ============
@@ -281,7 +281,7 @@ static func get_tree() -> Array:
 		{"id": "race_lio_1", "branch": "race", "name": "Spring Bond", "cost": 2, "pos": Vector2(7, 2),
 			"req": [], "race": "lioraen", "effect": {"stat": {"heal_power": 25, "speed": 0.8}}, "desc": "Lioraen: +25 heal power and +0.8 speed."},
 		{"id": "race_lio_2", "branch": "race", "name": "Warden of the Seven Mouths", "cost": 3, "pos": Vector2(7, 3),
-			"req": ["race_lio_1"], "race": "lioraen", "keystone": true, "effect": {"flag": {"bloom_boost": true}},
+			"req": ["race_lio_1"], "race": "lioraen", "keystone": true, "effect": {"flag": {"bloom_boost": 1}},
 			"desc": "Lioraen KEYSTONE: Your Groveheart's healing aura is far stronger and wider."},
 		# Lioraen new
 		{"id": "race_lio_3", "branch": "race", "name": "Nature's Grace", "cost": 1, "pos": Vector2(8, 2),

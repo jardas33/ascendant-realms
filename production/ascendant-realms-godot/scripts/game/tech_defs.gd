@@ -103,7 +103,7 @@ static func get_all() -> Dictionary:
 	},
 	"lio_roots": {
 		"name": "Deep Roots", "kind": "upgrade", "race": "lioraen",
-		"flags": {"bloom_boost": true, "building_hp": 0.15}, "min_tier": 2,
+		"flags": {"bloom_boost": 1, "building_hp": 0.15}, "min_tier": 2,
 		"cost": {"timber": 160, "stone": 80}, "time": 45, "at": "main",
 		"desc": "The groves drink from the springs: healing auras are stronger and buildings have 15% more health.",
 	},
@@ -217,7 +217,7 @@ static func get_all() -> Dictionary:
 		"cost": {"food": 300, "gold": 300, "stone": 150}, "time": 60, "at": "economy",
 		"desc": "The village bull walks before the host: all soldiers +12% health and +3 damage."},
 	"lio_cap": {"name": "The Seven Mouths Open", "kind": "upgrade", "race": "lioraen", "min_tier": 3,
-		"effects": [{"who": "ranged", "dmg": 4, "range": 2.0}, {"who": "all", "hp_mult": 0.08}], "flags": {"bloom_boost": true},
+		"effects": [{"who": "ranged", "dmg": 4, "range": 2.0}, {"who": "all", "hp_mult": 0.08}], "flags": {"bloom_boost": 1},
 		"cost": {"timber": 300, "gold": 300, "stone": 150}, "time": 60, "at": "economy",
 		"desc": "All seven springs flow at once: ranged units +4 damage and +2 range, all soldiers +8% health, and healing groves grow stronger."},
 	"vor_cap": {"name": "Furna Remembered", "kind": "upgrade", "race": "vorthak", "min_tier": 3,
