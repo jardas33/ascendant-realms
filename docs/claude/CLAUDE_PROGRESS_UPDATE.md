@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 212 (done): the tooltips on command cards**
+  - Hovered every card of the worker, hall, each building, hero and a soldier for three peoples and photographed each tooltip (new tool `claude_tipshot.gd`, which also prints every tooltip's text and size).
+  - Fixed: after a long tooltip, the next shorter one kept the long one's height, leaving a half-empty box. The box now fits its text every time.
+  - Added: a soldier's tooltip now says what its damage type is strong and weak against (taken from the damage table itself), its armour, reach and training time. Buildings say how long a worker takes to raise them, towers what they shoot, research how long it takes.
+  - Changed: the reason a card is locked ("Requires the Age of Iron") is its own line in a warning colour, worded the same on every card. Order tooltips no longer repeat their own title. Ability lines read "Mana 50, cooldown 26 s".
+  - Not checked at other window sizes: the HUD draws on a fixed 1920x1080 canvas, so the tooltip positions came out the same at 1366x768.
+  - Full regression: 94 of 94, 577 s, save unchanged.
 - **Plan 211 (done): the other nine landmarks**
   - Built and photographed each of the other nine peoples' landmarks. The new crystal shows as a gem over all nine. Fountain, rift gate, war drum, loom, standing stones, sun dial, bell and bonfire: no faults found.
   - Fixed: the Wolfveil Howling Stone was a plain grey box with a white ball on top, like a post with a lamp. It is now a tapered six-sided standing stone between two smaller ones, with a pale moon ring cut into its face.

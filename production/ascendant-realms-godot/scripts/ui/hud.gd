@@ -3216,7 +3216,11 @@ func _consume_hud_wheel(event: InputEvent) -> void:
 func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip: String, disabled_reason: String, accent: Color) -> void:
 	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel):
 		return
-	_clear_children(_command_tooltip)
+	# Taken out at once, not only queued for freeing: a child still inside
+	# keeps the plate at the height of the last, longer tooltip.
+	for old_child in _command_tooltip.get_children():
+		_command_tooltip.remove_child(old_child)
+		old_child.queue_free()
 	_command_tooltip.set("accent", accent)
 	_command_tooltip.queue_redraw()
 	var stack := VBoxContainer.new()
@@ -3244,15 +3248,35 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	var first_line := body_text.get_slice("\n", 0).strip_edges()
 	if first_line.to_lower() == title.to_lower():
 		body_text = body_text.substr(first_line.length()).strip_edges()
-	if not disabled_reason.is_empty():
-		body_text += "\nUnavailable: " + disabled_reason
+	# "Attack-move: march to..." under the heading ATTACK MOVE says it twice.
+	var lead := body_text.get_slice(":", 0)
+	if body_text.contains(":") and lead.replace("-", " ").to_lower() == title.to_lower():
+		body_text = body_text.substr(lead.length() + 1).strip_edges()
+		body_text = body_text.left(1).to_upper() + body_text.substr(1)
 	var body := _mk_label(body_text, 17, Color(0.91, 0.90, 0.84))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	body.custom_minimum_size = Vector2(376, 0)
 	body.add_theme_constant_override("line_spacing", 3)
 	stack.add_child(body)
+	if not disabled_reason.is_empty():
+		# Why the card cannot be used, set apart in the colour of a warning.
+		var blocked := _mk_label(disabled_reason, 16, Color(0.96, 0.60, 0.42))
+		blocked.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		blocked.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		blocked.clip_text = false
+		blocked.custom_minimum_size = Vector2(376, 0)
+		stack.add_child(blocked)
 	_command_tooltip.add_child(stack)
+	_command_tooltip.visible = true
+	_place_command_tooltip()
+	# Once more when the wrapped lines have their real heights.
+	_place_command_tooltip.call_deferred()
+
+
+func _place_command_tooltip() -> void:
+	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel) or not _command_tooltip.visible:
+		return
 	_command_tooltip.reset_size()
 	var deck_rect := _cmd_panel.get_global_rect()
 	var viewport_size := get_viewport_rect().size
@@ -3264,6 +3288,43 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 		clampf(tooltip_pos.x, 8.0, maxf(8.0, viewport_size.x - tooltip_size.x - 8.0)),
 		clampf(tooltip_pos.y, 8.0, maxf(8.0, viewport_size.y - tooltip_size.y - 8.0)))
 	_command_tooltip.visible = true
+
+
+## What a soldier is for, in two short lines under its description: what its
+## blows are good and poor against (from the damage table, so it cannot drift
+## from the rules), what it wears, its reach and how long it takes to train.
+func _unit_tooltip(udef: Dictionary) -> String:
+	var text := String(udef.get("desc", ""))
+	var seconds := int(round(float(udef.get("build_time", 0))))
+	var role := String(udef.get("role", ""))
+	if role == "worker":
+		return text + ("\nGathers and builds · trains in %d s" % seconds if seconds > 0 else "")
+	var class_names := {"unarmored": "unarmoured troops", "light": "light armour", "medium": "medium armour", "heavy": "heavy armour", "fortified": "buildings"}
+	var dmg_type := String(udef.get("dmg_type", ""))
+	if GameData.DAMAGE_TABLE.has(dmg_type):
+		var strong: Array = []
+		var weak: Array = []
+		for armor_class in GameData.ARMOR_CLASSES:
+			var mult := float(GameData.DAMAGE_TABLE[dmg_type].get(armor_class, 1.0))
+			if mult >= 1.15:
+				strong.append(class_names[armor_class])
+			elif mult <= 0.75:
+				weak.append(class_names[armor_class])
+		var line := "%s damage" % dmg_type.capitalize()
+		if not strong.is_empty():
+			line += ": strong against %s" % " and ".join(strong)
+		if not weak.is_empty():
+			line += ("; weak against %s" if not strong.is_empty() else ": weak against %s") % " and ".join(weak)
+		text += "\n" + line.replace("medium armour and heavy armour", "medium and heavy armour") + "."
+	var facts: Array = []
+	if float(udef.get("heal", 0.0)) > 0.0:
+		facts.append("Heals allies")
+	var wears := "%s armour" % String(udef.get("armor_class", "light")).replace("unarmored", "no")
+	facts.append(wears if not facts.is_empty() else wears.left(1).to_upper() + wears.substr(1))
+	facts.append("reach %d" % int(round(float(udef.get("range", 0.0)))) if float(udef.get("range", 0.0)) > 3.0 else "melee")
+	if seconds > 0:
+		facts.append("trains in %d s" % seconds)
+	return text + "\n" + " · ".join(facts)
 
 
 func _hide_command_tooltip() -> void:
@@ -3497,8 +3558,13 @@ func _build_worker_card() -> void:
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
 			tooltip_detail += "\nProvides: +%d population" % grants_pop
+		var card_text := tooltip_detail
+		if float(bdef.get("tower_dmg", 0.0)) > 0.0:
+			tooltip_detail += "\nShoots %s for %d, reach %d" % [String(bdef.get("tower_type", "pierce")), int(bdef.get("tower_dmg", 0)), int(round(float(bdef.get("tower_range", 0.0))))]
+		if float(bdef.get("build_time", 0.0)) > 0.0:
+			tooltip_detail += "\nOne worker raises it in %d s" % int(round(float(bdef.get("build_time", 0.0))))
 		var preview_definition := _building_portrait_definition(bdef, String(bid))
-		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, tooltip_detail, "Purpose")
+		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, card_text, "Purpose")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
@@ -3584,7 +3650,7 @@ func _build_hero_command_card(u) -> void:
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
 			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
 			var ability_emblem := "rally" if cap_id == "rally" else ""
-			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana: %d\nCooldown: %.1fs" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, cooldown], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
+			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana %d · cooldown %d s" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, int(round(cooldown))], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
 			btn.disabled = not ready
 			# People and signature spells wear their own emblem: the people's
 			# sigil in the spell's colour, marked by what the spell does.
@@ -3809,7 +3875,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var train_state := "LOCKED" if not reason.is_empty() else ("TRAINING" if queued_for_training else "READY")
 			var unit_emblem := String(uid) if String(uid) == "barrosan_worker" else ""
 			var unit_card_art := {} if not unit_emblem.is_empty() else udef
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, str(udef.get("desc", "")), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
+			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, _unit_tooltip(udef), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -3852,9 +3918,9 @@ Workers inside %d / %d  ·  +%d %s a minute
 					var required_age := GameData.get_tech("advance_tier_%d" % required_tier)
 					var required_age_name := String(required_age.get("name", "Age %d" % required_tier))
 					required_age_name = required_age_name.trim_prefix("Advance to ")
-					reason = "Requires %s" % required_age_name
+					reason = "Requires the %s" % required_age_name
 				elif _commander.tier < int(tdef.get("min_tier", 1)):
-					reason = "Requires %s" % String(GameData.get_tech("advance_tier_%d" % int(tdef.get("min_tier", 1))).get("name", "a later Age")).trim_prefix("Advance to ")
+					reason = "Requires the %s" % String(GameData.get_tech("advance_tier_%d" % int(tdef.get("min_tier", 1))).get("name", "Age that follows")).trim_prefix("Advance to ")
 				else:
 					var missing := ""
 					for r in tdef.get("req", []):
@@ -3867,7 +3933,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
 			var tech_emblem := String(tid) if String(tid) in ["advance_tier_2", "advance_tier_3"] else ""
-			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
+			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")) + ("\nTakes %d s" % int(round(float(tdef.get("time", 0.0)))) if float(tdef.get("time", 0.0)) > 0.0 and not _commander.completed_tech.has(tid) else ""), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
 			var cap_b = b
 			var cap_tid := String(tid)
