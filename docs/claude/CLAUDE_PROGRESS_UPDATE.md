@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 218 (done): briefings, tooltips, pause and result screens measured**
+  - New tool `claude_overlayclip.gd`: the same measurement over all 44 chapter briefings, the tooltip of every card of the worker, hall and hero, the pause menu, and the victory and defeat screens.
+  - Briefings, tooltips and the pause menu: nothing cut off, at 16:9 and at 21:9.
+  - Found on the result screen, and it was a wrong number, not only an untidy one: an experience gain of four digits lost its last digit. A win worth +1100 was shown as "+110", with no dots to say anything was missing. The figure's width was taken from the caption under it ("EXPERIENCE"). Fixed: the figure sets its own width. The same would have happened to 1000 or more enemies defeated.
+  - The tool is in the regression (98 checks). It ends a battle, so it backs the profile up and puts it back; the save was the same before and after each run.
+  - Full regression: 98 of 98, 811 s, save unchanged.
 - **Plan 217 (done): the menus measured, and the HUD in late-battle states**
   - New tool `claude_menuclip.gd`: the same measurement over seven menu screens at three window shapes (16:9, 21:9, 4:3). Nothing cut off, nothing ending in dots. The skill tree is left out: it is a canvas the player pans, so most of it is off screen by design.
   - The in-battle HUD measured at 21:9, 4:3 and 1280x720 for two peoples: nothing cut off.

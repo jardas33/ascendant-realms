@@ -4715,6 +4715,10 @@ func _on_game_over(victory: bool) -> void:
 		cell.add_theme_constant_override("separation", 2)
 		var value := _mk_title_label(String(stat[1]), 34, Color(0.96, 0.92, 0.82))
 		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		# The figure sets the cell's width, never the caption under it: a four
+		# digit experience gain lost its last digit ("+1100" read "+110").
+		value.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		value.clip_text = false
 		cell.add_child(value)
 		var caption := _mk_label(String(stat[0]), 13, Color(0.72, 0.68, 0.60))
 		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
