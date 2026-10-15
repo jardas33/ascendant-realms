@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 238 (done): the skirmish preview paints badlands and tropical maps in their own colors**
+  - I photographed the skirmish screen with rebuilt maps chosen. The picker groups them correctly (saga maps, then open fields), and the blurbs read well. But the little map preview drew Warlord's Crucible, a red badlands map, on green grass: the preview had no ground color for the badlands and tropical themes and fell back to highland green. Four maps were affected (Kaelmoor Badlands, Warlord's Crucible, Sunspire Delta, Emerald Isles), and it had been so since before the rebuild.
+  - Now badlands are drawn on red-brown earth and tropical maps on their own lush green. Checked by picture.
+  - Checked the other per-theme tables (ground cover, weather, ambient sound, rock tones): they cover every theme.
+  - `claude_openplaces.gd` now also checks that every theme in the map list has a preview color. It failed with the old preview (missing badlands and tropical).
+  - Full regression: 110 of 110 passed.
 - **Plan 237 (done): each rebuilt map names its own places**
   - The 19 rebuilt maps all called their five capture sites by the same generic names (The Lume Spire, Wayside Chapel, Old Shrine, North Watch, South Watch), on every map. The hand-built maps name theirs after the place (The Dam Works, Church of Salto).
   - Now each has five names of its own that fit its ground: on Mirefen the Drowned Lume, Reed Chapel, Eel Catchers' Hut, Causeway Watch and Heron Watch; on Ruins of Vael the Lume of Vael, Vael Chapter House, Vael Bathhouse, Broken Tower and Vael Gatehouse; on Emberfall Rift the Thrall Wells and the Glassblowers' Shelter; and so on. No name is used twice, and none is longer than the longest hand-built one.

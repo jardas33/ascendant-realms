@@ -19,6 +19,9 @@ const THEME_GROUND := {
 	"desert": Color(0.62, 0.50, 0.32),
 	"autumn": Color(0.46, 0.32, 0.18),
 	"wetland": Color(0.22, 0.32, 0.26),
+	# Badlands and tropical maps were drawn on the highland green.
+	"badlands": Color(0.50, 0.30, 0.18),
+	"tropical": Color(0.24, 0.42, 0.28),
 }
 
 var map_data := {}
