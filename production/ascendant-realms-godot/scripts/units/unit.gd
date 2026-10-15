@@ -4045,7 +4045,7 @@ func _show_hero_title() -> void:
 var _bark: Label3D
 
 func say(text: String, col: Color = Color(1.0, 0.95, 0.82)) -> void:
-	if text == "" or is_dead:
+	if text == "" or is_dead or (world and not world.game_running):
 		return
 	if is_instance_valid(_bark):
 		_bark.queue_free()

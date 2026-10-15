@@ -5769,6 +5769,14 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	match_ended = true
 	game_running = false
 	game_over_count += 1
+	# Floating names and calls are drawn over everything (no depth test), so
+	# a hero's name showed through the result ledger as faint text. The
+	# battle is over: hide them.
+	for group in ["units", "buildings"]:
+		for n in get_tree().get_nodes_in_group(group):
+			for c in n.get_children():
+				if c is Label3D:
+					c.visible = false
 	AudioManager.play_music_path(Sfx.music_key("victory" if victory else "defeat"), -6.0, false)
 	# rewards
 	var xp := 200.0 + float(kills_by_player) * 12.0 + match_time * 0.5
