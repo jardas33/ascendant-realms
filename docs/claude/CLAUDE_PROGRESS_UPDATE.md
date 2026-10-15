@@ -1276,6 +1276,14 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 240 (done): text you can read without squinting**
+  - Emanuel said much of the text is hard to read, the skill tree first. Measured at 1920x1080: star names on the skill tree drew at about 12.6 px and the cost lines at 9 px, and the cost lines were dimmed twice.
+  - Skill tree: star names are larger (about 16 px on screen), cost lines are white under their state color and larger, and the rows are spaced further apart so nothing overlaps. Where a name wraps onto two lines the cost line moves down; where it fits on one there is no gap.
+  - Every screen: the menus' default font is Cinzel, thin capitals that blur when small. Now any text that would draw Cinzel below 18 px uses the plain font instead, and no menu text draws below 14 px (the battle HUD already draws its text 1.2 times larger and keeps its sizes). Titles and headings keep Cinzel. The War Chest gained the most: its slot counts and relic stats were tiny serif capitals and are now plain, larger text.
+  - Skirmish: the map description beside the preview is a size larger in a wider column. War Chest stat lines use shorter separators so three stats still fit at 1440x1080.
+  - Campaign map: "Sealed" and "Side road" captions are brighter and a size larger over the painted map.
+  - Checked with pictures of every menu and a battle at 1920x1080.
+  - Full regression: 110 of 110 checks pass.
 - **Plan 239 (done): hills that look like ground, not plastic**
   - I photographed battles in progress on Warlord's Crucible and Emerald Isles. Two things were wrong with the hills on the rebuilt maps:
     - Some were steep cones. A hill that had to shrink to find room kept its full height (measured: height equal to its radius on Crucible; the hand-built hills are at most about 0.8). Now no generated hill is steeper than 0.8. Only heights changed; every map keeps its layout.

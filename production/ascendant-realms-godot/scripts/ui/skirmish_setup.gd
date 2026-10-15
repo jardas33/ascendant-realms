@@ -396,8 +396,8 @@ func _build_battle_panel() -> Control:
 	_map_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_map_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	preview_row.add_child(_map_preview)
-	_map_caption = _body_label(13, MUTED)
-	_map_caption.custom_minimum_size = Vector2(0, 0) if stacked else Vector2(150, 0)
+	_map_caption = _body_label(14, MUTED)
+	_map_caption.custom_minimum_size = Vector2(0, 0) if stacked else Vector2(185, 0)
 	if stacked:
 		_map_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_map_caption.size_flags_vertical = Control.SIZE_SHRINK_CENTER

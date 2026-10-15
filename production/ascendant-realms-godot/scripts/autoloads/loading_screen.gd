@@ -283,6 +283,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 	_build_ui()
+	var readable := preload("res://scripts/ui/readable_text.gd").new()
+	readable.name = "ReadableText"
+	add_child(readable)
 
 
 # Per-game accent resolution. Three lookups in priority order:

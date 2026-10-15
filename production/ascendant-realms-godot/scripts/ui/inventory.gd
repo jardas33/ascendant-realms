@@ -517,7 +517,7 @@ func _item_card(item: Dictionary) -> Button:
 		stat_bits.append(_short_stat(str(k), float(stats[k])))
 	if not stat_bits.is_empty():
 		var stat_label := Label.new()
-		stat_label.text = "  ·  ".join(stat_bits)
+		stat_label.text = " · ".join(stat_bits)
 		stat_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		stat_label.add_theme_font_size_override("font_size", 13)
 		stat_label.add_theme_color_override("font_color", Color(0.62, 0.86, 0.6))

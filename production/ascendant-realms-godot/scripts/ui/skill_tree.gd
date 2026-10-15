@@ -4,14 +4,17 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(220.0, 160.0)
-const FOCUSED_SPACING := Vector2(250.0, 160.0)
+const SPACING := Vector2(220.0, 182.0)
+const FOCUSED_SPACING := Vector2(250.0, 182.0)
 const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(190.0, 146.0)
+const NODE_SIZE := Vector2(190.0, 172.0)
 const ORB := Vector2(96.0, 96.0)
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 const GRAPH_ZOOM := 0.74
 const FOCUSED_ZOOM := 0.92
+## Star caption sizes on the canvas (before the graph zoom).
+const NAME_SIZE := 22
+const NAME_SIZE_COMPACT := 25
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
 const INK := Color("#0b1020")
@@ -182,6 +185,14 @@ func _ready() -> void:
 	ProfileManager.profile_changed.connect(_refresh_nodes)
 	_refresh_nodes()
 	call_deferred("_fit_default_zoom")
+
+func _name_lines(text: String, size: int) -> int:
+	var para := TextParagraph.new()
+	para.add_string(text, _title_font(), size)
+	para.width = NODE_SIZE.x
+	para.break_flags = TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE
+	return mini(2, para.get_line_count())
+
 
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
@@ -395,14 +406,16 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.accent = _branch_color(str(n.get("branch", "")))
 	glyph.texture = _skill_glyph_texture(n)
 	b.add_child(glyph)
-	# On a small screen the whole graph is drawn at about two thirds size, so
-	# the captions are set larger there to stay readable (17 became 11 px).
+	# The whole graph is drawn at about three quarters size (two thirds on a
+	# small screen), so the captions are set large enough to stay readable
+	# after it: a name 16 px on screen, its cost line 12 px (they were 12.6
+	# and 9 px, and players had to squint).
 	var compact := get_window().size.y < 850
-	var name_size := 20 if compact else 17
+	var name_size := NAME_SIZE_COMPACT if compact else NAME_SIZE
 	var name_label := _label(str(n.get("name", "")), name_size, PAPER)
 	name_label.add_theme_font_override("font", _title_font())
 	name_label.position = Vector2(0.0, ORB.y - 2.0)
-	name_label.size = Vector2(NODE_SIZE.x, 40.0 if compact else 34.0)
+	name_label.size = Vector2(NODE_SIZE.x, 62.0 if compact else 54.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -412,10 +425,13 @@ func _add_node_button(n: Dictionary) -> void:
 	name_label.add_theme_constant_override("outline_size", 5)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 15 if compact else 12, MUTED)
-	var two_lines: bool = _title_font().get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > NODE_SIZE.x - 4.0
-	cost_label.position = Vector2(0.0, ORB.y + ((42.0 if two_lines else 22.0) if compact else (38.0 if two_lines else 20.0)))
-	cost_label.size = Vector2(NODE_SIZE.x, 19.0 if compact else 16.0)
+	# White text, coloured by its state through modulate (a muted text colour
+	# under a muted modulate was dimmed twice).
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 20 if compact else 17, Color.WHITE)
+	# Wrapped the way the label wraps it: a name that only just fits must not leave a gap.
+	var two_lines: bool = _name_lines(name_label.text, name_size) > 1
+	cost_label.position = Vector2(0.0, ORB.y + ((56.0 if two_lines else 29.0) if compact else (50.0 if two_lines else 26.0)))
+	cost_label.size = Vector2(NODE_SIZE.x, 24.0 if compact else 21.0)
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
 	cost_label.add_theme_constant_override("outline_size", 4)
@@ -712,9 +728,10 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			continue
 		var b: Button = _node_buttons[nid]
 		var lab: Label = b.get_child(1) as Label
-		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x + 18.0)
-		var lines := 2 if tw3 >= NODE_SIZE.x - 2.0 else 1
-		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, 19.0 * lines + 22.0))
+		var fs := lab.get_theme_font_size("font_size")
+		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 18.0)
+		var lines := _name_lines(lab.text, fs)
+		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, (fs + 2.0) * lines + fs + 9.0))
 		canvas.draw_style_box(_name_plate_style, plate)
 	# Claim bursts: an expanding ring and sparks.
 	for b in _bursts:
