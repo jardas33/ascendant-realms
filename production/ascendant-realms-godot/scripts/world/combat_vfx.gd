@@ -297,20 +297,31 @@ static func order_marker(parent: Node3D, pos: Vector3, col: Color, radius: float
 	t.chain().tween_callback(root.queue_free)
 
 ## Ability shockwave: the same soft ring expanding outward and fading.
+static var _spell_ring_shader: Shader
+
+## Plan 245: the ground wave of a spell or a burst of power: a thin bright
+## front runs out to `radius` with a ring of runes behind it and a trailing
+## wash of light (assets/shaders/spell_ring.gdshader). It replaced a flat
+## disc whose over-bright rim burned to white.
 static func shockwave(parent: Node3D, pos: Vector3, col: Color, radius: float) -> void:
 	_ensure_markers()
+	if _spell_ring_shader == null:
+		_spell_ring_shader = load("res://assets/shaders/spell_ring.gdshader")
 	var ring := MeshInstance3D.new()
 	ring.mesh = _marker_quad
-	var mat := _ground_quad_material(_ring_tex, Color(col.r * 1.4, col.g * 1.4, col.b * 1.4, 1.0))
+	var mat := ShaderMaterial.new()
+	mat.shader = _spell_ring_shader
+	mat.set_shader_parameter("tint", Color(minf(col.r * 1.15, 1.0), minf(col.g * 1.15, 1.0), minf(col.b * 1.15, 1.0), 1.0))
+	mat.set_shader_parameter("seed", randf() * 100.0)
+	mat.set_shader_parameter("progress", 0.0)
 	ring.material_override = mat
 	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(ring)
 	ring.global_position = pos + Vector3(0, 0.12, 0)
-	ring.scale = Vector3.ONE * radius * 0.2
-	var t := ring.create_tween().set_parallel(true)
-	t.tween_property(ring, "scale", Vector3.ONE * radius * 1.12, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.tween_property(mat, "albedo_color:a", 0.0, 0.6).set_delay(0.1)
-	t.chain().tween_callback(ring.queue_free)
+	ring.scale = Vector3.ONE * radius * 1.12
+	var t := ring.create_tween()
+	t.tween_method(func(v: float): mat.set_shader_parameter("progress", v), 0.0, 1.0, 0.6 + radius * 0.025)
+	t.tween_callback(ring.queue_free)
 
 
 ## A column of Lume light where a fallen hero rises again: a tall additive
@@ -318,19 +329,19 @@ static func shockwave(parent: Node3D, pos: Vector3, col: Color, radius: float) -
 static func lume_pillar(parent: Node3D, pos: Vector3, col: Color) -> void:
 	var beam := MeshInstance3D.new()
 	var cyl := CylinderMesh.new()
-	cyl.top_radius = 0.7
-	cyl.bottom_radius = 1.1
+	cyl.top_radius = 1.0
+	cyl.bottom_radius = 1.5
 	cyl.height = 16.0
 	cyl.radial_segments = 20
 	cyl.cap_top = false
 	cyl.cap_bottom = false
 	beam.mesh = cyl
-	var mat := StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	mat.albedo_color = Color(col.r, col.g, col.b, 0.0)
+	# Plan 245: soft-edged light (assets/shaders/lume_beam.gdshader); the
+	# plain additive tube read as a hard-sided pale rectangle.
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://assets/shaders/lume_beam.gdshader")
+	mat.set_shader_parameter("tint", col)
+	mat.set_shader_parameter("strength", 0.0)
 	beam.material_override = mat
 	beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(beam)
@@ -343,12 +354,12 @@ static func lume_pillar(parent: Node3D, pos: Vector3, col: Color) -> void:
 	parent.add_child(light)
 	light.global_position = pos + Vector3(0, 1.5, 0)
 	var t := beam.create_tween().set_parallel(true)
-	t.tween_property(mat, "albedo_color:a", 0.38, 0.35)
+	t.tween_property(mat, "shader_parameter/strength", 1.1, 0.35)
 	t.tween_property(beam, "scale", Vector3(1.0, 1.0, 1.0), 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	t.tween_property(light, "light_energy", 5.0, 0.3)
 	t.chain().tween_interval(0.7)
 	t.chain().set_parallel(true)
-	t.tween_property(mat, "albedo_color:a", 0.0, 1.2)
+	t.tween_property(mat, "shader_parameter/strength", 0.0, 1.2)
 	t.tween_property(beam, "scale", Vector3(0.1, 1.0, 0.1), 1.2)
 	t.tween_property(light, "light_energy", 0.0, 1.2)
 	t.chain().tween_callback(func():

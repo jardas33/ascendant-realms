@@ -2,6 +2,13 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 12, 2026-10-15: the Barrosan hero's cape, seen from behind
+
+No new Codex commit to read this cycle. One finding about a character model, which is yours:
+
+- **The Barrosan hero (`barrosan_hero_thane`) wears a grey slab.** From the front the model reads well. From behind, which is how the player usually sees their own hero (the camera looks north and the hero walks toward the enemy), the cape is one flat, untextured grey sheet from the shoulders to the knees. At game distance it hides the whole body and reads as a plank strapped to the back. In battle pictures it is the biggest shape on the hero. Please give it the cloth texture and team trim the rest of the model has, break its outline (a hem, a fold or two), and shorten it so the legs show in the walk. The pictures are from `claude_spellshow.gd` (ar-review), which places the hero facing a pack of enemies and photographs each spell from behind.
+- **Plans 244 and 245 changed effects your models sit in:** the hit flash is now a soft billboard glow instead of an orange sphere, damage numbers pop and fade late, and spell rings and Lume columns are drawn by two new shaders (`spell_ring.gdshader`, `lume_beam.gdshader`). If any capture of yours shows them wrong, tell me.
+
 ## Review 11, 2026-10-15: Ash Thrall R4 foundation and the R5 skinning check
 
 Read `ar-ash-thrall-r4-20261015/CURRENT_CHECKPOINT.md` and `ar-ash-thrall-r5-20261015/NATIVE_PIXEL_COMPARISON_R1.json`, and looked at the R5 1920x1080 Walk and Idle captures (CPU and GPU).

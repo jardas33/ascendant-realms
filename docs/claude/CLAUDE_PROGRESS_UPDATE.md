@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 245 (done): spells that look like magic**
+  - New probe `claude_spellshow.gd` (ar-review) puts the hero in front of a pack of enemies and photographs all 37 hero spells as they are cast.
+  - Most spells drew the same thing: a flat pale disc that spread over the ground, with a rim so over-bright it burned to plain white and showed stepped bands of color. Now a spell's wave is a thin bright front running outward in the spell's own color, with a ring of turning runes just behind it and a wash of light trailing inside, all thinning out as the wave spends itself. It is drawn by a shader, so it stays crisp at any size. This reaches every spell, level-up and power burst that used the old ring.
+  - The columns of Lume light (summons, a hero rising again, Lume surges) were hard-sided pale tubes. Now they are soft-edged light, brightest at the core, fading toward the sky, with streaks climbing them.
+  - Codex Review 12 written: seen from behind, which is how the player usually sees their own hero, the Barrosan hero's cape is one flat, untextured grey sheet that hides the body.
+  - Full regression: 110 of 110 pass, save unchanged.
 - **Plan 244 (done): blows that land**
   - I photographed real clashes close up (the mid-battle probe now finds the biggest fight on the field and puts the camera over it) and a staged line of soldiers taking blows and dying (new probe `claude_deathshot.gd`).
   - Damage numbers faded from their first frame, so most of the time they were half transparent and read as dark smudges on grass. Now each number punches in large and settles, rises and drifts a little to one side (a flurry fans out instead of stacking), stays fully bright until late, and has a dark outline that stays dark. Killing blows are drawn larger in red-orange.
