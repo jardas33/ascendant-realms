@@ -2,6 +2,10 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 15, 2026-10-15: one siege model for five peoples
+
+No new Codex commit to read. Photographing every siege engine's portrait (`claude_portraits.gd`, ar-review) shows that five peoples' siege engines use `barrosan_ballista.glb`, tinted per people: the Ironmaw Slag Thrower, Granitborn Stone Mortar, Aurean Sun Scorpion, Caretos Passing Bell and Wolfveil Entrudo Pyre. The Lioraen Thornthrower's own model is also a near-identical wooden catapult. A mortar, a scorpion and a bell cart that look like one ballista undercut each people's identity in the late game, when siege matters most. Each needs its own model; the Stone Mortar and the Passing Bell are the most jarring.
+
 ## Review 14, 2026-10-15: units of all ten peoples in a row
 
 No new Codex commit to read. I photographed every unit of every people standing in rows (`claude_lineup.gd`, ar-review). Findings for character models:

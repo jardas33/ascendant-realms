@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 253 (done): siege engines show in their portraits**
+  - A new probe (`claude_portraits.gd`) draws the selection portraits of any units side by side. Seven of the eight siege engines showed as a speck in an empty frame on the small group card: their models measure far wider than their body, so the camera stood far away. On the large single card the soldier's waist-up camera showed only a crop of beams.
+  - Siege portraits are now framed on the engine's main body, like buildings, at a closer distance, on both card sizes. Every engine now fills its frame.
+  - Codex Review 15 written: five peoples' siege engines borrow the Barrosan Ballista's model.
+  - Full regression: all 110 checks passed, and the real save file was unchanged.
 - **Plan 252 (done): the smallest battle text is gone**
   - A new probe (`claude_hudsize.gd`) measured every text in the battle HUD, through every selection state, at 1920x1080. The smallest were the names under the portraits when a group is selected (10 to 12 pixels on screen), the line naming the group's kinds (12) and the production queue buttons (12).
   - A selected group now shows bigger faces with no squeezed names (each card's tooltip names the soldier). The line above them ("Bloomdancer x1 · Rootwarden x1 · +6 more") is drawn at 16 pixels and names two kinds when there are more than three, so it never ends in dots. Queue buttons are drawn at 14 pixels, stepping down only for the longest names.

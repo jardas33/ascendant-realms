@@ -223,7 +223,12 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			model.position -= Vector3(focus.position.x + focus.size.x * 0.5, 0.0, focus.position.z + focus.size.z * 0.5)
 			model_radius = maxf(focus.size.x, focus.size.z) * 0.5
 		elif bool(definition.get("is_siege", false)):
-			model_radius = ModelUtils.measure_radius(model)
+			# Framed like a building, on its main body: seven of the eight siege
+			# engines measured a far larger radius than their frame and sat in
+			# the group grid as a speck.
+			var focus := _building_focus(model, target_height)
+			model.position -= Vector3(focus.position.x + focus.size.x * 0.5, 0.0, focus.position.z + focus.size.z * 0.5)
+			model_radius = minf(maxf(focus.size.x, focus.size.z) * 0.5, target_height * 1.2)
 		if not is_building:
 			_pose_and_tint_unit(model, path, definition)
 	else:
@@ -262,8 +267,10 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			# The same view from closer: at card size the model must fill the frame.
 			var aim := Vector3(0.0, target_height * 0.48, 0.0)
 			_camera.position = aim + (_camera.position - aim) * (0.8 if narrow_structure else 0.68)
-	elif compact_card and bool(definition.get("is_siege", false)):
-		distance = maxf(3.1, model_radius * 2.4 + 0.45)
+	elif bool(definition.get("is_siege", false)):
+		# The whole engine, on the small group card and the large one alike (the
+		# waist-up soldier camera showed a crop of beams on the large card).
+		distance = maxf(2.4, model_radius * 1.8 + 0.35) * (1.0 if compact_card else 1.12)
 		_camera.position = Vector3(distance * 0.3, target_height * 0.8, distance)
 		_camera.fov = 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.38, 0.0), Vector3.UP)
