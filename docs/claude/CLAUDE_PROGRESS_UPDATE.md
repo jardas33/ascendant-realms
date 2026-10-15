@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 254 (done): unit portraits show faces**
+  - I photographed the selection portrait of all 80 units. Units with painted portraits (most Barrosan, some Lioraen and Vorthak) look rich. Every other unit was a small whole body standing in a dark frame, because the camera assumed the figure filled its bounds, and capes, weapons and outstretched arms make the bounds much bigger than the body. The four units wearing the Spear Guard body also still had the grey placeholder "dice" in their portraits.
+  - Rendered portraits now aim at the model's head once it stands in its idle pose: head and shoulders on the small group cards, down to the chest on the large card, like the painted ones. The placeholder dice are dropped there too.
+  - A model whose head bone sits low in its body (the Ironmaw Bowcrusha) keeps the old view. The Ironmaw brutes' models seem to face away from the portrait camera; that is noted for a later check.
+  - Full regression: all 110 checks passed, and the real save file was unchanged.
 - **Plan 253 (done): siege engines show in their portraits**
   - A new probe (`claude_portraits.gd`) draws the selection portraits of any units side by side. Seven of the eight siege engines showed as a speck in an empty frame on the small group card: their models measure far wider than their body, so the camera stood far away. On the large single card the soldier's waist-up camera showed only a crop of beams.
   - Siege portraits are now framed on the engine's main body, like buildings, at a closer distance, on both card sizes. Every engine now fills its frame.

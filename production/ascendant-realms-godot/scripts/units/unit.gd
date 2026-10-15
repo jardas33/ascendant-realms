@@ -816,8 +816,9 @@ func _build_model() -> void:
 ## icospheres and a box ("Pilot_" pieces) floating over a textured body that
 ## already has its own armour. Seen in a row, they read as big grey dice.
 ## Rigid untextured Pilot_ pieces are dropped; a skinned Pilot_ mesh (the
-## Ash Thrall's whole body has that name) is kept.
-func _drop_placeholder_armor(m: Node) -> void:
+## Ash Thrall's whole body has that name) is kept. The selection portraits
+## call it too.
+static func _drop_placeholder_armor(m: Node) -> void:
 	for mi in m.find_children("Pilot_*", "MeshInstance3D", true, false):
 		if mi.skin != null or mi.mesh == null:
 			continue

@@ -31,6 +31,7 @@ var _active_portrait_path := ""
 var _pending_entity = null
 var _pending_definition: Dictionary = {}
 var _pending_definition_is_building := true
+var _posed_model: Node3D
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -230,6 +231,8 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			model.position -= Vector3(focus.position.x + focus.size.x * 0.5, 0.0, focus.position.z + focus.size.z * 0.5)
 			model_radius = minf(maxf(focus.size.x, focus.size.z) * 0.5, target_height * 1.2)
 		if not is_building:
+			Unit._drop_placeholder_armor(model)
+			_posed_model = null if bool(definition.get("is_siege", false)) else model
 			_pose_and_tint_unit(model, path, definition)
 	else:
 		# Truthful visual fallback for definitions without an authored model.
@@ -361,8 +364,47 @@ func _redraw_once_posed() -> void:
 		return
 	await get_tree().process_frame
 	await get_tree().process_frame
+	_frame_on_head()
 	if is_instance_valid(_viewport) and custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD:
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
+
+## Head and shoulders, like the painted portraits. The fixed waist-up camera
+## assumed every body stood 1.95 m tall in its bounds, but most models' bounds
+## are larger than the figure (arms out, capes, weapons), so a unit stood
+## small and whole in a dark frame. With the idle pose in, the camera is aimed
+## at the skeleton's head instead. Models without a Head bone keep the fixed
+## camera.
+func _frame_on_head() -> void:
+	if not is_instance_valid(_posed_model) or not is_instance_valid(_camera):
+		return
+	var skeleton: Skeleton3D = null
+	for candidate in _posed_model.find_children("*", "Skeleton3D", true, false):
+		skeleton = candidate
+		break
+	if skeleton == null:
+		return
+	var head := skeleton.find_bone("Head")
+	if head < 0:
+		return
+	var head_at: Vector3 = skeleton.global_transform * skeleton.get_bone_global_pose(head).origin
+	var feet_y := _pivot.global_position.y
+	var tall := head_at.y - feet_y
+	# A head bone far below the top of the body (the Bowcrusha's sits at half
+	# its height) is no face to frame: keep the fixed camera.
+	var top := 0.0
+	for mi in _posed_model.find_children("*", "MeshInstance3D", true, false):
+		top = maxf(top, ((mi as MeshInstance3D).global_transform * (mi as MeshInstance3D).get_aabb()).end.y)
+	if tall < 0.4 or tall < (top - feet_y) * 0.7:
+		return
+	var compact := custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD
+	# Frame from just above the head down to the chest (the belt, large):
+	# span is half the height shown.
+	var span := tall * (0.24 if compact else 0.32)
+	var aim := head_at - Vector3(0.0, span * 0.22, 0.0)
+	var distance := span / tan(deg_to_rad(_camera.fov * 0.5))
+	_camera.global_position = Vector3(head_at.x, aim.y + span * 0.1, head_at.z + distance)
+	_camera.look_at(aim, Vector3.UP)
 
 
 func _portrait_path_for_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> String:
