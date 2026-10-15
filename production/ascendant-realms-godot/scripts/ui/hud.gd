@@ -50,7 +50,22 @@ const MINIMAP_WATER_BANK := Color(0.28, 0.43, 0.38, 0.42)
 const COMMAND_PANEL_WIDTH := 430.0
 const SELECTION_PANEL_WIDTH := 410.0
 const SELECTION_PANEL_HEIGHT := 230.0
-const INTERACTION_PANEL_SCALE := 1.2
+## The minimap, selection and command panels are drawn 1.2x at 1920 wide.
+## The project lays out at 1920 and scales the whole canvas down on smaller
+## windows, so at 1366x768 their 14-point text reached the eye at 11 px. On
+## narrower windows the panels grow by the square root of the shrink (1.19x
+## at 1366, 1.1x at 1600): text stays at 14 px or more while the panels take
+## only a little more of the screen.
+const PANEL_SCALE_BASE := 1.2
+var _panel_scale := PANEL_SCALE_BASE
+var _last_window_size := Vector2i.ZERO
+
+func _small_window_boost() -> float:
+	var window_w := float(get_window().size.x) if get_window() else 1920.0
+	var content_w := get_viewport_rect().size.x
+	if window_w <= 0.0 or content_w <= 0.0:
+		return 1.0
+	return clampf(sqrt(content_w / window_w), 1.0, 1.2)
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const COMMAND_INK := Color(0.035, 0.045, 0.06, 0.985)
 const COMMAND_SURFACE := Color(0.075, 0.09, 0.11, 0.98)
@@ -277,6 +292,7 @@ func _fit_to_viewport() -> void:
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
 		return
 	var margin := 14.0
+	_panel_scale = PANEL_SCALE_BASE * _small_window_boost()
 	# The resource, force, age and objective instruments float independently.
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
@@ -315,32 +331,32 @@ func _fit_to_viewport() -> void:
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
-		_minimap_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		_minimap_panel.scale = Vector2.ONE * _panel_scale
 		_minimap_panel.offset_left = margin
 		_minimap_panel.offset_right = margin + map_size.x
-		_minimap_panel.offset_top = -margin - map_size.y * INTERACTION_PANEL_SCALE
+		_minimap_panel.offset_top = -margin - map_size.y * _panel_scale
 		_minimap_panel.offset_bottom = _minimap_panel.offset_top + map_size.y
-	var command_visual_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH * INTERACTION_PANEL_SCALE
+	var command_visual_left := viewport_size.x - margin - COMMAND_PANEL_WIDTH * _panel_scale
 	if is_instance_valid(_sel_panel):
 		# Reserve a narrow forged join between the live dossier and command deck.
 		# The chassis rail occupies the left edge of the command deck; placing the
 		# dossier directly against it covered the rightmost status and stat glyphs
 		# at compact resolutions. The chassis still bridges the visual gap.
 		selection_height = maxf(selection_height, _sel_panel.get_combined_minimum_size().y)
-		_sel_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
-		var selection_left := command_visual_left - 18.0 - SELECTION_PANEL_WIDTH * INTERACTION_PANEL_SCALE
+		_sel_panel.scale = Vector2.ONE * _panel_scale
+		var selection_left := command_visual_left - 18.0 - SELECTION_PANEL_WIDTH * _panel_scale
 		_sel_panel.offset_left = selection_left - viewport_size.x * 0.5
 		_sel_panel.offset_right = _sel_panel.offset_left + SELECTION_PANEL_WIDTH
-		_sel_panel.offset_top = -margin - selection_height * INTERACTION_PANEL_SCALE
+		_sel_panel.offset_top = -margin - selection_height * _panel_scale
 		_sel_panel.offset_bottom = _sel_panel.offset_top + selection_height
 	if is_instance_valid(_selection_portrait) and is_instance_valid(_sel_panel):
-		_selection_portrait.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		_selection_portrait.scale = Vector2.ONE * _panel_scale
 		_selection_portrait.position = Vector2(_sel_panel.get_global_rect().position.x + 4.0, _sel_panel.get_global_rect().position.y - 35.0)
 	if is_instance_valid(_cmd_panel):
-		_cmd_panel.scale = Vector2.ONE * INTERACTION_PANEL_SCALE
+		_cmd_panel.scale = Vector2.ONE * _panel_scale
 		_cmd_panel.offset_left = command_visual_left - viewport_size.x
 		_cmd_panel.offset_right = _cmd_panel.offset_left + COMMAND_PANEL_WIDTH
-		_cmd_panel.offset_top = -margin - command_height * INTERACTION_PANEL_SCALE
+		_cmd_panel.offset_top = -margin - command_height * _panel_scale
 		_cmd_panel.offset_bottom = _cmd_panel.offset_top + command_height
 	if is_instance_valid(_command_chassis) and is_instance_valid(_sel_panel) and is_instance_valid(_cmd_panel):
 		var selected_rect := _sel_panel.get_global_rect()
@@ -2162,9 +2178,13 @@ func _minimap_water_distance(pos: Vector3, axis: String, center_z: float, half_w
 # ---------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	var viewport_size := get_viewport_rect().size
-	if viewport_size != _last_viewport_size:
+	# The window size too: resizing a 16:9 window keeps the 1920x1080 canvas
+	# but changes how much the panels are boosted.
+	var window_size := get_window().size if get_window() else Vector2i.ZERO
+	if viewport_size != _last_viewport_size or window_size != _last_window_size:
 		_fit_to_viewport()
 		_last_viewport_size = viewport_size
+		_last_window_size = window_size
 
 	_update_survival_label()
 	_update_bounty_label(delta)
