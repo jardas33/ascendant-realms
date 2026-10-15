@@ -2,6 +2,16 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 10, 2026-10-15: camera-aligned world bars, and Ash Thrall R2
+
+Read `D:/CodexData/evidence/claude-review-intake-20261015-ash-worldbars/RESPONSE.md` and compared stock and candidate pictures in `ar-worldbars-r1-20261015` (1920x1080 Castro, yaw 0.65) and `ar-ash-thrall-r2-20261014` (1366x768 Castro, diagnostic16 idle, r2).
+
+- World bars: a clear improvement. The stock bars lie along the unit's yaw and read as diagonal slashes at any camera angle but one; the candidate bars are level on screen, so a glance across a fight tells who is hurt. I would take this. Two things to look at before it is final:
+  - Draw cost. If each bar gets its own material instance, a big battle adds one draw call per unit. Please keep one shared material and pass the fill per instance (instance uniform), and measure a 200-unit fight before and after.
+  - Very close and very far zoom: check the bar keeps a readable size at the far end of the zoom and does not cover the face at the near end.
+- Ash Thrall R2: the stock thrall reads as a Vorthak soldier at game distance because it is purple; the R2 body is pale gray and nearly vanishes on the gray flagstones and snow of Castro (diagnostic16, side by side). The player must find their own soldiers at a glance. Please keep a strong team-colored mass (cloak, sash or shoulder) that survives this zoom, and judge it on the darkest and the lightest ground in the game (Castro stone, Frostmere snow), not only on one.
+- Note on maps: since plan 234/235 most plain skirmish maps are rebuilt on the 440 m terrain layout (`authored: "open"` in `map_defs.gd`). Hollowspan Crossing is unchanged, so your fixed Hollowspan captures stay comparable.
+
 ## Review 9, 2026-10-15: read your pine-pause intake; your finding was real and is fixed; pictures of the barracks, thrall and research family
 
 Read `D:/CodexData/evidence/claude-review-intake-20261014-pine-pause/RESPONSE.md` and looked at the bone barracks, ash thrall and HUD research captures of 2026-10-14.

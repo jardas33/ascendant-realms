@@ -63,6 +63,23 @@ const AUTHORED_BLURBS := {
 	"fojo": "Two stone wolf-traps mouth to mouth: each camp looks down a funnel that narrows to the pit, with a narrow door at the waist.",
 	"frostmere_basin": "A frozen river runs the length of the basin with three fords. Snowbound woods and black rock ridges break up the ground on each bank.",
 	"redsand_canyon": "Red rock ridges split the sand into lanes, with dry hills between them. Little cover and no water: the shortest way is always a fight.",
+	"ashen_vale": "Gray ash over a ruined vale. Rock ridges and dead tarns break the ground, and the last woods stand thin.",
+	"emberfall_rift": "The rift is walled in pieces: black ridges with gaps between them, pools of fire, and few trees.",
+	"dune_bastion": "Sandstone ridges run across the dunes like broken walls. Behind each one is a little shelter; between them is open sand.",
+	"verdant_hollows": "A river winds through green hollows with three fords. Deep woods crowd both banks, so armies meet in the clearings.",
+	"mirefen": "A slow river and still meres. The firm ground runs in strips between the waters, and the fords are the only short way.",
+	"kaelmoor": "Cracked red ground cut by rock ridges, with bare hills to watch from. A few thin woods are all the cover there is.",
+	"sunspire_delta": "The river spreads into a delta of pools and thick green woods. Three fords cross it; everything else is the long way round.",
+	"highland_gauntlet": "A river down the middle of the highlands and rock ridges on both banks: every road to the fords runs between them.",
+	"glacier_pass": "A frozen river through a pass of black rock. Ridges close in on both banks, and the three fords are the way across.",
+	"scorched_expanse": "A wide burned plain with a few rock ridges and pools of lava. No trees, little cover: the open ground belongs to the larger army.",
+	"ruins_of_vael": "Ash and broken stone where Vael stood. Old ruins, dark tarns and a few low ridges; the gray woods are coming back.",
+	"duskwater": "A river with three fords runs past dark meres. Woods line the shore, and the light is always failing.",
+	"iron_tundra": "Frozen open ground with no river: iron-gray ridges, low hills and iced tarns. Armies see each other coming from far off.",
+	"goldreach": "A high plateau with no river. Rolling hills give the high ground to whoever takes it first, with woods and ridges between.",
+	"blightmarsh": "A sick marsh with a river and black meres. Firm ground is scarce and the fords are fought over.",
+	"emerald_isles": "Green ground broken by a river and bright lagoons, with woods on every bank. The fords join the isles.",
+	"crucible": "Red rock ridges ring and cut the field into fighting pits. The warlords say only the strong come out.",
 	"junias": "A walled valley with a bridged stream. The ruins of the monastery stand on both banks: cloister to the west, archive to the east.",
 }
 
@@ -88,29 +105,29 @@ static func hollowspan() -> Dictionary:
 static func _specs() -> Array:
 	return [
 		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
-		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","layout":"corners","spread":96,"rich":0.9,"cap":"triple","crags":"walls"},
-		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","layout":"edges","spread":110,"rich":1.0,"cap":"triple","crags":"corners"},
+		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21},
+		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","authored":"open","seed":22,"ridges":7},
 		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","authored":"open","seed":2},
-		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","layout":"edges","spread":114,"rich":0.9,"cap":"single"},
-		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","layout":"corners","spread":84,"rich":1.1,"cap":"triple","crags":"gates"},
+		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","authored":"open","seed":23,"ridges":7,"hills":3},
+		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","authored":"open","seed":24,"woods":8},
 		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple","crags":"walls"},
-		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","layout":"edges","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"corners"},
-		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","layout":"corners","spread":118,"rich":0.9,"cap":"triple","crags":"islands"},
-		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","layout":"corners","spread":96,"rich":1.1,"cap":"triple","bridge":true,"crags":"gates"},
-		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","layout":"edges","spread":112,"rich":1.0,"cap":"single","crags":"pillars"},
-		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","layout":"edges","spread":112,"rich":0.9,"cap":"triple","crags":"corners"},
-		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","layout":"corners","spread":116,"rich":0.9,"cap":"single","crags":"walls"},
+		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","authored":"open","seed":25,"lakes":3,"woods":4},
+		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","authored":"open","seed":26,"hills":4},
+		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","authored":"open","seed":27,"lakes":2,"woods":7},
+		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","authored":"open","seed":28,"ridges":6,"woods":2},
+		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","authored":"open","seed":29,"ridges":6,"woods":3},
+		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","authored":"open","seed":30,"ridges":3,"woods":0,"lakes":1},
 		{"id":"bloomvale","name":"Bloomvale Meadows","theme":"verdant","layout":"corners","spread":108,"rich":1.5,"cap":"triple"},
-		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","layout":"corners","spread":100,"rich":1.0,"cap":"quad","crags":"gates"},
+		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","authored":"open","seed":31,"ridges":3,"woods":3,"lakes":2},
 		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","authored":"open","seed":16},
 		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple","crags":"islands"},
-		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
+		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","authored":"open","seed":32,"lakes":2,"woods":5},
 		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single","crags":"walls"},
-		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","layout":"corners","spread":118,"rich":0.9,"cap":"triple","crags":"islands"},
-		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","layout":"corners","spread":104,"rich":1.5,"cap":"quad","crags":"gates"},
-		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","layout":"edges","spread":104,"rich":0.6,"cap":"single","crags":"pillars"},
-		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","layout":"corners","spread":116,"rich":1.0,"cap":"triple","bridge":true,"crags":"walls"},
-		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","layout":"corners","spread":96,"rich":1.1,"cap":"quad","crags":"islands"},
+		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","authored":"open","seed":33,"river":false,"ridges":5,"hills":4,"woods":3,"lakes":2},
+		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","authored":"open","seed":34,"river":false,"ridges":3,"hills":5,"woods":3},
+		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","authored":"open","seed":35,"lakes":4,"woods":3},
+		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","authored":"open","seed":36,"lakes":4,"woods":6},
+		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","authored":"open","seed":37,"ridges":7,"hills":3},
 		# Authored battlefields: laid out by hand, larger than the generated
 		# ones, built round the place the saga gives them.
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
@@ -2168,7 +2185,9 @@ static func _open_field(s: Dictionary) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(s.get("seed", 1)) * 7_919 + 104_729
 	var th := String(s["theme"])
-	var wet: bool = th in ["highland", "verdant", "wetland", "tropical", "autumn", "snow"]
+	# A spec may set its own river (yes/no) and counts of woods, ridges,
+	# hills and lakes (each one a pair, mirrored); the theme gives the rest.
+	var wet: bool = bool(s.get("river", th in ["highland", "verdant", "wetland", "tropical", "autumn", "snow"]))
 	var keep: Array = []
 	for st in a["starts"]:
 		keep.append([Vector2(st.x, st.z), 64.0])
@@ -2225,13 +2244,30 @@ static func _open_field(s: Dictionary) -> Dictionary:
 	var woods: Array = []
 	var hills: Array = []
 	var ridges: Array = []
-	var wood_count: int = {"desert": 1, "badlands": 2, "volcanic": 2, "ashen": 4, "snow": 5}.get(th, 6)
-	var ridge_count: int = {"desert": 6, "badlands": 6, "volcanic": 5, "ashen": 4}.get(th, 4)
+	var wood_count: int = int(s.get("woods", {"desert": 1, "badlands": 2, "volcanic": 2, "ashen": 4, "snow": 5}.get(th, 6)))
+	var ridge_count: int = int(s.get("ridges", {"desert": 6, "badlands": 6, "volcanic": 5, "ashen": 4}.get(th, 4)))
+	# Lakes first, then woods, ridges and hills: whatever comes first is
+	# sure of its room, and each kind shrinks as its tries run out so that
+	# the last ones still fit between the others.
 	var tries := 0
-	while woods.size() < wood_count * 2 and tries < 2000:
+	var lake_count: int = int(s.get("lakes", 1 if wet else ({"volcanic": 2, "ashen": 1}.get(th, 0))))
+	while lakes.size() < lake_count * 2 and tries < 4000:
 		tries += 1
+		var shrink := 1.0 - 0.4 * float(tries) / 4000.0
+		var c := Vector2(rng.randf_range(-170, 170), rng.randf_range(-170, 170))
+		var rad := Vector2(rng.randf_range(14, 22), rng.randf_range(12, 20)) * shrink
+		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
+			continue
+		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
+		var sd := rng.randf_range(0.0, 6.0)
+		lakes.append({"at": c, "radii": rad, "seed": sd})
+		lakes.append({"at": -c, "radii": rad, "seed": sd + PI})
+	tries = 0
+	while woods.size() < wood_count * 2 and tries < 4000:
+		tries += 1
+		var shrink := 1.0 - 0.45 * float(tries) / 4000.0
 		var c := Vector2(rng.randf_range(-190, 190), rng.randf_range(-190, 190))
-		var rad := Vector2(rng.randf_range(14, 26), rng.randf_range(12, 24))
+		var rad := Vector2(rng.randf_range(14, 26), rng.randf_range(12, 24)) * shrink
 		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
 			continue
 		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
@@ -2239,11 +2275,12 @@ static func _open_field(s: Dictionary) -> Dictionary:
 		woods.append({"at": c, "radii": rad, "seed": sd})
 		woods.append({"at": -c, "radii": rad, "seed": sd + PI})
 	tries = 0
-	while ridges.size() < ridge_count * 2 and tries < 3000:
+	while ridges.size() < ridge_count * 2 and tries < 4000:
 		tries += 1
+		var shrink := 1.0 - 0.45 * float(tries) / 4000.0
 		var c := Vector2(rng.randf_range(-185, 185), rng.randf_range(-185, 185))
 		var ang := rng.randf_range(0.0, TAU)
-		var half_len := rng.randf_range(22.0, 44.0)
+		var half_len := rng.randf_range(22.0, 44.0) * shrink
 		var dir := Vector2(cos(ang), sin(ang))
 		var bend := Vector2(-dir.y, dir.x) * rng.randf_range(-9.0, 9.0)
 		var line := [c - dir * half_len, c + bend, c + dir * half_len]
@@ -2254,33 +2291,24 @@ static func _open_field(s: Dictionary) -> Dictionary:
 				break
 		if not ok:
 			continue
-		blobs.append([c, half_len])
+		# A ridge is thin: it holds only the ground along its own line.
+		for p in _smooth(line, 10.0):
+			blobs.append([p, 6.0])
 		ridges.append({"points": line, "thickness": 9.0})
 		ridges.append({"points": _twin_points(line), "thickness": 9.0})
 	tries = 0
-	var hill_count: int = {"desert": 4, "badlands": 3, "highland": 3, "snow": 3}.get(th, 2)
-	while hills.size() < hill_count * 2 and tries < 2000:
+	var hill_count: int = int(s.get("hills", {"desert": 4, "badlands": 3, "highland": 3, "snow": 3}.get(th, 2)))
+	while hills.size() < hill_count * 2 and tries < 4000:
 		tries += 1
+		var shrink := 1.0 - 0.4 * float(tries) / 4000.0
 		var c := Vector2(rng.randf_range(-180, 180), rng.randf_range(-180, 180))
-		var rad := Vector2(rng.randf_range(12, 18), rng.randf_range(10, 15))
+		var rad := Vector2(rng.randf_range(12, 18), rng.randf_range(10, 15)) * shrink
 		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
 			continue
 		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
 		var sd := rng.randf_range(0.0, 6.0)
 		hills.append({"at": c, "radii": rad, "height": rng.randf_range(8.0, 12.0), "seed": sd})
 		hills.append({"at": -c, "radii": rad, "height": hills[-1]["height"], "seed": sd + PI})
-	tries = 0
-	var lake_count: int = 1 if wet else ({"volcanic": 2, "ashen": 1}.get(th, 0))
-	while lakes.size() < lake_count * 2 and tries < 2000:
-		tries += 1
-		var c := Vector2(rng.randf_range(-170, 170), rng.randf_range(-170, 170))
-		var rad := Vector2(rng.randf_range(14, 22), rng.randf_range(12, 20))
-		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
-			continue
-		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
-		var sd := rng.randf_range(0.0, 6.0)
-		lakes.append({"at": c, "radii": rad, "seed": sd})
-		lakes.append({"at": -c, "radii": rad, "seed": sd + PI})
 	a["rivers"] = rivers
 	a["ridges"] = ridges
 	a["woods"] = woods
