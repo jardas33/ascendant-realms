@@ -2,6 +2,14 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 14, 2026-10-15: units of all ten peoples in a row
+
+No new Codex commit to read. I photographed every unit of every people standing in rows (`claude_lineup.gd`, ar-review). Findings for character models:
+
+- **`barrosan_spear_guard.glb` (worn by the Ironbreaker, Phalanx, Boneguard and Larouco Shield)** carried four `Pilot_Barrosan_*` pieces: untextured icospheres and a box over a textured body that already has its own armour. They read as big grey dice. The game now drops rigid, untextured `Pilot_*` meshes when a unit is built (plan 249), so no model change is needed for this, but removing them from the file would be cleaner.
+- **`vorthak_ash_thrall`**: the whole skinned body is named `Pilot_Vorthak_AshCleaver`, and it includes a flat faceted grey shield and a grey cleaver that floats away from the hand. It still reads as a placeholder next to the other Vorthak units.
+- **`grimtusk_ogre_r709b` (the Ogre, and also the Wyldkin Moon Bear)** has no UVs and no textures: ten flat colour materials, so it looks like smooth green clay beside textured units. A bear people's bear is also shown as a green ogre, which needs its own model.
+
 ## Review 13, 2026-10-15: the Barrosan Spear Guard
 
 No new Codex commit to read. A picture of every Barrosan unit standing in a row (`claude_lineup.gd`, ar-review, at the battle camera's angle) shows one model that is still a placeholder:

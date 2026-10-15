@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 249 (done): no more grey dice on the shield units**
+  - I photographed every unit of all ten peoples standing in rows. Four peoples' shield units (the Ironbreaker, the Phalanx, the Boneguard and the Larouco Shield) share one body, and it still wore its first-draft armour: big untextured grey balls and a box floating over a body that already has proper painted armour.
+  - Those placeholder pieces are now dropped when the unit is built, so the four units show their real armour and helmets. Other models are untouched (the rule only removes rigid, untextured pieces with that draft name).
+  - Codex Review 14 written: the Ash Thrall's faceted shield and floating cleaver, and the untextured ogre body that the Moon Bear also uses.
+  - Full regression: all 110 checks passed, and the real save file was unchanged.
 - **Plan 248 (done): props that look made, not modeled**
   - I photographed an army ordered across the field (new probe `claude_marchshot.gd`). The march itself reads well. But a fallen-log pile kept showing up in battle pictures as two flat brown cylinders and two plain grey dice, and a row of every Barrosan unit (new probe `claude_lineup.gd`) confirmed it is scenery, not a unit.
   - A sweep of every scenery model's materials (new probe `claude_glbmats.gd`) found the same bare "dark timber" and "slate" materials, with no texture at all, on the log piles, the fences, the supply shelter's posts and the boundary markers.

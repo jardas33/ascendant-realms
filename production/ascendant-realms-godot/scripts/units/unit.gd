@@ -748,6 +748,7 @@ func _build_model() -> void:
 			recorder.record_resource_load(path, "unit._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, _visual_height)
+		_drop_placeholder_armor(m)
 		_apply_p1r20_model_materials(m)
 		_build_slice4_role_accessories(m)
 		_build_r3b_worker_presentation(m)
@@ -809,6 +810,25 @@ func _build_model() -> void:
 	# M7: establish a stable battlefield-facing pose after the world places the unit.
 	call_deferred("_apply_m_initial_facing")
 
+
+## The Spear Guard body worn by the Ironbreaker, Phalanx, Boneguard and
+## Larouco Shield still carries its first pass of armour: untextured
+## icospheres and a box ("Pilot_" pieces) floating over a textured body that
+## already has its own armour. Seen in a row, they read as big grey dice.
+## Rigid untextured Pilot_ pieces are dropped; a skinned Pilot_ mesh (the
+## Ash Thrall's whole body has that name) is kept.
+func _drop_placeholder_armor(m: Node) -> void:
+	for mi in m.find_children("Pilot_*", "MeshInstance3D", true, false):
+		if mi.skin != null or mi.mesh == null:
+			continue
+		var textured := false
+		for surface in mi.mesh.get_surface_count():
+			var mat := mi.get_active_material(surface) as BaseMaterial3D
+			if mat and mat.albedo_texture:
+				textured = true
+		if not textured:
+			mi.get_parent().remove_child(mi)
+			mi.queue_free()
 
 ## Accessory models are many small rigid pieces (an Outrider's kit was 13
 ## draw calls, a Veil Warlock's 13). Merge the pieces of each attachment into
