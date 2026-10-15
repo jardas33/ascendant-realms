@@ -172,6 +172,9 @@ var _single_economy_label: Label = null
 var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
+var _queue_slot_key := ""
+var _queue_active_bar: ProgressBar = null
+const QUEUE_SLOT := 31.0
 var _production_status_label: Label = null
 var _production_progress_bar: ProgressBar = null
 var _watched_building = null           # building whose production we listen to
@@ -3124,26 +3127,12 @@ func _queue_slot_label(display_name: String) -> String:
 	return String(words[words.size() - 1])
 
 
-## Queue slots read at 12 (14 px on screen) and step down only as far as 10
-## when a long name or a run count ("Weapons ×3") would widen the row past
-## its panel.
-func _fit_queue_slot(slot: Button) -> void:
-	var font := slot.get_theme_font("font")
-	# The slot's frame takes about 12 px of its 64: text wider than 50 grew
-	# the slot and pushed the row out of its panel.
-	var room := slot.custom_minimum_size.x - maxf(14.0, slot.get_theme_stylebox("normal").get_minimum_size().x)
-	var font_size := 12
-	while font_size > 10 and font.get_string_size(slot.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > room:
-		font_size -= 1
-	slot.add_theme_font_size_override("font_size", font_size)
-
-
 func _refresh_queue() -> void:
 	if not is_instance_valid(_queue_container) or not is_instance_valid(_production_status_label):
 		return
-	_clear_children(_queue_container)
 	var b = _watched_building
 	if not is_instance_valid(b):
+		_clear_children(_queue_container)
 		return
 	# Queue slots need a taller dossier than the idle building. Resize only on a
 	# state transition so frequent production ticks do not relayout the HUD.
@@ -3153,6 +3142,8 @@ func _refresh_queue() -> void:
 			_sel_panel.custom_minimum_size.y = queue_height
 			call_deferred("_fit_to_viewport")
 	if b.queue.is_empty():
+		_clear_children(_queue_container)
+		_queue_slot_key = ""
 		_production_status_label.text = "Idle"
 		if is_instance_valid(_production_progress_bar):
 			_production_progress_bar.visible = false
@@ -3180,69 +3171,87 @@ func _refresh_queue() -> void:
 	_production_status_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_production_status_label.add_theme_font_size_override("font_size", HUD_TEXT_MIN)
 	_shrink_label_to(_production_status_label, 106.0, 9)
-	# One slot per run of the same item ("Worker ×7"), so a long queue fits the
-	# dossier: two slots, then how many more wait. Clicking a slot cancels the
-	# last item of its run (the one in training keeps its progress).
-	var idx := 0
-	var shown := 0
-	var prev_key := ""
-	var prev_slot: Button = null
-	var prev_label := ""
-	var run := 0
+	# One slot per run of the same item, so a long queue fits the dossier: two
+	# slots, then how many more wait. Each slot is the picture of what it
+	# makes (the unit's portrait, a research's glyph) with its count: names
+	# squeezed into these slots were drawn at 12 px. Clicking a slot cancels
+	# the last item of its run (the one in training keeps its progress).
+	# Production ticks only move the active slot's bar; the slots are rebuilt
+	# when the queue itself changes (the portraits are small 3D views).
+	var key_parts: PackedStringArray = []
 	for item in b.queue:
+		key_parts.append("%s:%s" % [String(item.get("kind", "unit")), String(item.get("id", ""))])
+	var queue_key := "|".join(key_parts)
+	if queue_key == _queue_slot_key and _queue_container.get_child_count() > 0:
+		if is_instance_valid(_queue_active_bar):
+			_queue_active_bar.value = active_prog
+		return
+	_clear_children(_queue_container)
+	_queue_slot_key = queue_key
+	_queue_active_bar = null
+	var runs: Array = []
+	for i in b.queue.size():
+		var item: Dictionary = b.queue[i]
 		var kind: String = item.get("kind", "unit")
 		var iid: String = item.get("id", "")
-		var key := kind + ":" + iid
-		if key == prev_key and is_instance_valid(prev_slot):
-			run += 1
-			prev_slot.text = "%s ×%d" % [prev_label, run]
-			_fit_queue_slot(prev_slot)
-			prev_slot.set_meta("cancel_index", idx)
-			idx += 1
-			continue
-		if shown >= 2:
-			_queue_container.add_child(_mk_label("+%d" % (b.queue.size() - idx), 13, COMMAND_GOLD))
-			break
-		var slot := _mk_button("", 12)
-		slot.custom_minimum_size = Vector2(64, 28)
-		slot.add_theme_font_size_override("font_size", 12)
-		var disp_name := ""
-		if kind == "unit":
-			disp_name = GameData.get_unit(iid).get("name", iid)
+		if not runs.is_empty() and runs[-1]["kind"] == kind and runs[-1]["id"] == iid:
+			runs[-1]["count"] += 1
+			runs[-1]["last"] = i
 		else:
-			disp_name = GameData.get_tech(iid).get("name", iid)
-		slot.text = _queue_slot_label(disp_name)
-		_fit_queue_slot(slot)
-		var total: float = float(item.get("total", 1.0))
-		var left: float = float(item.get("time_left", 0.0))
-		var prog: float = 1.0 - clampf(left / maxf(0.01, total), 0.0, 1.0)
-		slot.tooltip_text = "%s
-Click to cancel one" % disp_name
-		slot.set_meta("cancel_index", idx)
+			runs.append({"kind": kind, "id": iid, "count": 1, "last": i})
+	for r in mini(runs.size(), 2):
+		var run: Dictionary = runs[r]
+		var kind: String = run["kind"]
+		var iid: String = run["id"]
+		var disp_name: String = GameData.get_unit(iid).get("name", iid) if kind == "unit" else GameData.get_tech(iid).get("name", iid)
+		var slot := _mk_button("", 12)
+		slot.custom_minimum_size = Vector2(QUEUE_SLOT, QUEUE_SLOT)
+		slot.tooltip_text = "%s%s\nClick to cancel one" % [disp_name, " ×%d" % int(run["count"]) if int(run["count"]) > 1 else ""]
+		slot.set_meta("cancel_index", int(run["last"]))
+		var picture: Control
+		if kind == "unit" and iid != "barrosan_worker" and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+			picture = load(ENTITY_PORTRAIT_SCRIPT).new()
+			picture.custom_minimum_size = Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0)
+			slot.add_child(picture)
+			picture.configure_definition(GameData.get_unit(iid), false)
+			# EntityPortraitView restores its card minimum in _ready().
+			picture.set_deferred("custom_minimum_size", Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0))
+			picture.set_deferred("size", Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0))
+		else:
+			picture = _mk_command_icon(iid if kind == "unit" else _command_icon_kind(disp_name, "RESEARCH"), COMMAND_GOLD, QUEUE_SLOT - 6.0)
+			slot.add_child(picture)
+		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		picture.position = Vector2(3, 3)
+		picture.size = Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0)
+		if int(run["count"]) > 1:
+			var count := _mk_label("×%d" % int(run["count"]), HUD_TEXT_MIN, Color(1.0, 0.9, 0.62))
+			count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			count.position = Vector2(0, QUEUE_SLOT - 24.0)
+			count.size = Vector2(QUEUE_SLOT - 3.0, 18)
+			slot.add_child(count)
 		var cap_b = b
 		var cap_slot := slot
 		slot.pressed.connect(func():
 			if is_instance_valid(cap_b) and cap_b.has_method("cancel_queue_item") and is_instance_valid(cap_slot):
 				_issue_order({"type": "cancel", "target": cap_b, "index": int(cap_slot.get_meta("cancel_index", 0))}))
-		# progress mini-bar under text
-		var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
-		# Queue slots have an explicit compact size. Keep the progress bar on a
-		# fixed top-left anchor so the authored offsets remain authoritative and
-		# Godot does not repeatedly warn about conflicting opposite anchors while
-		# production_updated rebuilds the queue row.
-		pbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		pbar.custom_minimum_size = Vector2(60, 5)
-		pbar.value = prog
-		pbar.position = Vector2(2, 20)
-		pbar.size = Vector2(60, 5)
-		slot.add_child(pbar)
+		# The slot in training carries its progress along the bottom.
+		if r == 0:
+			var pbar := _mk_bar(Color(0.85, 0.7, 0.3))
+			# Fixed top-left anchor: the authored offsets stay authoritative and
+			# Godot does not warn about conflicting opposite anchors.
+			pbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			pbar.custom_minimum_size = Vector2(QUEUE_SLOT - 6.0, 5)
+			pbar.value = active_prog
+			pbar.position = Vector2(3, QUEUE_SLOT - 7.0)
+			pbar.size = Vector2(QUEUE_SLOT - 6.0, 5)
+			slot.add_child(pbar)
+			_queue_active_bar = pbar
 		_queue_container.add_child(slot)
-		prev_key = key
-		prev_slot = slot
-		prev_label = slot.text
-		run = 1
-		shown += 1
-		idx += 1
+	if runs.size() > 2:
+		var waiting := 0
+		for r in range(2, runs.size()):
+			waiting += int(runs[r]["count"])
+		_queue_container.add_child(_mk_label("+%d" % waiting, HUD_TEXT_MIN, COMMAND_GOLD))
 
 
 # ---------------------------------------------------------------------------

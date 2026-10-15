@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 257 (done): production queue shows pictures**
+  - The two queue slots beside a building's status held the unit or research name squeezed into a 64 px box, drawn at 12 to 14 px: the last small text in the battle HUD.
+  - Each slot is now a small square with the picture of what it makes (the unit's portrait, a research glyph), a count badge when several of the same wait, and the training bar along the bottom of the active slot. The full name and "Click to cancel one" are on the tooltip, and the line beside it still names the active item with its percentage.
+  - The slots used to be torn down and rebuilt on every production tick. Now ticks only move the active bar, and the slots are rebuilt when the queue changes.
+  - No clipped or offscreen HUD text for three peoples at 1920x1080 and at 1280x720.
+  - Full regression: 110 of 110 passed.
 - **Plan 256 (done): battle HUD text at 16 px or more**
   - Measured every text in the battle HUD across all selection states: about 500 were drawn at 14 or 15 px on a 1920 screen (the VITALS and STATUS lines, the DMG, ARM and RNG captions, role words, build card costs, command hints, the battle name, objective and bounty).
   - The smallest HUD text size went from 12 to 14 points, which draws at 17 px in the scaled panels; the battle name, menu and top bar captions went to 16 and the objective and bounty lines to 15 (at 16 the longest bounty and Domination lines were cut). Now every other HUD text is 16 px or more except the production queue slots, whose unit names still step down to fit their small square.
