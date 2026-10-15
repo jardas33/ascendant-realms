@@ -4,17 +4,28 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(220.0, 182.0)
-const FOCUSED_SPACING := Vector2(250.0, 182.0)
-const MARGIN := Vector2(34.0, 48.0)
-const NODE_SIZE := Vector2(190.0, 172.0)
+const SPACING := Vector2(240.0, 214.0)
+const FOCUSED_SPACING := Vector2(250.0, 214.0)
+const MARGIN := Vector2(34.0, 60.0)
+const NODE_SIZE := Vector2(200.0, 206.0)
 const ORB := Vector2(96.0, 96.0)
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 const GRAPH_ZOOM := 0.74
 const FOCUSED_ZOOM := 0.92
 ## Star caption sizes on the canvas (before the graph zoom).
-const NAME_SIZE := 22
-const NAME_SIZE_COMPACT := 25
+## Star names are set in the plain face, emboldened, not in Cinzel: the thin
+## capitals at this size were what made players squint (Emanuel, 2026-10-15).
+## Sized for 16 px on screen or more at the default zoom on a laptop window.
+const NAME_SIZE := 29
+const NAME_SIZE_COMPACT := 32
+const COST_SIZE := 23
+const COST_SIZE_COMPACT := 25
+## Each path winds like a river of stars instead of a straight column: a
+## gentle sideways wave, and every other path set half a row lower.
+const WAVE := 30.0
+## A name may spill a little past its star on both sides (the gap between
+## paths is wide enough), so long words are not shrunk or broken.
+const NAME_SPILL := 18.0
 const GRAPH_ORIGIN := Vector2(18.0, 18.0)
 
 const INK := Color("#0b1020")
@@ -207,16 +218,28 @@ func _ready() -> void:
 	_refresh_nodes()
 	call_deferred("_fit_default_zoom")
 
-func _name_lines(text: String, size: int) -> int:
+func _name_lines(text: String, size: int, width: float = NODE_SIZE.x) -> int:
 	var para := TextParagraph.new()
-	para.add_string(text, _title_font(), size)
-	para.width = NODE_SIZE.x
+	para.add_string(text, _name_font(), size)
+	para.width = width
 	para.break_flags = TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE
 	return mini(2, para.get_line_count())
 
 
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
+
+
+static var _star_font: FontVariation = null
+
+## The plain face, emboldened and slightly widened, for star names.
+func _name_font() -> Font:
+	if _star_font == null:
+		_star_font = FontVariation.new()
+		_star_font.base_font = ThemeDB.fallback_font
+		_star_font.variation_embolden = 0.55
+		_star_font.spacing_glyph = 1
+	return _star_font
 
 func _hero_race() -> String:
 	return str(ProfileManager.hero().get("race", ""))
@@ -316,7 +339,7 @@ func _build() -> void:
 	_viewport = Control.new()
 	_viewport.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_viewport.offset_left = 390.0
-	_viewport.offset_top = 124.0
+	_viewport.offset_top = 146.0
 	_viewport.offset_right = -24.0
 	_viewport.offset_bottom = -116.0
 	_viewport.clip_contents = true
@@ -436,30 +459,44 @@ func _add_node_button(n: Dictionary) -> void:
 	# small screen), so the captions are set large enough to stay readable
 	# after it: a name 16 px on screen, its cost line 12 px (they were 12.6
 	# and 9 px, and players had to squint).
-	var compact := get_window().size.y < 850
+	var compact := get_window().size.y < 850 or get_window().size.x < 1700
 	var name_size := NAME_SIZE_COMPACT if compact else NAME_SIZE
+	# A single word too long for the star's width (Stonewarden) is set a
+	# little smaller rather than broken in the middle.
+	# Only such a name spills past the star; the rest wrap at its width.
+	var name_w := NODE_SIZE.x
+	for word in str(n.get("name", "")).split(" "):
+		while name_size > 20 and _name_font().get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > NODE_SIZE.x + NAME_SPILL * 2.0 - 6.0:
+			name_size -= 1
+		name_w = maxf(name_w, minf(NODE_SIZE.x + NAME_SPILL * 2.0, _name_font().get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x + 6.0))
 	var name_label := _label(str(n.get("name", "")), name_size, PAPER)
-	name_label.add_theme_font_override("font", _title_font())
-	name_label.position = Vector2(0.0, ORB.y - 2.0)
-	name_label.size = Vector2(NODE_SIZE.x, 62.0 if compact else 54.0)
+	name_label.add_theme_font_override("font", _name_font())
+	name_label.position = Vector2((NODE_SIZE.x - name_w) * 0.5, ORB.y - 2.0)
+	# Lines are stacked by the face's real height (it is about 1.36 times its
+	# size), drawn a little tighter.
+	var line_h := _name_font().get_height(name_size) - 6.0
+	name_label.size = Vector2(name_w, line_h * 2.0 + 6.0)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	name_label.max_lines_visible = 2
-	name_label.add_theme_constant_override("line_spacing", -3)
+	name_label.add_theme_constant_override("line_spacing", -6)
 	name_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
 	name_label.add_theme_constant_override("outline_size", 5)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(name_label)
 	# White text, coloured by its state through modulate (a muted text colour
 	# under a muted modulate was dimmed twice).
-	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 20 if compact else 17, Color.WHITE)
+	var cost_label := _label("%d SP" % int(n.get("cost", 1)), COST_SIZE_COMPACT if compact else COST_SIZE, Color.WHITE)
+	cost_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	# Wrapped the way the label wraps it: a name that only just fits must not leave a gap.
-	var two_lines: bool = _name_lines(name_label.text, name_size) > 1
+	var two_lines: bool = _name_lines(name_label.text, name_size, name_w) > 1
 	# Kept for the name plate, which is drawn every frame.
 	b.set_meta("name_lines", 2 if two_lines else 1)
-	cost_label.position = Vector2(0.0, ORB.y + ((56.0 if two_lines else 29.0) if compact else (50.0 if two_lines else 26.0)))
-	cost_label.size = Vector2(NODE_SIZE.x, 24.0 if compact else 21.0)
+	var cost_h := ThemeDB.fallback_font.get_height(COST_SIZE_COMPACT if compact else COST_SIZE)
+	cost_label.position = Vector2(0.0, ORB.y - 4.0 + line_h * (2.0 if two_lines else 1.0))
+	cost_label.size = Vector2(NODE_SIZE.x, cost_h)
+	b.set_meta("text_h", line_h * (2.0 if two_lines else 1.0) + cost_h - 2.0)
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
 	cost_label.add_theme_constant_override("outline_size", 4)
@@ -473,11 +510,16 @@ func _add_node_button(n: Dictionary) -> void:
 
 func _node_pos(n: Dictionary) -> Vector2:
 	var p := _display_grid_pos(n)
-	var base := MARGIN + Vector2(p.x, p.y) * _layout_spacing()
-	# A little deterministic drift off the grid, so all the paths together
-	# read as a sky of constellations rather than a spreadsheet.
+	var spacing := _layout_spacing()
+	var base := MARGIN + Vector2(p.x, p.y) * spacing
+	# Each path winds: a sideways wave down its length (its phase shifted a little
+	# from path to path, so neighbours bend together and never crowd), and every other path half a
+	# row lower, so the sky reads as rivers of stars, not a spreadsheet.
+	var col := int(p.x)
+	var wave := sin(p.y * 1.15 + col * 0.9) * WAVE
+	var stagger := spacing.y * 0.5 if col % 2 == 1 else 0.0
 	var h := str(n.get("id", "")).hash()
-	return base + Vector2(float(h % 37) - 18.0, float((h / 37) % 21) - 10.0)
+	return base + Vector2(wave + float(h % 7) - 3.0, stagger + float((h / 7) % 7) - 3.0)
 
 func _layout_spacing() -> Vector2:
 	return FOCUSED_SPACING if _branch_filter != "" else SPACING
@@ -553,7 +595,7 @@ func _update_canvas_size() -> void:
 		var p := _display_grid_pos(n)
 		max_x = maxf(max_x, p.x)
 		max_y = maxf(max_y, p.y)
-	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y) * _layout_spacing() + NODE_SIZE
+	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y + 0.5) * _layout_spacing() + NODE_SIZE + Vector2(WAVE, 0.0)
 	_canvas.size = _canvas.custom_minimum_size
 	_apply_transform()
 
@@ -759,27 +801,28 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			if p2.y < top.y:
 				top = p2
 		var title: String = String(br).to_upper()
-		var tfs := 26
+		# Sized to reach the eye at about 18 px on a laptop window.
+		var tfs := 34
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
-		var title_pos := Vector2(top.x - (tw2 + 8.0 + ThemeDB.fallback_font.get_string_size("%d / %d" % progress.get(br, [0, 1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x) * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
+		var title_pos := Vector2(top.x - (tw2 + 8.0 + ThemeDB.fallback_font.get_string_size("%d / %d" % progress.get(br, [0, 1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x) * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
 		canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 6, Color(0.01, 0.015, 0.03, 0.85))
-		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.25), 0.8))
+		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.35), 0.97))
 		# How far along the path is: a thin bar that fills, and a count.
 		var pr: Array = progress.get(br, [0, 1])
 		var frac := float(pr[0]) / maxf(1.0, float(pr[1]))
 		var count := "%d / %d" % [pr[0], pr[1]]
 		var body := ThemeDB.fallback_font
-		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
 		# Beside the name, so nothing crowds the first star.
 		var count_pos := Vector2(title_pos.x + tw2 + 8.0, title_pos.y)
-		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 17, 5, Color(0.01, 0.015, 0.03, 0.9))
-		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 17, Color(PAPER, 0.8))
+		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, 6, Color(0.01, 0.015, 0.03, 0.9))
+		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, Color(PAPER, 0.92))
 		var bar_w := tw2 + 8.0 + cw
-		var bar := Rect2(title_pos.x, title_pos.y + 9.0, bar_w, 3.0)
+		var bar := Rect2(title_pos.x, title_pos.y + 10.0, bar_w, 4.0)
 		canvas.draw_rect(bar, Color(0.01, 0.015, 0.03, 0.85))
-		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 3.0)), Color(bc.lightened(0.3), 0.95))
+		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 4.0)), Color(bc.lightened(0.3), 0.95))
 	# Links: faint for locked, bright for open paths, with motes of light
 	# flowing along the owned ones toward the next star.
 	for n in _nodes:
@@ -930,9 +973,10 @@ func _draw_plates(canvas: CanvasItem) -> void:
 		var b: Button = _node_buttons[nid]
 		var lab: Label = b.get_child(1) as Label
 		var fs := lab.get_theme_font_size("font_size")
-		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 18.0)
+		var tw3 := minf(NODE_SIZE.x + NAME_SPILL * 2.0 + 8.0, _name_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 22.0)
 		var lines: int = b.get_meta("name_lines") if b.has_meta("name_lines") else 1
-		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, (fs + 2.0) * lines + fs + 9.0))
+		var plate_h: float = (b.get_meta("text_h") if b.has_meta("text_h") else (fs + 1.0) * lines + fs) + 6.0
+		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 4.0), Vector2(tw3, plate_h))
 		canvas.draw_style_box(_name_plate_style, plate)
 
 ## Added light over everything: the claim flash, its rings and sparks, and

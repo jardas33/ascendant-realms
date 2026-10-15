@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 261 (done): a readable, winding skill tree**
+  - Emanuel had to squint at the star names, and the paths ran straight down like a spreadsheet.
+  - Star names are now set in the clear body font, emboldened, instead of thin Cinzel capitals, and larger: measured on screen at about 17 px on a 1400x900 or 1366x768 window (they were about 12 px) and 21 px at 1920x1080. The one name with a very long word (Lume Transcendence) is set slightly smaller, 15 px on a laptop. Cost lines are 13 to 17 px, path titles about 18 px on a laptop with a brighter color.
+  - Lines are stacked by the font's real height, so the cost line no longer runs into a two-line name.
+  - Each path now winds: a gentle sideways wave down its length, and every other path sits half a row lower, so the stars interleave like rivers instead of columns.
+  - Checked with a new probe (`claude_skillread.gd`) for on-screen text size and any name or star touching another, at 1920x1080, 1400x900, 1366x768 and 1280x720: no overlaps. The menu layout check on the skill tree is clean at six sizes.
+  - Full regression: 110 of 110 passed.
 - **Plan 260 (done): readable menus on laptop screens**
   - The menus had the same problem as the battle HUD: the 16 px text floor (plan 251) is set on the 1920x1080 canvas, which is shrunk on smaller windows, so on a 1366x768 laptop menu text reached the eye at about 11 px.
   - The menu text floor now rises on smaller windows by the same compromise as the HUD panels (1.1x at 1600x900, 1.19x at 1366x768, at most 1.2x), so menu text reaches the eye at about 14 px or more there. The skill tree is left out: it sizes its own zoomed captions.
