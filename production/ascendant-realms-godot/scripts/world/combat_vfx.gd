@@ -591,6 +591,8 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 			continue
 		var piece: Node3D = load(path).instantiate()
 		rubble.add_child(piece)
+		if path == _LOGS:
+			ModelUtils.dress_timber(piece)
 		var a := randf() * TAU
 		piece.position = Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.75)
 		ModelUtils.scale_to_height(piece, randf_range(1.0, 1.9) if path == _RUBBLE else 1.3)

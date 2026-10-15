@@ -315,3 +315,39 @@ static func _get_combined_aabb(node: Node3D) -> AABB:
 			else:
 				combined = combined.merge(transformed_aabb)
 	return combined
+
+## Plan 248: the fallen-timber prop shipped bare: flat brown logs and plain
+## grey wedge stones with no texture, so they read as cylinders and dice
+## next to textured buildings. Give the logs real bark (grain along each
+## log) and the wedges the highland rock. Presentation only.
+const _BARK_TEX := "res://assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_ancient_bark_albedo.png"
+const _ROCK_TEX := "res://assets/environment/visual_convergence/small_stone_cairn_highland_rock.jpg"
+static var _bark_mat: StandardMaterial3D
+static var _wedge_mat: StandardMaterial3D
+
+static func dress_timber(root: Node) -> void:
+	if _bark_mat == null:
+		_bark_mat = StandardMaterial3D.new()
+		_bark_mat.albedo_texture = load(_BARK_TEX)
+		_bark_mat.albedo_color = Color(0.92, 0.86, 0.80)
+		_bark_mat.uv1_scale = Vector3(1.0, 1.6, 1.0)
+		_bark_mat.roughness = 0.95
+		_wedge_mat = StandardMaterial3D.new()
+		_wedge_mat.albedo_texture = load(_ROCK_TEX)
+		_wedge_mat.uv1_triplanar = true
+		_wedge_mat.uv1_scale = Vector3(0.9, 0.9, 0.9)
+		_wedge_mat.albedo_color = Color(0.85, 0.85, 0.82)
+		_wedge_mat.roughness = 1.0
+	for mi in root.find_children("*", "MeshInstance3D", true, false):
+		var m: Mesh = (mi as MeshInstance3D).mesh
+		if m == null:
+			continue
+		for s in m.get_surface_count():
+			var src = (mi as MeshInstance3D).get_active_material(s)
+			if not src is BaseMaterial3D or (src as BaseMaterial3D).albedo_texture != null:
+				continue
+			var name := String(src.resource_name).to_lower()
+			if "timber" in name or "wood" in name:
+				(mi as MeshInstance3D).set_surface_override_material(s, _bark_mat)
+			elif "stone" in name or "slate" in name:
+				(mi as MeshInstance3D).set_surface_override_material(s, _wedge_mat)

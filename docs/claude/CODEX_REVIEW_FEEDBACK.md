@@ -2,6 +2,12 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 13, 2026-10-15: the Barrosan Spear Guard
+
+No new Codex commit to read. A picture of every Barrosan unit standing in a row (`claude_lineup.gd`, ar-review, at the battle camera's angle) shows one model that is still a placeholder:
+
+- **`barrosan_spear_guard` is built from dark blocks.** Its body is stacked black boxes with a flat tan disc for a shield, and small dark spheres float in the air above it, not attached to anything. Every other Barrosan soldier beside it is a sculpted, textured person, so it stands out at once in a mixed army. It needs a real model (or, until then, the levy's body with a spear and a tower shield) before the next release. Please check the floating parts in particular: they look like pieces of a rig or an accessory left at the origin.
+
 ## Review 12, 2026-10-15: the Barrosan hero's cape, seen from behind
 
 No new Codex commit to read this cycle. One finding about a character model, which is yours:

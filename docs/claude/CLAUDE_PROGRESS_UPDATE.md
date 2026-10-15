@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 248 (done): props that look made, not modeled**
+  - I photographed an army ordered across the field (new probe `claude_marchshot.gd`). The march itself reads well. But a fallen-log pile kept showing up in battle pictures as two flat brown cylinders and two plain grey dice, and a row of every Barrosan unit (new probe `claude_lineup.gd`) confirmed it is scenery, not a unit.
+  - A sweep of every scenery model's materials (new probe `claude_glbmats.gd`) found the same bare "dark timber" and "slate" materials, with no texture at all, on the log piles, the fences, the supply shelter's posts and the boundary markers.
+  - Now the timber has real bark, with the grain running along each log and post, and the wedge stones have the highland rock. This covers every place these props stand: Hollowspan's scenery, the farmsteads on every map, and the rubble left by a fallen building.
+  - Codex Review 13 written: the Barrosan Spear Guard is still a model made of dark blocks, with parts floating above it.
+  - Full regression: 110 of 110 pass, save unchanged.
 - **Plan 247 (done): buildings that burn and fall**
   - New probe `claude_buildshot.gd` (ar-review) photographs a building at full health, 60%, 25% and as it falls. It can place a fresh enemy building (CLAUDE_PLACE), because destroying the enemy's main hall ends the match and slows time for the final blow.
   - Damage was hard to see from the battle camera, which looks down on the roof: one wisp of smoke from 70%, at most two small fires below 40%. Now it builds up in steps: smoke from 80%, a first fire from 55%, two by 35%, and below 20% the roof burns from four places. Fires and smoke are sized to the building, so a main hall burns bigger than a hut.

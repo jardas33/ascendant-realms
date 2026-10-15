@@ -616,6 +616,9 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	ModelUtils.ground_model(instance)
 	if asset_key in ["wall", "cairn"]:
 		_finish_stonework(instance)
+	# Logs, fences, posts, the supply shelter and the boundary marker share
+	# bare timber and slate materials; give them bark and rock.
+	ModelUtils.dress_timber(instance)
 	_set_presentation_only(instance)
 	_mark_navigation_blocker(instance, asset_key)
 
