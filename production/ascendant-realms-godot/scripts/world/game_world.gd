@@ -5410,11 +5410,25 @@ func _schedule_warband() -> void:
 				picks.append(id)
 		if picks.is_empty():
 			return
-		var n := 4 + int(Match.get_config().get("endless_depth", 1)) / 5
-		var units: Array = []
-		for i in n:
-			units.append(picks[i % picks.size()])
-		_spawn_saga_wave({"team": 1, "units": units, "line": "A warband crests the ridge. The road does not let you rest."}))
+		var wave := warband_wave(int(Match.get_config().get("endless_depth", 1)), picks)
+		wave["team"] = 1
+		wave["line"] = "A warband crests the ridge. The road does not let you rest."
+		_spawn_saga_wave(wave))
+
+## The Endless Road warband grows with the stage: 4 soldiers, and one more
+## for every 5 stages. Deep on the road that was a hundred soldiers or more in
+## one line hundreds of meters long, spilling off the field and taking the
+## frame rate with it. Past WARBAND_MAX_HEADS the warband stops growing in
+## number and grows in strength instead: each soldier carries the health and
+## the blows of several.
+const WARBAND_MAX_HEADS := 16
+static func warband_wave(depth: int, picks: Array) -> Dictionary:
+	var n := 4 + maxi(0, depth) / 5
+	var heads := mini(n, WARBAND_MAX_HEADS)
+	var units: Array = []
+	for i in heads:
+		units.append(picks[i % picks.size()])
+	return {"units": units, "strength": float(n) / float(heads)}
 
 func _spawn_saga_wave(wave: Dictionary) -> void:
 	if not game_running:
@@ -5434,10 +5448,20 @@ func _spawn_saga_wave(wave: Dictionary) -> void:
 	if float(map.get("size", 140.0)) > 200.0:
 		muster = from + toward * maxf(16.0, Vector2(target.x - from.x, target.z - from.z).length() - 190.0)
 		muster = out_of_crags(muster, 6.0, target)
+	# Ranks of eight, so a large wave is a column, not one long line.
 	var k := 0
+	var strength := maxf(1.0, float(wave.get("strength", 1.0)))
+	var cols := mini(8, maxi(1, wave["units"].size()))
+	var side := Vector3(toward.z, 0, -toward.x)
 	for uid in wave["units"]:
-		var u = spawn_unit(String(uid), team, muster + Vector3(toward.z, 0, -toward.x) * (float(k) - 2.0) * 2.0)
+		var at: Vector3 = muster + side * (float(k % cols) - float(cols - 1) * 0.5) * 2.0 - toward * float(k / cols) * 2.5
+		var u = spawn_unit(String(uid), team, at)
 		if u:
+			if strength > 1.0:
+				u.max_hp *= strength
+				u.hp = u.max_hp
+				u.base_dmg *= strength
+				u.set_meta("warband_strength", strength)
 			u.command_move(target, true)
 		k += 1
 	emit_signal("alert", String(wave.get("line", "Enemy reinforcements arrive!")), muster)
