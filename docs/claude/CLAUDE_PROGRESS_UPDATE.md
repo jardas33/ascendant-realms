@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 251 (done): bigger small text in every menu**
+  - A new probe (`claude_contrast.gd`) measured every piece of menu text at 1920x1080: its size on screen and its contrast against what is behind it. Contrast was fine everywhere, but 153 texts sat at the old 14-pixel minimum, the size that makes you squint.
+  - The minimum is now 16 pixels on every menu screen (the battle HUD keeps its own sizes, already scaled up).
+  - Two screens needed room for it. The skirmish people cards are taller and still show three lines of each people's description. The battlefield column scrolls, so three opponents never push Begin Battle off the screen. Relic cards in the War Chest are taller and show their two strongest stats on one line (inspecting a relic lists them all).
+  - The text-clipping checks over every menu, the HUD and the in-battle overlays report nothing cut, overlapping or off screen.
+  - Full regression: all 110 checks passed, and the real save file was unchanged.
 - **Plan 250 (done): no more clay-smooth units**
   - A sweep of every unit model's materials found three with no textures at all: the Grimtusk Ogre (which the Wyldkin Moon Bear also wears), the Grimtusk Bowcrusha and the Vorthak Rift Blade. Every surface was one flat colour, so next to the painted units they looked like smooth clay.
   - Those surfaces now get a fine grain and surface bumps, projected from all sides so the models need no changes. Iron gets a finer, harder grain with a little sheen; skin, hide and cloth a softer one. Colours keep their hue.

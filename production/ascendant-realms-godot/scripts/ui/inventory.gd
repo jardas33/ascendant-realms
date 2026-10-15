@@ -466,7 +466,8 @@ func _item_card(item: Dictionary) -> Button:
 	card.toggle_mode = true
 	card.button_group = _item_group
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.custom_minimum_size = Vector2(0, 112)
+	# A two-line name plus the slot and stat lines at the 16 px text floor.
+	card.custom_minimum_size = Vector2(0, 128)
 	for state in ["normal", "hover", "pressed", "hover_pressed"]:
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#1b2430") if state == "normal" else Color("#2b3240") if state == "hover" else Color("#302a20")
@@ -512,7 +513,9 @@ func _item_card(item: Dictionary) -> Button:
 	var stat_bits: Array = []
 	var stats: Dictionary = item.get("stats", {})
 	for k in stats:
-		if stat_bits.size() >= 3:
+		# Two stats: at the 16 px text floor a third no longer fits the card's
+		# line. Inspecting the relic lists them all.
+		if stat_bits.size() >= 2:
 			break
 		stat_bits.append(_short_stat(str(k), float(stats[k])))
 	if not stat_bits.is_empty():

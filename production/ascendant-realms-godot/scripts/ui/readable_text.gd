@@ -11,7 +11,7 @@ extends Node
 
 const TITLE_FONT := "res://assets/fonts/cinzel.ttf"
 const TITLE_MIN := 18
-const BODY_MIN := 14
+const BODY_MIN := 16
 
 var _pending: Array[Control] = []
 

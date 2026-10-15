@@ -254,7 +254,9 @@ func _race_card(rid: String) -> Button:
 	var card := Button.new()
 	card.toggle_mode = true
 	card.focus_mode = Control.FOCUS_NONE
-	card.custom_minimum_size = Vector2(0, 76)
+	# Tall enough for the name and three lines of the 16 px text floor; the
+	# list scrolls.
+	card.custom_minimum_size = Vector2(0, 108)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.clip_contents = true
@@ -352,6 +354,15 @@ func _card_style(col: Color, state: String) -> StyleBoxFlat:
 func _build_battle_panel() -> Control:
 	var parts := _panel(1.0)
 	var v: VBoxContainer = parts[1]
+	# The battlefield column scrolls, so three opponents or a long map
+	# legend at the 16 px text floor never push Begin Battle off the screen.
+	var margin := v.get_parent()
+	margin.remove_child(v)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	margin.add_child(scroll)
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(v)
 	v.add_child(_heading("Battlefield"))
 	var map_opt := OptionButton.new()
 	map_opt.custom_minimum_size = Vector2(0, 38)
