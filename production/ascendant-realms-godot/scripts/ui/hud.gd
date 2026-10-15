@@ -2761,16 +2761,18 @@ func _selection_type_summary(units: Array) -> String:
 			counts[label] = 0
 			order.append(label)
 		counts[label] = int(counts[label]) + 1
-	# Six kinds on one line ran off the panel: the three most numerous are
-	# named and the rest counted.
+	# Six kinds on one line ran off the panel: up to three kinds are named;
+	# with more, the two most numerous are named and the rest counted (at the
+	# line's readable size, three names and "+3 more" ended in dots).
+	var named := 3 if order.size() <= 3 else 2
 	if order.size() > 3:
 		order.sort_custom(func(a: String, c: String) -> bool: return int(counts[a]) > int(counts[c]))
 	var parts: Array[String] = []
-	for label in order.slice(0, 3):
+	for label in order.slice(0, named):
 		parts.append("%s x%d" % [label, int(counts[label])])
-	if order.size() > 3:
+	if order.size() > named:
 		var rest := 0
-		for label in order.slice(3):
+		for label in order.slice(named):
 			rest += int(counts[label])
 		parts.append("+%d more" % rest)
 	return " · ".join(parts)
@@ -2815,7 +2817,11 @@ func _build_multi(units: Array) -> void:
 	formation_info.add_theme_constant_override("separation", 0)
 	formation_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	formation_info.add_child(_mk_label("%d UNITS SELECTED" % units.size(), 15, FONT_COLOR))
-	formation_info.add_child(_mk_label(_selection_type_summary(units), 10, Color(0.76, 0.79, 0.75)))
+	# The line of kinds ("3 Thornrunner · 2 Rootwarden") names the group, so it
+	# is drawn at a readable size (it was 10, 12 px on screen).
+	var kinds_label := _mk_label(_selection_type_summary(units), 13, Color(0.80, 0.83, 0.78))
+	kinds_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	formation_info.add_child(kinds_label)
 	formation_header.add_child(formation_info)
 	_sel_body.add_child(formation_header)
 	formation_header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
@@ -2851,7 +2857,11 @@ func _build_multi(units: Array) -> void:
 		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, 64)
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var portrait_size := Vector2(64, 64) if expanded_pair else Vector2(54, 46)
+		# The six-column grid shows faces, not names: a name squeezed into a
+		# 54-74 px cell was drawn at 10 to 12 px. The line of kinds above names
+		# the group and each card's tooltip names the soldier; the portrait
+		# takes the name's room.
+		var portrait_size := Vector2(64, 64) if expanded_pair else Vector2(minf(cell_w, 62.0), 55)
 		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
 			portrait.custom_minimum_size = portrait_size
@@ -2876,12 +2886,11 @@ func _build_multi(units: Array) -> void:
 		var full_name := str(u.def.get("name", "Unit"))
 		var card_name := full_name if expanded_pair else full_name.split(" ")[-1]
 		cell.tooltip_text = full_name
-		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + card_name, 12 if expanded_pair else 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
-		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		if not expanded_pair:
-			_shrink_label_to(nm, cell_w, 8)
-		details.add_child(nm)
+		if expanded_pair:
+			var nm := _mk_label(("★ " if bool(u.is_hero) else "") + card_name, 13, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
+			nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
 		bar.custom_minimum_size = Vector2(70, 8) if expanded_pair else Vector2(50, 8)
 		if not expanded_pair:
@@ -3106,6 +3115,20 @@ func _queue_slot_label(display_name: String) -> String:
 	return String(words[words.size() - 1])
 
 
+## Queue slots read at 12 (14 px on screen) and step down only as far as 10
+## when a long name or a run count ("Weapons ×3") would widen the row past
+## its panel.
+func _fit_queue_slot(slot: Button) -> void:
+	var font := slot.get_theme_font("font")
+	# The slot's frame takes about 12 px of its 64: text wider than 50 grew
+	# the slot and pushed the row out of its panel.
+	var room := slot.custom_minimum_size.x - maxf(14.0, slot.get_theme_stylebox("normal").get_minimum_size().x)
+	var font_size := 12
+	while font_size > 10 and font.get_string_size(slot.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > room:
+		font_size -= 1
+	slot.add_theme_font_size_override("font_size", font_size)
+
+
 func _refresh_queue() -> void:
 	if not is_instance_valid(_queue_container) or not is_instance_valid(_production_status_label):
 		return
@@ -3164,6 +3187,7 @@ func _refresh_queue() -> void:
 		if key == prev_key and is_instance_valid(prev_slot):
 			run += 1
 			prev_slot.text = "%s ×%d" % [prev_label, run]
+			_fit_queue_slot(prev_slot)
 			prev_slot.set_meta("cancel_index", idx)
 			idx += 1
 			continue
@@ -3172,13 +3196,14 @@ func _refresh_queue() -> void:
 			break
 		var slot := _mk_button("", 12)
 		slot.custom_minimum_size = Vector2(64, 28)
-		slot.add_theme_font_size_override("font_size", 10)
+		slot.add_theme_font_size_override("font_size", 12)
 		var disp_name := ""
 		if kind == "unit":
 			disp_name = GameData.get_unit(iid).get("name", iid)
 		else:
 			disp_name = GameData.get_tech(iid).get("name", iid)
 		slot.text = _queue_slot_label(disp_name)
+		_fit_queue_slot(slot)
 		var total: float = float(item.get("total", 1.0))
 		var left: float = float(item.get("time_left", 0.0))
 		var prog: float = 1.0 - clampf(left / maxf(0.01, total), 0.0, 1.0)

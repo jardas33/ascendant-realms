@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 252 (done): the smallest battle text is gone**
+  - A new probe (`claude_hudsize.gd`) measured every text in the battle HUD, through every selection state, at 1920x1080. The smallest were the names under the portraits when a group is selected (10 to 12 pixels on screen), the line naming the group's kinds (12) and the production queue buttons (12).
+  - A selected group now shows bigger faces with no squeezed names (each card's tooltip names the soldier). The line above them ("Bloomdancer x1 · Rootwarden x1 · +6 more") is drawn at 16 pixels and names two kinds when there are more than three, so it never ends in dots. Queue buttons are drawn at 14 pixels, stepping down only for the longest names.
+  - Nothing in the HUD is drawn under 12 pixels now (it was 9.6), and the HUD clipping check reports nothing cut or out of its panel.
+  - Full regression: all 110 checks passed, and the real save file was unchanged.
 - **Plan 251 (done): bigger small text in every menu**
   - A new probe (`claude_contrast.gd`) measured every piece of menu text at 1920x1080: its size on screen and its contrast against what is behind it. Contrast was fine everywhere, but 153 texts sat at the old 14-pixel minimum, the size that makes you squint.
   - The minimum is now 16 pixels on every menu screen (the battle HUD keeps its own sizes, already scaled up).
