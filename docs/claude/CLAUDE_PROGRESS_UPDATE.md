@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 256 (done): battle HUD text at 16 px or more**
+  - Measured every text in the battle HUD across all selection states: about 500 were drawn at 14 or 15 px on a 1920 screen (the VITALS and STATUS lines, the DMG, ARM and RNG captions, role words, build card costs, command hints, the battle name, objective and bounty).
+  - The smallest HUD text size went from 12 to 14 points, which draws at 17 px in the scaled panels; the battle name, menu and top bar captions went to 16 and the objective and bounty lines to 15 (at 16 the longest bounty and Domination lines were cut). Now every other HUD text is 16 px or more except the production queue slots, whose unit names still step down to fit their small square.
+  - Where the larger text no longer fit: a hero's panel drops the VITALS heading (its two bars say it) and shows "Level 1 · 0 / 60" on one line; a construction site no longer shows an empty "Queue: Idle" row, so its progress bar is back inside the panel; the six-portrait squad grid lost 2 px per cell to stay inside its frame.
+  - Checked with no clipped, trimmed or offscreen text for four peoples at 1920x1080 and at 1280x720.
+  - Full regression: 110 of 110 passed.
 - **Plan 255 (done): no more units walking backwards**
   - A new probe (`claude_facing.gd`) orders every unit kind to march and compares the walking direction with the way its feet point. Two models were exported facing the wrong way: the Barrosan Spear Guard and the Ironmaw Bowcrusha. They walked, ran and fought with their faces pointing behind them.
   - Each model's resting feet now tell the game which way it faces, and a backwards model is turned around once when it is built, in battle and in the selection portrait. All 71 kinds with feet now walk face first (the Ironmaw warlord hero has no foot bones, so it is not checked this way).

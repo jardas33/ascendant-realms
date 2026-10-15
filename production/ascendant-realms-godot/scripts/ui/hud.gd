@@ -518,6 +518,8 @@ func _connect_signals() -> void:
 # ---------------------------------------------------------------------------
 # Small builder helpers
 # ---------------------------------------------------------------------------
+const HUD_TEXT_MIN := 14
+
 func _mk_label(text: String, size: int = 16, col: Color = FONT_COLOR) -> Label:
 	var l := Label.new()
 	l.text = text
@@ -525,9 +527,10 @@ func _mk_label(text: String, size: int = 16, col: Color = FONT_COLOR) -> Label:
 	if _body_font:
 		l.add_theme_font_override("font", _body_font)
 	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	# Nothing smaller than 12: inside the 1.2x panels that draws at 14 px at
-	# 1920, and 10 or 11 px captions were where players squinted.
-	l.add_theme_font_size_override("font_size", maxi(size, 12))
+	# Nothing smaller than 14: inside the 1.2x panels that draws at 17 px at
+	# 1920. At 12 (14 px) the vitals, status and stat captions still made
+	# players squint.
+	l.add_theme_font_size_override("font_size", maxi(size, HUD_TEXT_MIN))
 	l.add_theme_color_override("font_color", col)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	l.add_theme_constant_override("outline_size", 4)
@@ -1171,7 +1174,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
-	var title_label := _mk_label(title.to_upper(), 16 if instrument else 15, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	var title_label := _mk_label(title.to_upper(), 16, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
 	if instrument:
 		title_label.name = "TopMetricTitle"
 		# The compact forged corners need equal air on both sides of each name.
@@ -1211,7 +1214,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_title_label(title, 15, accent.lightened(0.14))
+	var heading := _mk_title_label(title, 16, accent.lightened(0.14))
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -1374,7 +1377,7 @@ func _build_top_bar() -> void:
 	menu_btn.offset_right = -12.0
 	menu_btn.offset_top = 17.0
 	menu_btn.offset_bottom = 59.0
-	var menu_copy := _mk_title_label("MENU", 14, Color(0.98, 0.91, 0.76))
+	var menu_copy := _mk_title_label("MENU", 16, Color(0.98, 0.91, 0.76))
 	menu_copy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	menu_copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	menu_copy.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -1450,7 +1453,7 @@ func _build_top_bar() -> void:
 	mission_row.add_child(mission_stack)
 	# Campaign battles are titled by their chapter, not the map.
 	var saga_chapter := CampaignDefs.find(String(Match.get_config().get("campaign_chapter", "")))
-	var battlefield_label := _mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 15, COMMAND_GOLD)
+	var battlefield_label := _mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 16, COMMAND_GOLD)
 	battlefield_label.name = "MatchBattlefieldLabel"
 	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mission_stack.add_child(battlefield_label)
@@ -1470,7 +1473,7 @@ func _build_top_bar() -> void:
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(objective_label)
 	# The bounty stays on the banner with how it stands, not just one alert.
-	_bounty_label = _mk_label("", 13, Color(0.95, 0.82, 0.5))
+	_bounty_label = _mk_label("", 15, Color(0.95, 0.82, 0.5))
 	_bounty_label.name = "MatchBountyLabel"
 	_bounty_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_bounty_label.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -2551,7 +2554,10 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		var vet := _mk_label(stars + ("   “%s”" % vet_name if vet_name != "" else "   Veteran"), 13, Color(1.0, 0.84, 0.42))
 		vet.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		info.add_child(vet)
-	info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
+	# A hero carries a mana bar under its health: the heading would push the
+	# status line out of the panel, and two bars read as vitals on their own.
+	if not u.is_hero:
+		info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
 
 	# hp bar + text
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
@@ -2632,8 +2638,8 @@ func _battle_level_text(u) -> String:
 	var steps: Array = u.FIELD_LEVEL_XP
 	if level >= steps.size():
 		return "Battle level %d" % level
-	return "Battle level %d
-%d / %d" % [level, int(u.field_xp), int(steps[level])]
+	# One line: at 14 points a second line stood below the portrait plinth.
+	return "Level %d  ·  %d / %d" % [level, int(u.field_xp), int(steps[level])]
 
 func _refresh_single_live() -> void:
 	var u = _tracked_single
@@ -2852,7 +2858,8 @@ func _build_multi(units: Array) -> void:
 		# ("Seedkeeper" was cut to "Seedkee..." in a 54 px cell).
 		# ...but never wider than a sixth of the panel: at 74 the sixth column
 		# stood outside it and every sixth soldier's portrait was cut away.
-		var room := floorf((_sel_body.size.x - 5.0 * 4.0 - 10.0) / 6.0)
+		# (22: with 14-point captions the sixth cell stood 9 px out at 10.)
+		var room := floorf((_sel_body.size.x - 5.0 * 4.0 - 22.0) / 6.0)
 		var cell_w := clampf(room, 54.0, 74.0) if get_viewport_rect().size.x >= 1800.0 else 54.0
 		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, 64)
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
@@ -3007,8 +3014,10 @@ func _build_single_building(b, read_only: bool = false) -> void:
 				if is_instance_valid(cap_label):
 					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cb.build_progress, 0.0, 1.0) * 100.0))
 
-	# production queue row (only meaningful when it produces)
-	if not read_only and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
+	# production queue row (only meaningful when it produces, and only once
+	# built: a site's "Idle" queue pushed its progress bar out of the panel;
+	# the card is rebuilt when construction completes)
+	if not read_only and b.is_built and (not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
 			or b.def.get("is_hq", false) or b.def.get("kind", "") == "main"):
 		_queue_container = HBoxContainer.new()
 		_queue_container.add_theme_constant_override("separation", 4)
@@ -3169,7 +3178,7 @@ func _refresh_queue() -> void:
 	_production_status_label.text = "%s %d%%" % [active_display, roundi(active_prog * 100.0)]
 	_production_status_label.tooltip_text = "%s: %s" % [active_verb, active_name]
 	_production_status_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	_production_status_label.add_theme_font_size_override("font_size", 12)
+	_production_status_label.add_theme_font_size_override("font_size", HUD_TEXT_MIN)
 	_shrink_label_to(_production_status_label, 106.0, 9)
 	# One slot per run of the same item ("Worker ×7"), so a long queue fits the
 	# dossier: two slots, then how many more wait. Clicking a slot cancels the
@@ -4079,7 +4088,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			sb.custom_minimum_size = Vector2(0, 32)
 			sb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			sb.focus_mode = Control.FOCUS_NONE
-			sb.add_theme_font_size_override("font_size", 13)
+			sb.add_theme_font_size_override("font_size", HUD_TEXT_MIN)
 			sb.disabled = int(_commander.resources.get(kind, 0)) < _commander.SELL_BATCH
 			_watch_cost({kind: _commander.SELL_BATCH}, not sb.disabled)
 			sb.tooltip_text = "Sell %d %s to the caravan for %d gold." % [_commander.SELL_BATCH, kind, _commander.SELL_GOLD]
