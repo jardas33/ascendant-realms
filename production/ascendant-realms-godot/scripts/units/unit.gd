@@ -749,6 +749,8 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, _visual_height)
 		_drop_placeholder_armor(m)
+		if _model_faces_backwards(m, path):
+			m.rotate_y(PI)
 		_apply_p1r20_model_materials(m)
 		_build_slice4_role_accessories(m)
 		_build_r3b_worker_presentation(m)
@@ -830,6 +832,39 @@ static func _drop_placeholder_armor(m: Node) -> void:
 		if not textured:
 			mi.get_parent().remove_child(mi)
 			mi.queue_free()
+
+static var _backwards_cache := {}
+
+## Two models were exported facing the other way (the Spear Guard's
+## stoneward_spears compat and the Bowcrusha's): they walked, ran and fought
+## with their faces pointing behind them. The rest-pose feet tell which way a
+## model faces (heel to toes); every correct model points its toes along -Z.
+## Models without foot bones are left alone. The selection portraits call it
+## too. Cached per model path.
+static func _model_faces_backwards(m: Node, path: String) -> bool:
+	if _backwards_cache.has(path):
+		return bool(_backwards_cache[path])
+	var result := false
+	var skeletons := m.find_children("*", "Skeleton3D", true, false)
+	if not skeletons.is_empty():
+		var sk := skeletons[0] as Skeleton3D
+		var xf := Transform3D.IDENTITY
+		var n: Node = sk
+		while n != null and n != m.get_parent():
+			if n is Node3D:
+				xf = (n as Node3D).transform * xf
+			n = n.get_parent()
+		var fwd := Vector3.ZERO
+		for side in ["Left", "Right"]:
+			var f := sk.find_bone(side + "Foot")
+			var t := sk.find_bone(side + "Toes")
+			if f >= 0 and t >= 0:
+				fwd += (xf * sk.get_bone_global_rest(t).origin) - (xf * sk.get_bone_global_rest(f).origin)
+		fwd.y = 0.0
+		if fwd.length() > 0.001:
+			result = fwd.normalized().z > 0.5
+	_backwards_cache[path] = result
+	return result
 
 ## Accessory models are many small rigid pieces (an Outrider's kit was 13
 ## draw calls, a Veil Warlock's 13). Merge the pieces of each attachment into

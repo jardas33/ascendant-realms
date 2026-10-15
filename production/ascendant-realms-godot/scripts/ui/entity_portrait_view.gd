@@ -232,6 +232,8 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			model_radius = minf(maxf(focus.size.x, focus.size.z) * 0.5, target_height * 1.2)
 		if not is_building:
 			Unit._drop_placeholder_armor(model)
+			if Unit._model_faces_backwards(model, path):
+				model.rotate_y(PI)
 			_posed_model = null if bool(definition.get("is_siege", false)) else model
 			_pose_and_tint_unit(model, path, definition)
 	else:
@@ -393,14 +395,24 @@ func _frame_on_head() -> void:
 	# A head bone far below the top of the body (the Bowcrusha's sits at half
 	# its height) is no face to frame: keep the fixed camera.
 	var top := 0.0
+	var width := 0.0
 	for mi in _posed_model.find_children("*", "MeshInstance3D", true, false):
-		top = maxf(top, ((mi as MeshInstance3D).global_transform * (mi as MeshInstance3D).get_aabb()).end.y)
+		var box: AABB = (mi as MeshInstance3D).global_transform * (mi as MeshInstance3D).get_aabb()
+		top = maxf(top, box.end.y)
+		width = maxf(width, box.size.x)
 	if tall < 0.4 or tall < (top - feet_y) * 0.7:
 		return
 	var compact := custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD
 	# Frame from just above the head down to the chest (the belt, large):
 	# span is half the height shown.
 	var span := tall * (0.24 if compact else 0.32)
+	# Hulking bodies (the Ironmaw Grunt and Ogre: half again as wide as they
+	# are tall, every other model about square) hunch their faces in front of
+	# huge shoulders; a head-and-chest crop showed an ear and a pauldron.
+	# Widen to the whole upper body.
+	var bulk := width / maxf(top - feet_y, 0.01)
+	if bulk > 1.25:
+		span *= minf(bulk * bulk, 2.4)
 	var aim := head_at - Vector3(0.0, span * 0.22, 0.0)
 	var distance := span / tan(deg_to_rad(_camera.fov * 0.5))
 	_camera.global_position = Vector3(head_at.x, aim.y + span * 0.1, head_at.z + distance)

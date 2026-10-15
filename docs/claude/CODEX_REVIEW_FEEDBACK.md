@@ -2,6 +2,10 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 16, 2026-10-15: two models face backwards
+
+No new Codex commit since the Ash Thrall grip study (a0afb4a6); the r10 study had only its preflight files. A march probe (`claude_facing.gd`, ar-review) compares each unit's walking direction with its feet. Two models are exported facing +Z while every other one faces -Z: `barrosan_stoneward_spears_r696_compat` (the Spear Guard body) and `grimtusk_bowcrusha_r704c`. The game now detects this from the rest-pose feet and turns them around, so nothing is broken in play, but new exports should face -Z like the rest. Also, `orc_grunt` and `grimtusk_ogre_r709b` hold their heads turned to one side in their idle pose, so the Grunt's portrait shows a profile with an ear in front; a forward-looking idle would help their portraits.
+
 ## Review 15, 2026-10-15: one siege model for five peoples
 
 No new Codex commit to read. Photographing every siege engine's portrait (`claude_portraits.gd`, ar-review) shows that five peoples' siege engines use `barrosan_ballista.glb`, tinted per people: the Ironmaw Slag Thrower, Granitborn Stone Mortar, Aurean Sun Scorpion, Caretos Passing Bell and Wolfveil Entrudo Pyre. The Lioraen Thornthrower's own model is also a near-identical wooden catapult. A mortar, a scorpion and a bell cart that look like one ballista undercut each people's identity in the late game, when siege matters most. Each needs its own model; the Stone Mortar and the Passing Bell are the most jarring.

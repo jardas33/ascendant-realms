@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 255 (done): no more units walking backwards**
+  - A new probe (`claude_facing.gd`) orders every unit kind to march and compares the walking direction with the way its feet point. Two models were exported facing the wrong way: the Barrosan Spear Guard and the Ironmaw Bowcrusha. They walked, ran and fought with their faces pointing behind them.
+  - Each model's resting feet now tell the game which way it faces, and a backwards model is turned around once when it is built, in battle and in the selection portrait. All 71 kinds with feet now walk face first (the Ironmaw warlord hero has no foot bones, so it is not checked this way).
+  - The Ironmaw Grunt and Ogre portraits showed an ear and a shoulder plate: their bodies are half again as wide as tall, with faces hunched forward. Their portraits now show the whole upper body.
+  - Codex Review 16 written.
+  - Full regression: 110 of 110 passed.
 - **Plan 254 (done): unit portraits show faces**
   - I photographed the selection portrait of all 80 units. Units with painted portraits (most Barrosan, some Lioraen and Vorthak) look rich. Every other unit was a small whole body standing in a dark frame, because the camera assumed the figure filled its bounds, and capes, weapons and outstretched arms make the bounds much bigger than the body. The four units wearing the Spear Guard body also still had the grey placeholder "dice" in their portraits.
   - Rendered portraits now aim at the model's head once it stands in its idle pose: head and shoulders on the small group cards, down to the chest on the large card, like the painted ones. The placeholder dice are dropped there too.
