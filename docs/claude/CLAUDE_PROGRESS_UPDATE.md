@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 258 (done): an emblem for each research**
+  - Every research in the command list and the production queue wore the same small four-rayed ring, so Forged Weapons, Tempered Armor and Sharpened Tools looked alike.
+  - Each research now wears a drawn medallion of what it does, read from its effects: a sword for damage, a shield for armor, a pick for gathering, a wall for building health, a bow for range, a boot for speed, a heart for healing, a flame for braziers and similar, and a crown for each people's final research. The two Age advances keep their painted emblems. All 42 researches were listed with their emblem and checked by name.
+  - Research rows now use the same larger emblem plate as the unit rows with portraits.
+  - Full regression: 110 of 110 passed.
 - **Plan 257 (done): production queue shows pictures**
   - The two queue slots beside a building's status held the unit or research name squeezed into a 64 px box, drawn at 12 to 14 px: the last small text in the battle HUD.
   - Each slot is now a small square with the picture of what it makes (the unit's portrait, a research glyph), a count badge when several of the same wait, and the training bar along the bottom of the active slot. The full name and "Click to cancel one" are on the tooltip, and the line beside it still names the active item with its percentage.

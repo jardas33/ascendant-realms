@@ -3218,7 +3218,7 @@ func _refresh_queue() -> void:
 			picture.set_deferred("custom_minimum_size", Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0))
 			picture.set_deferred("size", Vector2(QUEUE_SLOT - 6.0, QUEUE_SLOT - 6.0))
 		else:
-			picture = _mk_command_icon(iid if kind == "unit" else _command_icon_kind(disp_name, "RESEARCH"), COMMAND_GOLD, QUEUE_SLOT - 6.0)
+			picture = _mk_command_icon(iid if kind == "unit" else load(COMMAND_GLYPH_SCRIPT).research_kind(iid, GameData.get_tech(iid)), COMMAND_GOLD, QUEUE_SLOT - 6.0)
 			slot.add_child(picture)
 		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		picture.position = Vector2(3, 3)
@@ -4052,7 +4052,8 @@ Workers inside %d / %d  ·  +%d %s a minute
 				reason = _commander.missing_resource_summary(cost)
 			var ready_to_research: bool = available and affordable
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
-			var tech_emblem := String(tid) if String(tid) in ["advance_tier_2", "advance_tier_3"] else ""
+			# Each research wears an emblem of what it does (sword, shield, pick...).
+			var tech_emblem: String = load(COMMAND_GLYPH_SCRIPT).research_kind(String(tid), tdef)
 			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")) + ("\nTakes %d s" % int(round(float(tdef.get("time", 0.0)))) if float(tdef.get("time", 0.0)) > 0.0 and not _commander.completed_tech.has(tid) else ""), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
 			var cap_b = b
