@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 243 (done): battle HUD text you can read**
+  - Plan 240 left the battle HUD's own sizes alone. Many of its captions were 10 or 11 px (FIELD OVERVIEW, SELECTED ENTITY, VITALS, LIVE STATUS, the role badges such as MILITARY and BUILD SITE, the queue and site-progress captions).
+  - Now no HUD label is smaller than 12. Inside the selection, command and minimap panels, which are drawn 1.2 times larger, that is 14 px on a 1920 screen.
+  - Role badges now grow to fit their word. The HUD clip check found that four badges cut their word at the new size (BUILDING, BUILD SITE, MILITARY, LIVE STATUS); after the fix it finds none.
+  - On the victory and defeat screen, rarity tags beside each find went from 11 to 14 and are brighter. The tally captions (ENEMIES DEFEATED and so on) and the experience line are a size larger.
+  - Full regression: 110 of 110 checks pass.
 - **Plan 242 (done): the hero sheet reads at a glance, and waiting points call out**
   - The hero's record was two long lines of capitals (ENDLESS ROAD STAGE 25 · BATTLES 273 · ...). Now it is a row of tiles, each a big number over a short name: Endless stage, Battles, Victories, Foes slain, Elites, Tyrants, Jars dug, Road of the week (once run), then the saga in violet: Saga chapters, Wine of the dead, Heroic laurels, Retinue. The tiles wrap onto a second row on narrow screens.
   - Unspent points were easy to miss. The Attributes heading now says "27 points to spend" in gold, and it and every + button breathe slowly. The Skill Constellation button shows the waiting points ("Skill Constellation (53)") and breathes too, as does Choose Talent.

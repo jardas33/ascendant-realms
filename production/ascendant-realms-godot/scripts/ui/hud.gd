@@ -525,7 +525,9 @@ func _mk_label(text: String, size: int = 16, col: Color = FONT_COLOR) -> Label:
 	if _body_font:
 		l.add_theme_font_override("font", _body_font)
 	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	l.add_theme_font_size_override("font_size", size)
+	# Nothing smaller than 12: inside the 1.2x panels that draws at 14 px at
+	# 1920, and 10 or 11 px captions were where players squinted.
+	l.add_theme_font_size_override("font_size", maxi(size, 12))
 	l.add_theme_color_override("font_color", col)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	l.add_theme_constant_override("outline_size", 4)
@@ -747,6 +749,8 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	var label := _mk_label(text, 10, color)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# The badge grows to its word: a badge never shows a cut-off word.
+	label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	badge.add_child(label)
 	return badge
 
@@ -2287,6 +2291,7 @@ func _build_selection_panel() -> void:
 	entity_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	entity_header.add_child(entity_title)
 	var entity_hint := _mk_label("LIVE STATUS", 9, HUD_TEXT_MUTED)
+	entity_hint.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	entity_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entity_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	entity_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -4651,7 +4656,7 @@ func _on_game_over(victory: bool) -> void:
 		var start_xp := 0.0 if leveled else maxf(0.0, now_xp - float(xp))
 		var xp_row := VBoxContainer.new()
 		xp_row.add_theme_constant_override("separation", 2)
-		var xp_cap := _mk_label("Level %d  ·  %d / %d experience" % [int(hh.get("level", 1)), int(now_xp), int(need)], 13, Color(0.8, 0.74, 0.6))
+		var xp_cap := _mk_label("Level %d  ·  %d / %d experience" % [int(hh.get("level", 1)), int(now_xp), int(need)], 15, Color(0.88, 0.82, 0.68))
 		xp_cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		xp_row.add_child(xp_cap)
 		var xbar := ProgressBar.new()
@@ -4752,7 +4757,7 @@ func _on_game_over(victory: bool) -> void:
 		value.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		value.clip_text = false
 		cell.add_child(value)
-		var caption := _mk_label(String(stat[0]), 13, Color(0.72, 0.68, 0.60))
+		var caption := _mk_label(String(stat[0]), 14, Color(0.82, 0.78, 0.70))
 		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caption.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		cell.add_child(caption)
@@ -4866,7 +4871,7 @@ func _loot_row(it: Dictionary, col: Color) -> HBoxContainer:
 	var name_lbl := _mk_label(String(it.get("name", "")), 16, col)
 	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	row.add_child(name_lbl)
-	var tag := _mk_label(rarity.to_upper(), 11, Color(col, 0.75))
+	var tag := _mk_label(rarity.to_upper(), 14, Color(col, 0.9))
 	tag.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	tag.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	row.add_child(tag)
