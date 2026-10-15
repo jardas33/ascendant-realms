@@ -53,7 +53,13 @@ static func stage(depth: int, player_race: String, salt: int = 0) -> Dictionary:
 		# alike (a keep ringed by three camps; a wall with attacker and defender).
 		if bool(info.get("uneven", false)):
 			continue
+		# Only the hand-built fields: half the stages used to fall on the
+		# small generated maps, which are kept for quick skirmishes.
+		if not bool(info.get("authored", false)):
+			continue
 		maps.append(info)
+	if maps.is_empty():
+		maps = MapDefs.list_infos()
 	var foes_wanted := 1 + mini(2, (depth - 1) / 4)
 	var pool: Array = maps.filter(func(m): return int(m.get("players", 4)) >= foes_wanted + 1)
 	if pool.is_empty():
