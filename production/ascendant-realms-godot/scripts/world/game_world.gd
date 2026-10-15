@@ -1600,6 +1600,18 @@ func _build_hills() -> void:
 		var slag_path: String = slag_by_theme.get(str(map.get("theme", "")), "res://assets/textures/stone/highland_rock.png")
 		turf.albedo_texture = load(slag_path) if ResourceLoader.exists(slag_path) else null
 		turf.albedo_color = _scorched_tone("turf") * 2.6
+		# Dunes and snowdrifts had no texture at all and read as smooth
+		# plastic: they get the grain of dry earth or windswept snow, tinted
+		# to the ground they stand on.
+		var drift_by_theme: Dictionary = {
+			"desert": ["res://assets/textures/nature/highland_dirt_path_r3.png", Color(1.15, 1.0, 0.62)],
+			"badlands": ["res://assets/textures/nature/highland_dirt_path_r3.png", Color(1.0, 0.75, 0.5)],
+			"snow": ["res://assets/textures/nature/frostmere_windswept_snow_r1.png", Color(1.0, 1.02, 1.08)],
+		}
+		var drift: Array = drift_by_theme.get(str(map.get("theme", "")), [])
+		if not drift.is_empty() and ResourceLoader.exists(drift[0]):
+			turf.albedo_texture = load(drift[0])
+			turf.albedo_color = drift[1]
 	turf.roughness = 1.0
 	turf.uv1_triplanar = true
 	turf.uv1_scale = Vector3(0.14, 0.14, 0.14)

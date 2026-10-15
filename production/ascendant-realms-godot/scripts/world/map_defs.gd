@@ -2313,7 +2313,10 @@ static func _open_field(s: Dictionary) -> Dictionary:
 			continue
 		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
 		var sd := rng.randf_range(0.0, 6.0)
-		hills.append({"at": c, "radii": rad, "height": rng.randf_range(8.0, 12.0), "seed": sd})
+		# No steeper than the hand-built hills (height at most 0.8 of the
+		# smaller radius): a hill that shrank to fit stays a hill, not a cone.
+		var height := minf(rng.randf_range(8.0, 12.0), 0.8 * minf(rad.x, rad.y))
+		hills.append({"at": c, "radii": rad, "height": height, "seed": sd})
 		hills.append({"at": -c, "radii": rad, "height": hills[-1]["height"], "seed": sd + PI})
 	a["rivers"] = rivers
 	a["ridges"] = ridges
