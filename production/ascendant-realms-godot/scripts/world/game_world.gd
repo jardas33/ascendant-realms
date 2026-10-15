@@ -6704,10 +6704,24 @@ func spawn_collapse_fx(pos: Vector3, footprint: float) -> void:
 
 func spawn_death_fx(pos: Vector3) -> void:
 	if is_instance_valid(_fx_container) and player_visibility_state_at(pos) == VISIBILITY_CURRENTLY_VISIBLE:
+		if in_ford(pos):
+			# A fall in the river throws up spray and a ring on the water; the
+			# churned-earth scar showed through the water as a red-brown stain.
+			CombatVfx.splash(_fx_container, pos)
+			return
 		CombatVfx.death(_fx_container, pos)
 		CombatVfx.battle_scar(_fx_container, pos)
 		# The grass where a unit fell stays trampled.
 		clear_ground_cover(pos, 0.9)
+
+## Plan 244: where a falling body lands: a puff of dust, or spray in the river.
+func spawn_fall_fx(pos: Vector3) -> void:
+	if not is_instance_valid(_fx_container) or player_visibility_state_at(pos) != VISIBILITY_CURRENTLY_VISIBLE:
+		return
+	if in_ford(pos):
+		CombatVfx.splash(_fx_container, pos)
+	else:
+		CombatVfx.thud(_fx_container, pos)
 
 func spawn_heal_fx(pos: Vector3) -> void:
 	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)

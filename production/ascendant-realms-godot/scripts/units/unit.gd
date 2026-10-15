@@ -206,6 +206,10 @@ var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
 var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
+# Plan 244: each number drifts a little to one side so a flurry of blows
+# fans out instead of stacking, and a killing blow's number is drawn larger.
+var _damage_label_drift := 0.0
+var _damage_label_big := false
 var _r15_lethal_cue_time := 0.0
 var _combat_reaction_tween: Tween
 ## The model's size and lean when it is not flinching. A second hit inside
@@ -1530,9 +1534,10 @@ func _build_r15_combat_presentation() -> void:
 	_r15_hit_flash = MeshInstance3D.new()
 	_r15_hit_flash.name = "CombatHitFlash"
 	_r15_hit_flash.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var flash_mesh := SphereMesh.new()
-	flash_mesh.radius = COMBAT_HIT_FLASH_RADIUS
-	flash_mesh.height = COMBAT_HIT_FLASH_HEIGHT
+	# Plan 244: a soft burst of light facing the camera. The sphere it
+	# replaced read as a flat orange ball pasted over the struck unit.
+	var flash_mesh := QuadMesh.new()
+	flash_mesh.size = Vector2.ONE * COMBAT_HIT_FLASH_HEIGHT * 2.2
 	_r15_hit_flash.mesh = flash_mesh
 	_r15_hit_flash.position.y = maxf(0.6, _visual_height * 0.52)
 	_r15_hit_flash.visible = false
@@ -1544,6 +1549,9 @@ func _build_r15_combat_presentation() -> void:
 	flash_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	flash_mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	flash_mat.no_depth_test = true
+	flash_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	CombatVfx._ensure()
+	flash_mat.albedo_texture = CombatVfx._soft_tex
 	_r15_hit_flash.material_override = flash_mat
 	add_child(_r15_hit_flash)
 
@@ -1551,6 +1559,8 @@ func _build_r15_combat_presentation() -> void:
 	_r15_damage_label.name = "CombatDamageLabel"
 	_r15_damage_label.font_size = 56
 	_r15_damage_label.outline_size = 14
+	# A dark outline that stays dark: the number reads on grass, water and snow.
+	_r15_damage_label.outline_modulate = Color(0.07, 0.03, 0.02, 1.0)
 	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_r15_damage_label.no_depth_test = true
 	_r15_damage_label.pixel_size = COMBAT_DAMAGE_LABEL_PIXEL_SIZE
@@ -1611,11 +1621,11 @@ func _update_r15_combat_presentation(delta: float) -> void:
 				flash_scale = 1.08 + sin((1.0 - flash_progress) * PI) * 0.34
 				var flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if flash_material:
-					flash_material.albedo_color = Color(0.70, 0.18, 0.08, 1.0)
+					flash_material.albedo_color = Color(1.0, 0.36, 0.16, 1.0)
 			else:
 				var normal_flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if normal_flash_material:
-					normal_flash_material.albedo_color = Color(0.55, 0.26, 0.08, 1.0)
+					normal_flash_material.albedo_color = Color(0.95, 0.62, 0.30, 1.0)
 			_r15_hit_flash.scale = Vector3.ONE * flash_scale
 	if _r15_damage_label_time > 0.0:
 		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
@@ -1623,8 +1633,14 @@ func _update_r15_combat_presentation(delta: float) -> void:
 		_r15_damage_label.visible = _r15_damage_label_time > 0.0 and (not is_dead or _r15_lethal_cue_time > 0.0)
 		if _r15_damage_label.visible:
 			var progress := 1.0 - (_r15_damage_label_time / COMBAT_DAMAGE_LABEL_DURATION)
-			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + progress * 0.80
-			_r15_damage_label.modulate.a = 1.0 - progress
+			# The number punches in large and settles, rises and drifts aside,
+			# and stays fully opaque until late: a number that fades from the
+			# first frame spends most of its life half transparent and murky.
+			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + (1.0 - pow(1.0 - progress, 2.0)) * 1.1
+			_r15_damage_label.position.x = _damage_label_drift * progress
+			var pop := 1.0 + 0.7 * maxf(0.0, 1.0 - progress / 0.14)
+			_r15_damage_label.scale = Vector3.ONE * pop * (1.4 if _damage_label_big else 1.0)
+			_r15_damage_label.modulate.a = 1.0 if progress < 0.6 else 1.0 - (progress - 0.6) / 0.4
 
 static var damage_numbers_on := true
 
@@ -1707,7 +1723,9 @@ func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	if applied <= 0.0 or not is_instance_valid(_r15_damage_label) or not damage_numbers_on:
 		return
 	_r15_damage_label.text = "-%d" % maxi(1, roundi(applied))
-	_r15_damage_label.modulate = Color(1.0, 0.34, 0.24, 1.0) if killing_blow else Color(1.0, 0.82, 0.34, 1.0)
+	_r15_damage_label.modulate = Color(1.0, 0.42, 0.30, 1.0) if killing_blow else Color(1.0, 0.86, 0.40, 1.0)
+	_damage_label_drift = randf_range(-0.7, 0.7)
+	_damage_label_big = killing_blow
 	_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70)
 	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
 
@@ -4125,10 +4143,13 @@ func _die(from = null) -> void:
 	if is_instance_valid(model_root):
 		# Presentation-only death cue. Logical removal, collision ownership, and
 		# target validity are already settled above and remain unchanged.
-		var death_cue := create_tween().set_parallel(true)
-		death_cue.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		death_cue.tween_property(model_root, "scale", model_root.scale * DEATH_VISUAL_CUE_SCALE, DEATH_VISUAL_CUE_DURATION)
-		death_cue.tween_property(model_root, "position:y", model_root.position.y - DEATH_VISUAL_CUE_DROP, DEATH_VISUAL_CUE_DURATION)
+		if anim and _anim_names.has("death"):
+			var death_cue := create_tween().set_parallel(true)
+			death_cue.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+			death_cue.tween_property(model_root, "scale", model_root.scale * DEATH_VISUAL_CUE_SCALE, DEATH_VISUAL_CUE_DURATION)
+			death_cue.tween_property(model_root, "position:y", model_root.position.y - DEATH_VISUAL_CUE_DROP, DEATH_VISUAL_CUE_DURATION)
+		else:
+			_topple()
 	var credit_source = _last_damage_source if is_instance_valid(_last_damage_source) else from
 	if is_instance_valid(credit_source):
 		if credit_source.has_method("gain_veterancy"):
@@ -4153,12 +4174,43 @@ func _die(from = null) -> void:
 		_play("death", true)
 		await get_tree().create_timer(1.6).timeout
 	else:
-		await get_tree().create_timer(0.1).timeout
+		# A fallen body lies a moment before it sinks away.
+		await get_tree().create_timer(1.4 if is_instance_valid(model_root) else 0.1).timeout
 	# sink then free
 	var t := create_tween()
 	t.tween_property(self, "position:y", position.y - 2.0, 1.0)
 	await t.finished
 	queue_free()
+
+## Plan 244: a unit without a death clip falls over, away from whoever
+## struck the last blow, gathering speed like a body falling, with a small
+## bounce where it lands and a puff of dust. Presentation only.
+func _topple() -> void:
+	var away := Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0))
+	if is_instance_valid(_last_damage_source):
+		away = global_position - _last_damage_source.global_position
+		away.y = 0.0
+	if away.length_squared() < 0.0001:
+		away = Vector3.FORWARD
+	away = away.normalized()
+	# Turning "up" about up x away tips the top of the model toward `away`;
+	# the model's origin is at its feet, so it pivots on the ground.
+	var axis := (global_transform.basis.orthonormalized().inverse() * Vector3.UP.cross(away)).normalized()
+	var base := model_root.transform.basis
+	var lie := deg_to_rad(randf_range(80.0, 88.0))
+	var fall := create_tween()
+	fall.tween_method(func(a: float):
+		if is_instance_valid(model_root):
+			model_root.transform.basis = Basis(axis, a) * base, 0.0, lie, 0.46).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	fall.tween_callback(func():
+		if world and world.has_method("spawn_fall_fx"):
+			world.spawn_fall_fx(global_position + away * _visual_height * 0.55))
+	fall.tween_method(func(a: float):
+		if is_instance_valid(model_root):
+			model_root.transform.basis = Basis(axis, a) * base, lie, lie - 0.16, 0.09).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fall.tween_method(func(a: float):
+		if is_instance_valid(model_root):
+			model_root.transform.basis = Basis(axis, a) * base, lie - 0.16, lie, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 func _combat_source_team(from) -> int:
 	if from == null:

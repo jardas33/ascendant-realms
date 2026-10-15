@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 244 (done): blows that land**
+  - I photographed real clashes close up (the mid-battle probe now finds the biggest fight on the field and puts the camera over it) and a staged line of soldiers taking blows and dying (new probe `claude_deathshot.gd`).
+  - Damage numbers faded from their first frame, so most of the time they were half transparent and read as dark smudges on grass. Now each number punches in large and settles, rises and drifts a little to one side (a flurry fans out instead of stacking), stays fully bright until late, and has a dark outline that stays dark. Killing blows are drawn larger in red-orange.
+  - A struck unit used to get a flat orange ball pasted over it. Now it is a soft burst of light, warm for a blow and red-hot for the killing blow.
+  - Deaths in the river used to leave the churned-earth stain, which showed through the water as red-brown blotches. Now a fall in the river throws up spray and a ring spreads on the water.
+  - A unit whose model has no death animation of its own now falls over, away from the blow, with a small bounce and a puff of dust, and lies a moment before sinking, instead of shrinking where it stood. Every current soldier has its own death animation, so this is the safety net for new models.
+  - Full regression: 110 of 110 pass, save unchanged.
 - **Plan 243 (done): battle HUD text you can read**
   - Plan 240 left the battle HUD's own sizes alone. Many of its captions were 10 or 11 px (FIELD OVERVIEW, SELECTED ENTITY, VITALS, LIVE STATUS, the role badges such as MILITARY and BUILD SITE, the queue and site-progress captions).
   - Now no HUD label is smaller than 12. Inside the selection, command and minimap panels, which are drawn 1.2 times larger, that is 14 px on a 1920 screen.

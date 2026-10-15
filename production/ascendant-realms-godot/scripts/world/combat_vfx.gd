@@ -76,6 +76,21 @@ static func death(parent: Node3D, pos: Vector3) -> void:
 	_emitter(parent, Vector3(pos.x, 0.3, pos.z), _clod_process, _clod_mesh, null, 8, 0.9)
 
 
+## Plan 244: a body landing on the ground: a low ring of dust.
+static func thud(parent: Node3D, pos: Vector3) -> void:
+	_ensure()
+	_emitter(parent, Vector3(pos.x, 0.12, pos.z), _dust_process, _dust_mesh, _dust_mat, 7, 1.0).scale = Vector3.ONE * 1.2
+
+## Plan 244: a fall in the river: white spray thrown up and a ring on the water.
+static func splash(parent: Node3D, pos: Vector3) -> void:
+	_ensure()
+	var key := "splash"
+	if not _spark_mats.has(key):
+		_spark_mats[key] = _additive(Color(0.78, 0.9, 1.0), BaseMaterial3D.BILLBOARD_PARTICLES, 1.4)
+	var spray := _emitter(parent, Vector3(pos.x, 0.25, pos.z), _clod_process, _spark_mesh, _spark_mats[key], 16, 0.8)
+	spray.scale = Vector3.ONE * 1.3
+	shockwave(parent, Vector3(pos.x, 0.0, pos.z), Color(0.5, 0.64, 0.78), 1.3)
+
 static func _emitter(parent: Node3D, pos: Vector3, process: ParticleProcessMaterial, mesh: Mesh, mat: Material, count: int, life: float) -> GPUParticles3D:
 	var p := GPUParticles3D.new()
 	p.process_material = process
