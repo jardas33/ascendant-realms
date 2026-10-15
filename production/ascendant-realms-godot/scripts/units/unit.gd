@@ -1036,10 +1036,61 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			# keeps a sheen while cloth, leather and skin read as their painted colour.
 			if mat is StandardMaterial3D and (mat as StandardMaterial3D).metallic_texture != null:
 				mat.metallic = minf(mat.metallic, 0.3)
+			if mat is StandardMaterial3D and mat.albedo_texture == null and mat.normal_texture == null:
+				_add_surface_grain(mat as StandardMaterial3D, String(source.resource_name).to_lower())
 			mi.set_surface_override_material(surface, mat)
 		# Units behind trees or buildings show a team-coloured silhouette.
 		mi.material_overlay = _xray_overlay_material()
 		mi.set_instance_shader_parameter("xray_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
+
+## Three models (the Ogre, which the Moon Bear also wears, the Bowcrusha and
+## the Rift Blade) have no textures and no UVs: every surface was one flat
+## colour, so they read as smooth clay beside the painted units. Such
+## surfaces get a fine grain and a bumped normal, projected from all three
+## axes so no UVs are needed. Metal gets a finer, harder grain and a little
+## sheen; skin, cloth and hide a softer one. The colour is lifted to make up
+## for the grain's average darkening.
+static var _grain_albedo: ImageTexture
+static var _grain_normal: ImageTexture
+
+static func _grain_textures() -> void:
+	if _grain_albedo:
+		return
+	var noise := FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	noise.frequency = 0.045
+	noise.fractal_octaves = 4
+	noise.fractal_gain = 0.55
+	noise.seed = 7
+	var img := noise.get_seamless_image(256, 256)
+	img.convert(Image.FORMAT_RGB8)
+	var bump := img.duplicate() as Image
+	for y in img.get_height():
+		for x in img.get_width():
+			var v := img.get_pixel(x, y).r
+			var g := lerpf(0.74, 1.0, v)
+			img.set_pixel(x, y, Color(g, g, g))
+	img.generate_mipmaps()
+	_grain_albedo = ImageTexture.create_from_image(img)
+	bump.bump_map_to_normal_map(5.0)
+	bump.generate_mipmaps()
+	_grain_normal = ImageTexture.create_from_image(bump)
+
+func _add_surface_grain(mat: StandardMaterial3D, mat_name: String) -> void:
+	_grain_textures()
+	var metal := mat_name.contains("iron") or mat_name.contains("steel") or mat_name.contains("metal") or mat_name.contains("bronze") or mat_name.contains("edge") or mat_name.contains("blade")
+	mat.albedo_texture = _grain_albedo
+	mat.normal_enabled = true
+	mat.normal_texture = _grain_normal
+	mat.normal_scale = 0.55 if metal else 0.8
+	mat.uv1_triplanar = true
+	mat.uv1_triplanar_sharpness = 2.0
+	mat.uv1_scale = Vector3.ONE * (2.6 if metal else 1.7)
+	var lift := 1.13
+	mat.albedo_color = Color(minf(mat.albedo_color.r * lift, 1.0), minf(mat.albedo_color.g * lift, 1.0), minf(mat.albedo_color.b * lift, 1.0), mat.albedo_color.a)
+	if metal:
+		mat.metallic = maxf(mat.metallic, 0.45)
+		mat.roughness = minf(mat.roughness, 0.5)
 
 func _build_p1r22_contact_shadow() -> void:
 	# A small, flat contact cue separates feet from noisy terrain without adding a
