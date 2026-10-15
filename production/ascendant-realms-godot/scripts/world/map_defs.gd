@@ -105,29 +105,29 @@ static func hollowspan() -> Dictionary:
 static func _specs() -> Array:
 	return [
 		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
-		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21,"base":"edges"},
-		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","authored":"open","seed":22,"ridges":7,"base":"edges"},
-		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","authored":"open","seed":2},
-		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","authored":"open","seed":23,"ridges":7,"hills":3,"base":"edges"},
-		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","authored":"open","seed":24,"woods":8},
+		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21,"base":"edges","places":["The Ember Lume","Cinder Chapel","Gravekeeper's House","Ash Cairn","Smoke Watch"]},
+		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","authored":"open","seed":22,"ridges":7,"base":"edges","places":["The Rift Lume","Thrall Wells","Glassblowers' Shelter","Pyre Watch","Rim Watch"]},
+		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","authored":"open","seed":2,"places":["The Frozen Lume","Hermitage of the Thaw","Ferryman's Hut","Icefall Watch","Mere Watch"]},
+		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","authored":"open","seed":23,"ridges":7,"hills":3,"base":"edges","places":["The Bastion Lume","Oasis Cistern","Salt Traders' Camp","Dune Tower","Bastion Gate"]},
+		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","authored":"open","seed":24,"woods":8,"places":["The Green Lume","Mossy Spring","Charcoal Burners' Lodge","Old Oak Watch","Hollow Watch"]},
 		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple","crags":"walls"},
-		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","authored":"open","seed":25,"lakes":3,"woods":4},
-		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","authored":"open","seed":26,"hills":4,"base":"edges"},
-		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","authored":"open","seed":27,"lakes":2,"woods":7},
-		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","authored":"open","seed":28,"ridges":6,"woods":2},
-		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","authored":"open","seed":29,"ridges":6,"woods":3},
-		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","authored":"open","seed":30,"ridges":3,"woods":0,"lakes":1,"base":"edges"},
+		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","authored":"open","seed":25,"lakes":3,"woods":4,"places":["The Drowned Lume","Reed Chapel","Eel Catchers' Hut","Causeway Watch","Heron Watch"]},
+		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","authored":"open","seed":26,"hills":4,"base":"edges","places":["The Kaelmoor Lume","Red Spring","Drovers' Rest","Butte Watch","Cairn of Kael"]},
+		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","authored":"open","seed":27,"lakes":2,"woods":7,"places":["The Sunspire","Delta Shrine","Fishers' Landing","Reed Tower","Tide Watch"]},
+		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","authored":"open","seed":28,"ridges":6,"woods":2,"places":["The Gauntlet Lume","Shepherds' Chapel","Toll House","Crag Watch","Gap Watch"]},
+		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","authored":"open","seed":29,"ridges":6,"woods":3,"places":["The Glacier Lume","Pass Hospice","Snowbound Inn","Ice Watch","Cornice Watch"]},
+		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","authored":"open","seed":30,"ridges":3,"woods":0,"lakes":1,"base":"edges","places":["The Burnt Lume","Ash Well","Survivors' Camp","Black Cairn","Smoke Tower"]},
 		{"id":"bloomvale","name":"Bloomvale Meadows","theme":"verdant","layout":"corners","spread":108,"rich":1.5,"cap":"triple"},
-		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","authored":"open","seed":31,"ridges":3,"woods":3,"lakes":2,"base":"edges"},
-		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","authored":"open","seed":16},
+		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","authored":"open","seed":31,"ridges":3,"woods":3,"lakes":2,"base":"edges","places":["The Lume of Vael","Vael Chapter House","Vael Bathhouse","Broken Tower","Vael Gatehouse"]},
+		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","authored":"open","seed":16,"places":["The Red Lume","The Last Well","Caravan Shelter","Canyon Watch","Rimrock Watch"]},
 		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple","crags":"islands"},
-		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","authored":"open","seed":32,"lakes":2,"woods":5},
+		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","authored":"open","seed":32,"lakes":2,"woods":5,"places":["The Dusk Lume","Shore Chapel","Boatmen's Hall","Lantern Watch","Shore Watch"]},
 		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single","crags":"walls"},
-		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","authored":"open","seed":33,"river":false,"ridges":5,"hills":4,"woods":3,"lakes":2,"base":"edges"},
-		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","authored":"open","seed":34,"river":false,"ridges":3,"hills":5,"woods":3,"base":"edges"},
-		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","authored":"open","seed":35,"lakes":4,"woods":3},
-		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","authored":"open","seed":36,"lakes":4,"woods":6},
-		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","authored":"open","seed":37,"ridges":7,"hills":3,"base":"edges"},
+		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","authored":"open","seed":33,"river":false,"ridges":5,"hills":4,"woods":3,"lakes":2,"base":"edges","places":["The Iron Lume","Hunters' Lodge","Frozen Smithy","Ironstone Watch","Tundra Cairn"]},
+		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","authored":"open","seed":34,"river":false,"ridges":3,"hills":5,"woods":3,"base":"edges","places":["The Golden Lume","Assayers' Hall","Miners' Chapel","Plateau Watch","Reach Tower"]},
+		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","authored":"open","seed":35,"lakes":4,"woods":3,"places":["The Blighted Lume","Plague Hospice","Bog Herbalist","Gibbet Watch","Marsh Tower"]},
+		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","authored":"open","seed":36,"lakes":4,"woods":6,"places":["The Emerald Lume","Lagoon Shrine","Pearl Divers' Camp","Isle Watch","Lagoon Tower"]},
+		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","authored":"open","seed":37,"ridges":7,"hills":3,"base":"edges","places":["The Crucible Lume","Surgeons' Pit","Water Bearers' Camp","Arena Watch","Champion's Tower"]},
 		# Authored battlefields: laid out by hand, larger than the generated
 		# ones, built round the place the saga gives them.
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
@@ -2320,9 +2320,9 @@ static func _open_field(s: Dictionary) -> Dictionary:
 	a["woods"] = woods
 	a["hills"] = hills
 	a["lakes"] = lakes
-	# The layout's own places, under plain names (both list the Lume site,
-	# two healing sites and two watch posts, in that order).
-	var names := ["The Lume Spire", "Wayside Chapel", "Old Shrine", "North Watch", "South Watch"]
+	# The layout's own places, under the map's own names (both layouts list
+	# the Lume site, two healing sites and two watch posts, in that order).
+	var names: Array = s.get("places", ["The Lume Spire", "Wayside Chapel", "Old Shrine", "North Watch", "South Watch"])
 	for i in a["sites"].size():
 		a["sites"][i]["name"] = names[i]
 	return a

@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 237 (done): each rebuilt map names its own places**
+  - The 19 rebuilt maps all called their five capture sites by the same generic names (The Lume Spire, Wayside Chapel, Old Shrine, North Watch, South Watch), on every map. The hand-built maps name theirs after the place (The Dam Works, Church of Salto).
+  - Now each has five names of its own that fit its ground: on Mirefen the Drowned Lume, Reed Chapel, Eel Catchers' Hut, Causeway Watch and Heron Watch; on Ruins of Vael the Lume of Vael, Vael Chapter House, Vael Bathhouse, Broken Tower and Vael Gatehouse; on Emberfall Rift the Thrall Wells and the Glassblowers' Shelter; and so on. No name is used twice, and none is longer than the longest hand-built one.
+  - Only names changed: the sites stand where they stood and do what they did.
+  - The plan 236 matches that ran past 30 minutes on the edge layout were replayed twice each with a 50-minute limit: all eight ended (12 to 30 minutes). They were long wars, not a fault.
+  - New test `claude_openplaces.gd`, in the regression (110 checks): every open map has five names of its own, in the right order, none generic and none shared.
+  - Full regression: 110 of 110 passed.
 - **Plan 236 (done): the rebuilt maps no longer all share one layout**
   - The 19 maps of plans 234 and 235 each had their own ground, but underneath they all had the same camps, veins and roads (those of Rabagao Gorge): camps in the corners, about 290 m to a neighbour and 416 m across.
   - Now an open map can stand on a second layout, the one under the Plains of Bronze: camps at the middle of the four edges, roads meeting at the centre in a cross, about 230 m to a neighbour and 318 m across. A shorter march and a crossroads at the Lume site make a different game.
