@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 247 (done): buildings that burn and fall**
+  - New probe `claude_buildshot.gd` (ar-review) photographs a building at full health, 60%, 25% and as it falls. It can place a fresh enemy building (CLAUDE_PLACE), because destroying the enemy's main hall ends the match and slows time for the final blow.
+  - Damage was hard to see from the battle camera, which looks down on the roof: one wisp of smoke from 70%, at most two small fires below 40%. Now it builds up in steps: smoke from 80%, a first fire from 55%, two by 35%, and below 20% the roof burns from four places. Fires and smoke are sized to the building, so a main hall burns bigger than a hut.
+  - A fall was a slow sink in a few pale puffs. Now it is an event: a burst of burning embers thrown high above the roof, a flash of firelight over the area, heavy debris and a wave of dust that rolls out across the ground, as the building lists and sinks.
+  - Full regression: 110 of 110 pass, save unchanged.
 - **Plan 246 (done): spells you see strike**
   - The spell pictures from plan 245 showed that a damage spell only spread its ring: the foes it hurt showed nothing but their numbers.
   - Now every foe a damage spell reaches is struck by a shaft of the spell's own light: a column drops onto it and narrows away, a burst of colored light flares where it lands, sparks fly and a small ring spreads at its feet. The strikes land a fraction of a second apart, so a spell that hits a crowd ripples through it. Up to 14 foes a wave get a strike, which keeps huge battles cheap.

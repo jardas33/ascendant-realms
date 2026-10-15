@@ -525,6 +525,46 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		dust.scale = Vector3.ONE * clampf(footprint * 1.1, 2.5, 5.5)
 		dust.visibility_aabb = AABB(Vector3(-15, -1, -15), Vector3(30, 14, 30))
 	_emitter(parent, Vector3(pos.x, 0.8, pos.z), _clod_process, _clod_mesh, null, 30, 1.2).scale = Vector3.ONE * 2.6
+	# Plan 247: the fall itself is an event: a flash of fire from inside,
+	# burning embers thrown high, heavy debris, and a wave of dust that rolls
+	# out across the ground. Before, the building only sank in a few pale puffs.
+	var fire_col := Color(1.0, 0.55, 0.2)
+	var big := clampf(footprint * 0.7, 1.6, 4.0)
+	if not _spark_mats.has("collapse_embers"):
+		_spark_mats["collapse_embers"] = _additive(fire_col, BaseMaterial3D.BILLBOARD_PARTICLES, 2.4)
+	# Above the roof: from inside the building the walls hid all of it.
+	var roof := clampf(footprint * 1.3, 3.0, 9.0)
+	var embers := _emitter(parent, Vector3(pos.x, roof, pos.z), _clod_process, _flash_mesh, _spark_mats["collapse_embers"], 36, 1.6)
+	embers.scale = Vector3.ONE * big
+	embers.visibility_aabb = AABB(Vector3(-15, -1, -15), Vector3(30, 20, 30))
+	var debris := _emitter(parent, Vector3(pos.x, roof * 0.7, pos.z), _clod_process, _clod_mesh, null, 24, 1.5)
+	debris.scale = Vector3.ONE * big * 2.2
+	debris.visibility_aabb = AABB(Vector3(-15, -1, -15), Vector3(30, 20, 30))
+	var light := OmniLight3D.new()
+	light.light_color = fire_col
+	light.light_energy = 7.0
+	light.omni_range = footprint * 3.5 + 6.0
+	parent.add_child(light)
+	light.global_position = pos + Vector3(0, roof + 1.5, 0)
+	var lt := light.create_tween()
+	lt.tween_property(light, "light_energy", 0.0, 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	lt.tween_callback(light.queue_free)
+	var key := "collapse_flash"
+	if not _flash_mats.has(key):
+		_flash_mats[key] = _additive(fire_col, BaseMaterial3D.BILLBOARD_ENABLED, 3.0)
+		(_flash_mats[key] as StandardMaterial3D).no_depth_test = true
+	var glow := MeshInstance3D.new()
+	glow.mesh = _flash_mesh
+	glow.material_override = (_flash_mats[key] as StandardMaterial3D).duplicate()
+	glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(glow)
+	glow.global_position = pos + Vector3(0, roof, 0)
+	glow.scale = Vector3.ONE * footprint * 2.0
+	var gt := glow.create_tween().set_parallel(true)
+	gt.tween_property(glow, "scale", Vector3.ONE * footprint * 6.0, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	gt.tween_property(glow.material_override, "albedo_color", Color(0, 0, 0, 1), 0.45).set_delay(0.15)
+	gt.chain().tween_callback(glow.queue_free)
+	shockwave(parent, pos, Color(0.85, 0.6, 0.38), footprint * 2.6)
 	# Scorched footprint that does not fade.
 	if _scar_shader == null:
 		_scar_shader = load("res://assets/shaders/battle_scar.gdshader")

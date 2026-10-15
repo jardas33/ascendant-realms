@@ -1924,16 +1924,21 @@ var _damage_fires: Array = []
 ## again when it is repaired. Presentation only.
 func _update_damage_fires(ratio: float) -> void:
 	var top := _presentation_height()
-	var want_smoke := 0 if ratio >= 0.7 else (1 if ratio >= 0.4 else 2)
-	var want_fire := 0 if ratio >= 0.4 else (1 if ratio >= 0.2 else 2)
-	var spots := [Vector3(footprint * 0.35, top * 0.98, -footprint * 0.2), Vector3(-footprint * 0.3, top * 0.9, footprint * 0.3)]
+	# Plan 247: damage builds up in steps you can see from the battle camera,
+	# which looks down on the roof: smoke from 80%, a first fire from 55%,
+	# and below 20% the whole roof burns from four places.
+	var want_smoke := 0 if ratio >= 0.8 else (1 if ratio >= 0.55 else (2 if ratio >= 0.3 else 3))
+	var want_fire := 0 if ratio >= 0.55 else (1 if ratio >= 0.35 else (2 if ratio >= 0.2 else 4))
+	var spots := [Vector3(footprint * 0.35, top * 0.98, -footprint * 0.2), Vector3(-footprint * 0.3, top * 0.9, footprint * 0.3),
+		Vector3(-footprint * 0.32, top * 0.8, -footprint * 0.28), Vector3(footprint * 0.3, top * 0.75, footprint * 0.32)]
+	var size := clampf(footprint * 0.55, 1.0, 1.9)
 	while _damage_smoke.size() < want_smoke:
 		var smoke := ChimneySmoke.new()
 		smoke.name = "DamageSmoke"
 		add_child(smoke)
 		smoke.position = spots[_damage_smoke.size()]
-		smoke.scale = Vector3.ONE * 1.6
-		smoke.amount = 22
+		smoke.scale = Vector3.ONE * 1.6 * size
+		smoke.amount = 30
 		smoke.process_material = _dark_smoke_process(smoke.process_material)
 		_damage_smoke.append(smoke)
 	while _damage_smoke.size() > want_smoke:
@@ -1948,7 +1953,7 @@ func _update_damage_fires(ratio: float) -> void:
 		fire.light_range = 9.0
 		add_child(fire)
 		fire.position = spots[_damage_fires.size()] + Vector3(0, top * 0.08, 0)
-		fire.scale = Vector3.ONE * 2.4
+		fire.scale = Vector3.ONE * 2.4 * size
 		_damage_fires.append(fire)
 	while _damage_fires.size() > want_fire:
 		var old = _damage_fires.pop_back()
