@@ -49,7 +49,10 @@ var _res_kind := "standard"
 var _victory := "conquest"
 var _game_speed := 1.0
 var _speed_label: Label
-var _map_id := "hollowspan"
+# A first skirmish opens on a hand-built field (the valley where the saga
+# begins), not on one of the small generated maps.
+const DEFAULT_MAP := "salto_valley"
+var _map_id := DEFAULT_MAP
 var _map_infos := []
 var _saved_opps: Array = []   # validated {race, diff} from the last skirmish
 var _map_preview: Control
@@ -369,7 +372,7 @@ func _build_battle_panel() -> Control:
 		if str(_map_infos[i]["id"]) == _map_id:
 			map_known = true
 	if not map_known:
-		_map_id = "hollowspan"
+		_map_id = DEFAULT_MAP
 	for i in _map_infos.size():
 		if str(_map_infos[i]["id"]) == _map_id:
 			default_index = map_opt.get_item_index(i + 1)
