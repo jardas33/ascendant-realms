@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 262 (done): readable battle top bar on laptop screens**
+  - Plan 259 left the battle's top bar small on laptop windows: it already spans the screen, so it could not grow. At 1366x768 its captions (FOOD, POPULATION, IDLE WORKERS), the age heading and MENU reached the eye at about 11 px, the objective and bounty lines at about 11 px.
+  - Their text now grows inside the same frames by the same boost as the other panels (1.1x at 1600x900, 1.19x at 1366x768). At 1366x768 the captions measure 13.5 px, the objective and bounty 12.8 px (were about 11), and alerts grow likewise. The objective banner widens up to 30 px leftward so its lines stay whole.
+  - HUD clipping checked clean at 1920x1080, 1600x900, 1366x768 and 1280x720, apart from an occasional overlap with a hover label that also happens without this change.
+  - Full regression: 110 of 110 passed.
 - **Plan 261 (done): a readable, winding skill tree**
   - Emanuel had to squint at the star names, and the paths ran straight down like a spreadsheet.
   - Star names are now set in the clear body font, emboldened, instead of thin Cinzel capitals, and larger: measured on screen at about 17 px on a 1400x900 or 1366x768 window (they were about 12 px) and 21 px at 1920x1080. The one name with a very long word (Lume Transcendence) is set slightly smaller, 15 px on a laptop. Cost lines are 13 to 17 px, path titles about 18 px on a laptop with a brighter color.

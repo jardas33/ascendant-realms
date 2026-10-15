@@ -59,6 +59,14 @@ const SELECTION_PANEL_HEIGHT := 230.0
 const PANEL_SCALE_BASE := 1.2
 var _panel_scale := PANEL_SCALE_BASE
 var _last_window_size := Vector2i.ZERO
+## The top instruments cannot grow on a laptop window (they already span the
+## screen), so their small captions grow inside them instead, by the same
+## boost as the panels: [label, authored size] pairs, resized on refit.
+var _top_small_text: Array = []
+
+func _top_small(l: Label, size: int) -> Label:
+	_top_small_text.append([l, size])
+	return l
 
 func _small_window_boost() -> float:
 	var window_w := float(get_window().size.x) if get_window() else 1920.0
@@ -293,6 +301,11 @@ func _fit_to_viewport() -> void:
 		return
 	var margin := 14.0
 	_panel_scale = PANEL_SCALE_BASE * _small_window_boost()
+	var top_lift := _small_window_boost()
+	for pair in _top_small_text:
+		var tl: Label = pair[0]
+		if is_instance_valid(tl):
+			tl.add_theme_font_size_override("font_size", roundi(maxi(int(pair[1]), HUD_TEXT_MIN) * top_lift))
 	# The resource, force, age and objective instruments float independently.
 	# No opaque control spans the sky between them.
 	if is_instance_valid(_top_panel):
@@ -305,7 +318,9 @@ func _fit_to_viewport() -> void:
 		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
 		_age_panel.size = Vector2(176, 78)
 	if is_instance_valid(_objective_panel):
-		_objective_panel.offset_left = -530.0
+		# The banner's lines grow on a laptop window; it widens leftward into
+		# the gap before the age medallion (30 px at most) to keep them whole.
+		_objective_panel.offset_left = -530.0 - 150.0 * (top_lift - 1.0)
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
 		# Room for a fourth line: the bounty and how it stands.
@@ -1194,6 +1209,7 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	surface.tooltip_text = tooltip
 	surface.add_theme_constant_override("separation", 0)
 	var title_label := _mk_label(title.to_upper(), 16, accent.lerp(Color(0.94, 0.90, 0.79), 0.30))
+	_top_small(title_label, 16)
 	if instrument:
 		title_label.name = "TopMetricTitle"
 		# The compact forged corners need equal air on both sides of each name.
@@ -1233,7 +1249,7 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _mk_title_label(title, 16, accent.lightened(0.14))
+	var heading := _top_small(_mk_title_label(title, 16, accent.lightened(0.14)), 16)
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -1283,7 +1299,7 @@ func _build_top_bar() -> void:
 		_res_labels[k] = l
 		cell.add_child(l)
 		# Income over the last minute, small beside the stockpile.
-		var rate := _mk_label("", 12, Color(0.62, 0.92, 0.66))
+		var rate := _top_small(_mk_label("", 12, Color(0.62, 0.92, 0.66)), 12)
 		rate.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 		_res_rate_labels[k] = rate
 		cell.add_child(rate)
@@ -1396,7 +1412,7 @@ func _build_top_bar() -> void:
 	menu_btn.offset_right = -12.0
 	menu_btn.offset_top = 17.0
 	menu_btn.offset_bottom = 59.0
-	var menu_copy := _mk_title_label("MENU", 16, Color(0.98, 0.91, 0.76))
+	var menu_copy := _top_small(_mk_title_label("MENU", 16, Color(0.98, 0.91, 0.76)), 16)
 	menu_copy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	menu_copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	menu_copy.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -1472,7 +1488,7 @@ func _build_top_bar() -> void:
 	mission_row.add_child(mission_stack)
 	# Campaign battles are titled by their chapter, not the map.
 	var saga_chapter := CampaignDefs.find(String(Match.get_config().get("campaign_chapter", "")))
-	var battlefield_label := _mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 16, COMMAND_GOLD)
+	var battlefield_label := _top_small(_mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 16, COMMAND_GOLD), 16)
 	battlefield_label.name = "MatchBattlefieldLabel"
 	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mission_stack.add_child(battlefield_label)
@@ -1484,7 +1500,7 @@ func _build_top_bar() -> void:
 	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
 	var objective_text := "CONQUEST · Raze every enemy building" if victory_kind == "conquest" else ("DOMINATION · Hold every Lume site" if victory_kind == "domination" else victory_kind.capitalize())
-	var objective_label := _mk_label(objective_text, 15, Color(0.91, 0.84, 0.66))
+	var objective_label := _top_small(_mk_label(objective_text, 15, Color(0.91, 0.84, 0.66)), 15)
 	objective_label.name = "MatchObjectiveLabel"
 	_survival_label = objective_label
 	objective_label.tooltip_text = "Destroy every enemy building and worker to win." if victory_kind == "conquest" else ("Hold every Lume site at once for two and a half minutes (the count begins five minutes in), or destroy every enemy building and worker. The enemy can win the same way." if victory_kind == "domination" else objective_text)
@@ -1492,7 +1508,7 @@ func _build_top_bar() -> void:
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(objective_label)
 	# The bounty stays on the banner with how it stands, not just one alert.
-	_bounty_label = _mk_label("", 15, Color(0.95, 0.82, 0.5))
+	_bounty_label = _top_small(_mk_label("", 15, Color(0.95, 0.82, 0.5)), 15)
 	_bounty_label.name = "MatchBountyLabel"
 	_bounty_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_bounty_label.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -4530,7 +4546,8 @@ func _push_alert(message: String, col: Color) -> void:
 	padding.content_margin_top = 8.0
 	padding.content_margin_bottom = 9.0
 	dispatch.add_theme_stylebox_override("panel", padding)
-	var l := _mk_label(message, 18, col)
+	# Wrapped, so it can simply grow on a laptop window.
+	var l := _mk_label(message, roundi(18 * _small_window_boost()), col)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
