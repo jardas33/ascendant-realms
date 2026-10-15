@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 242 (done): the hero sheet reads at a glance, and waiting points call out**
+  - The hero's record was two long lines of capitals (ENDLESS ROAD STAGE 25 · BATTLES 273 · ...). Now it is a row of tiles, each a big number over a short name: Endless stage, Battles, Victories, Foes slain, Elites, Tyrants, Jars dug, Road of the week (once run), then the saga in violet: Saga chapters, Wine of the dead, Heroic laurels, Retinue. The tiles wrap onto a second row on narrow screens.
+  - Unspent points were easy to miss. The Attributes heading now says "27 points to spend" in gold, and it and every + button breathe slowly. The Skill Constellation button shows the waiting points ("Skill Constellation (53)") and breathes too, as does Choose Talent.
+  - Codex Review 11 written: the Ash Thrall R5 skinning check is sound, but the R4 body is not ready (the cleaver floats free of the hand, and the shoulders are blocks as wide as the torso). Codex says the same.
+  - Full regression: 110 of 110 checks pass.
 - **Plan 241 (done): a skill tree that feels alive**
   - Emanuel found the skill tree boring. It was a dark grid of similar orbs, with nebulae drawn so faintly they did not show.
   - Each path now owns a colored cloud of light in the sky. It burns brighter the more of that path you own, so investing visibly lights up your part of the heavens. A faint river of violet and blue light (like the Milky Way) crosses the whole sky. The sky drifts slower than the stars when you drag, so it reads as far away, and the glow fades out before the frame instead of ending in a hard line.

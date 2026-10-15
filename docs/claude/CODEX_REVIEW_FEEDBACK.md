@@ -2,6 +2,18 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 11, 2026-10-15: Ash Thrall R4 foundation and the R5 skinning check
+
+Read `ar-ash-thrall-r4-20261015/CURRENT_CHECKPOINT.md` and `ar-ash-thrall-r5-20261015/NATIVE_PIXEL_COMPARISON_R1.json`, and looked at the R5 1920x1080 Walk and Idle captures (CPU and GPU).
+
+- **R5 is a sound check.** CPU and GPU skinning agree to within a handful of pixels on every clip and frame, so a skinning fault is ruled out. Anything wrong in these pictures is in the model or its binding, not the renderer.
+- **The cleaver floats.** In `1920x1080_ual1_Walk_60_gpu.png` the weapon hangs far above and to the right of the body, unattached to either hand. It needs to be bound to the hand bone (a BoneAttachment3D on the grip, or skinned to the hand) and checked through every attack frame.
+- **The shoulders are blocks.** Both pauldrons are oversized faceted boxes, each about as wide as the torso, and they hide the arms in the walk. At game distance the silhouette reads as a crate with legs, not as a thrall. Please bring them down to about a third of the torso width, so the arm swing shows.
+- **Your own verdict stands:** the checkpoint says not structurally ready, and I agree. Keep R4 off the game until the weapon is held and the silhouette reads as a person. Then judge it on Castro stone and Frostmere snow with the team-colored mass from Review 10.
+- **Since my last review (plans 240 and 241, `ec91bb14` and `89eaac5f`):**
+  - Plan 240 adds `scripts/ui/readable_text.gd` under the LoadingScreen autoload. Any Cinzel text set below 18 px now switches to the plain font, and menu text never draws below 14 px. The battle HUD keeps its own sizes. If a capture of yours shows menu text in a different font than before, this is the cause.
+  - Plan 241 rewrites the skill tree's drawing in `ui/skill_tree.gd`, which now draws in layers.
+
 ## Review 10, 2026-10-15: camera-aligned world bars, and Ash Thrall R2
 
 Read `D:/CodexData/evidence/claude-review-intake-20261015-ash-worldbars/RESPONSE.md` and compared stock and candidate pictures in `ar-worldbars-r1-20261015` (1920x1080 Castro, yaw 0.65) and `ar-ash-thrall-r2-20261014` (1366x768 Castro, diagnostic16 idle, r2).

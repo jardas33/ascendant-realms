@@ -256,8 +256,6 @@ func _refresh() -> void:
 		ml.mouse_filter = Control.MOUSE_FILTER_PASS
 		medals.add_child(ml)
 	var saga_state: Dictionary = ProfileManager.saga()
-	var saga_line := Label.new()
-	saga_line.text = "THE SAGA   %d / %d CHAPTERS    ·    WINE OF THE DEAD %d / 7    ·    HEROIC LAURELS %d    ·    RETINUE %d / %d" % [saga_state["cleared"].size(), load("res://scripts/game/campaign_defs.gd").CHAPTERS.size(), saga_state["jars"].size(), saga_state["heroic"].size(), saga_state["retinue"].size(), ProfileManager.retinue_cap()]
 	var ret_names: Array = []
 	for entry in saga_state.get("retinue", []):
 		var label_name := String(entry.get("name", ""))
@@ -274,19 +272,28 @@ func _refresh() -> void:
 		ret_line.custom_minimum_size = Vector2(1000, 0)
 		identity.add_child(ret_line)
 	var st: Dictionary = ProfileManager.data.get("stats", {})
-	var record_line := Label.new()
-	record_line.text = "ENDLESS ROAD  STAGE %d    ·    BATTLES %d    ·    VICTORIES %d    ·    FOES SLAIN %d    ·    ELITES %d    ·    TYRANTS %d    ·    JARS %d" % [ProfileManager.endless_best(), int(st.get("battles", 0)), int(st.get("victories", 0)), int(st.get("units_killed", 0)), int(st.get("elites_slain", 0)), int(st.get("tyrants_slain", 0)), int(st.get("jars_dug", 0))]
 	var wk_best := ProfileManager.endless_fastest_key("w%d" % load("res://scripts/game/endless_defs.gd").week_number())
+	# The record as tiles, a big number over a short name, so a glance finds
+	# any of them; two long lines of capitals read as a wall of text.
+	var tiles := HFlowContainer.new()
+	tiles.add_theme_constant_override("h_separation", 10)
+	tiles.add_theme_constant_override("v_separation", 10)
+	identity.add_child(tiles)
+	var war_col := Color(0.98, 0.80, 0.45)
+	var saga_col := Color(0.86, 0.72, 0.95)
+	tiles.add_child(_record_tile(str(ProfileManager.endless_best()), "Endless stage", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("battles", 0))), "Battles", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("victories", 0))), "Victories", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("units_killed", 0))), "Foes slain", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("elites_slain", 0))), "Elites", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("tyrants_slain", 0))), "Tyrants", war_col))
+	tiles.add_child(_record_tile(str(int(st.get("jars_dug", 0))), "Jars dug", war_col))
 	if wk_best > 0.0:
-		record_line.text += "    ·    ROAD OF THE WEEK %d:%02d" % [int(wk_best) / 60, int(wk_best) % 60]
-	record_line.add_theme_font_override("font", _body_font())
-	record_line.add_theme_color_override("font_color", Color(0.98, 0.80, 0.45))
-	record_line.add_theme_font_size_override("font_size", 16)
-	identity.add_child(record_line)
-	saga_line.add_theme_font_override("font", _body_font())
-	saga_line.add_theme_color_override("font_color", Color(0.86, 0.72, 0.95))
-	saga_line.add_theme_font_size_override("font_size", 16)
-	identity.add_child(saga_line)
+		tiles.add_child(_record_tile("%d:%02d" % [int(wk_best) / 60, int(wk_best) % 60], "Road of the week", war_col))
+	tiles.add_child(_record_tile("%d / %d" % [saga_state["cleared"].size(), load("res://scripts/game/campaign_defs.gd").CHAPTERS.size()], "Saga chapters", saga_col))
+	tiles.add_child(_record_tile("%d / 7" % saga_state["jars"].size(), "Wine of the dead", saga_col))
+	tiles.add_child(_record_tile(str(saga_state["heroic"].size()), "Heroic laurels", saga_col))
+	tiles.add_child(_record_tile("%d / %d" % [saga_state["retinue"].size(), ProfileManager.retinue_cap()], "Retinue", saga_col))
 	identity_row.add_child(identity)
 
 	var lvl := int(h.get("level", 1))
@@ -332,8 +339,11 @@ func _refresh() -> void:
 	progression_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	progression_row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	progression_row.add_child(pts)
-	var constellation_button := _nav_button("Skill Constellation", func(): _goto("res://scenes/ui/skill_tree.tscn"))
+	var sp_waiting := int(h.get("skill_points", 0))
+	var constellation_button := _nav_button("Skill Constellation" + (" (%d)" % sp_waiting if sp_waiting > 0 else ""), func(): _goto("res://scenes/ui/skill_tree.tscn"))
 	constellation_button.custom_minimum_size = Vector2(250, 46)
+	if sp_waiting > 0:
+		_pulse(constellation_button)
 	progression_row.add_child(constellation_button)
 	# Waiting talent picks sit low on the page; a header button jumps to them.
 	var picks: int = ProfileManager.talent_points()
@@ -344,6 +354,7 @@ func _refresh() -> void:
 				_scroll.scroll_vertical += 260)
 		talent_jump.custom_minimum_size = Vector2(230, 46)
 		talent_jump.add_theme_color_override("font_color", Color(0.98, 0.84, 0.42))
+		_pulse(talent_jump)
 		progression_row.add_child(talent_jump)
 	identity.add_child(progression_row)
 
@@ -361,8 +372,24 @@ func _refresh() -> void:
 	attr_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	attr_panel.add_theme_constant_override("separation", 13)
 	attr_plate.add_child(attr_panel)
-	attr_panel.add_child(_heading("ATTRIBUTES"))
 	var attr_pts := int(h.get("attr_points", 0))
+	var attr_head := HBoxContainer.new()
+	attr_head.add_theme_constant_override("separation", 16)
+	attr_panel.add_child(attr_head)
+	attr_head.add_child(_heading("ATTRIBUTES"))
+	if attr_pts > 0:
+		# Unspent points are easy to miss in a line of capitals at the top.
+		var waiting := Label.new()
+		waiting.text = "%d point%s to spend" % [attr_pts, "" if attr_pts == 1 else "s"]
+		waiting.add_theme_font_override("font", _body_font())
+		waiting.add_theme_font_size_override("font_size", 18)
+		waiting.add_theme_color_override("font_color", Color(1.0, 0.86, 0.45))
+		waiting.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+		waiting.add_theme_constant_override("outline_size", 4)
+		waiting.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		waiting.size_flags_vertical = Control.SIZE_FILL
+		attr_head.add_child(waiting)
+		_pulse(waiting)
 	var attrs: Dictionary = h.get("attributes", {})
 	var attr_list := VBoxContainer.new()
 	attr_list.add_theme_constant_override("separation", 0)
@@ -410,6 +437,7 @@ func _refresh() -> void:
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_attribute(a))
 			row.add_child(plus)
+			_pulse(plus)
 		else:
 			var blank := Control.new()
 			blank.custom_minimum_size = Vector2(46, 40)
@@ -801,6 +829,46 @@ const STAT_HELP := {
 	"Powers": "Legendary powers from equipped items.",
 	"Taken": "Talents already picked, with their ranks.",
 }
+
+## A record tile: a big number over a short name.
+func _record_tile(value: String, caption: String, col: Color) -> PanelContainer:
+	var tile := PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.03, 0.035, 0.05, 0.78)
+	sb.border_color = Color(col, 0.38)
+	sb.set_border_width_all(1)
+	sb.border_width_top = 2
+	sb.set_corner_radius_all(6)
+	sb.content_margin_left = 14.0
+	sb.content_margin_right = 14.0
+	sb.content_margin_top = 6.0
+	sb.content_margin_bottom = 7.0
+	tile.add_theme_stylebox_override("panel", sb)
+	tile.custom_minimum_size = Vector2(104, 0)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", -2)
+	tile.add_child(box)
+	var v := Label.new()
+	v.text = value
+	v.add_theme_font_override("font", _body_font())
+	v.add_theme_font_size_override("font_size", 26)
+	v.add_theme_color_override("font_color", col)
+	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(v)
+	var c := Label.new()
+	c.text = caption
+	c.add_theme_font_override("font", _body_font())
+	c.add_theme_font_size_override("font_size", 14)
+	c.add_theme_color_override("font_color", Color(0.80, 0.78, 0.72))
+	c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(c)
+	return tile
+
+## A slow gold breath on something waiting for the player.
+func _pulse(c: CanvasItem) -> void:
+	var tw := c.create_tween().set_loops()
+	tw.tween_property(c, "self_modulate", Color(1.3, 1.15, 0.75), 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(c, "self_modulate", Color.WHITE, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 func _hsep() -> HSeparator:
 	return HSeparator.new()
