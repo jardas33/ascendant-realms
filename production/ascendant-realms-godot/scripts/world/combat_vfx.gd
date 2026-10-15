@@ -76,6 +76,57 @@ static func death(parent: Node3D, pos: Vector3) -> void:
 	_emitter(parent, Vector3(pos.x, 0.3, pos.z), _clod_process, _clod_mesh, null, 8, 0.9)
 
 
+## Plan 246: a shaft of a spell's light striking one foe: a thin column that
+## drops in and fades, sparks in the spell's color and a small ring at its feet.
+static var _strike_mesh: CylinderMesh
+static var _beam_shader: Shader
+
+static func spell_strike(parent: Node3D, pos: Vector3, col: Color) -> void:
+	_ensure()
+	if _strike_mesh == null:
+		_strike_mesh = CylinderMesh.new()
+		_strike_mesh.top_radius = 0.3
+		_strike_mesh.bottom_radius = 0.6
+		_strike_mesh.height = 7.0
+		_strike_mesh.radial_segments = 10
+		_strike_mesh.cap_top = false
+		_strike_mesh.cap_bottom = false
+		_beam_shader = load("res://assets/shaders/lume_beam.gdshader")
+	var beam := MeshInstance3D.new()
+	beam.mesh = _strike_mesh
+	var mat := ShaderMaterial.new()
+	mat.shader = _beam_shader
+	mat.set_shader_parameter("tint", col)
+	mat.set_shader_parameter("strength", 3.0)
+	beam.material_override = mat
+	beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(beam)
+	beam.global_position = Vector3(pos.x, 3.5, pos.z)
+	beam.scale = Vector3(1.0, 0.25, 1.0)
+	var t := beam.create_tween().set_parallel(true)
+	t.tween_property(beam, "scale:y", 1.0, 0.07)
+	t.tween_property(beam, "scale:x", 0.15, 0.45).set_delay(0.1)
+	t.tween_property(beam, "scale:z", 0.15, 0.45).set_delay(0.1)
+	t.tween_property(mat, "shader_parameter/strength", 0.0, 0.45).set_delay(0.1)
+	t.chain().tween_callback(beam.queue_free)
+	# A burst of the spell's light where it lands, seen from any camera angle.
+	var key := "strike" + col.to_html(false)
+	if not _flash_mats.has(key):
+		_flash_mats[key] = _additive(col, BaseMaterial3D.BILLBOARD_ENABLED, 1.6)
+	var glow := MeshInstance3D.new()
+	glow.mesh = _flash_mesh
+	glow.material_override = (_flash_mats[key] as StandardMaterial3D).duplicate()
+	glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(glow)
+	glow.global_position = Vector3(pos.x, 1.0, pos.z)
+	glow.scale = Vector3.ONE * 2.0
+	var g := glow.create_tween().set_parallel(true)
+	g.tween_property(glow, "scale", Vector3.ONE * 5.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	g.tween_property(glow.material_override, "albedo_color", Color(0, 0, 0, 1), 0.35)
+	g.chain().tween_callback(glow.queue_free)
+	hit(parent, Vector3(pos.x, 0.9, pos.z), col, true)
+	shockwave(parent, pos, col, 1.3)
+
 ## Plan 244: a body landing on the ground: a low ring of dust.
 static func thud(parent: Node3D, pos: Vector3) -> void:
 	_ensure()

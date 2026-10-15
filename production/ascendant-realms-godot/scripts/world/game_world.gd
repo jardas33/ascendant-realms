@@ -6529,6 +6529,15 @@ func _spell_damage_wave(hero, st: Dictionary, from: Vector3, to: Vector3, m: flo
 			var before: float = u.hp
 			u.take_damage(GameData.compute_damage(dmg, "magic", u.armor_class, u.cur_armor()), hero)
 			drained += maxf(0.0, before - u.hp)
+			# Plan 246: each foe the spell reaches is struck by a shaft of its
+			# light, a few at a time, so a spell is seen to hit and not only
+			# to spread a ring. At most 14 a wave keeps a huge battle cheap.
+			if hit <= 14 and is_instance_valid(_fx_container) and player_visibility_state_at(u.global_position) == VISIBILITY_CURRENTLY_VISIBLE:
+				var strike_at: Vector3 = u.global_position
+				var fx_parent: Node3D = _fx_container
+				get_tree().create_timer(randf_range(0.0, 0.18), false).timeout.connect(func():
+					if is_instance_valid(fx_parent):
+						CombatVfx.spell_strike(fx_parent, strike_at, tint))
 		if first:
 			if st.has("stun"): u.apply_stun(float(st["stun"]))
 			if st.has("root"): u.apply_root(float(st["root"]))
