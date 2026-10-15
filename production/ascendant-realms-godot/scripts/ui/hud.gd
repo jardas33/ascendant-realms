@@ -2780,6 +2780,14 @@ func _refresh_single_live() -> void:
 
 ## Steps a one-line label's type down until its text fits `width`, so a long
 ## name is shown whole and smaller instead of ending in dots.
+## An objective-banner line at its (window-lifted) size, set a little smaller
+## when the text is wider than the banner rather than cut.
+func _fit_top_line(label: Label, smallest: int) -> void:
+	label.add_theme_font_size_override("font_size", roundi(15 * _small_window_boost()))
+	if label.size.x > 40.0:
+		_shrink_label_to(label, label.size.x - 4.0, smallest)
+
+
 func _shrink_label_to(label: Label, width: float, smallest: int) -> void:
 	var font := label.get_theme_font("font")
 	var font_size := label.get_theme_font_size("font_size")
@@ -4440,6 +4448,7 @@ func _update_bounty_label(delta: float) -> void:
 	if bp.is_empty():
 		return
 	_bounty_label.text = String(bp["text"])
+	_fit_top_line(_bounty_label, 13)
 	# The moment a bounty is secured, a chime and an alert say so, once.
 	if bool(bp["done"]) and not _bounty_announced:
 		_bounty_announced = true
@@ -4465,9 +4474,7 @@ func _update_survival_label() -> void:
 					_survival_label.text += " · opens %d:%02d" % [int(dom["opens_in"]) / 60, int(dom["opens_in"]) % 60]
 				# With ten or more sites and the opening clock the line is wider
 				# than the header: it is set a little smaller, never cut.
-				_survival_label.add_theme_font_size_override("font_size", 15)
-				if _survival_label.size.x > 40.0:
-					_shrink_label_to(_survival_label, _survival_label.size.x - 2.0, 11)
+				_fit_top_line(_survival_label, 11)
 				_survival_label.add_theme_color_override("font_color", Color(0.91, 0.84, 0.66))
 			elif int(dom["team"]) == int(world.player_team):
 				_survival_label.text = "DOMINATION · You win in %s" % clock

@@ -1276,6 +1276,14 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 263 (done): every menu's text measured on a laptop window; campaign map chapter names**
+  - The text audit (`claude_contrast.gd`, now with CLAUDE_SIZE) measured every menu at 1366x768: all menu text reaches the eye at 13 px or more (most at 13.5, the raised floor from plan 260), none smaller.
+  - The pictures showed one real problem: on the campaign map, chapter names too long for one line (The Spring of Seven Mouths, The Burning Oven) dropped to a smaller size and pressed against the edges of their ribbon. They now keep their full size on a taller ribbon, decided at the size they actually draw (larger on a laptop window).
+  - The audit's nine low-contrast flags on the campaign map were false: it measures dark ink on a light ribbon by the median of the box, which the letters themselves dominate.
+  - Campaign map layout check clean at six window sizes.
+  - Plan 262's larger objective banner cut its longest lines on a laptop window (domination with ten sites and the opening clock, the losses bounty). Both lines are now set a little smaller only when they would not fit (`_fit_top_line`); the overlay check is clean at 1920x1080, 1920x1009, 1366x768 and 1280x720.
+  - The overlay check sometimes flagged a command card's tooltip as cut and overlapping: it looked before the card had laid out its wrapped lines. It now waits a frame more. (A 1920x1080 window on a 1080 screen can come out 1920x1009, which is when it showed.)
+  - Full regression: 110 of 110 passed (a first run failed the tutorial check, which passed alone, and the overlay check, which the fixes above cleared).
 - **Plan 262 (done): readable battle top bar on laptop screens**
   - Plan 259 left the battle's top bar small on laptop windows: it already spans the screen, so it could not grow. At 1366x768 its captions (FOOD, POPULATION, IDLE WORKERS), the age heading and MENU reached the eye at about 11 px, the objective and bounty lines at about 11 px.
   - Their text now grows inside the same frames by the same boost as the other panels (1.1x at 1600x900, 1.19x at 1366x768). At 1366x768 the captions measure 13.5 px, the objective and bounty 12.8 px (were about 11), and alerts grow likewise. The objective banner widens up to 30 px leftward so its lines stay whole.

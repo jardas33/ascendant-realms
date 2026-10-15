@@ -10,6 +10,8 @@ const SEAL_TOP := 4.0
 const SEAL_R := 34.0
 const RIBBON_Y := 74.0
 const RIBBON_H := 44.0
+## A two-line chapter name gets a taller ribbon instead of a smaller size.
+var ribbon_h := RIBBON_H
 
 var route_open := false
 var route_cleared := false
@@ -72,7 +74,7 @@ func _draw() -> void:
 
 	# Parchment ribbon under the seal, with folded, notched tails.
 	var ry := RIBBON_Y
-	var rh := RIBBON_H
+	var rh := ribbon_h
 	var inset := 18.0
 	var parch_hi := Color(0.86, 0.78, 0.60) if route_open or route_cleared else Color(0.56, 0.57, 0.60)
 	var parch_lo := parch_hi.darkened(0.28)

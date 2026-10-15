@@ -826,16 +826,19 @@ func _build_node(c: Dictionary) -> void:
 	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.max_lines_visible = 2
-	# Long names that need two lines drop a size so both fit the ribbon.
-	if _title_font().get_string_size(String(c["title"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x > NODE_SIZE.x - 60.0:
-		name_lbl.add_theme_font_size_override("font_size", 14)
-	name_lbl.add_theme_constant_override("line_spacing", -4)
+	# Long names take two lines at the same size on a taller ribbon (they
+	# used to drop to 14 and touch its edges).
+	# Measured at the size it will draw: the readable floor rises on a laptop.
+	var drawn_size := maxf(17.0, 16.0 * float(load("res://scripts/ui/readable_text.gd")._small_window_lift(self)))
+	if _title_font().get_string_size(String(c["title"]), HORIZONTAL_ALIGNMENT_LEFT, -1, int(ceilf(drawn_size))).x > NODE_SIZE.x - 76.0:
+		btn.ribbon_h = 64.0
+	name_lbl.add_theme_constant_override("line_spacing", -3)
 	# A hairline outline in the ink colour thickens the engraved letters so
 	# they stay legible when the page is scaled down.
 	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85) if (available or cleared) else Color(0.05, 0.06, 0.08, 0.85))
 	name_lbl.add_theme_constant_override("outline_size", 1)
 	name_lbl.position = Vector2(26.0, btn.RIBBON_Y)
-	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.RIBBON_H)
+	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.ribbon_h)
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(name_lbl)
 	var kind := "Side road  ·  " if bool(c.get("side", false)) else ("The Choice  ·  " if c.has("branch") else "")
@@ -844,7 +847,7 @@ func _build_node(c: Dictionary) -> void:
 		status += ("  ·  jar found" if id in s["jars"] else "  ·  a jar lies here") if available or cleared else ""
 	var status_lbl := _label(kind + status, 16, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.82, 0.85, 0.88))
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.position = Vector2(0.0, btn.RIBBON_Y + btn.RIBBON_H + 6.0)
+	status_lbl.position = Vector2(0.0, btn.RIBBON_Y + btn.ribbon_h + 6.0)
 	status_lbl.size = Vector2(NODE_SIZE.x, 20.0)
 	status_lbl.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.95))
 	status_lbl.add_theme_constant_override("outline_size", 5)
