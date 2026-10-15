@@ -1276,6 +1276,15 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 241 (done): a skill tree that feels alive**
+  - Emanuel found the skill tree boring. It was a dark grid of similar orbs, with nebulae drawn so faintly they did not show.
+  - Each path now owns a colored cloud of light in the sky. It burns brighter the more of that path you own, so investing visibly lights up your part of the heavens. A faint river of violet and blue light (like the Milky Way) crosses the whole sky. The sky drifts slower than the stars when you drag, so it reads as far away, and the glow fades out before the frame instead of ending in a hard line.
+  - Owned stars bloom in their path's color with a slow four-point flare. Stars ready to claim breathe gold and shed rising sparks. Roads you own glow along their length; roads not yet open are faint dotted star dust. Shooting stars cross the sky every few seconds.
+  - Claiming a star: a flash of light, the star punches out and settles, and a comet of light runs down each road it opens and flares on arrival at the newly opened star.
+  - Each path's name now shows how far along it is (for example COMBAT 3 / 14) with a thin bar that fills.
+  - Readability kept: star names sit on dark plates drawn above all the glow. Text drawn small by the tree's zoom still never goes below 14 px on screen, and star names keep their Cinzel lettering.
+  - New picture probe `claude_skillshow.gd` (ar-review): claims stars the way a click does and photographs the tree before, mid-claim and after (it writes the real save, so the caller restores it).
+  - Full regression: 110 of 110 checks pass.
 - **Plan 240 (done): text you can read without squinting**
   - Emanuel said much of the text is hard to read, the skill tree first. Measured at 1920x1080: star names on the skill tree drew at about 12.6 px and the cost lines at 9 px, and the cost lines were dimmed twice.
   - Skill tree: star names are larger (about 16 px on screen), cost lines are white under their state color and larger, and the rows are spaced further apart so nothing overlaps. Where a name wraps onto two lines the cost line moves down; where it fits on one there is no gap.

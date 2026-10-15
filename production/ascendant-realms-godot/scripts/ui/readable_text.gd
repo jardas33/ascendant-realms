@@ -5,8 +5,8 @@ extends Node
 ## reads well on titles, but below about 18 px its strokes blur and players
 ## squint at it (Emanuel, 2026-10-15). Every text control that would draw
 ## Cinzel smaller than TITLE_MIN switches to the plain body font, and no text
-## control draws smaller than BODY_MIN, both judged as drawn after any HUD
-## scale. Controls are checked once, at the end of the frame they join the
+## control draws smaller than BODY_MIN as drawn after any zoom or HUD scale.
+## Controls are checked once, at the end of the frame they join the
 ## tree, after their builder has set their sizes.
 
 const TITLE_FONT := "res://assets/fonts/cinzel.ttf"
@@ -49,8 +49,10 @@ static func fix(c: Control) -> void:
 	if size * scale < BODY_MIN and not _in_battle_hud(c):
 		size = ceili(BODY_MIN / scale)
 		c.add_theme_font_size_override(size_key, size)
+	# The font is judged at the size it was given: a zoomed-out canvas (the
+	# skill tree) keeps its named Cinzel stars.
 	var font := c.get_theme_font(font_key)
-	if size * scale < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
+	if size < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
 		c.add_theme_font_override(font_key, ThemeDB.fallback_font)
 
 

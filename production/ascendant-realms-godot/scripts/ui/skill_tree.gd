@@ -153,7 +153,28 @@ class ConstellationCanvas extends Control:
 		if is_instance_valid(presenter):
 			presenter._draw_constellation(self)
 
+## A drawing pass over the constellation: "glow" (added light, under the
+## stars), "plates" (the dark plates under star names) or "fx" (added light
+## over everything, for claim moments).
+class FxLayer extends Control:
+	var presenter: Object
+	var pass_name := ""
+
+	func _init(p: Object, pass_id: String, additive: bool) -> void:
+		presenter = p
+		pass_name = pass_id
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if additive:
+			var m := CanvasItemMaterial.new()
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+			material = m
+
+	func _draw() -> void:
+		if is_instance_valid(presenter):
+			presenter._draw_layer(self, pass_name)
+
 var _canvas: ConstellationCanvas
+var _layers: Array = []
 var _viewport: Control
 var _points_label: Label
 var _points_subtitle: Label
@@ -305,6 +326,9 @@ func _build() -> void:
 	_canvas.presenter = self
 	_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_viewport.add_child(_canvas)
+	_layers = [FxLayer.new(self, "glow", true), FxLayer.new(self, "plates", false)]
+	for layer in _layers:
+		_canvas.add_child(layer)
 
 	_rebuild_layout()
 	for n in _nodes:
@@ -312,6 +336,8 @@ func _build() -> void:
 		if race != "" and race != _hero_race():
 			continue
 		_add_node_button(n)
+	_layers.append(FxLayer.new(self, "fx", true))
+	_canvas.add_child(_layers[-1])
 	if _node_buttons.has("act_1"):
 		_selected_id = "act_1"
 
@@ -430,6 +456,8 @@ func _add_node_button(n: Dictionary) -> void:
 	var cost_label := _label("%d SP" % int(n.get("cost", 1)), 20 if compact else 17, Color.WHITE)
 	# Wrapped the way the label wraps it: a name that only just fits must not leave a gap.
 	var two_lines: bool = _name_lines(name_label.text, name_size) > 1
+	# Kept for the name plate, which is drawn every frame.
+	b.set_meta("name_lines", 2 if two_lines else 1)
 	cost_label.position = Vector2(0.0, ORB.y + ((56.0 if two_lines else 29.0) if compact else (50.0 if two_lines else 26.0)))
 	cost_label.size = Vector2(NODE_SIZE.x, 24.0 if compact else 21.0)
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -605,6 +633,53 @@ var _sky: Array = []
 var _sky_size := Vector2.ZERO
 ## Bursts of light when a star is claimed: {pos, t, col}.
 var _bursts: Array = []
+## Light running from a claimed star to each star it opens: {from, to, t, col}.
+var _comets: Array = []
+const COMET_TIME := 0.8
+## Shooting stars over the sky: {from, dir, speed, t}.
+var _shooting: Array = []
+var _next_shooting := 1.5
+var _fx_rng := RandomNumberGenerator.new()
+## The soft round light every glow is drawn with.
+var _glow_tex: Texture2D = _make_glow_texture()
+
+static func _make_glow_texture() -> Texture2D:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.22, 0.55, 1.0])
+	g.colors = PackedColorArray([Color(1, 1, 1, 1), Color(1, 1, 1, 0.55), Color(1, 1, 1, 0.14), Color(1, 1, 1, 0)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(1.0, 0.5)
+	t.width = 128
+	t.height = 128
+	return t
+
+## How much of a broad glow to show at a point: fades out toward the edges
+## of the visible sky, so the clouds never end in a hard line at the frame.
+func _edge_fade(at: Vector2) -> float:
+	var z := maxf(0.1, _zoom)
+	var view := Rect2(-_canvas.position / z, _viewport.size / z)
+	var d := minf(minf(at.x - view.position.x, view.end.x - at.x), minf(at.y - view.position.y, view.end.y - at.y))
+	return clampf(d / (260.0 / z), 0.0, 1.0)
+
+func _glow(canvas: CanvasItem, at: Vector2, radius: float, col: Color) -> void:
+	canvas.draw_texture_rect(_glow_tex, Rect2(at - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, col)
+
+## Owned share of each path, for how brightly its part of the sky burns.
+func _branch_progress() -> Dictionary:
+	var out := {}
+	for n in _nodes:
+		if not _is_visible_node(n):
+			continue
+		var br := str(n.get("branch", ""))
+		var row: Array = out.get(br, [0, 0])
+		row[1] += 1
+		if _is_unlocked(str(n.get("id", ""))):
+			row[0] += 1
+		out[br] = row
+	return out
 var _sky_time := 0.0
 ## One shared style for the name plates (the sky redraws every frame).
 var _name_plate_style: StyleBoxFlat = _make_name_plate_style()
@@ -619,8 +694,21 @@ func _process(delta: float) -> void:
 	_sky_time += delta
 	if is_instance_valid(_canvas) and is_visible_in_tree():
 		_canvas.queue_redraw()
+		for layer in _layers:
+			layer.queue_redraw()
 	if not _bursts.is_empty():
 		_bursts = _bursts.filter(func(b): return _sky_time - float(b["t"]) < 1.2)
+	if not _comets.is_empty():
+		_comets = _comets.filter(func(c): return _sky_time - float(c["t"]) < COMET_TIME + 0.7)
+	if not _shooting.is_empty():
+		_shooting = _shooting.filter(func(st): return _sky_time - float(st["t"]) < 1.1)
+	# Now and then a shooting star crosses the sky.
+	if _sky_time >= _next_shooting and is_instance_valid(_canvas):
+		_next_shooting = _sky_time + _fx_rng.randf_range(2.5, 6.0)
+		var area := _canvas.size
+		var dir := Vector2(_fx_rng.randf_range(0.55, 1.0) * (1.0 if _fx_rng.randf() < 0.5 else -1.0), _fx_rng.randf_range(0.35, 0.7)).normalized()
+		_shooting.append({"from": Vector2(_fx_rng.randf() * area.x, _fx_rng.randf() * area.y * 0.6), "dir": dir,
+			"speed": _fx_rng.randf_range(700.0, 1100.0), "t": _sky_time})
 
 func _orb_center(n: Dictionary) -> Vector2:
 	return _node_pos(n) + Vector2(NODE_SIZE.x * 0.5, ORB.y * 0.5)
@@ -641,10 +729,12 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 	var area: Vector2 = _canvas.size + Vector2(600, 600)
 	_ensure_sky(area)
 	# The sky: twinkling stars, a few warm, most cold.
+	# The sky drifts slower than the stars when dragged, so it reads as far away.
+	var parallax := -_pan * 0.35 / maxf(0.1, _zoom)
 	for st in _sky:
 		var tw := 0.35 + 0.65 * (0.5 + 0.5 * sin(_sky_time * float(st["sp"]) + float(st["ph"])))
 		var col := Color(0.85, 0.9, 1.0) if float(st["tint"]) < 0.8 else Color(1.0, 0.85, 0.6)
-		canvas.draw_circle(Vector2(st["p"]) - Vector2(300, 300), float(st["r"]), Color(col, 0.55 * tw))
+		canvas.draw_circle(Vector2(st["p"]) - Vector2(300, 300) + parallax, float(st["r"]), Color(col, 0.55 * tw))
 	# Nebulae: soft clouds of each path's colour around its stars.
 	var branch_pts := {}
 	for n in _nodes:
@@ -659,15 +749,10 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 	for br in branch_pts:
 		for p3 in branch_pts[br]:
 			top_line = minf(top_line, p3.y)
+	var progress := _branch_progress()
 	for br in branch_pts:
 		var pts: Array = branch_pts[br]
 		var bc: Color = _branch_color(br)
-		for k in pts.size():
-			if k % 2 == 1:
-				continue
-			var p: Vector2 = pts[k]
-			for q in 5:
-				canvas.draw_circle(p + Vector2(sin(k * 1.7) * 30.0, cos(k * 2.3) * 24.0), 50.0 + q * 26.0, Color(bc, 0.014))
 		# The constellation's name, large and faint above its first star.
 		var top: Vector2 = pts[0]
 		for p2 in pts:
@@ -678,9 +763,23 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
-		var title_pos := Vector2(top.x - tw2 * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
+		var title_pos := Vector2(top.x - (tw2 + 8.0 + ThemeDB.fallback_font.get_string_size("%d / %d" % progress.get(br, [0, 1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x) * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
 		canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 6, Color(0.01, 0.015, 0.03, 0.85))
 		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.25), 0.8))
+		# How far along the path is: a thin bar that fills, and a count.
+		var pr: Array = progress.get(br, [0, 1])
+		var frac := float(pr[0]) / maxf(1.0, float(pr[1]))
+		var count := "%d / %d" % [pr[0], pr[1]]
+		var body := ThemeDB.fallback_font
+		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+		# Beside the name, so nothing crowds the first star.
+		var count_pos := Vector2(title_pos.x + tw2 + 8.0, title_pos.y)
+		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 17, 5, Color(0.01, 0.015, 0.03, 0.9))
+		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 17, Color(PAPER, 0.8))
+		var bar_w := tw2 + 8.0 + cw
+		var bar := Rect2(title_pos.x, title_pos.y + 9.0, bar_w, 3.0)
+		canvas.draw_rect(bar, Color(0.01, 0.015, 0.03, 0.85))
+		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 3.0)), Color(bc.lightened(0.3), 0.95))
 	# Links: faint for locked, bright for open paths, with motes of light
 	# flowing along the owned ones toward the next star.
 	for n in _nodes:
@@ -697,9 +796,14 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			var available := _prereqs_met(n) and not _is_unlocked(id)
 			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
 			var path := _constellation_link(from, to)
-			var strength := 0.9 if complete else (0.75 if available else 0.28)
-			canvas.draw_polyline(path, Color(col, strength * 0.10), 12.0 if complete or available else 5.0, true)
-			canvas.draw_polyline(path, Color(col, strength * 0.40), 3.4 if complete or available else 1.6, true)
+			if not (complete or available):
+				# A road not yet open: a faint dotted trail of star dust.
+				for k in path.size():
+					canvas.draw_circle(path[k], 1.7, Color(LOCKED.lightened(0.2), 0.55))
+				continue
+			var strength := 0.9 if complete else 0.75
+			canvas.draw_polyline(path, Color(col, strength * 0.10), 12.0, true)
+			canvas.draw_polyline(path, Color(col, strength * 0.40), 3.4, true)
 			canvas.draw_polyline(path, Color(PAPER, strength * 0.55), 1.0, true)
 			if complete or available:
 				var motes := 3 if complete else 2
@@ -710,6 +814,103 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 					var p3: Vector2 = path[i0].lerp(path[mini(i0 + 1, path.size() - 1)], idx - float(i0))
 					canvas.draw_circle(p3, 5.0, Color(col, 0.18))
 					canvas.draw_circle(p3, 2.4, Color(col.lightened(0.4), 0.9))
+
+func _draw_layer(canvas: CanvasItem, pass_name: String) -> void:
+	match pass_name:
+		"glow":
+			_draw_glow(canvas)
+		"plates":
+			_draw_plates(canvas)
+		"fx":
+			_draw_fx(canvas)
+
+## Added light under the stars: each path's nebula burns brighter the more of
+## it you own, owned stars bloom with a slow four-point flare, stars ready to
+## claim breathe gold and shed sparks, and shooting stars cross the sky.
+func _draw_glow(canvas: CanvasItem) -> void:
+	var progress := _branch_progress()
+	# A river of faint light across the whole sky, like the Milky Way, drifting
+	# slower than the stars when the sky is dragged.
+	var area := _canvas.size
+	var parallax := -_pan * 0.35 / maxf(0.1, _zoom)
+	for k in 26:
+		var f := float(k) / 25.0
+		var along := Vector2(-200.0, area.y * 0.95).lerp(Vector2(area.x + 200.0, area.y * 0.05), f)
+		var bend := Vector2(0.0, sin(f * PI * 1.4) * area.y * 0.12)
+		var hue := Color(0.42, 0.30, 0.78).lerp(Color(0.25, 0.45, 0.85), 0.5 + 0.5 * sin(f * 7.0))
+		var shimmer := 0.8 + 0.2 * sin(_sky_time * 0.4 + f * 9.0)
+		var at := along + bend + parallax + Vector2(sin(f * 31.0) * 60.0, cos(f * 17.0) * 50.0)
+		_glow(canvas, at, 230.0 + 90.0 * sin(f * 13.0) ** 2, Color(hue, 0.34 * shimmer * _edge_fade(at)))
+	var by_branch := {}
+	for n in _nodes:
+		if _node_buttons.has(str(n.get("id", ""))) and _is_visible_node(n):
+			var br := str(n.get("branch", ""))
+			if not by_branch.has(br):
+				by_branch[br] = []
+			by_branch[br].append(_orb_center(n))
+	for br in by_branch:
+		var pts: Array = by_branch[br]
+		var bc: Color = _branch_color(br)
+		var pr: Array = progress.get(br, [0, 1])
+		var frac := float(pr[0]) / maxf(1.0, float(pr[1]))
+		for k in pts.size():
+			if k % 2 == 1:
+				continue
+			var p: Vector2 = pts[k]
+			var breathe := 0.85 + 0.15 * sin(_sky_time * 0.5 + float(k) * 1.3 + float(br.hash() % 11))
+			var drift := Vector2(sin(_sky_time * 0.11 + k) * 18.0, cos(_sky_time * 0.09 + k * 1.7) * 14.0)
+			var at2 := p + drift + Vector2(sin(k * 1.7) * 40.0, cos(k * 2.3) * 30.0)
+			_glow(canvas, at2, 250.0, Color(bc, (0.40 + 0.55 * frac) * breathe * _edge_fade(at2)))
+	# Owned roads glow along their whole length.
+	for n in _nodes:
+		var id := str(n.get("id", ""))
+		if not _node_buttons.has(id) or not _is_visible_node(n) or not _is_unlocked(id):
+			continue
+		for req in n.get("req", []):
+			var required := _find_node(str(req))
+			if required.is_empty() or not _node_buttons.has(req) or not _is_visible_node(required) or not _is_unlocked(str(req)):
+				continue
+			canvas.draw_polyline(_constellation_link(_orb_center(required), _orb_center(n)), Color(_branch_color(str(n.get("branch", ""))), 0.22), 14.0, true)
+	for n in _nodes:
+		var id := str(n.get("id", ""))
+		if not _node_buttons.has(id) or not _is_visible_node(n):
+			continue
+		var c := _orb_center(n)
+		var bc: Color = _branch_color(str(n.get("branch", "")))
+		var state := _node_state(n)
+		var seed := float(id.hash() % 101)
+		if state == "UNLOCKED":
+			var keystone: bool = n.get("keystone", false)
+			_glow(canvas, c, 120.0 if keystone else 92.0, Color(bc.lightened(0.25), 0.55))
+			_glow(canvas, c, 40.0, Color(1, 1, 1, 0.35))
+			# A slow four-point flare, like a bright star through a lens.
+			var spin := _sky_time * 0.12 + seed
+			var reach := (110.0 if keystone else 78.0) * (0.9 + 0.1 * sin(_sky_time * 1.3 + seed))
+			for q in 4:
+				var a := spin + q * PI * 0.5
+				var tip := Vector2(cos(a), sin(a))
+				var side := Vector2(-tip.y, tip.x) * 3.2
+				canvas.draw_colored_polygon(PackedVector2Array([c + side, c + tip * reach, c - side]), Color(bc.lightened(0.5), 0.5))
+		elif state == "PURCHASABLE":
+			var pulse := 0.5 + 0.5 * sin(_sky_time * 3.2 + seed)
+			_glow(canvas, c, 78.0 + 10.0 * pulse, Color(GOLD_BRIGHT, 0.20 + 0.20 * pulse))
+			# Sparks rising off a star that is ready to claim.
+			for m in 4:
+				var t := fmod(_sky_time * 0.55 + float(m) / 4.0 + seed * 0.13, 1.0)
+				var sp := c + Vector2(sin(seed + m * 2.1) * 30.0 + sin(t * 6.0 + m) * 6.0, -38.0 - t * 52.0)
+				canvas.draw_circle(sp, 2.6 * (1.0 - t) + 0.6, Color(GOLD_BRIGHT, 0.9 * (1.0 - t)))
+	for st in _shooting:
+		var age := _sky_time - float(st["t"])
+		var dir: Vector2 = st["dir"]
+		var head: Vector2 = Vector2(st["from"]) + dir * float(st["speed"]) * age
+		var fade := clampf(1.0 - age / 1.1, 0.0, 1.0) * clampf(age * 6.0, 0.0, 1.0)
+		for k in 8:
+			var a2 := head - dir * float(k) * 22.0
+			var b2 := head - dir * float(k + 1) * 22.0
+			canvas.draw_line(a2, b2, Color(0.85, 0.92, 1.0, fade * 0.8 * (1.0 - float(k) / 8.0)), 2.4 * (1.0 - float(k) / 9.0), true)
+		_glow(canvas, head, 22.0, Color(0.85, 0.92, 1.0, fade * 0.8))
+
+func _draw_plates(canvas: CanvasItem) -> void:
 	# The selected star wears two counter-turning gilt rings,
 	# drawn under the name plates so they never cross the star's name.
 	var sel := _find_node(_selected_id)
@@ -730,9 +931,33 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var lab: Label = b.get_child(1) as Label
 		var fs := lab.get_theme_font_size("font_size")
 		var tw3 := minf(NODE_SIZE.x, _title_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 18.0)
-		var lines := _name_lines(lab.text, fs)
+		var lines: int = b.get_meta("name_lines") if b.has_meta("name_lines") else 1
 		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 3.0), Vector2(tw3, (fs + 2.0) * lines + fs + 9.0))
 		canvas.draw_style_box(_name_plate_style, plate)
+
+## Added light over everything: the claim flash, its rings and sparks, and
+## light running down each road the claimed star opens.
+func _draw_fx(canvas: CanvasItem) -> void:
+	for b in _bursts:
+		var age0 := (_sky_time - float(b["t"])) / 0.6
+		if age0 < 1.0:
+			_glow(canvas, b["pos"], 140.0 + age0 * 260.0, Color(Color(b["col"]).lightened(0.3), 0.55 * (1.0 - age0)))
+	for cm in _comets:
+		var age := (_sky_time - float(cm["t"])) / COMET_TIME
+		var path := _constellation_link(cm["from"], cm["to"])
+		var col: Color = cm["col"]
+		if age < 1.0:
+			for k in 6:
+				var t := clampf(age - float(k) * 0.035, 0.0, 1.0)
+				var idx := t * float(path.size() - 1)
+				var i0 := int(idx)
+				var pt: Vector2 = path[i0].lerp(path[mini(i0 + 1, path.size() - 1)], idx - float(i0))
+				_glow(canvas, pt, 26.0 - k * 3.0, Color(col.lightened(0.4), 0.9 - k * 0.14))
+		else:
+			# Arrival: the opened star flares once.
+			var a2 := (age - 1.0) * COMET_TIME / 0.7
+			_glow(canvas, cm["to"], 60.0 + a2 * 70.0, Color(GOLD_BRIGHT, 0.7 * (1.0 - a2)))
+			canvas.draw_arc(cm["to"], 40.0 + a2 * 50.0, 0.0, TAU, 36, Color(GOLD_BRIGHT, 0.8 * (1.0 - a2)), 2.0, true)
 	# Claim bursts: an expanding ring and sparks.
 	for b in _bursts:
 		var age := (_sky_time - float(b["t"])) / 1.2
@@ -921,6 +1146,14 @@ func _on_node_pressed(n: Dictionary) -> void:
 		if ProfileManager.unlock_skill(id):
 			Sfx.play("levelup")
 			_bursts.append({"pos": _orb_center(n), "t": _sky_time, "col": _branch_color(str(n.get("branch", "")))})
+			# Light runs down every road this star opens.
+			for child in _nodes:
+				if id in child.get("req", []) and _node_buttons.has(str(child.get("id", ""))) and _is_visible_node(child) and _prereqs_met(child):
+					_comets.append({"from": _orb_center(n), "to": _orb_center(child), "t": _sky_time, "col": _branch_color(str(n.get("branch", "")))})
+			var claimed: Button = _node_buttons[id]
+			claimed.scale = Vector2.ONE * 1.35
+			claimed.set_meta("scaling_to", Vector2.ONE)
+			claimed.create_tween().tween_property(claimed, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 			_status_label.text = "%s joined your constellation." % str(n.get("name", ""))
 		else:
 			Sfx.play("select")
