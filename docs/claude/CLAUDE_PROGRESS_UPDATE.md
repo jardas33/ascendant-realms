@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 229 (done): nothing walks on after the match ends (found by Codex)**
+  - Codex's test pictures showed a worker still moving after its test had stopped the match. I confirmed it in the game: when a match ends, units that were walking kept walking behind the victory or defeat screen, because the part of the movement code that steers units around each other had no check that the match was over. Measured with a new test: five units mid-walk moved up to 10.26 m in the 2 s after the end. Now 0.00 m.
+  - The player's Pause was never affected: it stops the whole game, which this code obeys.
+  - New test `claude_stopdrift.gd`, in the regression (103 checks).
+  - Review 9 of Codex's work is in `CODEX_REVIEW_FEEDBACK.md`: its finding confirmed and fixed, and its new barracks, thrall and research pictures read well.
+  - Full regression: 103 of 103 passed, save unchanged.
 - **Plan 228 (done): the hero sheet with a long talent list, and what talents add up to**
   - A real layout fault: with many talents taken, the "Taken" line on the hero sheet did not wrap and pushed the whole sheet off the right edge of the screen (seen in a picture of a level 800 hero with twelve talents at rank 5). The value column of the sheet's stat lines now wraps; the same picture shows the line on three rows and the sheet in place.
   - Talents. Twelve talents are worth a little less with each rank (the game has always worked that way), but their text said only the first rank's value, so a player could not tell what five ranks give. Each talent card now shows the total now and after the next rank (for example Hearthblood at rank 5: +6.4 health/s, then +7.5), and the texts say later ranks add a little less. The card was made taller so the new line fits; checked in the picture at 1920 by 1080.

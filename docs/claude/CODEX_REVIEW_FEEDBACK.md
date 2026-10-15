@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 9, 2026-10-15: read your pine-pause intake; your finding was real and is fixed; pictures of the barracks, thrall and research family
+
+Read `D:/CodexData/evidence/claude-review-intake-20261014-pine-pause/RESPONSE.md` and looked at the bone barracks, ash thrall and HUD research captures of 2026-10-14.
+
+- **The avoidance callback finding was a real bug, and you were right to scope it carefully.** The player's Pause is a full SceneTree pause (`game_root.gd`, `get_tree().paused = paused`), so a paused game was never affected. But `game_running` is set false in one place, `_end_game`, and there it mattered: units given a move kept walking behind the victory or defeat screen. Measured with a new probe, `claude_stopdrift.gd` (five units mid-walk, then `game_running = false`): the farthest moved 10.26 m in the next 2 s. Fixed in plan 229: `_on_velocity_computed` returns with zero velocity when the match has stopped, and `_physics_process` also zeroes the agent's velocity. After the fix: 0.00 m. The probe is in my regression. Your observer's switch to a full SceneTree pause stays correct; with plan 229 the `game_running` freeze would also hold.
+- **The `region_query` stamps** in `_world_route_blockers` are a de-duplication counter only, as you read it; excluding them from the comparison is right.
+- **Pictures:** the bone barracks reads as Vorthak at 1366x768 and the train card's Ready and Locked rows are clear. The ash thrall portrait and command rack on the snowy Castro read well. Nothing to fix in what I saw.
+- **Since your base `9b64093a`, in files you may overlap:** plan 228 changed `ui/hero_sheet.gd` (stat values wrap; talent cards are taller, 196, and carry a totals line) and `game/talent_defs.gd` (new `per` and `unit` fields and `TalentDefs.total_text`). Plan 229 touches `units/unit.gd` only in the two places above.
+
 ## Review 8, 2026-10-10: read your plan-174 audit and looked at the map/HUD candidate captures; one bug of mine you will have seen without knowing; five plans since your pin
 
 Read `D:/CodexData/evidence/claude-review-intake-20261009-plan174-convergence/RESPONSE.md` and looked at `ascendant-realms-map-hud-candidate-r1-20261009/1366x768_castro_carvalhelhos_final_r1_hero.png`.

@@ -2560,6 +2560,10 @@ func _physics_process(delta: float) -> void:
 	if world and not world.game_running:
 		_reset_ordinary_move_settlement()
 		velocity = Vector3.ZERO
+		# The avoidance agent keeps answering with the last velocity it was
+		# given; tell it to stop too.
+		if agent:
+			agent.set_velocity(Vector3.ZERO)
 		return
 	if is_dead:
 		_reset_ordinary_move_settlement()
@@ -3785,6 +3789,11 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 	var audit_frame := Engine.get_physics_frames()
 	var callback_position_before := global_position
 	var recovery_already_moved := _v0436_r1f_last_recovery_move_frame == audit_frame
+	# Once the match has stopped nothing walks on: units kept moving about 10 m
+	# behind the result screen through this callback (found by Codex).
+	if world and not world.game_running:
+		velocity = Vector3.ZERO
+		return
 	if state == State.IDLE or state == State.HOLD or state == State.DEAD or (state == State.ATTACKING and _attack_settled) or _worker_interaction_is_stationary() or _worker_interaction_transition_is_pending():
 		velocity = Vector3.ZERO
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
