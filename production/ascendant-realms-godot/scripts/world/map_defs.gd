@@ -105,29 +105,29 @@ static func hollowspan() -> Dictionary:
 static func _specs() -> Array:
 	return [
 		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
-		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21},
-		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","authored":"open","seed":22,"ridges":7},
+		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21,"base":"edges"},
+		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","authored":"open","seed":22,"ridges":7,"base":"edges"},
 		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","authored":"open","seed":2},
-		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","authored":"open","seed":23,"ridges":7,"hills":3},
+		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","authored":"open","seed":23,"ridges":7,"hills":3,"base":"edges"},
 		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","authored":"open","seed":24,"woods":8},
 		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple","crags":"walls"},
 		{"id":"mirefen","name":"Mirefen Swamp","theme":"wetland","authored":"open","seed":25,"lakes":3,"woods":4},
-		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","authored":"open","seed":26,"hills":4},
+		{"id":"kaelmoor","name":"Kaelmoor Badlands","theme":"badlands","authored":"open","seed":26,"hills":4,"base":"edges"},
 		{"id":"sunspire_delta","name":"Sunspire Delta","theme":"tropical","authored":"open","seed":27,"lakes":2,"woods":7},
 		{"id":"highland_gauntlet","name":"Highland Gauntlet","theme":"highland","authored":"open","seed":28,"ridges":6,"woods":2},
 		{"id":"glacier_pass","name":"Glacier Pass","theme":"snow","authored":"open","seed":29,"ridges":6,"woods":3},
-		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","authored":"open","seed":30,"ridges":3,"woods":0,"lakes":1},
+		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","authored":"open","seed":30,"ridges":3,"woods":0,"lakes":1,"base":"edges"},
 		{"id":"bloomvale","name":"Bloomvale Meadows","theme":"verdant","layout":"corners","spread":108,"rich":1.5,"cap":"triple"},
-		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","authored":"open","seed":31,"ridges":3,"woods":3,"lakes":2},
+		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","authored":"open","seed":31,"ridges":3,"woods":3,"lakes":2,"base":"edges"},
 		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","authored":"open","seed":16},
 		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple","crags":"islands"},
 		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","authored":"open","seed":32,"lakes":2,"woods":5},
 		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single","crags":"walls"},
-		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","authored":"open","seed":33,"river":false,"ridges":5,"hills":4,"woods":3,"lakes":2},
-		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","authored":"open","seed":34,"river":false,"ridges":3,"hills":5,"woods":3},
+		{"id":"iron_tundra","name":"Iron Tundra","theme":"snow","authored":"open","seed":33,"river":false,"ridges":5,"hills":4,"woods":3,"lakes":2,"base":"edges"},
+		{"id":"goldreach","name":"Goldreach Plateau","theme":"highland","authored":"open","seed":34,"river":false,"ridges":3,"hills":5,"woods":3,"base":"edges"},
 		{"id":"blightmarsh","name":"Blightmarsh","theme":"wetland","authored":"open","seed":35,"lakes":4,"woods":3},
 		{"id":"emerald_isles","name":"Emerald Isles","theme":"tropical","authored":"open","seed":36,"lakes":4,"woods":6},
-		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","authored":"open","seed":37,"ridges":7,"hills":3},
+		{"id":"crucible","name":"Warlord's Crucible","theme":"badlands","authored":"open","seed":37,"ridges":7,"hills":3,"base":"edges"},
 		# Authored battlefields: laid out by hand, larger than the generated
 		# ones, built round the place the saga gives them.
 		{"id":"salto_valley","name":"Salto Valley","theme":"highland","authored":"salto"},
@@ -2181,7 +2181,11 @@ static func _rabagao_gorge() -> Dictionary:
 ## faces the same ground, and nothing is laid on a start, a vein, a deposit, a
 ## site or a road.
 static func _open_field(s: Dictionary) -> Dictionary:
-	var a: Dictionary = _rabagao_gorge()
+	# The layout under it: "gorge" (camps in the corners, roads to three
+	# fords) or "edges" (camps at the four edges, roads meeting at the centre;
+	# the starts, veins and roads of the Plains of Bronze).
+	var edges: bool = String(s.get("base", "gorge")) == "edges"
+	var a: Dictionary = _plains_of_bronze() if edges else _rabagao_gorge()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(s.get("seed", 1)) * 7_919 + 104_729
 	var th := String(s["theme"])
@@ -2207,7 +2211,9 @@ static func _open_field(s: Dictionary) -> Dictionary:
 	var river_line: Array = []
 	var rivers: Array = []
 	var lakes: Array = []
-	if wet:
+	# The edges layout has no river: its roads run straight to the centre
+	# and its deposits lie on the diagonals, so a river would cut them.
+	if wet and not edges:
 		# The gorge's river line, bent anew; the three fords stay where the
 		# roads cross it.
 		var pts: Array = []
@@ -2314,13 +2320,11 @@ static func _open_field(s: Dictionary) -> Dictionary:
 	a["woods"] = woods
 	a["hills"] = hills
 	a["lakes"] = lakes
-	a["sites"] = [
-		{"name": "The Lume Spire", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
-		{"name": "Wayside Chapel", "benefit": "heal", "pos": Vector3(-152, 0, -36), "model": RUIN},
-		{"name": "Old Shrine", "benefit": "heal", "pos": Vector3(152, 0, 36), "model": RUIN},
-		{"name": "North Watch", "benefit": "vision", "pos": Vector3(-34, 0, 148), "model": WATCH},
-		{"name": "South Watch", "benefit": "vision", "pos": Vector3(34, 0, -148), "model": WATCH},
-	]
+	# The layout's own places, under plain names (both list the Lume site,
+	# two healing sites and two watch posts, in that order).
+	var names := ["The Lume Spire", "Wayside Chapel", "Old Shrine", "North Watch", "South Watch"]
+	for i in a["sites"].size():
+		a["sites"][i]["name"] = names[i]
 	return a
 
 # ---------------------------------------------------------------------------
