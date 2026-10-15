@@ -8,20 +8,20 @@ extends RefCounted
 const EVERY_LEVELS := 10
 
 const TALENTS := [
-	{"id": "bloodthirst", "name": "Bloodthirst", "desc": "Heal for 2% of damage dealt per rank."},
-	{"id": "executioner", "name": "Headhunter", "desc": "+12% damage per rank against foes below 30% health."},
-	{"id": "thorns", "name": "Thornhide", "desc": "Melee attackers take 6% of their blow back per rank."},
-	{"id": "giants_blood", "name": "Giant's Blood", "desc": "+6% maximum health per rank."},
-	{"id": "swift_blade", "name": "Swift Blade", "desc": "+3% attack speed per rank."},
-	{"id": "warlord", "name": "Warlord", "desc": "Nearby soldiers gain +0.8 damage and +0.4 armor per rank."},
-	{"id": "stormcaller", "name": "Stormcaller", "desc": "+8% spell power per rank."},
+	{"id": "bloodthirst", "name": "Bloodthirst", "desc": "Heal for 2% of damage dealt. Later ranks add a little less.", "per": 2.0, "unit": "% lifesteal"},
+	{"id": "executioner", "name": "Headhunter", "desc": "+12% damage against foes below 30% health. Later ranks add a little less.", "per": 12.0, "unit": "% vs wounded"},
+	{"id": "thorns", "name": "Thornhide", "desc": "Melee attackers take 6% of each blow back. Later ranks add a little less.", "per": 6.0, "unit": "% thorns"},
+	{"id": "giants_blood", "name": "Giant's Blood", "desc": "+6% maximum health. Later ranks add a little less.", "per": 6.0, "unit": "% health"},
+	{"id": "swift_blade", "name": "Swift Blade", "desc": "+3% attack speed. Later ranks add a little less.", "per": 3.0, "unit": "% attack speed"},
+	{"id": "warlord", "name": "Warlord", "desc": "Nearby soldiers gain +0.8 damage and +0.4 armor. Later ranks add a little less.", "per": 0.8, "unit": " aura damage"},
+	{"id": "stormcaller", "name": "Stormcaller", "desc": "+8% spell power. Later ranks add a little less.", "per": 8.0, "unit": "% spell power"},
 	{"id": "quartermaster", "name": "Quartermaster", "desc": "+1 veteran in the retinue per rank."},
 	{"id": "treasure_hunter", "name": "Treasure Hunter", "desc": "+2 Fortune per rank for battle loot."},
-	{"id": "iron_will", "name": "Granite Skin", "desc": "+1 armor per rank."},
-	{"id": "lume_well", "name": "Lume Well", "desc": "+20 mana and +0.5 mana regeneration per rank."},
-	{"id": "rallying_cry", "name": "Salto's Horn", "desc": "+2 meters of command aura reach per rank."},
-	{"id": "second_wind", "name": "Hearthblood", "desc": "The hero regenerates 1.5 health per second per rank."},
-	{"id": "keen_eye", "name": "Keen Eye", "desc": "+3 sight per rank: see raiders coming."},
+	{"id": "iron_will", "name": "Granite Skin", "desc": "+1 armor. Later ranks add a little less.", "per": 1.0, "unit": " armor"},
+	{"id": "lume_well", "name": "Lume Well", "desc": "+20 mana and +0.5 mana regeneration. Later ranks add a little less.", "per": 20.0, "unit": " mana"},
+	{"id": "rallying_cry", "name": "Salto's Horn", "desc": "+2 meters of command aura reach. Later ranks add a little less.", "per": 2.0, "unit": " m reach"},
+	{"id": "second_wind", "name": "Hearthblood", "desc": "The hero regenerates 1.5 health a second. Later ranks add a little less.", "per": 1.5, "unit": " health/s"},
+	{"id": "keen_eye", "name": "Keen Eye", "desc": "+3 sight: see raiders coming. Later ranks add a little less.", "per": 3.0, "unit": " sight"},
 	{"id": "mentor", "name": "Mentor", "desc": "+5% battle experience per rank."},
 ]
 
@@ -50,6 +50,17 @@ static func find(id: String) -> Dictionary:
 		if String(t["id"]) == id:
 			return t
 	return {}
+
+## What `ranks` ranks of a talent with a "per" value give in all, as the
+## talent card shows it ("+15.9% health"). Empty for talents that grow by
+## the same amount every rank.
+static func total_text(id: String, ranks: int) -> String:
+	var t := find(id)
+	if not t.has("per") or ranks <= 0:
+		return ""
+	var v := float(t["per"]) * strength(ranks)
+	var num := ("%.1f" % v) if absf(v - roundf(v)) > 0.05 else str(int(roundf(v)))
+	return "+%s%s" % [num, String(t.get("unit", ""))]
 
 ## Effective strength of `ranks` ranks: gently sub-linear, never capped.
 static func strength(ranks: int) -> float:

@@ -530,6 +530,12 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 		extras.append("%d%% thorns" % int(float(b["thorns"]) * 100.0))
 	if float(b.get("spell_power", 0.0)) > 0.0:
 		extras.append("+%d%% spell power" % int(float(b["spell_power"]) * 100.0))
+	# Lume Mastery and the kill-bounty stars had no line anywhere.
+	if float(b.get("spell_range", 0.0)) > 0.0:
+		extras.append("spells reach +%d m" % int(round(float(b["spell_range"]))))
+	var bounty = b.get("flags", {}).get("bounty", 0)
+	if (bounty is float or bounty is int) and float(bounty) > 0.0:
+		extras.append("%d gold a kill" % int(bounty))
 	if not extras.is_empty():
 		build_panel.add_child(_stat_line("Talents", ", ".join(extras)))
 	var syns: Array = load("res://scripts/game/talent_defs.gd").active_synergies(h.get("talents", {}))
@@ -620,7 +626,7 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 			var td: Dictionary = TalentDefs.find(String(tid))
 			var rank_now := int(tl.get(String(tid), 0))
 			var card := Button.new()
-			card.custom_minimum_size = Vector2(0, 150)
+			card.custom_minimum_size = Vector2(0, 196)
 			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			card.focus_mode = Control.FOCUS_NONE
 			card.clip_contents = true
@@ -657,6 +663,18 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 			rk.add_theme_color_override("font_color", Color(0.62, 0.85, 0.62))
 			rk.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			cv.add_child(rk)
+			# What the ranks give in all: each rank is worth a little less than
+			# the one before, so the text alone overstated deep ranks.
+			var total_now: String = TalentDefs.total_text(String(tid), rank_now)
+			if total_now != "":
+				var tot := Label.new()
+				tot.text = "%s  ›  %s" % [total_now, TalentDefs.total_text(String(tid), rank_now + 1)]
+				tot.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				tot.add_theme_font_override("font", _body_font())
+				tot.add_theme_font_size_override("font_size", 14)
+				tot.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
+				tot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				cv.add_child(tot)
 			var ds := Label.new()
 			ds.text = String(td.get("desc", ""))
 			ds.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -758,6 +776,10 @@ func _stat_line(name: String, val: String) -> HBoxContainer:
 	b.add_theme_font_override("font", _body_font())
 	b.add_theme_color_override("font_color", Color(0.6, 0.95, 0.7))
 	b.add_theme_font_size_override("font_size", 19)
+	# Long values (twelve talents taken, every power) wrap. Unwrapped, one
+	# long line pushed the whole sheet off the right edge of the screen.
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(b)
 	# Every number explains itself on hover.
 	if STAT_HELP.has(name):

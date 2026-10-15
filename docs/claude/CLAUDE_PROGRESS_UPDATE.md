@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 228 (done): the hero sheet with a long talent list, and what talents add up to**
+  - A real layout fault: with many talents taken, the "Taken" line on the hero sheet did not wrap and pushed the whole sheet off the right edge of the screen (seen in a picture of a level 800 hero with twelve talents at rank 5). The value column of the sheet's stat lines now wraps; the same picture shows the line on three rows and the sheet in place.
+  - Talents. Twelve talents are worth a little less with each rank (the game has always worked that way), but their text said only the first rank's value, so a player could not tell what five ranks give. Each talent card now shows the total now and after the next rank (for example Hearthblood at rank 5: +6.4 health/s, then +7.5), and the texts say later ranks add a little less. The card was made taller so the new line fits; checked in the picture at 1920 by 1080.
+  - The "Talents" line of the hero sheet now also lists the spell reach and kill gold from the stars added in plans 225 and 226.
+  - Pictures of a battle in progress (Hollow against Lioraen, Autumn Reach): nothing broken and nothing oversized.
+  - Full regression: 102 of 102 passed, save unchanged.
 - **Plan 227 (done): what a pause must not let happen**
   - A few things in the game were timed by a clock that keeps running while the game is paused. I found them by reading every timer in the battle code, and measured each before and after:
     - Avatar. Take the form, pause for longer than its 12 seconds, and it was gone when play resumed (measured: off, health back to x1.00 after 2 s of play and 14 s of pause). Now it is still on (x1.50) and ends after its own 12 seconds of play.
