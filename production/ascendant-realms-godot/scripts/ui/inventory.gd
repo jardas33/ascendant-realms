@@ -514,8 +514,9 @@ func _item_card(item: Dictionary) -> Button:
 	var stats: Dictionary = item.get("stats", {})
 	for k in stats:
 		# Two stats: at the 16 px text floor a third no longer fits the card's
-		# line. Inspecting the relic lists them all.
-		if stat_bits.size() >= 2:
+		# line. Inspecting the relic lists them all. One on the smallest windows,
+		# where the text floor rises (ReadableText).
+		if stat_bits.size() >= (1 if load("res://scripts/ui/readable_text.gd")._small_window_lift(self) > 1.15 else 2):
 			break
 		stat_bits.append(_short_stat(str(k), float(stats[k])))
 	if not stat_bits.is_empty():

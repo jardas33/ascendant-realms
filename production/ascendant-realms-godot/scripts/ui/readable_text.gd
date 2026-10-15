@@ -46,14 +46,34 @@ static func fix(c: Control) -> void:
 	var scale := maxf(0.01, c.get_global_transform_with_canvas().get_scale().y)
 	# The battle HUD sizes its own text up for the screen (1.2x at 1920) and
 	# packs its panels to those sizes, so it keeps them.
-	if size * scale < BODY_MIN and not _in_battle_hud(c):
-		size = ceili(BODY_MIN / scale)
+	# A zoomed canvas (the skill tree) places its captions by their own sizes
+	# and sizes them for the window itself: only plain screens take the lift.
+	var floor_px := BODY_MIN * (_small_window_lift(c) if absf(scale - 1.0) < 0.05 else 1.0)
+	if size * scale < floor_px and not _in_battle_hud(c):
+		size = ceili(floor_px / scale)
 		c.add_theme_font_size_override(size_key, size)
 	# The font is judged at the size it was given: a zoomed-out canvas (the
 	# skill tree) keeps its named Cinzel stars.
 	var font := c.get_theme_font(font_key)
 	if size < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
 		c.add_theme_font_override(font_key, ThemeDB.fallback_font)
+
+
+## The game lays out on a 1920x1080 canvas and shrinks it to smaller windows:
+## at 1366x768 a 16 px menu text reached the eye at 11 px. The floor rises
+## by the square root of that shrink (1.19x at 1366, 1.1x at 1600), the same
+## compromise as the battle HUD panels: about 14 px on a laptop screen.
+## Screens with fixed text boxes size them by this too.
+static func _small_window_lift(c: Node) -> float:
+	var window := c.get_window() if c.is_inside_tree() else null
+	if window == null:
+		return 1.0
+	var canvas := c.get_viewport().get_visible_rect().size
+	var win := Vector2(window.size)
+	if win.x <= 0.0 or win.y <= 0.0 or canvas.x <= 0.0:
+		return 1.0
+	var shrink := minf(win.x / canvas.x, win.y / canvas.y)
+	return clampf(sqrt(1.0 / maxf(shrink, 0.01)), 1.0, 1.2)
 
 
 static func _in_battle_hud(c: Node) -> bool:

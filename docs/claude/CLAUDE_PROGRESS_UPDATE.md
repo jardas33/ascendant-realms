@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 260 (done): readable menus on laptop screens**
+  - The menus had the same problem as the battle HUD: the 16 px text floor (plan 251) is set on the 1920x1080 canvas, which is shrunk on smaller windows, so on a 1366x768 laptop menu text reached the eye at about 11 px.
+  - The menu text floor now rises on smaller windows by the same compromise as the HUD panels (1.1x at 1600x900, 1.19x at 1366x768, at most 1.2x), so menu text reaches the eye at about 14 px or more there. The skill tree is left out: it sizes its own zoomed captions.
+  - Raising it first broke about a thousand layout checks, almost all on the skirmish screen. Fixed by letting the screens grow with it: the skirmish people cards get taller and allow a fourth line, the hero sheet's talent cards get taller and their rank line wraps, and a relic card shows one stat instead of two on the smallest windows.
+  - Every menu checked with no clipped, trimmed or overlapping text at 1920x1080, 1920x823, 1600x900, 1440x1080, 1366x768 and 1280x720.
+  - Full regression: 109 of 110 passed; the overlay text check flagged 2 items in the full run but passed clean twice when rerun on its own.
 - **Plan 259 (done): readable battle HUD on laptop screens**
   - The game lays out at 1920 wide and shrinks everything on smaller windows. Measured at 1366x768 (a common laptop size), most battle HUD text reached the eye at 11 px, and at 1600x900 at 14 px, even after plan 256.
   - On windows narrower than 1920, the minimap, selection and command panels now grow by the square root of the shrink: 1.1x at 1600, 1.19x at 1366, at most 1.2x. Their text is now 14 px or more at 1366x768 and 15 px or more at 1600x900, while the panels take only a little more of the screen. Resizing the window updates them.

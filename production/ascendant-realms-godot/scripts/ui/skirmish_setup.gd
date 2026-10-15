@@ -256,7 +256,10 @@ func _race_card(rid: String) -> Button:
 	card.focus_mode = Control.FOCUS_NONE
 	# Tall enough for the name and three lines of the 16 px text floor; the
 	# list scrolls.
-	card.custom_minimum_size = Vector2(0, 108)
+	# On small windows the text floor rises (ReadableText): the card grows with
+	# it and the line may take a fourth row.
+	var lift: float = load("res://scripts/ui/readable_text.gd")._small_window_lift(self)
+	card.custom_minimum_size = Vector2(0, round(108.0 * lift * lift + (14.0 if lift > 1.0 else 0.0)))
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.clip_contents = true
@@ -292,7 +295,7 @@ func _race_card(rid: String) -> Button:
 	# Wraps to up to three lines, so taller cards show the faction's line in
 	# full instead of a one-line fragment in an empty card.
 	tag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tag.max_lines_visible = 3
+	tag.max_lines_visible = 3 if lift <= 1.0 else 4
 	tag.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_child(tag)

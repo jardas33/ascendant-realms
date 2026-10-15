@@ -654,7 +654,9 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 			var td: Dictionary = TalentDefs.find(String(tid))
 			var rank_now := int(tl.get(String(tid), 0))
 			var card := Button.new()
-			card.custom_minimum_size = Vector2(0, 196)
+			# Taller on small windows, where the text floor rises (ReadableText).
+			var lift: float = load("res://scripts/ui/readable_text.gd")._small_window_lift(self)
+			card.custom_minimum_size = Vector2(0, round(196.0 * lift * lift))
 			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			card.focus_mode = Control.FOCUS_NONE
 			card.clip_contents = true
@@ -689,6 +691,9 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 			rk.text = ("New talent  ·  click to take" if rank_now == 0 else "Rank %d  ›  %d  ·  click to take" % [rank_now, rank_now + 1])
 			rk.add_theme_font_size_override("font_size", 13)
 			rk.add_theme_color_override("font_color", Color(0.62, 0.85, 0.62))
+			# Wraps on small windows, where the raised text floor made this line
+			# wider than its card.
+			rk.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			rk.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			cv.add_child(rk)
 			# What the ranks give in all: each rank is worth a little less than
