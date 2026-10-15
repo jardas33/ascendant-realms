@@ -1276,6 +1276,17 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 234 (done): the plain open-field maps get real ground, first two**
+  - 23 of the skirmish maps were still the old generated "open field": a flat square with scattered props. They are smaller than the hand-built maps and have nothing to fight over but the veins.
+  - New: a terrain generator that lays a map out on the full 440 m ground of the hand-built maps, starting from the Rabagao Gorge skeleton (starts, veins, deposits, roads, ruins, farmsteads), then adds by the map's theme:
+    - Wet themes (highland, verdant, wetland, tropical, autumn, snow) get a winding river down the middle with three fords.
+    - Rock ridges, woods, hills and lakes, in counts that suit the theme (a desert has many ridges and one wood; a green map has six woods).
+    - Nothing is placed on a start, vein, deposit, road, ruin or farmstead, and the map's seed makes it the same every time.
+  - Converted this plan: Frostmere Basin (snow: frozen river, snowbound woods, black ridges) and Redsand Canyon (desert: red ridges and dry hills). Both now have a line of their own in the map picker and are listed with the generated maps, not the saga maps.
+  - Checked on both with the full map battery: soundness, 60 worker walks and 60 soldier attack-moves through bases (0 failed), every vein built by one worker, and three AI matches each between different peoples (all finished, nothing stuck).
+  - Kept as they are: Hollowspan Crossing (its own art, and many tests use it), and three maps the regression relies on.
+  - New tests `claude_mapcheck_frost.gd` and `claude_mapcheck_redsand.gd`, in the regression (109 checks).
+  - Full regression: 109 of 109 passed (the compile check was rerun alone after I restored its file, which my own cleanup command had deleted).
 - **Plan 233 (done): a first skirmish opens on a hand-built map**
   - A player setting up their first skirmish saw Hollowspan Crossing, one of the plain generated maps, chosen in advance. It now opens on Salto Valley, the valley where the saga begins: a river in a long S with three fords, a ridge and the Spring of Seven Mouths. Checked in a picture of the skirmish screen. A player who has set up a skirmish before still gets the map they chose last.
   - New test `claude_skirmdefault.gd`, in the regression (107 checks).

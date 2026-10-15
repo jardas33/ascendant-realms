@@ -364,7 +364,7 @@ func _build_battle_panel() -> Control:
 	for group in [true, false]:
 		map_opt.add_separator("Battlefields of the saga" if group else "Open fields")
 		for i in _map_infos.size():
-			if bool(_map_infos[i].get("authored", false)) == group:
+			if (bool(_map_infos[i].get("authored", false)) and not bool(_map_infos[i].get("open", false))) == group:
 				map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
 	var default_index := 0
 	var map_known: bool = _map_id == "__random__"

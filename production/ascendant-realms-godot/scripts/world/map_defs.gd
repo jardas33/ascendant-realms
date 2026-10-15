@@ -61,6 +61,8 @@ const AUTHORED_BLURBS := {
 	"rabagao_wall": "The Wall crosses the whole field with three sluice gates. Two camps lie behind it by the reservoir and two before it in the lowlands. Not an even field.",
 	"montalto": "The old keep in the middle, inside a rampart with three gates, and three camps round it. Made for one against three. Not an even field.",
 	"fojo": "Two stone wolf-traps mouth to mouth: each camp looks down a funnel that narrows to the pit, with a narrow door at the waist.",
+	"frostmere_basin": "A frozen river runs the length of the basin with three fords. Snowbound woods and black rock ridges break up the ground on each bank.",
+	"redsand_canyon": "Red rock ridges split the sand into lanes, with dry hills between them. Little cover and no water: the shortest way is always a fight.",
 	"junias": "A walled valley with a bridged stream. The ruins of the monastery stand on both banks: cloister to the west, archive to the east.",
 }
 
@@ -73,7 +75,7 @@ static func list_infos() -> Array:
 		if bool(s.get("saga", false)):
 			continue
 		out.append({"id": s["id"], "name": s["name"], "theme": s["theme"],
-			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false)), "authored": s.has("authored")})
+			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false)), "authored": s.has("authored"), "open": String(s.get("authored", "")) == "open"})
 	return out
 
 ## Back-compat: original default map.
@@ -88,7 +90,7 @@ static func _specs() -> Array:
 		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
 		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","layout":"corners","spread":96,"rich":0.9,"cap":"triple","crags":"walls"},
 		{"id":"emberfall_rift","name":"Emberfall Rift","theme":"volcanic","layout":"edges","spread":110,"rich":1.0,"cap":"triple","crags":"corners"},
-		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","layout":"corners","spread":102,"rich":1.0,"cap":"triple","bridge":true,"crags":"islands"},
+		{"id":"frostmere_basin","name":"Frostmere Basin","theme":"snow","authored":"open","seed":2},
 		{"id":"dune_bastion","name":"Dune Sea Bastion","theme":"desert","layout":"edges","spread":114,"rich":0.9,"cap":"single"},
 		{"id":"verdant_hollows","name":"Verdant Hollows","theme":"verdant","layout":"corners","spread":84,"rich":1.1,"cap":"triple","crags":"gates"},
 		{"id":"autumn_reach","name":"Autumn Reach","theme":"autumn","layout":"corners","spread":106,"rich":1.0,"cap":"triple","crags":"walls"},
@@ -100,7 +102,7 @@ static func _specs() -> Array:
 		{"id":"scorched_expanse","name":"Scorched Expanse","theme":"volcanic","layout":"corners","spread":116,"rich":0.9,"cap":"single","crags":"walls"},
 		{"id":"bloomvale","name":"Bloomvale Meadows","theme":"verdant","layout":"corners","spread":108,"rich":1.5,"cap":"triple"},
 		{"id":"ruins_of_vael","name":"Ruins of Vael","theme":"ashen","layout":"corners","spread":100,"rich":1.0,"cap":"quad","crags":"gates"},
-		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","layout":"corners","spread":100,"rich":1.0,"cap":"triple","crags":"walls"},
+		{"id":"redsand_canyon","name":"Redsand Canyon","theme":"desert","authored":"open","seed":16},
 		{"id":"thornwild","name":"Thornwild Basin","theme":"autumn","layout":"corners","spread":88,"rich":1.0,"cap":"triple","crags":"islands"},
 		{"id":"duskwater","name":"Duskwater Shore","theme":"wetland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
 		{"id":"cinderpeak","name":"Cinderpeak","theme":"volcanic","layout":"corners","spread":80,"rich":1.0,"cap":"single","crags":"walls"},
@@ -232,6 +234,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"montalto": a = _montalto()
 		"fojo": a = _fojo()
 		"junias": a = _junias()
+		"open": a = _open_field(s)
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	# A hold-out chapter wants its enemies near: a spec may seat the players in
@@ -2151,6 +2154,146 @@ static func _rabagao_gorge() -> Dictionary:
 		"farmsteads": [{"at": Vector2(-126, -62), "yaw": 0.8}, {"at": Vector2(126, 62), "yaw": 0.8 + PI}],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
 	}
+
+## An open field: one of the skirmish maps that used to be generated small
+## and plain (140 to 180 m, a few rock blocks), now laid out on the standard
+## 440 m skeleton of the hand-built maps (the starts, veins, deposits, sites
+## and roads of the Rabagao Gorge, all proven sound) with terrain of its own
+## drawn from its seed and theme: a river with three fords on the wet themes,
+## ridges, woods, hills and tarns. Everything is point-symmetric, so each seat
+## faces the same ground, and nothing is laid on a start, a vein, a deposit, a
+## site or a road.
+static func _open_field(s: Dictionary) -> Dictionary:
+	var a: Dictionary = _rabagao_gorge()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(s.get("seed", 1)) * 7_919 + 104_729
+	var th := String(s["theme"])
+	var wet: bool = th in ["highland", "verdant", "wetland", "tropical", "autumn", "snow"]
+	var keep: Array = []
+	for st in a["starts"]:
+		keep.append([Vector2(st.x, st.z), 64.0])
+	for v in a["veins"]:
+		keep.append([Vector2(v["pos"].x, v["pos"].z), 22.0])
+	for d in a["deposits"]:
+		keep.append([Vector2(d["pos"].x, d["pos"].z), 18.0])
+	for site in a["sites"]:
+		keep.append([Vector2(site["pos"].x, site["pos"].z), 20.0])
+	for ruin in a.get("ruins", []):
+		keep.append([ruin["at"], float(ruin["radius"]) + 8.0])
+	for farm in a.get("farmsteads", []):
+		keep.append([farm["at"], 16.0])
+	var road_lines: Array = []
+	for r in a["roads"]:
+		road_lines.append([Vector2(r.x, r.y), Vector2(r.z, r.w)])
+	var river_line: Array = []
+	var rivers: Array = []
+	var lakes: Array = []
+	if wet:
+		# The gorge's river line, bent anew; the three fords stay where the
+		# roads cross it.
+		var pts: Array = []
+		for z in [-234.0, -172.0, -120.0, -40.0, 0.0]:
+			pts.append(Vector2(-4.0 if z == -172.0 else (0.0 if z == 0.0 else rng.randf_range(-38.0, 38.0)), z))
+		var full: Array = pts.duplicate()
+		for i in range(pts.size() - 2, -1, -1):
+			full.append(Vector2(-pts[i].x, -pts[i].y))
+		var width := rng.randf_range(11.0, 15.0)
+		rivers.append({"points": full, "width": width,
+			"fords": [{"at": Vector2(-4, -172), "half": 11.0}, {"at": Vector2(0, 0), "half": 17.0}, {"at": Vector2(4, 172), "half": 11.0}]})
+		for p in _smooth(full, 6.0):
+			river_line.append(p)
+	var blobs: Array = []
+	var clear := func(c: Vector2, r: float) -> bool:
+		if absf(c.x) > 196.0 - r or absf(c.y) > 196.0 - r:
+			return false
+		for k in keep:
+			if c.distance_to(k[0]) < float(k[1]) + r:
+				return false
+		for line in road_lines:
+			if Geometry2D.get_closest_point_to_segment(c, line[0], line[1]).distance_to(c) < r + 6.0:
+				return false
+		for p in river_line:
+			if c.distance_to(p) < r + 10.0:
+				return false
+		for b in blobs:
+			if c.distance_to(b[0]) < r + float(b[1]) + 7.0 or c.distance_to(-b[0]) < r + float(b[1]) + 7.0:
+				return false
+		# Its twin across the centre must not lie on it either.
+		if c.length() < r + 8.0:
+			return false
+		return true
+	var woods: Array = []
+	var hills: Array = []
+	var ridges: Array = []
+	var wood_count: int = {"desert": 1, "badlands": 2, "volcanic": 2, "ashen": 4, "snow": 5}.get(th, 6)
+	var ridge_count: int = {"desert": 6, "badlands": 6, "volcanic": 5, "ashen": 4}.get(th, 4)
+	var tries := 0
+	while woods.size() < wood_count * 2 and tries < 2000:
+		tries += 1
+		var c := Vector2(rng.randf_range(-190, 190), rng.randf_range(-190, 190))
+		var rad := Vector2(rng.randf_range(14, 26), rng.randf_range(12, 24))
+		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
+			continue
+		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
+		var sd := rng.randf_range(0.0, 6.0)
+		woods.append({"at": c, "radii": rad, "seed": sd})
+		woods.append({"at": -c, "radii": rad, "seed": sd + PI})
+	tries = 0
+	while ridges.size() < ridge_count * 2 and tries < 3000:
+		tries += 1
+		var c := Vector2(rng.randf_range(-185, 185), rng.randf_range(-185, 185))
+		var ang := rng.randf_range(0.0, TAU)
+		var half_len := rng.randf_range(22.0, 44.0)
+		var dir := Vector2(cos(ang), sin(ang))
+		var bend := Vector2(-dir.y, dir.x) * rng.randf_range(-9.0, 9.0)
+		var line := [c - dir * half_len, c + bend, c + dir * half_len]
+		var ok := true
+		for p in _smooth(line, 6.0):
+			if not clear.call(p, 7.0):
+				ok = false
+				break
+		if not ok:
+			continue
+		blobs.append([c, half_len])
+		ridges.append({"points": line, "thickness": 9.0})
+		ridges.append({"points": _twin_points(line), "thickness": 9.0})
+	tries = 0
+	var hill_count: int = {"desert": 4, "badlands": 3, "highland": 3, "snow": 3}.get(th, 2)
+	while hills.size() < hill_count * 2 and tries < 2000:
+		tries += 1
+		var c := Vector2(rng.randf_range(-180, 180), rng.randf_range(-180, 180))
+		var rad := Vector2(rng.randf_range(12, 18), rng.randf_range(10, 15))
+		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
+			continue
+		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
+		var sd := rng.randf_range(0.0, 6.0)
+		hills.append({"at": c, "radii": rad, "height": rng.randf_range(8.0, 12.0), "seed": sd})
+		hills.append({"at": -c, "radii": rad, "height": hills[-1]["height"], "seed": sd + PI})
+	tries = 0
+	var lake_count: int = 1 if wet else ({"volcanic": 2, "ashen": 1}.get(th, 0))
+	while lakes.size() < lake_count * 2 and tries < 2000:
+		tries += 1
+		var c := Vector2(rng.randf_range(-170, 170), rng.randf_range(-170, 170))
+		var rad := Vector2(rng.randf_range(14, 22), rng.randf_range(12, 20))
+		if not clear.call(c, maxf(rad.x, rad.y) * 1.3):
+			continue
+		blobs.append([c, maxf(rad.x, rad.y) * 1.3])
+		var sd := rng.randf_range(0.0, 6.0)
+		lakes.append({"at": c, "radii": rad, "seed": sd})
+		lakes.append({"at": -c, "radii": rad, "seed": sd + PI})
+	a["rivers"] = rivers
+	a["ridges"] = ridges
+	a["woods"] = woods
+	a["hills"] = hills
+	a["lakes"] = lakes
+	a["sites"] = [
+		{"name": "The Lume Spire", "benefit": "income", "pos": Vector3.ZERO, "model": LUME},
+		{"name": "Wayside Chapel", "benefit": "heal", "pos": Vector3(-152, 0, -36), "model": RUIN},
+		{"name": "Old Shrine", "benefit": "heal", "pos": Vector3(152, 0, 36), "model": RUIN},
+		{"name": "North Watch", "benefit": "vision", "pos": Vector3(-34, 0, 148), "model": WATCH},
+		{"name": "South Watch", "benefit": "vision", "pos": Vector3(34, 0, -148), "model": WATCH},
+	]
+	return a
 
 # ---------------------------------------------------------------------------
 # Crags: impassable rock ridges that give a battlefield lanes, gates and flanks
