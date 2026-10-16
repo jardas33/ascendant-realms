@@ -580,6 +580,10 @@ static func _ruin_smoke(parent: Node3D, pos: Vector3, footprint: float) -> void:
 ## A building coming down: a towering dust cloud, thrown debris, and a
 ## rubble heap with scorched ground that stays for the rest of the match.
 
+## How high a ruin's stones pile r of the way out (0 middle, 1 rim).
+static func _mound_height(r: float, footprint: float) -> float:
+	return clampf(footprint * 0.16, 0.3, 1.0) * (1.0 - r * r)
+
 static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	_ensure()
 	for k in 3:
@@ -663,8 +667,11 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		_beam_mesh.rings = 1
 	# Cut stones from the walls, tumbled and half sunk. One multimesh for the
 	# stones and one for the beams: two draw calls a ruin.
-	var blocks := 10 + int(footprint * 5.0)
-	var grow := clampf(footprint / 3.0, 1.0, 1.5)
+	# Plan 320: a main hall's ruin was forty crate-sized cubes strewn apart on
+	# bare ground. Big ruins now get many more, smaller stones (count grows
+	# with the area), piled higher in the middle, stone on stone.
+	var blocks := 10 + int(footprint * footprint * 1.6)
+	var grow := clampf(footprint / 3.0, 1.0, 1.2)
 	var stones := MultiMesh.new()
 	stones.transform_format = MultiMesh.TRANSFORM_3D
 	stones.mesh = _block_mesh
@@ -674,7 +681,7 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.5), randf_range(0.4, 0.7)) * grow
 		# Heaped towards the middle, where the walls fell in.
 		var r := pow(randf(), 0.8)
-		var at := Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.75 + Vector3(0.0, size.y * 0.3 + (1.0 - r) * randf_range(0.0, 0.6), 0.0)
+		var at := Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.75 + Vector3(0.0, size.y * 0.3 + _mound_height(r, footprint) * randf_range(0.6, 1.0), 0.0)
 		var turn := Basis.from_euler(Vector3(randf_range(-0.3, 0.3), randf() * TAU, randf_range(-0.3, 0.3)))
 		stones.set_instance_transform(i, Transform3D(turn * Basis.from_scale(size), at))
 	var stone_mmi := MultiMeshInstance3D.new()
