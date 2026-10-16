@@ -177,9 +177,27 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 					surface_copy.albedo_color = Color(0.72, 0.72, 0.70, 1.0)
 				surface_copy.albedo_color = _resource_albedo(surface_copy.albedo_color)
 				surface_copy.roughness = maxf(surface_copy.roughness, 0.78)
-				n.set_surface_override_material(surface, surface_copy)
+				if resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
+					n.set_surface_override_material(surface, bark_material(surface_copy.albedo_color, Vector3(0, 0, 1)))
+				else:
+					n.set_surface_override_material(surface, surface_copy)
 	for child in n.get_children():
 		_apply_p1r14_resource_readability(child)
+
+## Furrowed bark for the logs of a timber pile or vein (log_bark.gdshader).
+## One material per colour and lie, so a joined stack stays one draw.
+static var _bark_cache := {}
+
+static func bark_material(col: Color, lie: Vector3) -> Material:
+	var key := "%s|%s" % [col.to_html(), str(lie)]
+	if not _bark_cache.has(key):
+		var m := ShaderMaterial.new()
+		m.shader = load("res://assets/shaders/log_bark.gdshader")
+		m.set_shader_parameter("bark_color", col)
+		m.set_shader_parameter("axis", lie)
+		m.set_meta("batch_safe", true)
+		_bark_cache[key] = m
+	return _bark_cache[key]
 
 func _resource_albedo(source: Color) -> Color:
 	match resource_kind:
@@ -233,10 +251,8 @@ func _add_timber_dressing() -> void:
 		log.rotation.z = PI * 0.5
 		log.position = Vector3(-0.38 + float(i) * 0.38, 0.24 + float(i % 2) * 0.25, 0.06)
 		log.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		var log_mat := StandardMaterial3D.new()
-		log_mat.albedo_color = Color(0.34, 0.16, 0.06, 1.0)
-		log_mat.roughness = 0.90
-		log.material_override = log_mat
+		# Lying along x (rotated a quarter turn about z).
+		log.material_override = bark_material(Color(0.34, 0.20, 0.10, 1.0), Vector3(1, 0, 0))
 		dressing.add_child(log)
 
 func _add_gold_dressing() -> void:

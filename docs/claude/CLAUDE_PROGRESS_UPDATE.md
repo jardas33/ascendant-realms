@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 306 (done): real bark on timber piles and veins**
+  - The logs of every timber pile and timber vein were smooth twelve-sided cylinders in one flat colour. Close up they read as toy pegs, and in low sun (Mirefen Swamp) as orange plastic.
+  - A new bark shader gives them furrows along each log, broken into plates, with grey weathering on the ridges. It works in world space, so a whole stack still joins into one mesh and costs no extra draw calls (the mesh joiner now accepts shaders marked batch_safe).
+  - Full regression: 111 of 111 checks passed in 921 s, save unchanged.
 - **Plan 305 (done): larger main menu buttons**
   - The title face draws lower case as small capitals, so the main menu's buttons (Begin the Saga, Skirmish, Hero...) were only about ten pixels tall on a laptop.
   - The buttons now use 28 instead of 24, and are slightly larger to hold it. Checked at 1366x768, 1920x1080 and 1280x1024.

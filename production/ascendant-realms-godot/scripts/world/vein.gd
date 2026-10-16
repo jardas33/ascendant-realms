@@ -44,7 +44,10 @@ func configure(p_kind: String, p_amount: int) -> void:
 						var toned: StandardMaterial3D = (source as StandardMaterial3D).duplicate()
 						toned.albedo_color = toned.albedo_color.lerp(Color(0.36, 0.23, 0.13, 1.0), 0.58)
 						toned.roughness = maxf(toned.roughness, 0.78)
-						mesh_node.set_surface_override_material(surface, toned)
+						if source.resource_name.to_lower().contains("bark"):
+							mesh_node.set_surface_override_material(surface, ResourceNode.bark_material(toned.albedo_color, Vector3(0, 0, 1)))
+						else:
+							mesh_node.set_surface_override_material(surface, toned)
 		_model = m
 		if is_inside_tree():
 			_join_model()

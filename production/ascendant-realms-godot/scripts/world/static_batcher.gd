@@ -92,7 +92,9 @@ static func _batchable(mi: MeshInstance3D, layer: Node3D, hidden_too: bool = fal
 			return false
 		if mat is BaseMaterial3D and ((mat as BaseMaterial3D).blend_mode != BaseMaterial3D.BLEND_MODE_MIX or (mat as BaseMaterial3D).billboard_mode != BaseMaterial3D.BILLBOARD_DISABLED):
 			return false
-		if mat is ShaderMaterial:
+		# A shader may read the piece's own transform; only ones marked
+		# "batch_safe" (worked out in world space) are joined.
+		if mat is ShaderMaterial and not mat.has_meta("batch_safe"):
 			return false
 	var p: Node = mi.get_parent()
 	while p and p != layer:
