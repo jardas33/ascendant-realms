@@ -381,9 +381,10 @@ func _build() -> void:
 	_preview_title = Label.new()
 	_preview_title.text = "HERO PREVIEW"
 	_preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_preview_title.add_theme_font_override("font", _title_font(20))
-	_preview_title.add_theme_font_size_override("font_size", 20)
-	_preview_title.add_theme_color_override("font_color", Color(0.9, 0.78, 0.5))
+	# Plan 324: 20 px capitals were about ten pixels tall on a laptop.
+	_preview_title.add_theme_font_override("font", _title_font(26))
+	_preview_title.add_theme_font_size_override("font_size", 26)
+	_preview_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.56))
 	_preview_title.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	_preview_title.add_theme_constant_override("outline_size", 3)
 	preview_v.add_child(_preview_title)

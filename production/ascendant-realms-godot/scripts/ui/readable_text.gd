@@ -41,6 +41,7 @@ static func fix(c: Control) -> void:
 	var font_key := "normal_font" if c is RichTextLabel else "font"
 	var size_key := "normal_font_size" if c is RichTextLabel else "font_size"
 	var size := c.get_theme_font_size(size_key)
+	var given := size
 	# Sizes are judged as drawn on the 1080-line canvas: the battle HUD is
 	# scaled up (1.2x at 1920), so its 12 px text already draws at 14.4.
 	var scale := maxf(0.01, c.get_global_transform_with_canvas().get_scale().y)
@@ -53,9 +54,11 @@ static func fix(c: Control) -> void:
 		size = ceili(floor_px / scale)
 		c.add_theme_font_size_override(size_key, size)
 	# The font is judged at the size it was given: a zoomed-out canvas (the
-	# skill tree) keeps its named Cinzel stars.
+	# skill tree) keeps its named Cinzel stars. Plan 324: and before the
+	# small-window lift, which used to push a 16 px Cinzel caption to 19 on
+	# a laptop and so keep the thin capitals there that 1920 had replaced.
 	var font := c.get_theme_font(font_key)
-	if size < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
+	if given < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
 		c.add_theme_font_override(font_key, ThemeDB.fallback_font)
 
 
