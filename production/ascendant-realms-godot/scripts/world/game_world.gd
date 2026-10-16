@@ -1938,6 +1938,15 @@ func _build_lakes() -> void:
 				var water_material := ShaderMaterial.new()
 				water_material.shader = load(shader_path)
 				water_material.set_shader_parameter("flow_speed", 0.05)
+				water_material.set_shader_parameter("bank_fade", 0.8)
+				# Drawn after its shore: the two sheets share a centre, so the
+				# sort could put the shore's solid mud over the middle of the
+				# lake as a dark blot.
+				water_material.render_priority = 1
+				if str(map.get("theme", "")) == "tropical":
+					# Bright lagoons on the tropical isles.
+					water_material.set_shader_parameter("shallow_tint", Color(0.18, 0.60, 0.58))
+					water_material.set_shader_parameter("deep_tint", Color(0.04, 0.34, 0.44))
 				sheet.material_override = water_material
 			layer.add_child(sheet)
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.3)

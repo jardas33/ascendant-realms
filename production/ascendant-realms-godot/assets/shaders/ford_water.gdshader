@@ -14,6 +14,10 @@ uniform float flow_speed = 0.35;
 // a river running north to south had its streaks laid across it, and they
 // read as the dashed lane markings of a road.
 uniform float strip_width = 0.0;
+// Where the water starts to thin toward its bank (0 centre .. 1 bank). A
+// tarn keeps open water nearly to its shore; it used to fade from 0.62, so
+// most of a lake showed the dark mud of its bed and read as a bog.
+uniform float bank_fade = 0.62;
 
 varying vec3 wpos;
 
@@ -57,7 +61,7 @@ void fragment() {
 	vec2 rc = strip_width > 0.0 ? vec2(UV.x * strip_width, (UV.y - 0.5) * strip_width) : wpos.xz;
 	float wobble = (fbm(vec2(rc.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(rc.x * 0.21, 3.0)) - 0.5) * 0.18;
 	float edge = across + wobble;
-	float body = 1.0 - smoothstep(0.62, 0.98, edge);   // soft, irregular banks
+	float body = 1.0 - smoothstep(bank_fade, 0.98, edge);   // soft, irregular banks
 	float depth = 1.0 - smoothstep(0.0, 0.85, edge);
 	mat2 rot = strip_width > 0.0 ? mat2(vec2(0.98, 0.2), vec2(-0.2, 0.98)) : mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
 	vec2 flow = rot * vec2(rc.x * 0.16 - TIME * flow_speed, rc.y * 0.42);

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 282 (done): clear lakes and bright lagoons**
+  - Lakes on the generated maps read as murky bogs: a dark blot of mud sat in the middle of each one, and the water thinned out early toward the shore.
+  - The blot was the lake's muddy shore sheet being drawn over its water; the water is now always drawn on top. Open water also reaches nearly to the shore. On the tropical maps (Emerald Isles) the lakes are bright turquoise lagoons, as the map's description promises.
+  - Full regression: 110 of 110 checks passed, save untouched.
 - **Plan 281 (done): rivers that flow along their course**
   - On the generated maps with a river (Emerald Isles and many others), the current streaks and foam ran east to west whatever way the river ran. On a river running north to south they lay across it in short white dashes and read as the lane markings of a road.
   - The current now follows each river's own course, so the streaks run downstream. Lakes and the straight crossing fords are unchanged.
