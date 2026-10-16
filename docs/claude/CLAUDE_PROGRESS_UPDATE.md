@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 267 (done): the half-built dam shows its works**
+  - Chapter 2-1's story says the Dominion's dam is half built, "two wings of stone with the works between them", but the gap between the wings showed only water and a Lume site.
+  - Now each wing's end tower has a timber scaffold climbing its open face (two rows of poles, four plank decks, zigzag braces), a treadwheel crane stands on each wing with its jib out over the gap and a cut block hanging on the rope, and stacks of cut blocks wait in a stoneyard at the foot of each wing, on the side away from its road.
+  - Soldiers walk round the scaffold and the stacks rather than through them. The map check still finds every start reaching every start, vein, site and deposit.
+  - Full regression: 110 of 110 checks pass (984 s); the real save is unchanged.
 - **Plan 266 (done): the great walls are built stone**
   - I photographed a real battle (chapter 2-1, The Dam at Salto) at 7, 10 and 13 minutes to find the weakest thing on screen. The fight itself drew as see-through ghosts, but that was my test camera sitting inside the dam wall, not a fault in the game.
   - The real weak point was the walls themselves (the dam, the fort rings, the Wolf-Trap funnels, the Rabagao Wall): a cobble rock texture smeared over plain boxes, reading as a cliff rather than something people built, with a dark crack down the face at every bend.

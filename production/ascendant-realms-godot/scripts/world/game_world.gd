@@ -1398,6 +1398,139 @@ func _build_walls() -> void:
 			capped.material_override = snow
 			capped.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			layer.add_child(capped)
+	_build_dam_works(layer, stone)
+
+## The works of a half-built dam (map key "dam_works": the tower at a wing's
+## end, the way across the gap, and the side its stoneyard lies on). A timber
+## scaffold climbs the tower's open face, a treadwheel crane on the wing
+## swings a cut block out over the gap, and cut blocks wait in stacks by the
+## wall. Presentation only: nothing here blocks a soldier.
+func _build_dam_works(layer: Node3D, stone: Material) -> void:
+	var works: Array = map.get("dam_works", [])
+	if works.is_empty():
+		return
+	var timber := SurfaceTool.new()
+	timber.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var blocks := SurfaceTool.new()
+	blocks.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4417
+	# A squared beam of `width` from `from` to `to`, in its own shade.
+	var beam := func(tool: SurfaceTool, from: Vector3, to: Vector3, width: float, tint: Color) -> void:
+		var along := (to - from).normalized()
+		var side := along.cross(Vector3.UP)
+		if side.length() < 0.01:
+			side = Vector3.RIGHT
+		side = side.normalized() * width * 0.5
+		var lift := side.cross(along).normalized() * width * 0.5
+		var corners: Array = []
+		for end in [from, to]:
+			for offset in [-side - lift, side - lift, side + lift, -side + lift]:
+				corners.append(end + offset)
+		for face in [[0, 1, 2, 3], [7, 6, 5, 4], [0, 4, 5, 1], [1, 5, 6, 2], [2, 6, 7, 3], [3, 7, 4, 0]]:
+			for index in [0, 1, 2, 0, 2, 3]:
+				tool.set_color(tint)
+				tool.add_vertex(corners[face[index]])
+	var wood := func() -> Color:
+		return Color(0.50, 0.35, 0.22).darkened(rng.randf_range(0.0, 0.25))
+	# Soldiers walk round the scaffold and the stacks rather than through them.
+	var solid: Array = []
+	var flat := func(v: Vector3) -> Vector2:
+		return Vector2(absf(v.x), absf(v.z))
+	for work in works:
+		var at := Vector3(work["at"].x, 0.0, work["at"].y)
+		var toward := Vector3(work["toward"].x, 0.0, work["toward"].y).normalized()
+		var yard := Vector3(work["yard"].x, 0.0, work["yard"].y).normalized()
+		var across := Vector3(-toward.z, 0.0, toward.x)
+		var face: float = float(work.get("face", 4.9))
+		var wing_top: float = float(work.get("wing_top", 10.0))
+		var height: float = float(work.get("height", 14.0))
+		# The scaffold: two rows of poles against the tower's open face, four
+		# lifts of ledgers and plank decks, and braces across each bay.
+		var lifts := 4
+		for depth in [face + 0.3, face + 1.9]:
+			for slot in [-3.0, -1.0, 1.0, 3.0]:
+				var foot: Vector3 = at + toward * depth + across * slot
+				beam.call(timber, foot, foot + Vector3.UP * (height + 0.8), 0.24, wood.call())
+			for lift in range(1, lifts + 1):
+				var y := height * float(lift) / float(lifts)
+				var row: Vector3 = at + toward * depth + Vector3.UP * y
+				beam.call(timber, row - across * 3.3, row + across * 3.3, 0.18, wood.call())
+		for lift in range(1, lifts + 1):
+			var y := height * float(lift) / float(lifts)
+			for slot in [-3.0, -1.0, 1.0, 3.0]:
+				var inner: Vector3 = at + toward * (face + 0.1) + across * slot + Vector3.UP * y
+				beam.call(timber, inner, inner + toward * 2.1, 0.16, wood.call())
+			# The deck: planks laid along the face.
+			for plank in 4:
+				var line: Vector3 = at + toward * (face + 0.5 + 0.38 * float(plank)) + Vector3.UP * (y + 0.12)
+				beam.call(timber, line - across * 3.2, line + across * 3.2, 0.32 if plank % 2 == 0 else 0.3, wood.call())
+			# A brace across each bay of the outer row, zigzagging up.
+			var low := height * float(lift - 1) / float(lifts)
+			for bay in 3:
+				var left: float = -3.0 + 2.0 * float(bay)
+				var flip := (bay + lift) % 2 == 0
+				var outer: Vector3 = at + toward * (face + 2.0)
+				beam.call(timber, outer + across * (left if flip else left + 2.0) + Vector3.UP * low, outer + across * (left + 2.0 if flip else left) + Vector3.UP * y, 0.13, wood.call())
+		# The crane on the wing: a mast, a jib reaching out over the gap with
+		# a block on its rope, a backstay, and a treadwheel at the foot.
+		var base: Vector3 = at - toward * 8.0 + Vector3.UP * wing_top
+		var mast_top: Vector3 = base + Vector3.UP * 7.5
+		beam.call(timber, base, mast_top, 0.42, wood.call())
+		var tip: Vector3 = at + toward * (face + 4.5) + Vector3.UP * (height + 5.5)
+		beam.call(timber, base + Vector3.UP * 5.2, tip, 0.34, wood.call())
+		beam.call(timber, mast_top, tip, 0.12, Color(0.32, 0.25, 0.18))
+		beam.call(timber, mast_top, base - toward * 4.0 + Vector3.UP * 0.3, 0.12, Color(0.32, 0.25, 0.18))
+		var hang: Vector3 = tip - Vector3.UP * 7.0
+		beam.call(timber, tip, hang, 0.07, Color(0.40, 0.34, 0.26))
+		beam.call(blocks, hang - Vector3.UP * 0.55 - across * 0.8, hang - Vector3.UP * 0.55 + across * 0.8, 1.1, Color(0.95, 0.93, 0.90))
+		var wheel_at: Vector3 = base - toward * 1.8 + Vector3.UP * 2.0
+		for spoke in 14:
+			var a0 := TAU * float(spoke) / 14.0
+			var a1 := TAU * float(spoke + 1) / 14.0
+			for rim_side in [-0.6, 0.6]:
+				var hub: Vector3 = wheel_at + across * rim_side
+				beam.call(timber, hub + (toward * cos(a0) + Vector3.UP * sin(a0)) * 1.9, hub + (toward * cos(a1) + Vector3.UP * sin(a1)) * 1.9, 0.16, wood.call())
+			if spoke % 2 == 0:
+				beam.call(timber, wheel_at + (toward * cos(a0) + Vector3.UP * sin(a0)) * 1.9, wheel_at - (toward * cos(a0) + Vector3.UP * sin(a0)) * 1.9, 0.09, wood.call())
+		beam.call(timber, wheel_at - across * 0.9, wheel_at + across * 0.9, 0.2, wood.call())
+		# The stoneyard: stacks of cut blocks along the foot of the wing.
+		for stack in 3:
+			var spot: Vector3 = at - toward * (8.0 + 5.5 * float(stack)) + yard * 7.6
+			var turn := rng.randf_range(-0.12, 0.12)
+			var run := (toward * cos(turn) + across * sin(turn)).normalized()
+			var wide := Vector3(-run.z, 0.0, run.x)
+			var layers := 2 + stack % 2
+			for level in layers:
+				for row in (3 - level):
+					var centre: Vector3 = spot + wide * (float(row) - float(2 - level) * 0.5) * 0.82 + Vector3.UP * (0.36 + 0.72 * float(level))
+					var shade := Color(1.0, 1.0, 1.0).darkened(rng.randf_range(0.0, 0.12))
+					beam.call(blocks, centre - run * 0.7, centre + run * 0.7, 0.7, shade)
+			clear_ground_cover(spot, 2.4)
+			solid.append([spot, flat.call(run * 0.8 + wide * 1.2), 2.0])
+		clear_ground_cover(at + toward * (face + 1.1), 4.0)
+		solid.append([at + toward * (face + 1.1), flat.call(toward * 1.0 + across * 3.4), height])
+	timber.generate_normals()
+	var timber_material := StandardMaterial3D.new()
+	timber_material.vertex_color_use_as_albedo = true
+	timber_material.vertex_color_is_srgb = true
+	timber_material.roughness = 0.95
+	var frame := MeshInstance3D.new()
+	frame.name = "DamWorksTimber"
+	frame.mesh = timber.commit()
+	frame.material_override = timber_material
+	frame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	layer.add_child(frame)
+	blocks.generate_normals()
+	var cut := MeshInstance3D.new()
+	cut.name = "DamWorksBlocks"
+	cut.mesh = blocks.commit()
+	cut.material_override = stone
+	cut.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	layer.add_child(cut)
+	for index in solid.size():
+		var piece: Array = solid[index]
+		_register_navigation_obstacle(frame, "dam_works_%d" % index, piece[0], piece[1], piece[2], "ENVIRONMENT_PROP", "dam_works", WorldBlockerContract.WORLD_BLOCKER_LAYER, true)
 
 ## A river: a ribbon of moving water along its course over a darker bed,
 ## wider than the water so the banks show. It runs on through the fords,

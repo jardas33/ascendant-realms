@@ -360,6 +360,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"bridges_turned": a.get("bridges_turned", false),
 		"ruins": a.get("ruins", []),
 		"farmsteads": a.get("farmsteads", []),
+		"dam_works": a.get("dam_works", []),
 		"roads": a["roads"],
 		"authored": true,
 	}
@@ -2170,6 +2171,10 @@ static func _rabagao_gorge() -> Dictionary:
 		"ruins": [{"at": Vector2(-130, -18), "radius": 8.0, "seed": 7}, {"at": Vector2(130, 18), "radius": 8.0, "seed": 8}],
 		"farmsteads": [{"at": Vector2(-126, -62), "yaw": 0.8}, {"at": Vector2(126, 62), "yaw": 0.8 + PI}],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
+		# The works between the wings: scaffold on each tower's open face, a
+		# crane on each wing, and a stoneyard on the side away from its road.
+		"dam_works": [{"at": Vector2(-17, 0), "toward": Vector2(1, 0), "yard": Vector2(0, 1)},
+			{"at": Vector2(17, 0), "toward": Vector2(-1, 0), "yard": Vector2(0, -1)}],
 	}
 
 ## An open field: one of the skirmish maps that used to be generated small
