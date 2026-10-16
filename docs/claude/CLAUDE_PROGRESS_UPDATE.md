@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 326 (done): the battle result screen's lines read on a laptop**
+  - At 1366x768 the sentence lines on the Victory and Defeat screen ("Stage 25 won, the road goes on", "Relic won", "Level up!", "New spell learned", deeds, jars, retinue) were set in the thin capital face at 16 to 18 px, about ten pixels tall.
+  - They now use the plain body face at the same size, so they read like the lines around them; the big headings ("Victory", "The saga ends") keep the capitals.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 325 (done): small headings grow on a laptop like body text does**
   - Headings drawn in the thin capital face at 18 to 23 px (War Chest relic names, "Choose your people", "Battlefield", "Open slots") kept their size on small windows, so on a 1366x768 laptop their capitals were about nine pixels tall. Body text already got a 1.19x lift there.
   - They now get the same lift on small windows (1920 is unchanged). War Chest relic cards grow with it, because a two-line relic name pushed the stat line out of the card; on narrow 4:3 windows they also make room for a third line of a long name (the first regression run caught names cut to two lines at 1440x1080). The main menu's footer line is also bigger.

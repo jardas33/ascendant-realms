@@ -4730,13 +4730,13 @@ func _on_game_over(victory: bool) -> void:
 		chronicle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(chronicle)
 		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
-			var relic_line := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
+			var relic_line := _mk_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			relic_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			relic_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 			relic_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			box.add_child(relic_line)
 		if victory and bool(CampaignDefs.find(chapter_id).get("jar", false)):
-			var jar_line := _mk_title_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
+			var jar_line := _mk_label("A jar of Wine of the Dead  ·  %d of %d found" % [ProfileManager.saga()["jars"].size(), CampaignDefs.JARS_TOTAL], 18, Color(0.86, 0.55, 0.95))
 			jar_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(jar_line)
 		var retinue_size: int = ProfileManager.saga().get("retinue", []).size()
@@ -4745,15 +4745,18 @@ func _on_game_over(victory: bool) -> void:
 			for entry in ProfileManager.saga().get("retinue", []):
 				if String(entry.get("name", "")) != "":
 					named.append(String(entry["name"]))
-			var retinue_line := _mk_title_label("Retinue: %d veteran%s will march with the Jardas into the next battle%s" % [retinue_size, "" if retinue_size == 1 else "s", ("  ·  " + ", ".join(named.slice(0, 3))) if not named.is_empty() else ""], 16, Color(0.78, 0.86, 0.66))
+			var retinue_line := _mk_label("Retinue: %d veteran%s will march with the Jardas into the next battle%s" % [retinue_size, "" if retinue_size == 1 else "s", ("  ·  " + ", ".join(named.slice(0, 3))) if not named.is_empty() else ""], 16, Color(0.78, 0.86, 0.66))
 			retinue_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			box.add_child(retinue_line)
 	if Match and String(Match.get_config().get("mode", "")) == "endless":
-		var road_line := _mk_title_label(("Stage %d won  ·  the road goes on" if victory else "Stage %d holds  ·  the road waits") % int(Match.get_config().get("endless_depth", 1)), 18, Color(0.98, 0.84, 0.46))
+		# Plan 326: the result screen's sentence lines are in the body face.
+		# In the thin capital face at 16 to 18 px they were about ten pixels
+		# tall on a laptop; the headings above keep the capitals.
+		var road_line := _mk_label(("Stage %d won  ·  the road goes on" if victory else "Stage %d holds  ·  the road waits") % int(Match.get_config().get("endless_depth", 1)), 18, Color(0.98, 0.84, 0.46))
 		road_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(road_line)
 		if victory and String(ProfileManager.saga().get("last_relic", "")) != "":
-			var loot := _mk_title_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
+			var loot := _mk_label("Relic won: %s  ·  see the War Chest" % String(ProfileManager.saga()["last_relic"]), 17, Color(0.98, 0.78, 0.40))
 			loot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			loot.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 			loot.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -4764,13 +4767,13 @@ func _on_game_over(victory: bool) -> void:
 		b_line.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		box.add_child(b_line)
 	for deed in result.get("deeds", []):
-		var deed_line := _mk_title_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
+		var deed_line := _mk_label("Deed: %s  ·  now called %s  ·  +1 mastery" % [String(deed.get("track", "")), String(deed.get("title", ""))], 16, Color(1.0, 0.86, 0.5))
 		deed_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		deed_line.set_meta("rare_pop", true)
 		box.add_child(deed_line)
 	if int(result.get("level_after", 0)) > int(result.get("level_before", 0)) and int(result.get("level_before", 0)) > 0:
 		var gained := int(result["level_after"]) - int(result["level_before"])
-		var lv_line := _mk_title_label("Level up! Your hero is now level %d%s" % [int(result["level_after"]), (" (+%d)" % gained) if gained > 1 else ""], 18, Color(1.0, 0.88, 0.45))
+		var lv_line := _mk_label("Level up! Your hero is now level %d%s" % [int(result["level_after"]), (" (+%d)" % gained) if gained > 1 else ""], 18, Color(1.0, 0.88, 0.45))
 		lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(lv_line)
 		Sfx.play("levelup", -6.0)
@@ -4785,7 +4788,7 @@ func _on_game_over(victory: bool) -> void:
 			if not before_sp.has(new_id):
 				var sdef: Dictionary = SkillDefs.get_abilities().get(String(new_id), {})
 				var key := KeyBinds.label("ability_p1" if int(sdef.get("slot", 1)) == 1 else "ability_p2")
-				var sp_line := _mk_title_label("New spell learned: %s  (key %s)" % [String(sdef.get("name", new_id)), key], 17, Color(0.75, 0.9, 1.0))
+				var sp_line := _mk_label("New spell learned: %s  (key %s)" % [String(sdef.get("name", new_id)), key], 17, Color(0.75, 0.9, 1.0))
 				sp_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 				sp_line.set_meta("rare_pop", true)
 				box.add_child(sp_line)
