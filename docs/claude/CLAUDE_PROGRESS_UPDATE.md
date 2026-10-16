@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 291 (done): readable campaign map header**
+  - The hero line, the Act subtitle and its progress ("cleared 0/9 · jars 0/2 · side roads 0/3") sat straight on the brightest part of the painted map, held up only by a text outline.
+  - A soft dark band now fades down from the top of the screen behind the header, so those lines read cleanly while the painting still shows through.
+  - Full regression: 111 of 111 checks passed in 1002 s, save unchanged.
 - **Plan 290 (done): clear dropdowns and buttons on the menu pages**
   - Every dropdown in the menus (battlefield, opponent people and difficulty, window mode, quality, relic filters, strength and weakness) showed its choice in the thin small-caps title font, and so did its open list.
   - Dropdowns and their lists now use the clear body font everywhere (set once on the shared menu theme). On the skirmish page the Back and Begin Battle buttons and the Resources, Victory and Game Speed labels match the rest of the menus; on hero creation the appearance name, points left and attribute names do too.

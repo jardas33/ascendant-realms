@@ -98,6 +98,24 @@ func _build() -> void:
 	_mood.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_mood.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_mood)
+	# A soft dark band behind the header, so the hero line, the Act subtitle
+	# and its progress read cleanly over the brightest part of the painting.
+	var band := TextureRect.new()
+	var band_grad := Gradient.new()
+	band_grad.offsets = PackedFloat32Array([0.0, 0.72, 1.0])
+	band_grad.colors = PackedColorArray([Color(0.01, 0.012, 0.025, 0.62), Color(0.01, 0.012, 0.025, 0.48), Color(0.01, 0.012, 0.025, 0.0)])
+	var band_tex := GradientTexture2D.new()
+	band_tex.gradient = band_grad
+	band_tex.fill_from = Vector2(0, 0)
+	band_tex.fill_to = Vector2(0, 1)
+	band_tex.width = 4
+	band_tex.height = 64
+	band.texture = band_tex
+	band.stretch_mode = TextureRect.STRETCH_SCALE
+	band.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	band.offset_bottom = 222.0
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(band)
 
 	var title := _label("The Seventy-Seventh Ascension", 38, Color(0.97, 0.92, 0.68), true)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
