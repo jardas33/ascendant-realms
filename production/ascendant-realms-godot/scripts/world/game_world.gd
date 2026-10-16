@@ -1054,6 +1054,7 @@ func _build_crags() -> void:
 	var crag_batcher = load("res://scripts/world/static_batcher.gd")
 	var crag_variants: Dictionary = {}
 	var authored_map := bool(map.get("authored", false))
+	var snowbound := str(map.get("theme", "")) == "snow"
 	for i in crags.size():
 		var pos: Vector3 = crags[i]["pos"]
 		var half: Vector2 = crags[i]["half"]
@@ -1104,7 +1105,14 @@ func _build_crags() -> void:
 					rock.position = Vector3(-half.x + (float(ix) + 0.5) * cell.x + rng.randf_range(-0.4, 0.4), rock.position.y,
 						-half.y + (float(iz) + 0.5) * cell.y + rng.randf_range(-0.4, 0.4))
 					rock.rotation.y = rng.randf() * TAU
-					_prep_decor(rock, _scorched_tone("rock"))
+					if snowbound:
+						# Under snow a ridge is snowed on along every ledge, as the
+						# lone boulders are (a negative height asks for the tree
+						# material without the wind); it stood lavender with
+						# green moss among the drifts.
+						_prep_decor(rock, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(rock))
+					else:
+						_prep_decor(rock, _scorched_tone("rock"))
 					# Unlike scattered boulders, a ridge needs its shadow to read as a wall.
 					for mesh in rock.find_children("*", "MeshInstance3D", true, false):
 						(mesh as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -1120,7 +1128,10 @@ func _build_crags() -> void:
 				boulder.position = Vector3(rng.randf_range(-half.x, half.x) if on_x else edge * (half.x - 0.4), boulder.position.y,
 					edge * (half.y - 0.4) if on_x else rng.randf_range(-half.y, half.y))
 				boulder.rotation.y = rng.randf() * TAU
-				_prep_decor(boulder, _scorched_tone("rock"))
+				if snowbound:
+					_prep_decor(boulder, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(boulder))
+				else:
+					_prep_decor(boulder, _scorched_tone("rock"))
 			if authored_map:
 				var built := holder.get_child_count()
 				crag_batcher.batch(holder)
@@ -1883,7 +1894,11 @@ func _build_hills() -> void:
 				ModelUtils.ground_model(rock)
 				rock.position = Vector3(at.x, at.y + rock.position.y - 0.4, at.z)
 				rock.rotation.y = rng.randf() * TAU
-				_prep_decor(rock, _scorched_tone("rock"))
+				if str(map.get("theme", "")) == "snow":
+					# Snowed on like the ridges.
+					_prep_decor(rock, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(rock))
+				else:
+					_prep_decor(rock, _scorched_tone("rock"))
 		# (On the tropical isles the hilltops grow palms: pines stood there
 		# among the lagoons.)
 		var hill_trees: Array = _theme_tree_paths([WOOD_TREES[0]])
@@ -1899,7 +1914,10 @@ func _build_hills() -> void:
 				ModelUtils.ground_model(pine)
 				pine.position = Vector3(at.x, at.y + pine.position.y - 0.2, at.z)
 				pine.rotation.y = rng.randf() * TAU
-				_prep_decor(pine)
+				# The canopy material, as every other tree has: hilltop pines
+				# stood dark and bare of snow among frosted ones, and did not
+				# move in the wind.
+				_prep_decor(pine, Color.WHITE, ModelUtils.measure_height(pine))
 		load("res://scripts/world/static_batcher.gd").batch(dress)
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.15)
 

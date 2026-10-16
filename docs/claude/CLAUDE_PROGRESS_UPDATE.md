@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 286 (done): snow on the winter rock**
+  - On the snow maps the rock ridges and the outcrops on the hills stood lavender, with dark green moss, among the drifts, and the pines on the hilltops were dark and bare while the pines around them were frosted.
+  - Ridges, rubble and hill outcrops are now snowed on along every ledge, like the lone boulders, and the hilltop pines carry snow and sway in the wind like every other tree.
+  - Full regression: 111 of 111 checks passed, save untouched.
 - **Plan 285 (done): no trees through roofs, dry trees in the badlands**
   - A battle picture on Montalto showed a pine standing up through the roof of a long hall. Only a handful of the scattered trees and boulders block building, so a hall could be raised right on top of one.
   - A building now clears any lone tree or boulder under it when it is placed. A new check (claude_decorclear) raises a hall on a tree and confirms the tree is gone.
