@@ -418,13 +418,15 @@ func _build_resource_tooltip() -> void:
 	_resource_tooltip.name = "ResourceHoverTooltip"
 	_resource_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_resource_tooltip.visible = false
-	_resource_tooltip.custom_minimum_size = Vector2(188.0, 56.0)
+	# Sized to its text: a bare name such as "Clan Croft" sat in the corner
+	# of a wide empty black box.
+	_resource_tooltip.custom_minimum_size = Vector2(0.0, 0.0)
 	_resource_tooltip.add_theme_stylebox_override("panel", _resource_tooltip_stylebox())
-	_resource_tooltip_label = _mk_label("", 15, Color(0.96, 0.91, 0.79))
+	_resource_tooltip_label = _mk_label("", 16, Color(0.96, 0.91, 0.79))
 	_resource_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_resource_tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_resource_tooltip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_resource_tooltip_label.custom_minimum_size = Vector2(164.0, 44.0)
+	_resource_tooltip_label.custom_minimum_size = Vector2(0.0, 0.0)
 	_resource_tooltip_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	_resource_tooltip.add_child(_resource_tooltip_label)
 	add_child(_resource_tooltip)
@@ -434,7 +436,19 @@ func _resource_tooltip_stylebox() -> StyleBoxFlat:
 	var sb := _hud_stylebox()
 	sb.bg_color = Color(0.05, 0.06, 0.075, 0.96)
 	sb.border_color = Color(0.82, 0.65, 0.30, 0.98)
-	sb.set_content_margin_all(10.0)
+	# The border colour was set but no width, so the box drew as a plain
+	# black slab; it now matches the game's other tooltips.
+	sb.border_width_left = 1
+	sb.border_width_right = 1
+	sb.border_width_bottom = 1
+	sb.border_width_top = 2
+	sb.set_corner_radius_all(3)
+	sb.shadow_color = Color(0, 0, 0, 0.55)
+	sb.shadow_size = 6
+	sb.content_margin_left = 12.0
+	sb.content_margin_right = 12.0
+	sb.content_margin_top = 7.0
+	sb.content_margin_bottom = 8.0
 	return sb
 
 

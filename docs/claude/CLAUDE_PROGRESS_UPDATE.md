@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 287 (done): the hover box over units, buildings and resources**
+  - Hovering over a unit, a building or a resource pile showed a wide plain black box with the name in one corner (for example "Clan Croft" in a box built for three lines). Its gold border had a colour but no width, so it never drew.
+  - The box now fits its text and has the gold border, rounded corners and shadow of the game's other tooltips; the text is a size larger.
+  - Also checked and dropped: capping the metal of the other peoples' imported buildings (as the units do) made almost no visible difference, so it was not kept.
+  - Full regression: 111 of 111 checks passed, save untouched.
 - **Plan 286 (done): snow on the winter rock**
   - On the snow maps the rock ridges and the outcrops on the hills stood lavender, with dark green moss, among the drifts, and the pines on the hilltops were dark and bare while the pines around them were frosted.
   - Ridges, rubble and hill outcrops are now snowed on along every ledge, like the lone boulders, and the hilltop pines carry snow and sway in the wind like every other tree.
