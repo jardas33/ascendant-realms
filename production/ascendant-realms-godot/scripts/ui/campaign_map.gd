@@ -863,10 +863,24 @@ func _build_node(c: Dictionary) -> void:
 	var status := "Sealed by your choice" if sealed_by_choice else (("Heroic laurel" if laurel else "Cleared") if cleared else (String(c["difficulty"]) if available else "Sealed"))
 	if bool(c.get("jar", false)):
 		status += ("  ·  jar found" if id in s["jars"] else "  ·  a jar lies here") if available or cleared else ""
-	var status_lbl := _label(kind + status, 16, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.82, 0.85, 0.88))
+	var status_lbl := _label(kind + status, 17, Color(0.98, 0.80, 0.36) if laurel else Color(0.5, 0.9, 0.55) if cleared else DIFF_COLORS.get(String(c["difficulty"]), Color(0.8, 0.8, 0.8)) if available else Color(0.82, 0.85, 0.88))
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.position = Vector2(0.0, btn.RIBBON_Y + btn.ribbon_h + 6.0)
-	status_lbl.size = Vector2(NODE_SIZE.x, 20.0)
+	# On a small dark plate sized to its words, centered under the ribbon: on
+	# the painted map the bare outlined caption was lost in the busy art.
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.02, 0.025, 0.035, 0.74)
+	plate.set_corner_radius_all(4)
+	plate.content_margin_left = 8.0
+	plate.content_margin_right = 8.0
+	plate.content_margin_top = 1.0
+	plate.content_margin_bottom = 2.0
+	status_lbl.add_theme_stylebox_override("normal", plate)
+	status_lbl.anchor_left = 0.5
+	status_lbl.anchor_right = 0.5
+	status_lbl.offset_left = 0.0
+	status_lbl.offset_right = 0.0
+	status_lbl.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	status_lbl.position.y = btn.RIBBON_Y + btn.ribbon_h + 5.0
 	status_lbl.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.95))
 	status_lbl.add_theme_constant_override("outline_size", 5)
 	status_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
