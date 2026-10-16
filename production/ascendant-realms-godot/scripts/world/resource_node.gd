@@ -181,6 +181,8 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 					_dress_gold(surface_copy)
 				if resource_kind == "food" and source_mat and source_mat.resource_name == "TilledSoil":
 					n.set_surface_override_material(surface, tilled_soil_material())
+				elif resource_kind == "food" and source_mat and source_mat.resource_name == "Sackcloth":
+					n.set_surface_override_material(surface, sackcloth_material(surface_copy.albedo_color))
 				elif resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
 					n.set_surface_override_material(surface, bark_material(surface_copy.albedo_color, Vector3(0, 0, 1)))
 				else:
@@ -225,6 +227,19 @@ static func tilled_soil_material() -> Material:
 		m.set_meta("batch_safe", true)
 		_soil_material = m
 	return _soil_material
+
+## Woven sackcloth for the grain sacks (sackcloth.gdshader).
+static var _sack_cache := {}
+
+static func sackcloth_material(col: Color) -> Material:
+	var key := col.to_html()
+	if not _sack_cache.has(key):
+		var m := ShaderMaterial.new()
+		m.shader = load("res://assets/shaders/sackcloth.gdshader")
+		m.set_shader_parameter("cloth_color", col)
+		m.set_meta("batch_safe", true)
+		_sack_cache[key] = m
+	return _sack_cache[key]
 
 func _resource_albedo(source: Color) -> Color:
 	match resource_kind:
@@ -319,17 +334,15 @@ func _add_food_dressing() -> void:
 		var sack_mesh := CapsuleMesh.new()
 		sack_mesh.radius = 0.36
 		sack_mesh.height = 1.02
-		sack_mesh.radial_segments = 8
-		sack_mesh.rings = 3
+		sack_mesh.radial_segments = 12
+		sack_mesh.rings = 5
 		sack.mesh = sack_mesh
 		sack.position = positions[i]
 		sack.rotation.y = -0.16 + 0.18 * float(i)
 		sack.scale = Vector3(0.90 + 0.04 * float(i), 1.10, 0.80)
 		sack.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		var sack_mat := StandardMaterial3D.new()
-		sack_mat.albedo_color = [Color(0.68, 0.52, 0.27, 1.0), Color(0.78, 0.63, 0.34, 1.0), Color(0.58, 0.42, 0.20, 1.0)][i]
-		sack_mat.roughness = 0.94
-		sack.material_override = sack_mat
+		# Woven, creased and dusty: in flat colour they were smooth blobs.
+		sack.material_override = sackcloth_material([Color(0.68, 0.52, 0.27, 1.0), Color(0.78, 0.63, 0.34, 1.0), Color(0.58, 0.42, 0.20, 1.0)][i])
 		dressing.add_child(sack)
 
 		var tie := MeshInstance3D.new()

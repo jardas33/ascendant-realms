@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 309 (done): woven sacks on the grain patches**
+  - The three provision sacks on every grain patch were smooth single-colour capsules that read as beige blobs.
+  - They now have a coarse burlap weave, creases, stains and a little flour dust on top (a new world-space sackcloth shader), and a rounder shape.
+  - Full regression: 111 of 111 checks passed in 923 s, save unchanged.
 - **Plan 308 (done): rock-textured pebbles round the stone quarries**
   - The five loose fragments round every stone deposit were plain grey, and in sunlight they lit up as smooth white lumps beside the textured quarry rock.
   - They now share the highland rock texture (world-mapped), and with one shared material instead of five colours they join into a single draw.
