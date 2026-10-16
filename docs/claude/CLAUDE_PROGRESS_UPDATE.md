@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 299 (done): straw-green reeds along the lakes**
+  - The reed beds round the tarns (for example on Ashfen Mire, 1-4) were built from near-black roots and dark olive tips, and from the camera they read as black scribbles along the shore.
+  - The rushes are now straw-green, darker at the waterline, with lighter brown reedmace heads.
+  - Full regression: 111 of 111 checks passed in 949 s, save unchanged.
 - **Plan 298 (done): burn scars without the scale pattern**
   - In battle pictures of Leonor's Cross (3-5, an ashen map) a wide stretch of ground was covered in even, lighter plates on a dark grid, like reptile scales. It was the char inside the burn scars added in plan 279.
   - The char is now mottled charcoal at two scales with only faint dark cracks, and the scars are a little smaller and rarer.

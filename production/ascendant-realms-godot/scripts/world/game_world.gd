@@ -2003,9 +2003,11 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 	rng.seed = 7741
 	var tool := SurfaceTool.new()
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var root_tone := Color(0.10, 0.17, 0.07)
-	var tip_tone := Color(0.40, 0.50, 0.20)
-	var head_tone := Color(0.20, 0.12, 0.07)
+	# Straw-green rushes, darker at the waterline (the near-black roots and
+	# olive tips read as black scribbles along the shore from the camera).
+	var root_tone := Color(0.26, 0.32, 0.14)
+	var tip_tone := Color(0.70, 0.72, 0.38)
+	var head_tone := Color(0.42, 0.26, 0.14)
 	for blade in 11:
 		var foot := Vector3(rng.randf_range(-0.38, 0.38), 0.0, rng.randf_range(-0.38, 0.38))
 		var tall := rng.randf_range(1.2, 2.3)
