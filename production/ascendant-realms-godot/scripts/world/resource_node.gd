@@ -177,7 +177,11 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 					surface_copy.albedo_color = Color(0.72, 0.72, 0.70, 1.0)
 				surface_copy.albedo_color = _resource_albedo(surface_copy.albedo_color)
 				surface_copy.roughness = maxf(surface_copy.roughness, 0.78)
-				if resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
+				if resource_kind == "gold" and source_mat and source_mat.resource_name.begins_with("Gold"):
+					_dress_gold(surface_copy)
+				if resource_kind == "food" and source_mat and source_mat.resource_name == "TilledSoil":
+					n.set_surface_override_material(surface, tilled_soil_material())
+				elif resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
 					n.set_surface_override_material(surface, bark_material(surface_copy.albedo_color, Vector3(0, 0, 1)))
 				else:
 					n.set_surface_override_material(surface, surface_copy)
@@ -198,6 +202,29 @@ static func bark_material(col: Color, lie: Vector3) -> Material:
 		m.set_meta("batch_safe", true)
 		_bark_cache[key] = m
 	return _bark_cache[key]
+
+## The gold in the rock glowed a flat pale yellow (the emission drowned the
+## metal), so the shards read as paper cut-outs. Now it is polished metal
+## that catches the light, with only a faint warm glow left in it.
+func _dress_gold(m: StandardMaterial3D) -> void:
+	m.albedo_color = Color(1.0, 0.80, 0.36)
+	m.metallic = 1.0
+	m.metallic_specular = 0.7
+	m.roughness = 0.32
+	if m.emission_enabled:
+		m.emission = Color(1.0, 0.55, 0.12)
+		m.emission_energy_multiplier = 0.18
+
+## Ploughed rows for a grain patch's soil: it was one flat dark-brown plate.
+static var _soil_material: Material
+
+static func tilled_soil_material() -> Material:
+	if _soil_material == null:
+		var m := ShaderMaterial.new()
+		m.shader = load("res://assets/shaders/tilled_soil.gdshader")
+		m.set_meta("batch_safe", true)
+		_soil_material = m
+	return _soil_material
 
 func _resource_albedo(source: Color) -> Color:
 	match resource_kind:
