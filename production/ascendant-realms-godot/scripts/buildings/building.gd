@@ -740,8 +740,13 @@ static func _strip_a02_review_staging(model: Node3D, path: String) -> void:
 ## hand's breadth high and the courses run level across every face.
 static var _a01_dressed: Dictionary = {}
 
+## The Barrosan buildings share one family of stone textures (granite walls,
+## dark slate roofs and forge blocks) mapped so large that each stone stood
+## two to five metres wide: walls and roofs read as a few dark blotches.
+## Their stone surfaces are laid in world metres instead, so the stones are
+## a hand's breadth across on every face of every Barrosan building.
 static func _dress_a01_stonework(model: Node3D, path: String) -> void:
-	if path != "res://assets/environment/buildings/barrosan_civic_keep_a01.glb":
+	if not path.begins_with("res://assets/environment/buildings/barrosan_"):
 		return
 	for child in model.find_children("*", "MeshInstance3D"):
 		var mesh := child as MeshInstance3D
@@ -752,13 +757,15 @@ static func _dress_a01_stonework(model: Node3D, path: String) -> void:
 			if not source:
 				continue
 			var texture_path: String = source.albedo_texture.resource_path if source.albedo_texture else ""
-			if not ("GRANITE" in source.resource_name.to_upper() or "granite" in texture_path):
+			var upper_name := source.resource_name.to_upper()
+			var slate := "SLATE" in upper_name or "slate" in texture_path
+			if not ("GRANITE" in upper_name or "granite" in texture_path or slate):
 				continue
 			if not _a01_dressed.has(source):
 				var dressed := source.duplicate() as StandardMaterial3D
 				dressed.uv1_triplanar = true
 				dressed.uv1_world_triplanar = true
-				dressed.uv1_scale = Vector3.ONE * 0.36
+				dressed.uv1_scale = Vector3.ONE * (0.42 if slate else 0.36)
 				dressed.uv1_triplanar_sharpness = 4.0
 				_a01_dressed[source] = dressed
 			mesh.set_surface_override_material(surface, _a01_dressed[source])

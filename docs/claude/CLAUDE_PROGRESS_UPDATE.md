@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 272 (done): Barrosan roofs, walls and forge stone at true size**
+  - The Barrosan houses, war hall, iron forge and main hall share one set of stone textures, mapped so large that each slate and stone stood two to five metres wide. Roofs read as a few black blotches and the forge block as a black box.
+  - All their granite and slate is now laid in world metres: roofs show rows of hand-sized slates, the walls show coursed stone, and the forge block reads as dark stonework around its fire. The same fix covers the landmarks that reuse the forge model.
+  - Full regression: 110 of 110 checks pass, save unchanged.
 - **Plan 271 (done): every people's buildings checked close up; the ten landmarks rebuilt in real materials**
   - A new picture tool photographs every building of every people up close (75 buildings). The modelled buildings held up; the weak spot was the ten landmark monuments (Village Oven, Fountain of the Mouras, Rift Gate, Great War Drum, Golden Loom, Standing Stones, Great Sun Dial, Howling Stone, Ossuary Bell, Entrudo Bonfire).
   - Their signature pieces were flat-colour shapes: a smooth orange ball for the oven, a pale yellow disc for the sun dial, a white bracket for the bell, a light-blue disc of water. Beside the modelled buildings they read as untextured placeholders.
