@@ -389,11 +389,26 @@ func _add_stone_quarry_dressing() -> void:
 		fragment.scale = fragment_scales[i]
 		fragment.rotation.y = 0.35 * float(i)
 		fragment.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		var fragment_mat := StandardMaterial3D.new()
-		fragment_mat.albedo_color = [Color(0.42, 0.46, 0.45, 1.0), Color(0.28, 0.32, 0.33, 1.0), Color(0.48, 0.50, 0.47, 1.0), Color(0.34, 0.38, 0.38, 1.0), Color(0.39, 0.42, 0.40, 1.0)][i]
-		fragment_mat.roughness = 0.92
-		fragment.material_override = fragment_mat
+		fragment.material_override = _fragment_material()
 		fragments.add_child(fragment)
+
+## Rock-textured stone for the loose quarry fragments. In flat grey they lit
+## up as smooth white lumps beside the textured quarry; one shared material
+## also lets the five join into a single draw.
+static var _fragment_mat: StandardMaterial3D
+
+static func _fragment_material() -> StandardMaterial3D:
+	if _fragment_mat == null:
+		_fragment_mat = StandardMaterial3D.new()
+		_fragment_mat.albedo_color = Color(0.56, 0.58, 0.56, 1.0)
+		var rock_path := "res://assets/textures/stone/highland_rock.png"
+		if ResourceLoader.exists(rock_path):
+			_fragment_mat.albedo_texture = load(rock_path)
+			_fragment_mat.uv1_triplanar = true
+			_fragment_mat.uv1_world_triplanar = true
+			_fragment_mat.uv1_scale = Vector3.ONE * 0.9
+		_fragment_mat.roughness = 0.95
+	return _fragment_mat
 
 ## The pointer is over this resource: a soft ring in its colour around its
 ## base, so what a right-click will gather is clear.
