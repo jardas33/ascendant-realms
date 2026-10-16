@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 283 (done): palms on the tropical hills**
+  - On the tropical maps the woods already grew palms and broadleaf trees, but every hilltop still carried a stand of highland pines among the lagoons.
+  - The hills now grow palms there, like the rest of the isles. Other themes keep their pines.
+  - Full regression: 110 of 110 checks passed, save untouched.
 - **Plan 282 (done): clear lakes and bright lagoons**
   - Lakes on the generated maps read as murky bogs: a dark blot of mud sat in the middle of each one, and the water thinned out early toward the shore.
   - The blot was the lake's muddy shore sheet being drawn over its water; the water is now always drawn on top. Open water also reaches nearly to the shore. On the tropical maps (Emerald Isles) the lakes are bright turquoise lagoons, as the map's description promises.

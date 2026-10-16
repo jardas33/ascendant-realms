@@ -1879,12 +1879,16 @@ func _build_hills() -> void:
 				rock.position = Vector3(at.x, at.y + rock.position.y - 0.4, at.z)
 				rock.rotation.y = rng.randf() * TAU
 				_prep_decor(rock, _scorched_tone("rock"))
+		# (On the tropical isles the hilltops grow palms: pines stood there
+		# among the lagoons.)
+		var hill_trees: Array = _theme_tree_paths([WOOD_TREES[0]])
 		for k in (0 if scorched and str(map.get("theme", "")) != "snow" else 5):
 			var a := rng.randf() * TAU
 			var t := rng.randf_range(0.0, 0.45)
 			var at: Vector3 = point.call(t, a)
-			if ResourceLoader.exists(WOOD_TREES[0]):
-				var pine: Node3D = load(WOOD_TREES[0]).instantiate()
+			var hill_tree: String = hill_trees[k % hill_trees.size()]
+			if ResourceLoader.exists(hill_tree):
+				var pine: Node3D = load(hill_tree).instantiate()
 				dress.add_child(pine)
 				ModelUtils.scale_to_height(pine, rng.randf_range(5.0, 7.0))
 				ModelUtils.ground_model(pine)
