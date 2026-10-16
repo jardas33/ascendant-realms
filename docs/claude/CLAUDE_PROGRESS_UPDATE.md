@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 318 (done): snow hills rise out of the snowfield**
+  - On Frostmere Basin each hill stood on the grey snowfield as a bright white cut-out slab with a hard outline: the hill's snow was brightest at its foot.
+  - The snow on a hill now darkens toward its foot (over the outer 45% of its radius) to the snowfield's tone and stays white on top, so the outline softens into the ground. Only snow maps change. The improvement is moderate: the slope facing the sun still shows a lighter edge at its foot.
+  - A first try shaded by height instead of distance out; the dome rises too fast near its edge for that to reach the foot.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 317 (done): river and tarn banks**
   - On Frostmere Basin the river ran down a wide near-black strip with straight edges across the snow: a road with a stream down the middle. The bank under every river and tarn was one flat colour fading out in a ruled line.
   - New `river_bank.gdshader` (used by `_bank_material()` for river beds and tarn shores): a ragged, soft edge, mud broken by silt and pebbles, and on snow maps a frosting with drifts of snow over the mud. Green maps keep their mud colour with the new texture (checked on Bread Fountain).

@@ -1820,6 +1820,7 @@ func _build_hills() -> void:
 	noise.frequency = 0.07
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5521
+	var snow_hill := str(map.get("theme", "")) == "snow"
 	for hill in hills:
 		var centre: Vector2 = hill["at"]
 		var radii: Vector2 = hill["radii"]
@@ -1859,6 +1860,12 @@ func _build_hills() -> void:
 					# Steeper and higher ground shows more rock (darker, greyer).
 					var shade := clampf(v.y / height, 0.0, 1.0)
 					var hue := Color(1.0, 1.0, 1.0).lerp(Color(0.80, 0.78, 0.74), shade * 0.5)
+					if snow_hill:
+						# Plan 318: under snow the foot was the brightest part, so
+						# each hill stood on the grey snowfield as a white cut-out
+						# slab. Now the foot takes the snowfield's tone and the
+						# snow brightens toward the windswept top.
+						hue = Color(1.0, 1.0, 1.0).lerp(Color(0.62, 0.64, 0.66), smoothstep(0.55, 1.0, t0 if index < 2 else t1))
 					if mesa:
 						# Beds of rock show as bands up the cliff; the top is paler.
 						var bed := 0.5 + 0.5 * sin(v.y * 2.4)
