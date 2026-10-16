@@ -1310,6 +1310,9 @@ func _build_damage_status_visual() -> void:
 	_damage_status_label.font_size = 17
 	_damage_status_label.outline_size = 6
 	_damage_status_label.outline_modulate = Color(0.08, 0.02, 0.0, 0.92)
+	# Lifted on screen clear of its bar: from the battle camera the bar ran
+	# straight through the word.
+	_damage_status_label.offset = Vector2(0, 16)
 	_damage_status_label.modulate = Color(1.0, 0.48, 0.32, 1.0)
 	_damage_status_label.position = Vector3(0, _presentation_height() + 1.18, 0)
 	_damage_status_label.text = "DAMAGED"

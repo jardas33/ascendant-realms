@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 311 (done): DAMAGED tag clear of its health bar**
+  - Since plan 303 made the DAMAGED tag screen-sized, it sat right on the building's red health bar from the battle camera, and the bar struck through the word.
+  - The tag is now lifted 16 pixels on screen above its bar; the resource LOW and NEAR EMPTY tags are lifted 10 above theirs.
+  - Full regression: 111 of 111 checks passed in 921 s, save unchanged.
 - **Plan 310 (done): straw on the grain sheaves**
   - The bound sheaves on every grain patch were smooth yellow domes and cones.
   - They now show upright straw streaks with drier, paler tops (a new world-space straw shader). A first version that worked out the streaks from the surface's facing turned into speckle on the rounded sheaves; the final one uses a field that changes across the ground and slowly upward, measured from the deposit, so it holds on any curve.

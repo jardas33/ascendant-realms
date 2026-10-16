@@ -512,6 +512,7 @@ func _build_depletion_status_visual(scale_h: float) -> void:
 	_depletion_status_label.font_size = 16
 	_depletion_status_label.outline_size = 6
 	_depletion_status_label.outline_modulate = Color(0.06, 0.035, 0.0, 0.92)
+	_depletion_status_label.offset = Vector2(0, 10)
 	_depletion_status_label.position = Vector3(0, maxf(1.8, scale_h * 0.90) + 0.42, 0)
 	_depletion_status_label.visible = false
 	model_root.add_child(_depletion_status_label)
