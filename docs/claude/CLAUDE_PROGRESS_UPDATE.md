@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 271 (done): every people's buildings checked close up; the ten landmarks rebuilt in real materials**
+  - A new picture tool photographs every building of every people up close (75 buildings). The modelled buildings held up; the weak spot was the ten landmark monuments (Village Oven, Fountain of the Mouras, Rift Gate, Great War Drum, Golden Loom, Standing Stones, Great Sun Dial, Howling Stone, Ossuary Bell, Entrudo Bonfire).
+  - Their signature pieces were flat-colour shapes: a smooth orange ball for the oven, a pale yellow disc for the sun dial, a white bracket for the bell, a light-blue disc of water. Beside the modelled buildings they read as untextured placeholders.
+  - Every piece now has a real surface: flagstone plazas and dressed-stone plinths, rough-hewn rock menhirs, grained timber (new wood shader with growth lines and knots), cast bronze and iron with a hammered patina, fired clay, bone, hide and dark water. The rift gate is now a basalt ring with a burning violet lip, the drum has iron hoops and hide heads, and the fountain has a second basin.
+  - Fixed a flicker where the fountain water sat exactly level with its basin rim.
+  - Full regression: 110 of 110 checks pass, save unchanged.
 - **Plan 270 (done): the Barrosan main hall's stonework**
   - The Clanhold (the Barrosan main hall, seen in every Barrosan match) had its granite ground floor mapped so large that each stone stood two or three metres wide: the walls read as a few grey blotches.
   - Its granite is now laid in world metres, so the stones are a hand's breadth high with level courses and mortar on every face, including the chimney.

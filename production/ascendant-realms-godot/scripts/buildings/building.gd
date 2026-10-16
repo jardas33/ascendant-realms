@@ -2070,6 +2070,9 @@ func _destroy(from = null) -> void:
 
 ## Each landmark gets its own centrepiece so it reads as a monument, not a
 ## workshop: a flagstone plaza plus a signature piece (stones, dial, drum...).
+## Every piece wears a real surface (dressed stone, rough rock, hewn timber,
+## cast bronze, fired clay, water), never a flat colour: the plain shapes read
+## as untextured placeholders beside the modelled buildings.
 ## Presentation only; no collision.
 func _add_landmark_centrepiece() -> void:
 	var kind := String(def.get("landmark", ""))
@@ -2079,36 +2082,47 @@ func _add_landmark_centrepiece() -> void:
 	add_child(root)
 	var r := footprint
 	var stone := Color(0.56, 0.54, 0.50)
-	# Plaza: a low flagstone disc with a tinted inlay ring.
-	_lm_piece(root, _lm_cyl(r * 1.25, r * 1.25, 0.16), stone.darkened(0.15), Vector3(0, 0.06, 0))
+	# Plaza: a low flagstone disc with a bronze inlay ring.
+	_lm_piece(root, _lm_cyl(r * 1.25, r * 1.3, 0.22), stone.darkened(0.05), Vector3(0, 0.06, 0), Vector3.ONE, 0.0, "masonry")
 	var inlay := TorusMesh.new()
 	inlay.inner_radius = r * 1.17
-	inlay.outer_radius = r * 1.2
-	inlay.rings = 48
-	inlay.ring_segments = 4
-	_lm_piece(root, inlay, tint.darkened(0.55), Vector3(0, 0.15, 0), Vector3(1, 0.25, 1))
+	inlay.outer_radius = r * 1.21
+	inlay.rings = 64
+	inlay.ring_segments = 6
+	_lm_piece(root, inlay, tint.lerp(Color(0.62, 0.45, 0.22), 0.6), Vector3(0, 0.17, 0), Vector3(1, 0.3, 1), 0.25, "bronze")
 	var front := Vector3(0, 0, r * 0.95)
 	match kind:
 		"stones":
+			# Rough-hewn menhirs, leaning a little, each with its own height
+			# and girth, and a capstone across the tallest pair.
 			for i in 9:
 				var a := TAU * float(i) / 9.0
 				var h := 2.6 + 0.8 * float(i % 3)
-				var slab := _lm_piece(root, _lm_box(Vector3(0.9, h, 0.45)), stone, Vector3(cos(a) * r * 1.15, h * 0.5, sin(a) * r * 1.15))
-				slab.rotation.y = -a + PI * 0.5
-				slab.rotation.z = 0.06 * float((i % 3) - 1)
-			var lintel := _lm_piece(root, _lm_box(Vector3(2.6, 0.45, 0.5)), stone.darkened(0.1), Vector3(r * 1.15, 3.85, 0.0))
-			lintel.rotation.y = PI * 0.5
+				var menhir := CylinderMesh.new()
+				menhir.top_radius = 0.34 + 0.06 * float(i % 2)
+				menhir.bottom_radius = 0.62
+				menhir.height = h
+				menhir.radial_segments = 5
+				menhir.rings = 2
+				var slab := _lm_piece(root, menhir, stone.lightened(0.05), Vector3(cos(a) * r * 1.15, h * 0.5 - 0.1, sin(a) * r * 1.15), Vector3(1.0, 1.0, 0.62), 0.0, "rock")
+				slab.rotation = Vector3(0.05 * float((i % 3) - 1), -a + PI * 0.5 + 0.3 * float(i % 2), 0.07 * float((i % 3) - 1))
+			var lintel := _lm_piece(root, _lm_box(Vector3(2.8, 0.55, 0.7)), stone, Vector3(r * 1.15, 3.95, 0.0), Vector3.ONE, 0.0, "rock")
+			lintel.rotation = Vector3(0.0, PI * 0.5, 0.04)
 		"sundial":
-			_lm_piece(root, _lm_cyl(2.2, 2.3, 0.3), Color(0.85, 0.68, 0.32), front + Vector3(0, 0.3, 0), Vector3.ONE, 0.6)
+			# A stepped stone drum carrying a bronze dial face with raised hour
+			# marks and a tall bronze gnomon.
+			_lm_piece(root, _lm_cyl(2.45, 2.6, 0.35), stone, front + Vector3(0, 0.18, 0), Vector3.ONE, 0.0, "masonry")
+			_lm_piece(root, _lm_cyl(2.2, 2.3, 0.22), Color(0.80, 0.60, 0.30), front + Vector3(0, 0.46, 0), Vector3.ONE, 0.15, "bronze")
 			for i in 12:
 				var a := TAU * float(i) / 12.0
-				_lm_piece(root, _lm_box(Vector3(0.12, 0.08, 0.5)), Color(0.35, 0.22, 0.10), front + Vector3(cos(a) * 1.85, 0.48, sin(a) * 1.85)).rotation.y = -a + PI * 0.5
-			var gnomon := _lm_piece(root, _lm_box(Vector3(0.18, 2.6, 1.1)), Color(0.72, 0.52, 0.22), front + Vector3(0, 1.4, -0.3), Vector3.ONE, 0.7)
+				var mark := _lm_piece(root, _lm_box(Vector3(0.14, 0.07, 0.42 if i % 3 == 0 else 0.26)), Color(0.30, 0.20, 0.10), front + Vector3(cos(a) * 1.85, 0.6, sin(a) * 1.85), Vector3.ONE, 0.0, "bronze")
+				mark.rotation.y = -a + PI * 0.5
+			var gnomon := _lm_piece(root, _lm_box(Vector3(0.16, 2.6, 1.1)), Color(0.78, 0.56, 0.24), front + Vector3(0, 1.45, -0.3), Vector3.ONE, 0.25, "bronze")
 			gnomon.rotation.x = -0.55
 		"bonfire":
 			for i in 8:
 				var a := TAU * float(i) / 8.0
-				var lg := _lm_piece(root, _lm_cyl(0.22, 0.28, 3.8), Color(0.30, 0.19, 0.10), front + Vector3(cos(a) * 0.8, 1.5, sin(a) * 0.8))
+				var lg := _lm_piece(root, _lm_cyl(0.22, 0.28, 3.8), Color(0.32, 0.21, 0.12), front + Vector3(cos(a) * 0.8, 1.5, sin(a) * 0.8), Vector3.ONE, 0.0, "wood")
 				lg.rotation = Vector3(0.0, -a, 0.0)
 				lg.rotate(Vector3(sin(a), 0, -cos(a)).normalized(), -0.38)
 			var fire := BrazierFire.new()
@@ -2118,26 +2132,33 @@ func _add_landmark_centrepiece() -> void:
 			fire.position = front + Vector3(0, 1.6, 0)
 			root.add_child(fire)
 		"drum":
-			var drum := _lm_piece(root, _lm_cyl(1.5, 1.5, 1.4), Color(0.45, 0.20, 0.12), front + Vector3(0, 1.0, 0))
-			drum.rotation.x = PI * 0.5
+			# A great timber drum with hide heads and iron hoops, on a cradle.
+			var body := _lm_piece(root, _lm_cyl(1.5, 1.5, 1.4), Color(0.48, 0.24, 0.13), front + Vector3(0, 1.15, 0), Vector3.ONE, 0.0, "wood")
+			body.rotation.x = PI * 0.5
 			for s in [-1.0, 1.0]:
-				_lm_piece(root, _lm_cyl(1.52, 1.52, 0.08), Color(0.86, 0.78, 0.62), front + Vector3(0, 1.0, 0.72 * s)).rotation.x = PI * 0.5
+				_lm_piece(root, _lm_cyl(1.56, 1.56, 0.06), Color(0.86, 0.76, 0.58), front + Vector3(0, 1.15, 0.72 * s), Vector3.ONE, 0.0, "hide").rotation.x = PI * 0.5
+				_lm_piece(root, _lm_cyl(1.6, 1.6, 0.14), Color(0.22, 0.20, 0.19), front + Vector3(0, 1.15, 0.6 * s), Vector3.ONE, 0.0, "iron").rotation.x = PI * 0.5
 			for s in [-1.0, 1.0]:
-				_lm_piece(root, _lm_box(Vector3(0.3, 0.5, 1.6)), Color(0.25, 0.15, 0.08), front + Vector3(1.1 * s, 0.25, 0))
+				_lm_piece(root, _lm_box(Vector3(0.36, 0.55, 1.7)), Color(0.30, 0.19, 0.10), front + Vector3(1.05 * s, 0.28, 0), Vector3.ONE, 0.0, "wood", Vector3(0, 0, 1))
 		"bell":
+			# A frame of great bones lashed with iron, the bronze bell hung
+			# from its crossbeam.
 			for s in [-1.0, 1.0]:
-				_lm_piece(root, _lm_box(Vector3(0.35, 3.6, 0.35)), Color(0.82, 0.80, 0.72), front + Vector3(1.4 * s, 1.8, 0))
-			_lm_piece(root, _lm_box(Vector3(3.3, 0.35, 0.4)), Color(0.82, 0.80, 0.72), front + Vector3(0, 3.6, 0))
+				_lm_piece(root, _lm_cyl(0.18, 0.26, 3.7), Color(0.80, 0.77, 0.68), front + Vector3(1.4 * s, 1.85, 0), Vector3.ONE, 0.0, "bone")
+			var beam := _lm_piece(root, _lm_cyl(0.2, 0.2, 3.4), Color(0.80, 0.77, 0.68), front + Vector3(0, 3.6, 0), Vector3.ONE, 0.0, "bone")
+			beam.rotation.z = PI * 0.5
 			var bell := CylinderMesh.new()
-			bell.top_radius = 0.45
+			bell.top_radius = 0.42
 			bell.bottom_radius = 1.0
 			bell.height = 1.4
-			_lm_piece(root, bell, Color(0.45, 0.33, 0.18), front + Vector3(0, 2.7, 0))
+			bell.radial_segments = 32
+			_lm_piece(root, bell, Color(0.50, 0.38, 0.20), front + Vector3(0, 2.7, 0), Vector3.ONE, 0.0, "bronze")
+			_lm_piece(root, _lm_cyl(1.04, 1.04, 0.12), Color(0.42, 0.31, 0.16), front + Vector3(0, 2.06, 0), Vector3.ONE, 0.0, "bronze")
 		"loom":
 			for s in [-1.0, 1.0]:
-				_lm_piece(root, _lm_box(Vector3(0.3, 3.2, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(1.5 * s, 1.6, 0))
-			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 3.2, 0))
-			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 0.5, 0))
+				_lm_piece(root, _lm_box(Vector3(0.3, 3.2, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(1.5 * s, 1.6, 0), Vector3.ONE, 0.0, "wood")
+			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 3.2, 0), Vector3.ONE, 0.0, "wood", Vector3(1, 0, 0))
+			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 0.5, 0), Vector3.ONE, 0.0, "wood", Vector3(1, 0, 0))
 			for i in 9:
 				_lm_piece(root, _lm_box(Vector3(0.05, 2.6, 0.05)), Color(1.0, 0.82, 0.3), front + Vector3(-1.2 + 0.3 * float(i), 1.85, 0), Vector3.ONE, 1.5)
 		"howl":
@@ -2151,7 +2172,7 @@ func _add_landmark_centrepiece() -> void:
 			shaft.height = 5.8
 			shaft.radial_segments = 6
 			shaft.rings = 1
-			var menhir := _lm_piece(root, shaft, rock, front + Vector3(0, 2.9, 0))
+			var menhir := _lm_piece(root, shaft, rock, front + Vector3(0, 2.9, 0), Vector3.ONE, 0.0, "rock")
 			menhir.rotation = Vector3(0.07, 0.4, -0.05)
 			for side in [[-1.7, 2.6, 0.5], [1.5, 1.9, -0.35]]:
 				var lesser := CylinderMesh.new()
@@ -2160,7 +2181,7 @@ func _add_landmark_centrepiece() -> void:
 				lesser.height = float(side[1])
 				lesser.radial_segments = 5
 				lesser.rings = 1
-				var stone_piece := _lm_piece(root, lesser, rock.darkened(0.12), front + Vector3(float(side[0]), float(side[1]) * 0.5, 0.3))
+				var stone_piece := _lm_piece(root, lesser, rock.darkened(0.12), front + Vector3(float(side[0]), float(side[1]) * 0.5, 0.3), Vector3.ONE, 0.0, "rock")
 				stone_piece.rotation = Vector3(0.0, float(side[2]) * 2.0, float(side[2]) * 0.35)
 			var moon := TorusMesh.new()
 			moon.inner_radius = 0.34
@@ -2170,17 +2191,31 @@ func _add_landmark_centrepiece() -> void:
 			var ring_piece := _lm_piece(root, moon, Color(0.7, 0.8, 1.0), front + Vector3(0, 3.9, 0.78), Vector3(1, 0.5, 1), 2.0)
 			ring_piece.rotation.x = PI * 0.5 - 0.09
 		"rift":
+			# A ring of black basalt standing on its edge, its inner lip
+			# burning violet around a dark veil.
 			var ring := TorusMesh.new()
-			ring.inner_radius = 1.3
-			ring.outer_radius = 1.6
-			var gate := _lm_piece(root, ring, Color(0.55, 0.25, 0.85), front + Vector3(0, 1.8, 0), Vector3.ONE, 1.8)
+			ring.inner_radius = 1.25
+			ring.outer_radius = 1.75
+			ring.rings = 48
+			ring.ring_segments = 8
+			var gate := _lm_piece(root, ring, Color(0.20, 0.18, 0.22), front + Vector3(0, 1.95, 0), Vector3.ONE, 0.0, "rock")
 			gate.rotation.x = PI * 0.5
-			var veil := _lm_piece(root, _lm_cyl(1.3, 1.3, 0.05), Color(0.12, 0.02, 0.2), front + Vector3(0, 1.8, 0), Vector3.ONE, 0.5)
+			var lip := TorusMesh.new()
+			lip.inner_radius = 1.2
+			lip.outer_radius = 1.3
+			lip.rings = 48
+			lip.ring_segments = 6
+			_lm_piece(root, lip, Color(0.55, 0.25, 0.85), front + Vector3(0, 1.95, 0), Vector3.ONE, 2.2).rotation.x = PI * 0.5
+			var veil := _lm_piece(root, _lm_cyl(1.25, 1.25, 0.05), Color(0.12, 0.02, 0.2), front + Vector3(0, 1.95, 0), Vector3.ONE, 0.6)
 			veil.rotation.x = PI * 0.5
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.9, 0.5, 0.9)), Color(0.22, 0.20, 0.24), front + Vector3(0.95 * s, 0.25, 0), Vector3.ONE, 0.0, "rock")
 		"fountain":
-			_lm_piece(root, _lm_cyl(1.9, 2.0, 0.6), stone, front + Vector3(0, 0.3, 0))
-			_lm_piece(root, _lm_cyl(1.6, 1.6, 0.1), Color(0.35, 0.65, 0.85), front + Vector3(0, 0.58, 0), Vector3.ONE, 0.6)
-			_lm_piece(root, _lm_cyl(0.25, 0.35, 1.8), stone, front + Vector3(0, 1.2, 0))
+			_lm_piece(root, _lm_cyl(1.9, 2.0, 0.6), stone.lightened(0.08), front + Vector3(0, 0.3, 0), Vector3.ONE, 0.0, "masonry")
+			_lm_piece(root, _lm_cyl(1.65, 1.65, 0.08), Color(0.10, 0.30, 0.38), front + Vector3(0, 0.63, 0), Vector3.ONE, 0.12, "water")
+			_lm_piece(root, _lm_cyl(0.25, 0.35, 1.8), stone.lightened(0.08), front + Vector3(0, 1.2, 0), Vector3.ONE, 0.0, "rock")
+			_lm_piece(root, _lm_cyl(0.75, 0.3, 0.25), stone.lightened(0.08), front + Vector3(0, 2.1, 0), Vector3.ONE, 0.0, "rock")
+			_lm_piece(root, _lm_cyl(0.66, 0.66, 0.05), Color(0.10, 0.30, 0.38), front + Vector3(0, 2.25, 0), Vector3.ONE, 0.12, "water")
 		"oven":
 			var dome := SphereMesh.new()
 			dome.radius = 1.6
@@ -2189,13 +2224,13 @@ func _add_landmark_centrepiece() -> void:
 			# A clay dome on a stone table, with a framed mouth, the fire inside
 			# it and a chimney: the bare dome alone read as a ball on the ground.
 			var clay := Color(0.72, 0.50, 0.36)
-			_lm_piece(root, _lm_cyl(1.85, 1.95, 0.6), stone, front + Vector3(0, 0.3, 0))
-			_lm_piece(root, dome, clay, front + Vector3(0, 0.6, 0))
+			_lm_piece(root, _lm_cyl(1.85, 1.95, 0.6), stone, front + Vector3(0, 0.3, 0), Vector3.ONE, 0.0, "masonry")
+			_lm_piece(root, dome, clay, front + Vector3(0, 0.6, 0), Vector3.ONE, 0.0, "clay")
 			_lm_piece(root, _lm_box(Vector3(0.9, 0.7, 0.5)), Color(0.06, 0.04, 0.03), front + Vector3(0, 0.95, 1.4))
 			for s in [-1.0, 1.0]:
-				_lm_piece(root, _lm_box(Vector3(0.2, 0.8, 0.6)), stone.lightened(0.1), front + Vector3(0.55 * s, 1.0, 1.4))
-			_lm_piece(root, _lm_box(Vector3(1.4, 0.2, 0.65)), stone.lightened(0.1), front + Vector3(0, 1.48, 1.4))
-			_lm_piece(root, _lm_cyl(0.2, 0.26, 1.2), clay.darkened(0.25), front + Vector3(0, 2.5, -0.5))
+				_lm_piece(root, _lm_box(Vector3(0.2, 0.8, 0.6)), stone.lightened(0.1), front + Vector3(0.55 * s, 1.0, 1.4), Vector3.ONE, 0.0, "rock")
+			_lm_piece(root, _lm_box(Vector3(1.4, 0.2, 0.65)), stone.lightened(0.1), front + Vector3(0, 1.48, 1.4), Vector3.ONE, 0.0, "rock")
+			_lm_piece(root, _lm_cyl(0.2, 0.26, 1.2), clay.darkened(0.25), front + Vector3(0, 2.5, -0.5), Vector3.ONE, 0.0, "clay")
 			var glow := BrazierFire.new()
 			glow.flame_scale = 0.55
 			glow.light_range = 6.0
@@ -2218,18 +2253,89 @@ func _lm_box(s: Vector3) -> BoxMesh:
 	return b
 
 
-func _lm_piece(parent: Node3D, mesh: Mesh, col: Color, pos: Vector3, scl: Vector3 = Vector3.ONE, glow: float = 0.0) -> MeshInstance3D:
+## Surface materials for the landmark pieces, shared between all landmarks
+## of the match (keyed by surface, colour and grain axis).
+static var _lm_materials: Dictionary = {}
+
+
+func _lm_piece(parent: Node3D, mesh: Mesh, col: Color, pos: Vector3, scl: Vector3 = Vector3.ONE, glow: float = 0.0, surf: String = "", grain: Vector3 = Vector3.UP) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = col
-	mat.roughness = 0.85
-	if glow > 0.0:
-		mat.emission_enabled = true
-		mat.emission = col
-		mat.emission_energy_multiplier = glow
-	mi.material_override = mat
+	mi.material_override = _lm_material(col, glow, surf, grain)
 	mi.position = pos
 	mi.scale = scl
 	parent.add_child(mi)
 	return mi
+
+
+func _lm_material(col: Color, glow: float, surf: String, grain: Vector3) -> Material:
+	var key := "%s|%s|%.2f|%s" % [surf, col.to_html(), glow, str(grain)]
+	if _lm_materials.has(key):
+		return _lm_materials[key]
+	var rock_path := "res://assets/textures/stone/highland_rock.png"
+	var mat: Material = null
+	match surf:
+		"masonry":
+			var masonry_path := "res://assets/shaders/masonry.gdshader"
+			if ResourceLoader.exists(masonry_path) and ResourceLoader.exists(rock_path):
+				var dressed := ShaderMaterial.new()
+				dressed.shader = load(masonry_path)
+				dressed.set_shader_parameter("rock", load(rock_path))
+				dressed.set_shader_parameter("rock_scale", 0.3)
+				dressed.set_shader_parameter("stone_tint", Color(minf(col.r * 1.4, 1.0), minf(col.g * 1.4, 1.0), minf(col.b * 1.4, 1.0)))
+				dressed.set_shader_parameter("course_height", 0.45)
+				dressed.set_shader_parameter("block_length", 0.9)
+				dressed.set_shader_parameter("joint", 0.035)
+				mat = dressed
+		"wood":
+			var wood_path := "res://assets/shaders/wood_grain.gdshader"
+			if ResourceLoader.exists(wood_path):
+				var timber := ShaderMaterial.new()
+				timber.shader = load(wood_path)
+				timber.set_shader_parameter("wood_color", col)
+				timber.set_shader_parameter("axis", grain)
+				mat = timber
+	if mat == null:
+		var m := StandardMaterial3D.new()
+		m.albedo_color = col
+		m.roughness = 0.85
+		match surf:
+			"rock", "clay", "bone", "hide", "masonry", "wood":
+				# Rough grain laid in world metres, so no piece stretches it.
+				if ResourceLoader.exists(rock_path):
+					m.albedo_texture = load(rock_path)
+					m.uv1_triplanar = true
+					m.uv1_world_triplanar = true
+					m.uv1_triplanar_sharpness = 4.0
+					var grain_scale := {"rock": 0.45, "clay": 0.8, "bone": 1.2, "hide": 1.6}.get(surf, 0.45) as float
+					m.uv1_scale = Vector3.ONE * grain_scale
+					# The rock texture is mid grey; lift the tint so the piece
+					# keeps its intended colour under the grain.
+					var lift := {"rock": 1.55, "clay": 1.7, "bone": 1.5, "hide": 1.45}.get(surf, 1.5) as float
+					m.albedo_color = Color(minf(col.r * lift, 1.0), minf(col.g * lift, 1.0), minf(col.b * lift, 1.0))
+				m.roughness = {"clay": 0.95, "bone": 0.7, "hide": 0.8}.get(surf, 1.0) as float
+			"bronze", "iron":
+				# Cast metal, hammered and patinated: the rock grain fine and
+				# faint over it, so it is not one flat sheet of colour.
+				if ResourceLoader.exists(rock_path):
+					m.albedo_texture = load(rock_path)
+					m.uv1_triplanar = true
+					m.uv1_world_triplanar = true
+					m.uv1_scale = Vector3.ONE * 1.4
+					m.roughness_texture = m.albedo_texture
+					m.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GRAYSCALE
+				var lift_m := 1.35 if surf == "bronze" else 1.2
+				m.albedo_color = Color(minf(col.r * lift_m, 1.0), minf(col.g * lift_m, 1.0), minf(col.b * lift_m, 1.0))
+				m.metallic = 0.8
+				m.roughness = 0.55 if surf == "bronze" else 0.7
+			"water":
+				m.metallic = 0.2
+				m.roughness = 0.05
+				m.metallic_specular = 0.9
+		if glow > 0.0:
+			m.emission_enabled = true
+			m.emission = col
+			m.emission_energy_multiplier = glow
+		mat = m
+	_lm_materials[key] = mat
+	return mat
