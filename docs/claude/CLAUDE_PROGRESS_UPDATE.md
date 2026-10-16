@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 295 (done): real lava in the slag pools**
+  - In battle pictures of the Lume-Iron Mines (4-2) the slag pools were one flat orange color, a painted blob from the camera. Volcanic rivers used the same flat material.
+  - A new shader (`slag_pool.gdshader`) draws dark crust plates that drift slowly over glowing seams, hottest in the middle and crusted toward the banks, with a dull glow through the crust.
+  - While building it the pool first showed square blocks. The usual sine-based noise hash magnified rounding so neighboring noise cells disagreed at their corners; the shader uses a hash without sine.
+  - Full regression: 111 of 111 checks passed in 939 s, save unchanged.
 - **Plan 294 (done): snow fields with drifts and scoured ground**
   - On snow maps one windswept snow texture laid the same dark speckle over the whole field, so every part of the map looked alike.
   - The ground shader now lays broad zones a few hundred meters across: deep drifts where the scour marks fill with smooth snow, and scoured stretches that show more of the rock beneath.

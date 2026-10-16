@@ -1979,16 +1979,14 @@ func _build_lakes() -> void:
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.3)
 	_build_reeds(layer, lakes)
 
-var _slag: StandardMaterial3D = null
+var _slag: ShaderMaterial = null
 
-func _slag_material() -> StandardMaterial3D:
+## Molten slag: drifting crust plates over glowing seams, crusted at the
+## banks (it was one flat orange colour, a painted blob from the camera).
+func _slag_material() -> ShaderMaterial:
 	if _slag == null:
-		_slag = StandardMaterial3D.new()
-		_slag.albedo_color = Color(0.80, 0.22, 0.04)
-		_slag.emission_enabled = true
-		_slag.emission = Color(1.0, 0.30, 0.04)
-		_slag.emission_energy_multiplier = 1.15
-		_slag.roughness = 0.55
+		_slag = ShaderMaterial.new()
+		_slag.shader = preload("res://assets/shaders/slag_pool.gdshader")
 	return _slag
 
 ## Reed beds along the shore of every tarn: stands of rush and reedmace in
