@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 314 (done): fords look like river beds**
+  - At a ford (Bread Fountain, chapter 2-3, at 1366x768) the shallows showed stones a metre and a quarter across, evenly spaced with dark joints, under bright white dashes: a paved road under glass.
+  - `ford_shallows.gdshader` now draws fist-sized cobbles of mixed stone (pebble_scale 0.8 to 2.6), finer gravel, sand drifts, an occasional larger stone, and a much fainter light ripple.
+  - Tried and dropped: varying the cobble size with a noise field; it bent the cells into swirls.
+  - The War Chest captions were checked at 1366x768: the text floor (ReadableText) already lifts them, so raising their sizes changed nothing on a laptop and was not kept.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 313 (done): ruins of large buildings, in two draw calls**
   - In a real Granitborn against Aurean battle, the large ruins from plan 312 had beams up to five metres long standing almost upright like poles, with stones scattered thinly across a wide patch.
   - Beams are now at most 3.2 m and lean low; stones are larger for large buildings and heaped closer to the middle.
