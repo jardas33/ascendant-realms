@@ -25,6 +25,10 @@ uniform float volcanic_surface = 0.0;
 uniform float sand_surface = 0.0;
 uniform vec3 sand_color : source_color = vec3(0.60, 0.58, 0.56);
 uniform float sand_ripple = 1.0;
+// Bog (wetland): sodden dark earth in broad patches, with standing pools of
+// still water at their hearts that catch the sky. Kept off the roads and
+// away from the starting seats. 0 none.
+uniform float bog_surface = 0.0;
 
 // R19 tactical readability grade.  These controls deliberately change only
 // the material presentation of the existing flat ground mesh; the playable
@@ -341,6 +345,21 @@ void fragment() {
 		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
 	}
+	float pool = 0.0;
+	if (bog_surface > 0.0) {
+		float keep = 1.0 - clamp(road, 0.0, 1.0);
+		for (int i = 0; i < field_seat_count; i++) {
+			keep *= smoothstep(26.0, 42.0, distance(wxz, field_seats[i]));
+		}
+		float patch_m = fbm2(wxz * 0.03 + 71.0);
+		float soggy = smoothstep(0.52, 0.66, patch_m) * keep * bog_surface;
+		pool = smoothstep(0.665, 0.705, patch_m + (fbm(wxz * 0.15 + 3.0) - 0.5) * 0.08) * keep * bog_surface;
+		vec3 mud = texture(tex_dirt, wxz * tile_dirt * 0.7).rgb * vec3(0.40, 0.38, 0.28);
+		ground = mix(ground, mix(ground * 0.62, mud, 0.5), soggy);
+		// Peat-dark water with a little weed floating in it.
+		vec3 still = vec3(0.045, 0.065, 0.05) + vec3(0.05, 0.07, 0.03) * smoothstep(0.6, 0.85, fbm(wxz * 0.5 + 9.0));
+		ground = mix(ground, still, pool);
+	}
 	ALBEDO = ground;
 	if (relief_strength > 0.0) {
 		// Rolling-ground relief from a low-frequency height field, fading out on
@@ -349,7 +368,7 @@ void fragment() {
 		float hc = swell(wxz * relief_scale * 6.0);
 		float hx = swell((wxz + vec2(e, 0.0)) * relief_scale * 6.0);
 		float hz = swell((wxz + vec2(0.0, e)) * relief_scale * 6.0);
-		float k = relief_strength * (1.0 - 0.7 * clamp(road, 0.0, 1.0)) * 2.2;
+		float k = relief_strength * (1.0 - 0.7 * clamp(road, 0.0, 1.0)) * 2.2 * (1.0 - pool);
 		vec3 n_world = normalize(vec3(-(hx - hc) * k, 1.0, -(hz - hc) * k));
 		NORMAL = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
 		// Cavity darkening in the hollows of the relief.
@@ -364,6 +383,6 @@ void fragment() {
 		ALBEDO = mix(ALBEDO, mix(ALBEDO, vec3(dot(ALBEDO, vec3(0.299, 0.587, 0.114))), 0.4) * 0.64, beyond);
 	}
 	ALBEDO *= 1.0 - cloud_shadow_strength * cloud_shadow(wxz, TIME);
-	ROUGHNESS = mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0));
-	SPECULAR = 0.02;
+	ROUGHNESS = mix(mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0)), 0.06, pool);
+	SPECULAR = mix(0.02, 0.5, pool);
 }

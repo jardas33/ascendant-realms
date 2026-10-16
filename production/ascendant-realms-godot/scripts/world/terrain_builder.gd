@@ -206,6 +206,8 @@ func _make_ground_material(map: Dictionary) -> Material:
 		sm.set_shader_parameter("sand_surface", 1.0)
 		sm.set_shader_parameter("sand_color", Color(0.60, 0.58, 0.56) if sand_theme == "desert" else Color(0.62, 0.52, 0.46))
 		sm.set_shader_parameter("sand_ripple", 1.0 if sand_theme == "desert" else 0.2)
+	elif sand_theme == "wetland":
+		sm.set_shader_parameter("bog_surface", 1.0)
 	# R19 material hierarchy: calm the walkable plane first, then let roads
 	# carry a restrained value shift.  This is presentation-only and does not
 	# change the map's authored geometry or navigation data.
@@ -270,6 +272,9 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 			# Sand and bare red earth: no green fields laid over them (the
 			# highland grade below painted lush and mossy turf on the dunes).
 			return {"ground_base": Color(0.52, 0.44, 0.32), "road_base": Color(0.50, 0.40, 0.28), "road_edge_color": Color(0.34, 0.26, 0.17), "surface_detail": 0.5, "surface_macro": 0.2, "road_detail": 0.5, "road_edge_strength": 0.22, "surface_saturation": 0.92, "field_strength": 0.0, "relief_strength": 0.7}
+		"wetland":
+			# Swamp country: darker, mossier turf than the highland lawn.
+			return {"ground_base": Color(0.25, 0.33, 0.20), "road_base": Color(0.36, 0.33, 0.25), "road_edge_color": Color(0.15, 0.18, 0.12), "surface_detail": 0.46, "surface_macro": 0.3, "road_detail": 0.57, "road_edge_strength": 0.29, "surface_saturation": 0.78, "field_strength": 0.55, "field_lush": Color(0.22, 0.32, 0.14), "field_dry": Color(0.40, 0.40, 0.24), "field_moss": Color(0.15, 0.23, 0.12), "relief_strength": 1.0}
 		"verdant":
 			# Keep Bloomvale's inviting green mids after replacing the repeated
 			# plant stamps with a finer, more natural meadow texture.

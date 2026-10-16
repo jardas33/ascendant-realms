@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 276 (done): swamps with bog and standing water**
+  - The wetland maps (Mirefen Swamp, Duskwater Shore, Blightmarsh) were drawn with the bright highland lawn between their meres.
+  - Their ground now has a darker, mossier grade, broad sodden patches of dark mud, and still pools of peat-dark water at the heart of the patches, with reeds standing in them. Roads and the starting bases stay dry.
+  - Full regression: 110 of 110 checks pass, save unchanged.
 - **Plan 275 (done): date palms on desert and tropical maps**
   - The desert maps grew pines and oaks toned brown, and the tropical deltas and isles grew pines.
   - Two date palms are now built in code: a curved, ringed trunk, a crown of arching fronds cut into folded leaflets, a skirt of dead fronds and clusters of dates. They sway with the same wind as the other trees.
