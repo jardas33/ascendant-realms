@@ -1263,7 +1263,10 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 1)
 	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var heading := _top_small(_mk_title_label(title, 16, accent.lightened(0.14)), 16)
+	# Captioned like the resource cards beside it (plain bold capitals,
+	# centred): the title face here read dim and stood off to the left.
+	var heading := _top_small(_mk_label(title.to_upper(), 16, accent.lerp(Color(0.94, 0.90, 0.79), 0.30)), 16)
+	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	group.add_child(heading)
 	var rule := ColorRect.new()
@@ -1396,6 +1399,7 @@ func _build_top_bar() -> void:
 	var progression_metrics: HBoxContainer = progression["metrics"]
 	var tier_metric := _top_metric_surface(TIER_COUNTS[1], COMMAND_GOLD, 122.0, "The Age of Bronze, first of three. The next Age is opened at your hall.", false)
 	_tier_caption = (tier_metric["surface"] as Control).get_child(0) as Label
+	_tier_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var tier_cell: HBoxContainer = tier_metric["value_row"]
 	_tier_label = _mk_label(TIER_NAMES[1], 29, Color(0.98, 0.88, 0.55))
 	_tier_label.custom_minimum_size = Vector2(122, 0)
