@@ -7,6 +7,9 @@ render_mode diffuse_burley, specular_schlick_ggx;
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform bool has_texture = true;
+// Trees built in code (the date palms) carry their shading and the colour of
+// their dates in the vertex colour.
+uniform bool use_vertex_color = false;
 uniform vec4 albedo_color : source_color = vec4(1.0);
 uniform vec3 uv_scale = vec3(1.0);
 uniform float roughness_value = 0.85;
@@ -38,6 +41,9 @@ void vertex() {
 
 void fragment() {
 	vec3 base = has_texture ? texture(albedo_tex, UV).rgb : vec3(1.0);
+	if (use_vertex_color) {
+		base *= COLOR.rgb;
+	}
 	base = mix(base, vec3(dot(base, vec3(0.299, 0.587, 0.114))) * vec3(0.94, 0.96, 1.04), leafless * 0.85);
 	ALBEDO = base * albedo_color.rgb * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;

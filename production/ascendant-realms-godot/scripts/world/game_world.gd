@@ -801,6 +801,7 @@ func _scatter_environment() -> void:
 			"res://assets/environment/vegetation/broadleaf_oak.glb"]:
 		if ResourceLoader.exists(p):
 			trees.append(p)
+	trees = _theme_tree_paths(trees)
 	var rocks := []
 	for p in ["res://assets/environment/rocks/mossy_boulder.glb",
 			"res://assets/environment/rocks/highland_rock_cluster.glb",
@@ -2024,6 +2025,32 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 	layer.add_child(reeds)
 
 const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
+const PALM_TREES := ["res://assets/environment/vegetation/desert_palm.scn", "res://assets/environment/vegetation/desert_palm_b.scn"]
+
+## The trees a battlefield grows. Sand country grows date palms (pines and
+## oaks stood toned brown on the dunes); the tropics mix palms with the
+## broadleaf trees instead of pines. Built by tests/claude_palmgen.gd.
+func _theme_tree_paths(defaults: Array) -> Array:
+	var palms: Array = []
+	for path in PALM_TREES:
+		if ResourceLoader.exists(path):
+			palms.append(path)
+	if palms.is_empty():
+		return defaults
+	match str(map.get("theme", "")):
+		"desert":
+			return palms
+		"tropical":
+			var mixed: Array = palms.duplicate()
+			for path in defaults:
+				if "oak" in String(path):
+					mixed.append(path)
+			return mixed
+	return defaults
+
+
+static func _is_palm(path: String) -> bool:
+	return "desert_palm" in path
 
 ## Woods: trees too close to pass between inside an uneven outline, tallest
 ## toward the middle, with a few stragglers beyond the edge.
@@ -2032,7 +2059,7 @@ func _build_woods() -> void:
 	if woods.is_empty():
 		return
 	var trees: Array = []
-	for path in WOOD_TREES:
+	for path in _theme_tree_paths(WOOD_TREES):
 		if ResourceLoader.exists(path):
 			trees.append(path)
 	if trees.is_empty():
@@ -2052,7 +2079,8 @@ func _build_woods() -> void:
 		layer.add_child(proto)
 		ModelUtils.scale_to_height(proto, 1.0)
 		ModelUtils.ground_model(proto)
-		var tone := _scorched_tone("tree")
+		# (A palm is a desert tree already: the sand tone would brown its fronds.)
+		var tone := Color.WHITE if _is_palm(path) else _scorched_tone("tree")
 		# Drawn as trees (wind, a shaded underside, snow on the crown), like the
 		# lone ones: under snow the woods stood green among white trees.
 		_prep_decor(proto, tone if tone != Color.WHITE else DECOR_FOLIAGE_TINTS.get(String(path).get_file(), Color.WHITE), 8.0)
@@ -2712,7 +2740,7 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 		return
 	# On scorched ground a scattered tree is as dead as the woods.
 	var leaf_tone: Color = DECOR_FOLIAGE_TINTS.get(path.get_file(), Color.WHITE)
-	if is_tree and _scorched_tone("tree") != Color.WHITE:
+	if is_tree and _scorched_tone("tree") != Color.WHITE and not _is_palm(path):
 		leaf_tone = _scorched_tone("tree")
 	# Nor does moss stay green there: on scorched, sand and snow ground a
 	# boulder takes the tone of the theme's rock and its moss is greyed, and
@@ -2790,6 +2818,7 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	m.shader = FOLIAGE_WIND_SHADER
 	m.set_shader_parameter("albedo_tex", standard.albedo_texture)
 	m.set_shader_parameter("has_texture", standard.albedo_texture != null)
+	m.set_shader_parameter("use_vertex_color", standard.vertex_color_use_as_albedo)
 	# Same muted grade the R14 pass gives other decor.
 	m.set_shader_parameter("albedo_color", (standard.albedo_color * tint).lerp(Color(0.60, 0.64, 0.56), 0.16))
 	m.set_shader_parameter("uv_scale", standard.uv1_scale)
