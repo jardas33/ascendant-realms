@@ -37,8 +37,18 @@ void fragment() {
 		discard;
 	}
 	float lying = smoothstep(0.3, 0.75, normalize(v_up).y) * smoothstep(0.7, 1.8, v_world.y);
-	lying *= smoothstep(0.18, 0.55, vnoise(v_world.xz * 0.9) * 0.6 + vnoise(v_world.xz * 3.1) * 0.4 + 0.25);
-	ALBEDO = snow_color;
-	ROUGHNESS = 0.85;
-	ALPHA = lying * 0.9;
+	float drift = vnoise(v_world.xz * 0.9) * 0.6 + vnoise(v_world.xz * 3.1) * 0.4;
+	lying *= smoothstep(0.18, 0.55, drift + 0.25);
+	// Deep drifts are white; thin snow is a cold blue-grey and lets the
+	// roof's own shingles and ridges show through, so a roof reads as a
+	// roof under snow, not a flat white sheet (which it did).
+	float depth = smoothstep(0.42, 0.9, drift);
+	float grain = vnoise(v_world.xz * 11.0) * 0.5 + vnoise(v_world.xz * 27.0) * 0.5;
+	vec3 thin = vec3(0.66, 0.72, 0.82);
+	ALBEDO = mix(thin, snow_color * 0.94, depth) * (0.93 + 0.07 * grain);
+	// Now and then a crystal catches the light.
+	float glint = step(0.985, hash21(floor(v_world.xz * 18.0)));
+	EMISSION = vec3(0.35, 0.38, 0.42) * glint * depth;
+	ROUGHNESS = 0.8;
+	ALPHA = lying * mix(0.38, 0.92, depth);
 }

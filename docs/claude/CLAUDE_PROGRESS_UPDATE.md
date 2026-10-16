@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 269 (done): snow on roofs lies in drifts**
+  - A battle in chapter 3-2 (The Larouco Road, under snow) showed the main hall's roof as one flat white sheet, the brightest and plainest thing on screen.
+  - Snow on buildings now lies in drifts: deep drifts white with a fine grain and the odd glinting crystal, thin snow a cold blue-grey that lets the roof show through. Every building on a snow map gets it.
+  - Full regression: 110 of 110 checks pass (891 s); the real save is unchanged.
 - **Plan 268 (done): the skill tree reads as a constellation again**
   - Emanuel said the readable skill tree now looked weird. It did: since plan 261 every other path stood half a row lower with its own wave, so the path headings sat at two heights, every name had a hard dark box behind it, and the lines between locked stars were faint dots. The sky read as a checkerboard of boxes.
   - Now the paths wind side to side together in level rows, every heading is centered over its path with its count beneath, the boxes are replaced by a soft shadow, and every path shows as one continuous line of stars in its own color, from under each name to the next star (so no line crosses a name).
