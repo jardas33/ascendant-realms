@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 313 (done): ruins of large buildings, in two draw calls**
+  - In a real Granitborn against Aurean battle, the large ruins from plan 312 had beams up to five metres long standing almost upright like poles, with stones scattered thinly across a wide patch.
+  - Beams are now at most 3.2 m and lean low; stones are larger for large buildings and heaped closer to the middle.
+  - Each ruin's stones and beams are two multimeshes, two draw calls per ruin instead of one per piece (up to about 55 on a large building).
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 312 (done): fallen buildings leave a real ruin; Codex review 17**
   - A destroyed building left mossy grey boulders two metres high with a stack of clean logs, nothing like a burned building.
   - Now the ruin is a low heap of cut stone blocks from the walls (the quarry rock), with charred beams lying and leaning across it. The beams glow faintly for about twelve seconds, and a thin dark smoke rises from the wreck for forty.

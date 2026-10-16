@@ -661,37 +661,46 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		_beam_mesh.height = 1.0
 		_beam_mesh.radial_segments = 7
 		_beam_mesh.rings = 1
-	# Cut stones from the walls, tumbled and half sunk.
-	var blocks := 10 + int(footprint * 4.0)
+	# Cut stones from the walls, tumbled and half sunk. One multimesh for the
+	# stones and one for the beams: two draw calls a ruin.
+	var blocks := 10 + int(footprint * 5.0)
+	var grow := clampf(footprint / 3.0, 1.0, 1.5)
+	var stones := MultiMesh.new()
+	stones.transform_format = MultiMesh.TRANSFORM_3D
+	stones.mesh = _block_mesh
+	stones.instance_count = blocks
 	for i in blocks:
-		var b := MeshInstance3D.new()
-		b.mesh = _block_mesh
-		b.material_override = stone_mat
-		b.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		rubble.add_child(b)
 		var a := randf() * TAU
-		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.5), randf_range(0.4, 0.7))
-		b.scale = size
+		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.5), randf_range(0.4, 0.7)) * grow
 		# Heaped towards the middle, where the walls fell in.
 		var r := pow(randf(), 0.8)
-		b.position = Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.9 + Vector3(0.0, size.y * 0.3 + (1.0 - r) * randf_range(0.0, 0.6), 0.0)
-		b.rotation = Vector3(randf_range(-0.3, 0.3), randf() * TAU, randf_range(-0.3, 0.3))
+		var at := Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.75 + Vector3(0.0, size.y * 0.3 + (1.0 - r) * randf_range(0.0, 0.6), 0.0)
+		var turn := Basis.from_euler(Vector3(randf_range(-0.3, 0.3), randf() * TAU, randf_range(-0.3, 0.3)))
+		stones.set_instance_transform(i, Transform3D(turn * Basis.from_scale(size), at))
+	var stone_mmi := MultiMeshInstance3D.new()
+	stone_mmi.multimesh = stones
+	stone_mmi.material_override = stone_mat
+	stone_mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	rubble.add_child(stone_mmi)
 	# Charred beams: some flat, some still leaning on the heap.
 	var beams := 4 + int(footprint * 1.2)
+	var timbers := MultiMesh.new()
+	timbers.transform_format = MultiMesh.TRANSFORM_3D
+	timbers.mesh = _beam_mesh
+	timbers.instance_count = beams
 	for i in beams:
-		var beam := MeshInstance3D.new()
-		beam.mesh = _beam_mesh
-		beam.material_override = char_mat
-		beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		rubble.add_child(beam)
 		var a := randf() * TAU
-		var length := randf_range(1.6, 1.0 + footprint * 0.7)
-		var thick := randf_range(0.22, 0.32)
-		beam.scale = Vector3(thick, length, thick)
-		var lean := randf_range(0.25, 0.7) if i % 2 == 0 else PI * 0.5 - randf_range(0.0, 0.12)
-		beam.rotation = Vector3(lean, randf() * TAU, 0.0)
-		beam.rotation_order = EULER_ORDER_YXZ
-		beam.position = Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.6) + Vector3(0.0, cos(lean) * length * 0.5 + thick * 0.4, 0.0)
+		var length := randf_range(1.5, clampf(1.0 + footprint * 0.5, 1.8, 3.2))
+		var thick := randf_range(0.22, 0.32) * sqrt(grow)
+		var lean := randf_range(0.9, 1.2) if i % 2 == 0 else PI * 0.5 - randf_range(0.0, 0.12)
+		var at := Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.6) + Vector3(0.0, cos(lean) * length * 0.5 + thick * 0.4, 0.0)
+		var turn := Basis.from_euler(Vector3(lean, randf() * TAU, 0.0), EULER_ORDER_YXZ)
+		timbers.set_instance_transform(i, Transform3D(turn * Basis.from_scale(Vector3(thick, length, thick)), at))
+	var beam_mmi := MultiMeshInstance3D.new()
+	beam_mmi.multimesh = timbers
+	beam_mmi.material_override = char_mat
+	beam_mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	rubble.add_child(beam_mmi)
 	var ct := rubble.create_tween()
 	ct.tween_property(char_mat, "emission_energy_multiplier", 0.0, 12.0).set_delay(1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_ruin_smoke(parent, Vector3(pos.x, 0.6, pos.z), footprint)
