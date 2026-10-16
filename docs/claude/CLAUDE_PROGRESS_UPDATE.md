@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 268 (done): the skill tree reads as a constellation again**
+  - Emanuel said the readable skill tree now looked weird. It did: since plan 261 every other path stood half a row lower with its own wave, so the path headings sat at two heights, every name had a hard dark box behind it, and the lines between locked stars were faint dots. The sky read as a checkerboard of boxes.
+  - Now the paths wind side to side together in level rows, every heading is centered over its path with its count beneath, the boxes are replaced by a soft shadow, and every path shows as one continuous line of stars in its own color, from under each name to the next star (so no line crosses a name).
+  - In a focused path, links leave the star's side and curve down into the next star.
+  - Text is unchanged: names 21.5 px at 1920x1080 and 15.3 px at 1366x768, no overlaps (`claude_skillread.gd`, which now takes CLAUDE_FOCUS for one path).
+  - Full regression: 110 of 110 checks pass (896 s); the real save is unchanged.
 - **Plan 267 (done): the half-built dam shows its works**
   - Chapter 2-1's story says the Dominion's dam is half built, "two wings of stone with the works between them", but the gap between the wings showed only water and a Lume site.
   - Now each wing's end tower has a timber scaffold climbing its open face (two rows of poles, four plank decks, zigzag braces), a treadwheel crane stands on each wing with its jib out over the gap and a cut block hanging on the rope, and stacks of cut blocks wait in a stoneyard at the foot of each wing, on the side away from its road.

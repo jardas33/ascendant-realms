@@ -6,7 +6,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const SPACING := Vector2(240.0, 214.0)
 const FOCUSED_SPACING := Vector2(250.0, 214.0)
-const MARGIN := Vector2(34.0, 60.0)
+const MARGIN := Vector2(34.0, 88.0)
 const NODE_SIZE := Vector2(200.0, 206.0)
 const ORB := Vector2(96.0, 96.0)
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
@@ -523,14 +523,15 @@ func _node_pos(n: Dictionary) -> Vector2:
 	var p := _display_grid_pos(n)
 	var spacing := _layout_spacing()
 	var base := MARGIN + Vector2(p.x, p.y) * spacing
-	# Each path winds: a sideways wave down its length (its phase shifted a little
-	# from path to path, so neighbours bend together and never crowd), and every other path half a
-	# row lower, so the sky reads as rivers of stars, not a spreadsheet.
+	# The paths wind side to side together, like rivers of stars running
+	# down the sky. (Every other path used to drop half a row with its own
+	# phase: the headings stood at two heights and the names made a
+	# checkerboard of boxes.) All bend in step, so neighbours keep their
+	# distance and the rows stay level.
 	var col := int(p.x)
-	var wave := sin(p.y * 1.15 + col * 0.9) * WAVE
-	var stagger := spacing.y * 0.5 if col % 2 == 1 else 0.0
+	var wave := sin(p.y * 1.05 + 0.4) * WAVE * (0.88 + 0.12 * sin(float(col) * 1.7))
 	var h := str(n.get("id", "")).hash()
-	return base + Vector2(wave + float(h % 7) - 3.0, stagger + float((h / 7) % 7) - 3.0)
+	return base + Vector2(wave + float(h % 5) - 2.0, float((h / 7) % 5) - 2.0)
 
 func _layout_spacing() -> Vector2:
 	return FOCUSED_SPACING if _branch_filter != "" else SPACING
@@ -817,7 +818,9 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
-		var title_pos := Vector2(top.x - (tw2 + 8.0 + ThemeDB.fallback_font.get_string_size("%d / %d" % progress.get(br, [0, 1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x) * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
+		# Centred over its path, with the count on its own line beneath (side
+		# by side, the longer names ran into the next path's heading).
+		var title_pos := Vector2(top.x - tw2 * 0.5, top_line - 100.0)
 		# A finished path wears its name in gold, haloed and breathing.
 		var finished: bool = int(progress.get(br, [0, 1])[0]) >= int(progress.get(br, [0, 1])[1])
 		if finished:
@@ -832,12 +835,11 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var count := "%d / %d" % [pr[0], pr[1]]
 		var body := ThemeDB.fallback_font
 		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
-		# Beside the name, so nothing crowds the first star.
-		var count_pos := Vector2(title_pos.x + tw2 + 8.0, title_pos.y)
+		var count_pos := Vector2(top.x - cw * 0.5, top_line - 66.0)
 		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, 6, Color(0.01, 0.015, 0.03, 0.9))
 		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, Color(PAPER, 0.92))
-		var bar_w := tw2 + 8.0 + cw
-		var bar := Rect2(title_pos.x, title_pos.y + 10.0, bar_w, 4.0)
+		var bar_w := maxf(cw + 40.0, tw2 * 0.7)
+		var bar := Rect2(top.x - bar_w * 0.5, top_line - 58.0, bar_w, 4.0)
 		canvas.draw_rect(bar, Color(0.01, 0.015, 0.03, 0.85))
 		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 4.0)), Color(bc.lightened(0.3), 0.95))
 	# Links: faint for locked, bright for open paths, with motes of light
@@ -851,15 +853,16 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			var required := _find_node(str(req))
 			if required.is_empty() or not _node_buttons.has(req) or not _is_visible_node(required):
 				continue
-			var from := _orb_center(required)
 			var complete := _is_unlocked(id) and _is_unlocked(req)
 			var available := _prereqs_met(n) and not _is_unlocked(id)
 			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
-			var path := _constellation_link(from, to)
+			var path := _link_path(required, n)
 			if not (complete or available):
-				# A road not yet open: a faint dotted trail of star dust.
-				for k in path.size():
-					canvas.draw_circle(path[k], 1.7, Color(LOCKED.lightened(0.2), 0.55))
+				# A road not yet open: a thin line in the path's own colour, so
+				# every path reads as one chain of stars from the start.
+				var faint: Color = _branch_color(str(n.get("branch", ""))).lightened(0.15)
+				canvas.draw_polyline(path, Color(faint, 0.10), 6.0, true)
+				canvas.draw_polyline(path, Color(faint, 0.42), 1.6, true)
 				continue
 			var strength := 0.9 if complete else 0.75
 			# Every star of the path owned: a gold wave runs down it, star to star.
@@ -936,7 +939,7 @@ func _draw_glow(canvas: CanvasItem) -> void:
 			var required := _find_node(str(req))
 			if required.is_empty() or not _node_buttons.has(req) or not _is_visible_node(required) or not _is_unlocked(str(req)):
 				continue
-			canvas.draw_polyline(_constellation_link(_orb_center(required), _orb_center(n)), Color(_branch_color(str(n.get("branch", ""))), 0.22), 14.0, true)
+			canvas.draw_polyline(_link_path(required, n), Color(_branch_color(str(n.get("branch", ""))), 0.22), 14.0, true)
 	for n in _nodes:
 		var id := str(n.get("id", ""))
 		if not _node_buttons.has(id) or not _is_visible_node(n):
@@ -988,7 +991,8 @@ func _draw_plates(canvas: CanvasItem) -> void:
 			canvas.draw_arc(sc2, rr2, a4, a4 + 1.3, 20, Color(GOLD_BRIGHT, 0.85), 2.2, true)
 			var a5 := -_sky_time * 0.6 + q * TAU / 3.0
 			canvas.draw_arc(sc2, rr2 + 7.0, a5, a5 + 0.8, 14, Color(GOLD_BRIGHT, 0.45), 1.4, true)
-	# A dark plate behind each star's name keeps links from crossing the text.
+	# A soft pool of shadow behind each name (it was a hard dark box, and the
+	# whole sky read as a grid of them) keeps the nebulae from washing it out.
 	for n in _nodes:
 		var nid := str(n.get("id", ""))
 		if not _node_buttons.has(nid) or not _is_visible_node(n):
@@ -999,8 +1003,8 @@ func _draw_plates(canvas: CanvasItem) -> void:
 		var tw3 := minf(NODE_SIZE.x + NAME_SPILL * 2.0 + 8.0, _name_font().get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 22.0)
 		var lines: int = b.get_meta("name_lines") if b.has_meta("name_lines") else 1
 		var plate_h: float = (b.get_meta("text_h") if b.has_meta("text_h") else (fs + 1.0) * lines + fs) + 6.0
-		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 4.0), Vector2(tw3, plate_h))
-		canvas.draw_style_box(_name_plate_style, plate)
+		var plate := Rect2(b.position + Vector2((NODE_SIZE.x - tw3) * 0.5, ORB.y - 4.0), Vector2(tw3, plate_h)).grow_individual(26.0, 14.0, 26.0, 18.0)
+		canvas.draw_texture_rect(_glow_tex, plate, false, Color(0.0, 0.0, 0.02, 0.62))
 
 ## Added light over everything: the claim flash, its rings and sparks, and
 ## light running down each road the claimed star opens.
@@ -1035,6 +1039,31 @@ func _draw_fx(canvas: CanvasItem) -> void:
 		for q in 12:
 			var a := q * TAU / 12.0 + float(b["t"])
 			canvas.draw_circle(bp + Vector2(cos(a), sin(a)) * (26.0 + age * 110.0), 2.5 * (1.0 - age) + 0.5, Color(bcol.lightened(0.3), 1.0 - age))
+
+## The road between two stars, from under the upper star's name to the rim
+## of the lower star's orb, so it never runs through a name.
+func _link_path(required: Dictionary, n: Dictionary) -> PackedVector2Array:
+	var from := _orb_center(required)
+	var to := _orb_center(n)
+	if absf(to.x - from.x) > NODE_SIZE.x * 0.6:
+		# Far to the side (a focused path zigzags): out of the star's side,
+		# level until clear of its name, then down into the top of the next.
+		var start := from + Vector2(signf(to.x - from.x) * (ORB.x * 0.5 + 4.0), 0.0)
+		var finish := to - Vector2(0.0, ORB.y * 0.5 + 4.0)
+		var first := start + Vector2((finish.x - start.x) * 0.75, 0.0)
+		var second := finish - Vector2(0.0, absf(finish.y - start.y) * 0.6)
+		var points := PackedVector2Array()
+		for step in range(21):
+			var t := float(step) / 20.0
+			var u := 1.0 - t
+			points.append(start * u * u * u + first * 3.0 * u * u * t + second * 3.0 * u * t * t + finish * t * t * t)
+		return points
+	if to.y > from.y + ORB.y:
+		var b: Button = _node_buttons.get(str(required.get("id", "")))
+		var text_h: float = float(b.get_meta("text_h")) if is_instance_valid(b) and b.has_meta("text_h") else 60.0
+		from.y += ORB.y * 0.5 - 4.0 + text_h + 4.0
+		to.y -= ORB.y * 0.5 + 2.0
+	return _constellation_link(from, to)
 
 func _constellation_link(from: Vector2, to: Vector2) -> PackedVector2Array:
 	var points := PackedVector2Array()
