@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 325 (done): small headings grow on a laptop like body text does**
+  - Headings drawn in the thin capital face at 18 to 23 px (War Chest relic names, "Choose your people", "Battlefield", "Open slots") kept their size on small windows, so on a 1366x768 laptop their capitals were about nine pixels tall. Body text already got a 1.19x lift there.
+  - They now get the same lift on small windows (1920 is unchanged). War Chest relic cards grow with it, because a two-line relic name pushed the stat line out of the card; on narrow 4:3 windows they also make room for a third line of a long name (the first regression run caught names cut to two lines at 1440x1080). The main menu's footer line is also bigger.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 324 (done): small thin capitals are replaced on a laptop too**
   - Small captions drawn in Cinzel (the thin all-capitals title face) switch to the plain body font so nobody squints. At 1920 that worked, but on a 1366 laptop the size lift for small windows ran first and pushed a 16 px caption to 19, so the switch never happened: the campaign map's chapter names, for one, stayed in thin small capitals only on laptops.
   - The font is now chosen from the size the page asked for, before the lift, so laptops get the same readable face as 1920. The hero preview caption on Forge Your Hero is also bigger and brighter (its capitals were about ten pixels tall on a laptop).

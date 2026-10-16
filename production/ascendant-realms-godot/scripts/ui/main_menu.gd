@@ -118,14 +118,15 @@ func _build() -> void:
 	footer.text = "The Saga of the Seventy-Seventh Ascension"
 	footer.add_theme_color_override("font_color", Color(0.88, 0.85, 0.75, 0.9))
 	footer.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
-	footer.add_theme_constant_override("outline_size", 3)
-	footer.add_theme_font_size_override("font_size", 18)
+	# Plan 325: 18 px small capitals were about nine pixels tall on a laptop.
+	footer.add_theme_constant_override("outline_size", 6)
+	footer.add_theme_font_size_override("font_size", 24)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	footer.offset_top = -50.0
 	footer.offset_bottom = -20.0
-	footer.offset_left = -300.0
-	footer.offset_right = 300.0
+	footer.offset_left = -360.0
+	footer.offset_right = 360.0
 	add_child(footer)
 
 ## "Continue the Saga" once the player has won a chapter.

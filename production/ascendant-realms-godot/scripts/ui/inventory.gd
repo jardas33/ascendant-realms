@@ -339,7 +339,10 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	card.name = "EquippedRelic_%s" % slot
 	card.focus_mode = Control.FOCUS_NONE
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.custom_minimum_size = Vector2(0, 108)
+	var lift: float = load("res://scripts/ui/readable_text.gd")._small_window_lift(self)
+	# Grown with the text lift on small windows, with room for a third line
+	# of a long name on narrow ones (1440x1080).
+	card.custom_minimum_size = Vector2(0, roundf(108.0 * lift + (34.0 if lift > 1.05 else 0.0)))
 	card.tooltip_text = "%s equipped in %s" % [str(item.get("name", "?")), _pretty(slot)]
 	for state in ["normal", "hover", "pressed"]:
 		var style := StyleBoxFlat.new()
@@ -376,7 +379,7 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	var name_label := Label.new()
 	name_label.text = str(item.get("name", "?"))
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_label.max_lines_visible = 2
+	name_label.max_lines_visible = 3 if lift > 1.05 else 2
 	name_label.add_theme_font_override("font", _title_font())
 	name_label.add_theme_font_size_override("font_size", 21)
 	name_label.add_theme_color_override("font_color", accent.lightened(0.18))
@@ -475,7 +478,11 @@ func _item_card(item: Dictionary) -> Button:
 	card.button_group = _item_group
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	# A two-line name plus the slot and stat lines at the 16 px text floor.
-	card.custom_minimum_size = Vector2(0, 128)
+	# Grown on small windows with the text lift (ReadableText): there a
+	# two-line name pushed the stat line out of the card.
+	var lift: float = load("res://scripts/ui/readable_text.gd")._small_window_lift(self)
+	# A lifted name can take a third line on narrow windows (1440x1080).
+	card.custom_minimum_size = Vector2(0, roundf(128.0 * lift + (34.0 if lift > 1.05 else 0.0)))
 	for state in ["normal", "hover", "pressed", "hover_pressed"]:
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#1b2430") if state == "normal" else Color("#2b3240") if state == "hover" else Color("#302a20")
@@ -504,7 +511,7 @@ func _item_card(item: Dictionary) -> Button:
 	var name_label := Label.new()
 	name_label.text = str(item.get("name", "?"))
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_label.max_lines_visible = 2
+	name_label.max_lines_visible = 3 if lift > 1.05 else 2
 	name_label.add_theme_font_override("font", _title_font())
 	name_label.add_theme_font_size_override("font_size", 22)
 	name_label.add_theme_color_override("font_color", accent.lightened(0.18))

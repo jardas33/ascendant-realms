@@ -12,6 +12,7 @@ extends Node
 const TITLE_FONT := "res://assets/fonts/cinzel.ttf"
 const TITLE_MIN := 18
 const BODY_MIN := 16
+const TITLE_LIFT_MAX := 24
 
 var _pending: Array[Control] = []
 
@@ -60,6 +61,13 @@ static func fix(c: Control) -> void:
 	var font := c.get_theme_font(font_key)
 	if given < TITLE_MIN and font != null and font.resource_path == TITLE_FONT:
 		c.add_theme_font_override(font_key, ThemeDB.fallback_font)
+	# Plan 325: small headings that keep the thin capitals (18 to 23 px) get
+	# the same small-window lift as body text. On a laptop an 18 px heading
+	# had capitals about nine pixels tall.
+	elif given < TITLE_LIFT_MAX and font != null and font.resource_path == TITLE_FONT and absf(scale - 1.0) < 0.05 and not _in_battle_hud(c):
+		var lifted := ceili(given * _small_window_lift(c))
+		if lifted > size:
+			c.add_theme_font_size_override(size_key, lifted)
 
 
 ## The game lays out on a 1920x1080 canvas and shrinks it to smaller windows:
