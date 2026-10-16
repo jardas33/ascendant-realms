@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 265 (done): readable command tips and victory screen**
+  - The overlay check now measures text size too (`claude_overlayclip.gd` CLAUDE_PX). On a 1366x768 window the command card tips drew their kind word and keys at 10 px and their text at 12 px, and the victory and defeat ledger at 10 to 11 px (14 px even at 1920x1080).
+  - Command tips are now drawn at the same scale as the command panel they belong to (1.2x, more on a laptop window): 14 px or more at 1366x768.
+  - The victory and defeat plate is drawn at the panels' scale too, fitted to the screen height. When it appears, the battle instruments (top bar, objective, minimap, selection and command panels) step aside, so the plate can use the full height and nothing dimmed shows around it. Its ledger is 12.8 px at 1366x768 (was 10) and, by the 1.2 scale, about 17 px at 1920x1080 (was 14).
+  - Overlay layout check clean for tips and victory at 1920x1080, 1366x768 and 1280x720, and for defeat at 1366x768.
+  - Full regression: 110 of 110 passed.
 - **Plan 264 (done): the skill tree celebrates what you own**
   - Owned stars no longer repeat their price and "UNLOCKED" under every name: they say OWNED, the legend's own word, in the owned color. The side panel says OWNED too. With 30 or more stars claimed the sky reads far calmer.
   - A finished path is celebrated: its name turns gold with a soft breathing halo, and a gold wave of light runs down its whole road, star to star, with twice the motes of light.

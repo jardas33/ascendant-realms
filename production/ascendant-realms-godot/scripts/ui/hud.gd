@@ -2413,6 +2413,8 @@ func _on_tracked_building_construction_completed(building) -> void:
 
 
 func _rebuild_selection(sel: Array) -> void:
+	if is_instance_valid(_gameover_layer):
+		return
 	_reset_selection_widgets()
 	_clear_children(_sel_body)
 	if is_instance_valid(_sel_panel):
@@ -2467,6 +2469,8 @@ func _rebuild_selection(sel: Array) -> void:
 
 
 func _rebuild_inspection(target) -> void:
+	if is_instance_valid(_gameover_layer):
+		return
 	_reset_selection_widgets()
 	_clear_children(_sel_body)
 	if not is_instance_valid(target):
@@ -3438,13 +3442,42 @@ func _show_command_tooltip(title: String, kind: String, hotkey: String, tooltip:
 	_place_command_tooltip.call_deferred()
 
 
+## The result plate is drawn at the HUD panels' scale (1.2, more on a
+## laptop window), so its ledger is as readable as they are, but never
+## taller or wider than the screen. Its ledger text was 14 px at 1920 and
+## 10 px on a 1366x768 window.
+func _fit_result_plate(plate: Control) -> void:
+	if not is_instance_valid(plate):
+		return
+	await get_tree().process_frame
+	if not is_instance_valid(plate) or plate.size.y <= 0.0:
+		return
+	var vp := get_viewport_rect().size
+	var s := minf(_panel_scale, minf((vp.y - 40.0) / plate.size.y, (vp.x - 40.0) / plate.size.x))
+	plate.pivot_offset = plate.size * 0.5
+	plate.scale = Vector2.ONE * maxf(1.0, s)
+	# The battle's instruments step aside for the result, so the plate can
+	# use the whole height and no dimmed figure shows through around it.
+	var hide_after := get_tree().create_timer(maxf(0.0, _result_hold + 0.25))
+	hide_after.timeout.connect(_hide_battle_chrome)
+
+
+func _hide_battle_chrome() -> void:
+	for panel in [_top_panel, _force_panel, _age_panel, _objective_panel, _menu_button, _alert_box, _minimap_panel, _sel_panel, _cmd_panel, _command_chassis, _command_tooltip]:
+		if is_instance_valid(panel):
+			(panel as CanvasItem).visible = false
+
+
 func _place_command_tooltip() -> void:
 	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel) or not _command_tooltip.visible:
 		return
 	_command_tooltip.reset_size()
+	# Drawn at the command deck's own scale: at 1.0 its kind word and keycaps
+	# were 14 px at 1920 and 10 px on a 1366x768 window.
+	_command_tooltip.scale = Vector2.ONE * _panel_scale
 	var deck_rect := _cmd_panel.get_global_rect()
 	var viewport_size := get_viewport_rect().size
-	var tooltip_size := _command_tooltip.size
+	var tooltip_size := _command_tooltip.size * _panel_scale
 	var tooltip_pos := Vector2(deck_rect.position.x + 8.0, deck_rect.position.y - tooltip_size.y - 10.0)
 	if tooltip_pos.y < 8.0:
 		tooltip_pos.y = deck_rect.end.y + 8.0
@@ -4629,6 +4662,7 @@ func _on_game_over(victory: bool) -> void:
 	plate.modulate.a = 0.0
 	_gameover_layer.add_child(plate)
 	plate.create_tween().tween_property(plate, "modulate:a", 1.0, 0.5).set_delay(_result_hold + 0.25)
+	_fit_result_plate.call_deferred(plate)
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	# Short screens (1366x768 laptops) get a tighter ledger so the buttons
