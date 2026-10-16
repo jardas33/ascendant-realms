@@ -145,9 +145,11 @@ func _campaign_label() -> String:
 func _make_button(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(320, 50)
+	b.custom_minimum_size = Vector2(340, 54)
 	b.focus_mode = Control.FOCUS_NONE
-	b.add_theme_font_size_override("font_size", 24)
+	# 28: the title face draws its lower case as small capitals, so at 24 the
+	# words were only about ten pixels tall on a laptop.
+	b.add_theme_font_size_override("font_size", 28)
 	b.add_theme_color_override("font_color", Color(0.95, 0.86, 0.64))
 	b.add_theme_color_override("font_hover_color", Color(1.0, 0.95, 0.78))
 	b.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.0, 0.9))

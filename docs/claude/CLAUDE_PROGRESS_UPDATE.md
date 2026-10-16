@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 305 (done): larger main menu buttons**
+  - The title face draws lower case as small capitals, so the main menu's buttons (Begin the Saga, Skirmish, Hero...) were only about ten pixels tall on a laptop.
+  - The buttons now use 28 instead of 24, and are slightly larger to hold it. Checked at 1366x768, 1920x1080 and 1280x1024.
+  - Full regression: 111 of 111 checks passed in 929 s, save unchanged.
 - **Plan 304 (done): campaign map captions on dark plates**
   - The status under each chapter on the campaign map (Easy, Sealed, Side road, Cleared) sat straight on the busy painted map with only an outline, and on a laptop it was about eleven pixels tall.
   - Each caption is now 17 and sits on a small dark plate sized to its words, centered under the chapter's ribbon.
