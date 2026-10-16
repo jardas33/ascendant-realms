@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 289 (done): readable War Chest text**
+  - On the War Chest page most of the small text (the race, slots filled, "3 in the chest", relic type and rarity, relic stats, "Inspect", the relic count) used the thin small-caps title font at 12 to 13 px, which is hard to read on a laptop.
+  - That text now uses the clear body font at 14 to 15 px. Titles, headings and relic names keep the decorative font. Checked at 1600x900 and 1280x800.
+  - Full regression: 111 of 111 checks passed in 948 s, save unchanged.
 - **Plan 288 (done): no lines through the skill tree's names**
   - On the Hero Constellation the lines joining the stars ran through the stars' names and costs in several paths (through "Plated Guard", "Disciplined Ranks", "1 SP · LOCKED" and others), which made the words harder to read.
   - Every line, its glow and the motes of light that run along it now break where they pass behind a name and pick up again below it.

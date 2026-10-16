@@ -75,8 +75,8 @@ func _build() -> void:
 	add_child(title)
 	var subtitle := Label.new()
 	subtitle.text = "RELICS AND ARMS YOUR HERO CARRIES INTO BATTLE"
-	subtitle.add_theme_font_override("font", _title_font())
-	subtitle.add_theme_font_size_override("font_size", 13)
+	subtitle.add_theme_font_override("font", ThemeDB.fallback_font)
+	subtitle.add_theme_font_size_override("font_size", 15)
 	subtitle.add_theme_color_override("font_color", Color(0.72, 0.68, 0.60))
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
@@ -219,12 +219,14 @@ func _rebuild_slots() -> void:
 		identity_text.add_child(name_label)
 		var race_label := Label.new()
 		race_label.text = str(race.get("name", "Hero")).to_upper()
+		race_label.add_theme_font_override("font", ThemeDB.fallback_font)
 		race_label.add_theme_font_size_override("font_size", 17)
 		race_label.add_theme_color_override("font_color", Color(0.78, 0.8, 0.77))
 		identity_text.add_child(race_label)
 		var loadout_label := Label.new()
 		loadout_label.text = "%d / %d SLOTS FILLED" % [equip.size(), SLOTS.size()]
-		loadout_label.add_theme_font_size_override("font_size", 13)
+		loadout_label.add_theme_font_override("font", ThemeDB.fallback_font)
+		loadout_label.add_theme_font_size_override("font_size", 15)
 		loadout_label.add_theme_color_override("font_color", Color(0.72, 0.62, 0.43))
 		identity_text.add_child(loadout_label)
 	_slots_box.add_child(HSeparator.new())
@@ -247,6 +249,7 @@ func _rebuild_slots() -> void:
 		var empty_equipment := Label.new()
 		empty_equipment.text = "No relics equipped. Inspect the chest to prepare your hero."
 		empty_equipment.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		empty_equipment.add_theme_font_override("font", ThemeDB.fallback_font)
 		empty_equipment.add_theme_font_size_override("font_size", 16)
 		empty_equipment.add_theme_color_override("font_color", Color(0.78, 0.82, 0.82) if _barrosan_vault_active else Color(0.68, 0.72, 0.73))
 		if _barrosan_vault_active:
@@ -309,6 +312,7 @@ func _open_slot_tile(slot: String, inv: Array) -> Button:
 		_draw_slot_emblem(tile, Vector2(tile.size.x - 28.0, tile.size.y * 0.5), 13.0, slot, emblem_col))
 	var name_label := Label.new()
 	name_label.text = _pretty(slot).to_upper()
+	name_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	name_label.add_theme_font_size_override("font_size", 15)
 	name_label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.84) if fits > 0 else Color(0.62, 0.66, 0.66))
 	name_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.02, 0.9))
@@ -317,7 +321,8 @@ func _open_slot_tile(slot: String, inv: Array) -> Button:
 	stack.add_child(name_label)
 	var hint := Label.new()
 	hint.text = ("%d in the chest" % fits) if fits > 0 else "Empty"
-	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_font_override("font", ThemeDB.fallback_font)
+	hint.add_theme_font_size_override("font_size", 14)
 	hint.add_theme_color_override("font_color", ready_col if fits > 0 else Color(0.5, 0.52, 0.52))
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(hint)
@@ -363,6 +368,7 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	content.add_child(stack)
 	var slot_label := Label.new()
 	slot_label.text = _pretty(slot).to_upper()
+	slot_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	slot_label.add_theme_font_size_override("font_size", 15)
 	slot_label.add_theme_color_override("font_color", Color(0.74, 0.70, 0.61))
 	slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -378,7 +384,8 @@ func _equipped_card(slot: String, item: Dictionary) -> Button:
 	stack.add_child(name_label)
 	var inspect := Label.new()
 	inspect.text = "INSPECT  ›"
-	inspect.add_theme_font_size_override("font_size", 13)
+	inspect.add_theme_font_override("font", ThemeDB.fallback_font)
+	inspect.add_theme_font_size_override("font_size", 14)
 	inspect.add_theme_color_override("font_color", Color(0.85, 0.72, 0.46))
 	inspect.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	inspect.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -398,7 +405,8 @@ func _rebuild_items() -> void:
 		return
 	var count_label := Label.new()
 	count_label.text = "%d RELICS CARRIED  ·  SELECT TO INSPECT" % inv.size()
-	count_label.add_theme_font_size_override("font_size", 13)
+	count_label.add_theme_font_override("font", ThemeDB.fallback_font)
+	count_label.add_theme_font_size_override("font_size", 15)
 	count_label.add_theme_color_override("font_color", Color(0.72, 0.67, 0.55))
 	_items_box.add_child(count_label)
 	# Filters: by slot and by gear set, so a long run's chest stays usable.
@@ -504,7 +512,8 @@ func _item_card(item: Dictionary) -> Button:
 	labels.add_child(name_label)
 	var meta_label := Label.new()
 	meta_label.text = "%s  ·  %s%s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper(), "  ·  LOCKED" if bool(item.get("locked", false)) else ""]
-	meta_label.add_theme_font_size_override("font_size", 13)
+	meta_label.add_theme_font_override("font", ThemeDB.fallback_font)
+	meta_label.add_theme_font_size_override("font_size", 14)
 	meta_label.add_theme_color_override("font_color", Color(0.68, 0.72, 0.73))
 	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	labels.add_child(meta_label)
@@ -523,13 +532,15 @@ func _item_card(item: Dictionary) -> Button:
 		var stat_label := Label.new()
 		stat_label.text = " · ".join(stat_bits)
 		stat_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		stat_label.add_theme_font_size_override("font_size", 13)
+		stat_label.add_theme_font_override("font", ThemeDB.fallback_font)
+		stat_label.add_theme_font_size_override("font_size", 14)
 		stat_label.add_theme_color_override("font_color", Color(0.62, 0.86, 0.6))
 		stat_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		labels.add_child(stat_label)
 	var inspect_label := Label.new()
 	inspect_label.text = "INSPECT  ›"
-	inspect_label.add_theme_font_size_override("font_size", 13)
+	inspect_label.add_theme_font_override("font", ThemeDB.fallback_font)
+	inspect_label.add_theme_font_size_override("font_size", 14)
 	inspect_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.46))
 	inspect_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	inspect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -658,7 +669,8 @@ func _detail_meta(item: Dictionary, equipped: bool) -> Label:
 	var rarity := str(item.get("rarity", "common"))
 	var label := Label.new()
 	label.text = "%s  ·  %s%s" % [_pretty(str(item.get("slot", ""))).to_upper(), rarity.to_upper(), "  ·  EQUIPPED" if equipped else ""]
-	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_font_override("font", ThemeDB.fallback_font)
+	label.add_theme_font_size_override("font_size", 15)
 	label.add_theme_color_override("font_color", RARITY_COLORS.get(rarity, Color.WHITE))
 	return label
 
