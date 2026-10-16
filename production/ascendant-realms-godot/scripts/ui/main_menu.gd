@@ -186,9 +186,11 @@ func _make_hero_card() -> Control:
 	card.add_theme_stylebox_override("panel", st)
 	card.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	card.offset_left = 28.0
-	card.offset_top = -170.0
-	card.offset_right = 470.0
+	card.offset_top = -184.0
+	card.offset_right = 520.0
 	card.offset_bottom = -26.0
+	# Longer text makes the card taller upward, never off the bottom edge.
+	card.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	card.add_child(row)
@@ -212,7 +214,8 @@ func _make_hero_card() -> Control:
 	col.add_child(name_l)
 	var sub := Label.new()
 	sub.text = "%s  ·  %s  ·  Level %d" % [str(race.get("name", "")), str(h.get("archetype", "")).capitalize(), int(h.get("level", 1))]
-	sub.add_theme_font_size_override("font_size", 15)
+	sub.add_theme_font_override("font", ThemeDB.fallback_font)
+	sub.add_theme_font_size_override("font_size", 16)
 	sub.add_theme_color_override("font_color", Color(0.84, 0.8, 0.7))
 	col.add_child(sub)
 	var bar := ProgressBar.new()
@@ -235,7 +238,8 @@ func _make_hero_card() -> Control:
 	var tp: int = ProfileManager.talent_points() if ProfileManager.has_method("talent_points") else 0
 	var hint := Label.new()
 	hint.text = ("%d points to spend  ·  %d talent picks waiting" % [pts, tp]) if (pts > 0 or tp > 0) else "Ready for battle"
-	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_font_override("font", ThemeDB.fallback_font)
+	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color(0.98, 0.82, 0.42) if (pts > 0 or tp > 0) else Color(0.6, 0.85, 0.62))
 	col.add_child(hint)
 	# Where the saga goes next: the first open main chapter not yet won.
@@ -248,8 +252,10 @@ func _make_hero_card() -> Control:
 			break
 	if next_title != "":
 		var next_l := Label.new()
-		next_l.text = "Next in the saga: %s" % next_title
-		next_l.add_theme_font_size_override("font_size", 13)
+		next_l.text = "Next battle: %s" % next_title
+		next_l.add_theme_font_override("font", ThemeDB.fallback_font)
+		next_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		next_l.add_theme_font_size_override("font_size", 15)
 		next_l.add_theme_color_override("font_color", Color(0.86, 0.78, 0.62))
 		col.add_child(next_l)
 	card.modulate.a = 0.0

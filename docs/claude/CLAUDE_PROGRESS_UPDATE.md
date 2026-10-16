@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 292 (done): readable main menu hero card**
+  - The hero card on the main menu showed the people, archetype and level, the points waiting and the next battle in the thin small-caps title font at 13 to 15 px, and the last line ran into the card's frame.
+  - Those lines now use the clear body font at 15 to 16 px, the card is a little wider and grows upward when its text needs room, and the last line reads "Next battle: The Spring of Seven Mouths". Checked at 1600x900, 1280x800 and 1920x823.
+  - Full regression: 111 of 111 checks passed in 974 s, save unchanged.
 - **Plan 291 (done): readable campaign map header**
   - The hero line, the Act subtitle and its progress ("cleared 0/9 · jars 0/2 · side roads 0/3") sat straight on the brightest part of the painted map, held up only by a text outline.
   - A soft dark band now fades down from the top of the screen behind the header, so those lines read cleanly while the painting still shows through.
