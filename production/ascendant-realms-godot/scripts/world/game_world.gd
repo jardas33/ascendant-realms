@@ -1021,11 +1021,15 @@ func _scorched_tone(what: String) -> Color:
 		"desert": {"rock": Color(1.0, 0.84, 0.62), "turf": Color(0.30, 0.25, 0.16), "tree": Color(0.92, 0.64, 0.30)},
 		"badlands": {"rock": Color(0.96, 0.64, 0.46), "turf": Color(0.34, 0.23, 0.17), "tree": Color(0.86, 0.54, 0.30)},
 		"snow": {"rock": Color(0.78, 0.80, 1.0), "turf": Color(0.35, 0.36, 0.385), "tree": Color(0.60, 0.76, 0.74)},
+		# In autumn only the rock changes: its moss has gone russet and the
+		# stone is warmed to the golden field (pale grey crags with bright
+		# green moss stood out of it like summer). Turf and trees keep theirs.
+		"autumn": {"rock": Color(0.94, 0.80, 0.62)},
 	}
 	var theme_name := str(map.get("theme", "highland"))
 	if not tones.has(theme_name):
 		return Color.WHITE
-	return tones[theme_name][what]
+	return tones[theme_name].get(what, Color.WHITE)
 
 const CRAG_VARIANTS := 6
 
@@ -2878,7 +2882,7 @@ func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> 
 	copy.albedo_color *= tint
 	# A tint cannot take the green out of moss painted into a rock's texture:
 	# on scorched, snowbound and sand maps the texture itself is greyed first.
-	if tint != Color.WHITE and copy.albedo_texture != null and _scorched_tone("rock") != Color.WHITE:
+	if tint != Color.WHITE and copy.albedo_texture != null and _scorched_tone("rock") != Color.WHITE and (str(map.get("theme", "")) != "autumn" or tint == _scorched_tone("rock")):
 		copy.albedo_texture = _greyed_texture(copy.albedo_texture)
 	_decor_material_cache[key] = copy
 	return copy

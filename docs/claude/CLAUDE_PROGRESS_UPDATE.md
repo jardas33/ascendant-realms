@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 284 (done): autumn crags**
+  - On the autumn maps the rock ridges, hill outcrops and boulders were pale grey with bright green moss, and stood out of the golden fields like summer.
+  - Their moss is now russet and the stone is warmed to match the field. Turf, reeds and trees are unchanged (the broadleaf trees keep their turned leaves from plan 277).
+  - Full regression: 110 of 110 checks passed, save untouched.
 - **Plan 283 (done): palms on the tropical hills**
   - On the tropical maps the woods already grew palms and broadleaf trees, but every hilltop still carried a stand of highland pines among the lagoons.
   - The hills now grow palms there, like the rest of the isles. Other themes keep their pines.
