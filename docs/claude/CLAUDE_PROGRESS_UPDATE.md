@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 317 (done): river and tarn banks**
+  - On Frostmere Basin the river ran down a wide near-black strip with straight edges across the snow: a road with a stream down the middle. The bank under every river and tarn was one flat colour fading out in a ruled line.
+  - New `river_bank.gdshader` (used by `_bank_material()` for river beds and tarn shores): a ragged, soft edge, mud broken by silt and pebbles, and on snow maps a frosting with drifts of snow over the mud. Green maps keep their mud colour with the new texture (checked on Bread Fountain).
+  - Tried and dropped: a white frost rim at the outer edge (looked like torn paper) and single-octave snow patches (blocky).
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 316 (done): scorch marks are darker than the ground**
   - On Emberfall Rift every ruin sat on a pale pink stain. The scorch mark under ruins and fallen units (`battle_scar.gdshader`) was unshaded, so its dark earth drew brighter than the sunlit ground around it on dark maps.
   - It is now lit like the ground, in a darker, less red earth, and reads as scorched on both volcanic and grass maps (checked on Emberfall Rift and Thornwild).

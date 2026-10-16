@@ -1726,12 +1726,12 @@ func _build_authored_structures() -> void:
 		_rebuild_navigation_soft_blockers()
 
 ## Wet earth that fades out at its edge (the fade is in the vertex colours).
-func _bank_material() -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(0.20, 0.19, 0.14)
-	material.roughness = 1.0
-	material.vertex_color_use_as_albedo = true
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+## Plan 317: wet mud with a ragged edge, frosted on snow maps (it was one
+## flat dark colour with a ruled edge: a road with a stream down it).
+func _bank_material() -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://assets/shaders/river_bank.gdshader")
+	material.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
 	return material
 
 ## A flat strip `half_width` either side of a line of points, at height `y`.
