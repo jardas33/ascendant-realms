@@ -3653,7 +3653,7 @@ func _build_navigation_blocker_snapshots(building_snapshot = null) -> Array[Dict
 	var registered_by_owner: Dictionary = {}
 	for world_blocker in _world_route_blockers:
 		var owner = world_blocker.get("owner")
-		if owner is Building and is_instance_valid(owner):
+		if is_instance_valid(owner) and owner is Building:
 			registered_buildings.append(owner)
 	for building in buildings:
 		if not is_instance_valid(building) or building.is_dead or registered_buildings.has(building):

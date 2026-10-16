@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 273 (done): a real fire in the Barrosan forge**
+  - The forge's fire was a flat glowing card shaped like stepped yellow blocks, in front of a pale grey furnace lining that read as a wall.
+  - A live flame with a warm flickering light now burns on the hearth, lighting the stones around the arch, and the furnace inside is sooted black brick. This also shows on the landmarks that reuse the forge model (Standing Stones, Sun Dial, Village Oven).
+  - Fixed an error line the game printed when a building was removed while its path blocker was still registered (it checked the building's type before checking it still existed).
+  - Full regression: 110 of 110 checks pass, save unchanged.
 - **Plan 272 (done): Barrosan roofs, walls and forge stone at true size**
   - The Barrosan houses, war hall, iron forge and main hall share one set of stone textures, mapped so large that each slate and stone stood two to five metres wide. Roofs read as a few black blotches and the forge block as a black box.
   - All their granite and slate is now laid in world metres: roofs show rows of hand-sized slates, the walls show coursed stone, and the forge block reads as dark stonework around its fire. The same fix covers the landmarks that reuse the forge model.

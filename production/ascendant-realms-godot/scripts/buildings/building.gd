@@ -383,6 +383,7 @@ func _build_model() -> void:
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
 		_dress_a01_stonework(m, path)
+		_kindle_forge_ember(m, path)
 		_strip_a02_review_staging(m, path)
 		if path == TASK606_A02_MODEL_PATH:
 			# The authored A02 foundation and wall cast a single hard-edged slab
@@ -769,6 +770,50 @@ static func _dress_a01_stonework(model: Node3D, path: String) -> void:
 				dressed.uv1_triplanar_sharpness = 4.0
 				_a01_dressed[source] = dressed
 			mesh.set_surface_override_material(surface, _a01_dressed[source])
+
+## The Barrosan forge's fire was a flat glowing card in the furnace mouth,
+## a stepped yellow shape that read as a sign. A small live flame and a warm
+## flickering light now burn in front of it.
+func _kindle_forge_ember(model: Node3D, path: String) -> void:
+	if not path.begins_with("res://assets/environment/buildings/barrosan_iron_forge"):
+		return
+	for child in model.find_children("*Ember*", "MeshInstance3D"):
+		var ember := child as MeshInstance3D
+		if not ember or not ember.mesh:
+			continue
+		var box := ember.mesh.get_aabb()
+		var fire := BrazierFire.new()
+		fire.name = "ForgeFire"
+		fire.flame_scale = 0.62
+		fire.light_range = 4.5
+		fire.light_energy = 1.6
+		# On the hearth just inside the arch: the card faces along its own -Z.
+		fire.position = Vector3(box.get_center().x, box.position.y + 0.02, box.position.z - 0.22)
+		ember.add_child(fire)
+		break
+	# The furnace's inside was a flat pale grey that read as a wall behind
+	# the fire; it is sooted black brick now.
+	for child in model.find_children("*Ash*", "MeshInstance3D"):
+		var lining := child as MeshInstance3D
+		if not lining or not lining.mesh:
+			continue
+		for surface in lining.mesh.get_surface_count():
+			var source := lining.get_active_material(surface) as StandardMaterial3D
+			if not source:
+				continue
+			if not _a01_dressed.has(source):
+				var soot := source.duplicate() as StandardMaterial3D
+				soot.albedo_color = Color(0.11, 0.095, 0.085)
+				var rock_path := "res://assets/textures/stone/highland_rock.png"
+				if ResourceLoader.exists(rock_path):
+					soot.albedo_texture = load(rock_path)
+					soot.uv1_triplanar = true
+					soot.uv1_world_triplanar = true
+					soot.uv1_scale = Vector3.ONE * 0.8
+				soot.roughness = 1.0
+				_a01_dressed[source] = soot
+			lining.set_surface_override_material(surface, _a01_dressed[source])
+
 
 func _is_a01_model_path(path: String) -> bool:
 	return path == "res://assets/environment/buildings/barrosan_civic_keep_a01.glb"
