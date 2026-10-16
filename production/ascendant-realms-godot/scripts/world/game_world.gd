@@ -1594,15 +1594,19 @@ func _build_rivers() -> void:
 		# end there in a ruled line, a pale slab laid across the river.)
 		var shallows := _ribbon(PackedVector2Array([ford_at - ford_across * half_river * 1.3, ford_at - ford_across * half_river * 0.8, ford_at, ford_at + ford_across * half_river * 0.8, ford_at + ford_across * half_river * 1.3]), reach * 1.25, 0.11, reach * 0.6, true)
 		shallows.name = "FordShallows"
-		var shallow_material := StandardMaterial3D.new()
-		shallow_material.albedo_color = Color(0.62, 0.72, 0.58, 0.62)
 		if str(map.get("theme", "")) == "volcanic":
 			# Where the fire can be crossed it has crusted over.
-			shallow_material.albedo_color = Color(0.16, 0.10, 0.09, 0.88)
-		shallow_material.roughness = 0.25
-		shallow_material.vertex_color_use_as_albedo = true
-		shallow_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		shallows.material_override = shallow_material
+			var crust_material := StandardMaterial3D.new()
+			crust_material.albedo_color = Color(0.16, 0.10, 0.09, 0.88)
+			crust_material.roughness = 0.25
+			crust_material.vertex_color_use_as_albedo = true
+			crust_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			shallows.material_override = crust_material
+		else:
+			# Pebbles under clear shallow water (a flat pale wash read as fog).
+			var shallow_material := ShaderMaterial.new()
+			shallow_material.shader = preload("res://assets/shaders/ford_shallows.gdshader")
+			shallows.material_override = shallow_material
 		layer.add_child(shallows)
 	# Stepping stones at each ford.
 	var rng := RandomNumberGenerator.new()

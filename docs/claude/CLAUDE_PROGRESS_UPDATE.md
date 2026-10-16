@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 296 (done): river fords as pebbles under shallow water**
+  - Where a ford crosses a river (for example the four fords of the Bread Fountain, 2-3) the shallows were one flat pale wash that read as a band of fog lying across the water.
+  - A new shader (`ford_shallows.gdshader`) draws a bed of pebbles and gravel seen through clear teal water, with thin bands of sunlight drifting over it, fading out up and down stream as before. Volcanic fords keep their dark crust.
+  - Full regression: 111 of 111 checks passed in 939 s, save unchanged.
 - **Plan 295 (done): real lava in the slag pools**
   - In battle pictures of the Lume-Iron Mines (4-2) the slag pools were one flat orange color, a painted blob from the camera. Volcanic rivers used the same flat material.
   - A new shader (`slag_pool.gdshader`) draws dark crust plates that drift slowly over glowing seams, hottest in the middle and crusted toward the banks, with a dull glow through the crust.
