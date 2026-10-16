@@ -4790,7 +4790,7 @@ func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
 	l.modulate = DEPOSIT_FLOAT_COLORS.get(kind, Color(0.95, 0.9, 0.75))
 	add_child(l)
 	var row := maxi(0, ["food", "timber", "stone", "gold"].find(kind))
-	l.offset = Vector2(0.0, 40.0 * float(row))
+	l.offset = Vector2(0.0, 52.0 * float(row))
 	l.global_position = drop.global_position + Vector3(0.0, 7.0, 0.0)
 	_deposit_float_stack[key] = {"label": l, "amount": amount, "t": now, "tween": _deposit_float_fade(l)}
 

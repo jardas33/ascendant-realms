@@ -4162,8 +4162,9 @@ func _show_hero_title() -> void:
 	tl.no_depth_test = true
 	tl.fixed_size = true
 	tl.pixel_size = 0.0008
-	tl.font_size = 20
-	tl.outline_size = 6
+	# Plan 322: 20 px read as a smudge over the hero on a laptop.
+	tl.font_size = 30
+	tl.outline_size = 9
 	tl.modulate = Color(1.0, 0.86, 0.5)
 	tl.outline_modulate = Color(0.08, 0.04, 0.0, 0.9)
 	add_child(tl)
@@ -4184,8 +4185,8 @@ func say(text: String, col: Color = Color(1.0, 0.95, 0.82)) -> void:
 	_bark.no_depth_test = true
 	_bark.fixed_size = true
 	_bark.pixel_size = 0.0008
-	_bark.font_size = 24
-	_bark.outline_size = 8
+	_bark.font_size = 32
+	_bark.outline_size = 10
 	_bark.modulate = col
 	_bark.outline_modulate = Color(0.06, 0.03, 0.0, 0.95)
 	add_child(_bark)
@@ -4206,8 +4207,8 @@ func _update_rank_badge() -> void:
 		_rank_badge.no_depth_test = true
 		_rank_badge.fixed_size = true
 		_rank_badge.pixel_size = 0.0009
-		_rank_badge.font_size = 22
-		_rank_badge.outline_size = 6
+		_rank_badge.font_size = 28
+		_rank_badge.outline_size = 8
 		_rank_badge.modulate = Color(1.0, 0.82, 0.3)
 		_rank_badge.outline_modulate = Color(0.1, 0.05, 0.0, 0.9)
 		add_child(_rank_badge)

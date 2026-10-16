@@ -509,8 +509,8 @@ func _build_depletion_status_visual(scale_h: float) -> void:
 	# about six pixels tall from the battle camera.
 	_depletion_status_label.fixed_size = true
 	_depletion_status_label.pixel_size = 0.0008
-	_depletion_status_label.font_size = 24
-	_depletion_status_label.outline_size = 8
+	_depletion_status_label.font_size = 30
+	_depletion_status_label.outline_size = 9
 	_depletion_status_label.outline_modulate = Color(0.06, 0.035, 0.0, 0.92)
 	_depletion_status_label.offset = Vector2(0, 10)
 	_depletion_status_label.position = Vector3(0, maxf(1.8, scale_h * 0.90) + 0.42, 0)
