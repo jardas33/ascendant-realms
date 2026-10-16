@@ -201,6 +201,11 @@ func _make_ground_material(map: Dictionary) -> Material:
 		seats.append(Vector2(99999.0, 99999.0))
 	sm.set_shader_parameter("field_seats", seats)
 	sm.set_shader_parameter("volcanic_surface", 1.0 if String(map.get("theme", "")) == "volcanic" else 0.0)
+	var sand_theme := String(map.get("theme", ""))
+	if sand_theme in ["desert", "badlands"]:
+		sm.set_shader_parameter("sand_surface", 1.0)
+		sm.set_shader_parameter("sand_color", Color(0.60, 0.58, 0.56) if sand_theme == "desert" else Color(0.62, 0.52, 0.46))
+		sm.set_shader_parameter("sand_ripple", 1.0 if sand_theme == "desert" else 0.2)
 	# R19 material hierarchy: calm the walkable plane first, then let roads
 	# carry a restrained value shift.  This is presentation-only and does not
 	# change the map's authored geometry or navigation data.
@@ -261,6 +266,10 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 			# The authored snow texture supplies drift structure; the cool road
 			# and earth values retain tactical hierarchy under the winter light.
 			return {"ground_base": Color(0.34, 0.40, 0.49), "road_base": Color(0.40, 0.39, 0.38), "road_edge_color": Color(0.18, 0.23, 0.29), "surface_detail": 0.42, "surface_macro": 0.28, "road_detail": 0.38, "road_edge_strength": 0.26, "surface_saturation": 0.66, "snow_shadow_color": Color(0.58, 0.66, 0.77), "snow_highlight_color": Color(0.88, 0.93, 1.0), "snow_underlay_strength": 0.08, "snow_variation_strength": 0.82}
+		"desert", "badlands":
+			# Sand and bare red earth: no green fields laid over them (the
+			# highland grade below painted lush and mossy turf on the dunes).
+			return {"ground_base": Color(0.52, 0.44, 0.32), "road_base": Color(0.50, 0.40, 0.28), "road_edge_color": Color(0.34, 0.26, 0.17), "surface_detail": 0.5, "surface_macro": 0.2, "road_detail": 0.5, "road_edge_strength": 0.22, "surface_saturation": 0.92, "field_strength": 0.0, "relief_strength": 0.7}
 		"verdant":
 			# Keep Bloomvale's inviting green mids after replacing the repeated
 			# plant stamps with a finer, more natural meadow texture.

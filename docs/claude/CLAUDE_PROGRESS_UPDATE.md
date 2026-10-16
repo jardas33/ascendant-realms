@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 274 (done): desert maps of sand, badlands of red earth**
+  - Battles photographed on desert, marsh and snow maps. Dune Sea Bastion, a "dune sea", showed an olive-green lawn with grass tufts: the desert and badlands maps used the highland ground grade, which paints lush and mossy turf, over the grass textures.
+  - Desert ground is now sand: broad dune swells, wind ripples that bend across the field, the grain of dry earth, and sandstone patches. Badlands (Kaelmoor, Warlord's Crucible, the Regent's Canyons) are bare red earth with faint ripples. No green fields are laid over either, the grass tufts are thinned to a few dry stalks, and the minimap matches the sand and red earth.
+  - Still to do: the desert woods are pines; plan 275 gives them desert trees.
+  - Full regression: 110 of 110 checks pass, save unchanged.
 - **Plan 273 (done): a real fire in the Barrosan forge**
   - The forge's fire was a flat glowing card shaped like stepped yellow blocks, in front of a pale grey furnace lining that read as a wall.
   - A live flame with a warm flickering light now burns on the hearth, lighting the stones around the arch, and the furnace inside is sooted black brick. This also shows on the landmarks that reuse the forge model (Standing Stones, Sun Dial, Village Oven).

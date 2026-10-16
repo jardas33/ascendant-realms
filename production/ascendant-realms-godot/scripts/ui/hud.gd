@@ -2002,7 +2002,9 @@ func _minimap_theme_color(theme_name: String, accent: bool) -> Color:
 	match theme_name:
 		"volcanic": return Color(0.42, 0.25, 0.18, 1.0) if not accent else Color(0.58, 0.32, 0.18, 1.0)
 		"snow": return Color(0.37, 0.45, 0.48, 1.0) if not accent else Color(0.60, 0.68, 0.70, 1.0)
-		"desert", "badlands": return Color(0.40, 0.29, 0.18, 1.0) if not accent else Color(0.58, 0.42, 0.24, 1.0)
+		# The survey matches the sand and red earth of the field itself.
+		"desert": return Color(0.56, 0.45, 0.29, 1.0) if not accent else Color(0.68, 0.55, 0.35, 1.0)
+		"badlands": return Color(0.48, 0.30, 0.20, 1.0) if not accent else Color(0.60, 0.38, 0.24, 1.0)
 		_: return Color(0.31, 0.39, 0.27, 1.0) if not accent else Color(0.39, 0.47, 0.31, 1.0)
 
 

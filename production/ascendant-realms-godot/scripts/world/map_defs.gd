@@ -2569,7 +2569,7 @@ static func theme(name: String) -> Dictionary:
 			"water": {"enabled": true, "deep": Color(0.1, 0.22, 0.28), "shallow": Color(0.24, 0.44, 0.46), "foam": Color(0.92, 0.9, 0.8)},
 		},
 		"desert": {
-			"ground_tint": Color(1.28, 1.06, 0.7), "dirt_bias": 0.5, "rock_bias": 0.12, "snow": 0.0,
+			"ground_tint": Color(1.28, 1.06, 0.7), "dirt_bias": 0.0, "rock_bias": 0.12, "snow": 0.0,
 			"rock_tint": Color(0.85, 0.68, 0.45),
 			"fog_color": Color(0.92, 0.84, 0.62), "fog_density": 0.00066,
 			"sun_color": Color(1.0, 0.95, 0.78), "sun_energy": 1.35, "ambient_energy": 0.7,
@@ -2579,7 +2579,7 @@ static func theme(name: String) -> Dictionary:
 			"water": {"enabled": false},
 		},
 		"badlands": {
-			"ground_tint": Color(1.12, 0.86, 0.66), "dirt_bias": 0.32, "rock_bias": 0.35, "snow": 0.0,
+			"ground_tint": Color(1.12, 0.86, 0.66), "dirt_bias": 0.1, "rock_bias": 0.35, "snow": 0.0,
 			"rock_tint": Color(0.78, 0.55, 0.42),
 			"fog_color": Color(0.82, 0.7, 0.56), "fog_density": 0.00088,
 			"sun_color": Color(1.0, 0.9, 0.74), "sun_energy": 1.2, "ambient_energy": 0.6,

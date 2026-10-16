@@ -19,6 +19,12 @@ uniform float tile_rock = 0.09;
 uniform float tile_snow = 0.016;
 uniform float tile_volcanic = 0.032;
 uniform float volcanic_surface = 0.0;
+// Sand and bare earth (desert, badlands): the grass layers are replaced by
+// this colour, broken by broad dune swells, wind ripples (sand_ripple) and
+// the grain of the dirt texture. 0 keeps the grass.
+uniform float sand_surface = 0.0;
+uniform vec3 sand_color : source_color = vec3(0.60, 0.58, 0.56);
+uniform float sand_ripple = 1.0;
 
 // R19 tactical readability grade.  These controls deliberately change only
 // the material presentation of the existing flat ground mesh; the playable
@@ -207,6 +213,18 @@ void fragment() {
 		ground = mix(grass_a, grass_b, meadow_m);
 	}
 	ground = mix(ground_base, ground, clamp(surface_detail, 0.0, 1.0));
+	if (sand_surface > 0.5) {
+		// The grass textures under a desert grade still read as an olive
+		// lawn with grass in it. Sand country has no turf at all.
+		float swell = fbm2(wxz * 0.009 + 9.0);
+		float bend = fbm(wxz * 0.035 + 4.0) * 7.0;
+		float ripple = sin(dot(wxz, vec2(0.83, 0.55)) * 2.2 + bend) * 0.5 + 0.5;
+		ripple = mix(ripple, sin(dot(wxz, vec2(0.6, 0.8)) * 3.1 + bend * 1.3) * 0.5 + 0.5, 0.35);
+		float grain = dot(texture(tex_dirt, wxz * tile_dirt * 0.8).rgb, vec3(0.333));
+		float lee = smoothstep(0.35, 0.7, fbm2(wxz * 0.021 + 31.0));
+		ground = sand_color * mix(0.84, 1.07, swell) * mix(1.0, mix(0.92, 1.05, ripple), clamp(sand_ripple, 0.0, 1.0))
+			* mix(0.9, 1.08, smoothstep(0.2, 0.6, grain)) * mix(1.0, 0.93, lee);
+	}
 
 	// dry-earth clearings (dirt_bias pushes toward a sandy/parched biome)
 	vec3 dirt = volcanic_surface > 0.5
