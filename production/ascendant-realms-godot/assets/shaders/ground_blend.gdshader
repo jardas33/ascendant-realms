@@ -373,10 +373,14 @@ void fragment() {
 		ground = mix(ground, ash_col, drift * keep * 0.5 * ash_surface);
 		// Burn scars: charred cores, a scorched brown ring around them.
 		float scar_n = fbm2(wxz * 0.022 + 57.0) + (fbm(wxz * 0.14 + 6.0) - 0.5) * 0.1;
-		float ring = smoothstep(0.54, 0.60, scar_n) * keep * ash_surface * (1.0 - drift);
-		float core = smoothstep(0.60, 0.66, scar_n) * keep * ash_surface * (1.0 - drift);
+		float ring = smoothstep(0.57, 0.63, scar_n) * keep * ash_surface * (1.0 - drift);
+		float core = smoothstep(0.63, 0.70, scar_n) * keep * ash_surface * (1.0 - drift);
 		ground = mix(ground, ground * vec3(0.62, 0.50, 0.40), ring * 0.8);
-		vec3 char_col = vec3(0.07, 0.065, 0.06) + vec3(0.06) * smoothstep(0.3, 0.6, crack_dist(wxz * 0.7 + 2.0));
+		// Charcoal mottled at two scales with only faint cracks: evenly lit
+		// plates on a dark grid read as reptile scales over a whole scar.
+		float soot = fbm(wxz * 0.35 + 2.0) * 0.6 + fbm(wxz * 1.3 + 9.0) * 0.4;
+		float char_crack = 1.0 - smoothstep(0.0, 0.06, crack_dist(wxz * 0.45 + 2.0));
+		vec3 char_col = (vec3(0.075, 0.07, 0.065) + vec3(0.07, 0.065, 0.06) * smoothstep(0.35, 0.75, soot)) * (1.0 - 0.35 * char_crack);
 		ground = mix(ground, char_col, core * 0.9);
 	}
 	// Volcanic fields: veins of lava glow through cracks in the basalt in
