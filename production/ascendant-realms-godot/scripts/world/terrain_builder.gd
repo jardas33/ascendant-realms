@@ -208,6 +208,8 @@ func _make_ground_material(map: Dictionary) -> Material:
 		sm.set_shader_parameter("sand_ripple", 1.0 if sand_theme == "desert" else 0.2)
 	elif sand_theme == "wetland":
 		sm.set_shader_parameter("bog_surface", 1.0)
+	elif sand_theme == "ashen":
+		sm.set_shader_parameter("ash_surface", 1.0)
 	# R19 material hierarchy: calm the walkable plane first, then let roads
 	# carry a restrained value shift.  This is presentation-only and does not
 	# change the map's authored geometry or navigation data.
@@ -263,7 +265,7 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		"ashen":
 			# Ashen needs a firmer value floor and broader breakup so the existing
 			# stone/dirt inputs survive the full battlefield view.
-			return {"ground_base": Color(0.31, 0.32, 0.35), "road_base": Color(0.46, 0.37, 0.29), "road_edge_color": Color(0.16, 0.17, 0.19), "surface_detail": 0.52, "surface_macro": 0.34, "road_detail": 0.54, "road_edge_strength": 0.23, "surface_saturation": 0.64}
+			return {"ground_base": Color(0.31, 0.32, 0.35), "road_base": Color(0.46, 0.37, 0.29), "road_edge_color": Color(0.16, 0.17, 0.19), "surface_detail": 0.52, "surface_macro": 0.34, "road_detail": 0.54, "road_edge_strength": 0.23, "surface_saturation": 0.64, "relief_strength": 0.6}
 		"snow":
 			# The authored snow texture supplies drift structure; the cool road
 			# and earth values retain tactical hierarchy under the winter light.

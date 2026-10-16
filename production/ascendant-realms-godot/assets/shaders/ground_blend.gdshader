@@ -29,6 +29,8 @@ uniform float sand_ripple = 1.0;
 // still water at their hearts that catch the sky. Kept off the roads and
 // away from the starting seats. 0 none.
 uniform float bog_surface = 0.0;
+// Ashen maps: wind-laid drifts of pale ash and charred burn scars.
+uniform float ash_surface = 0.0;
 
 // R19 tactical readability grade.  These controls deliberately change only
 // the material presentation of the existing flat ground mesh; the playable
@@ -344,6 +346,30 @@ void fragment() {
 		// Plates catch a little light at their raised centres.
 		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
+	}
+	// Ashen maps (a burned country): the open ground was a bare grey sheet.
+	// Pale ash now lies in long wind-combed drifts, and old burn scars leave
+	// charred black patches ringed with scorched earth. Roads and the
+	// starting seats stay clear.
+	if (ash_surface > 0.0) {
+		float keep = 1.0 - clamp(road, 0.0, 1.0);
+		for (int i = 0; i < field_seat_count; i++) {
+			keep *= smoothstep(22.0, 38.0, distance(wxz, field_seats[i]));
+		}
+		// Drifts are stretched along the prevailing wind (roughly +x+z).
+		vec2 wind = vec2(wxz.x * 0.7 + wxz.y * 0.7, -wxz.x * 0.7 + wxz.y * 0.7);
+		vec2 dp = vec2(wind.x * 0.012, wind.y * 0.045);
+		float drift = smoothstep(0.50, 0.68, fbm2(dp + 31.0) + (fbm(wxz * 0.2 + 4.0) - 0.5) * 0.12);
+		float streak = 0.88 + 0.12 * fbm(vec2(wind.x * 0.05, wind.y * 0.6) + 12.0);
+		vec3 ash_col = vec3(0.45, 0.43, 0.40) * (0.9 + 0.2 * fbm(wxz * 0.6 + 8.0)) * streak;
+		ground = mix(ground, ash_col, drift * keep * 0.5 * ash_surface);
+		// Burn scars: charred cores, a scorched brown ring around them.
+		float scar_n = fbm2(wxz * 0.022 + 57.0) + (fbm(wxz * 0.14 + 6.0) - 0.5) * 0.1;
+		float ring = smoothstep(0.54, 0.60, scar_n) * keep * ash_surface * (1.0 - drift);
+		float core = smoothstep(0.60, 0.66, scar_n) * keep * ash_surface * (1.0 - drift);
+		ground = mix(ground, ground * vec3(0.62, 0.50, 0.40), ring * 0.8);
+		vec3 char_col = vec3(0.07, 0.065, 0.06) + vec3(0.06) * smoothstep(0.3, 0.6, crack_dist(wxz * 0.7 + 2.0));
+		ground = mix(ground, char_col, core * 0.9);
 	}
 	// Volcanic fields: veins of lava glow through cracks in the basalt in
 	// broad bands across the open ground (they used to glow only under a

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 279 (done): ash drifts and burn scars on the ashen maps**
+  - The open middle of the ashen maps (Ruins of Vael, Furna in Ashes, Salto Ascendant and the other ashen fields) was a bare grey sheet.
+  - Pale ash now lies in long drifts combed by the wind, and old burn scars leave charred black ground, cracked like scorched paving, ringed with browned earth. The ground also has gentle relief now. Roads and starting bases stay clear. A first try made the ash so pale it read as snow; it was darkened and thinned.
+  - Full regression: 110 of 110 checks passed, save untouched.
 - **Plan 278 (done): lava veins on the volcanic fields**
   - The open middle of the volcanic maps (Scorched Expanse, Emberfall Rift, Cinderpeak and the saga's volcanic fields) was a flat brown sheet; lava glowed only under a Vorthak holdfast.
   - In broad bands across the open ground the basalt now cracks into large plates, and some of the seams glow with slowly pulsing lava. Roads and starting bases are left clear. A first attempt lit every crack and turned the field into a glowing net; it was cut back to a few burning veins so units stay easy to see.
