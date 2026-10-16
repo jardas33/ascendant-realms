@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 285 (done): no trees through roofs, dry trees in the badlands**
+  - A battle picture on Montalto showed a pine standing up through the roof of a long hall. Only a handful of the scattered trees and boulders block building, so a hall could be raised right on top of one.
+  - A building now clears any lone tree or boulder under it when it is placed. A new check (claude_decorclear) raises a hall on a tree and confirms the tree is gone.
+  - In the badlands (Kaelmoor, Warlord's Crucible, Regent's Canyon) green highland pines stood on the red earth. Their needles are now sparse and sun-dried, like the dead trees of the burned maps.
+  - Full regression: 111 of 111 checks passed, save untouched.
 - **Plan 284 (done): autumn crags**
   - On the autumn maps the rock ridges, hill outcrops and boulders were pale grey with bright green moss, and stood out of the golden fields like summer.
   - Their moss is now russet and the stone is warmed to match the field. Turf, reeds and trees are unchanged (the broadleaf trees keep their turned leaves from plan 277).

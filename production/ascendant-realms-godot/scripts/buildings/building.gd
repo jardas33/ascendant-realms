@@ -158,6 +158,8 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	rally_point = global_position + field_side * (footprint + 3.0)
 	if world and world.has_method("clear_ground_cover"):
 		world.clear_ground_cover(global_position, footprint * 1.2 + 1.0)
+	if world and world.has_method("clear_decor_under"):
+		world.clear_decor_under(global_position, footprint * 1.1 + 1.5)
 	_build_model()
 	_build_team_banner()
 	_build_visual_convergence_identity_dressing()

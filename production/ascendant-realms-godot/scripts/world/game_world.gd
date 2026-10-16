@@ -795,6 +795,7 @@ func _scatter_environment() -> void:
 	var decor := Node3D.new()
 	decor.name = "Decor"
 	add_child(decor)
+	_decor_root = decor
 
 	var trees := []
 	for p in ["res://assets/environment/vegetation/highland_pine.glb",
@@ -2171,6 +2172,25 @@ func clear_ground_cover(pos: Vector3, radius: float) -> void:
 	if is_instance_valid(_ground_cover):
 		_ground_cover.clear_circle(pos, radius)
 
+var _decor_root: Node3D = null
+
+## A building raised where a lone tree or boulder stood takes its place: the
+## scattered decor is not a building blocker (only a handful are), so a pine
+## stood up through the roof of a long hall on Montalto.
+func clear_decor_under(pos: Vector3, radius: float) -> void:
+	if not is_instance_valid(_decor_root):
+		return
+	var at := Vector2(pos.x, pos.z)
+	for child in _decor_root.get_children():
+		if not child is Node3D or not child.visible:
+			continue
+		var path := String(child.scene_file_path)
+		if not ("/environment/vegetation/" in path or "/environment/rocks/" in path):
+			continue
+		var p: Vector3 = child.global_position
+		if Vector2(p.x, p.z).distance_to(at) < radius:
+			child.visible = false
+
 
 func _build_visual_convergence_hollowspan(parent: Node3D, starts: Array) -> void:
 	# Slice 1 is a presentation-only authored layer for the Barrosan starting
@@ -2849,11 +2869,14 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	var texture_path: String = standard.albedo_texture.resource_path if standard.albedo_texture else ""
 	var turning: bool = str(map.get("theme", "")) == "autumn" and not "pine" in texture_path and not still
 	m.set_shader_parameter("autumn", 1.0 if turning else 0.0)
-	# On burned ground (ashen and volcanic) the leaves are dead and thinned.
-	var burned: bool = str(map.get("theme", "")) in ["ashen", "volcanic"] and not still
+	# On burned ground (ashen and volcanic) the leaves are dead and thinned;
+	# in the badlands they are sparse and sun-dried (green highland pines
+	# stood on the red earth there).
+	var burned: bool = str(map.get("theme", "")) in ["ashen", "volcanic", "badlands"] and not still
 	m.set_shader_parameter("withered", 1.0 if burned else 0.0)
 	if burned:
-		m.set_shader_parameter("withered_color", Color(0.40, 0.37, 0.33) if str(map.get("theme", "")) == "ashen" else Color(0.40, 0.27, 0.18))
+		var dry_colors := {"ashen": Color(0.40, 0.37, 0.33), "volcanic": Color(0.40, 0.27, 0.18), "badlands": Color(0.50, 0.44, 0.26)}
+		m.set_shader_parameter("withered_color", dry_colors[str(map.get("theme", ""))])
 	if turning or burned:
 		# (The green foliage tint would take the red out of the turned leaves,
 		# and the scorched tone would leave dead leaves near black.)
