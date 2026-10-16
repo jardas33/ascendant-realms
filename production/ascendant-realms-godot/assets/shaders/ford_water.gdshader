@@ -9,6 +9,11 @@ uniform vec3 deep_tint : source_color = vec3(0.07, 0.24, 0.30);
 uniform vec3 shallow_tint : source_color = vec3(0.22, 0.44, 0.44);
 uniform vec3 foam_tint : source_color = vec3(0.82, 0.86, 0.80);
 uniform float flow_speed = 0.35;
+// Width of a river strip in metres. When set, the current runs along the
+// strip (UV.x is the distance along it in widths) instead of along world X:
+// a river running north to south had its streaks laid across it, and they
+// read as the dashed lane markings of a road.
+uniform float strip_width = 0.0;
 
 varying vec3 wpos;
 
@@ -49,16 +54,17 @@ void vertex() {
 
 void fragment() {
 	float across = abs(UV.y - 0.5) * 2.0;            // 0 centre .. 1 bank
-	float wobble = (fbm(vec2(wpos.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(wpos.x * 0.21, 3.0)) - 0.5) * 0.18;
+	vec2 rc = strip_width > 0.0 ? vec2(UV.x * strip_width, (UV.y - 0.5) * strip_width) : wpos.xz;
+	float wobble = (fbm(vec2(rc.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(rc.x * 0.21, 3.0)) - 0.5) * 0.18;
 	float edge = across + wobble;
 	float body = 1.0 - smoothstep(0.62, 0.98, edge);   // soft, irregular banks
 	float depth = 1.0 - smoothstep(0.0, 0.85, edge);
-	mat2 rot = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
-	vec2 flow = rot * vec2(wpos.x * 0.16 - TIME * flow_speed, wpos.z * 0.42);
+	mat2 rot = strip_width > 0.0 ? mat2(vec2(0.98, 0.2), vec2(-0.2, 0.98)) : mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
+	vec2 flow = rot * vec2(rc.x * 0.16 - TIME * flow_speed, rc.y * 0.42);
 	float ripple = fbm(flow) * 0.6 + fbm(flow * 2.3 + 11.0) * 0.4;
 	vec3 col = mix(shallow_tint, deep_tint, smoothstep(0.0, 1.0, depth));
 	// Current streaks: noise stretched along the flow, drifting downstream.
-	float streak = fbm(vec2(wpos.x * 0.06 - TIME * flow_speed * 0.9, wpos.z * 0.85 + 3.0));
+	float streak = fbm(vec2(rc.x * 0.06 - TIME * flow_speed * 0.9, rc.y * 0.85 + 3.0));
 	streak = smoothstep(0.55, 0.78, streak) * (0.4 + 0.6 * depth);
 	col = mix(col, shallow_tint * 1.35, streak * 0.35);
 	// Foam where the current breaks along the banks and around shallow riffles.

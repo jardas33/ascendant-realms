@@ -1560,6 +1560,7 @@ func _build_rivers() -> void:
 		elif ResourceLoader.exists(shader_path):
 			var water_material := ShaderMaterial.new()
 			water_material.shader = load(shader_path)
+			water_material.set_shader_parameter("strip_width", width)
 			water.material_override = water_material
 		layer.add_child(water)
 		for sample in samples:
