@@ -1276,6 +1276,13 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 266 (done): the great walls are built stone**
+  - I photographed a real battle (chapter 2-1, The Dam at Salto) at 7, 10 and 13 minutes to find the weakest thing on screen. The fight itself drew as see-through ghosts, but that was my test camera sitting inside the dam wall, not a fault in the game.
+  - The real weak point was the walls themselves (the dam, the fort rings, the Wolf-Trap funnels, the Rabagao Wall): a cobble rock texture smeared over plain boxes, reading as a cliff rather than something people built, with a dark crack down the face at every bend.
+  - They now have dressed stone: courses of cut blocks, each course offset by half a block, each block its own shade, with sunken mortar joints and flagstones on top, all measured in metres along each face so nothing stretches (new `masonry.gdshader`).
+  - The wall body and parapets are now built as one bending strip, so the cracks at the bends are gone.
+  - Checked in pictures on the dam (close and at play height) and on the winter Wolf-Trap Walls under snow.
+  - Full regression: 110 of 110 checks pass (1018 s); the real save is unchanged.
 - **Plan 265 (done): readable command tips and victory screen**
   - The overlay check now measures text size too (`claude_overlayclip.gd` CLAUDE_PX). On a 1366x768 window the command card tips drew their kind word and keys at 10 px and their text at 12 px, and the victory and defeat ledger at 10 to 11 px (14 px even at 1920x1080).
   - Command tips are now drawn at the same scale as the command panel they belong to (1.2x, more on a laptop window): 14 px or more at 1366x768.

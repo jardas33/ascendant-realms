@@ -1256,15 +1256,27 @@ func _build_walls() -> void:
 	var layer := Node3D.new()
 	layer.name = "Walls"
 	add_child(layer)
-	var stone := StandardMaterial3D.new()
+	# Dressed stone: courses of cut blocks with mortar joints over the rock
+	# grain, measured in metres along each face. (The rock alone, laid
+	# triplanar, read as a smeared cliff rather than a built wall.)
+	var stone: Material
 	var stone_path := "res://assets/textures/stone/highland_rock.png"
-	if ResourceLoader.exists(stone_path):
-		stone.albedo_texture = load(stone_path)
-	stone.albedo_color = Color(0.78, 0.76, 0.72)
-	stone.roughness = 1.0
-	stone.uv1_triplanar = true
-	stone.uv1_scale = Vector3(0.16, 0.16, 0.16)
-	stone.vertex_color_use_as_albedo = true
+	var masonry_path := "res://assets/shaders/masonry.gdshader"
+	if ResourceLoader.exists(masonry_path) and ResourceLoader.exists(stone_path):
+		var dressed := ShaderMaterial.new()
+		dressed.shader = load(masonry_path)
+		dressed.set_shader_parameter("rock", load(stone_path))
+		stone = dressed
+	else:
+		var plain := StandardMaterial3D.new()
+		if ResourceLoader.exists(stone_path):
+			plain.albedo_texture = load(stone_path)
+		plain.albedo_color = Color(0.78, 0.76, 0.72)
+		plain.roughness = 1.0
+		plain.uv1_triplanar = true
+		plain.uv1_scale = Vector3(0.16, 0.16, 0.16)
+		plain.vertex_color_use_as_albedo = true
+		stone = plain
 	# On a field under snow the snow lies on the walls too: a white cap on
 	# the walk, the parapets and the towers.
 	var snowed := str(map.get("theme", "")) == "snow"
@@ -1310,18 +1322,50 @@ func _build_walls() -> void:
 					tool.set_color(tint.darkened(0.22 * (1.0 - clampf(vertex.y / top, 0.0, 1.0))))
 					tool.add_vertex(vertex)
 		var pale := Color(1.0, 1.0, 1.0)
+		# The across direction at each sample, mitred between the two runs that
+		# meet there, so the body and parapets bend without a seam. (Built as
+		# one box per run they left a dark wedge at every bend, a vertical
+		# crack down the face every three metres.)
+		var miters: Array = []
+		for index in samples.size():
+			var before: Vector2 = (samples[index] - samples[maxi(index - 1, 0)]).normalized() if index > 0 else (samples[1] - samples[0]).normalized()
+			var after: Vector2 = (samples[mini(index + 1, samples.size() - 1)] - samples[index]).normalized() if index < samples.size() - 1 else before
+			var bisector: Vector2 = (before + after).normalized()
+			var across_here := Vector2(-bisector.y, bisector.x)
+			var normal_after := Vector2(-after.y, after.x)
+			miters.append(across_here / maxf(0.5, across_here.dot(normal_after)))
+		# A bending strip `wide` either side of `offset` at the foot and
+		# `wide_top` at the head, from `low` to `high`: its top and both faces.
+		var strip := func(offset: float, wide: float, wide_top: float, low: float, high: float, tint: Color) -> void:
+			for index in range(samples.size() - 1):
+				var corners: Array = []
+				for at in [index, index + 1]:
+					var middle: Vector2 = samples[at] + miters[at] * offset
+					for spread in [[-wide, low], [wide, low]]:
+						var point: Vector2 = middle + miters[at] * spread[0]
+						corners.append(Vector3(point.x, spread[1], point.y))
+					for spread in [[-wide_top, high], [wide_top, high]]:
+						var point: Vector2 = middle + miters[at] * spread[0]
+						corners.append(Vector3(point.x, spread[1], point.y))
+				# 0,1 foot and 2,3 head at this sample; 4,5 and 6,7 at the next.
+				for face in [[2, 3, 7, 6], [0, 2, 6, 4], [1, 5, 7, 3]]:
+					for corner in [0, 2, 1, 0, 3, 2]:
+						var vertex: Vector3 = corners[face[corner]]
+						tool.set_color(tint.darkened(0.22 * (1.0 - clampf(vertex.y / top, 0.0, 1.0))))
+						tool.add_vertex(vertex)
+		# The body, and the walk along its top between two parapets.
+		strip.call(0.0, half, half - 0.9, 0.0, top, pale)
+		for side in [-1.0, 1.0]:
+			strip.call((half - 1.3) * side, 0.4, 0.4, top, top + 1.1, Color(0.94, 0.93, 0.90))
 		var walked := 0.0
 		for index in range(samples.size() - 1):
 			var from: Vector2 = samples[index]
 			var to: Vector2 = samples[index + 1]
 			var along := (to - from).normalized()
 			var across := Vector2(-along.y, along.x)
-			# The body, and the walk along its top between two parapets.
-			block.call(from, to, half, half - 0.9, 0.0, top, pale)
 			cap.call(from, to, half - 1.7, top)
 			for side in [-1.0, 1.0]:
 				var edge: Vector2 = across * (half - 1.3) * side
-				block.call(from + edge, to + edge, 0.4, 0.4, top, top + 1.1, Color(0.94, 0.93, 0.90))
 				cap.call(from + edge, to + edge, 0.4, top + 1.1)
 			# A buttress on both faces every twelve metres or so.
 			walked += from.distance_to(to)
