@@ -358,6 +358,8 @@ func _open_endless(chosen_depth: int = -1, weekly: bool = false) -> void:
 	plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	plate.grow_vertical = Control.GROW_DIRECTION_BOTH
 	plate.custom_minimum_size = Vector2(760, 0)
+	plate.set("surface_alpha", 0.97)
+	plate.set("surface_alpha_bottom", 0.97)
 	layer.add_child(plate)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
@@ -948,7 +950,14 @@ func _open_briefing(id: String) -> void:
 	plate.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	plate.grow_vertical = Control.GROW_DIRECTION_BOTH
-	plate.custom_minimum_size = Vector2(820, 0)
+	# Plan 327: wider on small windows, where the text is lifted
+	# (ReadableText): on a laptop the card was a narrow column of small lines.
+	var lift: float = load("res://scripts/ui/readable_text.gd")._small_window_lift(self)
+	plate.custom_minimum_size = Vector2(roundf(820.0 * lift), 0)
+	# Near-opaque: at the plate's usual 87% the map's titles showed through
+	# behind the story text.
+	plate.set("surface_alpha", 0.97)
+	plate.set("surface_alpha_bottom", 0.97)
 	layer.add_child(plate)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
@@ -997,7 +1006,7 @@ func _open_briefing(id: String) -> void:
 	box.add_child(rule)
 	var body := _label(CampaignDefs.briefing_for(id, _hero_race()), 18, Color(0.92, 0.89, 0.80))
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.custom_minimum_size = Vector2(716, 0)
+	body.custom_minimum_size = Vector2(roundf(716.0 * lift), 0)
 	box.add_child(body)
 	var foes: Array = []
 	for o in c["opponents"]:

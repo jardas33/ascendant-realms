@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 327 (done): a roomier, solid chapter briefing**
+  - On a 1366x768 laptop the chapter briefing was a narrow column (about 580 pixels) of small lines, because its text is lifted for small windows but its width was not. Its panel was also 87% opaque, so the campaign map's titles showed through behind the story text.
+  - The card now widens with the same lift (about 690 pixels on a laptop; 1920 unchanged), and both the chapter and Endless Road briefing panels are near-opaque.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 326 (done): the battle result screen's lines read on a laptop**
   - At 1366x768 the sentence lines on the Victory and Defeat screen ("Stage 25 won, the road goes on", "Relic won", "Level up!", "New spell learned", deeds, jars, retinue) were set in the thin capital face at 16 to 18 px, about ten pixels tall.
   - They now use the plain body face at the same size, so they read like the lines around them; the big headings ("Victory", "The saga ends") keep the capitals.
