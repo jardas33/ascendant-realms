@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 323 (done): the campaign map's header and sealed buttons read clearly**
+  - At 1366x768 the act's summary line ("The Vorthak raid... cleared 0/9, jars 0/2") was small warm grey text where the dark band behind the header had already faded to a third, right over the brightest part of the painting. The sealed Endless Road and Chronicle buttons had text that nearly vanished.
+  - The band is darker and reaches further down, the summary line is brighter and a size bigger, and sealed button text is a clearly readable grey that still looks sealed.
+  - A first try added a second panel behind the title; the page already had a band, so that band was strengthened instead.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 322 (done): every label over the battlefield is readable**
   - At 1366x768 the words over things in the world had capitals about seven pixels tall: the hero's name and title, battle cries, veteran stars, "DAMAGED", build progress and "LOW" or "NEAR EMPTY" on resources.
   - All of them are now about as big as the HUD text (capitals about twelve pixels), with heavier outlines. The rows of delivery numbers over a hall were moved further apart, because "+12 timber" and "+24 food" overlapped once they were bigger.

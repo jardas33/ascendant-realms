@@ -102,8 +102,10 @@ func _build() -> void:
 	# and its progress read cleanly over the brightest part of the painting.
 	var band := TextureRect.new()
 	var band_grad := Gradient.new()
-	band_grad.offsets = PackedFloat32Array([0.0, 0.72, 1.0])
-	band_grad.colors = PackedColorArray([Color(0.01, 0.012, 0.025, 0.62), Color(0.01, 0.012, 0.025, 0.48), Color(0.01, 0.012, 0.025, 0.0)])
+	# Plan 323: darker and deeper. The summary line sat where the band had
+	# faded to a third and was hard to read on a laptop.
+	band_grad.offsets = PackedFloat32Array([0.0, 0.8, 1.0])
+	band_grad.colors = PackedColorArray([Color(0.01, 0.012, 0.025, 0.66), Color(0.01, 0.012, 0.025, 0.6), Color(0.01, 0.012, 0.025, 0.0)])
 	var band_tex := GradientTexture2D.new()
 	band_tex.gradient = band_grad
 	band_tex.fill_from = Vector2(0, 0)
@@ -113,7 +115,7 @@ func _build() -> void:
 	band.texture = band_tex
 	band.stretch_mode = TextureRect.STRETCH_SCALE
 	band.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	band.offset_bottom = 222.0
+	band.offset_bottom = 250.0
 	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(band)
 
@@ -198,7 +200,7 @@ func _build() -> void:
 	_act_title.offset_top = 136.0
 	_act_title.offset_bottom = 172.0
 	add_child(_act_title)
-	_act_subtitle = _label("", 16, Color(0.82, 0.78, 0.68))
+	_act_subtitle = _label("", 17, Color(0.94, 0.9, 0.8))
 	_act_subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_act_subtitle.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	_act_subtitle.offset_top = 170.0
@@ -267,6 +269,8 @@ func _build() -> void:
 		chronicle.theme = load(THEME_PATH)
 	chronicle.add_theme_font_override("font", _title_font())
 	chronicle.add_theme_font_size_override("font_size", 20)
+	# Sealed but legible: the theme's grey nearly vanished on the dark button.
+	chronicle.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	chronicle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	chronicle.offset_left = -226.0
 	chronicle.offset_right = -36.0
@@ -285,6 +289,7 @@ func _build() -> void:
 		endless.theme = load(THEME_PATH)
 	endless.add_theme_font_override("font", _title_font())
 	endless.add_theme_font_size_override("font_size", 20)
+	endless.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	endless.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	endless.offset_left = -456.0
 	endless.offset_right = -246.0
