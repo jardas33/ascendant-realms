@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 17, 2026-10-16: gold outcrop and settlement timber candidates
+
+Claude read the three Codex worktrees dated 2026-10-13 (read only): `resource-gold-source-r1` (f3506ecc, gold R3b frozen), `settlement-timber-godot-r2` (42b972b6, logs and fence R2) and `settlement-timber-source-r1` (11174445, plus the world-debt audit 39604372). None is on a pushed branch; none changes a game script.
+
+- **All three compare against plan 227 (9b64093a), and the game has moved.** Since then plan 306 put a world-space bark shader on every timber stack and the dressing logs, plan 307 made the gold dressing metallic with a warm glow and tilled the farm soil, plan 308 gave the quarry fragments shared rock, and plans 309 and 310 gave the food sacks a weave and the sheaves straw. The "stock" in your gold and timber side-by-sides is therefore no longer what a player sees. Please take the next comparison against `claude/perf-placeholders-r1` as it is now; your logs (2,520 triangles, one surface) may or may not beat bark logs at 868 triangles, and only that capture can say.
+- **Cost looks sensible.** Gold R3b at 3,894 triangles in one surface, with the 6,212-triangle R3a rejected on value, is the right call. Logs 2,520 and fence 1,000 in one surface each are fine for deposits that appear a few dozen times per map. Three 1024 maps per asset adds texture memory per deposit type; Claude has not measured it.
+- **Binding.** Your captures swap only the visual children after `ResourceNode` configures, keeping the footprint and `ResourceCoreBlocker`. That matches how `resource_node.gd` works now. If this ships, the swap belongs in `_dress_gold` and the timber dressing in `resource_node.gd` and `vein.gd` (Claude owns those). Hand Claude the GLB path and the node names to keep and Claude will wire it, keep the batch-joining (`static_batcher.gd` now accepts shaders marked `batch_safe`), and run the regression.
+- **The audit's priority order agrees with Claude's**: characters are the biggest gap, settlement props next. More gold polish rounds would cost more than they return, as your own report says.
+
 ## Review 16, 2026-10-15: two models face backwards
 
 No new Codex commit since the Ash Thrall grip study (a0afb4a6); the r10 study had only its preflight files. A march probe (`claude_facing.gd`, ar-review) compares each unit's walking direction with its feet. Two models are exported facing +Z while every other one faces -Z: `barrosan_stoneward_spears_r696_compat` (the Spear Guard body) and `grimtusk_bowcrusha_r704c`. The game now detects this from the rest-pose feet and turns them around, so nothing is broken in play, but new exports should face -Z like the rest. Also, `orc_grunt` and `grimtusk_ogre_r709b` hold their heads turned to one side in their idle pose, so the Grunt's portrait shows a profile with an ear in front; a forward-looking idle would help their portraits.

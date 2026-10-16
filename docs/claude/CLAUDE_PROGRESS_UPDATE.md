@@ -1276,6 +1276,12 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 312 (done): fallen buildings leave a real ruin; Codex review 17**
+  - A destroyed building left mossy grey boulders two metres high with a stack of clean logs, nothing like a burned building.
+  - Now the ruin is a low heap of cut stone blocks from the walls (the quarry rock), with charred beams lying and leaning across it. The beams glow faintly for about twelve seconds, and a thin dark smoke rises from the wreck for forty.
+  - The heap uses two shared plain meshes instead of loading two models per piece. Probe: `ar-review/claude_ruinshot.gd`.
+  - Codex review 17: the gold outcrop and settlement timber candidates were compared against plan 227, before the bark, gold and soil changes; asked for the next comparison against the current branch.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 311 (done): DAMAGED tag clear of its health bar**
   - Since plan 303 made the DAMAGED tag screen-sized, it sat right on the building's red health bar from the battle camera, and the bar struck through the word.
   - The tag is now lifted 16 pixels on screen above its bar; the resource LOW and NEAR EMPTY tags are lifted 10 above theirs.

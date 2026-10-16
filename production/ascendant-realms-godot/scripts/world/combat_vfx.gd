@@ -512,10 +512,73 @@ static func battle_scar(parent: Node3D, pos: Vector3) -> void:
 		_scars.erase(scar)
 		scar.queue_free())
 
+## Burnt timber: black, with the grain still glowing where it smoulders.
+## Each ruin gets its own copy so its embers can die down on their own.
+static func _char_material() -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_color = Color(0.55, 0.48, 0.42)
+	m.roughness = 0.9
+	var bark := "res://assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_ancient_bark_albedo.png"
+	if ResourceLoader.exists(bark):
+		m.albedo_texture = load(bark)
+		m.emission_texture = m.albedo_texture
+		m.uv1_scale = Vector3(1.0, 1.6, 1.0)
+	m.emission_enabled = true
+	m.emission = Color(0.85, 0.22, 0.04)
+	m.emission_energy_multiplier = 0.12
+	return m
+
+static var _block_mesh: BoxMesh
+static var _beam_mesh: CylinderMesh
+static var _smoke_process: ParticleProcessMaterial
+
+## A thin dark smoke that keeps rising from a ruin for most of a minute.
+static func _ruin_smoke(parent: Node3D, pos: Vector3, footprint: float) -> void:
+	if _smoke_process == null:
+		_smoke_process = ParticleProcessMaterial.new()
+		_smoke_process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+		_smoke_process.emission_sphere_radius = 0.6
+		_smoke_process.direction = Vector3(0.15, 1, 0)
+		_smoke_process.spread = 12.0
+		_smoke_process.initial_velocity_min = 0.7
+		_smoke_process.initial_velocity_max = 1.2
+		_smoke_process.gravity = Vector3(0.12, 0.15, 0.0)
+		_smoke_process.scale_min = 0.9
+		_smoke_process.scale_max = 1.5
+		var grow := Curve.new()
+		grow.add_point(Vector2(0, 0.5))
+		grow.add_point(Vector2(1, 2.4))
+		var gt := CurveTexture.new()
+		gt.curve = grow
+		_smoke_process.scale_curve = gt
+		var ramp := Gradient.new()
+		ramp.set_color(0, Color(0.16, 0.15, 0.14, 0.0))
+		ramp.set_color(1, Color(0.30, 0.29, 0.28, 0.0))
+		ramp.add_point(0.15, Color(0.18, 0.17, 0.16, 0.42))
+		ramp.add_point(0.6, Color(0.26, 0.25, 0.24, 0.22))
+		var rt := GradientTexture1D.new()
+		rt.gradient = ramp
+		_smoke_process.color_ramp = rt
+	var p := GPUParticles3D.new()
+	p.process_material = _smoke_process
+	p.draw_pass_1 = _dust_mesh
+	p.material_override = _dust_mat
+	p.amount = 14
+	p.lifetime = 5.0
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.visibility_aabb = AABB(Vector3(-8, -1, -8), Vector3(16, 16, 16))
+	p.scale = Vector3.ONE * clampf(footprint * 0.5, 1.0, 2.2)
+	parent.add_child(p)
+	p.global_position = pos
+	p.emitting = true
+	var t := p.create_tween()
+	t.tween_interval(40.0)
+	t.tween_callback(func(): p.emitting = false)
+	t.tween_interval(6.0)
+	t.tween_callback(p.queue_free)
+
 ## A building coming down: a towering dust cloud, thrown debris, and a
 ## rubble heap with scorched ground that stays for the rest of the match.
-const _RUBBLE := "res://assets/environment/visual_convergence/small_stone_cairn.glb"
-const _LOGS := "res://assets/environment/visual_convergence/fallen_timber_cluster.glb"
 
 static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	_ensure()
@@ -584,23 +647,53 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	var rubble := Node3D.new()
 	parent.add_child(rubble)
 	rubble.global_position = Vector3(pos.x, 0.0, pos.z)
-	var pieces := 5 + int(footprint * 1.5)
-	for i in pieces:
-		var path := _LOGS if i % 3 == 2 else _RUBBLE
-		if not ResourceLoader.exists(path):
-			continue
-		var piece: Node3D = load(path).instantiate()
-		rubble.add_child(piece)
-		if path == _LOGS:
-			ModelUtils.dress_timber(piece)
+	# Plan 312: the heap read as mossy grey boulders two metres high with a
+	# few clean logs, nothing like a building that had just burned. Now it is
+	# low sooty stone and charred beams, some still leaning, that smoulder for
+	# a while, with a thin smoke rising from the wreck.
+	var char_mat := _char_material()
+	var stone_mat := ResourceNode._fragment_material()
+	if _block_mesh == null:
+		_block_mesh = BoxMesh.new()
+		_beam_mesh = CylinderMesh.new()
+		_beam_mesh.top_radius = 0.5
+		_beam_mesh.bottom_radius = 0.5
+		_beam_mesh.height = 1.0
+		_beam_mesh.radial_segments = 7
+		_beam_mesh.rings = 1
+	# Cut stones from the walls, tumbled and half sunk.
+	var blocks := 10 + int(footprint * 4.0)
+	for i in blocks:
+		var b := MeshInstance3D.new()
+		b.mesh = _block_mesh
+		b.material_override = stone_mat
+		b.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		rubble.add_child(b)
 		var a := randf() * TAU
-		piece.position = Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.75)
-		ModelUtils.scale_to_height(piece, randf_range(1.0, 1.9) if path == _RUBBLE else 1.3)
-		ModelUtils.ground_model(piece)
-		piece.rotation.y = randf() * TAU
-		for body in piece.find_children("*", "CollisionObject3D", true, false):
-			body.queue_free()
-		for g in piece.find_children("*", "GeometryInstance3D", true, false):
-			g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.5), randf_range(0.4, 0.7))
+		b.scale = size
+		# Heaped towards the middle, where the walls fell in.
+		var r := pow(randf(), 0.8)
+		b.position = Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.9 + Vector3(0.0, size.y * 0.3 + (1.0 - r) * randf_range(0.0, 0.6), 0.0)
+		b.rotation = Vector3(randf_range(-0.3, 0.3), randf() * TAU, randf_range(-0.3, 0.3))
+	# Charred beams: some flat, some still leaning on the heap.
+	var beams := 4 + int(footprint * 1.2)
+	for i in beams:
+		var beam := MeshInstance3D.new()
+		beam.mesh = _beam_mesh
+		beam.material_override = char_mat
+		beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		rubble.add_child(beam)
+		var a := randf() * TAU
+		var length := randf_range(1.6, 1.0 + footprint * 0.7)
+		var thick := randf_range(0.22, 0.32)
+		beam.scale = Vector3(thick, length, thick)
+		var lean := randf_range(0.25, 0.7) if i % 2 == 0 else PI * 0.5 - randf_range(0.0, 0.12)
+		beam.rotation = Vector3(lean, randf() * TAU, 0.0)
+		beam.rotation_order = EULER_ORDER_YXZ
+		beam.position = Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.6) + Vector3(0.0, cos(lean) * length * 0.5 + thick * 0.4, 0.0)
+	var ct := rubble.create_tween()
+	ct.tween_property(char_mat, "emission_energy_multiplier", 0.0, 12.0).set_delay(1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_ruin_smoke(parent, Vector3(pos.x, 0.6, pos.z), footprint)
 	rubble.scale = Vector3(1, 0.01, 1)
 	rubble.create_tween().tween_property(rubble, "scale", Vector3.ONE, 1.4).set_delay(0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
