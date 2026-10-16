@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 319 (done): income numbers you can read on a laptop**
+  - On Dune Bastion at 1366x768 the "+12 timber" that rises when workers deliver was about eight pixels tall, and the "LOW" tag on a running-dry resource was not much bigger.
+  - Delivery numbers are now screen-sized like HUD text (about 18 pixels tall at any zoom), the resource rows sit a fixed distance apart on screen, outpost income numbers match them, and "LOW" is half again as big.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 318 (done): snow hills rise out of the snowfield**
   - On Frostmere Basin each hill stood on the grey snowfield as a bright white cut-out slab with a hard outline: the hill's snow was brightest at its foot.
   - The snow on a hill now darkens toward its foot (over the outer 45% of its radius) to the snowfield's tone and stays white on top, so the outline softens into the ground. Only snow maps change. The improvement is moderate: the slope facing the sun still shows a lighter edge at its foot.

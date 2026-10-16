@@ -4778,16 +4778,20 @@ func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
 		return
 	var l := Label3D.new()
 	l.text = "+%d %s" % [amount, kind]
-	l.font_size = 64
-	l.outline_size = 16
+	# Screen-sized: at a fixed world size the number was about eight pixels
+	# tall from the battle camera on a laptop.
+	l.fixed_size = true
+	l.font_size = 32
+	l.outline_size = 10
 	l.outline_modulate = Color(0.05, 0.03, 0.02, 0.9)
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.no_depth_test = true
-	l.pixel_size = 0.012
+	l.pixel_size = 0.0009
 	l.modulate = DEPOSIT_FLOAT_COLORS.get(kind, Color(0.95, 0.9, 0.75))
 	add_child(l)
 	var row := maxi(0, ["food", "timber", "stone", "gold"].find(kind))
-	l.global_position = drop.global_position + Vector3(0.0, 7.0 + 1.5 * float(row), 0.0)
+	l.offset = Vector2(0.0, 40.0 * float(row))
+	l.global_position = drop.global_position + Vector3(0.0, 7.0, 0.0)
 	_deposit_float_stack[key] = {"label": l, "amount": amount, "t": now, "tween": _deposit_float_fade(l)}
 
 func _deposit_float_fade(l: Label3D) -> Tween:
@@ -6960,8 +6964,8 @@ func spawn_income_popup(pos: Vector3, amount: int, kind: String) -> void:
 	l.no_depth_test = true
 	l.fixed_size = true
 	l.pixel_size = 0.0009
-	l.font_size = 22
-	l.outline_size = 6
+	l.font_size = 32
+	l.outline_size = 10
 	l.modulate = INCOME_COLORS.get(kind, Color.WHITE)
 	l.outline_modulate = Color(0.05, 0.03, 0.0, 0.9)
 	_fx_container.add_child(l)
