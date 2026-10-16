@@ -2827,6 +2827,13 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	# Under snow the crowns carry it (the material cache is rebuilt for each
 	# battle, so one field's snow does not follow into the next).
 	m.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
+	# On an autumn field the broadleaf trees turn; pines stay green.
+	var texture_path: String = standard.albedo_texture.resource_path if standard.albedo_texture else ""
+	var turning: bool = str(map.get("theme", "")) == "autumn" and not "pine" in texture_path and not still
+	m.set_shader_parameter("autumn", 1.0 if turning else 0.0)
+	if turning:
+		# (The green foliage tint would take the red out of the turned leaves.)
+		m.set_shader_parameter("albedo_color", standard.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16))
 	if still:
 		m.set_shader_parameter("sway", 0.0)
 		m.set_shader_parameter("flutter", 0.0)

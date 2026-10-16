@@ -22,8 +22,12 @@ uniform float snow = 0.0;
 // 1 for a boulder drawn with this shader under snow: no light through
 // leaves, no shaded underside, and its moss greyed.
 uniform float leafless = 0.0;
+// 1 on an autumn field: green leaves turn gold, orange and red, each tree its
+// own mix. Only green pixels change, so bark and dead wood keep their colour.
+uniform float autumn = 0.0;
 
 varying float v_h;
+varying float v_seed;
 
 void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
@@ -36,6 +40,7 @@ void vertex() {
 	bend += vec3(sin(TIME * 4.3 + wp.y * 2.1 + wp.x * 1.7), sin(TIME * 3.7 + wp.z * 2.3) * 0.4, cos(TIME * 4.9 + wp.x * 1.9)) * flutter * leaf * (0.5 + 0.5 * gust);
 	VERTEX += inverse(mat3(MODEL_MATRIX)) * bend;
 	v_h = h;
+	v_seed = fract(sin(dot(origin.xz, vec2(12.9898, 78.233))) * 43758.5453);
 	UV = UV * uv_scale.xy;
 }
 
@@ -45,6 +50,17 @@ void fragment() {
 		base *= COLOR.rgb;
 	}
 	base = mix(base, vec3(dot(base, vec3(0.299, 0.587, 0.114))) * vec3(0.94, 0.96, 1.04), leafless * 0.85);
+	if (autumn > 0.0) {
+		float green = smoothstep(0.0, 0.06, base.g - max(base.r, base.b) * 0.92);
+		float l = dot(base, vec3(0.299, 0.587, 0.114));
+		vec3 gold = vec3(1.0, 0.72, 0.22);
+		vec3 rust = vec3(0.95, 0.42, 0.14);
+		vec3 crimson = vec3(0.78, 0.20, 0.10);
+		vec3 turn = v_seed < 0.5 ? mix(gold, rust, v_seed * 2.0) : mix(rust, crimson, (v_seed - 0.5) * 2.0);
+		// A few trees still half green.
+		turn = mix(turn, vec3(0.62, 0.70, 0.30), step(0.86, v_seed) * 0.6);
+		base = mix(base, turn * clamp(l * 2.3, 0.35, 0.9), green * autumn);
+	}
 	ALBEDO = base * albedo_color.rgb * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
 	float lying = snow * smoothstep(0.15, 0.75, dot(normalize(NORMAL), up_view)) * smoothstep(0.25, 0.7, v_h);
