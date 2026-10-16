@@ -181,6 +181,8 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 					_dress_gold(surface_copy)
 				if resource_kind == "food" and source_mat and source_mat.resource_name == "TilledSoil":
 					n.set_surface_override_material(surface, tilled_soil_material())
+				elif resource_kind == "food" and source_mat and source_mat.resource_name in ["RipeGrain", "GrainShade"] and String(n.name).begins_with("Sheaf"):
+					n.set_surface_override_material(surface, straw_material(surface_copy.albedo_color))
 				elif resource_kind == "food" and source_mat and source_mat.resource_name == "Sackcloth":
 					n.set_surface_override_material(surface, sackcloth_material(surface_copy.albedo_color))
 				elif resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
@@ -227,6 +229,19 @@ static func tilled_soil_material() -> Material:
 		m.set_meta("batch_safe", true)
 		_soil_material = m
 	return _soil_material
+
+## Bound straw for the grain sheaves (straw_bundle.gdshader).
+static var _straw_cache := {}
+
+static func straw_material(col: Color) -> Material:
+	var key := col.to_html()
+	if not _straw_cache.has(key):
+		var m := ShaderMaterial.new()
+		m.shader = load("res://assets/shaders/straw_bundle.gdshader")
+		m.set_shader_parameter("straw_color", col)
+		m.set_meta("batch_safe", true)
+		_straw_cache[key] = m
+	return _straw_cache[key]
 
 ## Woven sackcloth for the grain sacks (sackcloth.gdshader).
 static var _sack_cache := {}
