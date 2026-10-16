@@ -382,6 +382,7 @@ func _build_model() -> void:
 			recorder.record_resource_load(path, "building._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		_strip_a01_review_staging(m, path)
+		_dress_a01_stonework(m, path)
 		_strip_a02_review_staging(m, path)
 		if path == TASK606_A02_MODEL_PATH:
 			# The authored A02 foundation and wall cast a single hard-edged slab
@@ -732,6 +733,35 @@ static func _strip_a02_review_staging(model: Node3D, path: String) -> void:
 		if parent:
 			parent.remove_child(mesh)
 		mesh.free()
+
+## The main hall's granite was mapped so large that each stone stood two or
+## three metres wide, the ground floor a few grey blotches. Laid in world
+## metres instead (about 2.8 m of wall to the texture), its stones are a
+## hand's breadth high and the courses run level across every face.
+static var _a01_dressed: Dictionary = {}
+
+static func _dress_a01_stonework(model: Node3D, path: String) -> void:
+	if path != "res://assets/environment/buildings/barrosan_civic_keep_a01.glb":
+		return
+	for child in model.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh or not mesh.mesh:
+			continue
+		for surface in mesh.mesh.get_surface_count():
+			var source := mesh.get_active_material(surface) as StandardMaterial3D
+			if not source:
+				continue
+			var texture_path: String = source.albedo_texture.resource_path if source.albedo_texture else ""
+			if not ("GRANITE" in source.resource_name.to_upper() or "granite" in texture_path):
+				continue
+			if not _a01_dressed.has(source):
+				var dressed := source.duplicate() as StandardMaterial3D
+				dressed.uv1_triplanar = true
+				dressed.uv1_world_triplanar = true
+				dressed.uv1_scale = Vector3.ONE * 0.36
+				dressed.uv1_triplanar_sharpness = 4.0
+				_a01_dressed[source] = dressed
+			mesh.set_surface_override_material(surface, _a01_dressed[source])
 
 func _is_a01_model_path(path: String) -> bool:
 	return path == "res://assets/environment/buildings/barrosan_civic_keep_a01.glb"

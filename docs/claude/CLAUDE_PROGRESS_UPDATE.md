@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 270 (done): the Barrosan main hall's stonework**
+  - The Clanhold (the Barrosan main hall, seen in every Barrosan match) had its granite ground floor mapped so large that each stone stood two or three metres wide: the walls read as a few grey blotches.
+  - Its granite is now laid in world metres, so the stones are a hand's breadth high with level courses and mortar on every face, including the chimney.
+  - Full regression: 110 of 110 checks pass (907 s); the real save is unchanged.
 - **Plan 269 (done): snow on roofs lies in drifts**
   - A battle in chapter 3-2 (The Larouco Road, under snow) showed the main hall's roof as one flat white sheet, the brightest and plainest thing on screen.
   - Snow on buildings now lies in drifts: deep drifts white with a fine grain and the odd glinting crystal, thin snow a cold blue-grey that lets the roof show through. Every building on a snow map gets it.
