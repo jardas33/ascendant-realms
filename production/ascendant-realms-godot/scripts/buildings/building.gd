@@ -868,9 +868,13 @@ func _build_construction_status_visual() -> void:
 	_construction_status_label.name = "ConstructionStatus"
 	_construction_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_construction_status_label.no_depth_test = true
-	_construction_status_label.font_size = 48
-	_construction_status_label.outline_size = 14
-	_construction_status_label.pixel_size = 0.008
+	# Screen-sized: at a fixed world size it was about nine pixels tall from
+	# the battle camera.
+	_construction_status_label.fixed_size = true
+	_construction_status_label.pixel_size = 0.0008
+	_construction_status_label.font_size = 17
+	_construction_status_label.outline_size = 6
+	_construction_status_label.outline_modulate = Color(0.06, 0.035, 0.0, 0.92)
 	_construction_status_label.modulate = Color(1.0, 0.92, 0.58, 1.0)
 	_construction_status_label.position = Vector3(0, _presentation_height() + 1.1, 0)
 	add_child(_construction_status_label)
@@ -1301,9 +1305,11 @@ func _build_damage_status_visual() -> void:
 	_damage_status_label.name = "DamageStatus"
 	_damage_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_damage_status_label.no_depth_test = true
-	_damage_status_label.font_size = 48
-	_damage_status_label.outline_size = 12
-	_damage_status_label.pixel_size = 0.008
+	_damage_status_label.fixed_size = true
+	_damage_status_label.pixel_size = 0.0008
+	_damage_status_label.font_size = 17
+	_damage_status_label.outline_size = 6
+	_damage_status_label.outline_modulate = Color(0.08, 0.02, 0.0, 0.92)
 	_damage_status_label.modulate = Color(1.0, 0.48, 0.32, 1.0)
 	_damage_status_label.position = Vector3(0, _presentation_height() + 1.18, 0)
 	_damage_status_label.text = "DAMAGED"

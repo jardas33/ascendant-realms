@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 303 (done): readable DAMAGED tag over buildings**
+  - A hurt building shows DAMAGED over its roof. Like the resource tags in plan 302, it had a fixed world size and drew about nine pixels tall from the battle camera.
+  - It is now screen-sized at 17 with a dark outline. The debug-only BUILDING percentage label got the same treatment.
+  - Full regression: 111 of 111 checks passed in 947 s, save unchanged.
 - **Plan 302 (done): readable LOW and NEAR EMPTY tags on resource piles**
   - Piles that are half used show a LOW or NEAR EMPTY tag over a small bar. The tag had a fixed size in the world, so from the battle camera it was about six pixels tall and could not be read.
   - The tag is now screen-sized like the hero's title, at 16 with a dark outline.
