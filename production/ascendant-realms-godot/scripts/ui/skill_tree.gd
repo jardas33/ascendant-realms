@@ -58,6 +58,17 @@ const GLYPH_TEXTURES := {
 	"act_3": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_deepened_reserves.png"
 }
 
+## A star's click area is its orb and the text under it, not its whole
+## box: with the paths winding and staggered, the empty corners of
+## neighbouring boxes overlap and took each other's clicks.
+class StarButton extends Button:
+	func _has_point(point: Vector2) -> bool:
+		var orb_c := Vector2(size.x * 0.5, ORB.y * 0.5)
+		if point.distance_to(orb_c) <= ORB.x * 0.5 + 6.0:
+			return true
+		var text_h: float = get_meta("text_h") if has_meta("text_h") else size.y - ORB.y
+		return absf(point.x - size.x * 0.5) <= size.x * 0.5 and point.y >= ORB.y - 4.0 and point.y <= ORB.y + text_h
+
 class Glyph extends Control:
 	## A star of the constellation: a glowing orb in the path's colour. Its
 	## ring and halo say the state (owned, ready to claim, open, locked);
@@ -429,7 +440,7 @@ func _build() -> void:
 
 func _add_node_button(n: Dictionary) -> void:
 	var id := str(n.get("id", ""))
-	var b := Button.new()
+	var b := StarButton.new()
 	b.name = "Skill_%s" % id
 	b.toggle_mode = false
 	b.focus_mode = Control.FOCUS_NONE
@@ -807,8 +818,14 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
 		var title_pos := Vector2(top.x - (tw2 + 8.0 + ThemeDB.fallback_font.get_string_size("%d / %d" % progress.get(br, [0, 1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x) * 0.5, (top_line if top.y - top_line < 24.0 else top.y) - 70.0)
+		# A finished path wears its name in gold, haloed and breathing.
+		var finished: bool = int(progress.get(br, [0, 1])[0]) >= int(progress.get(br, [0, 1])[1])
+		if finished:
+			var breath := 0.5 + 0.5 * sin(_sky_time * 1.6)
+			canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 22, Color(GOLD_BRIGHT, 0.10 + 0.08 * breath))
+			canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 12, Color(GOLD_BRIGHT, 0.16 + 0.10 * breath))
 		canvas.draw_string_outline(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, 6, Color(0.01, 0.015, 0.03, 0.85))
-		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, Color(bc.lightened(0.35), 0.97))
+		canvas.draw_string(_title_font(), title_pos, title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, tfs, GOLD_BRIGHT if finished else Color(bc.lightened(0.35), 0.97))
 		# How far along the path is: a thin bar that fills, and a count.
 		var pr: Array = progress.get(br, [0, 1])
 		var frac := float(pr[0]) / maxf(1.0, float(pr[1]))
@@ -845,11 +862,17 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 					canvas.draw_circle(path[k], 1.7, Color(LOCKED.lightened(0.2), 0.55))
 				continue
 			var strength := 0.9 if complete else 0.75
+			# Every star of the path owned: a gold wave runs down it, star to star.
+			var path_done: bool = complete and int(progress.get(str(n.get("branch", "")), [0, 1])[0]) >= int(progress.get(str(n.get("branch", "")), [0, 1])[1])
+			if path_done:
+				var wave := 0.5 + 0.5 * sin(_sky_time * 2.4 - to.y * 0.012)
+				canvas.draw_polyline(path, Color(GOLD_BRIGHT, 0.10 + 0.14 * wave), 18.0, true)
+				canvas.draw_polyline(path, Color(GOLD_BRIGHT, 0.35 + 0.35 * wave), 4.0, true)
 			canvas.draw_polyline(path, Color(col, strength * 0.10), 12.0, true)
 			canvas.draw_polyline(path, Color(col, strength * 0.40), 3.4, true)
 			canvas.draw_polyline(path, Color(PAPER, strength * 0.55), 1.0, true)
 			if complete or available:
-				var motes := 3 if complete else 2
+				var motes := (6 if path_done else 3) if complete else 2
 				for m in motes:
 					var t := fmod(_sky_time * (0.28 if complete else 0.18) + float(m) / float(motes) + float(id.hash() % 97) / 97.0, 1.0)
 					var idx := t * float(path.size() - 1)
@@ -1108,7 +1131,8 @@ func _refresh_nodes() -> void:
 		b.position = _node_pos(n)
 		var state := _node_state(n)
 		var cost_label: Label = b.get_child(2) as Label
-		cost_label.text = "%d SP  ·  %s" % [int(n.get("cost", 1)), _node_tag(n)]
+		# An owned star says so, as the legend does; its price no longer matters.
+		cost_label.text = "OWNED" if _node_state(n) == "UNLOCKED" else "%d SP  ·  %s" % [int(n.get("cost", 1)), _node_tag(n)]
 		cost_label.modulate = GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
 		var name_label: Label = b.get_child(1) as Label
 		name_label.modulate = Color(1, 1, 1, 1) if state != "PREREQUISITE_BLOCKED" else Color(0.86, 0.88, 0.94, 0.96)
@@ -1219,7 +1243,7 @@ func _update_detail(n: Dictionary) -> void:
 	_detail_title.text = str(n.get("name", ""))
 	_detail_type.text = ("ACTIVE ABILITY" if has_ability else "PASSIVE AUGMENT") + ("  •  KEYSTONE" if n.get("keystone", false) else "")
 	_detail_type.modulate = ACTIVE if has_ability else GOLD
-	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", String({"PURCHASABLE": "READY TO CLAIM", "INSUFFICIENT_POINTS": "NEED MORE POINTS", "PREREQUISITE_BLOCKED": "LOCKED"}.get(state, state.replace("_", " ")))]
+	_detail_meta.text = "COST  %d SKILL POINT%s\nSTATE  %s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "S", String({"UNLOCKED": "OWNED", "PURCHASABLE": "READY TO CLAIM", "INSUFFICIENT_POINTS": "NEED MORE POINTS", "PREREQUISITE_BLOCKED": "LOCKED"}.get(state, state.replace("_", " ")))]
 	_detail_body.text = str(n.get("desc", ""))
 	var req_names: Array[String] = []
 	for req in n.get("req", []):
@@ -1230,7 +1254,7 @@ func _update_detail(n: Dictionary) -> void:
 	else:
 		_detail_requirements.text = ("REQUIRES  " + "  +  ".join(req_names)) if state == "PREREQUISITE_BLOCKED" else ("PATH FROM  " + "  +  ".join(req_names))
 	if state == "UNLOCKED":
-		_detail_action.text = "UNLOCKED  •  This power is active in your build"
+		_detail_action.text = "OWNED  •  This power is active in your build"
 	elif state == "PURCHASABLE":
 		_detail_action.text = "READY TO CLAIM  •  Click to spend %d point%s" % [int(n.get("cost", 1)), "" if int(n.get("cost", 1)) == 1 else "s"]
 	elif state == "INSUFFICIENT_POINTS":
