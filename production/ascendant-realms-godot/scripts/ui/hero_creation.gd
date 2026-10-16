@@ -278,6 +278,7 @@ func _build() -> void:
 	_appear_label.add_theme_color_override("font_color", Color.WHITE)
 	_appear_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	_appear_label.add_theme_constant_override("outline_size", 3)
+	_appear_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	_appear_label.add_theme_font_size_override("font_size", 17)
 	app_row.add_child(_appear_label)
 	var app_next := Button.new()
@@ -317,6 +318,7 @@ func _build() -> void:
 	main.add_child(_section_label("Attributes"))
 	_points_label = Label.new()
 	_points_label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
+	_points_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	_points_label.add_theme_font_size_override("font_size", 17)
 	main.add_child(_points_label)
 	var attr_grid := GridContainer.new()
@@ -329,6 +331,7 @@ func _build() -> void:
 		name_lbl.text = a.capitalize()
 		name_lbl.custom_minimum_size = Vector2(140, 36)
 		name_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
+		name_lbl.add_theme_font_override("font", ThemeDB.fallback_font)
 		name_lbl.add_theme_font_size_override("font_size", 17)
 		name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		attr_grid.add_child(name_lbl)

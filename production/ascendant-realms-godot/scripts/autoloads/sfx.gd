@@ -81,7 +81,16 @@ var ambient := A + "ambient_mountain_highland_with_distant_magical_a_highland_wi
 
 var _last_hover_ms := 0
 
+var _menu_theme: Theme
+
 func _ready() -> void:
+	# Dropdowns and their lists read in the body font: the menu theme's title
+	# font is too thin to read at dropdown sizes. Held here so the cached
+	# theme keeps the change for every page that loads it.
+	if ResourceLoader.exists("res://assets/ui/theme.tres"):
+		_menu_theme = load("res://assets/ui/theme.tres")
+		for type in ["OptionButton", "PopupMenu"]:
+			_menu_theme.set_font("font", type, ThemeDB.fallback_font)
 	# Every button in the game answers the pointer with a soft tick.
 	get_tree().node_added.connect(_on_node_added)
 

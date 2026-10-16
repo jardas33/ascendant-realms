@@ -664,9 +664,8 @@ func _heading(text: String) -> Label:
 	return l
 
 func _setting_label(text: String) -> Label:
-	var l := _body_label(14, MUTED)
+	var l := _body_label(15, MUTED)
 	l.text = text.to_upper()
-	l.add_theme_font_override("font", _title_font())
 	l.autowrap_mode = TextServer.AUTOWRAP_OFF
 	l.custom_minimum_size = Vector2(120, 0)
 	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -722,7 +721,6 @@ func _button(text: String, size: Vector2, cb: Callable) -> Button:
 	b.custom_minimum_size = size
 	b.focus_mode = Control.FOCUS_NONE
 	_label_button(b, text, Color(0.96, 0.92, 0.8))
-	b.add_theme_font_override("font", _title_font())
 	b.pressed.connect(cb)
 	return b
 
