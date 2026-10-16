@@ -296,6 +296,14 @@ void fragment() {
 		vec2 snow_uv = mirrored_uv(turn * wxz * tile_snow);
 		vec2 snow_uv_detail = mirrored_uv(rot * wxz * tile_snow * 0.71 + vec2(0.31, 0.57));
 		vec3 snow_albedo = mix(texture(tex_snow, snow_uv).rgb, texture(tex_snow, snow_uv_detail).rgb, mix(0.2, 0.8, tile_mix));
+		// Broad drifts and scoured ground, a few hundred metres across: deep
+		// drifts fill the texture's dark wind-scour marks with smooth snow,
+		// while scoured stretches show more of the rock beneath. Without it
+		// the one texture laid the same speckle over the whole field.
+		float drift = smoothstep(0.36, 0.70, fbm(wxz * 0.0075 + 83.0));
+		vec3 smooth_snow = snow_highlight_color * mix(0.92, 1.0, snow_micro);
+		snow_albedo = mix(snow_albedo, mix(smooth_snow, snow_albedo, 0.32), drift * 0.75);
+		snow_albedo *= mix(0.90, 1.0, drift);
 		snow_surface = mix(snow_surface, snow_albedo, 0.87);
 		snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 294 (done): snow fields with drifts and scoured ground**
+  - On snow maps one windswept snow texture laid the same dark speckle over the whole field, so every part of the map looked alike.
+  - The ground shader now lays broad zones a few hundred meters across: deep drifts where the scour marks fill with smooth snow, and scoured stretches that show more of the rock beneath.
+  - Full regression: 111 of 111 checks passed in 932 s, save unchanged.
 - **Plan 293 (done): bark-colored trunks and roots**
   - In battle pictures on the snow chapter (3-2) the broadleaf trees had bright green trunks and roots spreading over the snow. The generated oak texture carries its leaf green down the trunk, and the foliage tint made it greener.
   - The tree shader now draws the lowest third of each textured tree (roots and trunk, below the crown) as brown bark without the leaf tint. Crowns, snow on the crowns, palms and boulders are unchanged.
