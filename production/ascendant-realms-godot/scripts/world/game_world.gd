@@ -2831,8 +2831,14 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	var texture_path: String = standard.albedo_texture.resource_path if standard.albedo_texture else ""
 	var turning: bool = str(map.get("theme", "")) == "autumn" and not "pine" in texture_path and not still
 	m.set_shader_parameter("autumn", 1.0 if turning else 0.0)
-	if turning:
-		# (The green foliage tint would take the red out of the turned leaves.)
+	# On burned ground (ashen and volcanic) the leaves are dead and thinned.
+	var burned: bool = str(map.get("theme", "")) in ["ashen", "volcanic"] and not still
+	m.set_shader_parameter("withered", 1.0 if burned else 0.0)
+	if burned:
+		m.set_shader_parameter("withered_color", Color(0.40, 0.37, 0.33) if str(map.get("theme", "")) == "ashen" else Color(0.40, 0.27, 0.18))
+	if turning or burned:
+		# (The green foliage tint would take the red out of the turned leaves,
+		# and the scorched tone would leave dead leaves near black.)
 		m.set_shader_parameter("albedo_color", standard.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16))
 	if still:
 		m.set_shader_parameter("sway", 0.0)

@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 280 (done): dead trees on burned maps**
+  - On the ashen and volcanic maps the trees stayed green (a grey tone only dimmed the green), which looked wrong in a burned country.
+  - Their leaves are now dead and singed, ash-grey on the ashen maps and scorched brown on the volcanic ones, and the crowns are thinned to ragged remains. Pines are included. Bark and trunks keep their colour.
+  - Full regression: 110 of 110 checks passed, save untouched.
 - **Plan 279 (done): ash drifts and burn scars on the ashen maps**
   - The open middle of the ashen maps (Ruins of Vael, Furna in Ashes, Salto Ascendant and the other ashen fields) was a bare grey sheet.
   - Pale ash now lies in long drifts combed by the wind, and old burn scars leave charred black ground, cracked like scorched paving, ringed with browned earth. The ground also has gentle relief now. Roads and starting bases stay clear. A first try made the ash so pale it read as snow; it was darkened and thinned.

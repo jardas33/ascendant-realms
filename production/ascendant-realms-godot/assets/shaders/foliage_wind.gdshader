@@ -25,6 +25,10 @@ uniform float leafless = 0.0;
 // 1 on an autumn field: green leaves turn gold, orange and red, each tree its
 // own mix. Only green pixels change, so bark and dead wood keep their colour.
 uniform float autumn = 0.0;
+// 1 on burned ground (ashen and volcanic fields): the leaves are dead,
+// singed to withered_color, and the crowns are thinned to ragged remains.
+uniform float withered = 0.0;
+uniform vec3 withered_color : source_color = vec3(0.42, 0.36, 0.30);
 
 varying float v_h;
 varying float v_seed;
@@ -61,11 +65,22 @@ void fragment() {
 		turn = mix(turn, vec3(0.62, 0.70, 0.30), step(0.86, v_seed) * 0.6);
 		base = mix(base, turn * clamp(l * 2.3, 0.35, 0.9), green * autumn);
 	}
+	if (withered > 0.0) {
+		// (Pine needles are blue-green, so anything greener than it is red.)
+		float green = smoothstep(0.0, 0.05, base.g - base.r);
+		float holes = sin(UV.x * 31.0 + v_seed * 6.0) * sin(UV.y * 27.0 + v_seed * 4.0) + sin(UV.x * 13.0 - UV.y * 11.0 + v_seed * 9.0) * 0.5;
+		if (green > 0.5 && holes > 0.2) {
+			discard;
+		}
+		float l = dot(base, vec3(0.299, 0.587, 0.114));
+		vec3 dead = withered_color * mix(0.85, 1.15, v_seed) * clamp(l * 2.4, 0.4, 1.0);
+		base = mix(base, dead, green * withered);
+	}
 	ALBEDO = base * albedo_color.rgb * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
 	float lying = snow * smoothstep(0.15, 0.75, dot(normalize(NORMAL), up_view)) * smoothstep(0.25, 0.7, v_h);
 	ALBEDO = mix(ALBEDO, vec3(0.90, 0.93, 0.98), lying * 0.85);
 	ROUGHNESS = roughness_value;
 	SPECULAR = 0.3;
-	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h) * (1.0 - lying) * (1.0 - leafless);
+	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h) * (1.0 - lying) * (1.0 - leafless) * (1.0 - withered);
 }
