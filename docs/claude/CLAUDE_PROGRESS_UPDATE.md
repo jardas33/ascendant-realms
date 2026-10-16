@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 300 (done): living bog ground on wetland maps**
+  - The soggy ground and peat pools on wetland maps (for example Ashfen Mire, 1-4) were flat dark sheets.
+  - The soggy ground now has grass tussocks, patches of bright moss and small puddles.
+  - The peat pools have brown shallow edges, darker deeps and floating rafts of duckweed.
+  - Full regression: 111 of 111 checks passed in 933 s, save unchanged.
 - **Plan 299 (done): straw-green reeds along the lakes**
   - The reed beds round the tarns (for example on Ashfen Mire, 1-4) were built from near-black roots and dark olive tips, and from the camera they read as black scribbles along the shore.
   - The rushes are now straw-green, darker at the waterline, with lighter brown reedmace heads.

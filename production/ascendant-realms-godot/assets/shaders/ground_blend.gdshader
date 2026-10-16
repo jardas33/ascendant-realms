@@ -416,8 +416,25 @@ void fragment() {
 		pool = smoothstep(0.665, 0.705, patch_m + (fbm(wxz * 0.15 + 3.0) - 0.5) * 0.08) * keep * bog_surface;
 		vec3 mud = texture(tex_dirt, wxz * tile_dirt * 0.7).rgb * vec3(0.40, 0.38, 0.28);
 		ground = mix(ground, mix(ground * 0.62, mud, 0.5), soggy);
+		// The soggy ground is not one flat dark sheet: sedge tussocks stand
+		// out of it, beds of yellow-green bog moss spread across it, and small
+		// puddles of standing water lie between.
+		float tussock = smoothstep(0.56, 0.74, fbm(wxz * 0.9 + 13.0));
+		float moss = smoothstep(0.58, 0.78, fbm(wxz * 0.22 + 27.0));
+		float puddle = smoothstep(0.70, 0.75, fbm(wxz * 0.4 + 51.0)) * (1.0 - tussock);
+		vec3 bog_ground = mix(ground, vec3(0.30, 0.34, 0.14) * (0.85 + 0.3 * fbm(wxz * 2.3 + 5.0)), tussock * 0.75);
+		bog_ground = mix(bog_ground, vec3(0.40, 0.44, 0.15), moss * (1.0 - tussock) * 0.55);
+		ground = mix(ground, bog_ground, soggy);
+		pool = max(pool, puddle * soggy * 0.85);
 		// Peat-dark water with a little weed floating in it.
 		vec3 still = vec3(0.045, 0.065, 0.05) + vec3(0.05, 0.07, 0.03) * smoothstep(0.6, 0.85, fbm(wxz * 0.5 + 9.0));
+		// Shallow brown margins, darker deeps, and rafts of duckweed: the
+		// pools were one flat dark sheet.
+		float deep = smoothstep(0.69, 0.76, patch_m);
+		still = mix(vec3(0.17, 0.15, 0.08), still, 0.35 + 0.65 * deep);
+		still *= mix(1.0, 0.75, deep);
+		float weed = smoothstep(0.60, 0.70, fbm(wxz * 0.28 + 77.0)) * smoothstep(0.45, 0.65, fbm(wxz * 1.6 + 3.0));
+		still = mix(still, vec3(0.30, 0.42, 0.10), weed * 0.85);
 		ground = mix(ground, still, pool);
 	}
 	ALBEDO = ground;
