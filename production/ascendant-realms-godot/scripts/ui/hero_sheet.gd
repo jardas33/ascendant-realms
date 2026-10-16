@@ -416,8 +416,8 @@ func _refresh() -> void:
 		var hint := Label.new()
 		hint.text = String(ATTR_HINTS.get(a, ""))
 		hint.add_theme_font_override("font", _body_font())
-		hint.add_theme_font_size_override("font_size", 13)
-		hint.add_theme_color_override("font_color", Color(0.72, 0.68, 0.58, 0.85))
+		hint.add_theme_font_size_override("font_size", 14)
+		hint.add_theme_color_override("font_color", Color(0.80, 0.76, 0.66))
 		name_col.add_child(hint)
 		var vl := Label.new()
 		vl.text = str(int(attrs.get(a, 0)))
@@ -689,7 +689,8 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 			cv.add_child(nm)
 			var rk := Label.new()
 			rk.text = ("New talent  ·  click to take" if rank_now == 0 else "Rank %d  ›  %d  ·  click to take" % [rank_now, rank_now + 1])
-			rk.add_theme_font_size_override("font_size", 13)
+			rk.add_theme_font_override("font", _body_font())
+			rk.add_theme_font_size_override("font_size", 14)
 			rk.add_theme_color_override("font_color", Color(0.62, 0.85, 0.62))
 			# Wraps on small windows, where the raised text floor made this line
 			# wider than its card.

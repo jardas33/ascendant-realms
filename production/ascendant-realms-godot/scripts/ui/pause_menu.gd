@@ -234,8 +234,8 @@ func _make_section_header(text: String) -> Label:
 func _maybe_add_group_label(parent: VBoxContainer, text: String, font: Font) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 12)
-	label.add_theme_color_override("font_color", Color(0.72, 0.64, 0.48))
+	label.add_theme_font_size_override("font_size", 15)
+	label.add_theme_color_override("font_color", Color(0.84, 0.75, 0.56))
 	if font:
 		label.add_theme_font_override("font", font)
 	parent.add_child(label)

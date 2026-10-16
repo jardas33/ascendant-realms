@@ -178,8 +178,8 @@ func _title_block(title_text: String, subtitle_text: String) -> Control:
 	box.add_child(title)
 	var sub := Label.new()
 	sub.text = subtitle_text.to_upper()
-	sub.add_theme_font_override("font", _title_font())
-	sub.add_theme_font_size_override("font_size", 13)
+	sub.add_theme_font_override("font", _body_font())
+	sub.add_theme_font_size_override("font_size", 15)
 	sub.add_theme_color_override("font_color", MUTED)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(sub)
@@ -283,14 +283,14 @@ func _race_card(rid: String) -> Button:
 	var name_label := Label.new()
 	name_label.text = str(race.get("name", rid))
 	name_label.add_theme_font_override("font", _title_font())
-	name_label.add_theme_font_size_override("font_size", 17)
+	name_label.add_theme_font_size_override("font_size", 21)
 	name_label.add_theme_color_override("font_color", PARCHMENT)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_child(name_label)
 	var tag := Label.new()
 	tag.text = str(race.get("blurb", "")).get_slice(".", 0)
 	tag.add_theme_font_override("font", _body_font())
-	tag.add_theme_font_size_override("font_size", 13)
+	tag.add_theme_font_size_override("font_size", 14)
 	tag.add_theme_color_override("font_color", MUTED)
 	# Wraps to up to three lines, so taller cards show the faction's line in
 	# full instead of a one-line fragment in an empty card.
@@ -657,8 +657,9 @@ func _heading(text: String) -> Label:
 	var l := Label.new()
 	l.text = text.to_upper()
 	l.add_theme_font_override("font", _title_font())
-	l.add_theme_font_size_override("font_size", 17)
-	l.add_theme_color_override("font_color", GOLD)
+	# 22: the theme's capitals at 17 drew smaller than the body text below.
+	l.add_theme_font_size_override("font_size", 22)
+	l.add_theme_color_override("font_color", GOLD.lightened(0.15))
 	l.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	l.add_theme_constant_override("outline_size", 3)
 	return l
