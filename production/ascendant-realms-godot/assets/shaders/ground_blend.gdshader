@@ -345,6 +345,28 @@ void fragment() {
 		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
 	}
+	// Volcanic fields: veins of lava glow through cracks in the basalt in
+	// broad bands across the open ground (they used to glow only under a
+	// Vorthak holdfast, and the middle of the field was a flat brown sheet).
+	// Kept off the roads and away from the starting seats.
+	vec3 lava_glow = vec3(0.0);
+	if (volcanic_surface > 0.5) {
+		float keep = 1.0 - clamp(road, 0.0, 1.0);
+		for (int i = 0; i < field_seat_count; i++) {
+			keep *= smoothstep(24.0, 40.0, distance(wxz, field_seats[i]));
+		}
+		float band = smoothstep(0.64, 0.78, fbm2(wxz * 0.011 + 113.0)) * keep;
+		if (band > 0.001) {
+			float seam = 1.0 - smoothstep(0.0, 0.05, crack_dist(wxz * 0.13 + 17.0));
+			float fine = 1.0 - smoothstep(0.0, 0.035, crack_dist(wxz * 0.55 + 5.0));
+			// Plates darken toward the seams; the seams themselves burn.
+			ground *= 1.0 - band * (0.35 * seam + 0.15 * fine);
+			float heat = band * seam * smoothstep(0.45, 0.7, fbm(wxz * 0.08 + 2.0));
+			float pulse = 0.75 + 0.25 * sin(TIME * 0.9 + fbm(wxz * 0.05) * 9.0);
+			lava_glow = vec3(0.85, 0.20, 0.03) * heat * pulse;
+			ground = mix(ground, vec3(0.22, 0.05, 0.015), clamp(heat, 0.0, 1.0) * 0.8);
+		}
+	}
 	float pool = 0.0;
 	if (bog_surface > 0.0) {
 		float keep = 1.0 - clamp(road, 0.0, 1.0);
@@ -385,4 +407,5 @@ void fragment() {
 	ALBEDO *= 1.0 - cloud_shadow_strength * cloud_shadow(wxz, TIME);
 	ROUGHNESS = mix(mix(1.0, 0.7, clamp(snow_amt, 0.0, 1.0)), 0.06, pool);
 	SPECULAR = mix(0.02, 0.5, pool);
+	EMISSION = lava_glow;
 }
