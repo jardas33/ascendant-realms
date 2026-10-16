@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 288 (done): no lines through the skill tree's names**
+  - On the Hero Constellation the lines joining the stars ran through the stars' names and costs in several paths (through "Plated Guard", "Disciplined Ranks", "1 SP · LOCKED" and others), which made the words harder to read.
+  - Every line, its glow and the motes of light that run along it now break where they pass behind a name and pick up again below it.
+  - Full regression: 111 of 111 checks passed, save untouched.
 - **Plan 287 (done): the hover box over units, buildings and resources**
   - Hovering over a unit, a building or a resource pile showed a wide plain black box with the name in one corner (for example "Clan Croft" in a box built for three lines). Its gold border had a colour but no width, so it never drew.
   - The box now fits its text and has the gold border, rounded corners and shadow of the game's other tooltips; the text is a size larger.

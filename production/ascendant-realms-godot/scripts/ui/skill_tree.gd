@@ -844,6 +844,7 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 4.0)), Color(bc.lightened(0.3), 0.95))
 	# Links: faint for locked, bright for open paths, with motes of light
 	# flowing along the owned ones toward the next star.
+	var label_rects := _label_rects()
 	for n in _nodes:
 		var id := str(n.get("id", ""))
 		if not _node_buttons.has(id) or not _is_visible_node(n):
@@ -857,23 +858,29 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 			var available := _prereqs_met(n) and not _is_unlocked(id)
 			var col := MINT if complete else GOLD_BRIGHT if available else LOCKED
 			var path := _link_path(required, n)
+			# Broken where it passes behind a star's name, so no line runs
+			# through the words.
+			var pieces := _split_by_labels(path, label_rects)
 			if not (complete or available):
 				# A road not yet open: a thin line in the path's own colour, so
 				# every path reads as one chain of stars from the start.
 				var faint: Color = _branch_color(str(n.get("branch", ""))).lightened(0.15)
-				canvas.draw_polyline(path, Color(faint, 0.10), 6.0, true)
-				canvas.draw_polyline(path, Color(faint, 0.42), 1.6, true)
+				for piece in pieces:
+					canvas.draw_polyline(piece, Color(faint, 0.10), 6.0, true)
+					canvas.draw_polyline(piece, Color(faint, 0.42), 1.6, true)
 				continue
 			var strength := 0.9 if complete else 0.75
 			# Every star of the path owned: a gold wave runs down it, star to star.
 			var path_done: bool = complete and int(progress.get(str(n.get("branch", "")), [0, 1])[0]) >= int(progress.get(str(n.get("branch", "")), [0, 1])[1])
 			if path_done:
 				var wave := 0.5 + 0.5 * sin(_sky_time * 2.4 - to.y * 0.012)
-				canvas.draw_polyline(path, Color(GOLD_BRIGHT, 0.10 + 0.14 * wave), 18.0, true)
-				canvas.draw_polyline(path, Color(GOLD_BRIGHT, 0.35 + 0.35 * wave), 4.0, true)
-			canvas.draw_polyline(path, Color(col, strength * 0.10), 12.0, true)
-			canvas.draw_polyline(path, Color(col, strength * 0.40), 3.4, true)
-			canvas.draw_polyline(path, Color(PAPER, strength * 0.55), 1.0, true)
+				for piece in pieces:
+					canvas.draw_polyline(piece, Color(GOLD_BRIGHT, 0.10 + 0.14 * wave), 18.0, true)
+					canvas.draw_polyline(piece, Color(GOLD_BRIGHT, 0.35 + 0.35 * wave), 4.0, true)
+			for piece in pieces:
+				canvas.draw_polyline(piece, Color(col, strength * 0.10), 12.0, true)
+				canvas.draw_polyline(piece, Color(col, strength * 0.40), 3.4, true)
+				canvas.draw_polyline(piece, Color(PAPER, strength * 0.55), 1.0, true)
 			if complete or available:
 				var motes := (6 if path_done else 3) if complete else 2
 				for m in motes:
@@ -881,6 +888,8 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 					var idx := t * float(path.size() - 1)
 					var i0 := int(idx)
 					var p3: Vector2 = path[i0].lerp(path[mini(i0 + 1, path.size() - 1)], idx - float(i0))
+					if _in_any_rect(p3, label_rects):
+						continue
 					canvas.draw_circle(p3, 5.0, Color(col, 0.18))
 					canvas.draw_circle(p3, 2.4, Color(col.lightened(0.4), 0.9))
 
@@ -930,7 +939,8 @@ func _draw_glow(canvas: CanvasItem) -> void:
 			var drift := Vector2(sin(_sky_time * 0.11 + k) * 18.0, cos(_sky_time * 0.09 + k * 1.7) * 14.0)
 			var at2 := p + drift + Vector2(sin(k * 1.7) * 40.0, cos(k * 2.3) * 30.0)
 			_glow(canvas, at2, 250.0, Color(bc, (0.40 + 0.55 * frac) * breathe * _edge_fade(at2)))
-	# Owned roads glow along their whole length.
+	# Owned roads glow along their whole length (but not across a name).
+	var glow_rects := _label_rects()
 	for n in _nodes:
 		var id := str(n.get("id", ""))
 		if not _node_buttons.has(id) or not _is_visible_node(n) or not _is_unlocked(id):
@@ -939,7 +949,8 @@ func _draw_glow(canvas: CanvasItem) -> void:
 			var required := _find_node(str(req))
 			if required.is_empty() or not _node_buttons.has(req) or not _is_visible_node(required) or not _is_unlocked(str(req)):
 				continue
-			canvas.draw_polyline(_link_path(required, n), Color(_branch_color(str(n.get("branch", ""))), 0.22), 14.0, true)
+			for piece in _split_by_labels(_link_path(required, n), glow_rects):
+				canvas.draw_polyline(piece, Color(_branch_color(str(n.get("branch", ""))), 0.22), 14.0, true)
 	for n in _nodes:
 		var id := str(n.get("id", ""))
 		if not _node_buttons.has(id) or not _is_visible_node(n):
@@ -1064,6 +1075,59 @@ func _link_path(required: Dictionary, n: Dictionary) -> PackedVector2Array:
 		from.y += ORB.y * 0.5 - 4.0 + text_h + 4.0
 		to.y -= ORB.y * 0.5 + 2.0
 	return _constellation_link(from, to)
+
+## Where each visible star's name and cost are written, a little grown.
+func _label_rects() -> Array:
+	var rects: Array = []
+	for n in _nodes:
+		var nid := str(n.get("id", ""))
+		if not _node_buttons.has(nid) or not _is_visible_node(n):
+			continue
+		var b: Button = _node_buttons[nid]
+		var lab: Label = b.get_child(1) as Label
+		var fs := lab.get_theme_font_size("font_size")
+		var lines: int = b.get_meta("name_lines") if b.has_meta("name_lines") else 1
+		var name_w := 0.0
+		for part in (lab.text.split("
+") if "
+" in lab.text else PackedStringArray([lab.text])):
+			name_w = maxf(name_w, _name_font().get_string_size(part, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x)
+		if lines > 1 and not "
+" in lab.text:
+			# Wrapped: as wide as the label's box.
+			name_w = minf(name_w, lab.size.x if lab.size.x > 0.0 else name_w * 0.62)
+		var tw := clampf(name_w, 90.0, NODE_SIZE.x + NAME_SPILL * 2.0) + 12.0
+		var text_h: float = b.get_meta("text_h") if b.has_meta("text_h") else (fs + 1.0) * lines + fs
+		rects.append(Rect2(b.position + Vector2((NODE_SIZE.x - tw) * 0.5, ORB.y - 6.0), Vector2(tw, text_h + 10.0)))
+	return rects
+
+func _in_any_rect(p: Vector2, rects: Array) -> bool:
+	for r in rects:
+		if (r as Rect2).has_point(p):
+			return true
+	return false
+
+## A link cut into the pieces that lie outside every name: resampled every
+## few pixels, so a gap ends close to the words.
+func _split_by_labels(path: PackedVector2Array, rects: Array) -> Array:
+	var pieces: Array = []
+	var current := PackedVector2Array()
+	for i in path.size():
+		var a: Vector2 = path[i]
+		var steps := 1
+		if i + 1 < path.size():
+			steps = maxi(1, int(a.distance_to(path[i + 1]) / 4.0))
+		for s in steps:
+			var p: Vector2 = a if i + 1 >= path.size() else a.lerp(path[i + 1], float(s) / float(steps))
+			if _in_any_rect(p, rects):
+				if current.size() >= 2:
+					pieces.append(current)
+				current = PackedVector2Array()
+			else:
+				current.append(p)
+	if current.size() >= 2:
+		pieces.append(current)
+	return pieces
 
 func _constellation_link(from: Vector2, to: Vector2) -> PackedVector2Array:
 	var points := PackedVector2Array()
