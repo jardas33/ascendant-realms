@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 315 (done): no more white flakes out in the rivers**
+  - Rivers showed white flakes, like paper, out in the stream. Turning the sun glints off and softening the foam changed nothing; drawing each term of `ford_water.gdshader` in its own colour showed the flakes were the bank froth line.
+  - That line sat at 0.6 of the way from the middle to the bank (`edge`), while the water only thins from `bank_fade` (0.62) to 0.98, and the bank wobble carried it into the stream. It now sits just inside the visible shore, computed from `bank_fade`, so tarns and rivers both get froth at their edges.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 314 (done): fords look like river beds**
   - At a ford (Bread Fountain, chapter 2-3, at 1366x768) the shallows showed stones a metre and a quarter across, evenly spaced with dark joints, under bright white dashes: a paved road under glass.
   - `ford_shallows.gdshader` now draws fist-sized cobbles of mixed stone (pebble_scale 0.8 to 2.6), finer gravel, sand drifts, an occasional larger stone, and a much fainter light ripple.

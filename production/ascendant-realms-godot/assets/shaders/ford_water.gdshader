@@ -73,7 +73,11 @@ void fragment() {
 	col = mix(col, shallow_tint * 1.35, streak * 0.35);
 	// Foam where the current breaks along the banks and around shallow riffles.
 	float foam = smoothstep(0.72, 0.9, ripple) * (0.35 + 0.65 * smoothstep(0.45, 0.8, edge));
-	float bank_line = smoothstep(0.56, 0.62, edge) * (1.0 - smoothstep(0.64, 0.7, edge)) * smoothstep(0.5, 0.68, fbm(flow * 4.1 + 5.0));
+	// Plan 315: this line of froth sat at 0.6 of the way to the bank, and
+	// the bank wobble carried it out into the stream as white flakes. It
+	// now follows the water's edge, where the current meets the shore.
+	float shore = bank_fade + (0.98 - bank_fade) * 0.45;
+	float bank_line = smoothstep(shore - 0.06, shore, edge) * (1.0 - smoothstep(shore + 0.02, shore + 0.1, edge)) * smoothstep(0.5, 0.68, fbm(flow * 4.1 + 5.0));
 	col = mix(col, foam_tint, clamp(foam * 0.45 + bank_line * 0.35, 0.0, 1.0));
 	ALBEDO = col;
 	// Shallow margins let the wet riverbed show through; the channel is deep.
