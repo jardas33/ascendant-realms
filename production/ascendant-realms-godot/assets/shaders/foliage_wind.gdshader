@@ -29,6 +29,11 @@ uniform float autumn = 0.0;
 // singed to withered_color, and the crowns are thinned to ragged remains.
 uniform float withered = 0.0;
 uniform vec3 withered_color : source_color = vec3(0.42, 0.36, 0.30);
+// Roots and trunk, below the crown, read as bark: the generated tree
+// textures carry the leaf green down the trunk, and the foliage tint made
+// the roots of the broadleaf trees bright green.
+uniform vec3 bark_color : source_color = vec3(0.50, 0.40, 0.31);
+uniform float bark_top = 0.34;
 
 varying float v_h;
 varying float v_seed;
@@ -76,7 +81,11 @@ void fragment() {
 		vec3 dead = withered_color * mix(0.85, 1.15, v_seed) * clamp(l * 2.4, 0.4, 1.0);
 		base = mix(base, dead, green * withered);
 	}
-	ALBEDO = base * albedo_color.rgb * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
+	float bark = (has_texture && !use_vertex_color) ? (1.0 - smoothstep(bark_top * 0.6, bark_top, v_h)) * (1.0 - leafless) : 0.0;
+	float bark_l = dot(base, vec3(0.299, 0.587, 0.114));
+	base = mix(base, bark_color * clamp(bark_l * 2.2, 0.45, 1.25), bark * 0.85);
+	vec3 tint = mix(albedo_color.rgb, vec3(0.94), bark);
+	ALBEDO = base * tint * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
 	float lying = snow * smoothstep(0.15, 0.75, dot(normalize(NORMAL), up_view)) * smoothstep(0.25, 0.7, v_h);
 	ALBEDO = mix(ALBEDO, vec3(0.90, 0.93, 0.98), lying * 0.85);
