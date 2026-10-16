@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 321 (done): damage numbers you can read**
+  - The "-16" that pops over a unit when it is hit was 0.45 m tall in the world: about five pixels from the normal battle camera on a laptop and fourteen up close.
+  - It is now screen-sized, about sixteen pixels tall at any zoom (killing blows still pop bigger), with its dark outline kept.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 320 (done): a big building falls into a heap, not scattered crates**
   - On Emberfall Rift a destroyed main hall left about forty big cubes strewn apart on bare ground, which read as dropped crates.
   - Big ruins now get many more, slightly smaller stones (the count grows with the building's area) piled highest in the middle, so a fallen hall leaves a real heap. Small buildings are unchanged.

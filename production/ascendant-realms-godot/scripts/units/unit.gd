@@ -243,7 +243,7 @@ const COMBAT_DAMAGE_LABEL_DURATION := 0.96
 const COMBAT_HIT_FLASH_EXTENSION := 0.14
 const COMBAT_HIT_FLASH_RADIUS := 0.30
 const COMBAT_HIT_FLASH_HEIGHT := 0.60
-const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.008
+const COMBAT_DAMAGE_LABEL_PIXEL_SIZE := 0.0009
 const COMBAT_HIT_REACTION_DURATION := 0.24
 const COMBAT_HIT_REACTION_TILT := 0.1396263
 const LETHAL_HIT_CUE_DURATION := 0.46
@@ -1664,8 +1664,11 @@ func _build_r15_combat_presentation() -> void:
 
 	_r15_damage_label = Label3D.new()
 	_r15_damage_label.name = "CombatDamageLabel"
-	_r15_damage_label.font_size = 56
-	_r15_damage_label.outline_size = 14
+	# Plan 321: screen-sized. At 0.45 m tall the number was five or six
+	# pixels from the battle camera on a laptop, too small to read.
+	_r15_damage_label.fixed_size = true
+	_r15_damage_label.font_size = 28
+	_r15_damage_label.outline_size = 8
 	# A dark outline that stays dark: the number reads on grass, water and snow.
 	_r15_damage_label.outline_modulate = Color(0.07, 0.03, 0.02, 1.0)
 	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
