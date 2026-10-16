@@ -1,7 +1,10 @@
 shader_type spatial;
-render_mode unshaded, blend_mix, depth_draw_never, cull_disabled, shadows_disabled;
+render_mode blend_mix, depth_draw_never, cull_disabled, shadows_disabled;
 // Where a unit fell: a ragged patch of churned, darkened earth with a few
 // scattered flecks, fading out through `fade`. Presentation only.
+// Plan 316: it was unshaded, so its dark earth drew brighter than the lit
+// ground around it on dark maps and every ruin sat on a pale pink stain.
+// Now it takes the sun and shade like the ground it lies on.
 
 uniform float fade = 1.0;
 uniform float seed = 0.0;
@@ -27,7 +30,9 @@ void fragment() {
 	float edge = length(p) + (n(p * 3.0 + o) - 0.5) * 0.7 + (n(p * 8.0 + o) - 0.5) * 0.2;
 	float patch = 1.0 - smoothstep(0.45, 0.9, edge);
 	float flecks = step(0.8, n(p * 14.0 + o * 2.0)) * (1.0 - smoothstep(0.6, 1.0, length(p)));
-	vec3 earth = mix(vec3(0.10, 0.07, 0.05), vec3(0.20, 0.07, 0.05), n(p * 5.0 + o) * 0.6);
+	vec3 earth = mix(vec3(0.045, 0.038, 0.032), vec3(0.085, 0.05, 0.035), n(p * 5.0 + o) * 0.6);
 	ALBEDO = earth;
+	ROUGHNESS = 1.0;
+	SPECULAR = 0.0;
 	ALPHA = clamp(patch * 0.8 + flecks * 0.5, 0.0, 0.88) * fade;
 }
