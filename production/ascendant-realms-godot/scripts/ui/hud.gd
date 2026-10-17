@@ -2313,6 +2313,11 @@ func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel("selection", Color(0.76, 0.62, 0.37))
 	_sel_panel.set("embedded", true)
 	_sel_panel.name = "SelectionPanel"
+	# The plate's cut metal rim is thicker on the right than the shared 10 px
+	# margin, so labels and chips sat on the frame at laptop sizes.
+	var sel_style := _hud_stylebox()
+	sel_style.content_margin_right = 18
+	_sel_panel.add_theme_stylebox_override("panel", sel_style)
 	_sel_panel.custom_minimum_size = Vector2(SELECTION_PANEL_WIDTH, 200)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -2348,11 +2353,11 @@ func _build_selection_panel() -> void:
 	entity_rule.color = COMMAND_GOLD
 	entity_rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	entity_header.add_child(entity_rule)
-	var entity_title := _mk_label("SELECTED ENTITY", 11, COMMAND_GOLD)
+	var entity_title := _mk_label("SELECTED", 11, COMMAND_GOLD)
 	entity_title.custom_minimum_size = Vector2(132, 20)
 	entity_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	entity_header.add_child(entity_title)
-	var entity_hint := _mk_label("LIVE STATUS", 9, HUD_TEXT_MUTED)
+	var entity_hint := _mk_label("", 9, HUD_TEXT_MUTED)
 	entity_hint.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	entity_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entity_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -2605,7 +2610,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_name := _mk_label(shown_name, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_name.tooltip_text = uname
-	_shrink_label_to(identity_name, 142.0, 12)
+	_shrink_label_to(identity_name, 134.0, 12)
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
@@ -3043,7 +3048,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	building_header.add_theme_constant_override("separation", 6)
 	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var building_name := _mk_label(identity_text, 18, identity_color)
-	_shrink_label_to(building_name, 176.0, 13)
+	_shrink_label_to(building_name, 168.0, 13)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
 	var building_badge_text := "BUILDING" if b.is_built else "BUILD SITE"

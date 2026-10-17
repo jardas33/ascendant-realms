@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 329 (done): the selected-unit panel no longer runs into its frame**
+  - On a 1366x768 laptop the header of the selected-unit panel read "SELECTED ENTITY ... LIVE STATUS", and both "LIVE STATUS" and the HERO/WORKER/BUILDING tag sat right on the panel's metal rim.
+  - The header now just says "SELECTED" (the filler label is gone), and the panel keeps a wider margin on its right side, so the tag and bars stop short of the rim for heroes, workers and buildings.
+  - Full regression: 111 of 111 checks passed (one long unit name was trimmed by 2 pixels on the first run; names now fit the new width).
 - **Plan 328 (done): the pause menu is centered and its hotkeys line up**
   - On a 1366x768 laptop the pause menu sat about 80 pixels right of center: its plate grew past its 740 px design once the text was lifted for small windows, but it was still centered as if 740 wide. The key column was too narrow for the lifted keys, so descriptions started at different places on each row ("SHIFT + LMB Add to selection").
   - The plate is now centered on its real width (and scaled down if a window is too narrow), the key column fits the longest key, and the plate is near-opaque so the battle behind it no longer shows through.
