@@ -387,8 +387,18 @@ func _fit_to_viewport() -> void:
 		var plate_kind: String = "" if not alone else ("unit" if _tracked_single is Unit else "other")
 		if plate_kind != String(_sel_panel.get_meta("lone_plate", "")):
 			_sel_panel.set_meta("lone_plate", plate_kind)
+			# A lone building or enemy gets the forged plate the minimap wears
+			# instead of a flat box; a lone unit keeps the box, whose raised top
+			# holds the caption over its portrait.
+			var shaped := plate_kind == "other"
+			_sel_panel.set("embedded", not shaped)
+			_sel_panel.queue_redraw()
 			var plate := _hud_stylebox()
-			if alone:
+			# A lone unit's flat box has its rim outside the content (expand
+			# margins), so only the forged plates need the wider right margin.
+			if plate_kind != "unit":
+				plate.content_margin_right = 18
+			if alone and not shaped:
 				# Room at the top for the caption that stands over a unit's portrait.
 				plate.expand_margin_top = 26.0 if plate_kind == "unit" else 6.0
 				plate.bg_color = Color(0.035, 0.045, 0.05, 0.94)
@@ -2610,7 +2620,7 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	var identity_name := _mk_label(shown_name, identity_font_size, identity_color)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_name.tooltip_text = uname
-	_shrink_label_to(identity_name, 134.0, 12)
+	_shrink_label_to(identity_name, 126.0, 12)
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)

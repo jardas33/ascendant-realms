@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 332 (done): a selected tower or enemy building gets a forged frame**
+  - Selecting something with no orders (a tower, an enemy building) showed the unit panel alone in a plain rounded box, unlike the shaped bronze plates around the minimap and command deck.
+  - It now wears the same forged plate as the minimap. This also fixed a hidden fault from plan 329: after selecting such a building, the panel's wider right margin was lost until the game was restarted.
+  - Full regression: 111 of 111 checks passed (the first run caught a long unit name trimmed by 2 pixels; unit names now fit 126 pixels).
 - **Plan 331 (done): the hero's spells share one icon style**
   - A starting hero's ability list mixed three drawn people emblems (Stone Skin, Avalanche, Bastion) with one painted picture for Rallying Cry, so the card looked like two games stitched together.
   - Rallying Cry and the other skill-tree spells (Ground Slam, Charge, Bolt, Heal, Root, Avatar) now get the same drawn emblem in the hero's people color, each marked by what it does.
