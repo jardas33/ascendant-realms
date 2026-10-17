@@ -22,6 +22,19 @@ const ATTR_HINTS := {
 	"fortune": "better loot after every battle",
 }
 
+## The picture beside each attribute and each line of the build.
+const SkillIcons := preload("res://scripts/ui/skill_icons.gd")
+const ATTR_ICONS := {
+	"might": "fist", "endurance": "heart", "agility": "winged_boot", "intellect": "book",
+	"willpower": "rune_circle", "command": "banner", "fortune": "coins",
+}
+const STAT_ICONS := {
+	"Bonus Health": "heart", "Bonus Damage": "sword", "Bonus Armor": "shield", "Attack Speed": "dash",
+	"Max Mana": "droplet", "Mana Regen": "fountain", "Move Speed": "winged_boot", "Heal Power": "heart_regen",
+	"Command Aura": "banner", "Abilities Unlocked": "spark", "Forged as": "anvil", "Hero Power": "crown",
+	"Talents": "laurel", "Powers": "radiance", "Taken": "scroll",
+}
+
 func _ready() -> void:
 	if ResourceLoader.exists(PRESENTATION_THEME):
 		theme = load(PRESENTATION_THEME)
@@ -399,6 +412,7 @@ func _refresh() -> void:
 		row.custom_minimum_size = Vector2(0, 57)
 		row.add_theme_constant_override("separation", 18)
 		attr_list.add_child(row)
+		row.add_child(_icon_medallion(String(ATTR_ICONS.get(a, "")), 46.0))
 		var nl := Label.new()
 		nl.text = a.capitalize().to_upper()
 		nl.add_theme_font_override("font", _body_font())
@@ -425,22 +439,27 @@ func _refresh() -> void:
 		vl.custom_minimum_size = Vector2(60, 40)
 		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vl.add_theme_color_override("font_color", Color(0.96, 0.84, 0.57))
-		vl.add_theme_font_size_override("font_size", 20)
+		vl.add_theme_font_size_override("font_size", 22)
 		vl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		vl.size_flags_vertical = Control.SIZE_FILL
+		vl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		vl.custom_minimum_size = Vector2(56, 38)
+		vl.add_theme_stylebox_override("normal", _socket_style())
 		row.add_child(vl)
 		if attr_pts > 0:
 			var plus := Button.new()
-			_label_button(plus, "+", Color(0.7, 1.0, 0.7))
-			plus.custom_minimum_size = Vector2(46, 40)
-			plus.add_theme_font_size_override("font_size", 24)
+			_label_button(plus, "+", Color(1.0, 0.93, 0.7))
+			plus.custom_minimum_size = Vector2(42, 42)
+			plus.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			plus.add_theme_font_size_override("font_size", 26)
+			for sbn in ["normal", "hover", "pressed"]:
+				plus.add_theme_stylebox_override(sbn, _plus_style(sbn, 21))
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_attribute(a))
 			row.add_child(plus)
 			_pulse(plus)
 		else:
 			var blank := Control.new()
-			blank.custom_minimum_size = Vector2(46, 40)
+			blank.custom_minimum_size = Vector2(42, 42)
 			row.add_child(blank)
 		var rule := ColorRect.new()
 		# Two pixels: a one-pixel rule vanished on every other row when the
@@ -753,16 +772,22 @@ Mighty +8% damage · Swift +0.3 speed · Arcane +30 mana · Stalwart +2 armor ·
 		row.add_child(lbl)
 		if m_pts > 0:
 			var plus := Button.new()
-			_label_button(plus, "+", Color(0.7, 1.0, 0.7))
-			plus.custom_minimum_size = Vector2(46, 40)
-			plus.add_theme_font_size_override("font_size", 24)
+			_label_button(plus, "+", Color(1.0, 0.93, 0.7))
+			plus.custom_minimum_size = Vector2(42, 42)
+			plus.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			plus.add_theme_font_size_override("font_size", 26)
+			for sbn in ["normal", "hover", "pressed"]:
+				plus.add_theme_stylebox_override(sbn, _plus_style(sbn, 21))
 			plus.focus_mode = Control.FOCUS_NONE
 			plus.pressed.connect(func(): Sfx.play("select"); ProfileManager.spend_mastery(con.get("id", "")))
 			row.add_child(plus)
 			if m_pts >= 5:
 				var plus5 := Button.new()
 				_label_button(plus5, "+5", Color(0.7, 1.0, 0.7))
-				plus5.custom_minimum_size = Vector2(56, 40)
+				plus5.custom_minimum_size = Vector2(56, 42)
+				plus5.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+				for sbn in ["normal", "hover", "pressed"]:
+					plus5.add_theme_stylebox_override(sbn, _plus_style(sbn, 12))
 				plus5.focus_mode = Control.FOCUS_NONE
 				plus5.pressed.connect(func():
 					Sfx.play("select")
@@ -798,10 +823,15 @@ func _heading(text: String) -> Label:
 
 func _stat_line(name: String, val: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	if STAT_ICONS.has(name):
+		var icon := _icon_medallion(String(STAT_ICONS[name]), 34.0)
+		icon.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		row.add_child(icon)
 	var a := Label.new()
 	a.text = name
 	a.add_theme_font_override("font", _body_font())
-	a.custom_minimum_size = Vector2(230, 30)
+	a.custom_minimum_size = Vector2(186 if STAT_ICONS.has(name) else 230, 30)
 	a.add_theme_color_override("font_color", Color(0.85, 0.85, 0.8))
 	a.add_theme_font_size_override("font_size", 18)
 	row.add_child(a)
@@ -869,6 +899,47 @@ func _record_tile(value: String, caption: String, col: Color) -> PanelContainer:
 	c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(c)
 	return tile
+
+## A skill-style icon in a small forged ring.
+func _icon_medallion(icon: String, d: float) -> Control:
+	var m := Control.new()
+	m.custom_minimum_size = Vector2(d, d)
+	m.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	m.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tex: Texture2D = SkillIcons.icon_texture(icon, 96) if icon != "" else null
+	m.draw.connect(func():
+		var c := m.size * 0.5
+		var r := minf(m.size.x, m.size.y) * 0.5
+		m.draw_circle(c + Vector2(0, 1.5), r, Color(0, 0, 0, 0.5))
+		m.draw_circle(c, r, Color(0.36, 0.26, 0.13))
+		m.draw_circle(c, r - 1.5, Color(0.80, 0.62, 0.32))
+		m.draw_circle(c, r - 3.0, Color(0.05, 0.05, 0.07))
+		m.draw_arc(c, r - 1.5, PI * 1.1, PI * 1.6, 12, Color(1.0, 0.92, 0.7, 0.7), 1.2, true)
+		if tex:
+			var s := (r - 3.0) * 1.95
+			m.draw_texture_rect(tex, Rect2(c - Vector2(s, s) * 0.5, Vector2(s, s)), false))
+	return m
+
+## The dark gold-edged socket an attribute's number sits in.
+func _socket_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.04, 0.04, 0.06, 0.9)
+	sb.border_color = Color(0.78, 0.6, 0.32, 0.75)
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 2
+	sb.set_corner_radius_all(5)
+	return sb
+
+## A gilt button for spending a point.
+func _plus_style(state: String, radius: int) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = {"normal": Color(0.24, 0.17, 0.06), "hover": Color(0.42, 0.30, 0.10), "pressed": Color(0.16, 0.11, 0.04)}[state]
+	sb.border_color = Color(1.0, 0.82, 0.42) if state == "hover" else Color(0.86, 0.66, 0.32)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(1.0, 0.75, 0.3, 0.35 if state == "hover" else 0.18)
+	sb.shadow_size = 4
+	return sb
 
 ## A slow gold breath on something waiting for the player.
 func _pulse(c: CanvasItem) -> void:

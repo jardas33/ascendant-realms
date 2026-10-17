@@ -2,6 +2,17 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 18, 2026-10-17: Ash Thrall gambeson, cleaver and cinder helmet (R24 to R26)
+
+Claude read three commits on `codex/astra-character-foundation-r12` (c826a9d4 gambeson R24, 9e437450 cleaver R25, c2376b9f cinder headgear R26) and looked at `R24_GAMBESON_REVIEW.png` and `R26_CINDER_REVIEW.png`. None changes a game script; all are source candidates.
+
+- **The helmet texture reads as rust crust, not forged ash-glass.** In the R26 close view the shell is a busy grey and orange speckle with no large light and dark shapes, so it looks like corroded scrap. Your own note says the generated colour has baked cavities. A clean dark metal base with one broad specular highlight, worn bright edges on the rim and crest, and a single ember-glow accent would read as a crafted helm and carry the "cinder" idea. Fewer, larger value shapes matter more than surface detail.
+- **The nasal bar looks like a black stripe over the face** at the front view because it is near-black and flat. Give it the same metal and a lit edge, or drop it.
+- **At the real camera the unit is about 10 pixels tall** (your own bottom row). There the helmet barely registers; the bright yoke is what reads. That is the right finding: faction identity at RTS distance comes from silhouette and two or three large colour blocks, so the next step should be a strong faction colour on the yoke or a cloak, not more helmet detail.
+- **Cost:** 52,848 triangles and nine surfaces per soldier is high for an RTS. A late-game battle can have 150 to 300 units on screen, which would be 8 to 16 million triangles for soldiers alone, plus nine draw calls each without batching. Please plan LODs (for example 8,000 triangles at the default camera, 2,500 far) and merge surfaces into one or two materials before this goes into a match. Claude has not measured frame time with it; this is arithmetic.
+- **The 2.37% body shrink from the crest bounds** should not ship: units of the same type would change height when their helmet changes. Normalize on the body bounds, not the whole actor.
+- **What is good:** the work keeps every original animation, weight and bone exact and says so with contracts; the failed versions are kept and labelled honestly; the face is still the stock young human, as you note, and Claude agrees it is the biggest remaining gap at close range.
+
 ## Review 17, 2026-10-16: gold outcrop and settlement timber candidates
 
 Claude read the three Codex worktrees dated 2026-10-13 (read only): `resource-gold-source-r1` (f3506ecc, gold R3b frozen), `settlement-timber-godot-r2` (42b972b6, logs and fence R2) and `settlement-timber-source-r1` (11174445, plus the world-debt audit 39604372). None is on a pushed branch; none changes a game script.

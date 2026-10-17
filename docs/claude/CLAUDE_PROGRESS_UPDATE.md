@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 336 (done): the hero sheet wears the new icon set**
+  - The attribute list and the current-build list were plain text rows with green "+" text buttons.
+  - Each attribute now has its own icon in a small forged ring (Might a fist, Endurance a heart, Agility a winged boot, Intellect a book, Willpower a rune, Command a banner, Fortune coins), its number sits in a dark gold-edged socket, and the spend buttons are round gilt buttons (mastery buttons too).
+  - Every line of the current build has its icon (health heart, damage sword, armor shield, mana drop and so on).
+  - Full regression: 111 of 111 checks passed (1118 s), save untouched.
 - **Plan 335 (done): the hero skill tree rebuilt to read like a premium RTS talent tree**
   - Emanuel: the symbols repeated a lot and looked weak, and the lines were sometimes broken.
   - Layout: each path is now a true tree, row by prerequisite depth, siblings ordered under their parents so links never cross; links run straight or in clean S-curves from orb to orb, never under a label. The overview hides names (a hover card shows name and cost) so the stars and links are uncluttered.
