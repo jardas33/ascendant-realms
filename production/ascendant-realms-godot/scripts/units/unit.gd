@@ -4167,8 +4167,55 @@ func _show_hero_title() -> void:
 	tl.outline_size = 9
 	tl.modulate = Color(1.0, 0.86, 0.5)
 	tl.outline_modulate = Color(0.08, 0.04, 0.0, 0.9)
+	tl.render_priority = 2
+	tl.outline_render_priority = 1
 	add_child(tl)
 	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
+	# Lifted on screen too: from the battle camera the title sat over the
+	# hero's legs, and with its plate it hid them.
+	tl.offset = Vector2(0, 64)
+	# A dark nameplate with gilt edges behind the title (plan 342): bare
+	# outlined text over grass and armies read as a caption, not a banner.
+	var text_w := (tl.font if tl.font else ThemeDB.fallback_font).get_string_size(tl.text, HORIZONTAL_ALIGNMENT_LEFT, -1, tl.font_size).x
+	var plate := Sprite3D.new()
+	plate.name = "HeroTitlePlate"
+	plate.texture = _title_plate_texture(int(text_w) + 56, 50)
+	plate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	plate.no_depth_test = true
+	plate.fixed_size = true
+	plate.pixel_size = tl.pixel_size
+	plate.offset = tl.offset
+	plate.render_priority = 0
+	plate.shaded = false
+	plate.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+	tl.add_child(plate)
+
+## The hero's nameplate: a dark bar fading out at both ends, with a fine
+## gilt rule along its top and bottom edges and a small diamond at each end.
+static func _title_plate_texture(w: int, h: int) -> ImageTexture:
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var gold := Color(0.92, 0.74, 0.40)
+	for x in w:
+		var u := float(x) / float(w - 1)
+		var fade := clampf(minf(u, 1.0 - u) / 0.14, 0.0, 1.0)
+		for y in h:
+			var col := Color(0.05, 0.035, 0.02, 0.80 * fade)
+			if y < 2 or y >= h - 2:
+				col = Color(gold, 0.95 * fade)
+			elif y < 4 or y >= h - 4:
+				col = Color(0.02, 0.01, 0.0, 0.9 * fade)
+			img.set_pixel(x, y, col)
+	# Diamonds where the rules fade out.
+	for side in [0.10, 0.90]:
+		var cx := int(w * side)
+		for dy in range(-6, 7):
+			for dx in range(-6 + absi(dy), 7 - absi(dy)):
+				for yy in [1, h - 2]:
+					var px := cx + dx
+					var py: int = yy + dy
+					if px >= 0 and px < w and py >= 0 and py < h:
+						img.set_pixel(px, py, gold)
+	return ImageTexture.create_from_image(img)
 
 ## A short call over the unit's head (a hero's battle cry), fading out.
 var _bark: Label3D
