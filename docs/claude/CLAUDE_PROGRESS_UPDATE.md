@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 338 (done): the skirmish battlefield preview looks like land**
+  - The map preview on the skirmish page was a flat swatch with grey discs, plain lines and dots, like a prototype.
+  - The ground now has soft light and shade (one shared noise grain), rock and walls are lit from the upper left with a shaded flank, woods show tree crowns, roads have a dark verge under a pale track, the crossing river has banks and a sheen, and resource dots have an outline and a glint. Hills and lakes stay smooth so large ones do not look like heaps of bubbles.
+  - New probe `claude_mapsheet.gd` (ar-review) draws all 50 map previews on one sheet.
+  - Full regression: 111 of 111 checks passed (1100 s), save untouched.
 - **Plan 337 (done): War Chest relics show what they are**
   - Every relic without painted art showed the same thin line emblem per slot, so a chest of 43 relics looked like rows of identical badges.
   - Relics now wear an icon from the shared set, picked by slot and name: swords, axes, maces and hammers for the main hand, several shields, three helms, two armors, gauntlets, boots, a ring, an amulet, a cloak, and eight kinds of relic (crystal, orb, ankh and so on). Five gear icons were added to the set. The open-slot tiles show the same icons, bright when the chest holds something that fits.

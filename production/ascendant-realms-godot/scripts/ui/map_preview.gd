@@ -28,6 +28,25 @@ var map_data := {}
 var player_color := Color(0.95, 0.80, 0.40)
 var opponent_colors: Array = [Color(0.85, 0.28, 0.24)]
 var mystery := false
+## Light and shade laid over the ground so the field reads as land, not a
+## flat swatch. Made once and shared by every preview.
+static var _grain: ImageTexture
+
+
+static func _grain_texture() -> ImageTexture:
+	if _grain != null:
+		return _grain
+	var noise := FastNoiseLite.new()
+	noise.seed = 77
+	noise.frequency = 0.045
+	noise.fractal_octaves = 4
+	var img := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	for y in 128:
+		for x in 128:
+			var v := noise.get_noise_2d(x, y)
+			img.set_pixel(x, y, Color(1.0, 0.96, 0.82, v * 0.30) if v > 0.0 else Color(0.0, 0.02, 0.0, -v * 0.42))
+	_grain = ImageTexture.create_from_image(img)
+	return _grain
 
 
 func show_map(data: Dictionary, p_color: Color, opp_colors: Array) -> void:
@@ -57,6 +76,7 @@ func _draw() -> void:
 		return origin + Vector2((p.x + half) / (half * 2.0), (p.z + half) / (half * 2.0)) * side
 	var ground: Color = THEME_GROUND.get(str(map_data.get("theme", "highland")), Color(0.3, 0.34, 0.24))
 	draw_rect(rect, ground)
+	draw_texture_rect(_grain_texture(), rect, false)
 	# Soft vignette toward the edges so the field reads as a parchment survey.
 	for i in 6:
 		var inset := side * 0.02 * i
@@ -109,6 +129,8 @@ func _draw() -> void:
 						radius += maxf(1.0, side * 0.004)
 					if rect.grow(-radius).has_point(centre):
 						draw_circle(centre, radius, tint)
+						if pass_index == 1:
+							_relief(centre, radius, kind, tint)
 					elif pass_index == 1:
 						var corner_a: Vector2 = to_px.call(tile_pos - Vector3(tile_half.x, 0, tile_half.y))
 						var corner_b: Vector2 = to_px.call(tile_pos + Vector3(tile_half.x, 0, tile_half.y))
@@ -118,6 +140,7 @@ func _draw() -> void:
 	if authored:
 		overview = {}
 		for road in map_data.get("roads", []):
+			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.12, 0.09, 0.05, 0.55), maxf(3.5, side * 0.016), true)
 			draw_line(to_px.call(Vector3(road.x, 0, road.y)), to_px.call(Vector3(road.z, 0, road.w)), Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.010), true)
 		draw_tiles.call()
 		for ford in map_data.get("fords", []):
@@ -137,7 +160,11 @@ func _draw() -> void:
 		if str(overview.get("water_axis", "")) == "crossing":
 			var a: Vector2 = to_px.call(Vector3(-half, 0, wz - ww * 0.5))
 			var b: Vector2 = to_px.call(Vector3(half, 0, wz + ww * 0.5))
-			draw_rect(Rect2(a, b - a), water)
+			var band := Rect2(a, b - a)
+			draw_rect(band.grow_individual(0, 2, 0, 2), Color(0.10, 0.08, 0.05, 0.55))
+			draw_rect(band, water)
+			draw_rect(Rect2(band.position + Vector2(0, band.size.y * 0.22), Vector2(band.size.x, band.size.y * 0.22)), Color(water.lightened(0.3), 0.35))
+			draw_line(band.position, band.position + Vector2(band.size.x, 0), Color(0.80, 0.86, 0.80, 0.45), 1.0)
 			if map_data.has("bridge"):
 				var bp: Vector2 = to_px.call(map_data["bridge"]["pos"])
 				draw_rect(Rect2(bp - Vector2(side * 0.025, (b.y - a.y) * 0.6), Vector2(side * 0.05, (b.y - a.y) * 1.2)), Color(0.46, 0.34, 0.22))
@@ -156,14 +183,19 @@ func _draw() -> void:
 		var pts := PackedVector2Array()
 		for p in road:
 			pts.append(to_px.call(p))
-		draw_polyline(pts, Color(0.62, 0.50, 0.34, 0.85), maxf(2.0, side * 0.012), true)
+		draw_polyline(pts, Color(0.12, 0.09, 0.05, 0.55), maxf(3.5, side * 0.018), true)
+		draw_polyline(pts, Color(0.70, 0.57, 0.38, 0.9), maxf(2.0, side * 0.010), true)
 	# The older maps have rock ridges too (since 2026-10-01), and the preview
 	# never showed them: the walls a player would have to march round.
 	if not authored:
 		draw_tiles.call()
 	for r in map_data.get("resources", []):
 		var c: Color = KIND_COLORS.get(str(r.get("kind", "")), Color.WHITE)
-		draw_circle(to_px.call(r["pos"]), maxf(2.5, side * 0.011), c)
+		var rp: Vector2 = to_px.call(r["pos"])
+		var rr := maxf(2.5, side * 0.011)
+		draw_circle(rp + Vector2(0, 1), rr + 1.2, Color(0, 0, 0, 0.6))
+		draw_circle(rp, rr, c)
+		draw_circle(rp - Vector2(rr, rr) * 0.3, rr * 0.4, Color(c.lightened(0.5), 0.8))
 	# Veins: a dark-edged dot in the resource's colour, where outposts can rise.
 	for v in map_data.get("veins", []):
 		var vp: Vector2 = to_px.call(v["pos"])
@@ -182,6 +214,25 @@ func _draw() -> void:
 		_draw_banner(to_px.call(starts[i]), side * 0.045, col, i == 0)
 	draw_rect(rect, frame, false, 2.0)
 	draw_rect(Rect2(rect.position + Vector2(5, 5), rect.size - Vector2(10, 10)), Color(frame, 0.35), false, 1.0)
+
+
+## Sun from the upper left: rock and hills get a lit crown and a shaded
+## flank, woods a few tree crowns. (Hills and water stay smooth: a lake is
+## many tiles, and a sheen on each made it look like a heap of bubbles.)
+func _relief(c: Vector2, r: float, kind: String, tint: Color) -> void:
+	match kind:
+		"rock", "masonry":
+			draw_circle(c + Vector2(r, r) * 0.18, r * 0.78, Color(tint.darkened(0.35), 0.55))
+			draw_circle(c - Vector2(r, r) * 0.22, r * 0.62, Color(tint.lightened(0.28), 0.65))
+			if kind == "rock":
+				draw_circle(c - Vector2(r, r) * 0.34, r * 0.28, Color(tint.lightened(0.5), 0.5))
+		"forest":
+			for k in 3:
+				var a := TAU * (k / 3.0) + 0.6
+				var p := c + Vector2(cos(a), sin(a)) * r * 0.45
+				draw_circle(p + Vector2(1, 1.5), r * 0.42, Color(0, 0.03, 0, 0.45))
+				draw_circle(p, r * 0.4, tint.lightened(0.12))
+				draw_circle(p - Vector2(r, r) * 0.12, r * 0.18, Color(tint.lightened(0.42), 0.8))
 
 
 func _draw_banner(p: Vector2, s: float, col: Color, is_player: bool) -> void:
