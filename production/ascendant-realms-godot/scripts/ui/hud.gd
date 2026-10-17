@@ -3104,7 +3104,11 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		var queue_row := HBoxContainer.new()
 		queue_row.add_theme_constant_override("separation", 4)
 		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		queue_row.add_child(_mk_label("Queue", 11, Color(0.8, 0.78, 0.7)))
+		# Untrimmed: with the default ellipsis trim the expanding status label
+		# squeezed this caption to nothing and a lone "Idle" was left.
+		var queue_caption := _mk_label("QUEUE  ·", 11, Color(0.8, 0.78, 0.7))
+		queue_caption.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		queue_row.add_child(queue_caption)
 		_production_status_label = _mk_label("Idle", 12, Color(0.95, 0.82, 0.42))
 		_production_status_label.custom_minimum_size = Vector2(108, 20)
 		_production_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
