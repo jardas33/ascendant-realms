@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 337 (done): War Chest relics show what they are**
+  - Every relic without painted art showed the same thin line emblem per slot, so a chest of 43 relics looked like rows of identical badges.
+  - Relics now wear an icon from the shared set, picked by slot and name: swords, axes, maces and hammers for the main hand, several shields, three helms, two armors, gauntlets, boots, a ring, an amulet, a cloak, and eight kinds of relic (crystal, orb, ankh and so on). Five gear icons were added to the set. The open-slot tiles show the same icons, bright when the chest holds something that fits.
+  - Full regression: 111 of 111 checks passed (1014 s), save untouched.
 - **Plan 336 (done): the hero sheet wears the new icon set**
   - The attribute list and the current-build list were plain text rows with green "+" text buttons.
   - Each attribute now has its own icon in a small forged ring (Might a fist, Endurance a heart, Agility a winged boot, Intellect a book, Willpower a rune, Command a banner, Fortune coins), its number sits in a dark gold-edged socket, and the spend buttons are round gilt buttons (mastery buttons too).

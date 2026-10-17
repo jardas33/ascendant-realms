@@ -11,6 +11,22 @@ const RELIC_ART := {
 	"Ironbark Helm": "res://assets/ui/inventory/ironbark_helm_relic_r1.png",
 	"Warden's Band": "res://assets/ui/inventory/wardens_band_relic_r1.png",
 }
+const SkillIcons := preload("res://scripts/ui/skill_icons.gd")
+## The pictures a relic of each slot can wear; its name picks one, so two
+## swords in the chest need not look the same as two helms.
+const SLOT_ICONS := {
+	"main_hand": ["sword", "axe", "mace", "hammer", "spear", "flaming_sword"],
+	"off_hand": ["kite_shield", "shield", "aegis", "plus_shield"],
+	"head": ["helm", "horned_helm", "winged_helm"],
+	"body": ["breastplate", "scale_armor"],
+	"hands": ["gauntlet"],
+	"feet": ["boot", "winged_boot"],
+	"amulet": ["amulet"],
+	"ring1": ["ring"],
+	"ring2": ["ring"],
+	"cloak": ["cloak"],
+	"relic": ["radiance", "crystal", "orb", "ankh", "diamond", "rune_circle", "goblet", "candle"],
+}
 const MENU_PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
 
 const SLOTS := ["main_hand", "off_hand", "head", "body", "hands", "feet",
@@ -308,6 +324,12 @@ func _open_slot_tile(slot: String, inv: Array) -> Button:
 	# A faint emblem of the slot on the tile's right, brighter when the chest
 	# holds something that fits.
 	tile.draw.connect(func():
+		var slot_icon := _gear_icon(slot, "", 64)
+		if slot_icon != null:
+			var e := 30.0
+			var tint := Color(1, 1, 1, 0.92) if fits > 0 else Color(0.62, 0.64, 0.66, 0.42)
+			tile.draw_texture_rect(slot_icon, Rect2(Vector2(tile.size.x - 14.0 - e, (tile.size.y - e) * 0.5), Vector2(e, e)), false, tint)
+			return
 		var emblem_col := Color(ready_col, 0.55) if fits > 0 else Color(0.55, 0.58, 0.58, 0.28)
 		_draw_slot_emblem(tile, Vector2(tile.size.x - 28.0, tile.size.y * 0.5), 13.0, slot, emblem_col))
 	var name_label := Label.new()
@@ -694,6 +716,7 @@ func _item_art(item: Dictionary, edge: int, node_name: String) -> Control:
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var art_path := str(RELIC_ART.get(str(item.get("name", "")), ""))
 	var tex: Texture2D = load(art_path) if not art_path.is_empty() and ResourceLoader.exists(art_path) else null
+	var icon := _gear_icon(slot, str(item.get("name", "")), 128) if tex == null else null
 	holder.draw.connect(func():
 		var c := holder.size * 0.5
 		var r := minf(holder.size.x, holder.size.y) * 0.46
@@ -702,6 +725,11 @@ func _item_art(item: Dictionary, edge: int, node_name: String) -> Control:
 			holder.draw_circle(c, r * (1.0 - k * 0.12), Color(glow, float(strength) * (0.25 + k * 0.1)))
 		holder.draw_arc(c, r * 0.92, 0.0, TAU, 48, Color(glow, 0.55), 1.6, true)
 		if tex != null:
+			return
+		if icon != null:
+			var s2 := r * 1.45
+			holder.draw_texture_rect(icon, Rect2(c - Vector2(s2, s2) * 0.5 + Vector2(0, 2.5), Vector2(s2, s2)), false, Color(0, 0, 0, 0.55))
+			holder.draw_texture_rect(icon, Rect2(c - Vector2(s2, s2) * 0.5, Vector2(s2, s2)), false)
 			return
 		_draw_slot_emblem(holder, c, r * 0.62, slot, glow.lightened(0.35)))
 	if tex != null:
@@ -714,6 +742,12 @@ func _item_art(item: Dictionary, edge: int, node_name: String) -> Control:
 		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		holder.add_child(art)
 	return holder
+
+## A relic's picture from the shared icon set, chosen by its slot and name.
+func _gear_icon(slot: String, item_name: String, px: int) -> Texture2D:
+	var pool: Array = SLOT_ICONS.get(slot, SLOT_ICONS["relic"])
+	var pick: String = pool[0] if item_name == "" else pool[absi(item_name.hash()) % pool.size()]
+	return SkillIcons.icon_texture(pick, px)
 
 func _draw_slot_emblem(ci: CanvasItem, c: Vector2, r: float, slot: String, col: Color) -> void:
 	var dark := Color(0.03, 0.03, 0.04, 0.9)
