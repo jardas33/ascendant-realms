@@ -2072,6 +2072,8 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 	reeds.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	layer.add_child(reeds)
 
+## How far a lone oak is set into the ground, as a share of its height.
+const OAK_SINK := 0.065
 const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
 const PALM_TREES := ["res://assets/environment/vegetation/desert_palm.scn", "res://assets/environment/vegetation/desert_palm_b.scn"]
 
@@ -2792,6 +2794,10 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	var h: float = (rng.randf_range(5.0, 7.5) if "oak" in path else rng.randf_range(6.0, 9.0)) if is_tree else rng.randf_range(1.6, 3.6)
 	ModelUtils.scale_to_height(inst, h)
 	ModelUtils.ground_model(inst)
+	# The oak's roots splay out over the ground like thin legs; set it a
+	# little into the earth so only the flare of the trunk shows (plan 341).
+	if "oak" in path:
+		inst.position.y -= h * OAK_SINK
 	inst.rotation.y = rng.randf() * TAU
 	# Not on a vein either: an oak grew over the log stack of an old-growth
 	# grove and hid it, and a tree in the ring is in the outpost's way.
