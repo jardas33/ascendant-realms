@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 340 (done): shrine capture rings are carved rune bands**
+  - In a mid-battle picture the shrine's capture zone was a band of plain dashes and a bare inner circle, the most prototype-looking thing on the field.
+  - `capture_zone.gdshader` now draws two fine rings with a band of procedural runes between them (turning very slowly), an inner ring with eight notches, and a soft glow spilling inward. The capture progress fills the rune band in the contesting team's colour. Same quad, radius and parameters, so the capture logic is untouched.
+  - Full regression: 110 of 111 checks passed (1094 s), save untouched; the one failure was the windowed buttons check on the pause menu, which passed on two of three reruns with the change (a pointer-timing flake; the change is one ground shader).
 - **Plan 339 (done): the hero stands on a stage in Forge Your Hero**
   - The hero preview stood on a single dark disc over a flat navy box.
   - The 3D preview now renders on a clear background, so the framed panel shows through; a soft halo in the people's colour lights the space behind the hero; the dais is a two-step stone plinth with a bronze lip and the people's glowing ring, sitting in a pool of shadow.
