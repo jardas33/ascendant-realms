@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 328 (done): the pause menu is centered and its hotkeys line up**
+  - On a 1366x768 laptop the pause menu sat about 80 pixels right of center: its plate grew past its 740 px design once the text was lifted for small windows, but it was still centered as if 740 wide. The key column was too narrow for the lifted keys, so descriptions started at different places on each row ("SHIFT + LMB Add to selection").
+  - The plate is now centered on its real width (and scaled down if a window is too narrow), the key column fits the longest key, and the plate is near-opaque so the battle behind it no longer shows through.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 327 (done): a roomier, solid chapter briefing**
   - On a 1366x768 laptop the chapter briefing was a narrow column (about 580 pixels) of small lines, because its text is lifted for small windows but its width was not. Its panel was also 87% opaque, so the campaign map's titles showed through behind the story text.
   - The card now widens with the same lift (about 690 pixels on a laptop; 1920 unchanged), and both the chapter and Endless Road briefing panels are near-opaque.

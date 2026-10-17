@@ -18,12 +18,15 @@ func _fit() -> void:
 	if not is_instance_valid(_panel) or not is_instance_valid(_crest) or size.y <= 0.0:
 		return
 	var need := _panel.get_combined_minimum_size().y
+	# Plan 328: centred on its real width. With the text lifted on a laptop
+	# the plate grew past its 740 px design and sat 80 px right of centre.
+	var w := maxf(740.0, _panel.get_combined_minimum_size().x)
 	var crest_rise := 48.0
-	var k := minf(1.0, (size.y - 20.0) / (need + crest_rise))
+	var k := minf(1.0, minf((size.y - 20.0) / (need + crest_rise), (size.x - 40.0) / w))
 	_panel.pivot_offset = Vector2.ZERO
 	_panel.scale = Vector2(k, k)
-	_panel.size = Vector2(740.0, need)
-	_panel.position = Vector2((size.x - 740.0 * k) * 0.5, (size.y - (need + crest_rise) * k) * 0.5 + crest_rise * k)
+	_panel.size = Vector2(w, need)
+	_panel.position = Vector2((size.x - w * k) * 0.5, (size.y - (need + crest_rise) * k) * 0.5 + crest_rise * k)
 	_crest.pivot_offset = Vector2.ZERO
 	_crest.scale = Vector2(k, k)
 	_crest.size = Vector2(64.0, 74.0)
@@ -48,6 +51,9 @@ func setup() -> void:
 	# ledger, so the pause screen belongs to the same kit as the battle HUD.
 	_panel = load("res://scripts/ui/hero_sheet_plate.gd").new()
 	add_child(_panel)
+	# Near-opaque, so battle text behind it does not show through the keys.
+	_panel.set("surface_alpha", 0.96)
+	_panel.set("surface_alpha_bottom", 0.96)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color.TRANSPARENT
 	_panel.add_theme_stylebox_override("panel", sb)
@@ -247,7 +253,9 @@ func _add_key_row(parent: VBoxContainer, key: String, description: String, font:
 	parent.add_child(row)
 	var key_label := Label.new()
 	key_label.text = key
-	key_label.custom_minimum_size = Vector2(104, 0)
+	# Wide enough for the longest key at the laptop text size, so every
+	# description in a column starts at the same place.
+	key_label.custom_minimum_size = Vector2(150, 0)
 	key_label.add_theme_font_size_override("font_size", 14)
 	key_label.add_theme_color_override("font_color", Color(0.98, 0.87, 0.56))
 	key_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
