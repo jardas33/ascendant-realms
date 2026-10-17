@@ -4,9 +4,19 @@ extends Control
 ## SkillDefs and ProfileManager remain the semantic authorities.
 
 const FONT := "res://assets/fonts/cinzel.ttf"
-const SPACING := Vector2(240.0, 214.0)
-const FOCUSED_SPACING := Vector2(250.0, 214.0)
-const MARGIN := Vector2(34.0, 88.0)
+## Each path is laid out as the tree it is: a spine down the middle, forks
+## side by side, and the late side branch to its right (it used to be one
+## column, with forks stacked and links running behind other stars' names).
+## The overview shows the stars without names (hover one for its card); a
+## focused path spreads out and names every star.
+const LANE := 104.0
+const ROW := 128.0
+const COLUMN := 344.0
+const FOCUSED_LANE := 270.0
+const FOCUSED_ROW := 236.0
+## Where a path's side branch stands, in lanes right of its spine.
+const SPUR_LANE := 1.5
+const MARGIN := Vector2(34.0, 130.0)
 const NODE_SIZE := Vector2(200.0, 206.0)
 const ORB := Vector2(96.0, 96.0)
 const PLATE_SCRIPT := preload("res://scripts/ui/hero_sheet_plate.gd")
@@ -20,9 +30,6 @@ const NAME_SIZE := 29
 const NAME_SIZE_COMPACT := 32
 const COST_SIZE := 23
 const COST_SIZE_COMPACT := 25
-## Each path winds like a river of stars instead of a straight column: a
-## gentle sideways wave, and every other path set half a row lower.
-const WAVE := 30.0
 ## A name may spill a little past its star on both sides (the gap between
 ## paths is wide enough), so long words are not shrunk or broken.
 const NAME_SPILL := 18.0
@@ -51,12 +58,7 @@ const BRANCH_COLORS := {
 	"race": Color("#c59b62")
 }
 
-const GLYPH_TEXTURES := {
-	"cmb_2": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_battle_fury.png",
-	"act_1": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_rallying_cry.png",
-	"act_2": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_ground_slam.png",
-	"act_3": "res://assets/ui/skill_glyphs/task613_r1/a08_b1_deepened_reserves.png"
-}
+const SkillIcons := preload("res://scripts/ui/skill_icons.gd")
 
 ## A star's click area is its orb and the text under it, not its whole
 ## box: with the paths winding and staggered, the empty corners of
@@ -102,71 +104,120 @@ class Glyph extends Control:
 			_:
 				return LOCKED
 
+	## The forged rim's two tones by state: iron when locked, bronze when it
+	## waits for points, bright gold when it can be claimed, gilt when owned.
+	func _rim_tones() -> Array:
+		match state:
+			"UNLOCKED":
+				return [Color(0.50, 0.33, 0.12), Color(1.0, 0.90, 0.58)]
+			"PURCHASABLE":
+				return [Color(0.55, 0.38, 0.12), Color(1.0, 0.86, 0.50)]
+			"INSUFFICIENT_POINTS":
+				return [Color(0.30, 0.20, 0.11), Color(0.78, 0.56, 0.32)]
+			_:
+				return [Color(0.16, 0.17, 0.20), Color(0.52, 0.55, 0.60)]
+
+	## A ring of worked metal, lit from the upper left.
+	func _metal_ring(c: Vector2, radius: float, width: float, dark: Color, light: Color) -> void:
+		var segs := 48
+		for k in segs:
+			var a0 := TAU * float(k) / float(segs)
+			var a1 := TAU * float(k + 1) / float(segs) + 0.01
+			var lit := 0.5 + 0.5 * cos((a0 + a1) * 0.5 + PI * 0.75)
+			draw_arc(c, radius, a0, a1, 3, dark.lerp(light, lit * lit), width, true)
+		draw_arc(c, radius + width * 0.5, 0.0, TAU, 64, Color(0, 0, 0, 0.75), 1.4, true)
+		draw_arc(c, radius - width * 0.5, 0.0, TAU, 64, Color(0, 0, 0, 0.8), 1.4, true)
+		draw_arc(c, radius + width * 0.22, PI * 1.05, PI * 1.7, 18, Color(1, 1, 1, 0.28), 1.2, true)
+
+	## An eight-pointed star of metal behind a keystone's medallion.
+	func _star_frame(c: Vector2, r_out: float, r_in: float, dark: Color, light: Color, spin: float) -> void:
+		var pts := PackedVector2Array()
+		var cols := PackedColorArray()
+		for k in 16:
+			var a := spin + TAU * float(k) / 16.0
+			var rr := r_out if k % 2 == 0 else r_in
+			pts.append(c + Vector2(cos(a), sin(a)) * rr)
+			var lit := 0.5 + 0.5 * cos(a + PI * 0.75)
+			cols.append(dark.lerp(light, lit * 0.9))
+		draw_polygon(pts, cols)
+		var edge := PackedVector2Array(pts)
+		edge.append(pts[0])
+		draw_polyline(edge, Color(0, 0, 0, 0.7), 1.4, true)
+
 	func _draw() -> void:
 		var c := size * 0.5
-		var r := minf(size.x, size.y) * (0.40 if kind == "keystone" else 0.36)
+		var keystone := kind == "keystone"
+		var r := minf(size.x, size.y) * (0.40 if keystone else 0.42)
 		var sc := _state_color()
 		var dim := locked or state == "PREREQUISITE_BLOCKED"
 		var pulse := 0.5 + 0.5 * sin(_t * 3.2)
-		# Halo: soft rings of light, stronger for owned and ready stars.
-		var halo := 0.10 if dim else (0.22 if state == "UNLOCKED" else (0.18 + 0.12 * pulse if state == "PURCHASABLE" else 0.12))
+		var tones := _rim_tones()
+		var dark: Color = tones[0]
+		var light: Color = tones[1]
+		if state == "PURCHASABLE":
+			light = light.lerp(Color(1, 0.97, 0.8), 0.35 * pulse)
 		if hovered:
-			halo += 0.1
-		for k in 6:
-			draw_circle(c, r * (1.0 + 0.12 * float(k + 1)), Color(sc, halo * (1.0 - float(k) / 6.0) * 0.55))
-		# Keystone crown: four long points of light behind the orb.
-		if kind == "keystone":
-			var spin := _t * 0.2
-			for q in 4:
-				var a := spin + q * PI * 0.5
-				var tip := c + Vector2(cos(a), sin(a)) * r * 1.75
-				var side := Vector2(cos(a + PI * 0.5), sin(a + PI * 0.5)) * r * 0.22
-				draw_colored_polygon(PackedVector2Array([c + side, tip, c - side]), Color(sc, 0.35 if not dim else 0.15))
-		# The orb: deep ink shading up to the path colour at its heart.
-		for k in 8:
-			var f := 1.0 - float(k) / 8.0
-			var col := INK.lerp(accent.darkened(0.35), 0.15 + 0.6 * (1.0 - f))
+			light = light.lightened(0.15)
+		# Light behind the medallion for a star that is owned or ready.
+		if not dim and state != "INSUFFICIENT_POINTS":
+			var halo := 0.16 if state == "UNLOCKED" else 0.12 + 0.12 * pulse
+			for k in 5:
+				draw_circle(c, r * (1.12 + 0.11 * float(k + 1)), Color(sc, halo * (1.0 - float(k) / 5.0)))
+		# Drop shadow.
+		draw_circle(c + Vector2(0, r * 0.08), r * 1.12, Color(0, 0, 0, 0.55))
+		if keystone:
+			_star_frame(c, r * 1.42, r * 1.02, dark, light, PI * 0.125 if dim else PI * 0.125 + sin(_t * 0.6) * 0.04)
+			_star_frame(c, r * 1.22, r * 0.98, dark.darkened(0.3), light.darkened(0.15), 0.0)
+		# The well: deep ink at the rim, the path's colour glowing at its heart.
+		var well := r * 0.80
+		for k in 10:
+			var f := 1.0 - float(k) / 10.0
+			var col := INK.lerp(accent.darkened(0.45), 0.10 + 0.55 * (1.0 - f))
 			if dim:
-				col = col.darkened(0.45)
-			draw_circle(c + Vector2(-r * 0.12, -r * 0.14) * (1.0 - f), r * f, col)
+				col = col.lerp(Color(0.10, 0.11, 0.14), 0.6)
+			draw_circle(c + Vector2(-well * 0.10, -well * 0.12) * (1.0 - f), well * f, col)
+		# The skill's picture, with a shadow so it stands off the well.
 		if texture:
-			var tint := Color(0.62, 0.66, 0.74, 0.7) if dim else Color.WHITE
-			var inner := r * 1.42
-			draw_texture_rect(texture, Rect2(c - Vector2(inner, inner) * 0.5, Vector2(inner, inner)), false, tint)
+			var tint := Color(0.74, 0.75, 0.80, 0.92) if dim else Color.WHITE
+			var inner := well * 1.8
+			var box := Rect2(c - Vector2(inner, inner) * 0.5, Vector2(inner, inner))
+			draw_texture_rect(texture, Rect2(box.position + Vector2(0, 2.5), box.size), false, Color(0, 0, 0, 0.6))
+			draw_texture_rect(texture, box, false, tint)
 		else:
 			var gc := Color(PAPER, 0.45) if dim else PAPER
-			if kind == "active":
-				draw_circle(c, r * 0.18, gc)
-				for q in 4:
-					var a2 := q * PI * 0.5 + PI * 0.25
-					draw_line(c + Vector2(cos(a2), sin(a2)) * r * 0.32, c + Vector2(cos(a2), sin(a2)) * r * 0.62, gc, 2.2, true)
-			elif kind == "keystone":
-				var s := r * 0.48
-				draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.62, 0), c + Vector2(0, s), c + Vector2(-s * 0.62, 0)]), gc)
-			else:
-				# A small four-point star.
-				var s2 := r * 0.46
-				draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s2), c + Vector2(s2 * 0.24, -s2 * 0.24), c + Vector2(s2, 0), c + Vector2(s2 * 0.24, s2 * 0.24),
-					c + Vector2(0, s2), c + Vector2(-s2 * 0.24, s2 * 0.24), c + Vector2(-s2, 0), c + Vector2(-s2 * 0.24, -s2 * 0.24)]), gc)
-		# Gloss highlight.
-		draw_arc(c, r * 0.82, PI * 1.1, PI * 1.55, 16, Color(1, 1, 1, 0.10 if dim else 0.22), r * 0.14, true)
-		# State ring.
-		draw_arc(c, r, 0.0, TAU, 48, Color(sc, 0.9 if not dim else 0.55), 2.6 if not dim else 1.6, true)
-		if state == "PURCHASABLE":
-			# A turning ring of runes: the star is ready to claim.
-			var rr := r * 1.22
-			for q in 10:
-				var a3 := _t * 0.8 + q * TAU / 10.0
-				draw_arc(c, rr, a3, a3 + TAU / 22.0, 6, Color(GOLD_BRIGHT, 0.55 + 0.35 * pulse), 2.0, true)
-		elif state == "UNLOCKED":
-			draw_arc(c, r * 1.16, 0.0, TAU, 48, Color(MINT, 0.35), 1.2, true)
+			var s2 := well * 0.52
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s2), c + Vector2(s2 * 0.24, -s2 * 0.24), c + Vector2(s2, 0), c + Vector2(s2 * 0.24, s2 * 0.24),
+				c + Vector2(0, s2), c + Vector2(-s2 * 0.24, s2 * 0.24), c + Vector2(-s2, 0), c + Vector2(-s2 * 0.24, -s2 * 0.24)]), gc)
+		# Glass: a soft gleam over the top of the well.
+		draw_arc(c, well * 0.78, PI * 1.12, PI * 1.62, 18, Color(1, 1, 1, 0.08 if dim else 0.18), well * 0.22, true)
+		# The forged rim. An active power wears a second, inner ring.
+		_metal_ring(c, r * 0.90, r * 0.20, dark, light)
+		if kind == "active":
+			draw_arc(c, r * 0.76, 0.0, TAU, 48, Color(light, 0.85 if not dim else 0.45), 1.6, true)
+			for q in 4:
+				var a2 := q * PI * 0.5 + PI * 0.25
+				draw_circle(c + Vector2(cos(a2), sin(a2)) * r * 0.90, r * 0.07, light)
+				draw_circle(c + Vector2(cos(a2), sin(a2)) * r * 0.90, r * 0.035, dark.darkened(0.4))
+		else:
+			for q in 4:
+				var a3 := q * PI * 0.5
+				draw_circle(c + Vector2(cos(a3), sin(a3)) * r * 0.90, r * 0.05, light.lerp(dark, 0.3))
+		# Owned: a ring of the path's colour inside the rim.
+		if state == "UNLOCKED":
+			draw_arc(c, r * 0.79, 0.0, TAU, 48, Color(accent.lightened(0.35), 0.9), 2.2, true)
+		elif state == "PURCHASABLE":
+			# A turning ring of light: the star is ready to claim.
+			var rr := r * 1.18
+			for q in 8:
+				var a4 := _t * 0.7 + q * TAU / 8.0
+				draw_arc(c, rr, a4, a4 + TAU / 20.0, 6, Color(GOLD_BRIGHT, 0.55 + 0.4 * pulse), 2.4, true)
 		if dim:
-			# Padlock badge.
-			var b := c + Vector2(r * 0.72, r * 0.72)
-			draw_circle(b, r * 0.3, Color(INK, 0.95))
-			draw_arc(b, r * 0.3, 0.0, TAU, 20, Color(LOCKED, 0.9), 1.2, true)
-			draw_rect(Rect2(b + Vector2(-r * 0.13, -r * 0.02), Vector2(r * 0.26, r * 0.2)), LOCKED, false, 1.4)
-			draw_arc(b + Vector2(0, -r * 0.02), r * 0.09, PI, TAU, 10, LOCKED, 1.4, true)
+			# Padlock badge on the rim.
+			var b := c + Vector2(r * 0.74, r * 0.74)
+			draw_circle(b, r * 0.30, Color(0.05, 0.06, 0.08, 0.98))
+			draw_arc(b, r * 0.30, 0.0, TAU, 20, Color(0.55, 0.58, 0.64, 0.95), 1.4, true)
+			draw_rect(Rect2(b + Vector2(-r * 0.12, -r * 0.02), Vector2(r * 0.24, r * 0.18)), Color(0.62, 0.65, 0.7), true)
+			draw_arc(b + Vector2(0, -r * 0.02), r * 0.085, PI, TAU, 10, Color(0.62, 0.65, 0.7), 1.6, true)
 
 class ConstellationCanvas extends Control:
 	var presenter: Object
@@ -372,6 +423,8 @@ func _build() -> void:
 		_add_node_button(n)
 	_layers.append(FxLayer.new(self, "fx", true))
 	_canvas.add_child(_layers[-1])
+	_layers.append(FxLayer.new(self, "tag", false))
+	_canvas.add_child(_layers[-1])
 	if _node_buttons.has("act_1"):
 		_selected_id = "act_1"
 
@@ -456,7 +509,7 @@ func _add_node_button(n: Dictionary) -> void:
 	# under it and a small cost line make the node.
 	for state_name in ["normal", "hover", "pressed", "focus", "disabled"]:
 		b.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
-	b.pivot_offset = NODE_SIZE * 0.5
+	b.pivot_offset = Vector2(NODE_SIZE.x * 0.5, ORB.y * 0.5)
 	var glyph := Glyph.new()
 	glyph.position = Vector2((NODE_SIZE.x - ORB.x) * 0.5, 0.0)
 	glyph.size = ORB
@@ -507,7 +560,8 @@ func _add_node_button(n: Dictionary) -> void:
 	var cost_h := ThemeDB.fallback_font.get_height(COST_SIZE_COMPACT if compact else COST_SIZE)
 	cost_label.position = Vector2(0.0, ORB.y - 4.0 + line_h * (2.0 if two_lines else 1.0))
 	cost_label.size = Vector2(NODE_SIZE.x, cost_h)
-	b.set_meta("text_h", line_h * (2.0 if two_lines else 1.0) + cost_h - 2.0)
+	b.set_meta("text_full_h", line_h * (2.0 if two_lines else 1.0) + cost_h - 2.0)
+	b.set_meta("text_h", b.get_meta("text_full_h"))
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.add_theme_color_override("font_outline_color", Color(0.01, 0.015, 0.03, 0.95))
 	cost_label.add_theme_constant_override("outline_size", 4)
@@ -520,74 +574,97 @@ func _add_node_button(n: Dictionary) -> void:
 	_node_buttons[id] = b
 
 func _node_pos(n: Dictionary) -> Vector2:
-	var p := _display_grid_pos(n)
-	var spacing := _layout_spacing()
-	var base := MARGIN + Vector2(p.x, p.y) * spacing
-	# The paths wind side to side together, like rivers of stars running
-	# down the sky. (Every other path used to drop half a row with its own
-	# phase: the headings stood at two heights and the names made a
-	# checkerboard of boxes.) All bend in step, so neighbours keep their
-	# distance and the rows stay level.
-	var col := int(p.x)
-	var wave := sin(p.y * 1.05 + 0.4) * WAVE * (0.88 + 0.12 * sin(float(col) * 1.7))
-	var h := str(n.get("id", "")).hash()
-	return base + Vector2(wave + float(h % 5) - 2.0, float((h / 7) % 5) - 2.0)
+	# The layout holds each star's centre; the button's box hangs from it.
+	var p: Vector2 = _layout_positions.get(str(n.get("id", "")), Vector2.ZERO)
+	return MARGIN + p - Vector2(NODE_SIZE.x * 0.5, 0.0)
 
-func _layout_spacing() -> Vector2:
-	return FOCUSED_SPACING if _branch_filter != "" else SPACING
+func _focused() -> bool:
+	return _branch_filter != ""
 
-func _display_grid_pos(n: Dictionary) -> Vector2:
+## A star's depth in its path: the longest run of prerequisites above it.
+func _depth_of(n: Dictionary, depths: Dictionary) -> int:
 	var id := str(n.get("id", ""))
-	if _layout_positions.has(id):
-		return _layout_positions[id]
-	var p: Vector2 = n.get("pos", Vector2.ZERO)
-	return p
+	if depths.has(id):
+		return depths[id]
+	var d := 0
+	for req in n.get("req", []):
+		var parent := _find_node(str(req))
+		if not parent.is_empty() and str(parent.get("branch", "")) == str(n.get("branch", "")) and _is_visible_node(parent):
+			d = maxi(d, _depth_of(parent, depths) + 1)
+	depths[id] = d
+	return d
+
+## Where a star's parents already stand, on average (0 for a root).
+func _parent_x(n: Dictionary) -> float:
+	var total := 0.0
+	var count := 0
+	for req in n.get("req", []):
+		if _layout_positions.has(str(req)):
+			total += (_layout_positions[str(req)] as Vector2).x
+			count += 1
+	return total / float(count) if count > 0 else 0.0
 
 func _rebuild_layout() -> void:
 	_layout_positions.clear()
-	var visible: Array = []
-	var columns: Array = []
+	var lane_w := FOCUSED_LANE if _focused() else LANE
+	var row_h := FOCUSED_ROW if _focused() else ROW
+	var branches: Array = []
+	var by_branch := {}
 	for n in _nodes:
 		if not _is_visible_node(n):
 			continue
-		visible.append(n)
-		var x := float((n.get("pos", Vector2.ZERO) as Vector2).x)
-		if not columns.has(x):
-			columns.append(x)
-	columns.sort()
-	var column_map := {}
-	for i in range(columns.size()):
-		column_map[columns[i]] = i
-	visible.sort_custom(func(a, b):
-		var ap: Vector2 = a.get("pos", Vector2.ZERO)
-		var bp: Vector2 = b.get("pos", Vector2.ZERO)
-		if ap.y == bp.y:
-			return ap.x < bp.x
-		return ap.y < bp.y
-	)
-	var occupied := {}
-	var branch_map := {}
-	for n in visible:
-		var branch := str(n.get("branch", ""))
-		if not branch_map.has(branch):
-			branch_map[branch] = branch_map.size()
-	var focused_sequence := [1, 0, 2, 3, 1, 2, 0, 3]
-	for i in range(visible.size()):
-		var n: Dictionary = visible[i]
-		var id := str(n.get("id", ""))
-		var authored: Vector2 = n.get("pos", Vector2.ZERO)
-		var column := int(branch_map[str(n.get("branch", ""))])
-		if _branch_filter != "":
-			# Focused paths use a restrained four-column constellation pattern.
-			# This changes presentation only; prerequisite links remain authored.
-			column = focused_sequence[i % focused_sequence.size()]
-		var row := maxi(0, int(round(authored.y)))
-		var key := "%d:%d" % [column, row]
-		while occupied.has(key):
-			row += 1
-			key = "%d:%d" % [column, row]
-		occupied[key] = id
-		_layout_positions[id] = Vector2(column, row)
+		var br := str(n.get("branch", ""))
+		if not by_branch.has(br):
+			by_branch[br] = []
+			branches.append(br)
+		by_branch[br].append(n)
+	branches.sort_custom(func(a, b): return BRANCH_COLORS.keys().find(a) < BRANCH_COLORS.keys().find(b))
+	var depths := {}
+	for bi in branches.size():
+		var members: Array = by_branch[branches[bi]]
+		var min_x := INF
+		for n in members:
+			min_x = minf(min_x, (n.get("pos", Vector2.ZERO) as Vector2).x)
+		# Stars of one depth stand on one row: the spine's in the middle (two
+		# of them, a fork, either side of it), the side branch to the right.
+		var rows := {}
+		for n in members:
+			var d := _depth_of(n, depths)
+			if not rows.has(d):
+				rows[d] = []
+			rows[d].append(n)
+		var row_keys: Array = rows.keys()
+		row_keys.sort()
+		for d in row_keys:
+			var spine: Array = []
+			var side: Array = []
+			for n in rows[d]:
+				if (n.get("pos", Vector2.ZERO) as Vector2).x - min_x > 0.01:
+					side.append(n)
+				else:
+					spine.append(n)
+			# A fork's two stars stand under their own parents, so roads never cross.
+			spine.sort_custom(func(a, b):
+				var pa := _parent_x(a)
+				var pb := _parent_x(b)
+				if absf(pa - pb) > 0.5:
+					return pa < pb
+				return (a.get("pos", Vector2.ZERO) as Vector2).y < (b.get("pos", Vector2.ZERO) as Vector2).y)
+			for k in spine.size():
+				var lane := float(k) - float(spine.size() - 1) * 0.5
+				_layout_positions[str(spine[k].get("id", ""))] = Vector2(float(bi) * COLUMN + lane * lane_w, float(d) * row_h)
+			for k in side.size():
+				_layout_positions[str(side[k].get("id", ""))] = Vector2(float(bi) * COLUMN + (SPUR_LANE + float(k)) * lane_w, float(d) * row_h)
+	# The focused path is drawn alone, from the left edge.
+	if _focused():
+		var left := INF
+		for id in _layout_positions:
+			left = minf(left, (_layout_positions[id] as Vector2).x)
+		for id in _layout_positions:
+			_layout_positions[id] = _layout_positions[id] - Vector2(left - lane_w * 0.5, 0.0)
+	else:
+		for id in _layout_positions:
+			_layout_positions[id] = _layout_positions[id] + Vector2(LANE, 0.0)
 
 func _is_visible_node(n: Dictionary) -> bool:
 	if n.is_empty():
@@ -601,13 +678,10 @@ func _update_canvas_size() -> void:
 	_rebuild_layout()
 	var max_x := 0.0
 	var max_y := 0.0
-	for n in _nodes:
-		if not _is_visible_node(n):
-			continue
-		var p := _display_grid_pos(n)
-		max_x = maxf(max_x, p.x)
-		max_y = maxf(max_y, p.y)
-	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x, max_y + 0.5) * _layout_spacing() + NODE_SIZE + Vector2(WAVE, 0.0)
+	for id in _layout_positions:
+		max_x = maxf(max_x, (_layout_positions[id] as Vector2).x)
+		max_y = maxf(max_y, (_layout_positions[id] as Vector2).y)
+	_canvas.custom_minimum_size = MARGIN * 2.0 + Vector2(max_x + NODE_SIZE.x * 0.5, max_y + (NODE_SIZE.y if _focused() else ORB.y))
 	_canvas.size = _canvas.custom_minimum_size
 	_apply_transform()
 
@@ -618,8 +692,10 @@ func _fit_default_zoom() -> void:
 	# and let players drag down for the rest instead of cutting a card at the rail.
 	var target := FOCUSED_ZOOM if _branch_filter != "" else GRAPH_ZOOM
 	if _branch_filter == "":
-		target = minf(target, maxf(0.62, (_viewport.size.x - 36.0) / maxf(1.0, _canvas.size.x)))
-	_zoom = clampf(target, 0.52, 1.16)
+		# The whole sky in view, as large as the window allows.
+		var fit := minf((_viewport.size.x - 36.0) / maxf(1.0, _canvas.size.x), (_viewport.size.y - 24.0) / maxf(1.0, _canvas.size.y))
+		target = clampf(fit, 0.45, 0.9)
+	_zoom = clampf(target, 0.45, 1.16)
 	_apply_transform()
 
 func _apply_transform() -> void:
@@ -635,7 +711,7 @@ func _apply_transform() -> void:
 
 func _set_zoom(z: float) -> void:
 	Sfx.play("select")
-	_zoom = clampf(z, 0.52, 1.16)
+	_zoom = clampf(z, 0.45, 1.16)
 	_apply_transform()
 
 func _recenter_view() -> void:
@@ -814,13 +890,15 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 				top = p2
 		var title: String = String(br).to_upper()
 		# Sized to reach the eye at about 18 px on a laptop window.
-		var tfs := 34
+		# The overview is drawn smaller, so its headings are set larger.
+		var big := 1.0 if _focused() else 1.45
+		var tfs := roundi(34 * big)
 		var tw2 := _title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x
 		# Readable over the night sky: a dark outline under a brighter name,
 		# lifted clear of the first star's selection rings.
 		# Centred over its path, with the count on its own line beneath (side
 		# by side, the longer names ran into the next path's heading).
-		var title_pos := Vector2(top.x - tw2 * 0.5, top_line - 100.0)
+		var title_pos := Vector2(top.x - tw2 * 0.5, top_line - 100.0 * big)
 		# A finished path wears its name in gold, haloed and breathing.
 		var finished: bool = int(progress.get(br, [0, 1])[0]) >= int(progress.get(br, [0, 1])[1])
 		if finished:
@@ -834,12 +912,13 @@ func _draw_constellation(canvas: CanvasItem) -> void:
 		var frac := float(pr[0]) / maxf(1.0, float(pr[1]))
 		var count := "%d / %d" % [pr[0], pr[1]]
 		var body := ThemeDB.fallback_font
-		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
-		var count_pos := Vector2(top.x - cw * 0.5, top_line - 66.0)
-		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, 6, Color(0.01, 0.015, 0.03, 0.9))
-		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 24, Color(PAPER, 0.92))
+		var cfs := roundi(24 * big)
+		var cw := body.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, cfs).x
+		var count_pos := Vector2(top.x - cw * 0.5, top_line - 66.0 * big)
+		canvas.draw_string_outline(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, cfs, 6, Color(0.01, 0.015, 0.03, 0.9))
+		canvas.draw_string(body, count_pos, count, HORIZONTAL_ALIGNMENT_LEFT, -1.0, cfs, Color(PAPER, 0.92))
 		var bar_w := maxf(cw + 40.0, tw2 * 0.7)
-		var bar := Rect2(top.x - bar_w * 0.5, top_line - 58.0, bar_w, 4.0)
+		var bar := Rect2(top.x - bar_w * 0.5, top_line - 58.0 * big, bar_w, 4.0)
 		canvas.draw_rect(bar, Color(0.01, 0.015, 0.03, 0.85))
 		canvas.draw_rect(Rect2(bar.position, Vector2(bar_w * frac, 4.0)), Color(bc.lightened(0.3), 0.95))
 	# Links: faint for locked, bright for open paths, with motes of light
@@ -901,6 +980,51 @@ func _draw_layer(canvas: CanvasItem, pass_name: String) -> void:
 			_draw_plates(canvas)
 		"fx":
 			_draw_fx(canvas)
+		"tag":
+			_draw_name_tag(canvas)
+
+## The overview names no stars, so the one under the pointer gets a card
+## over it: its name and cost, sized to read about 18 px on a laptop.
+func _draw_name_tag(canvas: CanvasItem) -> void:
+	if _focused() or _hovered_id == "":
+		return
+	var n := _find_node(_hovered_id)
+	if n.is_empty() or not _is_visible_node(n):
+		return
+	var z := maxf(0.3, _zoom)
+	var fs := roundi(25.0 / z)
+	var cs := roundi(19.0 / z)
+	var font := _name_font()
+	var title := str(n.get("name", ""))
+	var state := _node_state(n)
+	var sub := "OWNED" if state == "UNLOCKED" else "%d SP  ·  %s" % [int(n.get("cost", 1)), _node_tag(n)]
+	var tw := maxf(font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x, ThemeDB.fallback_font.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, cs).x)
+	var pad := 14.0 / z
+	var h := font.get_height(fs) + ThemeDB.fallback_font.get_height(cs) + pad * 1.4
+	var c := _orb_center(n)
+	var box := Rect2(c.x - tw * 0.5 - pad, c.y - ORB.y * 0.62 - h - 8.0 / z, tw + pad * 2.0, h)
+	# Kept inside the visible sky (a star at the edge had its card cut).
+	var view := Rect2(-_canvas.position / z, _viewport.size / z).grow(-6.0 / z)
+	box.position.x = clampf(box.position.x, view.position.x, maxf(view.position.x, view.end.x - box.size.x))
+	if box.position.y < view.position.y:
+		box.position.y = c.y + ORB.y * 0.62 + 8.0 / z
+	var shift := box.get_center().x - c.x
+	var bc := _branch_color(str(n.get("branch", "")))
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.03, 0.035, 0.06, 0.96)
+	plate.border_color = Color(GOLD, 0.9)
+	plate.set_border_width_all(maxi(1, roundi(2.0 / z)))
+	plate.border_width_top = maxi(2, roundi(3.0 / z))
+	plate.set_corner_radius_all(roundi(6.0 / z))
+	plate.shadow_color = Color(0, 0, 0, 0.6)
+	plate.shadow_size = roundi(10.0 / z)
+	canvas.draw_style_box(plate, box)
+	canvas.draw_line(Vector2(box.position.x + pad, box.position.y + plate.border_width_top + 1.0), Vector2(box.end.x - pad, box.position.y + plate.border_width_top + 1.0), Color(bc, 0.7), 2.0 / z)
+	var ty := box.position.y + pad * 0.6 + font.get_ascent(fs)
+	c.x += shift
+	canvas.draw_string(font, Vector2(c.x - font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x * 0.5, ty), title, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs, PAPER)
+	var sub_col := GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
+	canvas.draw_string(ThemeDB.fallback_font, Vector2(c.x - ThemeDB.fallback_font.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, cs).x * 0.5, ty + font.get_descent(fs) + ThemeDB.fallback_font.get_ascent(cs) + 2.0 / z), sub, HORIZONTAL_ALIGNMENT_LEFT, -1.0, cs, sub_col)
 
 ## Added light under the stars: each path's nebula burns brighter the more of
 ## it you own, owned stars bloom with a slow four-point flare, stars ready to
@@ -1004,6 +1128,8 @@ func _draw_plates(canvas: CanvasItem) -> void:
 			canvas.draw_arc(sc2, rr2 + 7.0, a5, a5 + 0.8, 14, Color(GOLD_BRIGHT, 0.45), 1.4, true)
 	# A soft pool of shadow behind each name (it was a hard dark box, and the
 	# whole sky read as a grid of them) keeps the nebulae from washing it out.
+	if not _focused():
+		return
 	for n in _nodes:
 		var nid := str(n.get("id", ""))
 		if not _node_buttons.has(nid) or not _is_visible_node(n):
@@ -1051,34 +1177,38 @@ func _draw_fx(canvas: CanvasItem) -> void:
 			var a := q * TAU / 12.0 + float(b["t"])
 			canvas.draw_circle(bp + Vector2(cos(a), sin(a)) * (26.0 + age * 110.0), 2.5 * (1.0 - age) + 0.5, Color(bcol.lightened(0.3), 1.0 - age))
 
-## The road between two stars, from under the upper star's name to the rim
-## of the lower star's orb, so it never runs through a name.
+## The road between two stars: out of the bottom of the upper star (below
+## its name, when names are shown), then one smooth S down into the top of
+## the lower star. Rows are level and forks stand side by side, so a road
+## never passes behind another star or its name.
 func _link_path(required: Dictionary, n: Dictionary) -> PackedVector2Array:
 	var from := _orb_center(required)
 	var to := _orb_center(n)
-	if absf(to.x - from.x) > NODE_SIZE.x * 0.6:
-		# Far to the side (a focused path zigzags): out of the star's side,
-		# level until clear of its name, then down into the top of the next.
-		var start := from + Vector2(signf(to.x - from.x) * (ORB.x * 0.5 + 4.0), 0.0)
-		var finish := to - Vector2(0.0, ORB.y * 0.5 + 4.0)
-		var first := start + Vector2((finish.x - start.x) * 0.75, 0.0)
-		var second := finish - Vector2(0.0, absf(finish.y - start.y) * 0.6)
-		var points := PackedVector2Array()
-		for step in range(21):
-			var t := float(step) / 20.0
-			var u := 1.0 - t
-			points.append(start * u * u * u + first * 3.0 * u * u * t + second * 3.0 * u * t * t + finish * t * t * t)
-		return points
-	if to.y > from.y + ORB.y:
+	from.y += ORB.y * 0.5 - 2.0
+	if _focused():
 		var b: Button = _node_buttons.get(str(required.get("id", "")))
 		var text_h: float = float(b.get_meta("text_h")) if is_instance_valid(b) and b.has_meta("text_h") else 60.0
-		from.y += ORB.y * 0.5 - 4.0 + text_h + 4.0
-		to.y -= ORB.y * 0.5 + 2.0
-	return _constellation_link(from, to)
+		from.y += text_h + 6.0
+	to.y -= ORB.y * 0.5 - 2.0
+	var points := PackedVector2Array()
+	if absf(to.x - from.x) < 1.0:
+		for step in range(9):
+			points.append(from.lerp(to, float(step) / 8.0))
+		return points
+	var pull := (to.y - from.y) * 0.62
+	var c1 := from + Vector2(0.0, pull)
+	var c2 := to - Vector2(0.0, pull)
+	for step in range(25):
+		var t := float(step) / 24.0
+		var u := 1.0 - t
+		points.append(from * u * u * u + c1 * 3.0 * u * u * t + c2 * 3.0 * u * t * t + to * t * t * t)
+	return points
 
 ## Where each visible star's name and cost are written, a little grown.
 func _label_rects() -> Array:
 	var rects: Array = []
+	if not _focused():
+		return rects
 	for n in _nodes:
 		var nid := str(n.get("id", ""))
 		if not _node_buttons.has(nid) or not _is_visible_node(n):
@@ -1229,6 +1359,15 @@ func _refresh_nodes() -> void:
 		cost_label.modulate = GOLD_BRIGHT if state == "PURCHASABLE" else MINT if state == "UNLOCKED" else MUTED
 		var name_label: Label = b.get_child(1) as Label
 		name_label.modulate = Color(1, 1, 1, 1) if state != "PREREQUISITE_BLOCKED" else Color(0.86, 0.88, 0.94, 0.96)
+		# Names are written under the stars of a focused path; the overview
+		# shows the stars alone and a card for the one under the pointer.
+		name_label.visible = _focused()
+		cost_label.visible = _focused()
+		b.set_meta("text_h", float(b.get_meta("text_full_h")) if _focused() else 0.0)
+		# In the overview a star is just its orb, so its middle is the orb.
+		var box := NODE_SIZE if _focused() else Vector2(NODE_SIZE.x, ORB.y)
+		b.custom_minimum_size = box
+		b.size = box
 		if id == _selected_id:
 			name_label.add_theme_color_override("font_color", GOLD_BRIGHT)
 		else:
@@ -1290,8 +1429,7 @@ func _skill_glyph_texture(n: Dictionary) -> Texture2D:
 	var id := str(n.get("id", ""))
 	if _glyph_texture_cache.has(id):
 		return _glyph_texture_cache[id]
-	var path := str(GLYPH_TEXTURES.get(id, ""))
-	var texture: Texture2D = load(path) if path != "" and ResourceLoader.exists(path) else null
+	var texture: Texture2D = SkillIcons.texture_for(id, 128)
 	_glyph_texture_cache[id] = texture
 	return texture
 
