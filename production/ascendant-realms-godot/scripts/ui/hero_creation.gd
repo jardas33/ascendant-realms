@@ -54,6 +54,8 @@ var _preview_model: Node3D
 var _preview_cam: Camera3D
 var _dais_ring: MeshInstance3D
 var _dais_ring_mat: StandardMaterial3D
+## The halo of the people's colour behind the hero (plan 339).
+var _halo: TextureRect
 var _preview_anim: AnimationPlayer
 var _preview_title: Label
 
@@ -389,12 +391,38 @@ func _build() -> void:
 	_preview_title.add_theme_constant_override("outline_size", 3)
 	preview_v.add_child(_preview_title)
 
+	# The stage: a soft halo of the people's colour behind the hero, so the
+	# figure stands in a lit space and not on a flat panel (plan 339).
+	var stage := Control.new()
+	stage.custom_minimum_size = Vector2(400, 620)
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview_v.add_child(stage)
+	_halo = TextureRect.new()
+	var halo_grad := Gradient.new()
+	halo_grad.offsets = PackedFloat32Array([0.0, 0.35, 1.0])
+	halo_grad.colors = PackedColorArray([Color(1, 1, 1, 0.80), Color(1, 1, 1, 0.34), Color(1, 1, 1, 0.0)])
+	var halo_tex := GradientTexture2D.new()
+	halo_tex.gradient = halo_grad
+	halo_tex.fill = GradientTexture2D.FILL_RADIAL
+	halo_tex.fill_from = Vector2(0.5, 0.5)
+	halo_tex.fill_to = Vector2(0.5, 0.0)
+	halo_tex.width = 256
+	halo_tex.height = 256
+	_halo.texture = halo_tex
+	_halo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_halo.stretch_mode = TextureRect.STRETCH_SCALE
+	_halo.anchor_left = 0.0
+	_halo.anchor_right = 1.0
+	_halo.anchor_top = 0.08
+	_halo.anchor_bottom = 0.86
+	_halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stage.add_child(_halo)
 	_preview_container = SubViewportContainer.new()
 	_preview_container.stretch = true
-	_preview_container.custom_minimum_size = Vector2(400, 620)
-	_preview_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_preview_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	preview_v.add_child(_preview_container)
+	_preview_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stage.add_child(_preview_container)
 
 	_preview_viewport = SubViewport.new()
 	_preview_viewport.size = Vector2i(400, 620)
@@ -417,7 +445,9 @@ func _build() -> void:
 	# Environment — ambient + sky color so model is readable
 	var env_node := WorldEnvironment.new()
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
+	# Clear, not a colour: the viewport is transparent so the halo and the
+	# panel behind it show through (a colour background hid both).
+	env.background_mode = Environment.BG_CLEAR_COLOR
 	env.background_color = Color(0.07, 0.08, 0.12)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.55, 0.58, 0.75)
@@ -445,19 +475,57 @@ func _build() -> void:
 
 	# A stone dais under the hero, ringed with a glowing band of Lume in the
 	# faction's colour, and a warm rim light from behind.
-	var dais := MeshInstance3D.new()
-	var dm := CylinderMesh.new()
-	dm.top_radius = 0.56
-	dm.bottom_radius = 0.64
-	dm.height = 0.16
-	dm.radial_segments = 40
-	dais.mesh = dm
+	# A pool of shadow lies round the dais (the halo behind the hero is
+	# drawn in 2D under the viewport: a glow inside a transparent viewport
+	# either boxed itself or vanished).
+	var pool := MeshInstance3D.new()
+	var pm := PlaneMesh.new()
+	pm.size = Vector2(2.6, 2.6)
+	pool.mesh = pm
+	var pool_mat := ShaderMaterial.new()
+	var pool_shader := Shader.new()
+	pool_shader.code = """shader_type spatial;
+render_mode unshaded, depth_draw_never;
+void fragment() {
+	float r = length(UV - vec2(0.5));
+	ALBEDO = vec3(0.0);
+	ALPHA = smoothstep(0.5, 0.18, r) * 0.6;
+}"""
+	pool_mat.shader = pool_shader
+	pool.material_override = pool_mat
+	pool.position = Vector3(0, -0.159, 0)
+	_preview_viewport.add_child(pool)
+	# The dais: a carved two-step plinth of warm grey stone with a bronze
+	# lip, rather than one dark disc.
 	var stone := StandardMaterial3D.new()
-	stone.albedo_color = Color(0.09, 0.085, 0.08)
-	stone.roughness = 0.9
-	dais.material_override = stone
-	dais.position = Vector3(0, -0.08, 0)
-	_preview_viewport.add_child(dais)
+	stone.albedo_color = Color(0.17, 0.16, 0.15)
+	stone.roughness = 0.95
+	stone.metallic_specular = 0.1
+	for step in [[0.70, 0.76, 0.08, -0.12], [0.56, 0.62, 0.10, -0.05]]:
+		var slab := MeshInstance3D.new()
+		var sm := CylinderMesh.new()
+		sm.top_radius = step[0]
+		sm.bottom_radius = step[1]
+		sm.height = step[2]
+		sm.radial_segments = 48
+		slab.mesh = sm
+		slab.material_override = stone
+		slab.position = Vector3(0, step[3], 0)
+		_preview_viewport.add_child(slab)
+	var lip := MeshInstance3D.new()
+	var lm := TorusMesh.new()
+	lm.inner_radius = 0.685
+	lm.outer_radius = 0.715
+	lm.rings = 48
+	lm.ring_segments = 6
+	lip.mesh = lm
+	var bronze := StandardMaterial3D.new()
+	bronze.albedo_color = Color(0.72, 0.52, 0.26)
+	bronze.metallic = 0.85
+	bronze.roughness = 0.35
+	lip.material_override = bronze
+	lip.position = Vector3(0, -0.08, 0)
+	_preview_viewport.add_child(lip)
 	_dais_ring = MeshInstance3D.new()
 	var rm := TorusMesh.new()
 	rm.inner_radius = 0.57
@@ -469,7 +537,7 @@ func _build() -> void:
 	_dais_ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_dais_ring_mat.albedo_color = Color(1.0, 0.8, 0.4)
 	_dais_ring.material_override = _dais_ring_mat
-	_dais_ring.position = Vector3(0, 0.01, 0)
+	_dais_ring.position = Vector3(0, 0.0, 0)
 	_preview_viewport.add_child(_dais_ring)
 	var rim := OmniLight3D.new()
 	rim.light_color = Color(1.0, 0.8, 0.5)
@@ -548,6 +616,8 @@ func _refresh_race() -> void:
 	# The dais ring takes the chosen faction's colour.
 	if _dais_ring_mat != null:
 		_dais_ring_mat.albedo_color = Color(GameData.RACES.get(_race_id, {}).get("color", Color(1.0, 0.8, 0.4))).lightened(0.25)
+	if is_instance_valid(_halo):
+		_halo.modulate = Color(GameData.RACES.get(_race_id, {}).get("color", Color(1.0, 0.8, 0.4))).lightened(0.15)
 	for rid in _race_buttons:
 		_race_buttons[rid].button_pressed = (rid == _race_id)
 	var rd: Dictionary = GameData.RACES.get(_race_id, {})
