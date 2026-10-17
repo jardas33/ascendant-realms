@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 334 (done): a building's orders say only what it does**
+  - Every building's order deck said "Production and research" with the hints "RMB RALLY · CLICK TRAIN / RESEARCH", even a research hall like the Ledger Stone that trains nobody and has nothing to rally.
+  - The line under the name now says Training, Research or Training and research (houses: "Houses your people"), and the hints match: a research hall says "ARMY-WIDE UPGRADES · CLICK RESEARCH", a barracks "RMB RALLY · CLICK TRAIN".
+  - Full regression: 111 of 111 checks passed (1089 s), save untouched.
 - **Plan 333 (done): a selected tower shows what it hits for**
   - A selected tower showed only its health, so there was no way to compare a Watchtower with a Rift Obelisk or see what an enemy tower would do to your army.
   - Towers (yours and the enemy's) now carry three chips like a soldier's card: damage (with your tower upgrades), how often they fire, and their range.

@@ -3687,7 +3687,11 @@ func _add_command_context(single, selection: Array) -> void:
 	elif single != null and single is Building:
 		title = String(single.def.get("name", "Building"))
 		role = "BUILDING" if single.is_built else "BUILD SITE"
-		subtitle = ("Workers inside gather in safety" if bool(single.def.get("vein_outpost", false)) else "Production and research") if single.is_built else "Construction underway"
+		var trains: bool = not single.def.get("produces", []).is_empty()
+		var studies: bool = not single.def.get("research", []).is_empty() or bool(single.def.get("is_hq", false)) or String(single.def.get("kind", "")) == "main"
+		var idle_work := "Houses your people" if String(single.def.get("kind", "")) == "house" else ("Guards the ground around it" if single.def.has("tower_dmg") else "Ready")
+		var work := "Training and research" if trains and studies else ("Research" if studies else ("Training" if trains else idle_work))
+		subtitle = ("Workers inside gather in safety" if bool(single.def.get("vein_outpost", false)) else work) if single.is_built else "Construction underway"
 		accent = COMMAND_GOLD
 	elif not selection.is_empty():
 		title = "%d UNITS SELECTED" % selection.size()
@@ -4024,12 +4028,17 @@ func _build_building_card(b) -> void:
 		)
 		return
 	var def: Dictionary = b.def
-	if bool(def.get("vein_outpost", false)):
-		_add_context_hints(["RMB WORKERS  SEND IN", "EXPAND  MORE OUTPUT"])
-	else:
-		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var produces: Array = def.get("produces", [])
 	var research: Array = GameData.research_for(def, String(_commander.race)) if is_instance_valid(_commander) else def.get("research", [])
+	# Say only what this building does: a research hall has no troops to rally.
+	if bool(def.get("vein_outpost", false)):
+		_add_context_hints(["RMB WORKERS  SEND IN", "EXPAND  MORE OUTPUT"])
+	elif produces.is_empty() and not research.is_empty():
+		_add_context_hints(["ARMY-WIDE  UPGRADES", "CLICK  RESEARCH"])
+	elif research.is_empty() and not produces.is_empty():
+		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN"])
+	else:
+		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
 	var is_hq: bool = def.get("is_hq", false) or def.get("kind", "") == "main"
 
 	# Vein outpost: who works inside, what it pays, and how to grow it.
