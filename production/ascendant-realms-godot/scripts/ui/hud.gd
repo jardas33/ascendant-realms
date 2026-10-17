@@ -3017,7 +3017,8 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	if is_instance_valid(_sel_panel):
 		# 190: the queue line under the status ("Idle") was cut by the frame at 176.
 		# A site carries a progress line and its bar under the dossier.
-		_sel_panel.custom_minimum_size.y = 218.0 if not b.is_built else 190.0
+		# A tower's damage, rate and range chips need one more row.
+		_sel_panel.custom_minimum_size.y = 218.0 if not b.is_built else (238.0 if b.def.has("tower_dmg") else 190.0)
 	if not read_only and b.has_signal("construction_completed"):
 		b.construction_completed.connect(_on_tracked_building_construction_completed)
 		_watched_construction_building = b
@@ -3076,6 +3077,17 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	if read_only:
 		_single_stat_label = _mk_label("Hostile · Built structure", 15, Color(0.88, 0.85, 0.75))
 		identity_info.add_child(_single_stat_label)
+	# A tower shows what it hits for, how often and how far, like a soldier's
+	# card: before, a selected tower showed only its health.
+	if b.is_built and b.def.has("tower_dmg"):
+		var tower_bonus := float(b.commander.build_flags.get("tower_dmg", 0.0)) if b.commander and "build_flags" in b.commander else 0.0
+		var tower_row := HBoxContainer.new()
+		tower_row.add_theme_constant_override("separation", 4)
+		tower_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_add_stat_chip(tower_row, "DMG", _compact_combat_stat(float(b.def.get("tower_dmg", 20)) * (1.0 + tower_bonus)), "dmg", building_badge_color)
+		_add_stat_chip(tower_row, "EVERY", "%.1fs" % float(b.def.get("tower_cd", 1.2)), "rate", building_badge_color)
+		_add_stat_chip(tower_row, "RNG", "%d" % roundi(float(b.def.get("tower_range", 18.0))), "range", building_badge_color)
+		identity_info.add_child(tower_row)
 
 	if not read_only and not b.is_built:
 		var pb := _mk_bar(Color(0.85, 0.7, 0.3))
