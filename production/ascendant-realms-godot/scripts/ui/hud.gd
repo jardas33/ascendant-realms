@@ -3875,12 +3875,12 @@ func _build_hero_command_card(u) -> void:
 			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
 			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
-			var ability_emblem := "rally" if cap_id == "rally" else ""
+			var ability_emblem := ""
 			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana %d · cooldown %d s" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, int(round(cooldown))], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
 			btn.disabled = not ready
 			# People and signature spells wear their own emblem: the people's
 			# sigil in the spell's colour, marked by what the spell does.
-			if ab.has("tint") or bool(ab.get("sig", false)):
+			if ab.has("tint") or bool(ab.get("sig", false)) or SIGNATURE_GLYPHS.has(cap_id):
 				btn.add_child(_spell_emblem(ab, String(u.commander.race) if u.commander else "", String(cap_id)))
 			var cap_u = u
 			var aimed: bool = cap_id in ["root", "bolt", "charge"] or (float(ab.get("range", 0.0)) > 0.0 and String(ab.get("use", "enemy")) == "enemy" and (ab.has("fx") or bool(ab.get("sig", false))) and not cap_id in ["sig_chains", "sig_stoneskin", "sig_entrudo"])
@@ -5135,7 +5135,11 @@ func _make_metric_clickable(surface: Control, method: String, tip: String) -> vo
 ## Signature spells are written in code, so their emblem glyph is named here.
 const SIGNATURE_GLYPHS := {"sig_bull": "line", "sig_spring": "heal", "sig_ashglass": "rain", "sig_chains": "fury",
 	"sig_moura": "stun", "sig_stoneskin": "ward", "sig_sunfire": "strike", "sig_pack": "summon",
-	"sig_candles": "summon", "sig_entrudo": "flee"}
+	"sig_candles": "summon", "sig_entrudo": "flee",
+	# The hero's own skill-tree spells: one painted Rallying Cry beside drawn
+	# people emblems read as two different games on one card.
+	"rally": "heal", "slam": "quake", "charge": "dash", "bolt": "strike",
+	"heal": "heal", "root": "root", "avatar": "fury"}
 
 func _spell_emblem(ab: Dictionary, race: String, spell_id: String = "") -> Control:
 	var e := Control.new()
