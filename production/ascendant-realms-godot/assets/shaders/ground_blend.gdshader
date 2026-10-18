@@ -420,15 +420,33 @@ void fragment() {
 		for (int i = 0; i < field_seat_count; i++) {
 			keep *= smoothstep(24.0, 40.0, distance(wxz, field_seats[i]));
 		}
+		// Plan 370: the rest of the field was one flat rust sheet. Black
+		// basalt flows and pale ash beds now break it up.
+		float basalt = smoothstep(0.54, 0.58, fbm2(wxz * 0.019 + 201.0) + (fbm(wxz * 0.21 + 8.0) - 0.5) * 0.14) * keep;
+		float ash_bed = smoothstep(0.60, 0.64, fbm2(wxz * 0.016 + 77.0) + (fbm(wxz * 0.3 + 14.0) - 0.5) * 0.12 - 0.02) * keep * (1.0 - basalt);
+		vec3 basalt_col = vec3(0.085, 0.08, 0.09) * (0.7 + 0.6 * fbm(wxz * 0.9 + 33.0)) * (0.85 + 0.3 * smoothstep(0.3, 0.7, fbm(vec2(wxz.x * 0.5, wxz.y * 0.12) + 50.0))) * (1.0 - 0.3 * (1.0 - smoothstep(0.0, 0.05, crack_dist(wxz * 0.38 + 61.0))));
+		ground = mix(ground, basalt_col, basalt * 0.9);
+		vec3 ash_col = vec3(0.29, 0.29, 0.30) * (0.8 + 0.35 * fbm(wxz * 0.7 + 21.0)) * (0.9 + 0.1 * sin(dot(wxz, vec2(0.9, 0.5)) * 3.0 + fbm(wxz * 0.4) * 6.0));
+		ground = mix(ground, mix(ground, ash_col, 0.75), ash_bed);
 		float band = smoothstep(0.64, 0.78, fbm2(wxz * 0.011 + 113.0)) * keep;
 		if (band > 0.001) {
-			float seam = 1.0 - smoothstep(0.0, 0.05, crack_dist(wxz * 0.13 + 17.0));
+			// (Plan 370: the seams were straight cell edges of even width,
+			// like lines drawn with a ruler. They wander and swell now, and
+			// warm the rock beside them.)
+			vec2 cp = wxz * 0.13 + 17.0 + (vec2(fbm(wxz * 0.045 + 3.0), fbm(wxz * 0.045 + 9.0)) - 0.5) * 1.4;
+			float cd = crack_dist(cp);
+			float width = 0.025 + 0.05 * smoothstep(0.35, 0.75, fbm(wxz * 0.07 + 41.0));
+			float seam = 1.0 - smoothstep(0.0, width, cd);
+			float halo = 1.0 - smoothstep(width, width + 0.2, cd);
 			float fine = 1.0 - smoothstep(0.0, 0.035, crack_dist(wxz * 0.55 + 5.0));
 			// Plates darken toward the seams; the seams themselves burn.
 			ground *= 1.0 - band * (0.35 * seam + 0.15 * fine);
 			float heat = band * seam * smoothstep(0.45, 0.7, fbm(wxz * 0.08 + 2.0));
 			float pulse = 0.75 + 0.25 * sin(TIME * 0.9 + fbm(wxz * 0.05) * 9.0);
 			lava_glow = vec3(0.85, 0.20, 0.03) * heat * pulse;
+			float warm = band * halo * smoothstep(0.45, 0.7, fbm(wxz * 0.08 + 2.0));
+			lava_glow += vec3(0.30, 0.06, 0.01) * warm * (1.0 - seam) * pulse;
+			ground = mix(ground, ground * vec3(0.55, 0.42, 0.38), warm * 0.5);
 			ground = mix(ground, vec3(0.22, 0.05, 0.015), clamp(heat, 0.0, 1.0) * 0.8);
 		}
 	}
