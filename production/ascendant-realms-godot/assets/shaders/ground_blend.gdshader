@@ -350,6 +350,16 @@ void fragment() {
 		lip *= smoothstep(0.35, 0.65, fbm(wxz * 0.18 + 21.0));
 		vec3 bed = mix(wet, sand, lip * 0.6);
 		ground = mix(ground, bed, bank * ford.z);
+		// Plan 374: under the water the meadow went on, grass and flowers
+		// and all, seen through the shallows. The bed is silt and pebbles,
+		// darker toward the deep middle.
+		float under = 1.0 - smoothstep(ford.y * 0.5, ford.y * 0.72, dz);
+		vec3 silt = texture(tex_dirt, rot * wxz * tile_dirt * 0.8 + 0.3).rgb * vec3(0.52, 0.48, 0.38);
+		float pebble = smoothstep(0.55, 0.72, fbm(wxz * 1.7 + 5.0)) * (0.5 + 0.5 * smoothstep(0.4, 0.7, fbm(wxz * 0.15 + 30.0))) * (1.0 - smoothstep(ford.y * 0.3, ford.y * 0.55, dz));
+		vec3 stones = texture(tex_rock, wxz * tile_rock * 3.0).rgb;
+		stones = mix(vec3(dot(stones, vec3(0.299, 0.587, 0.114))), stones, 0.35) * vec3(0.60, 0.60, 0.57);
+		vec3 riverbed = mix(silt, stones, pebble * 0.7) * mix(1.0, 0.6, 1.0 - smoothstep(0.0, ford.y * 0.6, dz));
+		ground = mix(ground, riverbed, under * ford.z);
 	}
 	for (int i = 0; i < scorch_count; i++) {
 		float d = length(wxz - scorch_zones[i].xy) / max(scorch_zones[i].z, 0.1);
