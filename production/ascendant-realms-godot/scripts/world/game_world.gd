@@ -1015,7 +1015,9 @@ func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF
 ## turf and trees are toned to the ground they stand on.
 func _scorched_tone(what: String) -> Color:
 	var tones: Dictionary = {
-		"volcanic": {"rock": Color(0.62, 0.40, 0.35), "turf": Color(0.34, 0.25, 0.23), "tree": Color(0.50, 0.38, 0.30)},
+		# Plan 352: volcanic crags were the brown of the ground, soft clay
+		# lumps. They are dark basalt now, standing out of the red ash.
+		"volcanic": {"rock": Color(0.50, 0.46, 0.46), "turf": Color(0.34, 0.25, 0.23), "tree": Color(0.50, 0.38, 0.30)},
 		"ashen": {"rock": Color(0.62, 0.56, 0.62), "turf": Color(0.27, 0.255, 0.28), "tree": Color(0.52, 0.48, 0.50)},
 		# Under snow: cold rock with the moss greyed, white hills, frosted trees.
 		# Sand country: pale rock, dunes for hills, dry scrub for trees.
@@ -2968,10 +2970,26 @@ func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> 
 	# on scorched, snowbound and sand maps the texture itself is greyed first.
 	if tint != Color.WHITE and copy.albedo_texture != null and _scorched_tone("rock") != Color.WHITE and (str(map.get("theme", "")) != "autumn" or tint == _scorched_tone("rock")):
 		copy.albedo_texture = _greyed_texture(copy.albedo_texture)
+	if str(map.get("theme", "")) == "volcanic" and tint == _scorched_tone("rock"):
+		# Plan 352: greyed moss still sat on every column as a dark cap. The two
+		# ridge rocks have baked basalt copies of their textures, moss taken
+		# out (tools/basalt_bake.py at the repository root).
+		for rock_name in BASALT_TEXTURES:
+			if standard.resource_path.contains(rock_name) and ResourceLoader.exists(BASALT_TEXTURES[rock_name]):
+				copy.albedo_texture = load(BASALT_TEXTURES[rock_name])
+		# Dark basalt went to one black mass; a warm rim from the fire-lit air
+		# picks out every column.
+		copy.rim_enabled = true
+		copy.rim = 0.55
+		copy.rim_tint = 0.75
 	_decor_material_cache[key] = copy
 	return copy
 
 var _greyed_textures: Dictionary = {}
+const BASALT_TEXTURES := {
+	"highland_rock_cluster": "res://assets/environment/rocks/basalt_highland_rock_cluster.png",
+	"mossy_boulder": "res://assets/environment/rocks/basalt_mossy_boulder.png",
+}
 
 func _greyed_texture(texture: Texture2D) -> Texture2D:
 	if _greyed_textures.has(texture):
