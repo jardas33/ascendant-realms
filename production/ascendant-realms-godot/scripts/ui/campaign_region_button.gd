@@ -76,16 +76,22 @@ func _draw() -> void:
 	var ry := RIBBON_Y
 	var rh := ribbon_h
 	var inset := 18.0
-	var parch_hi := Color(0.86, 0.78, 0.60) if route_open or route_cleared else Color(0.56, 0.57, 0.60)
-	var parch_lo := parch_hi.darkened(0.28)
+	# Sealed chapters hang on a dark iron plaque with light lettering: the old
+	# flat grey ribbon read as an unfinished placeholder on the painted map.
+	var lit_up := route_open or route_cleared
+	var parch_hi := Color(0.86, 0.78, 0.60) if lit_up else Color(0.25, 0.26, 0.30)
+	var parch_lo := parch_hi.darkened(0.28) if lit_up else Color(0.11, 0.12, 0.14)
 	var tail := 16.0
+	# A soft drop shadow lifts the ribbon off the map.
+	draw_rect(Rect2(inset - tail + 2.0, ry + 5.0, w - 2.0 * (inset - tail) - 4.0, rh + 6.0), Color(0, 0, 0, 0.28))
+	draw_rect(Rect2(inset - 2.0, ry + 2.0, w - 2.0 * inset + 4.0, rh + 3.0), Color(0, 0, 0, 0.30))
 	var left_tail := PackedVector2Array([Vector2(inset - tail, ry + 6), Vector2(inset + 6, ry + 6), Vector2(inset + 6, ry + rh + 6), Vector2(inset - tail, ry + rh + 6), Vector2(inset - tail + 8, ry + rh * 0.5 + 6)])
 	var right_tail := PackedVector2Array([Vector2(w - inset + tail, ry + 6), Vector2(w - inset - 6, ry + 6), Vector2(w - inset - 6, ry + rh + 6), Vector2(w - inset + tail, ry + rh + 6), Vector2(w - inset + tail - 8, ry + rh * 0.5 + 6)])
 	draw_colored_polygon(left_tail, parch_lo.darkened(0.2))
 	draw_colored_polygon(right_tail, parch_lo.darkened(0.2))
 	var band := PackedVector2Array([Vector2(inset, ry), Vector2(w - inset, ry), Vector2(w - inset, ry + rh), Vector2(inset, ry + rh)])
 	draw_polygon(band, PackedColorArray([parch_hi, parch_hi, parch_lo, parch_lo]))
-	var edge := Color(0.35, 0.24, 0.12, 0.9) if route_open or route_cleared else Color(0.22, 0.23, 0.26, 0.9)
+	var edge := Color(0.35, 0.24, 0.12, 0.9) if lit_up else Color(0.56, 0.59, 0.65, 0.85)
 	band.append(band[0])
 	draw_polyline(band, edge, 1.4, true)
 	draw_line(Vector2(inset + 5, ry + 4), Vector2(w - inset - 5, ry + 4), Color(edge, 0.35), 1.0, true)
@@ -128,13 +134,11 @@ func _draw() -> void:
 	var fs := 18 if not side_road else 14
 	var label := number
 	var tw := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var ink := Color(0.99, 0.92, 0.72) if route_open or route_cleared else Color(0.58, 0.62, 0.68)
-	draw_string(font, c + Vector2(-tw * 0.5, fs * 0.36), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, ink)
-	# Sealed: a chain across the seal.
-	if not route_open and not route_cleared:
-		for k in 5:
-			var p2 := c + Vector2(-r * 0.9 + k * r * 0.45, r * 0.38 - k * r * 0.19)
-			draw_arc(p2, 5.0, 0.0, TAU, 12, Color(0.55, 0.58, 0.63, 0.9), 2.0, true)
+	var ink := Color(0.99, 0.92, 0.72)
+	if route_open or route_cleared:
+		draw_string(font, c + Vector2(-tw * 0.5, fs * 0.36), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, ink)
+	else:
+		_draw_padlock(c, r)
 	# A buried jar lies here: a small clay jar badge.
 	if has_jar:
 		var jp := c + Vector2(r * 0.9, r * 0.55)
@@ -142,3 +146,34 @@ func _draw() -> void:
 		draw_circle(jp, 9.0, Color(0.05, 0.04, 0.03, 0.95))
 		draw_colored_polygon(PackedVector2Array([jp + Vector2(-4, -3), jp + Vector2(4, -3), jp + Vector2(5, 4), jp + Vector2(0, 7), jp + Vector2(-5, 4)]), jc)
 		draw_rect(Rect2(jp + Vector2(-2.5, -6), Vector2(5, 3)), jc.darkened(0.3))
+
+
+func _draw_padlock(c: Vector2, r: float) -> void:
+	# Sealed: a forged steel padlock stamped on the iron seal (it replaced a
+	# row of small rings that read as a broken line).
+	var steel_hi := Color(0.74, 0.77, 0.82)
+	var steel_lo := Color(0.30, 0.32, 0.37)
+	var dark := Color(0.03, 0.035, 0.045, 0.95)
+	var sc := c + Vector2(0.0, -r * 0.10)
+	var sr := r * 0.25
+	draw_arc(sc, sr, PI, TAU, 18, dark, 6.0, true)
+	draw_line(sc + Vector2(-sr, 0.0), sc + Vector2(-sr, r * 0.16), dark, 6.0, true)
+	draw_line(sc + Vector2(sr, 0.0), sc + Vector2(sr, r * 0.16), dark, 6.0, true)
+	draw_arc(sc, sr, PI, TAU, 18, steel_hi, 3.2, true)
+	draw_line(sc + Vector2(-sr, 0.0), sc + Vector2(-sr, r * 0.16), steel_hi, 3.2, true)
+	draw_line(sc + Vector2(sr, 0.0), sc + Vector2(sr, r * 0.16), steel_lo.lightened(0.2), 3.2, true)
+	var bw := r * 0.86
+	var bh := r * 0.62
+	var top := c.y + r * 0.02
+	var body := PackedVector2Array([Vector2(c.x - bw * 0.5, top), Vector2(c.x + bw * 0.5, top), Vector2(c.x + bw * 0.5, top + bh), Vector2(c.x - bw * 0.5, top + bh)])
+	var halo := PackedVector2Array()
+	for p in body:
+		halo.append(c + (p - c) * 1.0 + (p - Vector2(c.x, top + bh * 0.5)).normalized() * 2.0)
+	draw_colored_polygon(halo, dark)
+	draw_polygon(body, PackedColorArray([steel_hi, steel_hi, steel_lo, steel_lo]))
+	draw_line(Vector2(c.x - bw * 0.5 + 2.0, top + 2.0), Vector2(c.x + bw * 0.5 - 2.0, top + 2.0), Color(1, 1, 1, 0.45), 1.2, true)
+	draw_line(Vector2(c.x - bw * 0.5 + 2.0, top + bh * 0.52), Vector2(c.x + bw * 0.5 - 2.0, top + bh * 0.52), Color(0.0, 0.0, 0.0, 0.25), 1.0, true)
+	# The keyhole.
+	var kc := Vector2(c.x, top + bh * 0.40)
+	draw_circle(kc, r * 0.075, dark)
+	draw_colored_polygon(PackedVector2Array([kc + Vector2(-r * 0.045, 0.0), kc + Vector2(r * 0.045, 0.0), kc + Vector2(r * 0.07, r * 0.20), kc + Vector2(-r * 0.07, r * 0.20)]), dark)

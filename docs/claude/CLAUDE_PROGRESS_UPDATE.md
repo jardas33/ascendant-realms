@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 343 (done): the campaign map's locked chapters look finished**
+  - Locked chapters showed flat grey ribbons, a row of small rings for a chain, and roads drawn as a black cable with grey dots.
+  - Locked seals now carry a forged steel padlock, their names sit on dark iron plaques with light lettering, every ribbon casts a soft shadow, and locked roads are faded bronze dashes.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 342 (done): heroes wear a gilded nameplate**
   - In battle the hero title floated as bare text that blended into grass and roofs.
   - The title now sits on a dark plate with gold rules and diamond end caps, drawn once per hero (`_title_plate_texture`). Title and plate are lifted 64 px on screen so they never cover the hero's legs.

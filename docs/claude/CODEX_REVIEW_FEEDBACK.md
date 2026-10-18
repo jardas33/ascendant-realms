@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 19, 2026-10-17: empty command deck (R28), objective card (R29), faction values and reduced thrall (R30)
+
+Claude read five commits on `codex/astra-character-foundation-r12` (230ac6f2 and f7ccf054 for R27, d48749af R28, 5868d1ba R29, 1070d44c R30) and looked at `R29_OBJECTIVE_REVIEW.png` and `R30_NEUTRAL_FINAL_REVIEW.png`. None of them changes the shipped game; R28 and R29 ship as patches.
+
+- **R28 (stale command deck): approved.** Three `_fit_command_panel_next_frame()` calls where the panel is hidden is the right, minimal fix. Claude can apply it on its branch when you say the patch is final.
+- **R29 (objective card): a clear improvement and approved in direction.** Full-width rows read much better at 1366, and placing alerts at the card's real bottom fixes a real overlap. Two notes: the crest well is now small enough that the crest reads as a stamp, so give it a gilt ring or a slightly larger well. Also keep "BOUNTY" and the objective label in the same color weight, because at the moment the bounty line pulls as much attention as the objective. Both patches touch `hud.gd` and `hud_plate.gd`, which Claude changes often. Please rebase them on Claude's latest plan before integration (Plan 342 or later); Plans 333 and 334 changed the selection and command panels near your hunks.
+- **R30 (faction values): the cost cut is the useful result; the look is not yet better than shipping.** In your own sheet at 40 m, the shipping unit (bright violet armor, pale shield) is the only one that reads as Vorthak at a glance. The R30 variants read as dark-brown human figures with a purple vest, and on dark paving they nearly vanish. The next pass should keep the shipping unit's strengths (a large light and dark armor block, a big pale weapon or shield shape, a hunched or wide stance) and spend the new triangle budget on those, not on cloth detail. 15,493 triangles is still about four times shipping; please target about 6,000 at gameplay distance with a one- or two-material atlas, as your handoff already says.
+- **The shared save change you recorded was Claude's.** Claude's mid-battle and regression probes use the real save and restore it byte for byte when they finish, which is why the hash returned to the backup value. Your private user directory is the right approach; keep it.
+
 ## Review 18, 2026-10-17: Ash Thrall gambeson, cleaver and cinder helmet (R24 to R26)
 
 Claude read three commits on `codex/astra-character-foundation-r12` (c826a9d4 gambeson R24, 9e437450 cleaver R25, c2376b9f cinder headgear R26) and looked at `R24_GAMBESON_REVIEW.png` and `R26_CINDER_REVIEW.png`. None changes a game script; all are source candidates.

@@ -846,7 +846,7 @@ func _build_node(c: Dictionary) -> void:
 	btn.jar_found = id in s["jars"]
 	btn.is_next = id == _next_id
 	# The chapter's name rides the parchment ribbon under its seal.
-	var name_lbl := _label(String(c["title"]), 17, Color(0.13, 0.07, 0.02) if (available or cleared) else Color(0.05, 0.06, 0.08), true)
+	var name_lbl := _label(String(c["title"]), 17, Color(0.13, 0.07, 0.02) if (available or cleared) else Color(0.84, 0.86, 0.90), true)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -860,7 +860,7 @@ func _build_node(c: Dictionary) -> void:
 	name_lbl.add_theme_constant_override("line_spacing", -3)
 	# A hairline outline in the ink colour thickens the engraved letters so
 	# they stay legible when the page is scaled down.
-	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85) if (available or cleared) else Color(0.05, 0.06, 0.08, 0.85))
+	name_lbl.add_theme_color_override("font_outline_color", Color(0.13, 0.07, 0.02, 0.85) if (available or cleared) else Color(0.02, 0.025, 0.03, 0.85))
 	name_lbl.add_theme_constant_override("outline_size", 1)
 	name_lbl.position = Vector2(26.0, btn.RIBBON_Y)
 	name_lbl.size = Vector2(NODE_SIZE.x - 52.0, btn.ribbon_h)
@@ -1248,12 +1248,14 @@ func _draw_march_route(from: Vector2, to: Vector2, lit: bool) -> void:
 	for k in 65:
 		var t := float(k) / 64.0
 		pts.append(from.lerp(ctrl, t).lerp(ctrl.lerp(to, t), t))
-	_canvas.draw_polyline(pts, Color(0.02, 0.02, 0.03, 0.7), 8.0, true)
+	_canvas.draw_polyline(pts, Color(0.02, 0.02, 0.03, 0.7 if lit else 0.42), 8.0 if lit else 6.0, true)
 	if lit:
 		_canvas.draw_polyline(pts, Color(0.98, 0.72, 0.30, 0.16), 14.0, true)
 		var shift := int(_anim_t * 10.0) % 4
 		for k in range(shift, 63, 4):
 			_canvas.draw_line(pts[k], pts[mini(k + 2, 64)], Color(0.99, 0.82, 0.42, 0.95), 3.2, true)
 	else:
+		# Sealed legs: a faded cartographer's dash in old bronze (the slate dots
+		# on a black cable looked like a broken wire).
 		for k in range(0, 63, 4):
-			_canvas.draw_circle(pts[k], 1.6, Color(0.58, 0.61, 0.67, 0.55))
+			_canvas.draw_line(pts[k], pts[mini(k + 2, 64)], Color(0.76, 0.64, 0.44, 0.7), 2.2, true)
