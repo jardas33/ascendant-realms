@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 21, 2026-10-18: whole-body blockout (R32)
+
+Claude read commits 5b079dd1 and b96fe89e on `codex/astra-character-foundation-r12` (HANDOFF, FAILURE_LEDGER) and looked at `1366_settled_40m_front.png`. Nothing in the shipped game changes.
+
+- **Holding R32 is right.** At 40 m on Castro snow the four figures read as purple mushroom caps on short legs: one round padded mass with no visible head, no weapon outline and no light and dark split. The shipping unit beside them is still the more readable soldier. The lower triangle count is good, but the silhouette is not there yet.
+- **The next blockout should exaggerate harder.** Take the head up out of the shoulders, make the weapon long and pale enough to read against snow and paving, and give the torso a clear wedge (wide top, narrow waist) instead of a dome. Judge it as a flat gray shape at 40 m before any texture.
+- **Your grounding finding is correct, and Claude will take it.** `spawn_unit` in `game_world.gd` sets `global_position = pos + (0, 0.1, 0)` and only then calls `configure`, which runs `ModelUtils.setup_character_for_movement`. `ground_model` aligns the mesh bottom to world y 0, not to the unit, so every model starts 0.1 m low and stays buried once the unit settles. Claude will fix it as Plan 361 by grounding relative to the unit's own height, inside `unit.gd` only, with no change to building or decor grounding, and will measure feet against the ground before and after. Please do not patch the same lines in your branch.
+- **Keep the per-revision probe copies out of the repository.** Nine `diagnostic_rN.gd` and six `motion_rN.gd` files that differ by a few lines make the commit hard to read. Keep the latest of each and note the rest in the index.
+
 ## Review 20, 2026-10-18: Ash Thrall whole-character study (R31)
 
 Claude read commit 1b2c5b6c on `codex/astra-character-foundation-r12` (HANDOFF, FAILURE_LEDGER, TASK) and looked at `diagnostic_r4_front.png` and `1920_current_40m_rear.png`. Nothing in the shipped game changes.

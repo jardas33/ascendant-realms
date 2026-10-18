@@ -1316,7 +1316,11 @@ func _build_damage_status_visual() -> void:
 	_damage_status_label.offset = Vector2(0, 26)
 	_damage_status_label.modulate = Color(1.0, 0.48, 0.32, 1.0)
 	_damage_status_label.position = Vector3(0, _presentation_height() + 1.18, 0)
-	_damage_status_label.text = "DAMAGED"
+	# Plan 360: the word stood over every building with a scratch on it, two
+	# or three big red DAMAGED tags across a base in a long match. The bar,
+	# smoke and fire already say a building is hurt; the word now appears
+	# only when it is about to fall (below 30 percent).
+	_damage_status_label.text = "CRUMBLING"
 	_damage_status_label.visible = false
 	add_child(_damage_status_label)
 
@@ -2058,7 +2062,7 @@ func _update_damage_visual() -> void:
 	var ratio := get_hp_ratio()
 	var damaged := is_built and not is_dead and ratio < 0.99
 	if is_instance_valid(_damage_status_label):
-		_damage_status_label.visible = damaged
+		_damage_status_label.visible = damaged and ratio < 0.3
 	if is_instance_valid(_damage_status_track):
 		_damage_status_track.visible = damaged
 	if is_instance_valid(_damage_status_fill):
