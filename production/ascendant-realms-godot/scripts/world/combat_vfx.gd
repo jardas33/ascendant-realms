@@ -530,6 +530,54 @@ static func _char_material() -> StandardMaterial3D:
 
 static var _block_mesh: BoxMesh
 static var _beam_mesh: CylinderMesh
+static var _chunk_meshes: Array = []
+static var _ruin_stone_mat: StandardMaterial3D
+
+## Plan 353: a ruin's stones were perfect grey cubes. A chunk is a box cut
+## twice each way, every corner knocked in and every point nudged, so it
+## reads as broken masonry; faces stay flat-shaded for hard chipped edges.
+static func _chunk_mesh(variant: int) -> Mesh:
+	while _chunk_meshes.size() <= variant:
+		var box := BoxMesh.new()
+		box.subdivide_width = 1
+		box.subdivide_height = 1
+		box.subdivide_depth = 1
+		var arrays := box.get_mesh_arrays()
+		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var seed_value := float(_chunk_meshes.size()) * 17.3 + 3.1
+		var jitter := func(v: Vector3, k: float) -> float:
+			return fposmod(sin(v.dot(Vector3(12.9898, 78.233, 37.719)) + seed_value * k) * 43758.5453, 1.0) - 0.5
+		for i in verts.size():
+			var v := verts[i]
+			# Corners (all three coordinates at the rim) are knocked in hardest.
+			var rim := (absf(v.x) + absf(v.y) + absf(v.z)) / 1.5
+			var cut := 0.22 * smoothstep(0.75, 1.0, rim)
+			var w := v * (1.0 - cut)
+			w += Vector3(jitter.call(v, 1.0), jitter.call(v, 2.0), jitter.call(v, 3.0)) * 0.16
+			verts[i] = w
+		arrays[Mesh.ARRAY_VERTEX] = verts
+		var st := SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var idx: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		for t in idx.size() / 3:
+			var a := verts[idx[t * 3]]
+			var b := verts[idx[t * 3 + 1]]
+			var c := verts[idx[t * 3 + 2]]
+			var n := (c - a).cross(b - a).normalized()
+			for k in 3:
+				st.set_normal(n)
+				st.set_uv(uvs[idx[t * 3 + k]])
+				st.add_vertex(verts[idx[t * 3 + k]])
+		_chunk_meshes.append(st.commit())
+	return _chunk_meshes[variant]
+
+static func _ruin_materials() -> void:
+	if _ruin_stone_mat != null:
+		return
+	_ruin_stone_mat = (ResourceNode._fragment_material() as StandardMaterial3D).duplicate()
+	_ruin_stone_mat.vertex_color_use_as_albedo = true
+	_ruin_stone_mat.albedo_color = Color(0.92, 0.90, 0.86)
 static var _smoke_process: ParticleProcessMaterial
 
 ## A thin dark smoke that keeps rising from a ruin for most of a minute.
@@ -656,7 +704,6 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	# low sooty stone and charred beams, some still leaning, that smoulder for
 	# a while, with a thin smoke rising from the wreck.
 	var char_mat := _char_material()
-	var stone_mat := ResourceNode._fragment_material()
 	if _block_mesh == null:
 		_block_mesh = BoxMesh.new()
 		_beam_mesh = CylinderMesh.new()
@@ -672,28 +719,45 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 	# with the area), piled higher in the middle, stone on stone.
 	var blocks := 10 + int(footprint * footprint * 1.6)
 	var grow := clampf(footprint / 3.0, 1.0, 1.2)
-	var stones := MultiMesh.new()
-	stones.transform_format = MultiMesh.TRANSFORM_3D
-	stones.mesh = _block_mesh
-	stones.instance_count = blocks
+	# Plan 353: three shapes of chipped stone instead of one clean cube, each
+	# stone its own shade from pale cut face to soot-black, and the size
+	# ranges wider (a few big wall blocks among small shards).
+	_ruin_materials()
+	var groups: Array = [[], [], []]
 	for i in blocks:
 		var a := randf() * TAU
-		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.5), randf_range(0.4, 0.7)) * grow
+		var big_one := randf() < 0.18
+		var size := Vector3(randf_range(0.5, 1.0), randf_range(0.3, 0.55), randf_range(0.4, 0.7)) * grow * (randf_range(1.3, 1.6) if big_one else randf_range(0.55, 1.0))
 		# Heaped towards the middle, where the walls fell in.
 		var r := pow(randf(), 0.8)
 		var at := Vector3(cos(a), 0.0, sin(a)) * r * footprint * 0.75 + Vector3(0.0, size.y * 0.3 + _mound_height(r, footprint) * randf_range(0.6, 1.0), 0.0)
-		var turn := Basis.from_euler(Vector3(randf_range(-0.3, 0.3), randf() * TAU, randf_range(-0.3, 0.3)))
-		stones.set_instance_transform(i, Transform3D(turn * Basis.from_scale(size), at))
-	var stone_mmi := MultiMeshInstance3D.new()
-	stone_mmi.multimesh = stones
-	stone_mmi.material_override = stone_mat
-	stone_mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	rubble.add_child(stone_mmi)
+		var turn := Basis.from_euler(Vector3(randf_range(-0.45, 0.45), randf() * TAU, randf_range(-0.45, 0.45)))
+		var soot := randf()
+		var shade := Color(0.80, 0.77, 0.72).lerp(Color(0.24, 0.22, 0.21), pow(soot, 0.8))
+		groups[i % 3].append([Transform3D(turn * Basis.from_scale(size), at), shade])
+	for g in groups.size():
+		var stones := MultiMesh.new()
+		stones.transform_format = MultiMesh.TRANSFORM_3D
+		stones.use_colors = true
+		stones.mesh = _chunk_mesh(g)
+		stones.instance_count = groups[g].size()
+		for k in groups[g].size():
+			stones.set_instance_transform(k, groups[g][k][0])
+			stones.set_instance_color(k, groups[g][k][1])
+		var stone_mmi := MultiMeshInstance3D.new()
+		stone_mmi.multimesh = stones
+		stone_mmi.material_override = _ruin_stone_mat
+		stone_mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		rubble.add_child(stone_mmi)
 	# Charred beams: some flat, some still leaning on the heap.
 	var beams := 4 + int(footprint * 1.2)
 	var timbers := MultiMesh.new()
 	timbers.transform_format = MultiMesh.TRANSFORM_3D
 	timbers.mesh = _beam_mesh
+	# Plan 353: beams are each charred their own way, from scorched brown to
+	# black (one even reddish-brown tone read as painted poles).
+	char_mat.vertex_color_use_as_albedo = true
+	timbers.use_colors = true
 	timbers.instance_count = beams
 	for i in beams:
 		var a := randf() * TAU
@@ -703,6 +767,7 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		var at := Vector3(cos(a), 0.0, sin(a)) * randf_range(0.0, footprint * 0.6) + Vector3(0.0, cos(lean) * length * 0.5 + thick * 0.4, 0.0)
 		var turn := Basis.from_euler(Vector3(lean, randf() * TAU, 0.0), EULER_ORDER_YXZ)
 		timbers.set_instance_transform(i, Transform3D(turn * Basis.from_scale(Vector3(thick, length, thick)), at))
+		timbers.set_instance_color(i, Color(0.62, 0.50, 0.40).lerp(Color(0.16, 0.14, 0.13), randf_range(0.3, 1.0)))
 	var beam_mmi := MultiMeshInstance3D.new()
 	beam_mmi.multimesh = timbers
 	beam_mmi.material_override = char_mat
