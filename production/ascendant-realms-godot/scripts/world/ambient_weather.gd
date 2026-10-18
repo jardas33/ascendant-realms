@@ -7,7 +7,10 @@ extends Node3D
 ## Presentation only.
 
 const LOOKS := {
-	"meadow": {"amount": 200, "size": 0.13, "color": Color(1.0, 0.96, 0.82, 0.75), "gravity": Vector3(0.25, -0.04, 0.12), "speed": 0.35, "life": 9.0, "spin": 0.0, "glow": 0.25},
+	# Plan 383: seed fluff is fewer, smaller, fainter and sunlit gold, and it
+	# drifts up rather than down: the bright white dots read as snow falling
+	# on summer fields.
+	"meadow": {"amount": 120, "size": 0.09, "color": Color(1.0, 0.92, 0.66, 0.5), "gravity": Vector3(0.3, 0.025, 0.12), "speed": 0.3, "life": 9.0, "spin": 0.0, "glow": 0.12},
 	"leaves": {"amount": 140, "size": 0.45, "color": Color(0.86, 0.46, 0.16, 1.0), "gravity": Vector3(0.45, -0.55, 0.2), "speed": 0.4, "life": 10.0, "spin": 180.0, "glow": 0.0},
 	"snow": {"amount": 800, "size": 0.2, "color": Color(0.96, 0.98, 1.0, 0.9), "gravity": Vector3(0.35, -1.3, 0.15), "speed": 0.2, "life": 9.0, "spin": 0.0, "glow": 0.1},
 	"sand": {"amount": 260, "size": 0.1, "color": Color(0.92, 0.80, 0.58, 0.55), "gravity": Vector3(2.2, -0.08, 0.6), "speed": 1.2, "life": 5.0, "spin": 0.0, "glow": 0.0},
