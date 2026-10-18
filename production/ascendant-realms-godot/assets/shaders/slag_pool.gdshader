@@ -74,17 +74,27 @@ void fragment() {
 	float rim = clamp(abs(UV.y - 0.5) * 2.0, 0.0, 1.0);
 	float heat = 1.0 - smoothstep(0.62, 1.0, rim);
 	float seam = seam_distance(p);
-	float crack = 1.0 - smoothstep(0.03, 0.10 + 0.20 * heat, seam);
+	// (Plan 371: the plates themselves glowed red and the seams were wide,
+	// so the whole pool was one bright orange sticker on the ground. The
+	// crust is black now, cooling and cracking; thin seams glow through it,
+	// with a few open pools of melt where the crust has broken up.)
+	float width = 0.025 + 0.07 * heat * smoothstep(0.3, 0.7, fbm(p * 0.3 + 40.0));
+	float crack = 1.0 - smoothstep(0.015, width + 0.02, seam);
+	float halo = (1.0 - smoothstep(width, width + 0.16, seam)) * heat;
 	float grain = fbm(p * 1.3 + 5.0);
 	float swell = fbm(p * 0.45 + 21.0);
 	float pulse = 0.82 + 0.18 * sin(TIME * 1.4 + grain * 9.0);
-	// Hot seams everywhere but the rim, and a dull glow through thin crust in
-	// the middle of the pool.
-	float molten = clamp(crack * (0.25 + 0.75 * heat) + heat * (0.16 + smoothstep(0.40, 0.75, swell) * 0.5), 0.0, 1.0);
-	vec3 liquid = mix(hot_color, core_color, smoothstep(0.55, 1.0, crack * heat));
-	vec3 crust = crust_color * mix(0.65, 1.45, grain);
+	float open_melt = smoothstep(0.60, 0.72, swell) * smoothstep(0.35, 0.0, rim);
+	float molten = clamp(crack * (0.35 + 0.65 * heat) + open_melt, 0.0, 1.0);
+	vec3 liquid = mix(hot_color, core_color, smoothstep(0.5, 1.0, max(crack * heat, open_melt)));
+	// Crust: dark basalt with a dull ember warmth near the seams, ashen grey
+	// and rough on the old crust at the rim.
+	float rough_crust = fbm(p * 3.1 + 7.0);
+	vec3 crust = crust_color * mix(0.8, 1.9, grain) * mix(0.75, 1.3, rough_crust);
+	crust = mix(crust, vec3(0.15, 0.13, 0.12) * mix(0.7, 1.2, rough_crust), smoothstep(0.75, 1.0, rim) * 0.6);
+	crust += vec3(0.25, 0.05, 0.01) * halo * 0.5;
 	ALBEDO = mix(crust, liquid * 0.8, molten);
-	EMISSION = liquid * molten * glow_strength * pulse;
+	EMISSION = liquid * molten * glow_strength * pulse + vec3(0.35, 0.06, 0.01) * halo * (1.0 - molten) * pulse;
 	ROUGHNESS = mix(0.92, 0.45, molten);
 	SPECULAR = 0.25;
 }
