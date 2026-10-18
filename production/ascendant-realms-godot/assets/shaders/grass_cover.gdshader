@@ -63,6 +63,9 @@ uniform float cloud_shadow_strength = 0.2;
 // Plan 366: 1 on a wetland. The ground shader lays standing pools where its
 // bog noise peaks; grass tufts stood on that water. Same noise, no tufts.
 uniform float bog_surface = 0.0;
+// Plan 369: 1 on an ashen map. Tufts stood on the pale ash drifts the
+// ground shader lays and read as dark specks; same drift noise, no tufts.
+uniform float ash_surface = 0.0;
 varying float v_shade;
 varying float v_height;
 varying float v_head;
@@ -81,6 +84,12 @@ void vertex() {
 		vec2 bp = origin.xz * 0.03 + 71.0;
 		float patch_m = 0.5 * vnoise(bp) + 0.25 * vnoise(bp * 2.03) + 0.1875;
 		grow *= 1.0 - smoothstep(0.635, 0.665, patch_m + (fbm(origin.xz * 0.15 + 3.0) - 0.5) * 0.08) * bog_surface;
+	}
+	if (ash_surface > 0.0) {
+		vec2 wind = vec2(origin.x * 0.7 + origin.z * 0.7, -origin.x * 0.7 + origin.z * 0.7);
+		vec2 dp = vec2(wind.x * 0.012, wind.y * 0.045) + 31.0;
+		float drift_n = 0.5 * vnoise(dp) + 0.25 * vnoise(dp * 2.03) + 0.1875;
+		grow *= 1.0 - smoothstep(0.44, 0.56, drift_n + (fbm(origin.xz * 0.2 + 4.0) - 0.5) * 0.12) * ash_surface;
 	}
 	VERTEX *= grow;
 	float h = UV.y;

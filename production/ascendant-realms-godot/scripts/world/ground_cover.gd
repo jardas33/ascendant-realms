@@ -27,7 +27,7 @@ const THEMES := {
 	"desert": {"tip": Color(0.80, 0.70, 0.44), "root": Color(0.40, 0.32, 0.18), "dry": Color(0.82, 0.72, 0.46), "density": 0.07, "dryness": 1.0, "flowers": 0.0, "palette": []},
 	"badlands": {"tip": Color(0.72, 0.56, 0.36), "root": Color(0.34, 0.24, 0.14), "dry": Color(0.76, 0.58, 0.38), "density": 0.12, "dryness": 1.0, "flowers": 0.0, "palette": []},
 	"volcanic": {"tip": Color(0.42, 0.38, 0.30), "root": Color(0.14, 0.12, 0.10), "dry": Color(0.46, 0.40, 0.32), "density": 0.18, "dryness": 1.0, "flowers": 0.0, "palette": []},
-	"ashen": {"tip": Color(0.52, 0.52, 0.46), "root": Color(0.18, 0.18, 0.16), "dry": Color(0.56, 0.54, 0.48), "density": 0.3, "dryness": 0.9, "flowers": 0.0, "palette": []},
+	"ashen": {"tip": Color(0.38, 0.36, 0.31), "root": Color(0.14, 0.13, 0.12), "dry": Color(0.41, 0.38, 0.32), "density": 0.3, "dryness": 0.9, "flowers": 0.0, "palette": []},
 	"snow": {"tip": Color(0.62, 0.62, 0.52), "root": Color(0.30, 0.30, 0.26), "dry": Color(0.70, 0.66, 0.56), "density": 0.12, "dryness": 0.9, "flowers": 0.0, "palette": []},
 }
 
@@ -54,6 +54,7 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 	_material.set_shader_parameter("mask_size", Vector2(_half * 2.0, _half * 2.0))
 	# Plan 366: keep tufts off the bog pools the ground shader lays.
 	_material.set_shader_parameter("bog_surface", 1.0 if theme_name == "wetland" else 0.0)
+	_material.set_shader_parameter("ash_surface", 1.0 if theme_name == "ashen" else 0.0)
 
 	var tuft := _make_tuft_mesh(false)
 	var flower := _make_tuft_mesh(true)
@@ -86,6 +87,21 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 	meadows.frequency = 0.012
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 55173 + hash(str(map.get("id", "")))
+	# Plan 369: on sparse themes (desert, badlands, volcanic, ashen, snow)
+	# the low density thinned every meadow evenly, so lone pale tufts were
+	# sprinkled over the whole field like noise. The same number of tufts now
+	# gathers in a few full patches: the clump value above which a patch
+	# grows is the quantile that keeps the overall count about the same.
+	var patch_floor := -1.0
+	if density < 0.5:
+		var samples: Array = []
+		var srng := RandomNumberGenerator.new()
+		srng.seed = 911
+		for i in 2000:
+			var q := Vector2(srng.randf_range(-_half, _half), srng.randf_range(-_half, _half))
+			samples.append((clumps.get_noise_2dv(q) * 0.5 + 0.5) * 0.55 + (meadows.get_noise_2dv(q) * 0.5 + 0.5) * 0.45)
+		samples.sort()
+		patch_floor = float(samples[clampi(int((1.0 - density * 0.6) * samples.size()), 0, samples.size() - 1)])
 	var palette: Array = look["palette"]
 	var chunks := int(ceil(_half * 2.0 / CHUNK))
 	for cx in chunks:
@@ -106,6 +122,8 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 					var c := clumps.get_noise_2dv(p) * 0.5 + 0.5
 					var m := meadows.get_noise_2dv(p) * 0.5 + 0.5
 					var chance := density * smoothstep(0.40, 0.56, c * 0.55 + m * 0.45)
+					if patch_floor > -1.0:
+						chance = 0.95 * smoothstep(patch_floor - 0.015, patch_floor + 0.025, c * 0.55 + m * 0.45)
 					var road := 1e9
 					for r in roads:
 						road = minf(road, _segment_distance(p, r[0], r[1]))
