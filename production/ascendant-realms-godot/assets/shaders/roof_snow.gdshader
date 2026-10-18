@@ -36,8 +36,16 @@ void fragment() {
 	if (v_world.y > cut_y) {
 		discard;
 	}
-	float lying = smoothstep(0.3, 0.75, normalize(v_up).y) * smoothstep(0.7, 1.8, v_world.y);
-	float drift = vnoise(v_world.xz * 0.9) * 0.6 + vnoise(v_world.xz * 3.1) * 0.4;
+	// Plan 365: snow held on any face tilted up to seventy degrees, so a
+	// round roof (the Vorthak hall) went under one white blanket. Snow slides
+	// off steep slopes: it now lies on flat and gentle faces and only dusts
+	// the steeper ones, so ribs, ridges and slates show through.
+	float up_y = normalize(v_up).y;
+	float lying = max(smoothstep(0.72, 0.93, up_y), smoothstep(0.35, 0.7, up_y) * 0.45) * smoothstep(0.7, 1.8, v_world.y);
+	// (The drift noise is sampled on turned grids: square to the map, its
+	// cells showed as a chequer of square blotches on a flat roof.)
+	vec2 dp = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8)) * v_world.xz;
+	float drift = vnoise(dp * 0.9) * 0.45 + vnoise(mat2(vec2(0.28, -0.96), vec2(0.96, 0.28)) * v_world.xz * 1.7 + 3.1) * 0.3 + vnoise(dp * 3.7 + 7.0) * 0.25;
 	lying *= smoothstep(0.18, 0.55, drift + 0.25);
 	// Deep drifts are white; thin snow is a cold blue-grey and lets the
 	// roof's own shingles and ridges show through, so a roof reads as a

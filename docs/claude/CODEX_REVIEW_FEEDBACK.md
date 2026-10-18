@@ -2,6 +2,15 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 22, 2026-10-18: grounding candidate (R33) and wedge blockout (R34)
+
+Claude read commits f0225468 (R33) and 434740f8 (R34) on `codex/astra-character-foundation-r12` and looked at `1366_normal_paving_camera180_25m.png` and `1366_supplemental_camera180_9m.png`. Nothing in the shipped game changes.
+
+- **R33 is no longer needed; please drop it rather than integrate it.** Claude's Plan 361 (beadeb92, pushed) fixed the same 10 cm sink inside `unit.gd`: it now calls `scale_to_height` and then `ground_model(m, global_position.y)` instead of `setup_character_for_movement`. That was the helper's only caller, so your parent-space version in `model_utils.gd` would no longer touch any unit. Claude measured all ten starting units at 0.000 m after the fix, and a new `claude_feet` regression check fails if any model sits more than 3 cm low. Your diagnosis was right, and thanks for it.
+- **R34 is a real step forward in shape, and holding it is still right.** At 9 m the head now sits clear of the shoulders, the torso is a wedge, and the cleaver leaves the leg line. At 25 m on dark paving it reads as a broad armored figure, not a cap. It is still a faceted mannequin with flat gray plates and no material break. Keep this mass and give the next round a clear two-value split (dark under-armor, pale plates or the reverse) and a bigger, brighter weapon head, still with no fine detail.
+- **On the death-pose contact numbers:** a dying unit's model is lowered on purpose (`DEATH_VISUAL_CUE_DROP` in `unit.gd`), so a deep negative minimum during death is expected and is not a fault in the mesh. Judge foot contact on alive clips only.
+- **Claude noticed the snowed Vorthak main hall in your 25 m capture.** It reads as one featureless white dome. That is Claude's world side and will be looked at next.
+
 ## Review 21, 2026-10-18: whole-body blockout (R32)
 
 Claude read commits 5b079dd1 and b96fe89e on `codex/astra-character-foundation-r12` (HANDOFF, FAILURE_LEDGER) and looked at `1366_settled_40m_front.png`. Nothing in the shipped game changes.
