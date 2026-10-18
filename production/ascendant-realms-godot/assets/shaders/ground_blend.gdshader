@@ -191,6 +191,12 @@ void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
+// Plan 385: a warped noise field whose zero line winds like a dry wash.
+float wash_field(vec2 wxz) {
+	vec2 wq = wxz * 0.012 + (vec2(fbm(wxz * 0.02 + 5.0), fbm(wxz * 0.02 + 11.0)) - 0.5) * 1.3;
+	return fbm2(wq + 140.0) * 2.0 - 1.0;
+}
+
 void fragment() {
 	vec2 wxz = world_pos.xz;
 
@@ -266,6 +272,23 @@ void fragment() {
 		// Darker sun-baked and paler dusty stretches give the field depth.
 		ground *= mix(0.86, 1.08, smoothstep(0.25, 0.75, fbm2(wxz * 0.021 + 17.0)));
 		ground *= mix(vec3(1.07, 0.99, 0.88), vec3(0.93, 0.95, 1.0), smoothstep(0.3, 0.7, fbm2(wxz * 0.0075 + 90.0)));
+		// Plan 385: dry washes wind across the field, pale sandy beds between
+		// darker cut banks, and gravel lies strewn on the open ground. At play
+		// height the field read as one flat sheet of orange.
+		float wf = wash_field(wxz);
+		// Distance to the wash's centre line in metres, from the field's slope,
+		// so beds and banks keep their width where the noise runs flat.
+		vec2 slope = vec2(wash_field(wxz + vec2(0.6, 0.0)) - wf, wash_field(wxz + vec2(0.0, 0.6)) - wf) / 0.6;
+		float dist = abs(wf) / max(length(slope), 0.002);
+		float reach = smoothstep(0.45, 0.68, fbm2(wxz * 0.006 + 71.0));
+		float bed_w = mix(0.6, 2.2, fbm(wxz * 0.02 + 23.0));
+		float bed = (1.0 - smoothstep(bed_w - 0.5, bed_w + 0.3, dist)) * reach;
+		float bank = smoothstep(bed_w - 0.2, bed_w + 0.4, dist) * (1.0 - smoothstep(bed_w + 0.6, bed_w + 2.0, dist)) * reach;
+		vec3 wash_sand = sand_color * vec3(1.16, 1.10, 1.02) * mix(0.92, 1.05, vnoise(wxz * 1.7 + 3.0));
+		ground = mix(ground, ground * vec3(0.70, 0.64, 0.62), bank * 0.45);
+		ground = mix(ground, wash_sand, bed * 0.6);
+		float stones = step(0.86, vnoise(wxz * 2.6 + 31.0)) * smoothstep(0.4, 0.7, fbm(wxz * 0.05 + 37.0)) * (1.0 - bed);
+		ground = mix(ground, ground * mix(0.55, 1.35, vnoise(wxz * 6.0 + 1.0)), stones * 0.6);
 	}
 
 	// worn roads between the path segments
