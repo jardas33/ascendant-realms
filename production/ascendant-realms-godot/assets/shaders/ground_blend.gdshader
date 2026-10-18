@@ -521,6 +521,9 @@ void fragment() {
 		float hz = swell((wxz + vec2(0.0, e)) * relief_scale * 6.0);
 		float k = relief_strength * (1.0 - 0.7 * clamp(road, 0.0, 1.0)) * 2.2 * (1.0 - pool);
 		vec3 base_n = mesh_normals > 0.5 ? normalize((INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz) : vec3(0.0, 1.0, 0.0);
+		// (Plan 376: the hill's coarse rings put a lighting crease at its
+		// foot, a hard line on the field. The normal eases to level there.)
+		base_n = normalize(mix(vec3(0.0, 1.0, 0.0), base_n, smoothstep(-0.05, 2.2, world_pos.y)));
 		vec3 n_world = normalize(base_n + vec3(-(hx - hc) * k, 0.0, -(hz - hc) * k));
 		NORMAL = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
 		// Cavity darkening in the hollows of the relief.
