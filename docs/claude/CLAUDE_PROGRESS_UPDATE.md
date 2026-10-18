@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 345 (done): skirmish crests are shaded heater shields**
+  - The people list and opponent rows showed each faction as a flat five-sided badge with a small charge.
+  - Crests are now heater shields with curved flanks, a field shaded from light at the top left to dark at the point, a gilt rim with a lit top edge, a drop shadow and the charge with a dark under-stroke. The people crest grew from 46x54 to 52x62.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 344 (done): forged main menu buttons**
   - The title screen buttons were flat dark boxes with a thin line, the plainest thing on the first screen a player sees.
   - Each button is now a lacquered plate in a gilt frame with cut corners, an inner rule and small gold diamonds; the saga button is deep crimson. Hover brightens the frame, pressing darkens the plate. The faces are drawn once and cached.

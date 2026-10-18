@@ -312,29 +312,71 @@ func _crest(race: Dictionary, col: Color) -> Control:
 	# A heraldic shield in the faction colour: gilt rim, a lighter chief and
 	# the faction's initial, until each faction has painted crest art.
 	var holder := Control.new()
-	holder.custom_minimum_size = Vector2(46, 54)
+	holder.custom_minimum_size = Vector2(52, 62)
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	holder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var race_id := ""
 	for k in GameData.RACES:
 		if GameData.RACES[k] == race:
 			race_id = String(k)
-	holder.draw.connect(func():
-		var w := holder.size.x
-		var h := holder.size.y
-		var m := 2.0
-		var shield := PackedVector2Array([Vector2(m, m), Vector2(w - m, m), Vector2(w - m, h * 0.55), Vector2(w * 0.5, h - m), Vector2(m, h * 0.55)])
-		holder.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.95))
-		var c := Vector2(w * 0.5, h * 0.45)
-		var inner := PackedVector2Array()
-		for p in shield:
-			inner.append(c + (p - c) * 0.84)
-		holder.draw_colored_polygon(inner, col.darkened(0.2))
-		holder.draw_rect(Rect2(inner[0], Vector2(inner[1].x - inner[0].x, h * 0.16)), Color(col.lightened(0.2), 0.55))
-		shield.append(shield[0])
-		holder.draw_polyline(shield, GOLD, 1.8, true)
-		FACTION_SIGILS.draw(holder, race_id, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+	holder.draw.connect(func(): _draw_shield(holder, col, race_id, false))
 	return holder
+
+## A heater shield: curved flanks to a point, a shaded field in the faction
+## colour, a gilt rim with a dark inner line, a drop shadow and the faction's
+## charge with a dark under-stroke (plan 345; the flat pentagon looked like a
+## placeholder badge).
+func _draw_shield(ci: Control, col: Color, race_id: String, unknown: bool) -> void:
+	var w := ci.size.x
+	var h := ci.size.y
+	var m := 2.0
+	var outline := PackedVector2Array([Vector2(m, m), Vector2(w * 0.5, m + h * 0.03), Vector2(w - m, m)])
+	for k in 9:
+		var t := float(k) / 8.0
+		var a := Vector2(w - m, h * 0.40)
+		var b := Vector2(w * 0.5, h - m)
+		var ctl := Vector2(w - m, h * 0.82)
+		outline.append(a.lerp(ctl, t).lerp(ctl.lerp(b, t), t))
+	for k in range(1, 9):
+		var t := 1.0 - float(k) / 8.0
+		var a := Vector2(m, h * 0.40)
+		var b := Vector2(w * 0.5, h - m)
+		var ctl := Vector2(m, h * 0.82)
+		outline.append(a.lerp(ctl, t).lerp(ctl.lerp(b, t), t))
+	var shadow := PackedVector2Array()
+	for p in outline:
+		shadow.append(p + Vector2(1.5, 2.5))
+	ci.draw_colored_polygon(shadow, Color(0, 0, 0, 0.45))
+	ci.draw_colored_polygon(outline, Color(0.05, 0.04, 0.03, 0.97))
+	var c := Vector2(w * 0.5, h * 0.45)
+	var inner := PackedVector2Array()
+	var shade := PackedColorArray()
+	for p in outline:
+		var ip := c + (p - c) * 0.84
+		inner.append(ip)
+		var v := clampf(ip.y / h, 0.0, 1.0)
+		var lit := clampf(1.0 - (ip.x / w) * 0.6, 0.0, 1.0)
+		shade.append(col.lightened(0.10 + 0.12 * lit).lerp(col.darkened(0.55), v))
+	ci.draw_polygon(inner, shade)
+	var ring := inner.duplicate()
+	ring.append(ring[0])
+	ci.draw_polyline(ring, Color(0.0, 0.0, 0.0, 0.55), 1.2, true)
+	var rim := outline.duplicate()
+	rim.append(rim[0])
+	ci.draw_polyline(rim, GOLD, 2.2, true)
+	ci.draw_polyline(PackedVector2Array([outline[0] + Vector2(2.0, 1.2), outline[1] + Vector2(0.0, 1.2), outline[2] + Vector2(-2.0, 1.2)]), Color(1.0, 0.95, 0.75, 0.55), 1.0, true)
+	var ink := Color(0.99, 0.93, 0.75)
+	var sc := Vector2(w * 0.5, h * 0.46)
+	if unknown:
+		# An unknown host: a question mark where the charge would be.
+		var qf := ci.get_theme_default_font()
+		var fs := int(h * 0.5)
+		var qs := qf.get_string_size("?", HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
+		ci.draw_string_outline(qf, Vector2(w * 0.5 - qs.x * 0.5, sc.y + fs * 0.36), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.6))
+		ci.draw_string(qf, Vector2(w * 0.5 - qs.x * 0.5, sc.y + fs * 0.36), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, ink)
+	else:
+		FACTION_SIGILS.draw(ci, race_id, sc + Vector2(1.0, 1.6), w * 0.31, Color(0.0, 0.0, 0.0, 0.5))
+		FACTION_SIGILS.draw(ci, race_id, sc, w * 0.31, ink)
 
 func _card_style(col: Color, state: String) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
@@ -534,7 +576,7 @@ func _rebuild_opponents() -> void:
 		row.add_child(marker)
 		# The rival's shield, redrawn as the chosen faction changes.
 		var opp_shield := Control.new()
-		opp_shield.custom_minimum_size = Vector2(30, 34)
+		opp_shield.custom_minimum_size = Vector2(30, 36)
 		opp_shield.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_child(opp_shield)
 		var race_opt := OptionButton.new()
@@ -553,24 +595,7 @@ func _rebuild_opponents() -> void:
 			var is_random: bool = race_opt.selected >= ids_ref.size()
 			var rid2 := String(ids_ref[clampi(race_opt.selected, 0, ids_ref.size() - 1)])
 			var col: Color = Color(0.42, 0.42, 0.46) if is_random else GameData.RACES.get(rid2, {}).get("color", Color(0.6, 0.6, 0.6))
-			var w := opp_shield.size.x
-			var h := opp_shield.size.y
-			var shield := PackedVector2Array([Vector2(1, 1), Vector2(w - 1, 1), Vector2(w - 1, h * 0.55), Vector2(w * 0.5, h - 1), Vector2(1, h * 0.55)])
-			opp_shield.draw_colored_polygon(shield, Color(0.05, 0.04, 0.03, 0.95))
-			var c := Vector2(w * 0.5, h * 0.45)
-			var inner := PackedVector2Array()
-			for pnt in shield:
-				inner.append(c + (pnt - c) * 0.84)
-			opp_shield.draw_colored_polygon(inner, col.darkened(0.2))
-			shield.append(shield[0])
-			opp_shield.draw_polyline(shield, GOLD, 1.4, true)
-			if is_random:
-				# An unknown host: a question mark where the sigil would be.
-				var qf := opp_shield.get_theme_default_font()
-				var qs := qf.get_string_size("?", HORIZONTAL_ALIGNMENT_LEFT, -1, 18)
-				opp_shield.draw_string(qf, Vector2(w * 0.5 - qs.x * 0.5, h * 0.47 + 6.0), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(0.99, 0.93, 0.75))
-			else:
-				FACTION_SIGILS.draw(opp_shield, rid2, Vector2(w * 0.5, h * 0.47), w * 0.3, Color(0.99, 0.93, 0.75)))
+			_draw_shield(opp_shield, col, rid2, is_random))
 		race_opt.item_selected.connect(func(_idx):
 			Sfx.play("select")
 			opp_shield.queue_redraw())
