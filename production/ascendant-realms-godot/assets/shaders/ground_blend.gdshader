@@ -394,6 +394,14 @@ void fragment() {
 		// Plates catch a little light at their raised centres.
 		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
+		// Plan 375: on a snowfield the holdfast's basalt pad was bare and dark
+		// to its very edge, a cut-out on the snow. Snow lies on its outer
+		// plates (the seams stay dark), melting away toward the hot heart.
+		if (snow_amt > 0.001) {
+			float lying = smoothstep(0.42, 0.9, d + (fbm(wxz * 0.25 + float(i) * 3.0) - 0.5) * 0.45);
+			vec3 snow_col = mix(snow_shadow_color, snow_highlight_color, 0.55 + 0.35 * fbm(wxz * 0.8 + 4.0));
+			ground = mix(ground, snow_col, clamp(lying * 0.85 * (1.0 - 0.6 * seam) * snow_amt, 0.0, 1.0) * clamp(burn, 0.0, 1.0));
+		}
 	}
 	// Ashen maps (a burned country): the open ground was a bare grey sheet.
 	// Pale ash now lies in long wind-combed drifts, and old burn scars leave
