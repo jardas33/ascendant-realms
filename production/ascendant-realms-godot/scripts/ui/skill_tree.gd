@@ -513,6 +513,7 @@ func _add_node_button(n: Dictionary) -> void:
 	var glyph := Glyph.new()
 	glyph.position = Vector2((NODE_SIZE.x - ORB.x) * 0.5, 0.0)
 	glyph.size = ORB
+	glyph.pivot_offset = ORB * 0.5
 	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	glyph.kind = "active" if n.get("effect", {}).has("ability") else "passive"
 	glyph.kind = "keystone" if n.get("keystone", false) else glyph.kind
@@ -1382,7 +1383,11 @@ func _refresh_nodes() -> void:
 		var heading: Vector2 = b.get_meta("scaling_to") if b.has_meta("scaling_to") else Vector2.ONE
 		if heading != want:
 			b.set_meta("scaling_to", want)
-			b.create_tween().tween_property(b, "scale", want, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			# Plan 358: only the orb swells. Scaling the whole 200 x 206
+			# button (orb and the name space under it) grew its click area
+			# over the stars below; the pointer then stayed on the hovered
+			# star and the one beneath could not be reached.
+			glyph.create_tween().tween_property(glyph, "scale", want, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	var visible_count := 0
 	var owned_count := 0
 	for n in _nodes:
