@@ -2,6 +2,7 @@ extends Control
 ## Hero Skill Constellation presentation layer.
 ## This file owns only the Skill Tree screen presentation and input routing.
 ## SkillDefs and ProfileManager remain the semantic authorities.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 ## Each path is laid out as the tree it is: a spine down the middle, forks
@@ -477,7 +478,7 @@ func _build() -> void:
 	footer.offset_bottom = -24.0
 	footer.add_theme_constant_override("separation", 10)
 	add_child(footer)
-	footer.add_child(_tool_button("BACK TO HERO", func(): _goto("res://scenes/ui/hero_sheet.tscn")))
+	footer.add_child(_tool_button("Back to Hero", func(): _goto("res://scenes/ui/hero_sheet.tscn")))
 	var footer_spacer := Control.new()
 	footer_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	footer.add_child(footer_spacer)
@@ -485,10 +486,10 @@ func _build() -> void:
 	navigation_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	navigation_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	footer.add_child(navigation_hint)
-	footer.add_child(_tool_button("− ZOOM", func(): _set_zoom(_zoom - 0.08)))
-	footer.add_child(_tool_button("+ ZOOM", func(): _set_zoom(_zoom + 0.08)))
-	footer.add_child(_tool_button("RECENTER", _recenter_view))
-	footer.add_child(_tool_button("RESPEC", _on_respec))
+	footer.add_child(_tool_button("− Zoom", func(): _set_zoom(_zoom - 0.08)))
+	footer.add_child(_tool_button("+ Zoom", func(): _set_zoom(_zoom + 0.08)))
+	footer.add_child(_tool_button("Recenter", _recenter_view))
+	footer.add_child(_tool_button("Respec", _on_respec))
 	_update_canvas_size()
 
 func _add_node_button(n: Dictionary) -> void:
@@ -1519,9 +1520,9 @@ func _tool_button(text: String, cb: Callable) -> Button:
 	b.add_theme_font_override("font", ThemeDB.fallback_font)
 	b.add_theme_font_size_override("font_size", 17)
 	b.add_theme_color_override("font_color", PAPER)
-	# The game's forged gilt buttons, as on every other page.
-	if ResourceLoader.exists("res://assets/ui/theme.tres"):
-		b.theme = load("res://assets/ui/theme.tres")
+	# Plan 384: the main menu's forged faces and title lettering, as on the
+	# other pages' footers (the theme's flat box looked unfinished here).
+	FORGED_FACES.forge_button(b, false, 20)
 	b.pressed.connect(cb)
 	return b
 

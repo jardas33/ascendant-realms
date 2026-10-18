@@ -453,8 +453,9 @@ static func forge_button(b: Button, primary := false, font_size := 24) -> void:
 	var font: Font = load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
 	b.add_theme_font_override("font", font)
 	b.add_theme_font_size_override("font_size", font_size)
-	# Wide enough that the label clears the gilt diamonds at both ends.
-	var need := font.get_string_size(b.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 64.0
+	# Wide enough that the label clears the gilt diamonds at both ends, with
+	# room for the readable-text lift on small windows (up to about 1.25x).
+	var need := font.get_string_size(b.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x * 1.25 + 64.0
 	if b.custom_minimum_size.x < need:
 		b.custom_minimum_size.x = ceilf(need)
 	b.add_theme_color_override("font_color", Color(0.95, 0.86, 0.64))

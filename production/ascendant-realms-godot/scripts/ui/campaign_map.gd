@@ -271,10 +271,12 @@ func _build() -> void:
 		chronicle.theme = load(THEME_PATH)
 	chronicle.add_theme_font_override("font", _title_font())
 	chronicle.add_theme_font_size_override("font_size", 20)
-	FORGED_FACES.forge_button(chronicle, false, 20)
+	FORGED_FACES.forge_button(chronicle, false, 18)
 	# Sealed but legible: the theme's grey nearly vanished on the dark button.
 	chronicle.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	chronicle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	# Widened to fit its forged face, it grows leftward, away from the edge.
+	chronicle.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	chronicle.offset_left = -226.0
 	chronicle.offset_right = -36.0
 	chronicle.offset_top = -66.0
@@ -292,9 +294,11 @@ func _build() -> void:
 		endless.theme = load(THEME_PATH)
 	endless.add_theme_font_override("font", _title_font())
 	endless.add_theme_font_size_override("font_size", 20)
-	FORGED_FACES.forge_button(endless, false, 20)
+	FORGED_FACES.forge_button(endless, false, 18)
 	endless.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	endless.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	# Widened to fit its forged face, it grows leftward, away from the edge.
+	endless.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	endless.offset_left = -456.0
 	endless.offset_right = -246.0
 	endless.offset_top = -66.0
