@@ -1871,6 +1871,20 @@ func _build_hills() -> void:
 						# slab. Now the foot takes the snowfield's tone and the
 						# snow brightens toward the windswept top.
 						hue = Color(1.0, 1.0, 1.0).lerp(Color(0.62, 0.64, 0.66), smoothstep(0.55, 1.0, t0 if index < 2 else t1))
+						# Plan 349: steep flanks turned from the sun lie in cool
+						# blue shadow, as snow does; from the battle camera the
+						# hill read as a flat white mat on the snowfield.
+						var vt := t0 if index < 2 else t1
+						var va := a0 if index == 0 or index == 2 else a1
+						var y_in: float = point.call(maxf(vt - 0.04, 0.0), va).y
+						var y_out: float = point.call(minf(vt + 0.04, 1.0), va).y
+						var steep := clampf((y_in - y_out) / maxf(0.08 * (radii.x + radii.y) * 0.5, 0.5) / 1.1, 0.0, 1.0)
+						var sun_yaw := deg_to_rad(float(_theme.get("sun_yaw", 40.0)))
+						var facing := Vector2(cos(va), sin(va)).dot(Vector2(sin(sun_yaw), cos(sun_yaw)))
+						var shadowed := steep * clampf(0.55 - 0.6 * facing, 0.0, 1.0)
+						hue = hue.lerp(Color(0.50, 0.58, 0.72), shadowed * 0.6)
+						# The sunlit flank is a touch warmer.
+						hue = hue.lerp(Color(1.0, 0.98, 0.94), steep * clampf(facing, 0.0, 1.0) * 0.25)
 					if mesa:
 						# Beds of rock show as bands up the cliff; the top is paler.
 						var bed := 0.5 + 0.5 * sin(v.y * 2.4)
