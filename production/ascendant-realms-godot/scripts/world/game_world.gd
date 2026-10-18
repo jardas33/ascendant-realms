@@ -1888,7 +1888,12 @@ func _build_hills() -> void:
 		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 		# A mesa: a flat top, a cliff all round it, and a skirt of scree.
 		var mesa := String(hill.get("shape", "")) == "mesa"
-		var rings := 12 if mesa else 7
+		# Plan 390: a desert hill was a round lump pinched into a bow tie,
+		# nothing like a dune. It is now a crescent dune: a long gentle
+		# windward back up to a sharp crest, a steep slip face behind it, and
+		# horns trailing downwind.
+		var dune := not mesa and str(map.get("theme", "")) == "desert"
+		var rings := 12 if mesa else (18 if dune else 7)
 		var spokes := 40
 		# Height at a share `t` of the way out (0 the top, 1 the foot) in direction `a`.
 		var point := func(t: float, a: float) -> Vector3:
@@ -1897,6 +1902,15 @@ func _build_hills() -> void:
 			var z := sin(a) * radii.y * reach * t
 			var rough := noise.get_noise_2d(centre.x + x, centre.y + z)
 			var rise := height * pow(maxf(0.0, 1.0 - t * t), 1.4) * (0.82 + 0.36 * rough)
+			if dune:
+				var un := cos(a) * reach * t
+				var vn := sin(a) * reach * t
+				var crest := 0.18 + 0.55 * vn * vn
+				var back := smoothstep(-1.0, crest, un)
+				var lee := 1.0 - smoothstep(crest, crest + 0.22, un)
+				var body := back * back * (3.0 - 2.0 * back) if un < crest else lee
+				var side := clampf(1.0 - absf(vn) * 0.95, 0.0, 1.0)
+				rise = height * 0.85 * body * pow(side, 0.8) * (1.0 - smoothstep(0.8, 1.0, t)) * (0.92 + 0.16 * rough)
 			if mesa:
 				var cliff := 1.0 - smoothstep(0.66, 0.80, t)
 				var scree := 0.16 * (1.0 - smoothstep(0.80, 1.0, t))
