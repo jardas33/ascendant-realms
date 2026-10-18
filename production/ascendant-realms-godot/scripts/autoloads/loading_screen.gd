@@ -163,7 +163,6 @@ const PRELOAD_PATHS: PackedStringArray = [
 	"res://assets/environment/buildings/lioraen_spirit_glade.glb",
 	"res://assets/environment/buildings/lioraen_thornhall.glb",
 	"res://assets/environment/buildings/sunspear_palace.glb",
-	"res://assets/environment/buildings/sylvan_court.glb",
 	"res://assets/environment/buildings/vorthak_ash_forge.glb",
 	"res://assets/environment/buildings/vorthak_bone_barracks.glb",
 	"res://assets/environment/buildings/vorthak_nighthold.glb",

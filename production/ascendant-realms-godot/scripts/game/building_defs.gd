@@ -180,8 +180,10 @@ static func get_all() -> Dictionary:
 	},
 
 	# ---------------- SYLVAN COURT ----------------
+	# Plan 386: the court stands in the ancient bough hall, silvered by the
+	# Moura tint. The old groveheart mesh drew as a lime dome with stumps.
 	"sylvan_court": {
-		"race": "sylvan", "name": "Moura Court", "kind": "main", "model": _b("lioraen_groveheart"),
+		"race": "sylvan", "name": "Moura Court", "kind": "main", "model": _b("lioraen_groveheart_ancient_bough_r1"),
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["sylvan_acolyte"], "drop_off": true, "is_hq": true,
