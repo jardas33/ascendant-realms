@@ -616,11 +616,68 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	ModelUtils.ground_model(instance)
 	if asset_key in ["wall", "cairn"]:
 		_finish_stonework(instance)
+	if asset_key in ["brush", "lume_bloom"]:
+		_finish_foliage(instance)
 	# Logs, fences, posts, the supply shelter and the boundary marker share
 	# bare timber and slate materials; give them bark and rock.
 	ModelUtils.dress_timber(instance)
 	_set_presentation_only(instance)
 	_mark_navigation_blocker(instance, asset_key)
+
+
+# Plan 354: the heather and moonbell clumps are flat-colored low-poly
+# models with hard facets: from the camera they read as green crystals with
+# pink cubes on them. Their normals are smoothed (once per mesh, cached) so
+# light rolls over the clump, and each color gets a leaf texture (baked by
+# tools/leaf_bake.py at the repository root).
+static var _smoothed_meshes: Dictionary = {}
+static var _foliage_materials: Dictionary = {}
+const LEAF_CLUMP_TEXTURE := "res://assets/textures/nature/leaf_clump.png"
+static var _leaf_grain: Texture2D
+
+func _finish_foliage(root: Node3D) -> void:
+	if _leaf_grain == null and ResourceLoader.exists(LEAF_CLUMP_TEXTURE):
+		_leaf_grain = load(LEAF_CLUMP_TEXTURE)
+	for child in root.find_children("*", "MeshInstance3D"):
+		var mesh_instance := child as MeshInstance3D
+		if not mesh_instance or not mesh_instance.mesh is ArrayMesh:
+			continue
+		var source_mesh := mesh_instance.mesh as ArrayMesh
+		if not _smoothed_meshes.has(source_mesh):
+			var smooth := ArrayMesh.new()
+			for surface in source_mesh.get_surface_count():
+				var st := SurfaceTool.new()
+				st.create_from(source_mesh, surface)
+				var arrays := st.commit_to_arrays()
+				# Drop the flat normals, weld the corners, light it smooth.
+				arrays[Mesh.ARRAY_NORMAL] = null
+				arrays[Mesh.ARRAY_TANGENT] = null
+				var weld := SurfaceTool.new()
+				weld.create_from_arrays(arrays)
+				weld.index()
+				weld.generate_normals()
+				weld.commit(smooth)
+				smooth.surface_set_material(surface, source_mesh.surface_get_material(surface))
+			_smoothed_meshes[source_mesh] = smooth
+		mesh_instance.mesh = _smoothed_meshes[source_mesh]
+		for surface in mesh_instance.mesh.get_surface_count():
+			var source := mesh_instance.mesh.surface_get_material(surface)
+			if not source is StandardMaterial3D or (source as StandardMaterial3D).albedo_texture != null:
+				continue
+			if not _foliage_materials.has(source):
+				var leafy := (source as StandardMaterial3D).duplicate() as StandardMaterial3D
+				leafy.albedo_texture = _leaf_grain
+				leafy.uv1_triplanar = true
+				leafy.uv1_world_triplanar = true
+				leafy.uv1_scale = Vector3.ONE * 0.6
+				# The leaf map averages about 0.65: lift the color back.
+				leafy.albedo_color = (source as StandardMaterial3D).albedo_color * 1.5
+				leafy.roughness = 0.88
+				leafy.metallic = 0.0
+				leafy.backlight_enabled = true
+				leafy.backlight = (source as StandardMaterial3D).albedo_color.darkened(0.35)
+				_foliage_materials[source] = leafy
+			mesh_instance.set_surface_override_material(surface, _foliage_materials[source])
 
 
 func _finish_stonework(root: Node3D) -> void:
