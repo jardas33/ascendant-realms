@@ -18,6 +18,11 @@ uniform float strip_width = 0.0;
 // tarn keeps open water nearly to its shore; it used to fade from 0.62, so
 // most of a lake showed the dark mud of its bed and read as a bog.
 uniform float bank_fade = 0.62;
+// Plan 347: rivers and tarns on snow maps are frozen. 1 draws ice: pale rime
+// along the shore, darker clear ice over the channel, white fracture lines
+// and wind-blown snow, and nothing moves. (Frostmere's "frozen river" was
+// open teal water.)
+uniform float frozen = 0.0;
 
 varying vec3 wpos;
 
@@ -89,5 +94,36 @@ void fragment() {
 	float hx = fbm(flow + vec2(e, 0.0));
 	float hz = fbm(flow + vec2(0.0, e));
 	vec3 n = normalize(vec3((ripple - hx) * 0.55, 1.0, (ripple - hz) * 0.55));
+	if (frozen > 0.5) {
+		vec2 iw = rc;
+		// Clear black ice over the deep channel, milky rime toward the shore.
+		vec3 clear_ice = vec3(0.13, 0.27, 0.37);
+		vec3 rime = vec3(0.76, 0.84, 0.90);
+		float milk = smoothstep(0.4, 0.95, edge) * 0.75 + (fbm(iw * 0.18 + 31.0) - 0.35) * 0.4;
+		vec3 ice = mix(clear_ice, rime, clamp(milk, 0.0, 1.0));
+		// Trapped bubbles and frost blooms.
+		float bloom = smoothstep(0.62, 0.8, fbm(iw * 0.9 + 7.0));
+		ice = mix(ice, rime * 1.05, bloom * 0.22);
+		// Fracture lines: thin white seams where two noises cross a level.
+		float c1 = 1.0 - smoothstep(0.0, 0.025, abs(fbm(iw * 0.11 + 3.0) - 0.5));
+		float c2 = 1.0 - smoothstep(0.0, 0.018, abs(fbm(iw * 0.33 + 17.0) - 0.5));
+		float crack = max(c1, c2 * 0.7);
+		ice = mix(ice, vec3(0.90, 0.94, 0.98), crack * 0.75);
+		// Snow blown across the ice in long drifts.
+		vec2 wind = mat2(vec2(0.86, 0.5), vec2(-0.5, 0.86)) * iw;
+		float drift = smoothstep(0.58, 0.8, fbm(vec2(wind.x * 0.07, wind.y * 0.32) + 41.0));
+		ice = mix(ice, vec3(0.90, 0.92, 0.96), drift * 0.6);
+		// A white frozen lip where the ice meets the bank.
+		float lip = smoothstep(bank_fade - 0.05, bank_fade + 0.12, edge);
+		ice = mix(ice, vec3(0.88, 0.91, 0.95), lip * 0.7);
+		ALBEDO = ice;
+		ALPHA = clamp(body * 1.08, 0.0, 1.0);
+		ROUGHNESS = mix(0.12, 0.8, max(drift, lip));
+		SPECULAR = 0.5;
+		float hx2 = fbm(iw * 0.5 + vec2(0.3, 0.0));
+		float h0 = fbm(iw * 0.5);
+		float hz2 = fbm(iw * 0.5 + vec2(0.0, 0.3));
+		n = normalize(vec3((h0 - hx2) * 0.25, 1.0, (h0 - hz2) * 0.25));
+	}
 	NORMAL = normalize((VIEW_MATRIX * vec4(n, 0.0)).xyz);
 }

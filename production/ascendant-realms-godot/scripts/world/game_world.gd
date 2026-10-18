@@ -1577,6 +1577,7 @@ func _build_rivers() -> void:
 			var water_material := ShaderMaterial.new()
 			water_material.shader = load(shader_path)
 			water_material.set_shader_parameter("strip_width", width)
+			water_material.set_shader_parameter("frozen", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
 			water.material_override = water_material
 		layer.add_child(water)
 		for sample in samples:
@@ -1606,6 +1607,10 @@ func _build_rivers() -> void:
 			# Pebbles under clear shallow water (a flat pale wash read as fog).
 			var shallow_material := ShaderMaterial.new()
 			shallow_material.shader = preload("res://assets/shaders/ford_shallows.gdshader")
+			if str(map.get("theme", "")) == "snow":
+				shallow_material.set_shader_parameter("frozen", 1.0)
+				shallow_material.set_shader_parameter("bed_light", Color(0.66, 0.68, 0.70))
+				shallow_material.set_shader_parameter("bed_dark", Color(0.40, 0.43, 0.47))
 			shallows.material_override = shallow_material
 		layer.add_child(shallows)
 	# Stepping stones at each ford.
@@ -1981,6 +1986,8 @@ func _build_lakes() -> void:
 				# sort could put the shore's solid mud over the middle of the
 				# lake as a dark blot.
 				water_material.render_priority = 1
+				if str(map.get("theme", "")) == "snow":
+					water_material.set_shader_parameter("frozen", 1.0)
 				if str(map.get("theme", "")) == "tropical":
 					# Bright lagoons on the tropical isles.
 					water_material.set_shader_parameter("shallow_tint", Color(0.18, 0.60, 0.58))

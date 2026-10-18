@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 347 (done): rivers and tarns on snow maps are frozen**
+  - Frostmere Basin's map text promises a frozen river, but it rendered as open teal water over a greenish cobble ford, cutting a dark band through the snowfield.
+  - On snow maps the river and tarn surface is now ice: dark clear ice over the channel, milky rime toward the banks, white fracture lines, wind-blown snow drifts and a frozen lip at the shore, with nothing moving. Fords show grey stones under clear ice with a dusting of snow.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 346 (done): a crowned victory screen with pictured spoils**
   - The result screen was a bare title on a black slab, and each find was a line of text with a small diamond.
   - VICTORY now has laurel sprigs on both sides and a drop shadow, and every result gets a gilt rule with a center diamond under the title. Each find shows its own picture in a rarity-framed tile, and the experience bar has a lit bevel.

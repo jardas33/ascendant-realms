@@ -10,6 +10,9 @@ uniform vec3 bed_light : source_color = vec3(0.62, 0.58, 0.47);
 uniform vec3 bed_dark : source_color = vec3(0.38, 0.37, 0.32);
 uniform float pebble_scale = 2.6;
 uniform float opacity = 0.82;
+// Plan 347: on snow maps the ford is frozen over: stones seen through clear
+// ice under a dusting of snow, with no moving light.
+uniform float frozen = 0.0;
 
 vec2 hash2(vec2 p) {
 	vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
@@ -80,6 +83,11 @@ void fragment() {
 	float ripple = sin(c.x * 1.7 + t + sin(c.y * 1.3 - t * 0.7) * 1.4) * sin(c.y * 1.9 - t * 0.8 + sin(c.x * 1.1 + t * 0.5) * 1.6);
 	float caustic = pow(clamp(ripple * 0.5 + 0.5, 0.0, 1.0), 8.0);
 	vec3 seen = mix(bed, bed * water_tint * 2.1, 0.55) + vec3(0.85, 0.95, 0.9) * caustic * 0.07;
+	if (frozen > 0.5) {
+		float dust = smoothstep(0.45, 0.75, vnoise(w * 0.35) * 0.6 + vnoise(w * 1.6 + 9.0) * 0.4);
+		seen = mix(bed * vec3(0.78, 0.86, 0.94), vec3(0.70, 0.80, 0.88), 0.45);
+		seen = mix(seen, vec3(0.90, 0.92, 0.96), dust * 0.7);
+	}
 	ALBEDO = seen;
 	ROUGHNESS = 0.18;
 	SPECULAR = 0.55;
