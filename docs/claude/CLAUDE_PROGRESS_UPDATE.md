@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 350 (done): desert ridges are clean sandstone**
+  - On Dune Sea Bastion every rock pillar in a ridge wore a dark olive cap: the greyed moss in the rock texture, warmed by the sand tint.
+  - On desert and badlands maps the rock texture is now bleached (no color, dark patches lifted toward the stone), so ridges read as sandstone. Other themes keep the old greying.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 349 (done): snow hills have shaded flanks**
   - From the battle camera a snow hill read as a flat white mat lying on the snowfield, with almost no sense of height.
   - Hill vertices on snow maps now carry slope shading: steep flanks turned away from the sun take a cool blue shadow, and sunlit flanks warm slightly, so each hill reads as raised ground. Shape, height and pathing are unchanged.

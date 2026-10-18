@@ -2981,7 +2981,13 @@ func _greyed_texture(texture: Texture2D) -> Texture2D:
 		return texture
 	if image.is_compressed():
 		image.decompress()
-	image.adjust_bcs(1.0, 1.0, 0.18)
+	if str(map.get("theme", "")) in ["desert", "badlands"]:
+		# Plan 350: in sand country the greyed moss, warmed by the sand tint,
+		# still sat on every pillar as dark olive caps. There the stone is
+		# bleached: no colour and the dark patches lifted toward the rock.
+		image.adjust_bcs(1.18, 0.72, 0.0)
+	else:
+		image.adjust_bcs(1.0, 1.0, 0.18)
 	image.generate_mipmaps()
 	var greyed := ImageTexture.create_from_image(image)
 	_greyed_textures[texture] = greyed
