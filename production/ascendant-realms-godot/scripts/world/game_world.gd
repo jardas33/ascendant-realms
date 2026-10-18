@@ -1011,6 +1011,15 @@ func out_of_crags(pos: Vector3, margin: float = 2.6, from: Vector3 = Vector3.INF
 		return best
 	return pos
 
+## Plan 368: the tone of ridge rock. Themes without a rock tone (green,
+## highland, tropical, wet) drew their ridges at the stone texture's full
+## brightness: pale cardboard cliffs on green ground. They are weathered
+## field stone now, darker and damper on the wetlands.
+func _ridge_tone() -> Color:
+	if _scorched_tone("rock") != Color.WHITE:
+		return _scorched_tone("rock")
+	return Color(0.62, 0.64, 0.58) if str(map.get("theme", "")) == "wetland" else Color(0.76, 0.75, 0.70)
+
 ## Scorched and snowbound themes have no moss and no green: ridge rock, hill
 ## turf and trees are toned to the ground they stand on.
 func _scorched_tone(what: String) -> Color:
@@ -1126,7 +1135,7 @@ func _build_crags() -> void:
 						# green moss among the drifts.
 						_prep_decor(rock, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(rock))
 					else:
-						_prep_decor(rock, _scorched_tone("rock"))
+						_prep_decor(rock, _ridge_tone())
 					# Unlike scattered boulders, a ridge needs its shadow to read as a wall.
 					for mesh in rock.find_children("*", "MeshInstance3D", true, false):
 						(mesh as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -1145,7 +1154,7 @@ func _build_crags() -> void:
 				if snowbound:
 					_prep_decor(boulder, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(boulder))
 				else:
-					_prep_decor(boulder, _scorched_tone("rock"))
+					_prep_decor(boulder, _ridge_tone())
 			if authored_map:
 				var built := holder.get_child_count()
 				crag_batcher.batch(holder)
