@@ -2121,38 +2121,43 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 	rng.seed = 7741
 	var tool := SurfaceTool.new()
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-	# Straw-green rushes, darker at the waterline (the near-black roots and
-	# olive tips read as black scribbles along the shore from the camera).
-	var root_tone := Color(0.26, 0.32, 0.14)
-	var tip_tone := Color(0.70, 0.72, 0.38)
-	var head_tone := Color(0.42, 0.26, 0.14)
-	for blade in 11:
-		var foot := Vector3(rng.randf_range(-0.38, 0.38), 0.0, rng.randf_range(-0.38, 0.38))
-		var tall := rng.randf_range(1.2, 2.3)
-		var tip := foot + Vector3(rng.randf_range(-0.28, 0.28), tall, rng.randf_range(-0.28, 0.28))
-		# Two crossed slivers per stalk, so it shows from every side.
+	# Straw-green rushes, darker at the waterline. Plan 379: slim curved
+	# blades in two segments, lit by reed_bed.gdshader from both sides (flat
+	# slivers with a fixed normal drew black from half the angles).
+	var root_tone := Color(0.30, 0.36, 0.17)
+	var mid_tone := Color(0.50, 0.56, 0.26)
+	var tip_tone := Color(0.74, 0.74, 0.42)
+	var head_tone := Color(0.40, 0.25, 0.13)
+	for blade in 16:
+		var foot := Vector3(rng.randf_range(-0.36, 0.36), 0.0, rng.randf_range(-0.36, 0.36))
+		var tall := rng.randf_range(1.0, 2.3)
+		var lean := Vector3(rng.randf_range(-1.0, 1.0), 0.0, rng.randf_range(-1.0, 1.0)).normalized() * rng.randf_range(0.15, 0.55)
+		# The blade arches: little lean low down, most of it near the tip.
+		var mid := foot + Vector3(0.0, tall * 0.55, 0.0) + lean * 0.3
+		var tip := foot + Vector3(0.0, tall, 0.0) + lean
+		var width := rng.randf_range(0.035, 0.055)
 		for turn in 2:
-			var side := Vector3(0.07, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, 0.07)
-			for corner in [[foot - side, root_tone], [foot + side, root_tone], [tip, tip_tone]]:
+			var side := Vector3(width, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, width)
+			var mside := side * 0.7
+			for corner in [[foot - side, root_tone], [foot + side, root_tone], [mid + mside, mid_tone],
+					[foot - side, root_tone], [mid + mside, mid_tone], [mid - mside, mid_tone],
+					[mid - mside, mid_tone], [mid + mside, mid_tone], [tip, tip_tone]]:
 				tool.set_normal(Vector3.UP)
 				tool.set_color(corner[1])
 				tool.add_vertex(corner[0])
-		# One stalk in three carries a reedmace head.
-		if blade % 3 == 0:
-			var low := foot.lerp(tip, 0.74)
-			var high := foot.lerp(tip, 0.93)
+		# One stalk in four carries a reedmace head, on its upper segment.
+		if blade % 4 == 0:
+			var low := mid.lerp(tip, 0.55)
+			var high := mid.lerp(tip, 0.85)
 			for turn in 2:
-				var side := Vector3(0.055, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, 0.055)
+				var side := Vector3(0.05, 0.0, 0.0) if turn == 0 else Vector3(0.0, 0.0, 0.05)
 				for corner in [low - side, low + side, high + side, low - side, high + side, high - side]:
 					tool.set_normal(Vector3.UP)
 					tool.set_color(head_tone)
 					tool.add_vertex(corner)
 	var clump := tool.commit()
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.vertex_color_is_srgb = true
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.roughness = 1.0
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://assets/shaders/reed_bed.gdshader")
 	var spots: Array = []
 	for lake in lakes:
 		var centre: Vector2 = lake["at"]
