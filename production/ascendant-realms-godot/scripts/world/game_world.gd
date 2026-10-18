@@ -1057,6 +1057,7 @@ func _build_crags() -> void:
 	var crag_variants: Dictionary = {}
 	var authored_map := bool(map.get("authored", false))
 	var snowbound := str(map.get("theme", "")) == "snow"
+	_crag_stone_pass = true
 	for i in crags.size():
 		var pos: Vector3 = crags[i]["pos"]
 		var half: Vector2 = crags[i]["half"]
@@ -1098,15 +1099,26 @@ func _build_crags() -> void:
 				for iz in nz:
 					var rock: Node3D = load(models[0]).instantiate()
 					holder.add_child(rock)
-					ModelUtils.scale_to_height(rock, rng.randf_range(4.6, 6.6))
+					# Plan 363: every rock stood 4.6 to 6.6 m, upright and
+					# unstretched, so a ridge read as a carpet of one blob.
+					# Now most rocks are middling and a few rise as spires, each
+					# is stretched and leans a little, and the rim steps down,
+					# so a ridge has a broken skyline.
+					var cx := -half.x + (float(ix) + 0.5) * cell.x
+					var cz := -half.y + (float(iz) + 0.5) * cell.y
+					var rim := maxf(absf(cx) / maxf(half.x, 0.1), absf(cz) / maxf(half.y, 0.1)) if nx * nz > 2 else 0.0
+					var tall := lerpf(3.6, 8.8, pow(rng.randf(), 1.7)) * lerpf(1.12, 0.72, rim * rim)
+					ModelUtils.scale_to_height(rock, tall)
+					var stretch := rng.randf_range(0.85, 1.32)
+					rock.scale *= Vector3(rng.randf_range(0.85, 1.12) / sqrt(stretch), stretch, rng.randf_range(0.85, 1.12) / sqrt(stretch))
+					rock.rotation = Vector3(rng.randf_range(-0.16, 0.16), rng.randf() * TAU, rng.randf_range(-0.16, 0.16))
 					var radius := ModelUtils.measure_radius(rock)
 					var fit := maxf(cell.x, cell.y) * 1.05
 					if radius > fit:
 						rock.scale *= fit / radius
 					ModelUtils.ground_model(rock)
-					rock.position = Vector3(-half.x + (float(ix) + 0.5) * cell.x + rng.randf_range(-0.4, 0.4), rock.position.y,
-						-half.y + (float(iz) + 0.5) * cell.y + rng.randf_range(-0.4, 0.4))
-					rock.rotation.y = rng.randf() * TAU
+					rock.position = Vector3(cx + rng.randf_range(-0.4, 0.4), rock.position.y - 0.25,
+						cz + rng.randf_range(-0.4, 0.4))
 					if snowbound:
 						# Under snow a ridge is snowed on along every ledge, as the
 						# lone boulders are (a negative height asks for the tree
@@ -1176,6 +1188,7 @@ func _build_crags() -> void:
 				holder.add_child(extra)
 				clear_ground_cover(pos + offset, thin + 1.5)
 		clear_ground_cover(pos, thin + 1.5)
+	_crag_stone_pass = false
 	# One merged mesh per crag, not one for all of them: a crag off screen is
 	# then culled instead of every ridge on the map being drawn every frame.
 	for holder in layer.get_children():
@@ -2881,7 +2894,7 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D, tint: Color = Color.
 		for surface in mesh.mesh.get_surface_count():
 			if mesh.get_surface_override_material(surface) != null:
 				continue
-			var source := mesh.mesh.surface_get_material(surface)
+			var source := _crag_stone_source(mesh.mesh.surface_get_material(surface))
 			var fixed := _foliage_wind_material(source, tint, tree_height) if tree_height != 0.0 else _dielectric_decor_material(source, tint)
 			if fixed != source:
 				mesh.set_surface_override_material(surface, fixed)
@@ -2984,6 +2997,32 @@ func _dielectric_decor_material(source: Material, tint: Color = Color.WHITE) -> 
 		copy.rim_tint = 0.75
 	_decor_material_cache[key] = copy
 	return copy
+
+## Plan 363: while ridges are built, their rocks take baked stone copies of
+## the rock textures (tools/crag_bake.py at the repository root). The bright
+## moss blobs of the originals read as the same dark cap on every rock of a
+## fifty-rock ridge. Volcanic ridges keep their basalt textures.
+const CRAG_TEXTURES := {
+	"highland_rock_cluster": "res://assets/environment/rocks/crag_highland_rock_cluster.png",
+	"mossy_boulder": "res://assets/environment/rocks/crag_mossy_boulder.png",
+}
+var _crag_stone_pass := false
+var _crag_stone_materials: Dictionary = {}
+
+func _crag_stone_source(source: Material) -> Material:
+	if not _crag_stone_pass or not source is StandardMaterial3D or str(map.get("theme", "")) == "volcanic":
+		return source
+	if _crag_stone_materials.has(source):
+		return _crag_stone_materials[source]
+	var standard := source as StandardMaterial3D
+	var stone: Material = source
+	for rock_name in CRAG_TEXTURES:
+		if standard.resource_path.contains(rock_name) and ResourceLoader.exists(CRAG_TEXTURES[rock_name]):
+			var copy := standard.duplicate() as StandardMaterial3D
+			copy.albedo_texture = load(CRAG_TEXTURES[rock_name])
+			stone = copy
+	_crag_stone_materials[source] = stone
+	return stone
 
 var _greyed_textures: Dictionary = {}
 const BASALT_TEXTURES := {
