@@ -2549,10 +2549,10 @@ static func theme(name: String) -> Dictionary:
 			"water": {"enabled": true, "deep": Color(0.05, 0.22, 0.34), "shallow": Color(0.16, 0.48, 0.58), "foam": Color(0.86, 0.95, 1.0)},
 		},
 		"verdant": {
-			"ground_tint": Color(0.82, 1.05, 0.78), "dirt_bias": -0.05, "rock_bias": -0.05, "snow": 0.0,
+			"ground_tint": Color(0.80, 0.96, 0.78), "dirt_bias": 0.03, "rock_bias": -0.05, "snow": 0.0,
 			"rock_tint": Color(0.58, 0.66, 0.5),
 			"fog_color": Color(0.66, 0.8, 0.62), "fog_density": 0.00099,
-			"sun_color": Color(1.0, 0.98, 0.86), "sun_energy": 1.2, "ambient_energy": 0.65,
+			"sun_color": Color(1.0, 0.98, 0.86), "sun_energy": 1.12, "ambient_energy": 0.65,
 			"fog_aerial_perspective": 0.35, "ssao": true, "glow": true, "sun_pitch": -40.0,
 			"grade_contrast": 1.07, "grade_saturation": 0.86, "grade_brightness": 1.0,
 			"decor_density": 1.35,
