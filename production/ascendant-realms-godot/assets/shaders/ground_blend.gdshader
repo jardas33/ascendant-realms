@@ -235,7 +235,7 @@ void fragment() {
 	// dry-earth clearings (dirt_bias pushes toward a sandy/parched biome)
 	vec3 dirt = volcanic_surface > 0.5
 		? texture(tex_volcanic, mirrored_uv(wxz * tile_volcanic * 0.62 + 0.23)).rgb * vec3(1.28, 1.04, 0.86)
-		: texture(tex_dirt, wxz * tile_dirt * 0.55).rgb;
+		: mix(texture(tex_dirt, wxz * tile_dirt * 0.55).rgb, texture(tex_dirt, rot * wxz * tile_dirt * 0.47 + 0.29).rgb, tile_mix);
 	float dirt_m = clamp(smoothstep(0.66, 0.82, fbm(wxz * 0.017 + 60.0)) + dirt_bias, 0.0, 1.0);
 	ground = mix(ground, dirt, dirt_m * 0.85);
 
@@ -248,6 +248,22 @@ void fragment() {
 		: mix(texture(tex_rock, wxz * tile_rock).rgb, texture(tex_rock, rot * wxz * tile_rock * 0.81 + 0.43).rgb, tile_mix);
 	float rock_m = clamp(smoothstep(0.62, 0.80, fbm(wxz * 0.02 + 21.0)) + rock_bias, 0.0, 1.0);
 	ground = mix(ground, rock, rock_m);
+	// Plan 364: on the badlands (rock_bias high) one flagstone pattern of
+	// cracked earth covered the whole field like paving. Broad hard-pan
+	// patches now smooth the cracks away, the plates shrink and grow from
+	// place to place, and the earth drifts between ochre and rust.
+	if (sand_surface > 0.5 && sand_ripple < 0.5) {
+		float pan = smoothstep(0.50, 0.70, fbm2(wxz * 0.013 + 44.0));
+		vec3 small_plates = mix(texture(tex_rock, rot * wxz * tile_rock * 1.7 + 0.13).rgb, texture(tex_rock, turn * wxz * tile_rock * 2.1 + 0.71).rgb, tile_mix);
+		float fine = smoothstep(0.45, 0.7, fbm2(wxz * 0.019 + 63.0)) * (1.0 - pan);
+		ground = mix(ground, mix(ground, small_plates, rock_m), fine);
+		float gl = dot(ground, vec3(0.333));
+		vec3 hardpan = sand_color / max(dot(sand_color, vec3(0.333)), 0.05) * mix(gl, 0.42, 0.55) * mix(0.95, 1.05, fbm(wxz * 0.11 + 8.0));
+		ground = mix(ground, hardpan, pan * 0.6);
+		// Darker sun-baked and paler dusty stretches give the field depth.
+		ground *= mix(0.86, 1.08, smoothstep(0.25, 0.75, fbm2(wxz * 0.021 + 17.0)));
+		ground *= mix(vec3(1.07, 0.99, 0.88), vec3(0.93, 0.95, 1.0), smoothstep(0.3, 0.7, fbm2(wxz * 0.0075 + 90.0)));
+	}
 
 	// worn roads between the path segments
 	float pd = 1e9;
