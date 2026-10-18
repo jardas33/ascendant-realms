@@ -747,7 +747,12 @@ func _build_model() -> void:
 		if recorder and OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1":
 			recorder.record_resource_load(path, "unit._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
-		ModelUtils.setup_character_for_movement(m, _visual_height)
+		ModelUtils.scale_to_height(m, _visual_height)
+		# Plan 361: ground the feet on the unit's own floor, not on world y 0.
+		# spawn_unit lifts the unit 0.1 m before configure, and the unit is held
+		# at y 0 afterward, so grounding to world 0 left every model 10 cm under
+		# the ground.
+		ModelUtils.ground_model(m, global_position.y if is_inside_tree() else 0.0)
 		_drop_placeholder_armor(m)
 		if _model_faces_backwards(m, path):
 			m.rotate_y(PI)
