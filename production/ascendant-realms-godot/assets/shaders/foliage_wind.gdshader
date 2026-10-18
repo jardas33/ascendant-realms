@@ -106,6 +106,10 @@ void fragment() {
 		base = mix(base, base * own * mix(0.88, 1.22, clumps), leafy);
 		// The gaps between leaf clusters hold shade: sky light is cut there.
 		leaf_ao = mix(1.0, mix(0.35, 1.0, smoothstep(0.25, 0.7, clumps)), leafy);
+		// Plan 356: under snow the leaves kept their summer green. Frost
+		// greys and darkens them.
+		float frost_l = dot(base, vec3(0.299, 0.587, 0.114));
+		base = mix(base, mix(base, vec3(frost_l) * vec3(0.86, 0.95, 1.0), 0.55) * 0.82, leafy * snow);
 	}
 	float bark = (has_texture && !use_vertex_color) ? (1.0 - smoothstep(bark_top * 0.6, bark_top, v_h)) * (1.0 - leafless) : 0.0;
 	float bark_l = dot(base, vec3(0.299, 0.587, 0.114));
@@ -113,8 +117,12 @@ void fragment() {
 	vec3 tint = mix(albedo_color.rgb, vec3(0.94), bark);
 	ALBEDO = base * tint * mix(mix(0.70, 1.08, smoothstep(0.1, 0.95, v_h)), 1.0, leafless);
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
-	float lying = snow * smoothstep(0.15, 0.75, dot(normalize(NORMAL), up_view)) * smoothstep(0.25, 0.7, v_h);
-	ALBEDO = mix(ALBEDO, vec3(0.90, 0.93, 0.98), lying * 0.85);
+	// Plan 356: snow lay as flat white sheets with hard edges. It now drifts
+	// in patches, thin at the rim and thick in the hollows that face the sky,
+	// and it is shaded a little (no snow is paper white in daylight).
+	float drift = leaf_noise(v_wp * 1.3) * 0.65 + leaf_noise(v_wp * 4.2) * 0.35;
+	float lying = snow * smoothstep(0.3, 0.9, dot(normalize(NORMAL), up_view) + (drift - 0.5) * 0.7) * smoothstep(0.25, 0.7, v_h);
+	ALBEDO = mix(ALBEDO, vec3(0.80, 0.84, 0.91) * mix(0.86, 1.04, drift), lying * 0.8);
 	ROUGHNESS = roughness_value;
 	SPECULAR = 0.3;
 	AO = leaf_ao;
