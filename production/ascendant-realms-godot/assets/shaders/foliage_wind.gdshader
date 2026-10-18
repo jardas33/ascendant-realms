@@ -109,7 +109,7 @@ void fragment() {
 		// Plan 356: under snow the leaves kept their summer green. Frost
 		// greys and darkens them.
 		float frost_l = dot(base, vec3(0.299, 0.587, 0.114));
-		base = mix(base, mix(base, vec3(frost_l) * vec3(0.86, 0.95, 1.0), 0.55) * 0.82, leafy * snow);
+		base = mix(base, mix(base, vec3(frost_l) * vec3(0.86, 0.95, 1.0), 0.7) * 0.8, leafy * snow);
 	}
 	float bark = (has_texture && !use_vertex_color) ? (1.0 - smoothstep(bark_top * 0.6, bark_top, v_h)) * (1.0 - leafless) : 0.0;
 	float bark_l = dot(base, vec3(0.299, 0.587, 0.114));
@@ -122,6 +122,9 @@ void fragment() {
 	// and it is shaded a little (no snow is paper white in daylight).
 	float drift = leaf_noise(v_wp * 1.3) * 0.65 + leaf_noise(v_wp * 4.2) * 0.35;
 	float lying = snow * smoothstep(0.3, 0.9, dot(normalize(NORMAL), up_view) + (drift - 0.5) * 0.7) * smoothstep(0.25, 0.7, v_h);
+	// (Broad leaf cards face the sky square on: without this they were all
+	// fully snowed, one white sheet per crown.)
+	lying *= smoothstep(0.18, 0.58, drift);
 	ALBEDO = mix(ALBEDO, vec3(0.80, 0.84, 0.91) * mix(0.86, 1.04, drift), lying * 0.8);
 	ROUGHNESS = roughness_value;
 	SPECULAR = 0.3;
