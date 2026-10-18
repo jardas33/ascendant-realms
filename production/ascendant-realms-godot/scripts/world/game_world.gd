@@ -1984,7 +1984,9 @@ func _build_hills() -> void:
 					# Snowed on like the ridges.
 					_prep_decor(rock, Color(0.86, 0.88, 0.94), -ModelUtils.measure_height(rock))
 				else:
-					_prep_decor(rock, _scorched_tone("rock"))
+					# Plan 377: weathered field stone, as the ridges (plan 368);
+					# on green hills the outcrops stood chalk-white.
+					_prep_decor(rock, _ridge_tone())
 		# (On the tropical isles the hilltops grow palms: pines stood there
 		# among the lagoons.)
 		var hill_trees: Array = _theme_tree_paths([WOOD_TREES[0]])
