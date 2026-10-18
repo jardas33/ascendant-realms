@@ -37,6 +37,19 @@ uniform float bark_top = 0.34;
 
 varying float v_h;
 varying float v_seed;
+varying vec3 v_wp;
+
+// Plan 355: value noise for leaf-scale light and shade in the crowns.
+float leaf_hash(vec3 p) {
+	return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+}
+float leaf_noise(vec3 p) {
+	vec3 i = floor(p);
+	vec3 f = fract(p);
+	f = f * f * (3.0 - 2.0 * f);
+	return mix(mix(mix(leaf_hash(i), leaf_hash(i + vec3(1, 0, 0)), f.x), mix(leaf_hash(i + vec3(0, 1, 0)), leaf_hash(i + vec3(1, 1, 0)), f.x), f.y),
+		mix(mix(leaf_hash(i + vec3(0, 0, 1)), leaf_hash(i + vec3(1, 0, 1)), f.x), mix(leaf_hash(i + vec3(0, 1, 1)), leaf_hash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
+}
 
 void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
@@ -49,6 +62,7 @@ void vertex() {
 	bend += vec3(sin(TIME * 4.3 + wp.y * 2.1 + wp.x * 1.7), sin(TIME * 3.7 + wp.z * 2.3) * 0.4, cos(TIME * 4.9 + wp.x * 1.9)) * flutter * leaf * (0.5 + 0.5 * gust);
 	VERTEX += inverse(mat3(MODEL_MATRIX)) * bend;
 	v_h = h;
+	v_wp = wp;
 	v_seed = fract(sin(dot(origin.xz, vec2(12.9898, 78.233))) * 43758.5453);
 	UV = UV * uv_scale.xy;
 }
@@ -81,6 +95,18 @@ void fragment() {
 		vec3 dead = withered_color * mix(0.85, 1.15, v_seed) * clamp(l * 2.4, 0.4, 1.0);
 		base = mix(base, dead, green * withered);
 	}
+	// Plan 355: a wood was one pale green mass, every crown the same smooth
+	// tint. Each tree now has its own green (darker or lighter, yellower or
+	// bluer), and the leaves catch the light in clumps.
+	float leaf_ao = 1.0;
+	if (leafless < 0.5 && withered < 0.5 && autumn < 0.5) {
+		float leafy = smoothstep(0.0, 0.05, base.g - base.r) * smoothstep(0.3, 0.6, v_h);
+		vec3 own = mix(vec3(0.78, 0.86, 0.76), vec3(1.08, 1.06, 0.80), v_seed);
+		float clumps = leaf_noise(v_wp * 0.9) * 0.7 + leaf_noise(v_wp * 3.4) * 0.3;
+		base = mix(base, base * own * mix(0.88, 1.22, clumps), leafy);
+		// The gaps between leaf clusters hold shade: sky light is cut there.
+		leaf_ao = mix(1.0, mix(0.35, 1.0, smoothstep(0.25, 0.7, clumps)), leafy);
+	}
 	float bark = (has_texture && !use_vertex_color) ? (1.0 - smoothstep(bark_top * 0.6, bark_top, v_h)) * (1.0 - leafless) : 0.0;
 	float bark_l = dot(base, vec3(0.299, 0.587, 0.114));
 	base = mix(base, bark_color * clamp(bark_l * 2.2, 0.45, 1.25), bark * 0.85);
@@ -91,5 +117,7 @@ void fragment() {
 	ALBEDO = mix(ALBEDO, vec3(0.90, 0.93, 0.98), lying * 0.85);
 	ROUGHNESS = roughness_value;
 	SPECULAR = 0.3;
+	AO = leaf_ao;
+	AO_LIGHT_AFFECT = 0.15;
 	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h) * (1.0 - lying) * (1.0 - leafless) * (1.0 - withered);
 }
