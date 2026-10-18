@@ -1786,6 +1786,11 @@ func _bank_material() -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://assets/shaders/river_bank.gdshader")
 	material.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
+	if str(map.get("theme", "")) == "tropical":
+		# Plan 378: pale sand shores and shallows on the tropical isles, not
+		# dark mud round a bright lagoon.
+		material.set_shader_parameter("mud", Color(0.46, 0.41, 0.30))
+		material.set_shader_parameter("silt", Color(0.62, 0.56, 0.42))
 	return material
 
 ## A flat strip `half_width` either side of a line of points, at height `y`.
@@ -2037,13 +2042,29 @@ func _build_lakes() -> void:
 			var grow := 1.45 if pass_index == 0 else 1.0
 			var tool := SurfaceTool.new()
 			tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-			var steps := 40
+			var steps := 72
 			for k in steps:
 				var a0 := TAU * float(k) / float(steps)
 				var a1 := TAU * float(k + 1) / float(steps)
 				var r0 := MapDefs.wood_reach(lake, a0) * grow
 				var r1 := MapDefs.wood_reach(lake, a1) * grow
 				var y := 0.04 if pass_index == 0 else 0.09
+				if pass_index == 0:
+					# Plan 378: the shore is solid wet ground right out to the
+					# waterline and fades only beyond it. It faded from the
+					# middle, so the meadow (flowers and all) showed through
+					# the shallows and the water ended in a hard polygon.
+					var in0 := Vector2(cos(a0) * radii.x * r0, sin(a0) * radii.y * r0) / grow
+					var in1 := Vector2(cos(a1) * radii.x * r1, sin(a1) * radii.y * r1) / grow
+					var out0 := in0 * grow
+					var out1 := in1 * grow
+					for corner in [[Vector2.ZERO, 1.0], [in0, 1.0], [in1, 1.0], [in0, 1.0], [out0, 0.0], [out1, 0.0], [in0, 1.0], [out1, 0.0], [in1, 1.0]]:
+						var at: Vector2 = corner[0]
+						tool.set_normal(Vector3.UP)
+						tool.set_color(Color(1.0, 1.0, 1.0, float(corner[1])))
+						tool.set_uv(Vector2(float(k) / float(steps), 0.5))
+						tool.add_vertex(Vector3(centre.x + at.x, y, centre.y + at.y))
+					continue
 				# Wound so the face looks up.
 				for corner in [[Vector2.ZERO, 0.5, 1.0], [Vector2(cos(a0) * radii.x * r0, sin(a0) * radii.y * r0), 1.0, 0.0], [Vector2(cos(a1) * radii.x * r1, sin(a1) * radii.y * r1), 1.0, 0.0]]:
 					var offset: Vector2 = corner[0]
