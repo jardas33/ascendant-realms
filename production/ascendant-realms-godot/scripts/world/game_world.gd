@@ -7057,7 +7057,10 @@ func spawn_collapse_fx(pos: Vector3, footprint: float) -> void:
 	# would tell the player where a fight they cannot see was decided.
 	if player_visibility_state_at(pos) != VISIBILITY_CURRENTLY_VISIBLE:
 		return
-	CombatVfx.collapse(_fx_container, pos, footprint)
+	# Plan 359: a ruin is built of the land's stone: sandstone in the desert,
+	# red in the badlands, dark on burned ground, cold under snow.
+	var ruin_tints := {"desert": Color(1.40, 1.06, 0.60), "badlands": Color(1.32, 0.86, 0.60), "volcanic": Color(0.66, 0.58, 0.56), "ashen": Color(0.84, 0.82, 0.84), "snow": Color(0.94, 0.98, 1.06)}
+	CombatVfx.collapse(_fx_container, pos, footprint, ruin_tints.get(str(map.get("theme", "")), Color.WHITE))
 	emit_signal("camera_shake", 0.7, pos)
 
 func spawn_death_fx(pos: Vector3) -> void:

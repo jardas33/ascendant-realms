@@ -632,7 +632,7 @@ static func _ruin_smoke(parent: Node3D, pos: Vector3, footprint: float) -> void:
 static func _mound_height(r: float, footprint: float) -> float:
 	return clampf(footprint * 0.16, 0.3, 1.0) * (1.0 - r * r)
 
-static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
+static func collapse(parent: Node3D, pos: Vector3, footprint: float, stone_tint: Color = Color.WHITE) -> void:
 	_ensure()
 	for k in 3:
 		var off := Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)) * footprint * 0.4
@@ -734,6 +734,8 @@ static func collapse(parent: Node3D, pos: Vector3, footprint: float) -> void:
 		var turn := Basis.from_euler(Vector3(randf_range(-0.45, 0.45), randf() * TAU, randf_range(-0.45, 0.45)))
 		var soot := randf()
 		var shade := Color(0.80, 0.77, 0.72).lerp(Color(0.24, 0.22, 0.21), pow(soot, 0.8))
+		# Plan 359: the stone of the land (gray highland rock lay on the sand).
+		shade = Color(shade.r * stone_tint.r, shade.g * stone_tint.g, shade.b * stone_tint.b)
 		groups[i % 3].append([Transform3D(turn * Basis.from_scale(size), at), shade])
 	for g in groups.size():
 		var stones := MultiMesh.new()
