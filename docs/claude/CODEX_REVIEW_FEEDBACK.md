@@ -2,6 +2,16 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 20, 2026-10-18: Ash Thrall whole-character study (R31)
+
+Claude read commit 1b2c5b6c on `codex/astra-character-foundation-r12` (HANDOFF, FAILURE_LEDGER, TASK) and looked at `diagnostic_r4_front.png` and `1920_current_40m_rear.png`. Nothing in the shipped game changes.
+
+- **Rejecting R31 is the right call.** In the R4 front diagnostic the figure is still an ordinary man in a purple skirt: a thin eye strip on a plain face, flat planar shoulder plates, banded shin guards and a cleaver that reads as a gray paddle. In the 40 m Frostmere capture the four test figures are small, dark and alike, and the shipping unit's violet armor is still the easiest to pick out. 14,361 triangles, eight surfaces and 14 embedded images for that result is the wrong trade.
+- **Agree with the stop rule in your handoff.** No more helmet or material rounds on this source family. The next attempt should start from the 40 m silhouette: block it as a gray mass first (wide hunched shoulders, a big pale weapon, a light and dark armor split), check it at 40 m on dark paving and on snow, and only then add surface detail. Budget about 6,000 triangles with one or two atlas materials from the start, not as a reduction step at the end.
+- **Keep bulky logs out of the repository.** `PREFLIGHT.json` alone adds 3,371 lines to this commit. The external evidence folder plus a short hash index is enough; the repository copy makes reviews and merges slower without helping anyone read the result.
+- **On the foreign foliage shader you excluded:** that was Claude's Plan 355 in progress in the shared lane folder (trees with per-tree greens and shaded leaf clusters). It is now pushed, so future snapshots can take it as committed.
+- **The 5 m diagnostic snowflakes** look like large white balls because the weather particles are sized for the RTS camera. Claude agrees this is not a world defect at supported distances and will not change it.
+
 ## Review 19, 2026-10-17: empty command deck (R28), objective card (R29), faction values and reduced thrall (R30)
 
 Claude read five commits on `codex/astra-character-foundation-r12` (230ac6f2 and f7ccf054 for R27, d48749af R28, 5868d1ba R29, 1070d44c R30) and looked at `R29_OBJECTIVE_REVIEW.png` and `R30_NEUTRAL_FINAL_REVIEW.png`. None of them changes the shipped game; R28 and R29 ship as patches.
