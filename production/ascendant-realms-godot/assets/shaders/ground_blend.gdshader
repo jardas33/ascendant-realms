@@ -19,6 +19,9 @@ uniform float tile_rock = 0.09;
 uniform float tile_snow = 0.016;
 uniform float tile_volcanic = 0.032;
 uniform float volcanic_surface = 0.0;
+// Plan 372: 1 on a hill wearing the ground material. Its relief bends the
+// hill's own normal instead of a flat one, so the hill keeps its shading.
+uniform float mesh_normals = 0.0;
 // Sand and bare earth (desert, badlands): the grass layers are replaced by
 // this colour, broken by broad dune swells, wind ripples (sand_ripple) and
 // the grain of the dirt texture. 0 keeps the grass.
@@ -499,10 +502,14 @@ void fragment() {
 		float hx = swell((wxz + vec2(e, 0.0)) * relief_scale * 6.0);
 		float hz = swell((wxz + vec2(0.0, e)) * relief_scale * 6.0);
 		float k = relief_strength * (1.0 - 0.7 * clamp(road, 0.0, 1.0)) * 2.2 * (1.0 - pool);
-		vec3 n_world = normalize(vec3(-(hx - hc) * k, 1.0, -(hz - hc) * k));
+		vec3 base_n = mesh_normals > 0.5 ? normalize((INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz) : vec3(0.0, 1.0, 0.0);
+		vec3 n_world = normalize(base_n + vec3(-(hx - hc) * k, 0.0, -(hz - hc) * k));
 		NORMAL = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
 		// Cavity darkening in the hollows of the relief.
 		ALBEDO *= mix(0.88, 1.03, smoothstep(-0.6, 0.6, hc));
+		// A hill's flanks are a little darker and duller than the field at
+		// its foot (packed and weathered), so a sunlit slope does not wash out.
+		ALBEDO *= 1.0 - 0.75 * clamp(1.0 - base_n.y, 0.0, 0.4) * mesh_normals;
 	}
 	if (field_half > 0.0) {
 		float past = max(abs(wxz.x), abs(wxz.y)) - field_half + (fbm(wxz * 0.11 + 5.0) - 0.5) * 3.0;

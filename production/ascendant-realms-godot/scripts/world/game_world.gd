@@ -1922,6 +1922,13 @@ func _build_hills() -> void:
 		mound.name = "Hill"
 		mound.mesh = tool.commit()
 		mound.material_override = turf
+		# Plan 372: a hill was a smooth blob in its own material, cut off from
+		# the ground at its foot by a hard seam. It wears the battlefield's
+		# own ground now (laid in world space, so the foot runs on into the
+		# field), with its slopes still lit as a hill.
+		var hill_ground := _hill_ground_material()
+		if hill_ground != null and not mesa and not snow_hill:
+			mound.material_override = hill_ground
 		if mesa:
 			# Bare rock, not sand: the stone texture under the banded colours.
 			var stone := turf.duplicate() as StandardMaterial3D
@@ -1974,6 +1981,17 @@ func _build_hills() -> void:
 				_prep_decor(pine, Color.WHITE, ModelUtils.measure_height(pine))
 		load("res://scripts/world/static_batcher.gd").batch(dress)
 		clear_ground_cover(Vector3(centre.x, 0.0, centre.y), maxf(radii.x, radii.y) * 1.15)
+
+var _hill_ground: ShaderMaterial = null
+
+func _hill_ground_material() -> ShaderMaterial:
+	if _hill_ground == null:
+		var scenery := get_node_or_null("Scenery")
+		var ground = scenery.get("_ground_material") if scenery != null else null
+		if ground is ShaderMaterial:
+			_hill_ground = (ground as ShaderMaterial).duplicate() as ShaderMaterial
+			_hill_ground.set_shader_parameter("mesh_normals", 1.0)
+	return _hill_ground
 
 ## Tarns: still water inside an uneven shore, with the same wet earth round it.
 func _build_lakes() -> void:
