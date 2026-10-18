@@ -52,6 +52,8 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 	_material.set_shader_parameter("clear_mask", _mask_texture)
 	_material.set_shader_parameter("mask_origin", Vector2(-_half, -_half))
 	_material.set_shader_parameter("mask_size", Vector2(_half * 2.0, _half * 2.0))
+	# Plan 366: keep tufts off the bog pools the ground shader lays.
+	_material.set_shader_parameter("bog_surface", 1.0 if theme_name == "wetland" else 0.0)
 
 	var tuft := _make_tuft_mesh(false)
 	var flower := _make_tuft_mesh(true)

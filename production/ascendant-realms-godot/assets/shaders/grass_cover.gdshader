@@ -60,6 +60,9 @@ float cloud_shadow(vec2 xz, float t) {
 }
 
 uniform float cloud_shadow_strength = 0.2;
+// Plan 366: 1 on a wetland. The ground shader lays standing pools where its
+// bog noise peaks; grass tufts stood on that water. Same noise, no tufts.
+uniform float bog_surface = 0.0;
 varying float v_shade;
 varying float v_height;
 varying float v_head;
@@ -74,6 +77,11 @@ void vertex() {
 	float dirt_m = smoothstep(0.66, 0.82, fbm(origin.xz * 0.017 + 60.0));
 	float rock_m = smoothstep(0.62, 0.80, fbm(origin.xz * 0.02 + 21.0));
 	grow *= (1.0 - 0.9 * smoothstep(0.2, 0.7, dirt_m)) * (1.0 - smoothstep(0.15, 0.55, rock_m));
+	if (bog_surface > 0.0) {
+		vec2 bp = origin.xz * 0.03 + 71.0;
+		float patch_m = 0.5 * vnoise(bp) + 0.25 * vnoise(bp * 2.03) + 0.1875;
+		grow *= 1.0 - smoothstep(0.635, 0.665, patch_m + (fbm(origin.xz * 0.15 + 3.0) - 0.5) * 0.08) * bog_surface;
+	}
 	VERTEX *= grow;
 	float h = UV.y;
 	// Travelling gusts plus a quick flutter; the tip moves, the root stays.

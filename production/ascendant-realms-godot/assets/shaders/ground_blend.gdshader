@@ -447,10 +447,13 @@ void fragment() {
 		// out of it, beds of yellow-green bog moss spread across it, and small
 		// puddles of standing water lie between.
 		float tussock = smoothstep(0.56, 0.74, fbm(wxz * 0.9 + 13.0));
-		float moss = smoothstep(0.58, 0.78, fbm(wxz * 0.22 + 27.0));
+		// (Plan 366: the moss beds were flat chartreuse smudges, like spilled
+		// paint. Their edges now fray and the moss carries its own grain.)
+		float moss = smoothstep(0.6, 0.8, fbm(wxz * 0.22 + 27.0) + (fbm(wxz * 1.3 + 2.0) - 0.5) * 0.14);
 		float puddle = smoothstep(0.70, 0.75, fbm(wxz * 0.4 + 51.0)) * (1.0 - tussock);
 		vec3 bog_ground = mix(ground, vec3(0.30, 0.34, 0.14) * (0.85 + 0.3 * fbm(wxz * 2.3 + 5.0)), tussock * 0.75);
-		bog_ground = mix(bog_ground, vec3(0.40, 0.44, 0.15), moss * (1.0 - tussock) * 0.55);
+		vec3 moss_col = vec3(0.33, 0.39, 0.13) * (0.72 + 0.5 * fbm(wxz * 1.9 + 19.0)) * mix(0.85, 1.1, dot(ground, vec3(0.333)) * 2.0);
+		bog_ground = mix(bog_ground, moss_col, moss * (1.0 - tussock) * 0.45);
 		ground = mix(ground, bog_ground, soggy);
 		pool = max(pool, puddle * soggy * 0.85);
 		// Peat-dark water with a little weed floating in it.
@@ -461,7 +464,12 @@ void fragment() {
 		still = mix(vec3(0.17, 0.15, 0.08), still, 0.35 + 0.65 * deep);
 		still *= mix(1.0, 0.75, deep);
 		float weed = smoothstep(0.60, 0.70, fbm(wxz * 0.28 + 77.0)) * smoothstep(0.45, 0.65, fbm(wxz * 1.6 + 3.0));
-		still = mix(still, vec3(0.30, 0.42, 0.10), weed * 0.85);
+		// (Plan 366: the rafts were bright flat chartreuse; they are darker,
+		// thinner and grained.)
+		still = mix(still, vec3(0.20, 0.29, 0.08) * (0.75 + 0.5 * vnoise(wxz * 4.1 + 6.0)), weed * 0.65);
+		// Open water mirrors a little of the grey sky, so a pool reads as
+		// water and not as a patch of dark paint.
+		still = mix(still, vec3(0.24, 0.30, 0.33), 0.2 * (1.0 - weed) * deep);
 		ground = mix(ground, still, pool);
 	}
 	ALBEDO = ground;
