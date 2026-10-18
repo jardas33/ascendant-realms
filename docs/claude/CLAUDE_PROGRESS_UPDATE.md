@@ -1276,6 +1276,11 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 346 (done): a crowned victory screen with pictured spoils**
+  - The result screen was a bare title on a black slab, and each find was a line of text with a small diamond.
+  - VICTORY now has laurel sprigs on both sides and a drop shadow, and every result gets a gilt rule with a center diamond under the title. Each find shows its own picture in a rarity-framed tile, and the experience bar has a lit bevel.
+  - Fix found on the way: the result list dropped each item's slot, so every find would have shown a relic picture. Weapons and shields named for their kind now show that kind (a Blade is a sword), here and in the War Chest.
+  - Full regression: 111 of 111 passed, save unchanged.
 - **Plan 345 (done): skirmish crests are shaded heater shields**
   - The people list and opponent rows showed each faction as a flat five-sided badge with a small charge.
   - Crests are now heater shields with curved flanks, a field shaded from light at the top left to dark at the point, a gilt rim with a lit top edge, a drop shadow and the charge with a dark under-stroke. The people crest grew from 46x54 to 52x62.

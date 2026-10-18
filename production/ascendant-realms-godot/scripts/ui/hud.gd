@@ -4736,7 +4736,15 @@ func _on_game_over(victory: bool) -> void:
 
 	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 44 if compact else 64, accent)
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heading.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	heading.add_theme_constant_override("shadow_offset_y", 3)
 	box.add_child(heading)
+	# Plan 346: a victory is crowned with laurel sprigs either side of the
+	# title, and every result gets a gilt rule with a centre diamond under it
+	# (the bare word on a black slab looked unfinished).
+	if victory:
+		heading.draw.connect(_draw_title_laurels.bind(heading, 44 if compact else 64, accent))
+	box.add_child(_title_rule(accent))
 
 	var result: Dictionary = Match.last_result if Match else {}
 	var kills := int(result.get("kills", 0))
@@ -4853,6 +4861,10 @@ func _on_game_over(victory: bool) -> void:
 		var xfill := StyleBoxFlat.new()
 		xfill.bg_color = Color(0.95, 0.74, 0.3)
 		xfill.set_corner_radius_all(3)
+		# A lit top edge and a darker underside give the fill a bevel.
+		xfill.border_color = Color(1.0, 0.93, 0.66)
+		xfill.border_width_top = 2
+		xfill.border_blend = true
 		var xback := StyleBoxFlat.new()
 		xback.bg_color = Color(0.04, 0.04, 0.05, 0.95)
 		xback.border_color = Color(0.7, 0.55, 0.3, 0.8)
@@ -5037,21 +5049,25 @@ func _loot_row(it: Dictionary, col: Color) -> HBoxContainer:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 10)
 	var rarity := String(it.get("rarity", "common"))
+	# Plan 346: each find shows its own picture in a rarity-framed tile (the
+	# same art as the War Chest), not a small diamond.
 	var gem := Control.new()
-	gem.custom_minimum_size = Vector2(22, 22)
+	gem.custom_minimum_size = Vector2(34, 34)
 	gem.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	gem.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var icon_name: String = load("res://scripts/ui/inventory.gd").gear_icon_name(String(it.get("slot", "")), String(it.get("name", "")))
+	var pic: Texture2D = load("res://scripts/ui/skill_icons.gd").icon_texture(icon_name, 64)
 	gem.draw.connect(func():
-		var c := gem.size * 0.5
+		var r := Rect2(Vector2.ZERO, gem.size)
 		if rarity in ["epic", "legendary"]:
-			gem.draw_circle(c, 11.0, Color(col, 0.22))
-		var r := 8.0
-		var outer := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
-		gem.draw_colored_polygon(outer, col.darkened(0.35))
-		gem.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c]), col.lightened(0.25))
-		gem.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(-r, 0), c]), col)
-		outer.append(outer[0])
-		gem.draw_polyline(outer, Color(0.97, 0.86, 0.6, 0.9), 1.2, true))
+			gem.draw_rect(r.grow(3.0), Color(col, 0.18))
+		gem.draw_rect(r, Color(0.03, 0.03, 0.04, 0.95))
+		for k in 4:
+			gem.draw_rect(r.grow(-2.0 - k * 2.0), Color(col, 0.10 - k * 0.02), false, 2.0)
+		if pic:
+			gem.draw_texture_rect(pic, r.grow(-2.5), false, col.lerp(Color(1, 0.96, 0.88), 0.55))
+		gem.draw_rect(r, col.darkened(0.15), false, 2.0)
+		gem.draw_rect(r.grow(-2.5), Color(0, 0, 0, 0.6), false, 1.0))
 	row.add_child(gem)
 	var name_lbl := _mk_label(String(it.get("name", "")), 16, col)
 	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
@@ -5061,6 +5077,55 @@ func _loot_row(it: Dictionary, col: Color) -> HBoxContainer:
 	tag.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	row.add_child(tag)
 	return row
+
+
+## Laurel sprigs either side of the result title: leaves along a rising
+## arc, each a pointed oval with a darker midrib.
+func _draw_title_laurels(lbl: Label, fs: int, col: Color) -> void:
+	var font := lbl.get_theme_font("font")
+	var tw := font.get_string_size(lbl.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var mid := lbl.size * 0.5
+	var leaf_len := fs * 0.30
+	for side in [-1.0, 1.0]:
+		var base := mid + Vector2(float(side) * (tw * 0.5 + fs * 0.32), fs * 0.30)
+		var stem := PackedVector2Array()
+		for k in 8:
+			var t := float(k) / 7.0
+			stem.append(base + Vector2(float(side) * sin(t * 1.3) * fs * 0.42, -t * fs * 0.72))
+		lbl.draw_polyline(stem, col.darkened(0.25), 2.0, true)
+		for k in range(1, 8):
+			var t := float(k) / 7.0
+			var at := stem[k]
+			var dir := (stem[k] - stem[k - 1]).normalized()
+			for flank in [-1.0, 1.0]:
+				var out := dir.rotated(float(flank) * 0.8)
+				var tip := at + out * leaf_len * (1.0 - t * 0.35)
+				var perp := Vector2(-out.y, out.x) * leaf_len * 0.22
+				var midp := (at + tip) * 0.5
+				var leaf := PackedVector2Array([at, midp + perp, tip, midp - perp])
+				lbl.draw_colored_polygon(leaf, col.lerp(Color(1, 0.95, 0.75), 0.15 if flank > 0 else 0.0).darkened(0.05 * k))
+				lbl.draw_line(at, tip, col.darkened(0.45), 1.0, true)
+		lbl.draw_circle(base, 2.5, col.darkened(0.2))
+
+
+## A gilt rule under the result title: two tapering lines and a centre diamond.
+func _title_rule(col: Color) -> Control:
+	var rule := Control.new()
+	rule.custom_minimum_size = Vector2(0, 14)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rule.draw.connect(func():
+		var c := rule.size * 0.5
+		var span := minf(rule.size.x * 0.5 - 10.0, 230.0)
+		for side in [-1.0, 1.0]:
+			for k in 6:
+				var a0 := 12.0 + span * float(k) / 6.0
+				var a1 := 12.0 + span * float(k + 1) / 6.0
+				rule.draw_line(c + Vector2(float(side) * a0, 0), c + Vector2(float(side) * a1, 0), Color(col, 0.85 * (1.0 - float(k) / 6.0)), 1.6, true)
+			rule.draw_circle(c + Vector2(float(side) * 20.0, 0), 2.0, Color(col, 0.9))
+		var d := 6.0
+		rule.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0)]), col)
+		rule.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d * 0.45), c + Vector2(d * 0.45, 0), c + Vector2(0, d * 0.45), c + Vector2(-d * 0.45, 0)]), col.darkened(0.45)))
+	return rule
 
 
 ## A small line chart of soldiers per side across the battle, your host in

@@ -745,9 +745,23 @@ func _item_art(item: Dictionary, edge: int, node_name: String) -> Control:
 
 ## A relic's picture from the shared icon set, chosen by its slot and name.
 func _gear_icon(slot: String, item_name: String, px: int) -> Texture2D:
+	return SkillIcons.icon_texture(gear_icon_name(slot, item_name), px)
+
+## The picture for a piece of gear: a weapon or shield named for its kind
+## shows that kind (a "Blade" is a sword, not a hammer); anything else picks
+## from its slot's pool by name.
+static func gear_icon_name(slot: String, item_name: String) -> String:
 	var pool: Array = SLOT_ICONS.get(slot, SLOT_ICONS["relic"])
-	var pick: String = pool[0] if item_name == "" else pool[absi(item_name.hash()) % pool.size()]
-	return SkillIcons.icon_texture(pick, px)
+	var low := item_name.to_lower()
+	if slot == "main_hand":
+		for pair in [["blade", "sword"], ["sword", "sword"], ["sabre", "sword"], ["saber", "sword"], ["falchion", "sword"], ["axe", "axe"], ["cleaver", "axe"], ["mace", "mace"], ["club", "mace"], ["flail", "mace"], ["hammer", "hammer"], ["maul", "hammer"], ["spear", "spear"], ["lance", "spear"], ["pike", "spear"], ["staff", "spear"], ["glaive", "spear"]]:
+			if pair[0] in low:
+				return pair[1]
+	elif slot == "off_hand":
+		for pair in [["aegis", "aegis"], ["kite", "kite_shield"], ["buckler", "shield"], ["shield", "shield"]]:
+			if pair[0] in low:
+				return pair[1]
+	return pool[0] if item_name == "" else pool[absi(item_name.hash()) % pool.size()]
 
 func _draw_slot_emblem(ci: CanvasItem, c: Vector2, r: float, slot: String, col: Color) -> void:
 	var dark := Color(0.03, 0.03, 0.04, 0.9)

@@ -5352,10 +5352,10 @@ func _roll_battle_loot(victory: bool) -> Array:
 		if limit >= 0 and tier >= 0 and tier <= limit:
 			var gained: float = load("res://scripts/game/loot_defs.gd").salvage_xp(it)
 			ProfileManager.add_xp(gained)
-			shown.append({"name": "%s (salvaged, +%d XP)" % [String(it["name"]), int(gained)], "rarity": String(it["rarity"])})
+			shown.append({"name": "%s (salvaged, +%d XP)" % [String(it["name"]), int(gained)], "rarity": String(it["rarity"]), "slot": String(it.get("slot", ""))})
 			continue
 		ProfileManager.add_item(it)
-		shown.append({"name": String(it["name"]), "rarity": String(it["rarity"])})
+		shown.append({"name": String(it["name"]), "rarity": String(it["rarity"]), "slot": String(it.get("slot", ""))})
 	return shown
 
 func _record_retinue(victory: bool) -> void:
