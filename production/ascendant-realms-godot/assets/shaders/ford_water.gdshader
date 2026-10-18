@@ -65,6 +65,12 @@ void fragment() {
 	float across = abs(UV.y - 0.5) * 2.0;            // 0 centre .. 1 bank
 	vec2 rc = strip_width > 0.0 ? vec2(UV.x * strip_width, (UV.y - 0.5) * strip_width) : wpos.xz;
 	float wobble = (fbm(vec2(rc.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(rc.x * 0.21, 3.0)) - 0.5) * 0.18;
+	// Plan 387: ice grows out from the banks in uneven shelves, so a frozen
+	// river's edge wanders far more than open water's (it read as a straight
+	// painted band), with a jagged rim where the shelf broke.
+	if (frozen > 0.5) {
+		wobble = wobble * 2.2 + (fbm(rc * 0.35 + 5.0) - 0.5) * 0.28 + (fbm(rc * 1.6 + 9.0) - 0.5) * 0.08;
+	}
 	float edge = across + wobble;
 	float body = 1.0 - smoothstep(bank_fade, 0.98, edge);   // soft, irregular banks
 	float depth = 1.0 - smoothstep(0.0, 0.85, edge);
