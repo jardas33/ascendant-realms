@@ -1276,6 +1276,7 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 351 (done):** roads were one soft band of color, a pale smear across the field. The ground shader now wears them: two wheel ruts that come and go, a lighter crown between them and gravel strewn along the surface. The road edge is firmer too (solid to 2.8 m instead of 1.5 m). Files: `assets/shaders/ground_blend.gdshader`, `scripts/world/terrain_builder.gd`. Fast regression 111 of 111 passed; save unchanged.
 - **Plan 350 (done): desert ridges are clean sandstone**
   - On Dune Sea Bastion every rock pillar in a ridge wore a dark olive cap: the greyed moss in the rock texture, warmed by the sand tint.
   - On desert and badlands maps the rock texture is now bleached (no color, dark patches lifted toward the stone), so ridges read as sandstone. Other themes keep the old greying.

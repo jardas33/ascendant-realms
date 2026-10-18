@@ -185,7 +185,8 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("paths", arr)
 	sm.set_shader_parameter("path_count", min(segs.size(), 8))
 	sm.set_shader_parameter("path_width", 7.0)
-	sm.set_shader_parameter("path_feather", 5.5)
+	# Plan 351: firmer edges (solid to 2.8 m, was 1.5 m): the road read as a smear.
+	sm.set_shader_parameter("path_feather", 4.2)
 	# biome grade
 	sm.set_shader_parameter("tint", _theme.get("ground_tint", Color.WHITE))
 	sm.set_shader_parameter("dirt_bias", float(_theme.get("dirt_bias", 0.0)))

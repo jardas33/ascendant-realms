@@ -259,6 +259,17 @@ void fragment() {
 	float road = 1.0 - smoothstep(path_width - path_feather, path_width + wob, pd);
 	vec3 road_col = mix(road_base, volcanic_surface > 0.5 ? dirt : texture(tex_dirt, wxz * tile_dirt * 0.62).rgb, clamp(road_detail, 0.0, 1.0));
 	ground = mix(ground, road_col, clamp(road, 0.0, 1.0));
+	// Plan 351: a road was one soft band of colour, a pale smear across the
+	// field. Now it is worn: two wheel ruts that come and go, a lighter crown
+	// between them and gravel strewn along it.
+	float rm = clamp(road, 0.0, 1.0);
+	float rut_wob = (fbm(wxz * 0.21 + 9.0) - 0.5) * 0.6;
+	float rut = (1.0 - smoothstep(0.22, 0.6, abs(pd - 1.9 + rut_wob))) * smoothstep(0.3, 0.55, fbm(wxz * 0.07 + 13.0));
+	float crown = 1.0 - smoothstep(0.2, 1.4, pd);
+	float gravel = step(0.80, vnoise(wxz * 3.3)) * step(0.42, vnoise(wxz * 0.6 + 5.0)) * (1.0 - smoothstep(path_width - 2.5, path_width, pd));
+	ground = mix(ground, road_col * 0.64, rut * 0.55 * rm);
+	ground = mix(ground, road_col * 1.10, crown * 0.16 * rm);
+	ground = mix(ground, road_col * mix(0.68, 1.32, vnoise(wxz * 5.0 + 2.0)), gravel * 0.55 * rm);
 	// A low-contrast worn edge makes routes legible without creating a
 	// gameplay-zone outline or a floating strip.
 	float road_edge = smoothstep(path_width + 0.3, path_width + 2.8, pd) * (1.0 - smoothstep(path_width + 2.8, path_width + 4.0, pd));
