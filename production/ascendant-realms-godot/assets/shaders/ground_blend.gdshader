@@ -239,6 +239,22 @@ void fragment() {
 		float lee = smoothstep(0.35, 0.7, fbm2(wxz * 0.021 + 31.0));
 		ground = sand_color * mix(0.84, 1.07, swell) * mix(1.0, mix(0.92, 1.05, ripple), clamp(sand_ripple, 0.0, 1.0))
 			* mix(0.9, 1.08, smoothstep(0.2, 0.6, grain)) * mix(1.0, 0.93, lee);
+		if (sand_ripple > 0.5) {
+			// Plan 389: open desert read as one flat mustard sheet. Dunes now
+			// have a sunlit and a shaded face, pale crests over warmer hollows,
+			// and wind ripples with a sharp crest and a dark lee that come and
+			// go in patches instead of covering the field evenly.
+			float dh = 5.0;
+			float dune_x = fbm2((wxz + vec2(dh, 0.0)) * 0.009 + 9.0) - fbm2((wxz - vec2(dh, 0.0)) * 0.009 + 9.0);
+			float dune_z = fbm2((wxz + vec2(0.0, dh)) * 0.009 + 9.0) - fbm2((wxz - vec2(0.0, dh)) * 0.009 + 9.0);
+			float face = clamp(dot(vec2(dune_x, dune_z), vec2(-0.6, -0.8)) * 9.0, -1.0, 1.0);
+			ground *= 1.0 + face * 0.22;
+			ground = mix(ground * vec3(1.06, 0.95, 0.84), ground * vec3(1.02, 1.01, 1.0), smoothstep(0.3, 0.75, swell));
+			float phase = fract(dot(wxz, vec2(0.83, 0.55)) * 0.42 + bend * 0.16);
+			float saw = smoothstep(0.0, 0.78, phase) * (1.0 - smoothstep(0.78, 1.0, phase));
+			float patchy = smoothstep(0.35, 0.65, fbm2(wxz * 0.03 + 17.0)) * (1.0 - lee * 0.6);
+			ground *= mix(1.0, mix(0.88, 1.04, saw), patchy);
+		}
 	}
 
 	// dry-earth clearings (dirt_bias pushes toward a sandy/parched biome)

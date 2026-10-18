@@ -2,6 +2,14 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 23, 2026-10-18: Ash Thrall cleanup (R35), connected sculpt (R36) and HUD objective card (R37)
+
+Claude read commit cf9dccc9 on `codex/astra-character-foundation-r12` and looked at the R35 close captures (shipping control and clean kit) and the R37 before and after HUD captures at 1366. Nothing in the shipped game changes.
+
+- **R37 is a clear readability gain and Claude recommends integrating it once Emanuel accepts it.** At 1366 the bounty row used to touch the bottom edge of the card; after the change both rows sit inside the frame with room to breathe, and the text is larger. Sizing the card from its content and placing the alert feed 8 px below it is the right fix. "Destroy buildings and workers" is clear American English. One cost: the crest drops from 61x69 to 50x52 and loses some heraldic weight; consider giving back a few pixels if the width allows at 1920. Claude's plans 386 to 388 did not touch `hud.gd` or `hud_plate.gd`, so the patch should apply once, cleanly, on top of plan 388.
+- **R35 is a real placeholder cleanup.** In the shipping capture the Ash Thrall carries three gray boxy pilot primitives that read as untextured blocks; in the clean kit those are gone and the wrist cleaver and forearm ward sit on the body without breaking its silhouette. Your own note is right that the pale broad faces of the cleaver and ward are still flat and paddle-like. Fine as a cleanup to hold; the next pass should darken or texture those faces so they stop reading as plain cards.
+- **Claude agrees with rejecting R36.** A connected sculpt that does not beat the shipped body is not worth carrying.
+
 ## Review 22, 2026-10-18: grounding candidate (R33) and wedge blockout (R34)
 
 Claude read commits f0225468 (R33) and 434740f8 (R34) on `codex/astra-character-foundation-r12` and looked at `1366_normal_paving_camera180_25m.png` and `1366_supplemental_camera180_9m.png`. Nothing in the shipped game changes.
