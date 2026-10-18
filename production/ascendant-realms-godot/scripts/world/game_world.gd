@@ -2081,6 +2081,7 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 
 ## How far a lone oak is set into the ground, as a share of its height.
 const OAK_SINK := 0.065
+const WOOD_OAK_SINK := 0.12
 const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
 const PALM_TREES := ["res://assets/environment/vegetation/desert_palm.scn", "res://assets/environment/vegetation/desert_palm_b.scn"]
 
@@ -2180,7 +2181,11 @@ func _build_woods() -> void:
 				if depth > 0.0 or (depth > -0.12 and rng.randf() < 0.25):
 					var kind_index := rng.randi() % kinds.size()
 					var tall := rng.randf_range(6.4, 8.2) + clampf(depth, 0.0, 0.6) * 4.0
-					placed[kind_index].append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(tall, tall, tall)), Vector3(px, 0.0, pz)))
+					# Oaks are set into the ground like the lone ones (plan 341),
+					# deeper since the canopy hides the trunks: in the woods they
+					# still stood on long splayed root legs.
+					var sink := tall * WOOD_OAK_SINK if "oak" in String(trees[kind_index]) else 0.0
+					placed[kind_index].append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(tall, tall, tall)), Vector3(px, -sink, pz)))
 				z += spacing
 			x += spacing
 		clear_ground_cover(holder.position, minf(radii.x, radii.y) * 0.8)
