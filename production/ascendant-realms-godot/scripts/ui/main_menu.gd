@@ -63,7 +63,7 @@ func _build() -> void:
 	col.offset_bottom = 360.0
 	add_child(col)
 
-	var primary := _make_button(_campaign_label(), _on_campaign)
+	var primary := _make_button(_campaign_label(), _on_campaign, true)
 	col.add_child(primary)
 	# The saga is the main road: its button breathes a slow warm light.
 	primary.add_theme_color_override("font_color", Color(1.0, 0.9, 0.6))
@@ -143,11 +143,21 @@ func _campaign_label() -> String:
 		act = maxi(act, int(String(id).substr(0, 1)))
 	return "Continue the Saga · Act %s" % ["I", "II", "III", "IV", "V"][clampi(act - 1, 0, 4)]
 
-func _make_button(text: String, cb: Callable) -> Button:
+func _make_button(text: String, cb: Callable, primary := false) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.custom_minimum_size = Vector2(340, 54)
 	b.focus_mode = Control.FOCUS_NONE
+	# Forged faces: a lacquered plate in a gilt frame with cut corners (the
+	# theme's flat dark box looked unfinished on the title screen). The saga
+	# button is lacquered in deep crimson.
+	var tag := "p" if primary else "n"
+	b.add_theme_stylebox_override("normal", _face_style(tag))
+	b.add_theme_stylebox_override("hover", _face_style(tag + "h"))
+	b.add_theme_stylebox_override("pressed", _face_style(tag + "d"))
+	b.add_theme_stylebox_override("hover_pressed", _face_style(tag + "d"))
+	b.add_theme_stylebox_override("disabled", _face_style(tag))
+	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	# 28: the title face draws its lower case as small capitals, so at 24 the
 	# words were only about ten pixels tall on a laptop.
 	b.add_theme_font_size_override("font_size", 28)
@@ -364,3 +374,74 @@ func _on_tutorial() -> void:
 func _on_quit() -> void:
 	Sfx.play("select")
 	get_tree().quit()
+
+
+static var _faces := {}
+
+## A menu button face drawn once and cached: n normal, p primary, with h for
+## hover and d for pressed.
+static func _face_style(key: String) -> StyleBoxTexture:
+	if not _faces.has(key):
+		var st := StyleBoxTexture.new()
+		st.texture = _face_texture(key)
+		st.texture_margin_left = 22.0
+		st.texture_margin_right = 22.0
+		st.texture_margin_top = 12.0
+		st.texture_margin_bottom = 12.0
+		st.content_margin_left = 18.0
+		st.content_margin_right = 18.0
+		st.content_margin_top = 4.0
+		st.content_margin_bottom = 6.0
+		_faces[key] = st
+	return _faces[key]
+
+static func _face_texture(key: String) -> ImageTexture:
+	var w := 340
+	var h := 54
+	var primary := key.begins_with("p")
+	var hot := key.ends_with("h")
+	var down := key.ends_with("d")
+	var top := Color(0.36, 0.09, 0.06) if primary else Color(0.19, 0.13, 0.08)
+	var bot := Color(0.12, 0.025, 0.02) if primary else Color(0.06, 0.045, 0.035)
+	if hot:
+		top = top.lightened(0.16)
+		bot = bot.lightened(0.07)
+	elif down:
+		top = top.darkened(0.35)
+		bot = bot.darkened(0.2)
+	var gold := Color(1.0, 0.84, 0.48) if hot else Color(0.82, 0.63, 0.31)
+	var gold_in := gold.darkened(0.25)
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var half := Vector2(w * 0.5 - 1.0, h * 0.5 - 1.0)
+	var ch := 9.0
+	for y in h:
+		var v := float(y) / float(h - 1)
+		var base := top.lerp(bot, v)
+		# A faint lit ridge under the top edge.
+		if y >= 4 and y <= 6:
+			base = base.lightened(0.10)
+		var edge_row := y < 9 or y >= h - 9
+		if not edge_row:
+			img.fill_rect(Rect2i(18, y, w - 36, 1), Color(base, 0.94))
+		for x in w:
+			if not edge_row and x >= 18 and x < w - 18:
+				continue
+			var p := Vector2(x + 0.5 - w * 0.5, y + 0.5 - h * 0.5)
+			var q := p.abs() - half
+			var d := maxf(Vector2(maxf(q.x, 0.0), maxf(q.y, 0.0)).length() + minf(maxf(q.x, q.y), 0.0), (q.x + q.y + ch) * 0.70711)
+			if d > 0.5:
+				continue
+			var col := base
+			col = col.lerp(gold_in, _band(d, -6.4, -5.2) * 0.8)
+			col = col.lerp(Color(0.0, 0.0, 0.0), _band(d, -3.6, -2.4) * 0.55)
+			col = col.lerp(gold.lightened(0.25 * (1.0 - v)), _band(d, -2.4, 0.0))
+			# Small gilt diamonds on the inner rule at both ends.
+			var ex := minf(float(x) + 0.5, float(w) - float(x) - 0.5)
+			var dd := absf(ex - 13.0) + absf(p.y)
+			col = col.lerp(gold.lightened(0.15), clampf(4.8 - dd, 0.0, 1.0))
+			var a := clampf(0.5 - d, 0.0, 1.0) * (0.94 if d < -2.4 else 1.0)
+			img.set_pixel(x, y, Color(col, a))
+	return ImageTexture.create_from_image(img)
+
+static func _band(d: float, a: float, b: float) -> float:
+	return clampf(minf(d - a, b - d) + 0.5, 0.0, 1.0)

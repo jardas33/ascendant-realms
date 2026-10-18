@@ -1276,6 +1276,10 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 344 (done): forged main menu buttons**
+  - The title screen buttons were flat dark boxes with a thin line, the plainest thing on the first screen a player sees.
+  - Each button is now a lacquered plate in a gilt frame with cut corners, an inner rule and small gold diamonds; the saga button is deep crimson. Hover brightens the frame, pressing darkens the plate. The faces are drawn once and cached.
+  - Full regression: 110 of 111 passed; the skill tree clickable check missed two buttons once (hover card under the pointer) and passed on two reruns; save unchanged.
 - **Plan 343 (done): the campaign map's locked chapters look finished**
   - Locked chapters showed flat grey ribbons, a row of small rings for a chain, and roads drawn as a black cable with grey dots.
   - Locked seals now carry a forged steel padlock, their names sit on dark iron plaques with light lettering, every ribbon casts a soft shadow, and locked roads are faded bronze dashes.
