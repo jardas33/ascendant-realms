@@ -2865,6 +2865,11 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 		# (Under snow the rock tone is a cold blue meant for the crags' own
 		# picture; on a greyed boulder it came out violet.)
 		leaf_tone = Color(0.86, 0.88, 0.94) if str(map.get("theme", "")) == "snow" else _scorched_tone("rock")
+	elif not is_tree:
+		# Plan 367: on green and wet ground a lone boulder kept its texture at
+		# full brightness and stood chalk-white against the dark turf and bog.
+		# It is toned down to damp field stone.
+		leaf_tone = leaf_tone * (Color(0.60, 0.62, 0.57) if str(map.get("theme", "")) == "wetland" else Color(0.78, 0.78, 0.74))
 	# Beyond the edge of the battlefield the ground is drawn in shade (see
 	# `field_half` in the ground shader), and what stands there with it.
 	var field_edge: float = float(map.get("size", MapDefs.MAP_SIZE))
