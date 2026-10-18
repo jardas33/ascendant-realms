@@ -443,5 +443,26 @@ static func _face_texture(key: String) -> ImageTexture:
 			img.set_pixel(x, y, Color(col, a))
 	return ImageTexture.create_from_image(img)
 
+## Plan 380: the other pages' footer buttons wear the same forged faces and
+## title lettering, so leaving the title screen no longer drops to plain boxes.
+static func forge_button(b: Button, primary := false, font_size := 24) -> void:
+	var tag := "p" if primary else "n"
+	for pair in [["normal", tag], ["hover", tag + "h"], ["pressed", tag + "d"], ["hover_pressed", tag + "d"], ["disabled", tag]]:
+		b.add_theme_stylebox_override(pair[0], _face_style(pair[1]))
+	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	var font: Font = load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
+	b.add_theme_font_override("font", font)
+	b.add_theme_font_size_override("font_size", font_size)
+	# Wide enough that the label clears the gilt diamonds at both ends.
+	var need := font.get_string_size(b.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 64.0
+	if b.custom_minimum_size.x < need:
+		b.custom_minimum_size.x = ceilf(need)
+	b.add_theme_color_override("font_color", Color(0.95, 0.86, 0.64))
+	b.add_theme_color_override("font_hover_color", Color(1.0, 0.95, 0.78))
+	b.add_theme_color_override("font_pressed_color", Color(0.9, 0.8, 0.58))
+	b.add_theme_color_override("font_disabled_color", Color(0.6, 0.55, 0.45))
+	b.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.0, 0.9))
+	b.add_theme_constant_override("outline_size", 4)
+
 static func _band(d: float, a: float, b: float) -> float:
 	return clampf(minf(d - a, b - d) + 0.5, 0.0, 1.0)

@@ -1,5 +1,6 @@
 extends Control
 ## Inventory — equipment slots, item bag, equip/unequip, and stat comparison.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const DEFAULT_BG := "res://assets/textures/backgrounds/main_menu_bg.png"
@@ -145,7 +146,7 @@ func _build() -> void:
 	footer.add_theme_constant_override("separation", 20)
 	add_child(footer)
 	_grant_button = _button("Claim Starter Relics", _on_grant)
-	_style_primary(_grant_button)
+	FORGED_FACES.forge_button(_grant_button, true)
 	footer.add_child(_grant_button)
 	footer.add_child(_button("Equip Best", func():
 		ProfileManager.equip_best()
@@ -154,6 +155,9 @@ func _build() -> void:
 		ProfileManager.salvage_rarities(["common", "uncommon"])
 		_refresh()))
 	footer.add_child(_button("Back", func(): _goto("res://scenes/ui/hero_sheet.tscn")))
+	for b in footer.get_children():
+		if b != _grant_button:
+			FORGED_FACES.forge_button(b)
 
 func _column(header: String, assign: Callable) -> Control:
 	var panel: PanelContainer = MENU_PLATE_SCRIPT.new()

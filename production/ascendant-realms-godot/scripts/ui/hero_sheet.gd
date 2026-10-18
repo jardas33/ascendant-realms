@@ -1,6 +1,7 @@
 extends Control
 ## Hero Sheet — the hero's home. Attributes, level/XP, build summary,
 ## mastery panel, and gateways to the constellation, inventory and battle.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
@@ -130,6 +131,10 @@ func _build_static() -> void:
 	nav.add_child(_nav_button("War Chest", func(): _goto("res://scenes/ui/inventory.tscn")))
 	nav.add_child(_nav_button("Battle!", func(): _goto("res://scenes/ui/skirmish_setup.tscn")))
 	nav.add_child(_nav_button("Back", func(): _goto("res://scenes/ui/main_menu.tscn")))
+	# The page's way out wears the title screen's forged faces; the header
+	# buttons keep the plain style, where long labels fit.
+	for b in nav.get_children():
+		FORGED_FACES.forge_button(b, b.text == "Battle!")
 
 func _refresh() -> void:
 	if not is_instance_valid(_body):

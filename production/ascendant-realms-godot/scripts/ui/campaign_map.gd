@@ -4,6 +4,7 @@ extends Control
 ## roads. Clicking a battle opens its chronicle briefing; "March to war"
 ## starts it. The jars of Wine of the Dead and the Rabagão Wall choice are
 ## shown in the header.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 const CampaignDefs := preload("res://scripts/game/campaign_defs.gd")
 const EndlessDefs := preload("res://scripts/game/endless_defs.gd")
 
@@ -252,6 +253,7 @@ func _build() -> void:
 		back.theme = load(THEME_PATH)
 	back.add_theme_font_override("font", _title_font())
 	back.add_theme_font_size_override("font_size", 20)
+	FORGED_FACES.forge_button(back, false, 20)
 	back.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	back.offset_left = 36.0
 	back.offset_top = -66.0
@@ -269,6 +271,7 @@ func _build() -> void:
 		chronicle.theme = load(THEME_PATH)
 	chronicle.add_theme_font_override("font", _title_font())
 	chronicle.add_theme_font_size_override("font_size", 20)
+	FORGED_FACES.forge_button(chronicle, false, 20)
 	# Sealed but legible: the theme's grey nearly vanished on the dark button.
 	chronicle.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	chronicle.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -289,6 +292,7 @@ func _build() -> void:
 		endless.theme = load(THEME_PATH)
 	endless.add_theme_font_override("font", _title_font())
 	endless.add_theme_font_size_override("font_size", 20)
+	FORGED_FACES.forge_button(endless, false, 20)
 	endless.add_theme_color_override("font_disabled_color", Color(0.66, 0.63, 0.58))
 	endless.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	endless.offset_left = -456.0

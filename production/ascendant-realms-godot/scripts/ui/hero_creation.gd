@@ -1,6 +1,7 @@
 extends Control
 ## Hero Creation — name, race, archetype, appearance, strength/weakness,
 ## and starting attribute allocation. Forges the persistent hero.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
@@ -565,6 +566,7 @@ void fragment() {
 	back.add_theme_font_size_override("font_size", 20)
 	back.add_theme_color_override("font_color", Color.WHITE)
 	back.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
+	FORGED_FACES.forge_button(back)
 	back.pressed.connect(func(): Sfx.play("select"); Match.clear_pending_hero_origin(); get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn"))
 	footer.add_child(back)
 	var forge := Button.new()
@@ -576,6 +578,7 @@ void fragment() {
 	forge.add_theme_font_size_override("font_size", 20)
 	forge.add_theme_color_override("font_color", Color(0.98, 0.92, 0.6))
 	forge.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
+	FORGED_FACES.forge_button(forge, true)
 	forge.pressed.connect(_on_forge)
 	footer.add_child(forge)
 	# The one action this page leads to breathes a slow warm light, like

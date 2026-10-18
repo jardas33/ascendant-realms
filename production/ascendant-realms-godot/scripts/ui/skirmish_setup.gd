@@ -2,6 +2,7 @@ extends Control
 ## Skirmish Setup: pick a faction from illustrated banner cards, survey the
 ## battlefield on a tactical preview, set opponents and pace, then march into
 ## game_world. The Match config contract is unchanged.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FACTION_SIGILS := preload("res://scripts/ui/faction_sigils.gd")
 const FONT := "res://assets/fonts/cinzel.ttf"
@@ -152,9 +153,11 @@ func _build() -> void:
 	footer.alignment = BoxContainer.ALIGNMENT_CENTER
 	footer.add_theme_constant_override("separation", 24)
 	column.add_child(footer)
-	footer.add_child(_button("Back", Vector2(200, 50), func(): _goto("res://scenes/ui/main_menu.tscn")))
+	var back := _button("Back", Vector2(200, 50), func(): _goto("res://scenes/ui/main_menu.tscn"))
+	FORGED_FACES.forge_button(back)
+	footer.add_child(back)
 	var begin := _button("Begin Battle", Vector2(300, 54), _on_begin)
-	_style_primary(begin)
+	FORGED_FACES.forge_button(begin, true)
 	footer.add_child(begin)
 	# The call to arms breathes a slow warm light.
 	var breathe := begin.create_tween().set_loops()

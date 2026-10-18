@@ -1,6 +1,7 @@
 extends Control
 ## Settings — audio, camera, accessibility, UI scale and game speed,
 ## plus a read-only controls reference and a Delete Hero option.
+const FORGED_FACES := preload("res://scripts/ui/main_menu.gd")
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
@@ -247,9 +248,14 @@ func _build() -> void:
 	footer.alignment = BoxContainer.ALIGNMENT_CENTER
 	footer.add_theme_constant_override("separation", 30)
 	add_child(footer)
-	footer.add_child(_button("Back", Color(0.96, 0.92, 0.8), func(): _goto("res://scenes/ui/main_menu.tscn")))
+	var back := _button("Back", Color(0.96, 0.92, 0.8), func(): _goto("res://scenes/ui/main_menu.tscn"))
+	FORGED_FACES.forge_button(back)
+	footer.add_child(back)
 	if ProfileManager.has_hero():
-		footer.add_child(_button("Delete Hero", Color(1.0, 0.6, 0.55), _on_delete))
+		var delete := _button("Delete Hero", Color(1.0, 0.6, 0.55), _on_delete)
+		FORGED_FACES.forge_button(delete)
+		delete.add_theme_color_override("font_color", Color(1.0, 0.6, 0.55))
+		footer.add_child(delete)
 
 # --- rows -----------------------------------------------------------------
 func _plate() -> PanelContainer:
