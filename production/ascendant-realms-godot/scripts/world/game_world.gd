@@ -1659,6 +1659,19 @@ func _build_rivers() -> void:
 				_prep_decor(stone)
 		load("res://scripts/world/static_batcher.gd").batch(stones)
 
+## A ruin's pillar (or a drum broken off one) lying on its side, half sunk.
+func _lay_ruin_stone(holder: Node3D, path: String, at: Vector3, length: float, rng: RandomNumberGenerator) -> void:
+	var stone: Node3D = load(path).instantiate()
+	holder.add_child(stone)
+	ModelUtils.scale_to_height(stone, length)
+	stone.scale = Vector3(stone.scale.x * 2.1, stone.scale.y, stone.scale.z * 2.1)
+	stone.position = at
+	stone.rotation = Vector3(rng.randf_range(-0.1, 0.1), rng.randf() * TAU, PI * 0.5 + rng.randf_range(-0.12, 0.12))
+	ModelUtils.ground_model(stone, -0.18 * length / 3.0)
+	for body in stone.find_children("*", "CollisionObject3D", true, false):
+		body.queue_free()
+	_register_environment_world_blocker(stone, "castro_pillar", "presentation")
+
 ## Bridges and ruins of an authored map.
 func _build_authored_structures() -> void:
 	var bridges: Array = map.get("bridges", [])
@@ -1700,12 +1713,20 @@ func _build_authored_structures() -> void:
 			var count: int = ring[1]
 			for i in count:
 				if rng.randf() < 0.34:
+					# Plan 373: a gap in the ring is often a pillar that fell
+					# (every stone stood upright, the same post again and
+					# again, and read as a fence).
+					if rng.randf() < 0.6:
+						_lay_ruin_stone(holder, pillar_path, Vector3(cos(TAU * float(i) / float(count)), 0.0, sin(TAU * float(i) / float(count))) * float(ring[0]), rng.randf_range(2.6, 4.4), rng)
 					continue
 				var a := TAU * float(i) / float(count) + rng.randf_range(-0.12, 0.12)
 				var pillar: Node3D = load(pillar_path).instantiate()
 				holder.add_child(pillar)
 				pillar.position = Vector3(cos(a), 0.0, sin(a)) * float(ring[0])
-				ModelUtils.scale_to_height(pillar, rng.randf_range(3.2, 5.6) if rng.randf() < 0.7 else rng.randf_range(1.2, 2.2))
+				# (The inner ring is worn down to stumps, so the outer ring
+				# stands clear of it from the camera.)
+				var standing := rng.randf() < (0.7 if count > 6 else 0.25)
+				ModelUtils.scale_to_height(pillar, rng.randf_range(3.2, 5.6) if standing else rng.randf_range(1.0, 1.9))
 				# Stout, as a castro's stones are: at the model's own
 				# proportions they read as fence posts from the game's height.
 				pillar.scale = Vector3(pillar.scale.x * 2.1, pillar.scale.y, pillar.scale.z * 2.1)
@@ -1714,6 +1735,10 @@ func _build_authored_structures() -> void:
 				for body in pillar.find_children("*", "CollisionObject3D", true, false):
 					body.queue_free()
 				_register_environment_world_blocker(pillar, "castro_pillar", "presentation")
+				# Broken drums lie at the foot of some of the standing ones.
+				if rng.randf() < 0.3:
+					var drop := rng.randf() * TAU
+					_lay_ruin_stone(holder, pillar_path, pillar.position + Vector3(cos(drop), 0.0, sin(drop)) * rng.randf_range(1.6, 2.6), rng.randf_range(0.9, 1.5), rng)
 		if ResourceLoader.exists(cairn_path):
 			var cairn: Node3D = load(cairn_path).instantiate()
 			holder.add_child(cairn)
