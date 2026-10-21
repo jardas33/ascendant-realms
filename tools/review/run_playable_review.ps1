@@ -22,11 +22,19 @@ function Invoke-ReviewGit {
 
 function Get-ReviewHash {
     param([string]$Path, [bool]$CanonicalText)
-    if (-not $CanonicalText) { return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant() }
-    $copy = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n")
-    $encoding = New-Object System.Text.UTF8Encoding($false)
     $algorithm = [Security.Cryptography.SHA256]::Create()
-    try { return ([BitConverter]::ToString($algorithm.ComputeHash($encoding.GetBytes($copy)))).Replace('-', '').ToLowerInvariant() }
+    try {
+        if ($CanonicalText) {
+            $copy = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n")
+            $encoding = New-Object System.Text.UTF8Encoding($false)
+            $digest = $algorithm.ComputeHash($encoding.GetBytes($copy))
+        } else {
+            $stream = [IO.File]::OpenRead($Path)
+            try { $digest = $algorithm.ComputeHash($stream) }
+            finally { $stream.Dispose() }
+        }
+        return ([BitConverter]::ToString($digest)).Replace('-', '').ToLowerInvariant()
+    }
     finally { $algorithm.Dispose() }
 }
 
@@ -67,7 +75,7 @@ try {
     if ($actualBranch -ne $ExpectedBranch -or $actualBranch -notlike 'codex/emanuel-playable-*') { throw ('Wrong review branch: ' + $actualBranch) }
     if ($ExpectedSha -and $actualSha -ne $ExpectedSha) { throw ('The current-build pointer expects ' + $ExpectedSha + ', but checkout HEAD is ' + $actualSha) }
     if (-not (Test-Path -LiteralPath $EnginePath -PathType Leaf)) { throw ('Certified Godot is missing: ' + $EnginePath) }
-    if ((Get-FileHash -LiteralPath $EnginePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $certifiedHash) { throw 'Godot executable does not match the certified 4.6.3 build.' }
+    if ((Get-ReviewHash -Path $EnginePath -CanonicalText $false) -ne $certifiedHash) { throw 'Godot executable does not match the certified 4.6.3 build.' }
     if (Test-Path -LiteralPath (Join-Path $gamePath 'override.cfg')) { throw 'A local override.cfg would change this review. Preserve it separately before launching.' }
     $project = [IO.File]::ReadAllText((Join-Path $gamePath 'project.godot'))
     if (-not $project.Contains('config/name="Ascendant Realms"') -or -not $project.Contains('run/main_scene="res://scenes/main.tscn"') -or -not $project.Contains('config/custom_user_dir_name="AscendantRealms_Emanuel_Playable_R59"')) { throw 'Runtime identity or private review profile does not match R59.' }

@@ -10,7 +10,7 @@ checks continue; no alternate desktop-control route is used.
 ## Foundation and surviving work
 
 Worktree: `D:/ar-emanuel-playable-r59`. Branch:
-`codex/emanuel-playable-convergence-r59`. The parent is the exact newest Claude
+`codex/emanuel-playable-convergence-r59`. The branch starts from the newest Claude
 source at the start, Plan390 `ec1097818ba18b5107e761c094c729198f92cc76`, verified
 against both tracked-clean `D:/ClaudeWork/ar-lane` and GitHub. Historical August
 governance documents are not current branch facts. Claude Review23 was read.
