@@ -20,6 +20,21 @@ const FIELD_ORDER_QUADRANTS := {
 	"patrol": Vector2i(1, 1),
 }
 
+# Original painted sheet. Measured row boundaries keep every object complete;
+# the generator's rows are not exactly one third of the source image.
+const RESEARCH_ATLAS := "res://assets/ui/command_emblems/r40/research_symbols_r1.png"
+const RESEARCH_CELLS := {
+    "r_sword": Rect2(0, 0, 418, 396),
+    "r_shield": Rect2(418, 0, 418, 396),
+    "r_pick": Rect2(836, 0, 418, 396),
+    "r_wall": Rect2(0, 396, 418, 420),
+    "r_flame": Rect2(418, 396, 418, 420),
+    "r_bow": Rect2(836, 396, 418, 420),
+    "r_boot": Rect2(0, 816, 418, 438),
+    "r_heart": Rect2(418, 816, 418, 438),
+    "r_crown": Rect2(836, 816, 418, 438),
+}
+
 static var _emblem_cache: Dictionary = {}
 
 ## Which drawn emblem a research wears, read from what it does: every research
@@ -69,6 +84,18 @@ func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if RESEARCH_CELLS.has(icon_kind):
+		var atlas: Texture2D = _load_emblem(RESEARCH_ATLAS)
+		if atlas:
+			var source: Rect2 = RESEARCH_CELLS[icon_kind]
+			var imported_scale := atlas.get_size() / Vector2(1254, 1254)
+			source.position *= imported_scale
+			source.size *= imported_scale
+			# Preserve aspect; never stretch or crop the painted object to fill a bay.
+			var fit := minf(size.x / source.size.x, size.y / source.size.y)
+			var drawn_size := source.size * fit
+			draw_texture_rect_region(atlas, Rect2((size - drawn_size) * 0.5, drawn_size), source)
+			return
 	if FIELD_ORDER_QUADRANTS.has(icon_kind):
 		var atlas_path := FIELD_ORDERS_ATLAS
 		match visual_faction:

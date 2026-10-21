@@ -88,6 +88,7 @@ var _outpost_pay_timer := 0.0
 const OUTPOST_RATE := 1.0
 const OUTPOST_MAX_LEVEL := 3
 
+var _granitborn_effects: GranitbornBuildingPresentation
 var model_root: Node3D
 var selection_ring: MeshInstance3D
 var _hover_ring: MeshInstance3D
@@ -237,6 +238,8 @@ static var _palette_materials: Dictionary = {}
 
 func _apply_faction_palette(m: Node, path: String) -> void:
 	var race := String(def.get("race", ""))
+	if GranitbornBuildingPresentation.owns_model(path):
+		return
 	if race == "" or path.get_file().begins_with(race) or not FACTION_PALETTES.has(race):
 		return
 	var tint: Color = FACTION_PALETTES[race]
@@ -410,7 +413,7 @@ func _build_model() -> void:
 		# like sheds beside the Barrosan ones, and a landmark's plaza dwarfed
 		# its own hall. Widen such a model to fill most of its plot, growing
 		# at most 70%. Towers stay slim; the authored Barrosan set is left as is.
-		if String(def.get("kind", "")) != "tower" and String(def.get("race", "")) != "barrosan":
+		if String(def.get("kind", "")) != "tower" and String(def.get("race", "")) != "barrosan" and not GranitbornBuildingPresentation.owns_model(path):
 			var model_width: float = _world_width(m)
 			var want_width: float = footprint * 1.55
 			if model_width > 0.01 and model_width < want_width:
@@ -425,6 +428,8 @@ func _build_model() -> void:
 		_merge_static_parts(m, path)
 		for mi in m.find_children("*", "MeshInstance3D"):
 			_mesh_instances.append(mi)
+		if path == GranitbornBuildingPresentation.FORGE and world != null:
+			_granitborn_effects = GranitbornBuildingPresentation.make_forge_effects(m)
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -453,6 +458,11 @@ func _lay_roof_snow() -> void:
 		_roof_snow_material.shader = load("res://assets/shaders/roof_snow.gdshader")
 	for mi in _mesh_instances:
 		if is_instance_valid(mi):
+			# The Forge coal bed stays hot; all four architectural surfaces keep snow.
+			if String(def.get("model", "")) == GranitbornBuildingPresentation.FORGE:
+				var mat = mi.get_active_material(0)
+				if mat != null and mat.resource_name.contains("Fire"):
+					continue
 			mi.material_overlay = _roof_snow_material
 
 
@@ -1202,6 +1212,8 @@ func _set_construction_visual(p: float) -> void:
 	if model_root:
 		model_root.position.y = lerp(-0.15, 0.0, clamp(p, 0.0, 1.0))
 	var building_now := p < 1.0
+	if is_instance_valid(_granitborn_effects):
+		_granitborn_effects.set_active(not building_now and not is_dead)
 	if is_instance_valid(_construction_status_label):
 		# The selected card and grounded progress track are the player-facing
 		# construction read. Keep the literal percentage label for explicit
@@ -2059,6 +2071,8 @@ func _update_damage_fires(ratio: float) -> void:
 			old.queue_free()
 
 func _update_damage_visual() -> void:
+	if is_instance_valid(_granitborn_effects):
+		_granitborn_effects.set_active(is_built and not is_dead)
 	var ratio := get_hp_ratio()
 	var damaged := is_built and not is_dead and ratio < 0.99
 	if is_instance_valid(_damage_status_label):

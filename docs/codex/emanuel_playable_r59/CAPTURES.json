@@ -1,0 +1,58 @@
+{
+  "PUBLIC_07_LIVE_OPENING_1366.jpg": {
+    "original_capture": "PUBLIC_07_LIVE_OPENING_1366.png",
+    "sha256": "fadcbdfd0848966dd82cac0c3fb970881581b3c4a068d68135810cbd31828edc",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_11_R55_BUILD_GALLERY_1366.jpg": {
+    "original_capture": "PUBLIC_11_R55_BUILD_GALLERY_1366.png",
+    "sha256": "41d43470fec9035171e2231d6769bd8400db8ec7a1cb0f1b4cd8aa1ec293f0c4",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_14_NATIVE_ROUNDHOUSE_77_PERCENT_1366.jpg": {
+    "original_capture": "PUBLIC_14_NATIVE_ROUNDHOUSE_77_PERCENT_1366.png",
+    "sha256": "07d21bfa55ce8e57adbbbc373a100c4b6a248bc300abc784d9f02e91834e127f",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_15_ROUNDHOUSE_NATURALLY_COMPLETE_1366.jpg": {
+    "original_capture": "PUBLIC_15_ROUNDHOUSE_NATURALLY_COMPLETE_1366.png",
+    "sha256": "5e28691e700eb0ab604e4956b279b1704b5a309277d50e427f8e7ba28f0762ca",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_18_FORGE_NATIVE_CONSTRUCTION_64_PERCENT_1366.jpg": {
+    "original_capture": "PUBLIC_18_FORGE_NATIVE_CONSTRUCTION_64_PERCENT_1366.png",
+    "sha256": "f362f872484977242bea3417b74e0ed3339763a2de30c35570fa6db174c405db",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_19_FORGE_NATURALLY_COMPLETE_1366.jpg": {
+    "original_capture": "PUBLIC_19_FORGE_NATURALLY_COMPLETE_1366.png",
+    "sha256": "7272222238563f705769bf77732c45e3bad4d647e655ede825ab1f08bea64134",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  },
+  "PUBLIC_21_FIRST_WARRIOR_COMPLETE_AND_RALLY_1366.jpg": {
+    "original_capture": "PUBLIC_21_FIRST_WARRIOR_COMPLETE_AND_RALLY_1366.png",
+    "sha256": "33e9daa5ed686bb3e89e6e5aaec3f60f6026362c9ce8acfb76651c60b0ef047a",
+    "format": "JPEG",
+    "width": 1368,
+    "height": 800,
+    "note": "Original Computer Use window capture bytes. Historical external filename used .png; correct JPEG extension here. Window chrome included; requested game content1366x768."
+  }
+}

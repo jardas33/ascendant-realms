@@ -226,20 +226,20 @@ static func get_all() -> Dictionary:
 
 	# ---------------- KARAK DWARVES ----------------
 	"karak_hold": {
-		"race": "karak", "name": "Castro Hold", "kind": "main", "model": _b("karak_hold"),
+		"race": "karak", "name": "Castro Hold", "kind": "main", "model": "res://assets/environment/buildings/codex_r56/castro_hold.glb",
 		"hp": 2400, "armor_class": "fortified", "armor": 11, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 220}, "build_time": 65, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["karak_miner"], "drop_off": true, "is_hq": true,
 		"desc": "A walled castro on the hilltop, older than the Dominion and harder than it. Trains Castro Quarriers and anchors the hillfort.",
 	},
 	"karak_longhouse": {
-		"race": "karak", "name": "Roundhouse", "kind": "house", "model": _b("barrosan_clan_croft"),
+		"race": "karak", "name": "Roundhouse", "kind": "house", "model": "res://assets/environment/buildings/codex_r57/roundhouse.glb",
 		"hp": 560, "armor_class": "medium", "armor": 2, "footprint": 3.6,
 		"cost": {"timber": 55, "stone": 20}, "build_time": 16, "grants_pop": 8,
 		"produces": [], "desc": "A round stone house of the castro, roofed in thatch. Houses more of the Granitborn.",
 	},
 	"karak_warforge": {
-		"race": "karak", "name": "Castro Forge", "kind": "barracks", "model": _b("barrosan_war_hall"),
+		"race": "karak", "name": "Castro Forge", "kind": "barracks", "model": "res://assets/environment/buildings/codex_r58/forge.glb",
 		"hp": 980, "armor_class": "fortified", "armor": 6, "footprint": 5.0,
 		"cost": {"timber": 145, "stone": 50}, "build_time": 28, "grants_pop": 0,
 		"produces": ["karak_warrior", "karak_ironbreaker", "karak_quarreler", "karak_castro_rider", "karak_hammerer", "karak_cannon"],
