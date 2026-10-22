@@ -5,6 +5,7 @@ var accent := Color(0.82, 0.64, 0.36)
 var command_kind := "ORDER"
 var command_state := "READY"
 var is_menu := false
+var crafted_build := false
 ## A light glint that sweeps once across the tile when the pointer arrives.
 var _glint := -1.0
 
@@ -46,6 +47,33 @@ func set_command_state(value: String) -> void:
 	if command_state != value:
 		command_state = value
 		queue_redraw()
+
+
+func _draw_crafted_build(w: float, h: float, lit: bool) -> void:
+	# A cast bronze rim belongs to the structure, not its affordability state.
+	# State remains explicit in the native footer and disabled hit target.
+	var warm := Color(0.67, 0.48, 0.26) if not disabled else Color(0.34, 0.31, 0.25)
+	var high := Color(0.91, 0.74, 0.45) if lit else warm
+	var face := PackedVector2Array([Vector2(1, 7), Vector2(7, 1), Vector2(w - 7, 1), Vector2(w - 1, 7), Vector2(w - 1, h - 7), Vector2(w - 7, h - 1), Vector2(7, h - 1), Vector2(1, h - 7), Vector2(1, 7)])
+	var top := Color(0.095, 0.091, 0.073, 0.98) if lit else Color(0.052, 0.061, 0.058, 0.98)
+	var bottom := Color(0.022, 0.029, 0.029, 0.99)
+	if button_pressed:
+		top = top.darkened(0.24)
+	draw_polygon(face, PackedColorArray([top, top, top, top, bottom, bottom, bottom, bottom, top]))
+	draw_polyline(face, Color(0.008, 0.012, 0.013), 3.0, true)
+	draw_polyline(face, high, 1.0, true)
+	# Small bevels establish thickness, with a dark lower edge rather than glow.
+	draw_line(Vector2(8, 3), Vector2(w - 8, 3), Color(high.r, high.g, high.b, 0.45), 1.0, true)
+	draw_line(Vector2(8, h - 3), Vector2(w - 8, h - 3), Color(0.19, 0.15, 0.10), 1.0, true)
+	for x in [8.0, w - 8.0]:
+		draw_line(Vector2(x - 2, 8), Vector2(x + 2, 8), Color(high.r, high.g, high.b, 0.70), 1.0, true)
+	# Recessed art well, sized to the actual 88px painting. The square stays whole.
+	draw_rect(Rect2(5, 5, 90, 90), Color(0.006, 0.012, 0.014), true)
+	draw_rect(Rect2(5.5, 5.5, 89, 89), Color(warm.r, warm.g, warm.b, 0.48), false, 1.0)
+	draw_line(Vector2(98, 12), Vector2(98, h - 12), Color(warm.r, warm.g, warm.b, 0.20), 1.0, true)
+	if lit:
+		draw_line(Vector2(8, 1), Vector2(w - 8, 1), Color(1.0, 0.85, 0.56, 0.86), 1.0, true)
+	# No full-card animated light crossing the artwork or text.
 
 
 func _draw() -> void:
@@ -102,6 +130,9 @@ func _draw() -> void:
 			highlight.append(face[0])
 			draw_polyline(highlight, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.56), 1.3, true)
 		_draw_glint(w, h)
+		return
+	if crafted_build and command_kind == "BUILD":
+		_draw_crafted_build(w, h, lit)
 		return
 	if command_kind in ["BUILD", "TRAIN", "RESEARCH"]:
 		# Give the authored structure and technology art a lit recess instead of

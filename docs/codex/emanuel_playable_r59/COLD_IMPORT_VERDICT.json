@@ -1,0 +1,14 @@
+{
+  "status": "PASS_COLD_GIT_SOURCE_IMPORT_NO_REUSED_CACHE",
+  "runtime_tree": "68329a19d6c7c44093ca75b733c3776eddde3817",
+  "import_exit_code": 0,
+  "import_elapsed_seconds": 152.59,
+  "import_stderr_empty": true,
+  "pinned_runtime_files_exact": 704,
+  "required_cache_outputs_present": 455,
+  "baseline_extracted_payloads_exact": 23,
+  "critical_thatch_import_settings_exact": true,
+  "QA_user_dir": "AscendantRealms_Emanuel_Playable_R59_COLD_QA",
+  "desktop_control": false,
+  "public_gameplay_rehearsal": false
+}

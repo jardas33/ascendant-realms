@@ -9,3 +9,18 @@
 *.html text eol=lf
 *.png binary
 *.bin binary
+
+# R59 authored integration sources: reproducible Windows review checkouts.
+production/ascendant-realms-godot/project.godot text eol=lf
+production/ascendant-realms-godot/scripts/buildings/building.gd text eol=lf
+production/ascendant-realms-godot/scripts/buildings/granitborn_building_presentation.gd text eol=lf
+production/ascendant-realms-godot/scripts/game/building_defs.gd text eol=lf
+production/ascendant-realms-godot/scripts/ui/command_glyph_view.gd text eol=lf
+production/ascendant-realms-godot/scripts/ui/hud.gd text eol=lf
+production/ascendant-realms-godot/scripts/ui/hud_action_button.gd text eol=lf
+production/ascendant-realms-godot/scripts/ui/hud_plate.gd text eol=lf
+production/ascendant-realms-godot/scripts/world/rts_controller.gd text eol=lf
+production/ascendant-realms-godot/tests/r59_*.gd text eol=lf
+tools/review/*.ps1 text eol=lf
+PLAY_EMANUEL_REVIEW.bat text eol=crlf
+art_sources/granitborn_r59/*.blend binary

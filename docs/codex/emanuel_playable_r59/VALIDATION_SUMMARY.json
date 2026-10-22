@@ -1,0 +1,74 @@
+{
+  "source_audit": "PASS",
+  "fixture_checks": 39,
+  "native_profile_reload_checks": 13,
+  "map_resolver_chapters": 44,
+  "map_resolver_hidden_chapter_entries": 12,
+  "headless_cases": [
+    {
+      "case": "compile_r3_headless",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "case": "contract_r7_headless",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "case": "profile_reload_r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "case": "saga_r1",
+      "passed": false,
+      "errors": []
+    },
+    {
+      "case": "economy_r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "case": "combat_r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "case": "navigation_r1",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "historic_saga_validator": "UNCHANGED_RED_12_PICKER_LIST_EXCLUSIONS_ALL_RESOLVE_THROUGH_REAL_API",
+  "all_suites_green": false,
+  "live_public_route": "1366 content verified through first natural warrior completion; second rally traversal unobserved",
+  "public_capture_count": 21,
+  "selected_capture_count": 7,
+  "capture_format": "Computer Use original JPEG, bounded native Godot window; no image processing",
+  "remaining_live_checks": [
+    "1920 public route",
+    "public snow",
+    "second warrior rally traversal",
+    "pause/settings/GUI reload"
+  ],
+  "desktop_control": "Human explicitly keeps stopped; no more desktop actions",
+  "classification": "PARTIAL_R59_PLAYABLE_CONVERGENCE_PENDING_REMAINING_LIVE_CHECKS",
+  "human_visual_approval": false,
+  "production_promotion": false,
+  "cold_source_import": {
+    "status": "PASS_COLD_GIT_SOURCE_IMPORT_NO_REUSED_CACHE",
+    "runtime_tree": "68329a19d6c7c44093ca75b733c3776eddde3817",
+    "import_exit_code": 0,
+    "import_elapsed_seconds": 152.59,
+    "import_stderr_empty": true,
+    "pinned_runtime_files_exact": 704,
+    "required_cache_outputs_present": 455,
+    "baseline_extracted_payloads_exact": 23,
+    "critical_thatch_import_settings_exact": true,
+    "QA_user_dir": "AscendantRealms_Emanuel_Playable_R59_COLD_QA",
+    "desktop_control": false,
+    "public_gameplay_rehearsal": false
+  }
+}

@@ -1,0 +1,3493 @@
+{
+  "schema": 1,
+  "foundation": "ec1097818ba18b5107e761c094c729198f92cc76",
+  "files": {
+    ".engine_turns.json": {
+      "sha256": "b6aa5368fa18cf9a30f5aa5459a38d725dfae242418e83f78c5b209103e6247e",
+      "text": true
+    },
+    ".gitignore": {
+      "sha256": "4faf6154d781957a6eb27eb283b1c6eac60539368d9d31f14c885bcb505d6770",
+      "text": false
+    },
+    ".tesana_storage_state.json": {
+      "sha256": "f44965a2ede3b6f327e9d668ced2b57ec8409bc562a824b6d078d27ad6ad9e41",
+      "text": true
+    },
+    ".tools_shrink_glb.py": {
+      "sha256": "e3dc870b380a86eba11cc0bf85d5e9a3580d3adec6c9834ce04c07c53e5a8d79",
+      "text": false
+    },
+    "README_EXPORT.md": {
+      "sha256": "3c1f11f0253a3745a29583a875e2d7056a0d776421f3546e11ff4f5e496cc0bf",
+      "text": true
+    },
+    "addons/tesana_world_editor/scene_export.gd": {
+      "sha256": "77e8f8160e3c22bbf7279c96ea7b587b97bacd7a774dba0cace1a2de4823ccfd",
+      "text": true
+    },
+    "assets/animations/humanoid_profile_bone_map.tres": {
+      "sha256": "6cb55281a122bc1936fcc9acb5318c2a3d77c079bb81609f1e4ad335c3437667",
+      "text": true
+    },
+    "assets/audio/ambient/ambient_mountain_highland_with_distant_magical_a_highland_wind_lume.mp3": {
+      "sha256": "fd6960a8505427e78469ba12cadbf0a80a37cf7d8cd68740441f84bb6b7d3ef1",
+      "text": false
+    },
+    "assets/audio/music/jingle_defeat_defeat_dirge.mp3": {
+      "sha256": "a2bf4b5f59f8804f76eec0a6d82a623c3fa3ba9fb72b80b1fab71ce4d2d63564",
+      "text": false
+    },
+    "assets/audio/music/jingle_victory_victory_fanfare.mp3": {
+      "sha256": "021d6b1ee866c8a5466788eb2587ed3ebdb591ab32e221349d413938ac8ed6e0",
+      "text": false
+    },
+    "assets/audio/music/music_combat_skirmish_battle_rise.mp3": {
+      "sha256": "b376a96df96466d03e003558ce68d23fd0a2a722acf024ff268a7db6753fd9de",
+      "text": false
+    },
+    "assets/audio/music/music_menu_ascendant_main_theme.mp3": {
+      "sha256": "3c44e84f93a26c24e5238be5b0bc01f59eecceb4a71274df4fea40821d708c8b",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_arcane_zap.wav": {
+      "sha256": "1ff68d32457f2f672df30d4c7af878c25a16d520c4bd2f075ae81e31fae30127",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_arrow_shot.mp3": {
+      "sha256": "ff91ea9524ceb4f3b6d5c4a23607c86721aadd079b510f762f42c0598552cf6c",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_blunt_hit.wav": {
+      "sha256": "f9203c6e111908d6e8fa7e94225b36abbfd4bcb94a870ddae6a294616905473f",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_projectile_impact.wav": {
+      "sha256": "3b700fe40a92976ef546196f36abb8e20890f3e2f13c962f83e09fa73f38d180",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_siege_launch.wav": {
+      "sha256": "2a47b8e6bb06b33e281da4e9a4ae35a1fe3d16dd736cee0fc24e8159e3e33158",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_spell_cast.mp3": {
+      "sha256": "16cb0ddd76b1175269a69d15ecc4e86a9ec8b4d24693200168e5e22724a8ae2e",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_sword_hit.mp3": {
+      "sha256": "3fd8a70c8778e011243a4951d32d56186d1db03f383ed465ebd17526629b37f1",
+      "text": false
+    },
+    "assets/audio/sfx/combat/combat_unit_death.mp3": {
+      "sha256": "4b400af0da191b72b5712cc82b2e6eedf559bb211847e98ec1f1377ba3a10a05",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_curse.wav": {
+      "sha256": "6f8be317088a3a586ca9065210e6ca5642f0aacad356ccd336fd9690ad163346",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_fury.wav": {
+      "sha256": "e84da6ea29f45ab99563c9d39afe2c75c9259f03cc718747791e7649154c7a4b",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_heal.wav": {
+      "sha256": "ee45316243b7a8a61d995aa848250b309f3a855714e611793bae0af4b8e8d1a7",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_quake.wav": {
+      "sha256": "a5adefebf9b6397b3afa7ba97f8ed381fe9b630a3ea5d50651bbf5625a4589c1",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_rain.wav": {
+      "sha256": "7196a02240d9c0cef20ee93353d35e64abd86ed237f40b94b971f1555fd4f4be",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_summon.wav": {
+      "sha256": "da7107c16366580385e0b276f16028be325f346ebb45f3853411f70546eb5fa7",
+      "text": false
+    },
+    "assets/audio/sfx/combat/spell_ward.wav": {
+      "sha256": "c9de31c0ce46aa1bc1b3c66c44024509e2f6b56632f884bbad60c0b30fdfb110",
+      "text": false
+    },
+    "assets/audio/sfx/combat/work_chop.wav": {
+      "sha256": "433504a4e42cccd055e4e93e24c4778a03a29e303ff8cf2f10c9738286a3f7ea",
+      "text": false
+    },
+    "assets/audio/sfx/combat/work_harvest.wav": {
+      "sha256": "85ccc775c596a09f29615a35271404a431df61c31660a93f4843a251621e3891",
+      "text": false
+    },
+    "assets/audio/sfx/combat/work_pick.wav": {
+      "sha256": "6ebd113d84aaa65b5f7a5ea1a84d520a37e227fb8b96a843ee97bc96b5b409c5",
+      "text": false
+    },
+    "assets/audio/sfx/pickup/pickup_hero_level_up.mp3": {
+      "sha256": "31ad20c1460837de73979cb34a560874ada04fb30b076addaa4324c2f74a4b8d",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_age_up.wav": {
+      "sha256": "946027669c9951d4b99bd2f8886a7fcb43bf6242a7bf3ee045baa0151b3aeffd",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_base_under_attack.mp3": {
+      "sha256": "46390d9b88020d2ed053122ddc900665c58bbffdd98aca90aff381909c73a9cb",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_building_complete.mp3": {
+      "sha256": "26b69b07b7b7eeb7cf4292fbcacad559ad35f1ae37f494ddff9d40520fe396b3",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_coin_chime.wav": {
+      "sha256": "87da5bdf80870fdeb3340dc6f4bac2a4c80a74ee5f3c2629dfc7219a64ac9fc3",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_collapse.wav": {
+      "sha256": "d1255f9d31a2cf87c7590bedc8e9a6820c2b9de701952dbe19e6ace473328f85",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_hover_tick.wav": {
+      "sha256": "8adcd10c2973ece8a7697251c848dbfdd8978286a802ba82f809ed072eb14873",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_order_knock.wav": {
+      "sha256": "d6667c6cd1714ec0cec639609588d5d0467245fc003f64e343bf6331e38883ee",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_page_turn.wav": {
+      "sha256": "c3ce5e7bcc4d63edd6cb7960bca568180face252ce234eae17da376db0a89980",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_refuse.wav": {
+      "sha256": "7f89ec40d1d79a03bb1c862d24d8564d9d16de572ea440a616bdd580e2ef196a",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_research_done.wav": {
+      "sha256": "34fd282babcbec90963eea5d8ab0615456173b66aaea79512b9b6fe5e7e05ab5",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_seal_stamp.wav": {
+      "sha256": "8e2d3f218474cb5022a5d0822cd2b504816b907316f8e8aac6399d720ddfee7b",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_unit_ready.mp3": {
+      "sha256": "f8a2e653ed9ead1f38aa23d71cc84177b7fe9c85bf06553a79eac27b17530b0f",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_unit_select_confirm.mp3": {
+      "sha256": "967a7e1600586e6708c288a8ccacbfadf0c7d50b93510bd2ea903cf566aaf9b5",
+      "text": false
+    },
+    "assets/audio/sfx/ui/ui_war_horn.wav": {
+      "sha256": "9154702c7b60e5fa503ff63627e7a75efcbf6888b433a2da5c3482a90628a9da",
+      "text": false
+    },
+    "assets/cache/building_hulls.res": {
+      "sha256": "10e5b34ce1730203ab9b7ae8bd0a5548e23d5bbad3096eb8b2b0886ffd0fa849",
+      "text": false
+    },
+    "assets/characters/_orient_fix.gd": {
+      "sha256": "83b3fae91385c48ffabff033a4253100fb7a429bb18401648f2af62ca83bcd10",
+      "text": true
+    },
+    "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb": {
+      "sha256": "371dca0d20afd35861d282264d0d84cfd86c3997311b78e8cac516717f9fe3c5",
+      "text": false
+    },
+    "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb": {
+      "sha256": "db7fa78a5f1c7f4589ffe9b12252acb5694d2c3d7cf09df76c31090bcc424889",
+      "text": false
+    },
+    "assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb": {
+      "sha256": "46ad0f8878b27e261a020faa1be0fcfc9579068292953dab5ced732370ef5dde",
+      "text": false
+    },
+    "assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres": {
+      "sha256": "56e0e293c0be1d6ddeb361e8e048d776526a4876697819d07a3d1bd81612914b",
+      "text": true
+    },
+    "assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb": {
+      "sha256": "0e0b6a16f66b07e3af8adf521ef4f166b13ff8ee601fa853c0c38582cd73d1e7",
+      "text": false
+    },
+    "assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb": {
+      "sha256": "099f6b86596acae9454f6442eb94ac09f1b6c04035b6257b616097b50d551a70",
+      "text": false
+    },
+    "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres": {
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375",
+      "text": true
+    },
+    "assets/characters/barrosan_outrider/barrosan_outrider.glb": {
+      "sha256": "f2a51b45a23dd3721c625a0c936b1765e06d683249973706b9a097a1a36e73a0",
+      "text": false
+    },
+    "assets/characters/barrosan_outrider/barrosan_outrider_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb": {
+      "sha256": "b23f02bac000dc87c8936206f4ef125f4537705f5c8d46c80647582bc081261b",
+      "text": false
+    },
+    "assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/barrosan_stoneward_spears_r696_compat/barrosan_stoneward_spears_r696_compat.glb": {
+      "sha256": "872782124da7045a4a6c73e1a2c22dd944751cb4c5edebd8e09d250ce1a6b7a8",
+      "text": false
+    },
+    "assets/characters/barrosan_stoneward_spears_r696_compat/barrosan_stoneward_spears_r696_compat_animations.tres": {
+      "sha256": "9a37e23ef57557c4d49baeb3aa2cea9cc3002ac88dab14000a8dea0e064c9b2c",
+      "text": true
+    },
+    "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb": {
+      "sha256": "4b2c77ec71d4e5dce10d0c112e764a88ee9b8dfd2e0032f661f67bfa34123ab1",
+      "text": false
+    },
+    "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/dwarf_warrior/dwarf_warrior.glb": {
+      "sha256": "3185980d98baaef6c89c89a43966b9535af08c68c38f9ed2f4b931c2f3d7a5a6",
+      "text": false
+    },
+    "assets/characters/dwarf_warrior/dwarf_warrior_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb": {
+      "sha256": "e691ea8b8fe3e45f358e88c73ad4448d1914291bdec24daa7b41217dd42be4d1",
+      "text": false
+    },
+    "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/frostborn_warrior/frostborn_warrior.glb": {
+      "sha256": "f37e64e58d53ad3cd83ad71869b16dd289eba9622baca5178998ac9d6a3ca4c2",
+      "text": false
+    },
+    "assets/characters/frostborn_warrior/frostborn_warrior_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/grimtusk_bowcrusha_r704c/grimtusk_bowcrusha_r704c.glb": {
+      "sha256": "f65c4cf856a8128a6b2411c9307629057f59c53e273395e83aa9b84c575a66fe",
+      "text": false
+    },
+    "assets/characters/grimtusk_bowcrusha_r704c/grimtusk_bowcrusha_r704c_animations.tres": {
+      "sha256": "56e0e293c0be1d6ddeb361e8e048d776526a4876697819d07a3d1bd81612914b",
+      "text": true
+    },
+    "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb": {
+      "sha256": "437dc035c802f7cb9db765474f6e6c172efa2e4cc1bdda4e4b824caa65620478",
+      "text": false
+    },
+    "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/grimtusk_ogre_r709b/grimtusk_ogre_r709b.glb": {
+      "sha256": "bdca90effb8993181f8e78520dd03ace62babf2dbb2d5d30a222bfaa1c2e7de4",
+      "text": false
+    },
+    "assets/characters/grimtusk_ogre_r709b/grimtusk_ogre_r709b_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/highelf_archer/highelf_archer.glb": {
+      "sha256": "4ca648a790c42530d8d6b3652053ceee0caffae321c94b138dcaf3e21e65ec9a",
+      "text": false
+    },
+    "assets/characters/highelf_archer/highelf_archer_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/hollow_hero_lich/hollow_hero_lich.glb": {
+      "sha256": "cb57c5e3e9a5b7a27f0e5d27a47920378fc2f36511afcf234e0f9b9664ad6f20",
+      "text": false
+    },
+    "assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb": {
+      "sha256": "dc5c0efbbb2f924a4477ff84bc82a9a1f781f3e94872dad7e8e0a3366c520944",
+      "text": false
+    },
+    "assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb": {
+      "sha256": "f7fdc06ab4c521b3e5bc52906684cfaa1e79344cf1feb7a172fb59f286f7b250",
+      "text": false
+    },
+    "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb": {
+      "sha256": "439bea17236ea7b5b2c201aa03c812ce7a28ba1baf99c530f02427cf5991f776",
+      "text": false
+    },
+    "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres": {
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831",
+      "text": true
+    },
+    "assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb": {
+      "sha256": "78c9fe6846249a9da21669d15536186541ae5038d63221b1dbb48c8b671c5549",
+      "text": false
+    },
+    "assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres": {
+      "sha256": "72c94605eda22004739bea59b130a8b7ad660e2c54628fa1b91e158dca1f809a",
+      "text": true
+    },
+    "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb": {
+      "sha256": "d6ff7b2a36fce5fa49934dcbf6317487920a37847f3bfb5ad1fde7a27f97d832",
+      "text": false
+    },
+    "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb": {
+      "sha256": "486e360054fa590f7d2e4ca1f5729e31ab38cffc5c686a50f3708b35bd5a1874",
+      "text": false
+    },
+    "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres": {
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375",
+      "text": true
+    },
+    "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb": {
+      "sha256": "6679cb4e5af1ff663985a1112ee0dad17ef1dbc5c5a88ebe231bfb31a36797b1",
+      "text": false
+    },
+    "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres": {
+      "sha256": "56e0e293c0be1d6ddeb361e8e048d776526a4876697819d07a3d1bd81612914b",
+      "text": true
+    },
+    "assets/characters/lioraen_windstrider/lioraen_windstrider.glb": {
+      "sha256": "57751ff8c0aaecbf5235946aea43e7acdaaec7361add1bc140b70507991911c5",
+      "text": false
+    },
+    "assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/orc_grunt/orc_grunt.glb": {
+      "sha256": "c27962acf72832fb597b5a91f1bc22eec767a52327d46acd864b848b1ac979f8",
+      "text": false
+    },
+    "assets/characters/orc_grunt/orc_grunt_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb": {
+      "sha256": "8b0774fc616bda5f05e2bb403d16d80492b633db7640169c5cf274e649208a1f",
+      "text": false
+    },
+    "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/sunspear_legionary/sunspear_legionary.glb": {
+      "sha256": "04e630a4024787e3259cb9d27f22f92838f1de51a609419fb3640ee6e9ad9746",
+      "text": false
+    },
+    "assets/characters/sunspear_legionary/sunspear_legionary_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb": {
+      "sha256": "de0decbee1f63c3e8689609dfc8f34f3d89b1827d4b93478fb7891210edb858a",
+      "text": false
+    },
+    "assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/undead_skeleton/undead_skeleton.glb": {
+      "sha256": "1baf063032e97c3c829b5b80e5d81ea57019aff74ee2bcc3c2267f77d94c6ba7",
+      "text": false
+    },
+    "assets/characters/undead_skeleton/undead_skeleton_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/characters/visual_convergence/barrosan_clan_levy_accessories.glb": {
+      "sha256": "f94af43555a83ec5083993b003a659cc407ac588ee8121285cb191ccf18cca92",
+      "text": false
+    },
+    "assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb": {
+      "sha256": "8cf0932d1fe943f98a81ca6808fa4cc06f3cb0e8b4fc2c2e057898f576815f8d",
+      "text": false
+    },
+    "assets/characters/visual_convergence/barrosan_outrider_r1_accessories.glb": {
+      "sha256": "bacfb5a5f6201c4b996f8ce35108e0aa5a202cb567d4fcd1799ac61286fc5da2",
+      "text": false
+    },
+    "assets/characters/visual_convergence/barrosan_spear_guard_accessories.glb": {
+      "sha256": "67e77d882eb5fccfd5f7b394cebe95ec09333d1c38593e118803a2049e62d120",
+      "text": false
+    },
+    "assets/characters/visual_convergence/barrosan_worker_cargo_bundle.glb": {
+      "sha256": "aed03478464dcf254ccb9d1c269440c6b92a5db7a962250b847cca0109e4827e",
+      "text": false
+    },
+    "assets/characters/visual_convergence/barrosan_worker_tool.glb": {
+      "sha256": "271a86e4fd68f6894989ead7ee9ffba41c0ba2011f6f5bb36ba010120fef3ca2",
+      "text": false
+    },
+    "assets/characters/visual_convergence/vorthak_veil_warlock_r1_accessories.glb": {
+      "sha256": "9e98c1b02bfbf723ad1b6849b56aed0ae6afe20627e11dd19d88eb7aaa6dabfa",
+      "text": false
+    },
+    "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb": {
+      "sha256": "40c69b91774d4e29081b5660c53fb7b2b9bc3340d0ef2511076e85c8e59536b6",
+      "text": false
+    },
+    "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb": {
+      "sha256": "127a627d26bc0dbee0f928c5aa4ade9b255a2efe247d9330ca61daf70f41c40f",
+      "text": false
+    },
+    "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres": {
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375",
+      "text": true
+    },
+    "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb": {
+      "sha256": "3b1be5ba0d8e0e9687ff0a7484947e339494a24c1e14a2b5e8246a7958305e9a",
+      "text": false
+    },
+    "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres": {
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831",
+      "text": true
+    },
+    "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb": {
+      "sha256": "7ae7c20947f073e3607c8b44ca9229af183119df9345d3f160d205ab671b4d63",
+      "text": false
+    },
+    "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb": {
+      "sha256": "af210abfea73a0e8992a570a651a7eeab467ecd895633afff7f0472ed2fdbf29",
+      "text": false
+    },
+    "assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres": {
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831",
+      "text": true
+    },
+    "assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb": {
+      "sha256": "84c504e4234c66714d6a53da0db36a40bb2e217f905e4d70f0e33b62cf89c1fa",
+      "text": false
+    },
+    "assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres": {
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a",
+      "text": true
+    },
+    "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb": {
+      "sha256": "f2f3559e633b5c1f4f8b2c2c2f7119ca07f37c9c0ba0e0782eb22f87718d03c3",
+      "text": false
+    },
+    "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres": {
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831",
+      "text": true
+    },
+    "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb": {
+      "sha256": "904c10c4bad168c852c09a0b128ae2036d578ea83c58d5e0e83d56d0ba563803",
+      "text": false
+    },
+    "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres": {
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff",
+      "text": true
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01.glb": {
+      "sha256": "f4fd4bedd273067f1b356e52d5b0197eae62483cc6d7f9ddeff9f0a49b864b0b",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_material_import.gd": {
+      "sha256": "fa2218ed1d78c772e6d20bb306ea4240c24baea89e00882d0d039ede21a851cd",
+      "text": true
+    },
+    "assets/environment/buildings/barrosan_clan_croft.glb": {
+      "sha256": "1027098e0fcbe1ffc6045558d75a16ec5063cdaa02ced7161e721cd7cde450d4",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clan_croft_tripo_model_basecolor.jpg": {
+      "sha256": "f32cb5e799bec5ee5c9961b4e3ab51c51504bc9572bcb69246df82eaf7a139b8",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clan_croft_tripo_model_normal.jpg": {
+      "sha256": "17450b019a5a6127afd7db9e91dea8793ab54771500bc6dc70c0a842819b83a2",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clan_croft_tripo_model_rm.jpg": {
+      "sha256": "c2fe46e090ebecb464b89498f9916e8719ff75a69763b988bdb984670ebba18c",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clanhold.glb": {
+      "sha256": "9e2e74a5533f4133f8dfdec50997925d031d817b2b499848dd663db9836734e1",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clanhold_authority.glb": {
+      "sha256": "b9805e371ae5ec75d8c3ae3c12a07932cf9847df0dea48a2151f5317ae9d57a3",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clanhold_tripo_model_basecolor.jpg": {
+      "sha256": "a7442587083c1d5d96ac11398624e18327c077490deb946a58dda08d120cc68a",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clanhold_tripo_model_normal.jpg": {
+      "sha256": "21dee489e2735f1a977b396677f162c3ad432bb404a2b5fe6c102911e373999c",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg": {
+      "sha256": "db3018357394effeb47d90a0192288ad1bca186185caf35c183c6577d1a353c5",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_houses_a03.glb": {
+      "sha256": "2924e455ce711b58baf7a4eea720ceb935c083e94d49767545b492b4b4cf3f37",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge.glb": {
+      "sha256": "1a20b9b54a2ed968a11e883f0c2fd5977ea42046a2d6846a7949316261cdb5c6",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb": {
+      "sha256": "86a603092dcedd56200a628e621e0fc8a9377ea204c1b22faebb36ddd1b57cd9",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r1_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r1_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r1_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r1_barrosan-limewash-albedo.jpg": {
+      "sha256": "dbf53d2f0ab84f51b05423e243f7e1b17d93cfae01cd892b902effecf042203f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb": {
+      "sha256": "a0508375a91192ca360beaf65705873126d69078a567bfba1ede22339ae6dc88",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r2_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r2_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r2_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_b01_r2_barrosan-limewash-albedo.jpg": {
+      "sha256": "dbf53d2f0ab84f51b05423e243f7e1b17d93cfae01cd892b902effecf042203f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_tripo_model_basecolor.jpg": {
+      "sha256": "6830dd45b1bfc4190e21983f651b63096afb89dee8fecc40fd402e11b90c5fbf",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_tripo_model_normal.jpg": {
+      "sha256": "1d9c39929a76834fd04a16a8e99743029de8b2faffb9219e30e4fa776412af2c",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_iron_forge_tripo_model_rm.jpg": {
+      "sha256": "f48fcc20f7d8f46b79ff1cb267ae211224c9fbbc6cac7ea59b14aac6fe021808",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall.glb": {
+      "sha256": "a4b2c07f2ae9c61496d44ceb98d8d6e376be57792431ea440ff564a1c293f8b8",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02.glb": {
+      "sha256": "758449403841f72078ad33ce8f392fd6c89aeaac999a8e6cbc5cf4868943e336",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-limewash-albedo.jpg": {
+      "sha256": "dbf53d2f0ab84f51b05423e243f7e1b17d93cfae01cd892b902effecf042203f",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_tripo_model_basecolor.jpg": {
+      "sha256": "2e14714971900bab0cd08b248fd65541faa4eb1c3038bc681e1b0e24e92fd162",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_tripo_model_normal.jpg": {
+      "sha256": "d689b9c1d1d0eec0af4de2e11d19de5a5b687a6076a114cf74c8b771f391739e",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_war_hall_tripo_model_rm.jpg": {
+      "sha256": "21b268614c29eb503d346dd00855c892731cc311ff8c30cc05bac36ef545ba21",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_watchtower.glb": {
+      "sha256": "9e2e74a5533f4133f8dfdec50997925d031d817b2b499848dd663db9836734e1",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_watchtower_tripo_model_basecolor.jpg": {
+      "sha256": "a7442587083c1d5d96ac11398624e18327c077490deb946a58dda08d120cc68a",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_watchtower_tripo_model_normal.jpg": {
+      "sha256": "21dee489e2735f1a977b396677f162c3ad432bb404a2b5fe6c102911e373999c",
+      "text": false
+    },
+    "assets/environment/buildings/barrosan_watchtower_tripo_model_rm.jpg": {
+      "sha256": "db3018357394effeb47d90a0192288ad1bca186185caf35c183c6577d1a353c5",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r56/castro_hold.glb": {
+      "sha256": "4d1341a4dd35da07e66fe85139fb001294acd47872c99891f62ace829f00b528",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r56/castro_hold_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r56/castro_hold_barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r56/castro_hold_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r57/roundhouse.glb": {
+      "sha256": "20cf754d5d9c30fa3174f43deb3eec65f16d0b10ef9275372a4009091427ee2e",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r57/roundhouse_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r57/roundhouse_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r57/roundhouse_r57_thatch.png": {
+      "sha256": "73ccf271e40d83263b7299e347d37a32049772e02fbe0cb777c561598dff5790",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r58/forge.glb": {
+      "sha256": "58f92aad9f07e0f313394f82b5c881a5a2c9cd64853e00e1bf2ff83a5e3daec0",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r58/forge_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r58/forge_barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "text": false
+    },
+    "assets/environment/buildings/codex_r58/forge_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "text": false
+    },
+    "assets/environment/buildings/frostborn_mead_hall.glb": {
+      "sha256": "e33c2fa8affba9752e1db374ba616e6c9b8b8ff2f4b95143d0dbdd90d3dbb9ed",
+      "text": false
+    },
+    "assets/environment/buildings/frostborn_mead_hall_tripo_model_basecolor.jpg": {
+      "sha256": "6c57686b18e9fc417f1a2a5381e4b41958440fa7531404a94107de4a7c3945ea",
+      "text": false
+    },
+    "assets/environment/buildings/frostborn_mead_hall_tripo_model_normal.jpg": {
+      "sha256": "9470606b8fef76df2b85b0fd315e5924795697ec394a49ca8f3e3b22a3708ad9",
+      "text": false
+    },
+    "assets/environment/buildings/frostborn_mead_hall_tripo_model_rm.jpg": {
+      "sha256": "ca574393b6b76d84212a215e70f6d53060ab9d7320695a0b9679e3441b2c338f",
+      "text": false
+    },
+    "assets/environment/buildings/grimtusk_stronghold.glb": {
+      "sha256": "c06984b8703409eeef901ae02adb23e7fb600739cbcea71281274acfaec7e033",
+      "text": false
+    },
+    "assets/environment/buildings/grimtusk_stronghold_tripo_model_basecolor.jpg": {
+      "sha256": "32edaf060d6fcf9edf5ae510f184442b2d19c370533858156b7cbf8f09aed220",
+      "text": false
+    },
+    "assets/environment/buildings/grimtusk_stronghold_tripo_model_normal.jpg": {
+      "sha256": "5a712e558be28c3a8b96b83e776e3eb4960a75b5baa0f9c69bc1d7c97d044975",
+      "text": false
+    },
+    "assets/environment/buildings/grimtusk_stronghold_tripo_model_rm.jpg": {
+      "sha256": "567e9fd0c6af2918ba22033504e60805082e28401af826590107579849a46b12",
+      "text": false
+    },
+    "assets/environment/buildings/hollow_necropolis.glb": {
+      "sha256": "d7de066b617a4bbc5d75ca9c9a7bb43c7e22cbe3ed4e9e82a7ce94831ac1c3c5",
+      "text": false
+    },
+    "assets/environment/buildings/hollow_necropolis_tripo_model_basecolor.jpg": {
+      "sha256": "46f9c9538e9778e691e26b45a15bf61f236327743e2be8ed01de0fcda54f2e63",
+      "text": false
+    },
+    "assets/environment/buildings/hollow_necropolis_tripo_model_normal.jpg": {
+      "sha256": "ced741246b6b8fa6c76dfb112d072acfc049a094ca38705846dbfe7c3ba17868",
+      "text": false
+    },
+    "assets/environment/buildings/hollow_necropolis_tripo_model_rm.jpg": {
+      "sha256": "607ed045716d4c8c3eecd6fd0196035f882de47598d054b5cde2b4b5ec77e554",
+      "text": false
+    },
+    "assets/environment/buildings/karak_hold.glb": {
+      "sha256": "ab18db4d3d8b33b95e9b8be82f02727d5c5dad413492b6a80cbd454db13a6ce3",
+      "text": false
+    },
+    "assets/environment/buildings/karak_hold_tripo_model_basecolor.jpg": {
+      "sha256": "0db48e1d7f52209cd9cab24cf2e23f5164a25c4e547f2afc532fe5663e8791d4",
+      "text": false
+    },
+    "assets/environment/buildings/karak_hold_tripo_model_normal.jpg": {
+      "sha256": "8277a002f103d8401be71241ba448b3e5b10ea27ee1f6bbb41e7d41bc412e1f3",
+      "text": false
+    },
+    "assets/environment/buildings/karak_hold_tripo_model_rm.jpg": {
+      "sha256": "af90d19872da51f5495f10b27f59714a83c3a3d5c045ea8c33c54c0ba7d5d002",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_bloom_spire.glb": {
+      "sha256": "d54027f63a7de0e996b6890a9933b70b20a6996a25d55024ecc1b6a67d5f5605",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_bloom_spire_tripo_model_basecolor.jpg": {
+      "sha256": "40ce86714f63662a8dd663e0c9e81d320202b9e28bc0764566798792dfa7a365",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_bloom_spire_tripo_model_normal.jpg": {
+      "sha256": "0d23859bac5a25399d22aec591fa95f4ac185d502ca577c95ac163e1ac25c5ad",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_bloom_spire_tripo_model_rm.jpg": {
+      "sha256": "69acbfc94f209c413edfc215fcae67ae4d1308017e84b4ccbde38ffcbc7fe35d",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_groveheart.glb": {
+      "sha256": "76e5ae6b1df00d4f4e10db88cff2cc09cbf49c1a80b5015c6a04d67ed6baf027",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb": {
+      "sha256": "f1e93787f5370d83068a41d7e6388c4ea2d5e845dd715b2aec5e076894f84a53",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_groveheart_tripo_model_basecolor.jpg": {
+      "sha256": "3f9a0ec7b5160e3e5a011add6faa36d8800b70e96f9cbaf6f14a500e306d0e15",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_groveheart_tripo_model_normal.jpg": {
+      "sha256": "8c5bdfe9deb2c8483487f87d9791b87f1b31f6715107c6359c9cb001ca44d647",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_groveheart_tripo_model_rm.jpg": {
+      "sha256": "a9284e56da164c31f43f77a4c8019fcb7f14b671bbe976dbaf38393cad59f501",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_lifewell.glb": {
+      "sha256": "379d0102011859f65b1a7a549528c912bb4475f1afd7b5f069b1c3a11c34cba5",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_lifewell_tripo_model_basecolor.jpg": {
+      "sha256": "46754bb169941e3f8b04cc1e137e40e13263beddaa57962f0dcf70756fefc8d6",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_lifewell_tripo_model_normal.jpg": {
+      "sha256": "68d54b8f34ef5cfc64c82650507cfc91663e39607f3e67a35944152077fda595",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_lifewell_tripo_model_rm.jpg": {
+      "sha256": "38201ce8d09ac21ade96cbbd0383090381dc7de1bfb1c0ef789fe92d425084c9",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_spirit_glade.glb": {
+      "sha256": "8a27bbab798d3cd4876880d2f653a319e6160ce8f6eed5993bb3eedfe1fe905d",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_spirit_glade_tripo_model_basecolor.jpg": {
+      "sha256": "0580f3eadf0310bc70b66c75c0071f39600713b69ce4ac1a09b3ad64ab2a81ee",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_spirit_glade_tripo_model_normal.jpg": {
+      "sha256": "036c48deecf8fe1aaa9dca68d7571e975e5708540e264e48cf3029fe2b7b6182",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_spirit_glade_tripo_model_rm.jpg": {
+      "sha256": "ad61376e01e822785721b36c99809f1c820a0a51f96d9fbf389412baa7b74deb",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_thornhall.glb": {
+      "sha256": "83784d63e43e85c17b8d6658542d024e9a4742735f053c63909e7fd75034429f",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_thornhall_tripo_model_basecolor.jpg": {
+      "sha256": "2cbd9c06ee04472f5182cd711da27c1484e1390c2581359afd0309df82177560",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_thornhall_tripo_model_normal.jpg": {
+      "sha256": "27224008edf48a3d36cdd54a208d9514fb7a1bde8cdde31fd4bbd8f2e79eb980",
+      "text": false
+    },
+    "assets/environment/buildings/lioraen_thornhall_tripo_model_rm.jpg": {
+      "sha256": "c049525b8b3a3e98b570818b8afc86eb5a88ecade0a478cb9341eacfc659e790",
+      "text": false
+    },
+    "assets/environment/buildings/sunspear_palace.glb": {
+      "sha256": "6350b5219b6a9e4a5a256952435620639ab1b72b65510c5fc0d6c0b73d183c3c",
+      "text": false
+    },
+    "assets/environment/buildings/sunspear_palace_tripo_model_basecolor.jpg": {
+      "sha256": "f141e3944357c11fdb4a614988d6864f8b15a228b3fbb1c173e2a101a05d7042",
+      "text": false
+    },
+    "assets/environment/buildings/sunspear_palace_tripo_model_normal.jpg": {
+      "sha256": "dd02cde63a9572b8d1ec0df3c5b670d8b764d193bc4361b65c8f9d6a42c3431f",
+      "text": false
+    },
+    "assets/environment/buildings/sunspear_palace_tripo_model_rm.jpg": {
+      "sha256": "4b3f4dabc7523b3e45e8a3b23cd6626bb5edad1228a5e3db9341fbabb717245b",
+      "text": false
+    },
+    "assets/environment/buildings/sylvan_court.glb": {
+      "sha256": "96afb00efe01d4abe099ad771143260e43cbd25be5b30c469ae91e384113f84d",
+      "text": false
+    },
+    "assets/environment/buildings/sylvan_court_tripo_model_basecolor.jpg": {
+      "sha256": "7143f69d848b52029c886171f72a161b04ffae3a1a7d30b0b5206e7e5826c42e",
+      "text": false
+    },
+    "assets/environment/buildings/sylvan_court_tripo_model_normal.jpg": {
+      "sha256": "09543486dc8a64abc3993a4118f5e20ef618eeed53178a6c64e9f4eaaf063adf",
+      "text": false
+    },
+    "assets/environment/buildings/sylvan_court_tripo_model_rm.jpg": {
+      "sha256": "72cb82f030022e22964047d4eef7453538634c04b6ee1519358bf4a67519d132",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_ash_forge.glb": {
+      "sha256": "29ef6384f1fd5d0d51f8e60f978f09c6888654dce0f2c660e63d200d159b7c43",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_ash_forge_tripo_model_basecolor.jpg": {
+      "sha256": "3b35a3f0ff8de725e7e5462a486424fc38bec1804e47c2f24dba08dfe22531fc",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg": {
+      "sha256": "a21e21d605003c6aaee826b624adf73fcfa768dddb7856a11891a6468d3890bf",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_ash_forge_tripo_model_rm.jpg": {
+      "sha256": "b4fceaf09a0fc0f8399dae3f37f6efe9f51b716246f1b7dba244eb446e5a9c65",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_bone_barracks.glb": {
+      "sha256": "88ce32e8643db073de68403b1987d94795b03db25b6051a7e3c78ad26f1b4417",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_bone_barracks_tripo_model_basecolor.jpg": {
+      "sha256": "fb96732aa971f5ae341ef5fc53925a1d9a897a293d67ee42c5eb1ab1692a9e40",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_bone_barracks_tripo_model_normal.jpg": {
+      "sha256": "f91c8af31253d49828c1e03a380d3902cf8a46413c846fb515a2692472de9ab0",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_bone_barracks_tripo_model_rm.jpg": {
+      "sha256": "c53be8a2d483d76e3b22847f5d078f73ee1f06619c86e7875b6f83287c2073ab",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_nighthold.glb": {
+      "sha256": "7e48771c9173dd3601151db759a1125e8fe9378a3acdf161364b7c7d87db8ffa",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_nighthold_tripo_model_basecolor.jpg": {
+      "sha256": "3be73292760065893c20a0842367564d5d48cc4fae1719b99eb4a166120b8213",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_nighthold_tripo_model_normal.jpg": {
+      "sha256": "0e32a01c5e72ad795ed2b882fdac3d08c856dcabb1ccbd80ec421e3be9f619fd",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_nighthold_tripo_model_rm.jpg": {
+      "sha256": "ab23305b2580091b478e6aa002e63e8e430ecaac0c0827b4d0971b7c617ed4a1",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_rift_obelisk.glb": {
+      "sha256": "67b09d2739f9d7612c2e8104c007230d298390025f9dd9997737f2e1c569fbee",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_basecolor.jpg": {
+      "sha256": "9953e11c9e54f8d0d552859b17c24bebf24818d7750244c42bedae707f17c3ec",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_normal.jpg": {
+      "sha256": "ba64c4de02f8cfd291cfa4346d801ec376283272c70d4be26d2b3844543b8f5d",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_rm.jpg": {
+      "sha256": "e4ae5e3fceb09e51c4d92961a2977750f8b2bd7d0b50b3748a51f99b8ebc69c4",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_warlock_spire.glb": {
+      "sha256": "ad43221a77dd9985cac438cda21f2fc88a7e0eb55a9513176e423d254d44747b",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_warlock_spire_tripo_model_basecolor.jpg": {
+      "sha256": "f089adaaae58475af9d4d19e85c1259f059bd6f0f13fe1ed04b864cfc8a9da97",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_warlock_spire_tripo_model_normal.jpg": {
+      "sha256": "87c124f81c25fae2a086e037b3ab6f6f1c4d85e0d36e2d5bd059923e1499c23b",
+      "text": false
+    },
+    "assets/environment/buildings/vorthak_warlock_spire_tripo_model_rm.jpg": {
+      "sha256": "640b935cdc9fe4f37929f8b87842c1fcf7ef8ca013863adaf069f9531193cef5",
+      "text": false
+    },
+    "assets/environment/buildings/wyldkin_denhold.glb": {
+      "sha256": "a2b64b7d60d9bcb7014e4950770e469ce4ca34f1ea898e7dd010c4880f286d3e",
+      "text": false
+    },
+    "assets/environment/buildings/wyldkin_denhold_tripo_model_basecolor.jpg": {
+      "sha256": "cc3b3e76006628aee672802f064e6e2bbc81987a9be6a0e6d6c3e776f0e6c9da",
+      "text": false
+    },
+    "assets/environment/buildings/wyldkin_denhold_tripo_model_normal.jpg": {
+      "sha256": "dbd77fc6680204dc4e279e947363725f0db02baae878af4a8f6549a1f953907a",
+      "text": false
+    },
+    "assets/environment/buildings/wyldkin_denhold_tripo_model_rm.jpg": {
+      "sha256": "8895aaf80ecd97e19446b46ebd1ce743568cd926f66ab79a561f2686602fca9e",
+      "text": false
+    },
+    "assets/environment/rocks/basalt_highland_rock_cluster.png": {
+      "sha256": "32010753a680823dc5d2eb37a18adbc22536e73b5e74d533414101bc66611a72",
+      "text": false
+    },
+    "assets/environment/rocks/basalt_mossy_boulder.png": {
+      "sha256": "029f556e182cd09579c840142c0dbaf8dcf9d55ac4cdeb1c728246cd1c174e3b",
+      "text": false
+    },
+    "assets/environment/rocks/crag_highland_rock_cluster.png": {
+      "sha256": "1a65e4fdb082df1147bc3ebf59bcd71292ae47b154f5b653f49f3b6b99c08570",
+      "text": false
+    },
+    "assets/environment/rocks/crag_mossy_boulder.png": {
+      "sha256": "d004b09e44e4955126f44f4a79c6234ce532b07dfd17bcbd5e4697c40e198405",
+      "text": false
+    },
+    "assets/environment/rocks/gold_mine_lumevein.glb": {
+      "sha256": "b48da668f2247f99024cee10ff557f8c40cd2f3f5d42df146955c7d70659862b",
+      "text": false
+    },
+    "assets/environment/rocks/gold_mine_lumevein_tripo_model_basecolor.jpg": {
+      "sha256": "4b787b2ebf4c9c3f99139b51d88e681102e3024357f1a1a62f5a7287a8a798c8",
+      "text": false
+    },
+    "assets/environment/rocks/gold_mine_lumevein_tripo_model_normal.jpg": {
+      "sha256": "f7a0c29e469e9fcedce763e4559eb47dea6416a52a67226842460d5170ecc336",
+      "text": false
+    },
+    "assets/environment/rocks/gold_mine_lumevein_tripo_model_rm.jpg": {
+      "sha256": "a6a3a07a94eb16f7bc219cd32e6314f2e4352e7a5d8b9f023273b339ad191d82",
+      "text": false
+    },
+    "assets/environment/rocks/highland_rock_cluster.glb": {
+      "sha256": "4ae858de3c3919f7b03117178659fd58cdadca9e9909c7926c95ff1bea526162",
+      "text": false
+    },
+    "assets/environment/rocks/highland_rock_cluster_tripo_model_basecolor.jpg": {
+      "sha256": "2a422822d364f7df8f3a76df9b6fc9b5df07dfbc27d3215043a6b6b69ded5460",
+      "text": false
+    },
+    "assets/environment/rocks/highland_rock_cluster_tripo_model_normal.jpg": {
+      "sha256": "63e02c786341f0de043e74ed2cd448938f772eeb436a9b1dd225266c46ad0fcb",
+      "text": false
+    },
+    "assets/environment/rocks/highland_rock_cluster_tripo_model_rm.jpg": {
+      "sha256": "efdb6d4811ed8e6c2be44667ca5c4919efb9427f646c707cc3bf76ab9a435bb1",
+      "text": false
+    },
+    "assets/environment/rocks/mossy_boulder.glb": {
+      "sha256": "04ad073ba7cf30a50351b1053f1a25ea2e41d941b3c93d5f076b5a558646cb81",
+      "text": false
+    },
+    "assets/environment/rocks/mossy_boulder_tripo_model_basecolor.jpg": {
+      "sha256": "21708685ef23a47ba61b6e444fc653f18bf1f690afa9345278a4e213a680b204",
+      "text": false
+    },
+    "assets/environment/rocks/mossy_boulder_tripo_model_normal.jpg": {
+      "sha256": "06697639b2eccd10794cb6d0338bf6f84bfda44523568489300066e4690841c9",
+      "text": false
+    },
+    "assets/environment/rocks/mossy_boulder_tripo_model_rm.jpg": {
+      "sha256": "efc3c12607e6302bdfaad5b015ccc94ad661f3c20db42a1880e394614f48b1d4",
+      "text": false
+    },
+    "assets/environment/structures/ancient_ruin_pillar.glb": {
+      "sha256": "4506056f3168242bf6b9c5f7fc1f47bbc6ed87144624a2b6a7f971633ba3b715",
+      "text": false
+    },
+    "assets/environment/structures/ancient_ruin_pillar_tripo_model_basecolor.jpg": {
+      "sha256": "a6bd5b7f2a378a48e595958efee191cfa8eba1ccda2ac667bc917a78f9412a55",
+      "text": false
+    },
+    "assets/environment/structures/ancient_ruin_pillar_tripo_model_normal.jpg": {
+      "sha256": "461cbd72b412ac5b81a9477e78af5bb85cd45f359584c371e3ee5293b774a61f",
+      "text": false
+    },
+    "assets/environment/structures/ancient_ruin_pillar_tripo_model_rm.jpg": {
+      "sha256": "ea336dc1d780b877f9818e6f6939def4b8cd37669a687a0e05e5db7c17561df8",
+      "text": false
+    },
+    "assets/environment/structures/highland_crossing_bridge.glb": {
+      "sha256": "430c09aac03f29c80a834715cc5ef161bcf4c72ce853eab49bef00e55deaa040",
+      "text": false
+    },
+    "assets/environment/structures/highland_crossing_bridge_material_import.gd": {
+      "sha256": "5f35191c745747e5ab4ea2fc1fb716517a26f50bc02651e1a192a7ddda1e8692",
+      "text": true
+    },
+    "assets/environment/structures/highland_crossing_bridge_tripo_model_basecolor.jpg": {
+      "sha256": "83625d9b5268c91c16249124899e83b0e0240fb4e9f3d9e674ae6de7e92880f7",
+      "text": false
+    },
+    "assets/environment/structures/highland_crossing_bridge_tripo_model_normal.jpg": {
+      "sha256": "4f9eed698a711d879ae0ffd8300fc52e13ba47966eada2d20f4ff01f4ce7458e",
+      "text": false
+    },
+    "assets/environment/structures/highland_crossing_bridge_tripo_model_rm.jpg": {
+      "sha256": "c0268add1662c32d8eaf07512147b811b1d632979677f6368faaf1be96e9228b",
+      "text": false
+    },
+    "assets/environment/structures/lume_spire_ruin.glb": {
+      "sha256": "8a27bbab798d3cd4876880d2f653a319e6160ce8f6eed5993bb3eedfe1fe905d",
+      "text": false
+    },
+    "assets/environment/structures/lume_spire_ruin_tripo_model_basecolor.jpg": {
+      "sha256": "0580f3eadf0310bc70b66c75c0071f39600713b69ce4ac1a09b3ad64ab2a81ee",
+      "text": false
+    },
+    "assets/environment/structures/lume_spire_ruin_tripo_model_normal.jpg": {
+      "sha256": "036c48deecf8fe1aaa9dca68d7571e975e5708540e264e48cf3029fe2b7b6182",
+      "text": false
+    },
+    "assets/environment/structures/lume_spire_ruin_tripo_model_rm.jpg": {
+      "sha256": "ad61376e01e822785721b36c99809f1c820a0a51f96d9fbf389412baa7b74deb",
+      "text": false
+    },
+    "assets/environment/vegetation/broadleaf_oak.glb": {
+      "sha256": "c554a3c928789b108d52b4c2c3c24e6f694d1b63f8a5346c3631ab5d07cc0449",
+      "text": false
+    },
+    "assets/environment/vegetation/broadleaf_oak_tripo_model_basecolor.jpg": {
+      "sha256": "8f7d12aeee4560b1a0f14e331fcecb604866c8655cefe69cf275fbc0832123ff",
+      "text": false
+    },
+    "assets/environment/vegetation/broadleaf_oak_tripo_model_normal.jpg": {
+      "sha256": "5de34a2500ba3d2e1dd9357dd6e5f33eb9a88a75fec53c574119283ba54fe413",
+      "text": false
+    },
+    "assets/environment/vegetation/broadleaf_oak_tripo_model_rm.jpg": {
+      "sha256": "ecc5c4a2370fc5f359f85a6ad93bad551c4f27f3d4cc837131fbc5319bc51307",
+      "text": false
+    },
+    "assets/environment/vegetation/desert_palm.scn": {
+      "sha256": "c97c0e2abf380d858eba1428f16cda8339d1d8c1bbfaca8868060fdf195c4cb3",
+      "text": false
+    },
+    "assets/environment/vegetation/desert_palm_b.scn": {
+      "sha256": "017d37eb5b6af2254e05ca1f0dd2124638e49d897700801a8801ebabb0db3c04",
+      "text": false
+    },
+    "assets/environment/vegetation/highland_pine.glb": {
+      "sha256": "ccf1cf59aaf25687f3875fef6277cfda495eaf6c717dba898e82f62e3cc27bd0",
+      "text": false
+    },
+    "assets/environment/vegetation/highland_pine_tripo_model_basecolor.jpg": {
+      "sha256": "c8218e446643d490a5cddb6a7761286842963855f8ab19fcfeb71dfd00c03028",
+      "text": false
+    },
+    "assets/environment/vegetation/highland_pine_tripo_model_normal.jpg": {
+      "sha256": "a4e355da96a7088d8b4fcf9a47c9fd658c01b56168cbe9cc171bb387323f1e9a",
+      "text": false
+    },
+    "assets/environment/vegetation/highland_pine_tripo_model_rm.jpg": {
+      "sha256": "348b2716e743b5970f42db7e7f36a41601de838badc889f6a0d228c5f7172925",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_boundary_marker.glb": {
+      "sha256": "46fa6d108b5f5c09afc8048c9bf63683efd48e72a1ca6e72bfa1e62b4cffa95c",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_campaign_tent_lod1.glb": {
+      "sha256": "6d6026f813a1d92e53f708ed488de08b6066effab27e8856948029d6726700c5",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_clan_standard_lod1.glb": {
+      "sha256": "f351d63588a28dbbd9c27d4e3d8896cfd557a937fe95ed5cee5003789f759db2",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_clan_waystone_lod1.glb": {
+      "sha256": "ccc9ab0e5800e84a979e76b99e6e271a6b4b4883a528fa8403479615b169982a",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_covered_supply_wagon_lod1.glb": {
+      "sha256": "e4064e2474838ea4afaabbea338738a5417bf6479cb701713cc7fb0cf9dcbc8e",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_guard_tower_lod1.glb": {
+      "sha256": "019795ceb4f29b251411ee401bd4017dad6ef464bb2a0eef244164fd4a58c80c",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_muster_gate_lod1.glb": {
+      "sha256": "6297a2ce7250c9f2705ef7aab59c1acf733a4a8017924c29fcb475d268136cd9",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_muster_rack_lod1.glb": {
+      "sha256": "0e4b313cd29ad646499b60984db923c96cd80d1587acf2cd6994ea910a893179",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_open_gate_doors_lod1.glb": {
+      "sha256": "2557ec054ce9490bc61910bfbd3d3291664ac69a98c239201f84b93ef5f8ae06",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_palisade_corner_lod1.glb": {
+      "sha256": "d2756eda5afffd0f4b68418d13e167e492a047fe1469d7abf46964bfa86e36e6",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_palisade_wall_4m_lod1.glb": {
+      "sha256": "6cb6d69746cb828de56cff39a9ada3e1a53f2814285ff303315a8f0cd79c5651",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_supply_awning_lod1.glb": {
+      "sha256": "cfe758d6c859c2cea7b9028d89ac5b3671480c88f36cf6ee0f6bb86058a9a972",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_training_pavilion_lod1.glb": {
+      "sha256": "172ebe9b72e7505dd9fd3e3abdeabe91bd7f8f23a2242c66d76727e482fdc182",
+      "text": false
+    },
+    "assets/environment/visual_convergence/barrosan_settlement/barrosan_watch_brazier_lod1.glb": {
+      "sha256": "108d4405304972d09d2ec40d77351d9c79a1027cdddf908cbb8dd420fa7bf484",
+      "text": false
+    },
+    "assets/environment/visual_convergence/fallen_timber_cluster.glb": {
+      "sha256": "008052a00befb247c74bf1b1330a679e6279f3a27e60d655d526b9e553ab17a8",
+      "text": false
+    },
+    "assets/environment/visual_convergence/highland_brush_cluster.glb": {
+      "sha256": "763df8b68067336a764ced4eed6bfeb5e374b92677b703580b25f71f538df597",
+      "text": false
+    },
+    "assets/environment/visual_convergence/highland_dry_stone_wall_module.glb": {
+      "sha256": "1e876048395599beaf50adbce6f2c965a447a08db39f72aaae164c350adcb4f8",
+      "text": false
+    },
+    "assets/environment/visual_convergence/lioraen_lume_bloom.glb": {
+      "sha256": "4ba7d85ef529836e39a5e84ee6774cfae729f4ef6fe3648d72144cc66eedac75",
+      "text": false
+    },
+    "assets/environment/visual_convergence/lioraen_moonstone.glb": {
+      "sha256": "f2792f90f2cc3ff8f91b4da5a7fd75b7a509e333e7001bee9167e4981924c666",
+      "text": false
+    },
+    "assets/environment/visual_convergence/lioraen_waystone_slate_r2.png": {
+      "sha256": "0a6614ccdce19c521c3872c2065ef9bf0c6057f0bdeb0391489e354f128c0975",
+      "text": false
+    },
+    "assets/environment/visual_convergence/rough_supply_shelter.glb": {
+      "sha256": "1720d7473f768ea103762d1388d35c78bec62226887cac9ebf4cdfcd4dc99edb",
+      "text": false
+    },
+    "assets/environment/visual_convergence/small_stone_cairn.glb": {
+      "sha256": "a25622debc7d3abed71b69e07b0dfc76efaad1a1d7e686f97dc9bd747972fc32",
+      "text": false
+    },
+    "assets/environment/visual_convergence/vorthak_ash_glass_shards.glb": {
+      "sha256": "269b4a55f6f31c959881f181641a6bff15c0c0d5d6fc8f051002eb4fdac3acde",
+      "text": false
+    },
+    "assets/environment/visual_convergence/vorthak_charred_wall.glb": {
+      "sha256": "435023779725a5169ec11e96d1ce1ed155d1a1979e3d8dad1bc66d2b10c5fab8",
+      "text": false
+    },
+    "assets/environment/visual_convergence/weathered_fence_module.glb": {
+      "sha256": "bb74c5d0ac2dfd7638c2f80f86a78f2c558e4d1ce44e3f0502360c67500f3140",
+      "text": false
+    },
+    "assets/fonts/cinzel.ttf": {
+      "sha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34",
+      "text": false
+    },
+    "assets/generation-meta.json": {
+      "sha256": "2b4f4eb4cc8f5882b99fd99b1542867309f9b924c9302ba2fefba8da09a730a2",
+      "text": true
+    },
+    "assets/manifest.json": {
+      "sha256": "457c421def8f93f334578a97504706175269002be500d8664faf71090f123e0c",
+      "text": true
+    },
+    "assets/materials/barrosan/barrosan_iron_forge_surface.tres": {
+      "sha256": "685bd7f732473b221eb3661c07a6c7fbf2253d5a64090bd79ad6cce0ec602895",
+      "text": true
+    },
+    "assets/materials/barrosan/barrosan_watchtower_surface.tres": {
+      "sha256": "9041a9e829143830586fec5e01ec8d3a3eb059204772fe89b9a4baf3e42229f3",
+      "text": true
+    },
+    "assets/props/containers/resource_timber_pile.glb": {
+      "sha256": "0a9de8eaf422a8ca28e36b5ba11c5824742646cf24da23c52c33e534224b03e0",
+      "text": false
+    },
+    "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg": {
+      "sha256": "17970403aa8f0a300f51404948662edd51f00b742b8f20961a925979d09606d3",
+      "text": false
+    },
+    "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg": {
+      "sha256": "f12e4432502c5793af1a379f05e4470727f14c0eae69c2152e70ea2d42b8f4ff",
+      "text": false
+    },
+    "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg": {
+      "sha256": "c7200ccd01c4253e9bd8ac803673eb6926bf1a38cb637d2386baf97e0e362a3e",
+      "text": false
+    },
+    "assets/props/items/hero_relic_amulet.glb": {
+      "sha256": "c73d8867521bd946b36c9c21cb4351a49f7b0df8f6a707d45fe48a5a588983d5",
+      "text": false
+    },
+    "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg": {
+      "sha256": "555d7978c081ef2971b3a8bdbd8f1631ab98269eaeb7b55c927fa79232df0342",
+      "text": false
+    },
+    "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg": {
+      "sha256": "d2c501fde56e7af8f0d924872a5480d953df9b744600adbff47d4e8bc49f1ddf",
+      "text": false
+    },
+    "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg": {
+      "sha256": "0039ff6c910f7e831e3815679ebf528e44aa9ab49cf9288c020d44998f79be15",
+      "text": false
+    },
+    "assets/props/items/lume_shard_crystal.glb": {
+      "sha256": "e120ab6a3f0b1403340cb50cc3e960cfc66d42217e6d4c3f4a6d0cc6d5ea8a3d",
+      "text": false
+    },
+    "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg": {
+      "sha256": "05888e91a949a18f0b395ed2e896febaf9f40d364196d2dc159aa1ea55416cdd",
+      "text": false
+    },
+    "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg": {
+      "sha256": "a98de3097f3fb6d61695274beb62431f3e1137205ddbfa95d815d7ae9fd41c3d",
+      "text": false
+    },
+    "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg": {
+      "sha256": "52168e5e5ec5d505c002a69a71aa9a3a4a5e6a212a5cd2f9c603edb05b7d151b",
+      "text": false
+    },
+    "assets/props/misc/resource_gold_vein.glb": {
+      "sha256": "b43026e64a11e9d3018c86421e1557cb654cdb4fdf300959a924c5367baac958",
+      "text": false
+    },
+    "assets/props/misc/resource_gold_vein_small_stone_cairn_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "text": false
+    },
+    "assets/props/misc/resource_harvest_grain.glb": {
+      "sha256": "c64a3ed713b05b5e37db7602ff336ceb0891818e2b37b18f4657d705412d1a67",
+      "text": false
+    },
+    "assets/props/misc/resource_stone_quarry_chunk.glb": {
+      "sha256": "4b6d426727b3eeb8e1f6be6405ab6bb72dfd5e0e15bc74594227b94a8ee98955",
+      "text": false
+    },
+    "assets/props/misc/resource_stone_quarry_chunk_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "text": false
+    },
+    "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg": {
+      "sha256": "9507b4598013b9895491dffd53ba09d99ec6c57a6038548b615eca02554b8845",
+      "text": false
+    },
+    "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg": {
+      "sha256": "89a1202722d9c8f02f11441d81ee3a1a8c05e44283de9bf311fe7c21e34d3adf",
+      "text": false
+    },
+    "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg": {
+      "sha256": "ec48e2b0164cc68d7d3f964550f6f54bc41ed4cc5124e2fd1e20fb19cc5712c7",
+      "text": false
+    },
+    "assets/props/misc/resource_timber_stack.glb": {
+      "sha256": "130374c6230ca04cd6932778afa05be09827198d5aa0987c9498c846017c053d",
+      "text": false
+    },
+    "assets/props/misc/resource_timber_stack_EndGrain.png": {
+      "sha256": "b4de8abc7e7d591231e79bf838e1c48558b96de56b3dd52095c0026d7744870c",
+      "text": false
+    },
+    "assets/props/vehicles/barrosan_ballista.glb": {
+      "sha256": "042a1be93cf4570fdace62fbb3a86cb60a8832bbfb379a7e337c6fa0a4f1bc23",
+      "text": false
+    },
+    "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg": {
+      "sha256": "e81b905f8f0c1d818ec9315e46399b32d16e0d5d8b4af09eb6fa7242539f4871",
+      "text": false
+    },
+    "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg": {
+      "sha256": "7dda5711d248336a1b7cc93bad92cd8409da34ea95be6e9798ab20fc474efd3f",
+      "text": false
+    },
+    "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg": {
+      "sha256": "2815e033c8cb381e7619b93446469cabd40f04ca09d0be05a82c82d0a8c97cfe",
+      "text": false
+    },
+    "assets/props/vehicles/lioraen_thornthrower.glb": {
+      "sha256": "042a1be93cf4570fdace62fbb3a86cb60a8832bbfb379a7e337c6fa0a4f1bc23",
+      "text": false
+    },
+    "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg": {
+      "sha256": "e81b905f8f0c1d818ec9315e46399b32d16e0d5d8b4af09eb6fa7242539f4871",
+      "text": false
+    },
+    "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg": {
+      "sha256": "7dda5711d248336a1b7cc93bad92cd8409da34ea95be6e9798ab20fc474efd3f",
+      "text": false
+    },
+    "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg": {
+      "sha256": "2815e033c8cb381e7619b93446469cabd40f04ca09d0be05a82c82d0a8c97cfe",
+      "text": false
+    },
+    "assets/props/vehicles/vorthak_fracture_engine.glb": {
+      "sha256": "29867219cf449485f4dbb85528b5cd0b8525fbe92701eb05fa0992a11b4ec823",
+      "text": false
+    },
+    "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg": {
+      "sha256": "a4ffcb8651736e8e4b43929f59eeda433cc77b7e1da47eda280ed8c64a50c964",
+      "text": false
+    },
+    "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg": {
+      "sha256": "21e3c184a6ad6a012bb78643918df113be237427ec1bc363206816e949264c6d",
+      "text": false
+    },
+    "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg": {
+      "sha256": "8c0987c417bd68b4945ec210126bff5875b6ab640b57eba757bd7849a4f29804",
+      "text": false
+    },
+    "assets/props/weapons/barrosan_claymore.glb": {
+      "sha256": "95a9bd79486f1a591998427f5f87f3c49f5e5d6a71acbde82e704c6f5dc793a6",
+      "text": false
+    },
+    "assets/props/weapons/barrosan_claymore_tripo_model_basecolor.jpg": {
+      "sha256": "c935d8f89b17b603e10ff07f4e8a6db932aedba542335d7e8dafe230e3f15398",
+      "text": false
+    },
+    "assets/props/weapons/barrosan_claymore_tripo_model_normal.jpg": {
+      "sha256": "4d39ee25f2e0e2996dd8d1f6e2fd7472cd2ecf8f85fefd66bc19f84d656eb0ef",
+      "text": false
+    },
+    "assets/props/weapons/barrosan_claymore_tripo_model_rm.jpg": {
+      "sha256": "763ff5c95706e2e94a967a72c137db8747f681a9f1d6f2b1691fbe90ae13328e",
+      "text": false
+    },
+    "assets/props/weapons/lioraen_bloomblade.glb": {
+      "sha256": "210908cfc2502f933134a1a00985d797bd69141bd36bcc613f9421a86a55f98b",
+      "text": false
+    },
+    "assets/props/weapons/lioraen_bloomblade_tripo_model_basecolor.jpg": {
+      "sha256": "037b2dfbc0f817868bdf59f10086d40f4e89561bb694ed5ec07cfb217d8c54a3",
+      "text": false
+    },
+    "assets/props/weapons/lioraen_bloomblade_tripo_model_normal.jpg": {
+      "sha256": "ced6fb856d6fd0fdfb12b36e30be2e41714559841b7e8f227f4bedb7b8a49ac2",
+      "text": false
+    },
+    "assets/props/weapons/lioraen_bloomblade_tripo_model_rm.jpg": {
+      "sha256": "9e01640564375e6431c0390e76c0f3e2a1a7e1cbc8d3c72147054c33f24b85aa",
+      "text": false
+    },
+    "assets/props/weapons/vorthak_rift_staff.glb": {
+      "sha256": "271c6b8a17b2234f25dc0c47be78b18a3cfa4eb3b04b768d94f351748425ce2f",
+      "text": false
+    },
+    "assets/props/weapons/vorthak_rift_staff_tripo_model_basecolor.jpg": {
+      "sha256": "af3d9dc19e39cabe537c647742562cf93019588d7517c55b24ac6aff9ec4b9e0",
+      "text": false
+    },
+    "assets/props/weapons/vorthak_rift_staff_tripo_model_normal.jpg": {
+      "sha256": "a6d59646ad927234a963886c32c667ac8be5afb6bff469bb2ad0676908a76261",
+      "text": false
+    },
+    "assets/props/weapons/vorthak_rift_staff_tripo_model_rm.jpg": {
+      "sha256": "7bcd42b6f57bd72ff255072c68b983a908eced144d045e663b3d44fadf61a05d",
+      "text": false
+    },
+    "assets/shaders/battle_scar.gdshader": {
+      "sha256": "41d4cb42f9fdc9e6e3e614633c5b9d2b7ebea07138d096e4cda416a96b6e9a82",
+      "text": true
+    },
+    "assets/shaders/capture_beam.gdshader": {
+      "sha256": "83a7164be4d6d5044054c662f3c4497f36a059159826fe6427874fcbbe84d82f",
+      "text": true
+    },
+    "assets/shaders/capture_zone.gdshader": {
+      "sha256": "0030c7be6ab09f59d4e59c2e215872bd11914379d99c41fca820a617ad75b87d",
+      "text": true
+    },
+    "assets/shaders/construction_rise.gdshader": {
+      "sha256": "52e480e5ccab58d1f77f9a471b9bae4990c918cb95551bebd4b0b859810a3984",
+      "text": true
+    },
+    "assets/shaders/fog_of_war.gdshader": {
+      "sha256": "672cf9b0f0482f1dea8ed3b71fb903ee5ce9ccbe4d8c263e211a059e3939b599",
+      "text": true
+    },
+    "assets/shaders/foliage_wind.gdshader": {
+      "sha256": "fa5e0e690c6d7c584b569db105c68f2308c793009189434b434d1bd4f17b035c",
+      "text": true
+    },
+    "assets/shaders/ford_shallows.gdshader": {
+      "sha256": "7629e07678680503fbff7d48b5a72accf881f3819a0cb1b06fb770d0d291b7c9",
+      "text": true
+    },
+    "assets/shaders/ford_water.gdshader": {
+      "sha256": "70e57d7ced4082e34284f86ddf94918f9c6c45aafbd6184642dbc603d94db18c",
+      "text": true
+    },
+    "assets/shaders/grass_cover.gdshader": {
+      "sha256": "582fdfbc35d9008ab0fe436dce787a4b2f2c666204e34ef4863f33cf87e69aba",
+      "text": true
+    },
+    "assets/shaders/ground_blend.gdshader": {
+      "sha256": "7fa76c24307cad6d3fea8852c0f73a98da3b061b817afcf8fbc76ef257c817a0",
+      "text": true
+    },
+    "assets/shaders/ground_wear_soft.gdshader": {
+      "sha256": "37bad439889a205332c5783b77a2d5cc10c67879b9a18bb503d3a280441ee1d5",
+      "text": true
+    },
+    "assets/shaders/log_bark.gdshader": {
+      "sha256": "f557345a73c5a25f79cc747bc41108573dc5cb9c2a0bff056cf21f24df84ad03",
+      "text": true
+    },
+    "assets/shaders/lume_beam.gdshader": {
+      "sha256": "7048825547642ee852942e6e1656a89feddc6b02edecc753bc408488b82133a8",
+      "text": true
+    },
+    "assets/shaders/masonry.gdshader": {
+      "sha256": "5260f786af28752da0997845250cede25917369f39b81207867417a039fa3f6c",
+      "text": true
+    },
+    "assets/shaders/rally_path.gdshader": {
+      "sha256": "b798370d9fb35dd6bbf059a1b5831325b1c2836c6aefe2094296f9a9cba1fea9",
+      "text": true
+    },
+    "assets/shaders/reed_bed.gdshader": {
+      "sha256": "e99dd1390b8e6fd0c8e3a80e770e3559eea130f3bffc1dd951d6682ae2ee2fb8",
+      "text": true
+    },
+    "assets/shaders/river_bank.gdshader": {
+      "sha256": "233e00c178df14b3a1b3ae154c69741ebf11f388b94fd198667ae1e3edb600f4",
+      "text": true
+    },
+    "assets/shaders/roof_snow.gdshader": {
+      "sha256": "803170d84e3000b4cad0d007991a8801fc854759fdc4f4d885a1d237a6940851",
+      "text": true
+    },
+    "assets/shaders/sackcloth.gdshader": {
+      "sha256": "954c9180736e82d26fa12bc9c7ebb035ab43fa405c4f49af0c1e23289ad50db6",
+      "text": true
+    },
+    "assets/shaders/selection_ring.gdshader": {
+      "sha256": "b147af1b151ad1a5d010d71f15f675336fa381eaf7482fe4c16b02d436cfa69b",
+      "text": true
+    },
+    "assets/shaders/slag_pool.gdshader": {
+      "sha256": "b3ae7543ee01ce42a98df90d3bbba673cd5d2eedf7fd9bd7d7c4e2a17f1aaed3",
+      "text": true
+    },
+    "assets/shaders/spell_ring.gdshader": {
+      "sha256": "61c41841fdb3cc9d93c1fd4c96ea6beb7d7a04e8f2860de1b25703b5e99998a3",
+      "text": true
+    },
+    "assets/shaders/straw_bundle.gdshader": {
+      "sha256": "0548ec4e950efd24dae71c963b03a5470ccac83ad96364fa5b7a5a1bf684b4e0",
+      "text": true
+    },
+    "assets/shaders/team_banner.gdshader": {
+      "sha256": "63c017841db4b36003246479e97a5d2b4b7efae1ef12a3e26de19e78cfc7fcba",
+      "text": true
+    },
+    "assets/shaders/tilled_soil.gdshader": {
+      "sha256": "85a8738596b895828001c61381bf95f8df468bda753a6afa525fc0da2d73cd1e",
+      "text": true
+    },
+    "assets/shaders/toon_water.gdshader": {
+      "sha256": "0a6780a8589f75a0ee5b01e76d5353164d9ef833501a929c281f42120c19d00a",
+      "text": true
+    },
+    "assets/shaders/unit_xray.gdshader": {
+      "sha256": "e2b91e90eaa5a82a98d655d9885000fd7e2548a7a80cc6e565736c9b34209e63",
+      "text": true
+    },
+    "assets/shaders/wood_grain.gdshader": {
+      "sha256": "a24f746bcca5468d793be577071a43f97a112a1676324e0a662d1705d9313e85",
+      "text": true
+    },
+    "assets/textures/backgrounds/main_menu_bg.png": {
+      "sha256": "331d8d6751e86d3801259a567f458f91fce9eb7df6615d184809b8c233e30c7f",
+      "text": false
+    },
+    "assets/textures/ground/ART_DIRECTION.md": {
+      "sha256": "52f0a5216b06f9a6810c4d0b86c657575024a0e08fb26bbba04c08e6174c43eb",
+      "text": true
+    },
+    "assets/textures/ground/vorthak_volcanic_ash_r1.png": {
+      "sha256": "61acf7db6f56a256e14b29ed6984781f859d6edc2c51e5e383cde383cb596441",
+      "text": false
+    },
+    "assets/textures/nature/frostmere_windswept_snow_r1.png": {
+      "sha256": "f0e628328f4303bf3e6fb48d967c5e0d6932dffbd3a65771a63955e76057aec1",
+      "text": false
+    },
+    "assets/textures/nature/highland_dirt_path.png": {
+      "sha256": "364b09262842a3620e014c96d7c25ea132f924ada331bddda1fb357e9e034dcc",
+      "text": false
+    },
+    "assets/textures/nature/highland_dirt_path_r3.png": {
+      "sha256": "9d517d8764f235f7f1ced12daf33ec33a22bbe8f88706fdf337bca5c10e28f6b",
+      "text": false
+    },
+    "assets/textures/nature/highland_grass.png": {
+      "sha256": "722cb25fcb0048b5788cbbcd1ea49d8a406ce605f99f0e9f26df922f3ad38365",
+      "text": false
+    },
+    "assets/textures/nature/highland_meadow_grass.png": {
+      "sha256": "8e4b348a9011166cbceeb09235a408ddc6c31b1b9d609f0a96042b07d101fba4",
+      "text": false
+    },
+    "assets/textures/nature/highland_meadow_grass_r5.png": {
+      "sha256": "1b484a52d58c9ffb2b6ccf3d47bef941341036f8e005cef3a44518e9b58f7a40",
+      "text": false
+    },
+    "assets/textures/nature/leaf_clump.png": {
+      "sha256": "b713a801bbb910984431f3ae2bd55301125da97798514e7443886f66d0a114fa",
+      "text": false
+    },
+    "assets/textures/skyboxes/highland_storm_sky_sky.tres": {
+      "sha256": "35f8435babb26aafe1b1ebe78f0e600bc3699bd16d2d6cd5f96f4e43acec669a",
+      "text": true
+    },
+    "assets/textures/skyboxes/highland_storm_sky_skybox.png": {
+      "sha256": "3a53d048df8366b79400991f1ac2a63cd87208ccc298b674cb7497227bb5da78",
+      "text": false
+    },
+    "assets/textures/stone/highland_rock.png": {
+      "sha256": "f5a88ffd0eb25da587b16f39d2e3859c8ab253181a2019340637f5665cf97bf8",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/avatar.png": {
+      "sha256": "c7a1e4438447e12f12cfa30d956923e07eed906e28b9f9344c5988e4bfc34d1b",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/bolt.png": {
+      "sha256": "82da7d5f1d11c59e7ee05635fd4dbc6bb61c7c37ffefe4c4f9ea18a3bcce4397",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/charge.png": {
+      "sha256": "053846dc6c7b557369534f70a37140da4a7aa65c026e00434416c57659ffe4d7",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/heal.png": {
+      "sha256": "a05b2d07a2d254875acad67fc54533cf032240278d3d0eaa661fc1305c993f75",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/rally.png": {
+      "sha256": "3f2fcffbf122c7a692139b28f027a01a874b935eb4b326a5a5b070ce1a0cfd17",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/root.png": {
+      "sha256": "83d70342c6e4ace0db332cd8b86e6cd4c67d81c6f41ffbaa863f95c675631e1f",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_ashglass.png": {
+      "sha256": "f5e4d633d42ccbc803b0363f0e4e33657cc58b8a13b29b957496e8b1e7c28c58",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_bull.png": {
+      "sha256": "526ac7fc7175e8b30f29e0f89a7e5aed6eea1f6f511fcc770ad310bfab189008",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_candles.png": {
+      "sha256": "907b92226edc0519456ace9429c358c68aa81094d290f30daa46ee98fe726417",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_chains.png": {
+      "sha256": "4f9e0a2b8f175b03dea1da1ffa7e87fe384357f13fc263f4c7ed608e74f25180",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_entrudo.png": {
+      "sha256": "cbd279e46849bcb331d14d2888bf5436745d9b1c48bed1ec749f42d2c7810d2a",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_moura.png": {
+      "sha256": "60eddb4f0cee5fbd2eddf8cf8d887756062295d0e89b504ff4ed6f17f63bbc94",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_pack.png": {
+      "sha256": "538781384e371c6532c3d3e719f01bdf32dd36ebbdb3830e812d7c9ba19ca418",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_spring.png": {
+      "sha256": "e28e8dfa9daf553c7c8f8c4e960bb562a3125a4ef8f9b58638ac4ff6c6ae3529",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_stoneskin.png": {
+      "sha256": "d38956253b1c6cc434d7d28d10155e9cfee5f0007784b69d4dda9e6f4f952094",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/sig_sunfire.png": {
+      "sha256": "9fbdd58985a93a817de758db83837ea87dd524882a9e9573eed6a663d214a053",
+      "text": false
+    },
+    "assets/ui/ability_illustrations/r44/slam.png": {
+      "sha256": "17e9ebdff2e6fb8e48708ec78d6b0157d2b26d0b48f09191a09c009eafb7a0ac",
+      "text": false
+    },
+    "assets/ui/barrosan_command_crest_i2.png": {
+      "sha256": "d434bb325db16af33bc183d261712bfd241cc1a01ed493960b56d23a481b4e7e",
+      "text": false
+    },
+    "assets/ui/btn_play.png": {
+      "sha256": "d1efa6bf4fa4fed4a49bfe3395bce8bc01947c90a0e6f325cf80fd5beaaa7ab9",
+      "text": false
+    },
+    "assets/ui/btn_play.tres": {
+      "sha256": "eb2741acdb180fa8def2029cb2b73b33b1ebaa524dc241861b0a029e7478c96c",
+      "text": true
+    },
+    "assets/ui/btn_skirmish.png": {
+      "sha256": "7fdd72ff203095e71e383ca0231f87e9a68e4e1da3481f3517dc67c27ca340bb",
+      "text": false
+    },
+    "assets/ui/btn_skirmish.tres": {
+      "sha256": "740acce0a75c6582ffda4ba5ee2abe8d4fa05c022c61ed9a21b64c2c5fa0cdbd",
+      "text": true
+    },
+    "assets/ui/buttons/forged_disabled.png": {
+      "sha256": "2e5b9caa831016052b69253dc3afc5ecd9f50c4e80a7723b35882c335082ac4e",
+      "text": false
+    },
+    "assets/ui/buttons/forged_hover.png": {
+      "sha256": "5c3867f38988dfe771e268c84bd543168e0b40fd3c535a696deab85fbd7ee136",
+      "text": false
+    },
+    "assets/ui/buttons/forged_normal.png": {
+      "sha256": "ad7c460dffb1943c8f2249217da7f9254aec8a3c740d3bcf55955b417f307673",
+      "text": false
+    },
+    "assets/ui/buttons/forged_pressed.png": {
+      "sha256": "6cc42b694f9230111d9312fc128ad842aef7721b3ac0298daadb2b72ce628e1e",
+      "text": false
+    },
+    "assets/ui/command_emblems/astra_r1/age_of_iron.png": {
+      "sha256": "49df035b9ae5ed793a4a5f8c9cf63e906b933a6e9a19f2b8a58fe107f09a967c",
+      "text": false
+    },
+    "assets/ui/command_emblems/astra_r1/age_of_lume.png": {
+      "sha256": "cea470ae53aa59778aac5b4c202153bc5cbe2dc54117ba1a9fcc4f91594a3879",
+      "text": false
+    },
+    "assets/ui/command_emblems/astra_r1/field_orders_atlas.png": {
+      "sha256": "73e645b64092bf053c1f6ade61a3c8b7f3e786173de294bcdd06cecfebf2dc01",
+      "text": false
+    },
+    "assets/ui/command_emblems/astra_r1/rallying_cry.png": {
+      "sha256": "13829fd169571dccab652341fde0dd2ce44c21f27e871a2b198694bd5b519f62",
+      "text": false
+    },
+    "assets/ui/command_emblems/astra_r1/recruit_highland_worker.png": {
+      "sha256": "b3d7f423cde792032aa12285f7e569ca192a942f3134f752c04b544ad0b642d8",
+      "text": false
+    },
+    "assets/ui/command_emblems/lioraen_r1/ART_DIRECTION.md": {
+      "sha256": "b7725aef4964b87bb01ee3b51c4b51ace66f5e59222c51c1206ac93b3a3e60c5",
+      "text": true
+    },
+    "assets/ui/command_emblems/lioraen_r1/field_orders_atlas.png": {
+      "sha256": "95c13d93f0ed7f205e65771dc14743387161ea71c99ed20c7f3c2092b65aadb1",
+      "text": false
+    },
+    "assets/ui/command_emblems/lioraen_r1/rallying_cry.png": {
+      "sha256": "bdf6cb1230b16aa31a6d1f282c15ff57b77145302c255dbaf2c4bbad2f1997ee",
+      "text": false
+    },
+    "assets/ui/command_emblems/r40/research_symbols_r1.png": {
+      "sha256": "46355e7951f6ee2052c156c1f72edc2b1929df294195b23b71c14db9acad5205",
+      "text": false
+    },
+    "assets/ui/command_emblems/vorthak_r1/ART_DIRECTION.md": {
+      "sha256": "9e580c9119cddc005dcddf4dec2f0e83658357aae7513ce7653e9a3f724bcaa0",
+      "text": true
+    },
+    "assets/ui/command_emblems/vorthak_r1/field_orders_atlas.png": {
+      "sha256": "ead16ed8b84c634c8a0bcc90b4360a4284d55a231ea3f9a2de80a1dafa873480",
+      "text": false
+    },
+    "assets/ui/command_emblems/vorthak_r1/rallying_cry.png": {
+      "sha256": "56a01e08dbc9b5386448a6e7f91b77d405c866278e3944d02baa743689fd41f1",
+      "text": false
+    },
+    "assets/ui/construction_art/astra_r1/ART_DIRECTION.md": {
+      "sha256": "b5582a413caa34e2023a94982df57521ba027933991c41b20acbdcae17f1c488",
+      "text": true
+    },
+    "assets/ui/construction_art/astra_r1/clan_croft.png": {
+      "sha256": "328b4c5571d1ee9cd01677cb59451e646964c4854fcf374f2c2672aa5182cb8c",
+      "text": false
+    },
+    "assets/ui/construction_art/astra_r1/clanhold.png": {
+      "sha256": "2c8f08cc730c87dc606f077656e4fc61755f16f6940b57864d79a007205297ee",
+      "text": false
+    },
+    "assets/ui/construction_art/astra_r1/iron_forge.png": {
+      "sha256": "e0019c14dad42aa796e4bee4e217b8c1bd667d769e7b9336f28dae3e6d8a1a50",
+      "text": false
+    },
+    "assets/ui/construction_art/astra_r1/war_hall.png": {
+      "sha256": "230b6dce6072a79fb12b4f6d1160825c34049117dc1f053ca2f80f86c981334b",
+      "text": false
+    },
+    "assets/ui/construction_art/astra_r1/watchtower.png": {
+      "sha256": "677bc31506724d26b0f3d679a86be4708f827de07c0f0c95863e21f1867f5152",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/ART_DIRECTION.md": {
+      "sha256": "cb3509c3ced608a5d11d3277c8a7def01c087d854c93f51e4969763906b2109a",
+      "text": true
+    },
+    "assets/ui/construction_art/lioraen_r1/bloom_spire.png": {
+      "sha256": "acd35334362a34447f8d0dd605ba09c3a73fc1f3737c9a9ea5e1edb6952e85e9",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/grove_forge.png": {
+      "sha256": "f9788dd6e8bec293f23bdacfd594adcb75de0dc12da4d7158eb2070f4a74a484",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/groveheart.png": {
+      "sha256": "2fe96e9de553b5bdc1a4b128c435edfbacb0e43eba68eddaa355c7e60b0d4ed5",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/lifewell.png": {
+      "sha256": "6a2c2d493f3ba29d581944e6973c5b0dc22a017b71af60408772f42447b41230",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/spirit_glade.png": {
+      "sha256": "ee8437e352b8e64dc6bbd77ce746b8a6070e1a4bbc5786915bf4fd45fc60549c",
+      "text": false
+    },
+    "assets/ui/construction_art/lioraen_r1/thornhall.png": {
+      "sha256": "92cdeb5d508eb4729d0c81217aead2c310187d1bb993e164b9c5a5de1e9d9c51",
+      "text": false
+    },
+    "assets/ui/construction_art/vorthak_r1/ash_forge.png": {
+      "sha256": "d67a89ab98b6caaf47f09b60cd4c8c9d8f3218ff8fca7a989edfd7b15daf00b0",
+      "text": false
+    },
+    "assets/ui/construction_art/vorthak_r1/bone_barracks.png": {
+      "sha256": "d96bb5ce7d7860d0498bbe13e15cde2e5a0ecb507807925200abc9ce8e8f0e9e",
+      "text": false
+    },
+    "assets/ui/construction_art/vorthak_r1/nighthold.png": {
+      "sha256": "d54332f6d68fcc29d8a9373e8ad71f708f984a497e7c8e4ae6cddaca77db9270",
+      "text": false
+    },
+    "assets/ui/construction_art/vorthak_r1/rift_obelisk.png": {
+      "sha256": "78a6b8447aa5ee5f94f5eb45aad94ea970bb0d3e46ab3010eb40bb9a6c6ae7be",
+      "text": false
+    },
+    "assets/ui/construction_art/vorthak_r1/warlock_spire.png": {
+      "sha256": "4aab40a656a335ae821d4a80dca983da4a280beede12a0d87976dc0ca2748bda",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/castro_forge.png": {
+      "sha256": "b7804012dd3038cc191719b2f413a82fe13b03e637f9038b2b67ac0bbf957a15",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/castro_hold.png": {
+      "sha256": "0d48ae8b1eb410ff869455058e9fbd57ae890dd356ed0b78346a8fcb12ef252c",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/castro_rampart.png": {
+      "sha256": "fea76bb921fa79a9953e865aed7f0a582cd5e6099a70b4f0bad9a173f8028fed",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/ledger_stone.png": {
+      "sha256": "11ddf21e7b4cb658cab59061dd86c8be587e8b0c76bd9929acea6a662c6a856b",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/quarry_works.png": {
+      "sha256": "6286f2509cd286b182b561d7ad5386a4de38e091095bd1d8b956c946b284dff6",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/roundhouse.png": {
+      "sha256": "54952bb352baeff8ec9c75e6d56d508590d9be8fe5d9d991b437bf34d29dfd36",
+      "text": false
+    },
+    "assets/ui/construction_illustrations/r54/standing_stones.png": {
+      "sha256": "020b66078c3e7c3024201f95581492fb5a9d9a4fd2dbf0b800cb90daef9c4f50",
+      "text": false
+    },
+    "assets/ui/cursors/ascendant_attack_move_cursor.svg": {
+      "sha256": "c645811adcbf33b5dcdff38ff591fd1c1b5651710da59572d2c7d885328fe8b2",
+      "text": true
+    },
+    "assets/ui/cursors/ascendant_direct_attack_cursor.svg": {
+      "sha256": "8ca1eaddf65c5702941a512b4543ab36f3488b4dec8daf1f4d063bfe38c8572a",
+      "text": true
+    },
+    "assets/ui/faction_crests/astra_r1/ART_DIRECTION.md": {
+      "sha256": "0b3bec0b374e453feae4c9a0a10115cee6176fee0deff808db1af815b8e41dd5",
+      "text": true
+    },
+    "assets/ui/faction_crests/astra_r1/lioraen.png": {
+      "sha256": "751080dd369b13e195c1be85bed007c558e867ee428325d3eeeb2990f620d8c0",
+      "text": false
+    },
+    "assets/ui/faction_crests/astra_r1/vorthak.png": {
+      "sha256": "403c1bc0d0cf5c2856f3406abb023b8828109344dc7a21ef770700966bb28832",
+      "text": false
+    },
+    "assets/ui/frame_portrait.png": {
+      "sha256": "e9ef65c090dab4f25369fa09897d36f293fc5f46ac4d196502a224b96805adec",
+      "text": false
+    },
+    "assets/ui/frame_portrait.tres": {
+      "sha256": "4543dace4a3652d1dceb02435a448eccb944afad04fcc62a96f66581d5014507",
+      "text": true
+    },
+    "assets/ui/hud_instruments/astra_r1/ART_DIRECTION.md": {
+      "sha256": "6d151825bdc4e74026d47c9dbc16e6f670b7f0c6cad538444424c7d8803653a1",
+      "text": true
+    },
+    "assets/ui/hud_instruments/astra_r1/force_objects_atlas_r2.png": {
+      "sha256": "abd66c9964023afe40d3869e074a4891325212e3f64816a0a7911a065bb97242",
+      "text": false
+    },
+    "assets/ui/hud_instruments/astra_r1/metric_bezel.png": {
+      "sha256": "6e8c977080de2a0456614851c28ae6b568d9fd8f8bd1e178d437a4676252862b",
+      "text": false
+    },
+    "assets/ui/hud_instruments/astra_r1/resource_objects_atlas_r1.png": {
+      "sha256": "7c8f262386c1bc7161628db6d8b6c96267dd9b47e53bbaa37c57f7484b6392c2",
+      "text": false
+    },
+    "assets/ui/icon_food.png": {
+      "sha256": "d16fa59230cd70f9fb760f218898c31bf9925307500f97f6616a592a89758d25",
+      "text": false
+    },
+    "assets/ui/icon_gold.png": {
+      "sha256": "2f3af13f2032c7c94fae5fe55e6a12d2521af686e0709f5c335ada7eee46b18d",
+      "text": false
+    },
+    "assets/ui/icon_lume.png": {
+      "sha256": "228c6f8c28f6fc155a75e08b98ccfc686b440b0c6ccf5e257cf8cd7996d7c84a",
+      "text": false
+    },
+    "assets/ui/icon_stone.png": {
+      "sha256": "a86360be143649b8ad2d3190515b8b33606e0635f1941e8da6cd116c68480688",
+      "text": false
+    },
+    "assets/ui/icon_timber.png": {
+      "sha256": "35828f0aa7212a2126eeb488a7da291bbfffac5b47cafa465c5e9e1a4eac97e2",
+      "text": false
+    },
+    "assets/ui/inventory/ART_PROMPTS.md": {
+      "sha256": "c7b3c7ff6e2373b9476d40dd25b295089d88beb6386fc064d9452914b2b33b6b",
+      "text": true
+    },
+    "assets/ui/inventory/astra_empty_relic_cradle_r1.png": {
+      "sha256": "d4e4c4ce3cec999b6c06c2c14c1e98e46e0bb384a4319149b00fcaccac7fd74d",
+      "text": false
+    },
+    "assets/ui/inventory/astra_empty_war_chest_r1.png": {
+      "sha256": "bd5b30aad1ce7d553423fa7245067d244296fc4e947e608551636cb74d47369a",
+      "text": false
+    },
+    "assets/ui/inventory/ironbark_helm_relic_r1.png": {
+      "sha256": "c967fa14f79d6821691905da6d91a2ab338fe38de692f8e67c473f28ac90d4fb",
+      "text": false
+    },
+    "assets/ui/inventory/lumeforged_blade_relic_r1.png": {
+      "sha256": "bd9949e744737c73e4550c101599d840559ff3b93739181c7d18e5b3f26f5904",
+      "text": false
+    },
+    "assets/ui/inventory/war_chest_vault_backdrop_r2.png": {
+      "sha256": "9c8017746c490629b850b1ebb7c978689e5f8713819efdd425f2dd4e62dbe551",
+      "text": false
+    },
+    "assets/ui/inventory/wardens_band_relic_r1.png": {
+      "sha256": "45792b4c165678acb822822175ddb0a6a12552c72c2d2c6ef74c465ba7dfe959",
+      "text": false
+    },
+    "assets/ui/loading_bar_accent.tres": {
+      "sha256": "ac62fd7ec781b5ffe65530b73706e10ab24fb5c41a7f21a351b87581828d873e",
+      "text": true
+    },
+    "assets/ui/loading_screen.png": {
+      "sha256": "eb8d83fc4f8b29cf07bc13a673e28fcaf58c290d6757ad754255f43369dee430",
+      "text": false
+    },
+    "assets/ui/panel_command.png": {
+      "sha256": "d16b8eba617419ad0544323e84831ae57fdb0c7d31aa991576c19bf2ce557a01",
+      "text": false
+    },
+    "assets/ui/panel_command.tres": {
+      "sha256": "bbf91c5b25af96d18255f9164f6767a2c173466b5f925bd8172c17ebd4a7caf6",
+      "text": true
+    },
+    "assets/ui/panel_hud.png": {
+      "sha256": "3da0c1b5f094a0a3ee3e72f459bfaaa183398364b984fb35fd4b48927a4d4ea0",
+      "text": false
+    },
+    "assets/ui/panel_hud.tres": {
+      "sha256": "19a45c60ee1d3502b36aae1fbc2cb9f55df1a6087100f7b078e502f34a3c6e7c",
+      "text": true
+    },
+    "assets/ui/panel_main.png": {
+      "sha256": "14c739d65e4a5aa9cec4b8c54a4b6c0d771fac96231b4bf8580afaf9c03b04e3",
+      "text": false
+    },
+    "assets/ui/panel_main.tres": {
+      "sha256": "9ab9b8f3672a42639b9afae358242945ea2b61e7ae431a1cdf187b9cdcb65231",
+      "text": true
+    },
+    "assets/ui/portraits/barrosan/a08_b1_portrait_clan_levy.jpg": {
+      "sha256": "ee87fc3d5705e6a7e550cd2c96ae270cfa10efefe9d076203f21af0807b1a521",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/a08_b1_portrait_stoneward_spears.jpg": {
+      "sha256": "dd68ae06072257fe371730a75115d4a579fa4b7f97406268a626d45b9e221b87",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/a08_portrait_warthane.jpg": {
+      "sha256": "34712c4fb9a4d17e3bf70d8535bb193b168d578bcf21f0771163bdd0bfe29d53",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/a08_portrait_worker.jpg": {
+      "sha256": "28877a68778afff0a2b33981dec123ed7b142c70ff4e4df5ee8b7d8fa3dca827",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/astra_r1/anvil_breaker.png": {
+      "sha256": "048c41ec61ac64e4d0705e38da9c42c0085752735377afbba8d4de7b22e51fc9",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/astra_r1/clan_ballista.png": {
+      "sha256": "71ad641c26edbeb651763664ef411d7225406c9982091a240692a7fe46e273fb",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/astra_r1/crag_archer.png": {
+      "sha256": "eda94a0dd75136012f1901f8b80b1ca848bbfb08da212233bd7c9914aff6479f",
+      "text": false
+    },
+    "assets/ui/portraits/barrosan/astra_r1/highland_outrider.png": {
+      "sha256": "51b798731625a76e744c7dc35c9061b4033b40298e5ce35fdcd607ef163b0f5d",
+      "text": false
+    },
+    "assets/ui/portraits/lioraen/astra_r1/ART_DIRECTION.md": {
+      "sha256": "8b10133b489420a6f710ab7cde95cd5b42e9f3e7f28313d205b1a27b97a34bd8",
+      "text": true
+    },
+    "assets/ui/portraits/lioraen/astra_r1/grove_warden.png": {
+      "sha256": "47c7faa37eab2905c94e4817d75bb4353de4676e25921a0862678f681b7f4ea3",
+      "text": false
+    },
+    "assets/ui/portraits/lioraen/astra_r1/seedkeeper.png": {
+      "sha256": "f1b1cbefa4bcf40b7d26be5666072943bfca9fe213b2e8c9849d98efed5e9ab8",
+      "text": false
+    },
+    "assets/ui/portraits/lioraen/astra_r1/thornrunner.png": {
+      "sha256": "a32b087e59a38f1f45fe37f5435e141f229afefe8ec3f0c569319b27b71316ae",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/ART_DIRECTION.md": {
+      "sha256": "076cb5a00b80fb36b66b0afdbb48f27d8bb11f2ae4772af26a97b03acf37828b",
+      "text": true
+    },
+    "assets/ui/portraits/vorthak/astra_r1/ash_thrall.png": {
+      "sha256": "81b87914e03911130e117665252097e8212d375a93a300cd8a8d12d376756ec7",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/bondservant.png": {
+      "sha256": "494107e72ff9d3ac276bae9f0bb68ae6464e901fc9147a9c1cdd7f8bea27b427",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/cinder_spitter.png": {
+      "sha256": "80e047e8307188851dbbcf97fc2d227c716c814e62f42a19273c1197835e468f",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/gloom_hound.png": {
+      "sha256": "59d2bf8b086f51c872a034dc40869d529932893dad09efe03f03886209c268e0",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/rift_binder.png": {
+      "sha256": "8093c59e5776fe53a651fb18e20cdd9e0af9863c83c7ae3e8a7b4251ebf9335f",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/rift_blade.png": {
+      "sha256": "f5b3fdc8951895a788464b62f4827df1e3e05b6e5055653fd8818fb255c59de0",
+      "text": false
+    },
+    "assets/ui/portraits/vorthak/astra_r1/veil_warlock.png": {
+      "sha256": "4c7d4f52eb4fde99923723bf22d0f05158e6652c2b3b45d276aea4194976f24b",
+      "text": false
+    },
+    "assets/ui/skill_glyphs/task613_r1/a08_b1_battle_fury.png": {
+      "sha256": "ec30169daa12ceb3c364044a7094337b9047abdf6cb0192933c6a1a8be9b2fd5",
+      "text": false
+    },
+    "assets/ui/skill_glyphs/task613_r1/a08_b1_deepened_reserves.png": {
+      "sha256": "083f2e93fa52fc647fb8bf0bfa4649e18ecd3161d3956ecb10f0d7ea0586fcfb",
+      "text": false
+    },
+    "assets/ui/skill_glyphs/task613_r1/a08_b1_ground_slam.png": {
+      "sha256": "49268d843a4a36952f251275368c63dd828087c628a446324d735158c0051c5a",
+      "text": false
+    },
+    "assets/ui/skill_glyphs/task613_r1/a08_b1_rallying_cry.png": {
+      "sha256": "aee1c0c909e71d11815214b40a5204bf3db2dc5d7860f9cb8c77c7a03f0025d3",
+      "text": false
+    },
+    "assets/ui/slider_grabber.png": {
+      "sha256": "d2109ec86c9c7fb3f24515854d5776e91da094522b5c90b770d299cff5ebf834",
+      "text": false
+    },
+    "assets/ui/slider_grabber_hi.png": {
+      "sha256": "dcb76c54b0358f8686467b08937af1514a1def865495abd7d0b56d3b1c22d078",
+      "text": false
+    },
+    "assets/ui/theme.tres": {
+      "sha256": "170848d6b90a78d3b0256277a2f093a8c365991865a0dfdd871bce623168e3e0",
+      "text": true
+    },
+    "assets/ui/title_poster.webp": {
+      "sha256": "570a698c519949bccb08239810983c7cb6801ae63beb5f4366610115b67363aa",
+      "text": false
+    },
+    "assets/ui/title_poster_sm.webp": {
+      "sha256": "61afa57f71e7fe1d2a9fe19d142a998da9c628dec3a345ab30fb7b8514e964fa",
+      "text": false
+    },
+    "assets/ui/toggle_off.png": {
+      "sha256": "464ad8c6513565ef02e7734fd3c8682642d499b24a43aa0ec912c45aff2ae121",
+      "text": false
+    },
+    "assets/ui/toggle_off_disabled.png": {
+      "sha256": "84f927c4117d13e670a22d776ac9160927c81a8da1edf6b28dabd01b3e55bca4",
+      "text": false
+    },
+    "assets/ui/toggle_on.png": {
+      "sha256": "6eec743e803a1cf55f893bbaa738717d61603441a8813ba0633f1be7c5c1e01b",
+      "text": false
+    },
+    "assets/ui/toggle_on_disabled.png": {
+      "sha256": "5129ab30728b8f27b88d91803ae283d94e27882c0e0a4a375a978e70d2a4639a",
+      "text": false
+    },
+    "assets/ui/tooltip_theme.tres": {
+      "sha256": "21897846e6cbbc632bb286d49f0164f4df783a19c8f722ac409678364faea2e8",
+      "text": true
+    },
+    "assets/ui/wordmark_title.png": {
+      "sha256": "8ae72c0820efb7b33967dc0602ccff6027c50467f3bb7029da8c6552dc67a162",
+      "text": false
+    },
+    "docs/ASSET_CATALOG.json": {
+      "sha256": "960b5ce53fb67f54960fcba3d21e940244d6d63eeaae4aeac70a23d6b7af64e9",
+      "text": true
+    },
+    "export_presets.cfg": {
+      "sha256": "d22d1c23b2f8f718b2601184ee534d432469e5c69c5115e2f08e3c4cf18ec7f2",
+      "text": true
+    },
+    "project.godot": {
+      "sha256": "d457a0d77fbb7b78dc1cb52ef53849a7b15b0a3fb494c7c8240f1567d20b1d08",
+      "text": true
+    },
+    "scenes/dev/asset_gallery.gd": {
+      "sha256": "3918006372ae39a57772b7b0d1bcbc364c9cd93fda64969c1da6da959a95f16d",
+      "text": true
+    },
+    "scenes/dev/asset_gallery.tscn": {
+      "sha256": "a9f7ca7c50221cfd5391d0ccb85c193325a5fcc7fc814df07b78f5bb434e58ff",
+      "text": true
+    },
+    "scenes/game_world.tscn": {
+      "sha256": "ac7e807d704d60efe8f8da058834f3150128065297c1d4e928dae95b781a2689",
+      "text": true
+    },
+    "scenes/main.tscn": {
+      "sha256": "a33c30e5b9f595f846609fcb1a1134443f3144235bb8b888fb38945f6783b8dc",
+      "text": true
+    },
+    "scenes/ui/campaign_map.tscn": {
+      "sha256": "7ae45f15869a1ea391c4a2ab621f2bdc8b98e03875f5e8a20065eb9a8d95f0fa",
+      "text": true
+    },
+    "scenes/ui/hero_creation.tscn": {
+      "sha256": "4c8881d14969b785bf49cca4b8517c6bb27445ed641e392c7871beb08218a41d",
+      "text": true
+    },
+    "scenes/ui/hero_sheet.tscn": {
+      "sha256": "7384f9c1c7ea8a1e29732094762c6450e01ed709086259f676c7c42f888af471",
+      "text": true
+    },
+    "scenes/ui/inventory.tscn": {
+      "sha256": "7bc8e099a6a6b8e32043bf232529e90a7253f277efdc6e2d1f1c7eb50434ce1c",
+      "text": true
+    },
+    "scenes/ui/main_menu.tscn": {
+      "sha256": "76ad282f2dc5ab9ffe6f87f65fe1aa25039cf8e1a2ff30e721e2202860cc6863",
+      "text": true
+    },
+    "scenes/ui/settings.tscn": {
+      "sha256": "cc165be2fbc4611f2acb308bb945f78ae07b34f2573f6a8a0d6828c5d73b3383",
+      "text": true
+    },
+    "scenes/ui/skill_tree.tscn": {
+      "sha256": "081bda80fbb2cf85adae70706ae7379281da56076624bbd3712b77b94294ac67",
+      "text": true
+    },
+    "scenes/ui/skirmish_setup.tscn": {
+      "sha256": "298b723aad12b7c542b6a7caccdf2cd3b2089338c16c3e76627c14a8ad3e176f",
+      "text": true
+    },
+    "scripts/ai/enemy_ai.gd": {
+      "sha256": "7c42864c12166b7510219a756e97e7b29b33f45da9652abb6120fb42b5c665cc",
+      "text": true
+    },
+    "scripts/autoloads/audio_manager.gd": {
+      "sha256": "82d942a55b8bd7123fe8e93184ff3a84b009e4a56bcea8da29a3dabe6ad0d0de",
+      "text": true
+    },
+    "scripts/autoloads/loading_screen.gd": {
+      "sha256": "a9fbb9bb578f32a42043f547dc31e17e1dfe83b549bca5e1af06f223af274ad6",
+      "text": true
+    },
+    "scripts/autoloads/match_config.gd": {
+      "sha256": "7c7e647386ada79a5c67c31b3c9197a049b16f42474f9e63be426aaa26a764a6",
+      "text": true
+    },
+    "scripts/autoloads/profile_manager.gd": {
+      "sha256": "625d7208459a6aedf3c22d146ad19c8157352b5dadab8c2431267ab38b54058f",
+      "text": true
+    },
+    "scripts/autoloads/sfx.gd": {
+      "sha256": "f9d9981827fd8770c84265b0fde78d3379b22167d4045330516386471ef7a725",
+      "text": true
+    },
+    "scripts/buildings/building.gd": {
+      "sha256": "e08ce7895d6b275d721ed872eeff224d170f928d57bf3bbf74f3c2c5cbd2681d",
+      "text": true
+    },
+    "scripts/buildings/granitborn_building_presentation.gd": {
+      "sha256": "05e596136f78b7a1d1462a9ed0a315c4cf6275a6f4b5ec4114594cf23d368db8",
+      "text": true
+    },
+    "scripts/game/achievement_defs.gd": {
+      "sha256": "04ae5212f069e6d102c9dc6855520c29c89f98a2f558a7a15db5570703663a8d",
+      "text": true
+    },
+    "scripts/game/bark_defs.gd": {
+      "sha256": "f17cf2ee4c17a680e6bf0eaddd6a1bf7a5f966986c5419b440579c251c80cbdf",
+      "text": true
+    },
+    "scripts/game/building_defs.gd": {
+      "sha256": "da144ff9c6f3e49c172877edbc2802e6cce9393b1694ef448bdc0f9683c3f552",
+      "text": true
+    },
+    "scripts/game/campaign_defs.gd": {
+      "sha256": "1581e37c317e148872c554e0492283a78ef1989d327704687388acb6182cf5a7",
+      "text": true
+    },
+    "scripts/game/commander.gd": {
+      "sha256": "ca7dfbbb5e21152de760620960007723b3a8efeb0a2805da0710e006e091aa82",
+      "text": true
+    },
+    "scripts/game/endless_defs.gd": {
+      "sha256": "4a93f5837ef1d2a019b931971fa2c54e4f91defa824de50e3c85f78a8ce5ea98",
+      "text": true
+    },
+    "scripts/game/game_data.gd": {
+      "sha256": "c69e90b383e06ad11b703c772485deb628628a4404efc6923e6405c641931cfc",
+      "text": true
+    },
+    "scripts/game/hero_progression.gd": {
+      "sha256": "d2d1a2f17eb0e4ede73b7969eeca4fb9f1a0246f42528205e2cabb453c1ffebd",
+      "text": true
+    },
+    "scripts/game/key_binds.gd": {
+      "sha256": "d6837c4ec6804591853eb13d2a8697cc7c083d60839578a8dea060eb5239bb65",
+      "text": true
+    },
+    "scripts/game/loot_defs.gd": {
+      "sha256": "6f7096a08ca1f7174254ece90451d4eaeb18b8676cd543baaff079e0275bff97",
+      "text": true
+    },
+    "scripts/game/skill_defs.gd": {
+      "sha256": "a2f7240185cd9bcd546b531f306e85b5086b6c41fc66cdfeaa03a9ceb249c30b",
+      "text": true
+    },
+    "scripts/game/talent_defs.gd": {
+      "sha256": "fdd4f38a07d94bdc6afb87d16d959319dac1b59756ef2eae6bd8bd23b8b9d4a0",
+      "text": true
+    },
+    "scripts/game/tech_defs.gd": {
+      "sha256": "8606bb1d81b46b882a5811134c8f6aba7e3069cbe7f8602a03bf91d539b892d5",
+      "text": true
+    },
+    "scripts/game/unit_defs.gd": {
+      "sha256": "a57c5fd8e8f6e6de6179d0c8267415704aa6eb09a6bb92cb47547c9d5f974b5e",
+      "text": true
+    },
+    "scripts/main_menu.gd": {
+      "sha256": "4996d93529409e65ead5594d8b2cb1d62013e7dd7bf094fbb42de8e01e641e99",
+      "text": true
+    },
+    "scripts/ui/campaign_map.gd": {
+      "sha256": "aa0558ae9e14ec3f1d9974dc46951c8d474a246a46275623cbb2f47717e1c5bc",
+      "text": true
+    },
+    "scripts/ui/campaign_region_button.gd": {
+      "sha256": "44246cf7e20edaabeae30f78fdc7e4dcb952aa0760c5db1af7a8a73c24f05090",
+      "text": true
+    },
+    "scripts/ui/command_glyph_view.gd": {
+      "sha256": "be246c330181f1f51a4e8c3c02638d9b901f1d16d97358ce47654d1d2dac7147",
+      "text": true
+    },
+    "scripts/ui/debug_overlay.gd": {
+      "sha256": "b03593f9f4c814088c3a5a6d12e30d0c5de365b7ffa3e4d46faada9052f09cd1",
+      "text": true
+    },
+    "scripts/ui/entity_portrait_view.gd": {
+      "sha256": "3eb401cddd13c9dee9a444b77485884a6a2fe5243467bd1238e2d28ad30ed1b1",
+      "text": true
+    },
+    "scripts/ui/faction_sigils.gd": {
+      "sha256": "51ca92ea1c60ffe110642b1947d48c31f84bac1e9a1cd31f5466a2e6c0117b56",
+      "text": true
+    },
+    "scripts/ui/gilt_confirm.gd": {
+      "sha256": "505ab16da1c30da81bf5c5791c39a84996cf587de08a77e8b8ccf08c6a379b99",
+      "text": true
+    },
+    "scripts/ui/hero_creation.gd": {
+      "sha256": "bf973a9baba6cf1c65536962cdb8602f1f4d8404cd1585cd56f1f936499b36e8",
+      "text": true
+    },
+    "scripts/ui/hero_sheet.gd": {
+      "sha256": "46780f25dea70ea4c431c468f2164cbfee3e3237c2ceeee5ec8d021e0f212e14",
+      "text": true
+    },
+    "scripts/ui/hero_sheet_plate.gd": {
+      "sha256": "9d31addee66f26dbae7975031ded4f77d540c93605cc46a61473aed786d4c15c",
+      "text": true
+    },
+    "scripts/ui/hud.gd": {
+      "sha256": "b912d81100d95e8591e02f89ecbb3f5dc568aa335eba86a8fe9c1964bf83d8c6",
+      "text": true
+    },
+    "scripts/ui/hud_action_button.gd": {
+      "sha256": "cb5772ea3041a4629b41975023dd12118a383986489ce77e920b03ae58b495de",
+      "text": true
+    },
+    "scripts/ui/hud_alert_dispatch.gd": {
+      "sha256": "5e2181010e6e85401f7a5fd29e4e78b72f7aac3364a050b538cfb073bd49c979",
+      "text": true
+    },
+    "scripts/ui/hud_command_chassis.gd": {
+      "sha256": "7e7ef5d36da81218644b3295c84bf2d73f368c95eefcee91d0bd4e044e2075fb",
+      "text": true
+    },
+    "scripts/ui/hud_command_rack.gd": {
+      "sha256": "4ca793388097d9e53a1473e1ec093708c81ce6039fc96c7c4e175a0151ff5d1e",
+      "text": true
+    },
+    "scripts/ui/hud_command_tooltip.gd": {
+      "sha256": "f0e8aa18cb8a699008cafaa532d68ac3119e07b9b75f6ac418df27eef622c24a",
+      "text": true
+    },
+    "scripts/ui/hud_construction_progress.gd": {
+      "sha256": "5afeacf57e1ae89409a9db64cf03b583fbdc92f94bf9817fe62056ee7de828ef",
+      "text": true
+    },
+    "scripts/ui/hud_metric_glyph.gd": {
+      "sha256": "38a7d3c5c72fe4b07b892ad7ac561f559ecc4ab5b1dffdde2484576d92f251c5",
+      "text": true
+    },
+    "scripts/ui/hud_plate.gd": {
+      "sha256": "e1e98d897e213c368a7b92382bdd93c16e10468262154ff29527e99bec4175eb",
+      "text": true
+    },
+    "scripts/ui/hud_top_metric.gd": {
+      "sha256": "a11021df4a966dcdebd781f2f50eb3997b64aa43eeb194f8a26fcd74b837fcaa",
+      "text": true
+    },
+    "scripts/ui/hud_vital_bar.gd": {
+      "sha256": "e0db50bb0ee3c583f443e2742df6edbcefc85d86bb6c7780a7883e07a6178d15",
+      "text": true
+    },
+    "scripts/ui/inventory.gd": {
+      "sha256": "2115cd5ac282cf97a78009b91ac9c71d00cc3530b6f28d859c0657e837ca024c",
+      "text": true
+    },
+    "scripts/ui/main_menu.gd": {
+      "sha256": "f2ec0910f3ada2cd022f3448cfcf03a402da25e2a497e0098696e9d80176a3e2",
+      "text": true
+    },
+    "scripts/ui/map_preview.gd": {
+      "sha256": "45684e5eaf2050e3da7c865ec9307ec3db5579ec758043fde1e6e9fc295ac459",
+      "text": true
+    },
+    "scripts/ui/ornate_panel_style.gd": {
+      "sha256": "7e03a22db754f3987f04c8f633cc29e2e983a604d2c3b846bf3e1c8ab112a236",
+      "text": true
+    },
+    "scripts/ui/pause_menu.gd": {
+      "sha256": "4144f61c0e535a4ae595c577d64d94d3d61730431ae361db7c62b89dd577d699",
+      "text": true
+    },
+    "scripts/ui/readable_text.gd": {
+      "sha256": "5851c197fee875a9b7c13b155ddf8f5120c920de075504331d2e42b7ec6ee024",
+      "text": true
+    },
+    "scripts/ui/settings.gd": {
+      "sha256": "cefd1185a9afe6cc77a6bbdd2ec87ea9dfde946460e58ff3135dd884417377f9",
+      "text": true
+    },
+    "scripts/ui/skill_icons.gd": {
+      "sha256": "74fb7f084f8f58355170d30ef3017e678b9f8add72ccc87bd6ea4704b3b8bee2",
+      "text": true
+    },
+    "scripts/ui/skill_tree.gd": {
+      "sha256": "dd0fc22844d92b2cfd611bc37bbbcd317b70e4298ec17894e84792e41c49f647",
+      "text": true
+    },
+    "scripts/ui/skirmish_briefing_plate.gd": {
+      "sha256": "e16d8934943b44c1c31e8582583b789bda151644547dc018227a856128b0f0fe",
+      "text": true
+    },
+    "scripts/ui/skirmish_setup.gd": {
+      "sha256": "04b17fb318a0f9021fe308df9e02cb7ac25ad1456d8d8ef6e0ed2a6f70f38012",
+      "text": true
+    },
+    "scripts/ui/tutorial.gd": {
+      "sha256": "6d0ae6b184429f9f61e6824cc2b31074c1cbe97525c868fbeb683659628a928b",
+      "text": true
+    },
+    "scripts/units/projectile.gd": {
+      "sha256": "47bee0ca4922bef92cb2865ffe11261ec01229cbfe3327c46d51b7fca91479b9",
+      "text": true
+    },
+    "scripts/units/unit.gd": {
+      "sha256": "7ded156af9af9932f80c2ad845fa93b5e7e2b6b5067239c110c5281e107abfc3",
+      "text": true
+    },
+    "scripts/utils/hull_cache.gd": {
+      "sha256": "56e9dc4118dd962eef88d19ccb5db30d6b8da5a7797f3ec915fbdee6055e0b94",
+      "text": true
+    },
+    "scripts/utils/model_utils.gd": {
+      "sha256": "9599f29d429dd7af5fed0ca30e7ea87b310bf6008cc6da175b9b4c93cb3016e9",
+      "text": true
+    },
+    "scripts/weapon_grip.gd": {
+      "sha256": "66609f4ca70c456730989e1caf45d706ca50ac2382ce833ffea7c87f9f04ffcb",
+      "text": true
+    },
+    "scripts/world/ambient_sound.gd": {
+      "sha256": "7d18829d31c683651bfe2a347457113ebb813dfa71d6290bcf3cc2212d14fe0a",
+      "text": true
+    },
+    "scripts/world/ambient_weather.gd": {
+      "sha256": "24ca7171158829330e5cd6d9e84adc407c20e15912011216b0423c2b97c21698",
+      "text": true
+    },
+    "scripts/world/brazier_fire.gd": {
+      "sha256": "517536052a7d4827b6a9c5736abcd885d6a9a51efead1cec17a4a1e9b7258128",
+      "text": true
+    },
+    "scripts/world/capture_point.gd": {
+      "sha256": "a959916de614355b94fea40e874af36f5ff2cd33552fe41887004c955197dc15",
+      "text": true
+    },
+    "scripts/world/chimney_smoke.gd": {
+      "sha256": "66c5fb480be70b99afc9c13661348dbd70dedfd406b3898166ef48d9a70d11d5",
+      "text": true
+    },
+    "scripts/world/combat_vfx.gd": {
+      "sha256": "7f8bec7ac02d2cab2a5f0c1ca3cb3f743ab4914bc4e5d61516d3b924682ed5e5",
+      "text": true
+    },
+    "scripts/world/command_bus.gd": {
+      "sha256": "a90bd7fcd163d83d9d18b1c409b7adb55105f5ace5f7cc08d97388b05314fc3a",
+      "text": true
+    },
+    "scripts/world/game_root.gd": {
+      "sha256": "cde1752a9b710fa16429857ee5db47773a8b2aa1424cb06325dcaf57e77ac438",
+      "text": true
+    },
+    "scripts/world/game_world.gd": {
+      "sha256": "d8b24970d7d61b032b9ead46e845047ede9358bdefd19c0f448ee59cdb67a1d6",
+      "text": true
+    },
+    "scripts/world/ground_cover.gd": {
+      "sha256": "244f0b87d0c130a496ea0c758a17bf44717444dcfeb0a323211b93f33ccae2ff",
+      "text": true
+    },
+    "scripts/world/grove_motes.gd": {
+      "sha256": "78cd0eaf0bc94c22ecb3c89e195ef85eca2dac97d1007cdcc536234b877e7e99",
+      "text": true
+    },
+    "scripts/world/hollowspan_environment_composition.gd": {
+      "sha256": "d27c3149f36e3c9c5abd1d6804a79fcb906ba52eb3994198207568a1f9022848",
+      "text": true
+    },
+    "scripts/world/lume_jar.gd": {
+      "sha256": "5b97952982bdf853f6944d9033d35529cf140ef29b8bf49eb9cc7c99671aa711",
+      "text": true
+    },
+    "scripts/world/map_defs.gd": {
+      "sha256": "799e2016aa171103506af50b4383a4892eb03676790b0d37414a5541993679d8",
+      "text": true
+    },
+    "scripts/world/resource_node.gd": {
+      "sha256": "c0b81b95ee39612b1f032a7e59e83f148f52497ef1892a0ec39c3375e1fcbe93",
+      "text": true
+    },
+    "scripts/world/rts_controller.gd": {
+      "sha256": "b88ddd029260a1dc3d3e1720be140308e8da35fbacaaa2f14afd320ea5705f03",
+      "text": true
+    },
+    "scripts/world/static_batcher.gd": {
+      "sha256": "5bd10c8ba9967128bd40852319ea0d1f6a6dbda1d0be65740f100f32fd6e9144",
+      "text": true
+    },
+    "scripts/world/terrain_builder.gd": {
+      "sha256": "87042f20338707d7cf987a3ee69ea55aac3c0df91d7d49ff5659799ee8987624",
+      "text": true
+    },
+    "scripts/world/vein.gd": {
+      "sha256": "494ef8d0c15197dc40fd2d4e7fa78780fae72c84b1b4c7c8fcb534e2732803de",
+      "text": true
+    },
+    "scripts/world/world_blocker_contract.gd": {
+      "sha256": "0dd48c106068f8c8f00d01ef2eff48adcf82076db5f9e0012b713549bace997d",
+      "text": true
+    },
+    "slot-0.lock": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": false
+    },
+    "tests/asset_load_scan.gd": {
+      "sha256": "a2248d036484b6d9cefaa5d2dbac3bd59c7b579a88e007b8c75868b0d05018f1",
+      "text": true
+    },
+    "tests/astra_clan_levy_visual_review.gd": {
+      "sha256": "cf0fab98b64cef57a60e38e178650f5c3f503ab216a8b441c6af360fa629e9d2",
+      "text": true
+    },
+    "tests/bake_building_hulls.gd": {
+      "sha256": "3cd6b168e873131ba05df5c17ccf780ff5d3cd689c66cd517f2596fe729defa2",
+      "text": true
+    },
+    "tests/barrosan_iron_forge_b01_r1_runtime.gd": {
+      "sha256": "8e292d9642a748c5be6f826f939389f62e3a851c6220655c5e77dac6160b3d20",
+      "text": true
+    },
+    "tests/barrosan_iron_forge_b01_r1_runtime.tscn": {
+      "sha256": "369177b08da3fc5b2fee2a54fbce2d0c54bb77f899cef225eba99eb7c363d10a",
+      "text": true
+    },
+    "tests/barrosan_iron_forge_b01_r2_runtime.tscn": {
+      "sha256": "369177b08da3fc5b2fee2a54fbce2d0c54bb77f899cef225eba99eb7c363d10a",
+      "text": true
+    },
+    "tests/capture_bootstrap.gd": {
+      "sha256": "50787d8c4a7836483882c96b2bc5df63bb753f21e540474e1f6dcd9b59df5c35",
+      "text": true
+    },
+    "tests/claude_compileall.gd": {
+      "sha256": "ff943a281f6c79e93ffbf0de2a5635a58cd5915042dfeb51ef7b5ebb5a500c4e",
+      "text": true
+    },
+    "tests/claude_palmgen.gd": {
+      "sha256": "7833338d2d6b0059e2b77926c5f598089c97f4a4deedd8551a8b782ab8605985",
+      "text": true
+    },
+    "tests/claude_sagacheck.gd": {
+      "sha256": "217a468d83b1691c898b6074be4f0d4a16bbd087d6c7323ac1b81593c9a3a41b",
+      "text": true
+    },
+    "tests/current_combat_capture.gd": {
+      "sha256": "1329831ce621ef702c452bf4a01eec263350e5b49550244fdeb479c5473faba6",
+      "text": true
+    },
+    "tests/current_military_production_capture.gd": {
+      "sha256": "4a029303756efddd746bd8d81806d4059db4e1753d2211cbe9946484973aebf8",
+      "text": true
+    },
+    "tests/current_research_capture.gd": {
+      "sha256": "f91ee1ddc91c87ad00da4ee6d5b4287be138cda1e114a7e07bf6a7d27c69e9b9",
+      "text": true
+    },
+    "tests/current_short_public_capture.gd": {
+      "sha256": "beee6f7c65f0957b75de02853174151f6835fe4393ec1d21b29250e21dd06d7c",
+      "text": true
+    },
+    "tests/current_worker_economy_capture.gd": {
+      "sha256": "08e77dd38b26c8a5a54e81e62fe4ea4db33aaa80107fb4d96969fd477d6d2f99",
+      "text": true
+    },
+    "tests/p1_load_01_observer.gd": {
+      "sha256": "54210dc0319f3510185538432b0ee59e9a49b789d0a3cdcf4f45843794f769b9",
+      "text": true
+    },
+    "tests/p1_resources_01_readability.gd": {
+      "sha256": "2f9cdf28f4e946a262ec052359babd5e530c912b920def8df54e0026c0b65bcd",
+      "text": true
+    },
+    "tests/p1_ui_presentation_fix_pack_1.gd": {
+      "sha256": "c952dc8d73941fffcd00a99e2dbe07da71b6e1d5825a25b5a18b5d8835874659",
+      "text": true
+    },
+    "tests/p1r10_build_preview.gd": {
+      "sha256": "13845d4efa99008c5df842f10f661db8bbe1e8917c6bf552db2878956bab5364",
+      "text": true
+    },
+    "tests/p1r13_unit_readability.gd": {
+      "sha256": "917622373a869fbfcc1360c4f8fe3d508892910ec0aedbf5351ae30263f63c9e",
+      "text": true
+    },
+    "tests/p1r14_tactical_hierarchy.gd": {
+      "sha256": "cd94ef758645fc006e37768c89624fa5df9d057b369791f203787a016f005ced",
+      "text": true
+    },
+    "tests/p1r17_ui_capture.gd": {
+      "sha256": "8107a9e13200f49a596f3e57db7444eec859cb8036f1d29bb6f31168ceef7ea8",
+      "text": true
+    },
+    "tests/p1r19_tactical_ground.gd": {
+      "sha256": "53462a65c5169b4842ad92619c85aa94c6c49ab3d00fbee6c905ec3dbf451238",
+      "text": true
+    },
+    "tests/p1r1_unit_readability.gd": {
+      "sha256": "e16fbcd807be0ca75d58a653fad5a73b54ff6f922e8710e05deb34c08c8f4598",
+      "text": true
+    },
+    "tests/p1r20_character_separation.gd": {
+      "sha256": "f3cbf3faec9f3a89ab319a6584905fa598dc4dab7c2bfdddd4e4aa1fbe645378",
+      "text": true
+    },
+    "tests/p1r21_motion_grounding.gd": {
+      "sha256": "c982fc65d6a30453dac11c24f37f440e8cc142dfbe8cc5fa1b0a223f6d72ddbf",
+      "text": true
+    },
+    "tests/p1r22_command_card.gd": {
+      "sha256": "33c21301d768161956d22c7ff09fb0ab456c12d7379e6fb50e8090230451c74b",
+      "text": true
+    },
+    "tests/p1r23_selected_group.gd": {
+      "sha256": "9779d3ce1cabd50d368fe4680d4b204eeb4f41ab15367ef0984217a903f91726",
+      "text": true
+    },
+    "tests/p1r2_selected_portraits.gd": {
+      "sha256": "8cbd46925c0d553201f907e8634f906d45f92bb645cfa52d99e791f3b4c9dcc0",
+      "text": true
+    },
+    "tests/p1r3_minimap_terrain.gd": {
+      "sha256": "52beab137d9b7abb68a832a73c178072baf164811d1db0dceccc5834126d30a3",
+      "text": true
+    },
+    "tests/p1r4_worker_interaction.gd": {
+      "sha256": "2121d98a9e9cdc3128fb4a6e28f14b571160442a181e42bb364b3039142af366",
+      "text": true
+    },
+    "tests/p1r5_gameplay_ui_legibility.gd": {
+      "sha256": "57dafef322bef9d80f6208f62285f56173f8b64254131f00ba92b21fa465e411",
+      "text": true
+    },
+    "tests/p1r6_strategic_site_markers.gd": {
+      "sha256": "11c5700f8d4107524f2645111935a073289ee08851b1e4b7dd6e748655ce488e",
+      "text": true
+    },
+    "tests/p1r7_camera_readability.gd": {
+      "sha256": "c7261ae455904bae88c95b84fd392056de6b035c586844c32246bf579eceabcd",
+      "text": true
+    },
+    "tests/p1r9_space_readability.gd": {
+      "sha256": "97289df45bcd1c9732a39c94ec270be67ad7612266b26cece2ca33e2f7a3346c",
+      "text": true
+    },
+    "tests/p1s1_viewport_safe_area.gd": {
+      "sha256": "d3b586d9e96acfab4fbcf88ca64a9167b07659252bb79a69e74575dee0219988",
+      "text": true
+    },
+    "tests/p1s2_camera_bounds.gd": {
+      "sha256": "d1299f1e412e472418e0b768d6512283f3780ad43ada9492c6f7892b9c058eef",
+      "text": true
+    },
+    "tests/p1s3_selection_readability.gd": {
+      "sha256": "ce5bdd685c05ad07e768249540568be17194ec12fc987326539fe0e4769207da",
+      "text": true
+    },
+    "tests/p1s4_command_feedback.gd": {
+      "sha256": "1b7011aa929ebb172b3179d19c7cf8cf5a670e3c7559e52f41858c1ee1fafe3d",
+      "text": true
+    },
+    "tests/p1s5_match_identity.gd": {
+      "sha256": "c4b7359ea40e9f5eb2ae20fe77d58bae415f65b0c3fe7cb89be17b7379edf7ff",
+      "text": true
+    },
+    "tests/player_visibility_state_architecture_r1.gd": {
+      "sha256": "255e926f3034f1f0a03f5cd0bdd454dd47cb088f086f92bb074018fef56b6382",
+      "text": true
+    },
+    "tests/r59_campaign_map_resolution.gd": {
+      "sha256": "e8c506973e21c3e9f07b810d0be8b8f7fb5b4acf83fb22a07980577a6c304936",
+      "text": true
+    },
+    "tests/r59_playable_contract.gd": {
+      "sha256": "96789a8aac540d78ebb990eb88a47950a368048f98c7591a884b28d3da0e6cf4",
+      "text": true
+    },
+    "tests/r59_profile_reload.gd": {
+      "sha256": "39564f83f01cf165b3c153f858bb1d8b2d8626366f7c15d1d591ca8945cb3af4",
+      "text": true
+    },
+    "tests/r730a_combat_hit_audio_sync.gd": {
+      "sha256": "3faf669adac07a3ad7b982c3e8140b03d0a791393db7b59cad10863928f02a6b",
+      "text": true
+    },
+    "tests/r730b1_projectile_impact_audio.gd": {
+      "sha256": "e692586c20edb240c289e6afc4c0346b0b924e19dc01b7111fbc887ad960e0b6",
+      "text": true
+    },
+    "tests/ui_review_capture.gd": {
+      "sha256": "48e5ac69a9f2890284c74ac4694d3d8f297eda39cc589a426b2fb264537a47c5",
+      "text": true
+    },
+    "tests/v0431_capture.gd": {
+      "sha256": "ee11ba92fce4bdb0c14c6391250f4ffb1d8829d8c9ff04db9d4a58ba9ea949da",
+      "text": true
+    },
+    "tests/v0432_capture.gd": {
+      "sha256": "733109a4485df7dfe06a4a07214bee5d8360fcf2b76b4747879e6285aab84071",
+      "text": true
+    },
+    "tests/v0433_capture.gd": {
+      "sha256": "aa53074c43071fcca004caf813bd118fe3d57dbafacb2638a8ce86a572a00f2d",
+      "text": true
+    },
+    "tests/v0433_economy_unit_test.gd": {
+      "sha256": "994813ae74a00d2affc7a65f8519549ff803e908cf8eb340d6febefecad6ac3d",
+      "text": true
+    },
+    "tests/v0433_identity_unit_test.gd": {
+      "sha256": "a41e685d7f75c8472a593870e2cf0511a53312708f2d62da8cb4b4aa64221150",
+      "text": true
+    },
+    "tests/v0434_capture.gd": {
+      "sha256": "e98517482d842a72479c76bd880b561af1c4f6afc305c79d212cd305d2a3eff5",
+      "text": true
+    },
+    "tests/v0434_combat_unit_test.gd": {
+      "sha256": "e389e86295bdfbe0879c1521cb4303f1128bdd1a28f1c1597a514dbaa67df25f",
+      "text": true
+    },
+    "tests/v0435_capture.gd": {
+      "sha256": "56b5e7ad9d92db196d8333327932a64052731a9b85492dd80b8842385e64745b",
+      "text": true
+    },
+    "tests/v0435_easy_ai_wave.gd": {
+      "sha256": "48814ce8e2dd0323fff3e93ad675c376b20fa0ecc592d61c748c836bf0a50aa3",
+      "text": true
+    },
+    "tests/v0436_capture.gd": {
+      "sha256": "b9f4134d22d5b9d121fbee04cd471552b54e934b957e031cb6f448b2dadb30de",
+      "text": true
+    },
+    "tests/v0436_conquest_victory.gd": {
+      "sha256": "a7f260df2eef9c8e1343af377b8d3127d1696a3758dd4c66d4f156a35809a07b",
+      "text": true
+    },
+    "tests/v0436_navigation_repair.gd": {
+      "sha256": "80b486b9834b06045b7769681e5b0a000a8d7a05246d43a50d9c997346c56c43",
+      "text": true
+    },
+    "tests/v0436_r1_navigation_behavioral_proof.gd": {
+      "sha256": "b35cf4c244e9ad3283a87c4b89218c73daa8f5763495d5283bcebb9b21f58c50",
+      "text": true
+    },
+    "tests/v0436_r1c_capture.gd": {
+      "sha256": "944843f582d87ed410b6289cedc1de54cb7fadfb5014a02a3b174e1c5863a33b",
+      "text": true
+    },
+    "tests/v0436_r1d_startup_capture.gd": {
+      "sha256": "023f779ba10f3024a307de721627cf4b842f8dba18d8513a866fdc032954c358",
+      "text": true
+    },
+    "tests/v0436_r1f_boundary_physics.gd": {
+      "sha256": "d0b6c36e92cd5c24207f6fea355280619bcd2c3968583aa92bb90c81285884f8",
+      "text": true
+    },
+    "tests/v0436_r1g_capture.gd": {
+      "sha256": "5d9af85ca34724f9674f15639f975a5fd14bd192e0211c4726e59c1f6c1578fb",
+      "text": true
+    },
+    "tests/v0436_r1h_capture.gd": {
+      "sha256": "a7a86d93ebd13cd2b555da8f6d9d6b3d1291926d69e0216725c9983502f2e178",
+      "text": true
+    },
+    "tests/v0436_r1j_capture.gd": {
+      "sha256": "7abf7d52f750faba19a22ad9b8c8cb8e1a0c7841cccaa67a82303bb22e0bbdeb",
+      "text": true
+    },
+    "tests/v0436_r1k_capture.gd": {
+      "sha256": "3f82374ce00c25ce35d146ce341f7bf6d3158cdaaee5921ddb5c18d4469c1969",
+      "text": true
+    },
+    "tools/blender/exportLioraenGroveheart.py": {
+      "sha256": "fcb065cfdb1c503ce666ce44056fdca4754c642131b289622d6e27827dd8157a",
+      "text": false
+    },
+    "tools/blender/generateLioraenMoonbell.py": {
+      "sha256": "577c882be0b89b8af219711607086f9c13ef70433959689dea7d2d93291d8a6f",
+      "text": false
+    },
+    "tools/blender/generateLioraenWaystone.py": {
+      "sha256": "83b458b73e44c5eaffff9cb650cf8345cbb92c453bfbede640da72c7d85dd5fe",
+      "text": false
+    },
+    "tools/synth_sfx.py": {
+      "sha256": "547659ccc3e1f6ecec487f7461d8d84c0fcea5b6ae5f04a9bfac6e8257f4560f",
+      "text": false
+    },
+    "tools/ui/make_forged_buttons.py": {
+      "sha256": "5e719cf46b529383bdb7cee406abc6218715c08b984e287d23c6b5dedb65b19e",
+      "text": false
+    }
+  },
+  "generated_dependencies": {
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-aged-timber-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-dark-slate-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-dirt-yard-albedo.png": {
+      "sha256": "9eb92aedb99d1f883f7c14a19e7e577554b75a8e480f7660c24973db2d765d0c",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-dirt-yard-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-granite-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-highland-grass-albedo.png": {
+      "sha256": "bbb2418262720390b5f8e3e11251447db1dcbf3fd5270c2ade71ece385e493fd",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-highland-grass-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_civic_keep_a01_barrosan-limewash-albedo.jpg": {
+      "sha256": "dbf53d2f0ab84f51b05423e243f7e1b17d93cfae01cd892b902effecf042203f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-limewash-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-aged-timber-albedo.jpg": {
+      "sha256": "40db180e8843cadcc17b8b7c419991cc624dd0b532b8b025c110537e4c2aee4f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-aged-timber-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-aged-timber-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-dark-slate-albedo.jpg": {
+      "sha256": "e49690b7ce46f5fc49ee6c2704b0e3a62b14d36cc9bdc34d909ff6fb9ff2ee1f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-dark-slate-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-dark-slate-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-dirt-yard-albedo.png": {
+      "sha256": "9eb92aedb99d1f883f7c14a19e7e577554b75a8e480f7660c24973db2d765d0c",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-dirt-yard-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-granite-albedo.jpg": {
+      "sha256": "7b6c908deea40423e6934804dd21d0281e860288502b865fd00e2e826270af2e",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-granite-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-granite-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-highland-grass-albedo.png": {
+      "sha256": "bbb2418262720390b5f8e3e11251447db1dcbf3fd5270c2ade71ece385e493fd",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-highland-grass-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_houses_a03_barrosan-limewash-albedo.jpg": {
+      "sha256": "dbf53d2f0ab84f51b05423e243f7e1b17d93cfae01cd892b902effecf042203f",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r1.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_iron_forge_b01_r2.glb:barrosan-limewash-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-limewash-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-dirt-yard-albedo.png": {
+      "sha256": "9eb92aedb99d1f883f7c14a19e7e577554b75a8e480f7660c24973db2d765d0c",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-dirt-yard-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-dirt-yard-albedo"
+      ]
+    },
+    "assets/environment/buildings/barrosan_war_hall_a02_barrosan-highland-grass-albedo.png": {
+      "sha256": "bbb2418262720390b5f8e3e11251447db1dcbf3fd5270c2ade71ece385e493fd",
+      "embedded_origins": [
+        "assets/environment/buildings/barrosan_civic_keep_a01.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_houses_a03.glb:barrosan-highland-grass-albedo",
+        "assets/environment/buildings/barrosan_war_hall_a02.glb:barrosan-highland-grass-albedo"
+      ]
+    },
+    "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_ancient_bark_albedo.png": {
+      "sha256": "8f4bdefd420a20da5eea8bc262f4cd68e6b16bd880e72d8c948b3dfe6ea876fb",
+      "embedded_origins": [
+        "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb:ancient_bark_albedo"
+      ]
+    },
+    "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_tripo_model_basecolor.jpg": {
+      "sha256": "8f7d12aeee4560b1a0f14e331fcecb604866c8655cefe69cf275fbc0832123ff",
+      "embedded_origins": [
+        "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb:tripo_model_basecolor",
+        "assets/environment/vegetation/broadleaf_oak.glb:tripo_model_basecolor"
+      ]
+    },
+    "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_tripo_model_normal.jpg": {
+      "sha256": "5de34a2500ba3d2e1dd9357dd6e5f33eb9a88a75fec53c574119283ba54fe413",
+      "embedded_origins": [
+        "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb:tripo_model_normal",
+        "assets/environment/vegetation/broadleaf_oak.glb:tripo_model_normal"
+      ]
+    },
+    "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1_tripo_model_rm.jpg": {
+      "sha256": "ecc5c4a2370fc5f359f85a6ad93bad551c4f27f3d4cc837131fbc5319bc51307",
+      "embedded_origins": [
+        "assets/environment/buildings/lioraen_groveheart_ancient_bough_r1.glb:tripo_model_rm",
+        "assets/environment/vegetation/broadleaf_oak.glb:tripo_model_rm"
+      ]
+    },
+    "assets/environment/visual_convergence/highland_brush_cluster_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "embedded_origins": [
+        "assets/environment/visual_convergence/highland_brush_cluster.glb:highland_rock",
+        "assets/environment/visual_convergence/highland_dry_stone_wall_module.glb:highland_rock",
+        "assets/environment/visual_convergence/small_stone_cairn.glb:highland_rock",
+        "assets/environment/visual_convergence/vorthak_charred_wall.glb:highland_rock",
+        "assets/props/misc/resource_gold_vein.glb:small_stone_cairn_highland_rock",
+        "assets/props/misc/resource_stone_quarry_chunk.glb:highland_rock"
+      ]
+    },
+    "assets/environment/visual_convergence/highland_dry_stone_wall_module_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "embedded_origins": [
+        "assets/environment/visual_convergence/highland_brush_cluster.glb:highland_rock",
+        "assets/environment/visual_convergence/highland_dry_stone_wall_module.glb:highland_rock",
+        "assets/environment/visual_convergence/small_stone_cairn.glb:highland_rock",
+        "assets/environment/visual_convergence/vorthak_charred_wall.glb:highland_rock",
+        "assets/props/misc/resource_gold_vein.glb:small_stone_cairn_highland_rock",
+        "assets/props/misc/resource_stone_quarry_chunk.glb:highland_rock"
+      ]
+    },
+    "assets/environment/visual_convergence/lioraen_moonstone_lioraen_waystone_slate_r2.png": {
+      "sha256": "0a6614ccdce19c521c3872c2065ef9bf0c6057f0bdeb0391489e354f128c0975",
+      "embedded_origins": [
+        "assets/environment/visual_convergence/lioraen_moonstone.glb:lioraen_waystone_slate_r2"
+      ]
+    },
+    "assets/environment/visual_convergence/small_stone_cairn_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "embedded_origins": [
+        "assets/environment/visual_convergence/highland_brush_cluster.glb:highland_rock",
+        "assets/environment/visual_convergence/highland_dry_stone_wall_module.glb:highland_rock",
+        "assets/environment/visual_convergence/small_stone_cairn.glb:highland_rock",
+        "assets/environment/visual_convergence/vorthak_charred_wall.glb:highland_rock",
+        "assets/props/misc/resource_gold_vein.glb:small_stone_cairn_highland_rock",
+        "assets/props/misc/resource_stone_quarry_chunk.glb:highland_rock"
+      ]
+    },
+    "assets/environment/visual_convergence/vorthak_charred_wall_highland_rock.jpg": {
+      "sha256": "ce68ba24c297f386daca8e20c78a4f62a3cc7bf93ef8531d1e25cc80d4aff153",
+      "embedded_origins": [
+        "assets/environment/visual_convergence/highland_brush_cluster.glb:highland_rock",
+        "assets/environment/visual_convergence/highland_dry_stone_wall_module.glb:highland_rock",
+        "assets/environment/visual_convergence/small_stone_cairn.glb:highland_rock",
+        "assets/environment/visual_convergence/vorthak_charred_wall.glb:highland_rock",
+        "assets/props/misc/resource_gold_vein.glb:small_stone_cairn_highland_rock",
+        "assets/props/misc/resource_stone_quarry_chunk.glb:highland_rock"
+      ]
+    }
+  },
+  "critical_import_settings": {
+    "assets/environment/buildings/codex_r57/roundhouse_r57_thatch.png.import": {
+      "mipmaps/generate": "true",
+      "process/size_limit": "512"
+    }
+  },
+  "required_cache_outputs": [
+    ".godot/imported/a08_b1_battle_fury.png-dbb3551d6144fd9d1c5814713e0b1168.ctex",
+    ".godot/imported/a08_b1_deepened_reserves.png-4c0d30e3febe45b18c722ad66582c2c5.ctex",
+    ".godot/imported/a08_b1_ground_slam.png-9241b3968ca3d2a2fa554201465bc3d4.ctex",
+    ".godot/imported/a08_b1_portrait_clan_levy.jpg-518f24853fee3b13503c2385ac50a764.ctex",
+    ".godot/imported/a08_b1_portrait_stoneward_spears.jpg-946c6806e28aafaf150212f7d2ab4680.ctex",
+    ".godot/imported/a08_b1_rallying_cry.png-769d3ed46cfd3876ea324916a14a37e1.ctex",
+    ".godot/imported/a08_portrait_warthane.jpg-d2296005ba257140063c64e53bb4ae99.ctex",
+    ".godot/imported/a08_portrait_worker.jpg-4bd3b9ab6c7e6509d3ffcef328710c1e.ctex",
+    ".godot/imported/age_of_iron.png-715ac1787489e0ec89c58621dde29202.ctex",
+    ".godot/imported/age_of_lume.png-c1221c9c84b6d1c1d3b5c7693b71c7c1.ctex",
+    ".godot/imported/ambient_mountain_highland_with_distant_magical_a_highland_wind_lume.mp3-04f3f79029186d77f03336cde287502d.mp3str",
+    ".godot/imported/ancient_ruin_pillar.glb-29fe559bc89223fd184e955e522f95fb.scn",
+    ".godot/imported/ancient_ruin_pillar_tripo_model_basecolor.jpg-28c394760f2579c3fd544bdf67b48be8.ctex",
+    ".godot/imported/ancient_ruin_pillar_tripo_model_normal.jpg-245b86d61dc19365203cf08f43c75b18.ctex",
+    ".godot/imported/ancient_ruin_pillar_tripo_model_rm.jpg-ff3bfeadd943e8857e1bd1fc8839ea5b.ctex",
+    ".godot/imported/anvil_breaker.png-cfb2e0423656a8ffae7f631f626e4f7a.ctex",
+    ".godot/imported/ascendant_attack_move_cursor.svg-5c5d47593c59c76e8341d472e37f0deb.ctex",
+    ".godot/imported/ascendant_direct_attack_cursor.svg-03d574c2c2788171fa8dda73c4f48939.ctex",
+    ".godot/imported/ash_forge.png-0120520888585f206595a26516d46ef7.ctex",
+    ".godot/imported/ash_thrall.png-263ea9456c09a782b88badc3b81f3497.ctex",
+    ".godot/imported/astra_empty_relic_cradle_r1.png-48354c4b2bf7a5f1bf92f9662955afec.ctex",
+    ".godot/imported/astra_empty_war_chest_r1.png-85dbe4cbb2e58a826bbf337ce8bdfa87.ctex",
+    ".godot/imported/avatar.png-5f417c126916f69ef45f7b87e16db743.ctex",
+    ".godot/imported/barrosan_anvil_breaker.glb-f14dffe5312f7faa1c44b83a5473eeb6.scn",
+    ".godot/imported/barrosan_ballista.glb-f5c02d43169f2f50172d8c1463c59a57.scn",
+    ".godot/imported/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg-90a74dbc9ebd951928b88d2607743f07.ctex",
+    ".godot/imported/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg-32c9aeaf25a0419fa93c35db5d2ff6d8.ctex",
+    ".godot/imported/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg-c2f02dfd3db547c41144bbdeda6e8262.ctex",
+    ".godot/imported/barrosan_boundary_marker.glb-1c5aa23816b9cd9cc4f4ba631e5e6832.scn",
+    ".godot/imported/barrosan_campaign_tent_lod1.glb-eceef79c3de6fbc3d36398479a76cd8c.scn",
+    ".godot/imported/barrosan_civic_keep_a01.glb-03c14f44626ce26cd5a29833426c6cf7.scn",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg-3ab0f877f932e74e4abc2e656b949fe6.ctex",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg-7a0619fbf4c57f5d390b3aa3a47f028b.ctex",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-dirt-yard-albedo.png-7689c4f8af6b2cd87aa5a1e1988775a2.ctex",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-granite-albedo.jpg-ab34338e0b17a295c6d8f5db088adb64.ctex",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-highland-grass-albedo.png-04a98089350861b06408d517066a3366.ctex",
+    ".godot/imported/barrosan_civic_keep_a01_barrosan-limewash-albedo.jpg-504efeb229d204a501f642f61fc4aeb6.ctex",
+    ".godot/imported/barrosan_clan_croft.glb-fede5c973f75c195bb60b8c87da3011c.scn",
+    ".godot/imported/barrosan_clan_croft_tripo_model_basecolor.jpg-0f4d6079173a36ae9eb1120b44c7ef91.ctex",
+    ".godot/imported/barrosan_clan_croft_tripo_model_normal.jpg-16505eccba4f50176e253ed8371a809b.ctex",
+    ".godot/imported/barrosan_clan_croft_tripo_model_rm.jpg-df5ab7ff20816f01d7ff64eb5851ed03.ctex",
+    ".godot/imported/barrosan_clan_levy.glb-719873fc1a484b7c2a35243711f305bd.scn",
+    ".godot/imported/barrosan_clan_levy_accessories.glb-4755f64163b897cbc4513e41119e5362.scn",
+    ".godot/imported/barrosan_clan_standard_lod1.glb-346d751a5079e39d5eddf311d91e1f81.scn",
+    ".godot/imported/barrosan_clan_waystone_lod1.glb-373b2e64e93ddd024e51501ca4e97498.scn",
+    ".godot/imported/barrosan_clanhold.glb-6e19682d8424230e7ddeec4d927d85eb.scn",
+    ".godot/imported/barrosan_clanhold_authority.glb-a5f93acc2331ddd28d1cdd8aa65cee1d.scn",
+    ".godot/imported/barrosan_clanhold_tripo_model_basecolor.jpg-a1d049b2780cd7d6090b8b562382a3ec.ctex",
+    ".godot/imported/barrosan_clanhold_tripo_model_normal.jpg-87581d108e54b65248defeda3ce5109c.ctex",
+    ".godot/imported/barrosan_clanhold_tripo_model_rm.jpg-b15b876a3ca30aa4c674f5a6797466b5.ctex",
+    ".godot/imported/barrosan_claymore.glb-092e5a472da6a604f9d754bcd426e306.scn",
+    ".godot/imported/barrosan_claymore_tripo_model_basecolor.jpg-00366b02371bc71bb4bbe6d2f47de10c.ctex",
+    ".godot/imported/barrosan_claymore_tripo_model_normal.jpg-5dbe9ad9848c119ca0900044237ea64a.ctex",
+    ".godot/imported/barrosan_claymore_tripo_model_rm.jpg-00b364ba21ae1b2b42eeb3be9b02bad2.ctex",
+    ".godot/imported/barrosan_command_crest_i2.png-1334d7891bd16111bf00f9739f379d73.ctex",
+    ".godot/imported/barrosan_covered_supply_wagon_lod1.glb-d1a9cdca5f967bdca671c520467ddc84.scn",
+    ".godot/imported/barrosan_crag_archer.glb-cd7edfd5f4a864eafbf0a6e6e4ba25f2.scn",
+    ".godot/imported/barrosan_crag_archer_accessories.glb-81c05c00cb00dbca1edd644a806be59a.scn",
+    ".godot/imported/barrosan_guard_tower_lod1.glb-c1144ef2e9c95ab88289d3387861ae79.scn",
+    ".godot/imported/barrosan_hero_thane.glb-70f8d8aacc36f02f27c9e66c839dca7d.scn",
+    ".godot/imported/barrosan_highlander_worker.glb-dc59f679867ae8269c656ea96bf72804.scn",
+    ".godot/imported/barrosan_houses_a03.glb-e034a1edb158d7483579291e36ef15ed.scn",
+    ".godot/imported/barrosan_houses_a03_barrosan-aged-timber-albedo.jpg-4d34edfed8a85da07c9e9ee96499db37.ctex",
+    ".godot/imported/barrosan_houses_a03_barrosan-dark-slate-albedo.jpg-9ea51ee797fd11a38679a1e69f36755c.ctex",
+    ".godot/imported/barrosan_houses_a03_barrosan-dirt-yard-albedo.png-de9e151f70213e8d5e5517ee662d99e8.ctex",
+    ".godot/imported/barrosan_houses_a03_barrosan-granite-albedo.jpg-3974a2fd9922976c2dcc485da00abb5c.ctex",
+    ".godot/imported/barrosan_houses_a03_barrosan-highland-grass-albedo.png-9b6930e8e8da7aff88e3dc23cf7b447c.ctex",
+    ".godot/imported/barrosan_houses_a03_barrosan-limewash-albedo.jpg-09cc3f367410c6835792ebb29e3e14d4.ctex",
+    ".godot/imported/barrosan_iron_forge.glb-40c21cf536ebfd558cda9de0b000e612.scn",
+    ".godot/imported/barrosan_iron_forge_b01_r1.glb-f97b314cc24140df918e82ee96c04ec1.scn",
+    ".godot/imported/barrosan_iron_forge_b01_r1_barrosan-aged-timber-albedo.jpg-6282a4ce78b19405700db50c2c3c6b84.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r1_barrosan-dark-slate-albedo.jpg-a35932285f93e2be20ba0161046f06c1.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r1_barrosan-granite-albedo.jpg-09e6fea8d6427fb12d1a76839792462a.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r1_barrosan-limewash-albedo.jpg-4f371debf9fc56e01e80e7b455de8a47.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r2.glb-ef8e00cbf013339c86214cc50c5317a1.scn",
+    ".godot/imported/barrosan_iron_forge_b01_r2_barrosan-aged-timber-albedo.jpg-9310238f90297c33690e3bd0f4235f6a.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r2_barrosan-dark-slate-albedo.jpg-c6dc7b068741e505070278123a4fa878.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r2_barrosan-granite-albedo.jpg-96c1a93d42abdeeeb38c52f6f6980a3e.ctex",
+    ".godot/imported/barrosan_iron_forge_b01_r2_barrosan-limewash-albedo.jpg-34b9bf83a01610fbb942449c953514e3.ctex",
+    ".godot/imported/barrosan_iron_forge_tripo_model_basecolor.jpg-e181aece31c71d882db34e69d7c2aa1b.ctex",
+    ".godot/imported/barrosan_iron_forge_tripo_model_normal.jpg-3966627308ad0c155b9c15a8eb5c1e32.ctex",
+    ".godot/imported/barrosan_iron_forge_tripo_model_rm.jpg-0a5845f1ba03181a69e6fb42f66b95eb.ctex",
+    ".godot/imported/barrosan_muster_gate_lod1.glb-fe286daeaae7466f34d78bf1961686b7.scn",
+    ".godot/imported/barrosan_muster_rack_lod1.glb-b0865d814c6b58ad483d62c6941edf4e.scn",
+    ".godot/imported/barrosan_open_gate_doors_lod1.glb-6df9b9a94e54de81884302bd1c3dab8d.scn",
+    ".godot/imported/barrosan_outrider.glb-14a4f98b1ccfaa1285abc58998adba5d.scn",
+    ".godot/imported/barrosan_outrider_r1_accessories.glb-40bb16f7a4a2e597fd8957bd3d00fc02.scn",
+    ".godot/imported/barrosan_palisade_corner_lod1.glb-66fe593e4c3de2ef96aeb3ed6ecc4f12.scn",
+    ".godot/imported/barrosan_palisade_wall_4m_lod1.glb-7acd3ed7648c0d42588fdb17e4f510d1.scn",
+    ".godot/imported/barrosan_spear_guard.glb-f9c0b94c263f522c970b4818dfd27d90.scn",
+    ".godot/imported/barrosan_spear_guard_accessories.glb-e8c78539be84da25db9664061e80da51.scn",
+    ".godot/imported/barrosan_stoneward_spears_r696_compat.glb-444f17a2ac5e5469cf7b22ecf06d37ac.scn",
+    ".godot/imported/barrosan_supply_awning_lod1.glb-af66cb3bfbd7cacd628b7d83e8897d36.scn",
+    ".godot/imported/barrosan_training_pavilion_lod1.glb-21fb39c8c0cebf0edeb1498f54e5149f.scn",
+    ".godot/imported/barrosan_war_hall.glb-1e4f94917cb5f38b06c706744078598d.scn",
+    ".godot/imported/barrosan_war_hall_a02.glb-f253da462d1b6ef85ff747a4a5f2c4a3.scn",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-aged-timber-albedo.jpg-3530660734095cd408caee4a49a67ef9.ctex",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-dark-slate-albedo.jpg-a0f17f54549d68b480f3bc3c538b7093.ctex",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-dirt-yard-albedo.png-cd81e1bc4a8931f87e745cc87c3e75cf.ctex",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-granite-albedo.jpg-89d181e3c34a3d298142d8451371cdcd.ctex",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-highland-grass-albedo.png-76ae08756b6553488dd029e590b49779.ctex",
+    ".godot/imported/barrosan_war_hall_a02_barrosan-limewash-albedo.jpg-b151ea4ff313fae8f500ace941b5ebb1.ctex",
+    ".godot/imported/barrosan_war_hall_tripo_model_basecolor.jpg-2e657af637484e4e666091ec7f825d36.ctex",
+    ".godot/imported/barrosan_war_hall_tripo_model_normal.jpg-95056fd3fce72fea46ca462b6b3637bd.ctex",
+    ".godot/imported/barrosan_war_hall_tripo_model_rm.jpg-a9e44ce6cecd5df9456cbcbbeacee2f1.ctex",
+    ".godot/imported/barrosan_watch_brazier_lod1.glb-aa08dd6f713612a857aa109fd28ed99e.scn",
+    ".godot/imported/barrosan_watchtower.glb-b0b3ae2b5b78a8ec27c43a95ef04c59f.scn",
+    ".godot/imported/barrosan_watchtower_tripo_model_basecolor.jpg-638ce44aebf71f187035c015f082eefd.ctex",
+    ".godot/imported/barrosan_watchtower_tripo_model_normal.jpg-f34e0adc976cff01ef9222e2ffef8cee.ctex",
+    ".godot/imported/barrosan_watchtower_tripo_model_rm.jpg-0134fd84e0c59a62b5583128be5ee496.ctex",
+    ".godot/imported/barrosan_worker_cargo_bundle.glb-f4bd4e688efe7c979ef46b2a7a40dfed.scn",
+    ".godot/imported/barrosan_worker_tool.glb-12927d2b4353fed56ddd8de6acaa7b83.scn",
+    ".godot/imported/basalt_highland_rock_cluster.png-dc31392e499cab7658ef0d69b3a40502.ctex",
+    ".godot/imported/basalt_mossy_boulder.png-1eaf362ea07841ec9b6f9b038dcc8081.ctex",
+    ".godot/imported/beastfolk_wolf_warrior.glb-67a03a7f1197e25c60fb598977dee92b.scn",
+    ".godot/imported/bloom_spire.png-1bc043bbba7814adb9256494341ef78b.ctex",
+    ".godot/imported/bolt.png-1683d369b23e3be88947609a20b16df6.ctex",
+    ".godot/imported/bondservant.png-77e5c74458d5a939168d3bdb6a64aeac.ctex",
+    ".godot/imported/bone_barracks.png-f91b75748696940348147d3e14f97939.ctex",
+    ".godot/imported/broadleaf_oak.glb-1982b4639adbb6f0968e3ef39ad19d90.scn",
+    ".godot/imported/broadleaf_oak_tripo_model_basecolor.jpg-ea3818f587aa7c84ad150be4a8590551.ctex",
+    ".godot/imported/broadleaf_oak_tripo_model_normal.jpg-b03701d1ef680c98858f2c1da902dbeb.ctex",
+    ".godot/imported/broadleaf_oak_tripo_model_rm.jpg-01cd9a8624ccb525b325f74f4514bcfe.ctex",
+    ".godot/imported/btn_play.png-6c8a88e13e96531c8bf805f16cc6a670.ctex",
+    ".godot/imported/btn_skirmish.png-c7758e9e2c0bf19de1f8a7a38333e710.ctex",
+    ".godot/imported/castro_forge.png-7cec1deca760253007567a038bb3ce48.ctex",
+    ".godot/imported/castro_hold.glb-a53f47586b8eaa74a88e067ad7cc6163.scn",
+    ".godot/imported/castro_hold.png-a4776950f14767327cfd952054f2df7f.ctex",
+    ".godot/imported/castro_hold_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg-66c51f58312422552b1dd4b025ffd7df.ctex",
+    ".godot/imported/castro_hold_barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg-ded8df513e729db8590f6911c55461ce.ctex",
+    ".godot/imported/castro_hold_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg-d25539d1de24ed07259b523727ddee7d.ctex",
+    ".godot/imported/castro_rampart.png-856692c61ce02eb6da4b2a9fdd64134e.ctex",
+    ".godot/imported/charge.png-4ad9dacc60c00b057bbd82a8c5d27751.ctex",
+    ".godot/imported/cinder_spitter.png-51207161dc0fd6670774442c8d0523ca.ctex",
+    ".godot/imported/cinzel.ttf-0c1e9ff45380cb3c41b48c1cb0d409e6.fontdata",
+    ".godot/imported/clan_ballista.png-cdde773985ec52cfd06174b6dd178150.ctex",
+    ".godot/imported/clan_croft.png-337866b80577c11a936841335b575db8.ctex",
+    ".godot/imported/clanhold.png-d4c94fcceab398e7f59f61f383d65bc3.ctex",
+    ".godot/imported/combat_arcane_zap.wav-716d94ba8afc37247bc3ba9e6305344d.sample",
+    ".godot/imported/combat_arrow_shot.mp3-276f8834e6bb75cc6cc581d7d01bd9e2.mp3str",
+    ".godot/imported/combat_blunt_hit.wav-e08270ccf1c200b5b0c6b40beba552a4.sample",
+    ".godot/imported/combat_projectile_impact.wav-c6425d1e8306a95f1b6b95e035c3690e.sample",
+    ".godot/imported/combat_siege_launch.wav-48e598e9867b369180ee55b484cbc1e4.sample",
+    ".godot/imported/combat_spell_cast.mp3-d8aa9abbcf16bb323f0aeb441b934c34.mp3str",
+    ".godot/imported/combat_sword_hit.mp3-1082b50e3d1a39b7a9cc852bd598d7fe.mp3str",
+    ".godot/imported/combat_unit_death.mp3-9c12c640e0ed4cb707fea311d3cf58f0.mp3str",
+    ".godot/imported/crag_archer.png-8230e253e6a1abd663e2563683400af9.ctex",
+    ".godot/imported/crag_highland_rock_cluster.png-4145f503387ff72267ec60e388e71721.ctex",
+    ".godot/imported/crag_mossy_boulder.png-26efb531ed92ffe6478c7365d1edaa27.ctex",
+    ".godot/imported/dwarf_warrior.glb-043f65a645a74a005f848782b8e76a10.scn",
+    ".godot/imported/fallen_timber_cluster.glb-7f76edb02ee941d716b29afadc05762c.scn",
+    ".godot/imported/field_orders_atlas.png-1217d3b329360797b6dd33ee815b3463.ctex",
+    ".godot/imported/field_orders_atlas.png-1f4db182bd9467a490e8b00a614f93fe.ctex",
+    ".godot/imported/field_orders_atlas.png-bd8eb6dc671c221f9e5a50f43d7d5772.ctex",
+    ".godot/imported/force_objects_atlas_r2.png-da589b04c6882af93806369a1f2880e7.ctex",
+    ".godot/imported/forge.glb-4e290c59f77815355b0d8a2f70a3ff4c.scn",
+    ".godot/imported/forge_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg-70264ecb5b00dfe1e3a4065f9f7ae518.ctex",
+    ".godot/imported/forge_barrosan_civic_keep_a01_barrosan-dark-slate-albedo.jpg-e54e89ff84efe3fe0e2a2a1d97c49414.ctex",
+    ".godot/imported/forge_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg-9cf2b173add08fa845c577dbaa74a297.ctex",
+    ".godot/imported/forged_disabled.png-c42175a37d3bd02460dbadf822e8254f.ctex",
+    ".godot/imported/forged_hover.png-83e36644601ad333fc148c8ebfb66eb4.ctex",
+    ".godot/imported/forged_normal.png-47f763f3e77970d5a57d96d7ad446519.ctex",
+    ".godot/imported/forged_pressed.png-22fc3f3b33c5c2bb67969422a3d670e0.ctex",
+    ".godot/imported/frame_portrait.png-2b12783d32cb2774d0f8495036a1bf70.ctex",
+    ".godot/imported/frostborn_hero_jarl.glb-f1739eb316f3db3234f403dbc75857d4.scn",
+    ".godot/imported/frostborn_mead_hall.glb-e5dd9ac40cf98000c3ea4e3d436459f9.scn",
+    ".godot/imported/frostborn_mead_hall_tripo_model_basecolor.jpg-38b5778e5418d3859420ac6f09e2a7cd.ctex",
+    ".godot/imported/frostborn_mead_hall_tripo_model_normal.jpg-a39240995b315560f7b200bbcb9faf2d.ctex",
+    ".godot/imported/frostborn_mead_hall_tripo_model_rm.jpg-92d1c7cd74107a9931869b0fcc636055.ctex",
+    ".godot/imported/frostborn_warrior.glb-58ad803d6f8e953c31858df3f557c29c.scn",
+    ".godot/imported/frostmere_windswept_snow_r1.png-84ba7dfeb29e74da046a48f92f0ff584.ctex",
+    ".godot/imported/gloom_hound.png-3feb69f509b625203805b55b94eaf94d.ctex",
+    ".godot/imported/gold_mine_lumevein.glb-f46f7eea93575440f5a92f734bdd9488.scn",
+    ".godot/imported/gold_mine_lumevein_tripo_model_basecolor.jpg-97ddb7f30a10a4b36e3d76e8bb08f9b4.ctex",
+    ".godot/imported/gold_mine_lumevein_tripo_model_normal.jpg-dce01f790041a0921519f5829f875ffb.ctex",
+    ".godot/imported/gold_mine_lumevein_tripo_model_rm.jpg-3ea19caf696455f5634ebb95121d2014.ctex",
+    ".godot/imported/grimtusk_bowcrusha_r704c.glb-a7342bfa922f99cce051df407e4b5ca6.scn",
+    ".godot/imported/grimtusk_hero_warlord.glb-e0b5b79d56a2e43e719e997d3d549646.scn",
+    ".godot/imported/grimtusk_ogre_r709b.glb-e7c8edd22073f44d7c246568c0891d63.scn",
+    ".godot/imported/grimtusk_stronghold.glb-5b5972bf13eac2fabdbcbc0fe7a4b7bd.scn",
+    ".godot/imported/grimtusk_stronghold_tripo_model_basecolor.jpg-c55956313212c7575a15d9af2c4820f6.ctex",
+    ".godot/imported/grimtusk_stronghold_tripo_model_normal.jpg-9fe03cfbb7ff267f897c3854a76693b5.ctex",
+    ".godot/imported/grimtusk_stronghold_tripo_model_rm.jpg-e45a8f67eb23c491f9ccb7ae0cfd62df.ctex",
+    ".godot/imported/grove_forge.png-932702c553dc2718013264b107c7eead.ctex",
+    ".godot/imported/grove_warden.png-5dcd49bef3ee6c1f4416f7db5fba6a21.ctex",
+    ".godot/imported/groveheart.png-2191606b839ca5a4e15a2c20dd861ac9.ctex",
+    ".godot/imported/heal.png-dedc62a529806e53ff6fc6c9c3c27e85.ctex",
+    ".godot/imported/hero_relic_amulet.glb-fbc5b3448640742d9fb50a6256917068.scn",
+    ".godot/imported/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg-b4ca5e56bfb219e2a7d912480f2e2980.ctex",
+    ".godot/imported/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg-f1d0477e7f7dc9b3d282567ebc3763dd.ctex",
+    ".godot/imported/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg-422b1685c87a78a6c695783713482190.ctex",
+    ".godot/imported/highelf_archer.glb-e198bc883f5686f44628f1a0cb5e63a0.scn",
+    ".godot/imported/highland_brush_cluster.glb-b403df1bda745ac21a00559f06e9483a.scn",
+    ".godot/imported/highland_brush_cluster_highland_rock.jpg-01aa974e2ef066fdfbfca74308ab932a.ctex",
+    ".godot/imported/highland_crossing_bridge.glb-4e890f16546991edcb555e0327234fb5.scn",
+    ".godot/imported/highland_crossing_bridge_tripo_model_basecolor.jpg-932851d5d5c87e089e1deac894d004b6.ctex",
+    ".godot/imported/highland_crossing_bridge_tripo_model_normal.jpg-fa4ddcb3b26301d3ed16fda101f34888.ctex",
+    ".godot/imported/highland_crossing_bridge_tripo_model_rm.jpg-e444db866ac8dd16206ebb8ccc830780.ctex",
+    ".godot/imported/highland_dirt_path.png-3e8f4c44bde1d7237265fe947c8c2cb5.ctex",
+    ".godot/imported/highland_dirt_path_r3.png-0938b3f01ec88b9e5f7a828fd67acbfb.ctex",
+    ".godot/imported/highland_dry_stone_wall_module.glb-716c6557308aba9bc218cbd0a261388b.scn",
+    ".godot/imported/highland_dry_stone_wall_module_highland_rock.jpg-6a029d7d1e6b2f150042b1071ed049ae.ctex",
+    ".godot/imported/highland_grass.png-f7a5312e0cbfa61f417aed426829d372.ctex",
+    ".godot/imported/highland_meadow_grass.png-8cd80b91c889451c0c1281427b355321.ctex",
+    ".godot/imported/highland_meadow_grass_r5.png-a87d54c2212c17a971ceeff203a01b68.ctex",
+    ".godot/imported/highland_outrider.png-48d688ca8531aeb330b09e7a58ee6122.ctex",
+    ".godot/imported/highland_pine.glb-4f3c534c9cc6c88f67ea5b05fb1ccffb.scn",
+    ".godot/imported/highland_pine_tripo_model_basecolor.jpg-d326aa9f17c92ba5881b9821f40863cb.ctex",
+    ".godot/imported/highland_pine_tripo_model_normal.jpg-5e76d5ff775013005bd877ca246a7216.ctex",
+    ".godot/imported/highland_pine_tripo_model_rm.jpg-ca1de78d5b376764cf481c4b1aa22300.ctex",
+    ".godot/imported/highland_rock.png-7194bc6705be4608d38775d1b2265389.ctex",
+    ".godot/imported/highland_rock_cluster.glb-e100b51fa87d3a92491ba76890a01ad3.scn",
+    ".godot/imported/highland_rock_cluster_tripo_model_basecolor.jpg-7819634e6a9d381f209e1e5ec8154415.ctex",
+    ".godot/imported/highland_rock_cluster_tripo_model_normal.jpg-031167bc06d1bae61efe8e9d65e11f59.ctex",
+    ".godot/imported/highland_rock_cluster_tripo_model_rm.jpg-284d8a33d4efef22715afeaa480205c0.ctex",
+    ".godot/imported/highland_storm_sky_skybox.png-c46e09368753eb244cd3f13876b071a7.ctex",
+    ".godot/imported/hollow_hero_lich.glb-d751e7effda32b95eef9c42edecbe568.scn",
+    ".godot/imported/hollow_necropolis.glb-aab8af419f508b2fdd76ba8d73389754.scn",
+    ".godot/imported/hollow_necropolis_tripo_model_basecolor.jpg-c0c44b3cecb7e811b64df32a1e52447b.ctex",
+    ".godot/imported/hollow_necropolis_tripo_model_normal.jpg-96698dbb3697607d3ba2b2a169d01f55.ctex",
+    ".godot/imported/hollow_necropolis_tripo_model_rm.jpg-d69ade46a1af79b4e52a263132eecac0.ctex",
+    ".godot/imported/icon_food.png-58224c5e81367d1ccbb7a1fc38d1e01a.ctex",
+    ".godot/imported/icon_gold.png-94b7e13741d46bb0976a04e83d305447.ctex",
+    ".godot/imported/icon_lume.png-02f5cc5fd3a1380d243c1dcb1a3b1806.ctex",
+    ".godot/imported/icon_stone.png-a846c716d0ce2b684d91ed86014ce765.ctex",
+    ".godot/imported/icon_timber.png-e6296bedb1d62857e664ea1012dc379e.ctex",
+    ".godot/imported/iron_forge.png-e0db71035da1d2adac32d1bcb3b62b3f.ctex",
+    ".godot/imported/ironbark_helm_relic_r1.png-2dd263e1254af57bf9bd659adb39f091.ctex",
+    ".godot/imported/jingle_defeat_defeat_dirge.mp3-8abb2e2e779523a593beecb1e4732eed.mp3str",
+    ".godot/imported/jingle_victory_victory_fanfare.mp3-9a6a45f405056c3fb832093a19df43a2.mp3str",
+    ".godot/imported/karak_hero_thanelord.glb-e339dfd1daf202598d363ad590cdab8c.scn",
+    ".godot/imported/karak_hold.glb-bd0e9f58d1fa59ec38d5cfbec48828cc.scn",
+    ".godot/imported/karak_hold_tripo_model_basecolor.jpg-68edd338c8b27324581b6576b15e5604.ctex",
+    ".godot/imported/karak_hold_tripo_model_normal.jpg-8653bb1ff89947b0d83fffe4cb64610a.ctex",
+    ".godot/imported/karak_hold_tripo_model_rm.jpg-158eedf6620abf98cf0810bde1faf696.ctex",
+    ".godot/imported/leaf_clump.png-87d478420925126a91f7b729bc9e0938.ctex",
+    ".godot/imported/ledger_stone.png-c3dc47c370844ccc0d32ed23b29294e9.ctex",
+    ".godot/imported/lifewell.png-12e2bad8a8ccea5c5882f9e2667ed044.ctex",
+    ".godot/imported/lioraen.png-2a161858f5bd7a51662f046ea013896e.ctex",
+    ".godot/imported/lioraen_bloom_spire.glb-d221308c8e35155f75e8d2d338e459cd.scn",
+    ".godot/imported/lioraen_bloom_spire_tripo_model_basecolor.jpg-c9856a4c94a2478afdbd48bf1870f0eb.ctex",
+    ".godot/imported/lioraen_bloom_spire_tripo_model_normal.jpg-326d58280068f50ec611c15908895b53.ctex",
+    ".godot/imported/lioraen_bloom_spire_tripo_model_rm.jpg-877a219bd448d832cc036cde139520cc.ctex",
+    ".godot/imported/lioraen_bloomblade.glb-adbcaebfc3dc22abb594c9c4d03588d9.scn",
+    ".godot/imported/lioraen_bloomblade_tripo_model_basecolor.jpg-7f69a3ae2f795345a1751fdee91edbdb.ctex",
+    ".godot/imported/lioraen_bloomblade_tripo_model_normal.jpg-13195346c287dca15367eaf07c66706d.ctex",
+    ".godot/imported/lioraen_bloomblade_tripo_model_rm.jpg-5845c87a4495755d39cd7d01ce4ac315.ctex",
+    ".godot/imported/lioraen_bloomdancer.glb-cb8b1055e5db65c48cdd371937196042.scn",
+    ".godot/imported/lioraen_canopy_mender.glb-9e65621c61d5b52d43cfe6d5b7a4123d.scn",
+    ".godot/imported/lioraen_groveheart.glb-f7790fd6e63ccb3123bc5120b6727c21.scn",
+    ".godot/imported/lioraen_groveheart_ancient_bough_r1.glb-de29ce85a6f9c38e1a8a893fef3040c6.scn",
+    ".godot/imported/lioraen_groveheart_ancient_bough_r1_ancient_bark_albedo.png-326d61edf0ceb44be26f9c3433b1583e.ctex",
+    ".godot/imported/lioraen_groveheart_ancient_bough_r1_tripo_model_basecolor.jpg-4f4a87fd04cefc97b805a124529a18ba.ctex",
+    ".godot/imported/lioraen_groveheart_ancient_bough_r1_tripo_model_normal.jpg-319d13a76e87e7822ab3bf05deb9b7ce.ctex",
+    ".godot/imported/lioraen_groveheart_ancient_bough_r1_tripo_model_rm.jpg-33f27f01cd23af9ce81e3e7d9e226a60.ctex",
+    ".godot/imported/lioraen_groveheart_tripo_model_basecolor.jpg-54db375f47a46fd847e690996710115d.ctex",
+    ".godot/imported/lioraen_groveheart_tripo_model_normal.jpg-ce8bcb5841137217c3c6fc3daf4e5c18.ctex",
+    ".godot/imported/lioraen_groveheart_tripo_model_rm.jpg-f65f78bde4b3d3094f8539be5d475e57.ctex",
+    ".godot/imported/lioraen_hero_warden.glb-9a4aa8ec0c5afa666088b25a2cb34417.scn",
+    ".godot/imported/lioraen_lifewell.glb-eec95c9581c4b79dc51e50f4f36939c3.scn",
+    ".godot/imported/lioraen_lifewell_tripo_model_basecolor.jpg-d4d736cee718ba05f3ede0a52e25e7f6.ctex",
+    ".godot/imported/lioraen_lifewell_tripo_model_normal.jpg-bd745c40085db9b18a2eff8cdf44d47c.ctex",
+    ".godot/imported/lioraen_lifewell_tripo_model_rm.jpg-15b62128fd8446a1a09893f176a08db5.ctex",
+    ".godot/imported/lioraen_lume_bloom.glb-190aefaf341edc15461f8fd4f8187161.scn",
+    ".godot/imported/lioraen_moonstone.glb-c4b38a98aa79d832e8cecf14fcceca7e.scn",
+    ".godot/imported/lioraen_moonstone_lioraen_waystone_slate_r2.png-348667dec29aca58d4bb9af2ca83d51c.ctex",
+    ".godot/imported/lioraen_rootwarden_guard.glb-0d1bb9c758c2be907780d002a3e5b00d.scn",
+    ".godot/imported/lioraen_seedkeeper_worker.glb-e66cf1e3e7fa9c190c2ecbe500183451.scn",
+    ".godot/imported/lioraen_spirit_glade.glb-57b35ea6e035d879f28e5ff425cf7882.scn",
+    ".godot/imported/lioraen_spirit_glade_tripo_model_basecolor.jpg-defa602c0ad168f597774a6fedd0e13b.ctex",
+    ".godot/imported/lioraen_spirit_glade_tripo_model_normal.jpg-86b761bf167dc76a3c24bfe2859acf91.ctex",
+    ".godot/imported/lioraen_spirit_glade_tripo_model_rm.jpg-93bc5b2db66a372ee5649c0f887d7e39.ctex",
+    ".godot/imported/lioraen_thorn_ranger.glb-d1db476b4dad6ecb4eb45aa55cdc7855.scn",
+    ".godot/imported/lioraen_thornhall.glb-43c9d40925085022f51d272a4fb7b56a.scn",
+    ".godot/imported/lioraen_thornhall_tripo_model_basecolor.jpg-e9172dcfe1eab791b14272b5319ab320.ctex",
+    ".godot/imported/lioraen_thornhall_tripo_model_normal.jpg-657316835abe91e41c37e9f1bfddd947.ctex",
+    ".godot/imported/lioraen_thornhall_tripo_model_rm.jpg-71bd8f89929858927bbbe76f8f43d9c2.ctex",
+    ".godot/imported/lioraen_thornthrower.glb-8814ffd35c47479fc0a241d19c32bab7.scn",
+    ".godot/imported/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg-f7fd9ed3a794466c14d32c7408ef5229.ctex",
+    ".godot/imported/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg-e637ab59ed040bde83e7910c189e5609.ctex",
+    ".godot/imported/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg-6f4b2ebd7fb6528626a7f27bcda9ee45.ctex",
+    ".godot/imported/lioraen_waystone_slate_r2.png-a5e8cc48ccc87360b98362fbe2f6484f.ctex",
+    ".godot/imported/lioraen_windstrider.glb-940197ef88f0ae461ae7cfcc8224f4e6.scn",
+    ".godot/imported/loading_screen.png-60df6aab58b2ef9ff4864b5cd107673b.ctex",
+    ".godot/imported/lume_shard_crystal.glb-eb0ffc528f92eb6607cbb885d4b6d04e.scn",
+    ".godot/imported/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg-1fd1e0a88d1b22907025fff1b6c2ed74.ctex",
+    ".godot/imported/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg-2144d12a86d30d615126971fa9207e4d.ctex",
+    ".godot/imported/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg-38453eed5243e0398e280b67143a68da.ctex",
+    ".godot/imported/lume_spire_ruin.glb-b09dcff79630524f7130a5b74cd9cd0b.scn",
+    ".godot/imported/lume_spire_ruin_tripo_model_basecolor.jpg-e5fb88c30fe5f222ba2b454f2c5c2b0a.ctex",
+    ".godot/imported/lume_spire_ruin_tripo_model_normal.jpg-3841e80abcd4e3e3b7020dc5f1577318.ctex",
+    ".godot/imported/lume_spire_ruin_tripo_model_rm.jpg-ce71c06d8e45bf6fe2d0217ccc1a1a52.ctex",
+    ".godot/imported/lumeforged_blade_relic_r1.png-dd1b1097afc97d5caa760e2e0fc92bb9.ctex",
+    ".godot/imported/main_menu_bg.png-ce489de5370860dbebf19bdebe10bd9e.ctex",
+    ".godot/imported/metric_bezel.png-72110cc872617381e370b359ecddac70.ctex",
+    ".godot/imported/mossy_boulder.glb-db008bfe03ef21c6934662af47e5c214.scn",
+    ".godot/imported/mossy_boulder_tripo_model_basecolor.jpg-7ef2a135ce0d5645817cf516a10d14eb.ctex",
+    ".godot/imported/mossy_boulder_tripo_model_normal.jpg-288f2fe4603e35570757b929d4a6acdd.ctex",
+    ".godot/imported/mossy_boulder_tripo_model_rm.jpg-b6794f74589e099daf185e7be7a8d835.ctex",
+    ".godot/imported/music_combat_skirmish_battle_rise.mp3-a736b0290f6126a2c4fa5d1cac496fe5.mp3str",
+    ".godot/imported/music_menu_ascendant_main_theme.mp3-9eeb48d33d4bd68554a210d83e48bb7f.mp3str",
+    ".godot/imported/nighthold.png-b21b3a40789227df14bc0c083750a2eb.ctex",
+    ".godot/imported/orc_grunt.glb-5199b68cecfc2ff66c9f6c35e2ad4a51.scn",
+    ".godot/imported/panel_command.png-e2c22094c18aee18336d71bf812d4ef6.ctex",
+    ".godot/imported/panel_hud.png-e221d0f5294d377222e14ed05d8a0f3b.ctex",
+    ".godot/imported/panel_main.png-06a96cc53dc4a958ab6365718cfbbf08.ctex",
+    ".godot/imported/pickup_hero_level_up.mp3-ab3daebcc3fb49994e8381954cfa49d3.mp3str",
+    ".godot/imported/quarry_works.png-de11939c6a845e4701d63e5549bcd66f.ctex",
+    ".godot/imported/rally.png-4a51a4d2e6c8ced6bcc7e2ead0b9d8ff.ctex",
+    ".godot/imported/rallying_cry.png-48879620e97df4633243f3937df4c390.ctex",
+    ".godot/imported/rallying_cry.png-7c30ac521c1f36e33b89f9ea7cad0f92.ctex",
+    ".godot/imported/rallying_cry.png-d0db92663d59d2708bfa74a0f2ca284e.ctex",
+    ".godot/imported/recruit_highland_worker.png-b21581b03091015f76e57d620977f6bd.ctex",
+    ".godot/imported/research_symbols_r1.png-9f7b7d984ff06363a4eb30bd70ea9137.ctex",
+    ".godot/imported/resource_gold_vein.glb-c8b261b7a66b4356181fe7c7cf26a718.scn",
+    ".godot/imported/resource_gold_vein_small_stone_cairn_highland_rock.jpg-a11956f31ed7f198bc38cbc4dcc78d5c.ctex",
+    ".godot/imported/resource_harvest_grain.glb-735335588f41bfccaf4de20a7b55f240.scn",
+    ".godot/imported/resource_objects_atlas_r1.png-1fbdee617f33c39432dc9561808d788c.ctex",
+    ".godot/imported/resource_stone_quarry_chunk.glb-c733ac2914c25d73892d2b8725f71d49.scn",
+    ".godot/imported/resource_stone_quarry_chunk_highland_rock.jpg-650edcd642fc0a5899c886764edddacc.ctex",
+    ".godot/imported/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg-017aff07b6b6f85a597a5fea702e1fe6.ctex",
+    ".godot/imported/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg-30b6c356e1ffdbcdde574761587675c2.ctex",
+    ".godot/imported/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg-979a19e529ba575ba84d493281c3792d.ctex",
+    ".godot/imported/resource_timber_pile.glb-a4527f4347653dd7a4ed3c170fe027bc.scn",
+    ".godot/imported/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg-3dbd7235c9c1463cc6ed293f13f360d3.ctex",
+    ".godot/imported/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg-5654972a084b78681265d3eefdeed88b.ctex",
+    ".godot/imported/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg-86c9b1a6cf367c4512585e798fb9e77e.ctex",
+    ".godot/imported/resource_timber_stack.glb-43e25e03b58660f4d956eae6bdfd6db3.scn",
+    ".godot/imported/resource_timber_stack_EndGrain.png-7addcb46fdc2eb0d63409971b985e67e.ctex",
+    ".godot/imported/rift_binder.png-176e3ee53c59cad2e9fea3da2743e56c.ctex",
+    ".godot/imported/rift_blade.png-db6572085b07b06cf4a27b4a0f01ddf0.ctex",
+    ".godot/imported/rift_obelisk.png-449c102f9596533aa6d41bcd65b003cc.ctex",
+    ".godot/imported/root.png-298b6d155af17184a3242a8df445f7fe.ctex",
+    ".godot/imported/rough_supply_shelter.glb-dec587dde35d4835802bee9bed09d3c8.scn",
+    ".godot/imported/roundhouse.glb-6eebf3732e79054962fb5758bf6ceb93.scn",
+    ".godot/imported/roundhouse.png-b598935d26358f5b215ee1ee16c78965.ctex",
+    ".godot/imported/roundhouse_barrosan_civic_keep_a01_barrosan-aged-timber-albedo.jpg-2b764020cb3661cdd64c05395b96759e.ctex",
+    ".godot/imported/roundhouse_barrosan_civic_keep_a01_barrosan-granite-albedo.jpg-3f7aeabea8accd37c7797d0c87e6f6cb.ctex",
+    ".godot/imported/roundhouse_r57_thatch.png-44b23d9abcc2fd76b7389f353b374e17.ctex",
+    ".godot/imported/seedkeeper.png-e70a3e19b9ff3d5d8daf0ba9cda0fd8c.ctex",
+    ".godot/imported/sig_ashglass.png-3f3547c36a2c9461cf1b2f4caadaec0a.ctex",
+    ".godot/imported/sig_bull.png-6d209ec1c8a17533fa0025e863157ee9.ctex",
+    ".godot/imported/sig_candles.png-ecb99a5fa10a5b57ab8c440b6fc108f0.ctex",
+    ".godot/imported/sig_chains.png-aa2616a5afb0fa45a9e9989291c7a775.ctex",
+    ".godot/imported/sig_entrudo.png-cf07a17bd7f68c41e60d43cbffec6b8b.ctex",
+    ".godot/imported/sig_moura.png-9008637c5d8d0cbd263ac352eb40eacc.ctex",
+    ".godot/imported/sig_pack.png-4fc3456e8182cc1efcce490efab33b52.ctex",
+    ".godot/imported/sig_spring.png-325b3077ac21544bc43695a821f87603.ctex",
+    ".godot/imported/sig_stoneskin.png-9fe077d64d9e21cd8e22de40c72940c6.ctex",
+    ".godot/imported/sig_sunfire.png-2acea72989668db85e259eac4f0f28ce.ctex",
+    ".godot/imported/slam.png-aa8cc32cbec0637c8ebeb7a27fe9534a.ctex",
+    ".godot/imported/slider_grabber.png-06c2d06af282aed2aca6572f399e22a8.ctex",
+    ".godot/imported/slider_grabber_hi.png-77480b5f8a018e4393d7bbfef674766b.ctex",
+    ".godot/imported/small_stone_cairn.glb-0544552c29f20ce4ddbc97b5351ae602.scn",
+    ".godot/imported/small_stone_cairn_highland_rock.jpg-f8e676ee7f59e59b32b890b2634842f9.ctex",
+    ".godot/imported/spell_curse.wav-64edd28f27f529606a12c8bd508e1d49.sample",
+    ".godot/imported/spell_fury.wav-0889c2880bb8ab0f3203c18d1bfe80b2.sample",
+    ".godot/imported/spell_heal.wav-f600563f00c63417ad1bef80c5652864.sample",
+    ".godot/imported/spell_quake.wav-0a6472bdeb5eca40f1dca7f02f575a2c.sample",
+    ".godot/imported/spell_rain.wav-06c950aecc7a5ad672f4b63e8c99e38e.sample",
+    ".godot/imported/spell_summon.wav-be0048c784cb52e9b2c9ac8e0828a680.sample",
+    ".godot/imported/spell_ward.wav-de72030584ea7c52eaf5618a4d5227c2.sample",
+    ".godot/imported/spirit_glade.png-001467a97e40efa6ffdc5bbcc0af2557.ctex",
+    ".godot/imported/standing_stones.png-00ad1f4123fac8cd13cad2d388bd83df.ctex",
+    ".godot/imported/sunspear_hero_pharaoh.glb-43926989bcadd62cdcf04985bac03137.scn",
+    ".godot/imported/sunspear_legionary.glb-3c8491646d5a55f4e0aaddbe730bdec3.scn",
+    ".godot/imported/sunspear_palace.glb-8441d2ecfb12b5ebc965d68b791bde29.scn",
+    ".godot/imported/sunspear_palace_tripo_model_basecolor.jpg-f86b52b31f0015cf133e89f8d71948c9.ctex",
+    ".godot/imported/sunspear_palace_tripo_model_normal.jpg-875db94884e6a8bfc9f3cae4572691a2.ctex",
+    ".godot/imported/sunspear_palace_tripo_model_rm.jpg-dd8b519fb09b999b401d51510b69be69.ctex",
+    ".godot/imported/sylvan_court.glb-f77652eccaa37acf42fad022eb271458.scn",
+    ".godot/imported/sylvan_court_tripo_model_basecolor.jpg-fcbd494ce7e4928c1def2a7c9123ac96.ctex",
+    ".godot/imported/sylvan_court_tripo_model_normal.jpg-3cfd57e5e5e3a7c3eecee316ceb3ab5f.ctex",
+    ".godot/imported/sylvan_court_tripo_model_rm.jpg-015b44c7da349611f5a91e288ba40fd5.ctex",
+    ".godot/imported/sylvan_hero_archon.glb-971b932627d2fa4fec463ccb8d89bb34.scn",
+    ".godot/imported/thornhall.png-689269a5215fafcc8505f0548992956a.ctex",
+    ".godot/imported/thornrunner.png-b204fb27efbb05410d40648859b54878.ctex",
+    ".godot/imported/title_poster.webp-9b99e761f0b8aa38a272c12c2a93456e.ctex",
+    ".godot/imported/title_poster_sm.webp-072286b29dea4627e4041a1ddf202bcd.ctex",
+    ".godot/imported/toggle_off.png-80b84cb36554865d5ce1eb5b9dd477d4.ctex",
+    ".godot/imported/toggle_off_disabled.png-d0735a5aeccaad2dd24fdf805b8ec4dc.ctex",
+    ".godot/imported/toggle_on.png-c403724dc9ea223545e6da8c75c6b7a5.ctex",
+    ".godot/imported/toggle_on_disabled.png-45a2886468f48716f8e044db532f7fe9.ctex",
+    ".godot/imported/ui_age_up.wav-2b8aa814b845ba6c06813b8390234294.sample",
+    ".godot/imported/ui_base_under_attack.mp3-485a3bcfdc7ebf825393861461e983c7.mp3str",
+    ".godot/imported/ui_building_complete.mp3-8e3c2d8fd3e2507b216d2f2c318fdcf3.mp3str",
+    ".godot/imported/ui_coin_chime.wav-ef6e2474cc6842184128a59e0a82a0ec.sample",
+    ".godot/imported/ui_collapse.wav-d0e429ee58d7f81bab2cccd2b714a5aa.sample",
+    ".godot/imported/ui_hover_tick.wav-c84caefc76e33d841ab39795049251ea.sample",
+    ".godot/imported/ui_order_knock.wav-389afc0ad28e2ebb4be369f38e3b0574.sample",
+    ".godot/imported/ui_page_turn.wav-9a5b258d353e86f467c07b3f03365346.sample",
+    ".godot/imported/ui_refuse.wav-7f7d7b86b0f74c136e7912d99e0eb066.sample",
+    ".godot/imported/ui_research_done.wav-f52e0f38258495acf885c857d962c6d3.sample",
+    ".godot/imported/ui_seal_stamp.wav-3f6e34c158775804c03159a166eb224a.sample",
+    ".godot/imported/ui_unit_ready.mp3-41d01f9c5b8af66d0f7352ccf8219e60.mp3str",
+    ".godot/imported/ui_unit_select_confirm.mp3-801a82c73f8256bb2cfb4451646f6097.mp3str",
+    ".godot/imported/ui_war_horn.wav-4bc00f48bbfc1c737ca053127d0b4a32.sample",
+    ".godot/imported/undead_skeleton.glb-d34461aaba3551aa593888871e23c67a.scn",
+    ".godot/imported/veil_warlock.png-d17014e8c487660d79fd85f05dca636e.ctex",
+    ".godot/imported/vorthak.png-f24fe3596790078212cebf28791d57f1.ctex",
+    ".godot/imported/vorthak_ash_forge.glb-efd142e0ce11e1145d9763d9e79d4f64.scn",
+    ".godot/imported/vorthak_ash_forge_tripo_model_basecolor.jpg-73297a35ac2c157d694619255ec5429a.ctex",
+    ".godot/imported/vorthak_ash_forge_tripo_model_normal.jpg-73e31ddce2ed5284167a815d16b1b5c4.ctex",
+    ".godot/imported/vorthak_ash_forge_tripo_model_rm.jpg-4bfd368f6ca4f2c8401f8a4871bf822f.ctex",
+    ".godot/imported/vorthak_ash_glass_shards.glb-33607be69c3f1de214984ccc4dba0ab1.scn",
+    ".godot/imported/vorthak_ash_thrall.glb-8d61add7451b33e30f98030594e71d86.scn",
+    ".godot/imported/vorthak_bondservant_worker.glb-4c9c539c88cbafa7eb21a262d11dd739.scn",
+    ".godot/imported/vorthak_bone_barracks.glb-f2b7a32e0d74a2e3ef6e2e90d17c3817.scn",
+    ".godot/imported/vorthak_bone_barracks_tripo_model_basecolor.jpg-ed4482d6cf301568d4326baffba7135b.ctex",
+    ".godot/imported/vorthak_bone_barracks_tripo_model_normal.jpg-e719628c6048f180f8d050dc42f5bbd8.ctex",
+    ".godot/imported/vorthak_bone_barracks_tripo_model_rm.jpg-93b83811e848f734159bbe977849da06.ctex",
+    ".godot/imported/vorthak_charred_wall.glb-e0192abf7ae6f823776d1261751fc578.scn",
+    ".godot/imported/vorthak_charred_wall_highland_rock.jpg-559efaea3574a6d78b27e92e6c608f05.ctex",
+    ".godot/imported/vorthak_cinder_spitter.glb-22a5943738a36f8bdca74c2e98a914d2.scn",
+    ".godot/imported/vorthak_fracture_engine.glb-05a7aa2049366eefc72244745e9593e7.scn",
+    ".godot/imported/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg-2f57bb5bfaa28cf949c2b380f8d26f73.ctex",
+    ".godot/imported/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg-10ff1340aa83a11690942923c1af5c06.ctex",
+    ".godot/imported/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg-b5eaf9fee9db99d1ea1a3d3c01b7bdce.ctex",
+    ".godot/imported/vorthak_gloom_hound.glb-e2138eb2d9312cda9cc992235b0c7673.scn",
+    ".godot/imported/vorthak_hero_binder.glb-58118d157ec1ba74414a34b20bf68ff8.scn",
+    ".godot/imported/vorthak_nighthold.glb-d27545a71e211f47caeb8ce1d5bc8c01.scn",
+    ".godot/imported/vorthak_nighthold_tripo_model_basecolor.jpg-3ec5f23108ce4d0755c8e0205cc43d9a.ctex",
+    ".godot/imported/vorthak_nighthold_tripo_model_normal.jpg-13cbeb39c0e30ac4ce2944ed5fb625dc.ctex",
+    ".godot/imported/vorthak_nighthold_tripo_model_rm.jpg-d8d16cd21e5710758df064af483c71ad.ctex",
+    ".godot/imported/vorthak_rift_blade.glb-5b13cfda6f36b0f37f972716a7343e46.scn",
+    ".godot/imported/vorthak_rift_obelisk.glb-7f5cce9b1ab95d6f3241b4721c7578ed.scn",
+    ".godot/imported/vorthak_rift_obelisk_tripo_model_basecolor.jpg-91b33a053037a47dcdf386adbf93fdda.ctex",
+    ".godot/imported/vorthak_rift_obelisk_tripo_model_normal.jpg-6e365d04d4d41b86dfdbd0df5f6a0f85.ctex",
+    ".godot/imported/vorthak_rift_obelisk_tripo_model_rm.jpg-cdb05c6e93209f7d9cb134060cbd79d6.ctex",
+    ".godot/imported/vorthak_rift_staff.glb-76d0279cab6f0e04f0667a92dbebf782.scn",
+    ".godot/imported/vorthak_rift_staff_tripo_model_basecolor.jpg-0e87191da2e241b7b17eb02d4c46f8ce.ctex",
+    ".godot/imported/vorthak_rift_staff_tripo_model_normal.jpg-dbab542e85d675fce51ef29ad3c6b76f.ctex",
+    ".godot/imported/vorthak_rift_staff_tripo_model_rm.jpg-5059b4672510de892cf67ccc46f86932.ctex",
+    ".godot/imported/vorthak_veil_warlock.glb-52ba759f22d352b819b508045f8c9d8e.scn",
+    ".godot/imported/vorthak_veil_warlock_r1_accessories.glb-8a2e3764f2c4893fc98bc36a520ddc2a.scn",
+    ".godot/imported/vorthak_volcanic_ash_r1.png-2d0eda5f2ed578020b2ce69706c12b1c.ctex",
+    ".godot/imported/vorthak_warlock_spire.glb-7fa73f782d887bf2315124eaf6da4c7f.scn",
+    ".godot/imported/vorthak_warlock_spire_tripo_model_basecolor.jpg-aa27dba1f5bf2b0eebed15fcde792716.ctex",
+    ".godot/imported/vorthak_warlock_spire_tripo_model_normal.jpg-764af931f12b0219c3d84b7ea672c2b0.ctex",
+    ".godot/imported/vorthak_warlock_spire_tripo_model_rm.jpg-e27335af3e9cbc5e12de929bfa70b0f9.ctex",
+    ".godot/imported/war_chest_vault_backdrop_r2.png-e1808b371ab57d85c9ba477756bdff78.ctex",
+    ".godot/imported/war_hall.png-1c9c6550ff819c1646c47f8ac2869146.ctex",
+    ".godot/imported/wardens_band_relic_r1.png-417b6aea9dd06ba922bbdb5c75b5b7f1.ctex",
+    ".godot/imported/warlock_spire.png-47d2b2058b8c775c0995f96427d2c4dd.ctex",
+    ".godot/imported/watchtower.png-0e7af637a0f90ef1f0b03451920e61cf.ctex",
+    ".godot/imported/weathered_fence_module.glb-c2e9344b8d1e84f6c0c1f956cf68bd60.scn",
+    ".godot/imported/wordmark_title.png-5ca96c7912db2c9faa2242e647b37ccd.ctex",
+    ".godot/imported/work_chop.wav-cf5f885bfcd37b7c5d6e1c8f0d45762e.sample",
+    ".godot/imported/work_harvest.wav-3d83cb6fb52e86a97beec35773f51eb5.sample",
+    ".godot/imported/work_pick.wav-94dbe0af9a694327f8c27f588400bc73.sample",
+    ".godot/imported/wyldkin_denhold.glb-14d705343868775d22b8adaaafaf7f4d.scn",
+    ".godot/imported/wyldkin_denhold_tripo_model_basecolor.jpg-9b2188cbcf9fc3612e233b4b3ace0f98.ctex",
+    ".godot/imported/wyldkin_denhold_tripo_model_normal.jpg-e03acb24e8d1c73819485e67c07f90d8.ctex",
+    ".godot/imported/wyldkin_denhold_tripo_model_rm.jpg-72f69601dd1d4474c38fed2e9ef5dc5d.ctex",
+    ".godot/imported/wyldkin_hero_alpha.glb-f796b5963c24510abb6941c606fcfda7.scn"
+  ],
+  "exclude": "Godot-generated UID/import metadata; critical thatch settings checked separately"
+}

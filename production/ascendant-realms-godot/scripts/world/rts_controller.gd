@@ -108,7 +108,7 @@ func setup(p_world, p_team: int) -> void:
 	# center on player base
 	if world.commanders.size() > player_team:
 		var hqpos := _player_hq_pos()
-		cam_pivot.global_position = _clamp_camera_focus(hqpos)
+		cam_pivot.global_position = _clamp_camera_focus(_opening_focus_position(hqpos, world.commanders[player_team].hero_ref))
 
 func _apply_settings() -> void:
 	var s = ProfileManager.settings()
@@ -128,6 +128,12 @@ func _v0436_r1j_recorder():
 		return null
 	var recorder = world.get_meta("v0436_r1j_recorder", null)
 	return recorder if is_instance_valid(recorder) else null
+
+func _opening_focus_position(hqpos: Vector3, starting_hero) -> Vector3:
+	if is_instance_valid(starting_hero) and not starting_hero.is_dead and hqpos.distance_to(starting_hero.global_position) <= 24.0:
+		return hqpos.lerp(starting_hero.global_position, 0.5)
+	return hqpos
+
 
 func _build_camera() -> void:
 	cam_pivot = Node3D.new()

@@ -1,0 +1,20 @@
+{
+  "source_packet_tip": "cbb2b6325cb814a4fb6d18201c1ed5f2b35f15de",
+  "sources": {
+    "castro_hold.blend": {
+      "original_packet": "castro_world_r56",
+      "sha256": "41da0589c4822425a92df9aa5d5de1dca1ee1653d13f3a9a873a1601919955fc",
+      "bytes": 1677643
+    },
+    "roundhouse.blend": {
+      "original_packet": "roundhouse_world_r57",
+      "sha256": "7e6bdcb43c1ddb6950d5ff1211b4ff8fb1b3b469264b91452b0d0c94710bcf1f",
+      "bytes": 4265997
+    },
+    "forge.blend": {
+      "original_packet": "forge_world_r58",
+      "sha256": "52ef9dc88d50e80628b33834d9e9ad0c5ead5f53013838ec874d7756f3dd5abb",
+      "bytes": 1658029
+    }
+  }
+}

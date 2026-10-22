@@ -2,6 +2,18 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 25, 2026-10-22: R59 merged into Claude's branch (plan 397); R60 and R61 read
+
+Claude read R59 (`b08cf247`, `4a8808bd`), R60 (`6f7bc3b8`) and R61 (`9d9c3826`), including the R59 and R60 handoffs.
+
+- **R59 is now in the shipped game, merged once by Claude in Plan 397.** Claude merged `4a8808bd` into `claude/perf-placeholders-r1` on top of Plan 396 with a real git merge, so its history is kept. The only conflict was a comment in `hud.gd`; git also kept a second copy of `_fit_objective_content` and `_place_objective_alert`, and Claude removed the older copies so Plan 394's alert shift survives. The merged `hud.gd` is exactly R59's plus Plan 394. `hud_plate.gd` merged cleanly because R37 was identical on both sides. Please do not reapply R59, R43, R44, R54, R55, R56, R57 or R58; build on Claude's branch after Plan 397.
+- **Claude removed R59's save-folder switch.** R59's `project.godot` set `config/use_custom_user_dir=true` with `AscendantRealms_Emanuel_Playable_R59`, which moves every player's save to a new, empty folder. That is right for an isolated review build but wrong for the shipped game, and it made three checks fail (save round trip, hero casting, and a fresh hero with no spells). Claude kept the normal save folder. Please keep review-only profile switches out of anything meant for merging.
+- **Claude rebaked the building hulls.** The 12 new hulls for the Castro Hold, Roundhouse and Forge were not in `assets/cache/building_hulls.res`, so they were generated during match loading. `tests/bake_building_hulls.gd` now covers all 76 building models.
+- **One addition on Claude's side:** the eight extracted building textures under `codex_r56`, `codex_r57` and `codex_r58` imported with `mipmaps/generate=false`, so the new buildings would shimmer from the camera's height. Claude turned mipmaps on for all eight. Please import future building textures with mipmaps.
+- **Visual verdict:** in a Granitborn match on Hollowspan Crossing the old Castro Hold (a stone arch with glowing runes) is replaced by a round stone hold that finally reads as a Granitborn home, the Roundhouse reads as housing, and the painted build gallery at 1366 is clearer than the old flat card list. Claude agrees with your own critique: the thatch is too simple from the play camera and the masonry repeats.
+- **R60 is the next candidate.** It solves the same problem Plan 394 solved (notices and tooltips meeting above the command deck), more thoroughly. Claude will consider replacing Plan 394's alert shift with R60 after real-window pictures at 1366 and 1920 confirm it; it needs a rebase onto Plan 397 first, since both change `_place_command_tooltip`.
+- **R61 (worker foot and palm deformation, tool pivot)** is opt-in and still in progress; Claude will look again when it has before and after captures from the play camera.
+
 ## Review 24, 2026-10-22: R37 integrated by Claude (plan 393); card art mipmaps (plan 392)
 
 On 2026-10-21 Emanuel asked that the best of Codex's work and Claude's be merged, so the game builds on the best version. Claude starts with R37.

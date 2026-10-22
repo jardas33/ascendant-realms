@@ -98,6 +98,15 @@ const RES_ICONS := {
 	"gold": "res://assets/ui/icon_gold.png",
 }
 const RES_ORDER := ["food", "timber", "stone", "gold"]
+const GRANITBORN_BUILD_ART := {
+	"karak_hold": "res://assets/ui/construction_illustrations/r54/castro_hold.png",
+	"karak_longhouse": "res://assets/ui/construction_illustrations/r54/roundhouse.png",
+	"karak_anvil": "res://assets/ui/construction_illustrations/r54/ledger_stone.png",
+	"karak_gun_tower": "res://assets/ui/construction_illustrations/r54/castro_rampart.png",
+	"karak_standing_stones": "res://assets/ui/construction_illustrations/r54/standing_stones.png",
+	"karak_outpost": "res://assets/ui/construction_illustrations/r54/quarry_works.png",
+	"karak_warforge": "res://assets/ui/construction_illustrations/r54/castro_forge.png",
+}
 const BARROSAN_BUILD_ART := {
 	"barrosan_clanhold": "res://assets/ui/construction_art/astra_r1/clanhold.png",
 	"barrosan_clan_croft": "res://assets/ui/construction_art/astra_r1/clan_croft.png",
@@ -176,6 +185,11 @@ var _card_watch: Array = []        # [cost, was_available, pop_definition]
 var _card_poll := 0.0
 var _card_force_refresh := false
 var _cmd_body: Control = null
+# Presentation choices only, keyed by building definition and progression group.
+# Retain booleans across native cost/queue rebuilds, never node references or saves.
+var _research_expanded: Dictionary = {}
+# Presentation-only HQ workspace, never persisted or holding Node references.
+var _hq_workspace_choices: Dictionary = {}
 var _command_chassis: Control = null
 var _command_tooltip: PanelContainer = null
 
@@ -218,6 +232,7 @@ var _resource_tooltip: PanelContainer = null
 var _resource_tooltip_label: Label = null
 var _hovered_resource = null
 var _resource_tooltip_accum := 0.0
+var _resource_hover_title_id := 0
 const RESOURCE_TOOLTIP_POLL_INTERVAL := 0.08
 
 # --- refresh cadence ---
@@ -323,7 +338,7 @@ func _fit_to_viewport() -> void:
 		_objective_panel.offset_left = -530.0 - 150.0 * (top_lift - 1.0)
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
-		# The content minimum decides height; wrapped status rows stay readable.
+		# Content height keeps the full-width objective rows readable.
 		_objective_panel.offset_bottom = 104.0
 		call_deferred("_fit_objective_content")
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
@@ -343,7 +358,7 @@ func _fit_to_viewport() -> void:
 	var fixed_height := _cmd_fixed.get_combined_minimum_size().y if is_instance_valid(_cmd_fixed) else 0.0
 	# Tall screens give the hall's train, age and caravan rows room to show.
 	var command_ceiling := clampf(viewport_size.y * 0.45, 430.0, 500.0)
-	var command_height := minf(command_ceiling, maxf(280.0, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0))
+	var command_height := minf(command_ceiling, _cmd_body.get_combined_minimum_size().y + fixed_height + 30.0)
 	var selection_height := minf(requested_selection_height, maxf(228.0, floor(viewport_size.y * 0.27)))
 	if is_instance_valid(_minimap_panel):
 		var map_size := _minimap_panel.get_combined_minimum_size()
@@ -413,6 +428,9 @@ func _fit_to_viewport() -> void:
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -100.0
 		_menu_button.offset_right = -12.0
+	for child in get_children():
+		if child is Control and child.has_meta("command_notice"):
+			_place_command_notice(child)
 	queue_redraw()
 
 
@@ -476,7 +494,7 @@ func _build_resource_tooltip() -> void:
 	# of a wide empty black box.
 	_resource_tooltip.custom_minimum_size = Vector2(0.0, 0.0)
 	_resource_tooltip.add_theme_stylebox_override("panel", _resource_tooltip_stylebox())
-	_resource_tooltip_label = _mk_label("", 16, Color(0.96, 0.91, 0.79))
+	_resource_tooltip_label = _top_small(_mk_label("", 18, Color(0.96, 0.91, 0.79)), 18)
 	_resource_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_resource_tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_resource_tooltip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -484,6 +502,14 @@ func _build_resource_tooltip() -> void:
 	_resource_tooltip_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	_resource_tooltip.add_child(_resource_tooltip_label)
 	add_child(_resource_tooltip)
+	_resource_tooltip.visibility_changed.connect(func():
+		if not _resource_tooltip.visible:
+			_restore_resource_hover_title())
+	visibility_changed.connect(func():
+		if not is_visible_in_tree():
+			_resource_tooltip.hide()
+			_restore_resource_hover_title())
+	tree_exiting.connect(_restore_resource_hover_title)
 
 
 func _resource_tooltip_stylebox() -> StyleBoxFlat:
@@ -519,7 +545,69 @@ func _set_resource_hover(on: bool) -> void:
 	if is_instance_valid(_hovered_resource) and _hovered_resource.has_method("set_pointer_hover"):
 		_hovered_resource.set_pointer_hover(on)
 
+func _restore_resource_hover_title() -> void:
+	var title_id := _resource_hover_title_id
+	_resource_hover_title_id = 0
+	if title_id == 0 or not is_instance_id_valid(title_id):
+		return
+	var title = instance_from_id(title_id)
+	if is_instance_valid(title):
+		title.show()
+
+
+func _resource_hover_obstacles() -> Array[Rect2]:
+	var boxes: Array[Rect2] = []
+	for node in [_top_panel, _force_panel, _age_panel, _objective_panel,
+		_menu_button, _minimap_panel, _sel_panel, _cmd_panel, _alert_box, _command_tooltip]:
+		if is_instance_valid(node) and node.is_visible_in_tree():
+			boxes.append(node.get_global_rect().grow(8.0))
+	for child in get_children():
+		if child is Control and child.has_meta("command_notice") and child.is_visible_in_tree():
+			boxes.append(child.get_global_rect().grow(8.0))
+	return boxes
+
+
+func _resource_hover_position(pointer: Vector2, tooltip_size: Vector2) -> Vector2:
+	var margin := Vector2(8.0, 8.0)
+	var viewport_size := get_viewport_rect().size
+	var offset := Vector2(16.0, 18.0)
+	var candidates: Array[Vector2] = [pointer + offset,
+		pointer + Vector2(-tooltip_size.x - offset.x, offset.y),
+		pointer - tooltip_size - offset,
+		pointer + Vector2(offset.x, -tooltip_size.y - offset.y)]
+	var obstacles := _resource_hover_obstacles()
+	# If the adjacent quadrants meet a panel, try its nearest outer edges.
+	# This also handles a tooltip wider than the playable sliver beside a deck.
+	for box in obstacles:
+		candidates.append(Vector2(pointer.x + offset.x, box.position.y - tooltip_size.y))
+		candidates.append(Vector2(pointer.x + offset.x, box.end.y))
+		candidates.append(Vector2(box.position.x - tooltip_size.x, pointer.y + offset.y))
+		candidates.append(Vector2(box.end.x, pointer.y + offset.y))
+	var best := Vector2.ZERO
+	var best_overlap := INF
+	var best_distance := INF
+	for position in candidates:
+		var clamped := Vector2(
+			clampf(position.x, margin.x, maxf(margin.x, viewport_size.x - tooltip_size.x - margin.x)),
+			clampf(position.y, margin.y, maxf(margin.y, viewport_size.y - tooltip_size.y - margin.y)))
+		var rect := Rect2(clamped, tooltip_size)
+		var overlap := 0.0
+		for box in obstacles:
+			if rect.intersects(box):
+				overlap += rect.intersection(box).get_area()
+		# Keep the pointer itself unobscured; ties prefer the nearest clear slot.
+		if rect.grow(6.0).has_point(pointer):
+			overlap += tooltip_size.x * tooltip_size.y
+		var distance := clamped.distance_squared_to(pointer + offset)
+		if overlap < best_overlap or (is_equal_approx(overlap, best_overlap) and distance < best_distance):
+			best = clamped
+			best_overlap = overlap
+			best_distance = distance
+	return best
+
+
 func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -> void:
+	_restore_resource_hover_title()
 	if not is_instance_valid(_resource_tooltip) or not is_instance_valid(rts):
 		return
 	var hovered_control := get_viewport().gui_get_hovered_control()
@@ -575,6 +663,13 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		var public_name := String(hovered.def.get("name", fallback_name))
 		var hostile: bool = "team" in hovered and int(hovered.team) != int(rts.player_team)
 		_resource_tooltip_label.text = "%s\nHostile" % public_name if hostile else public_name
+		# Show one full identifier, not a title banner and a second bare name.
+		# Do not hide an already-hidden title or change an enemy's information.
+		var title := hovered.get_node_or_null("HeroTitle") as Label3D
+		if not hostile and is_instance_valid(title) and title.is_visible_in_tree() and not title.text.strip_edges().is_empty():
+			_resource_tooltip_label.text = title.text
+			_resource_hover_title_id = title.get_instance_id()
+			title.hide()
 	else:
 		_set_resource_hover(false)
 		_hovered_resource = null
@@ -585,18 +680,7 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 
 func _place_resource_tooltip(pointer: Vector2) -> void:
 	_resource_tooltip.reset_size()
-	var viewport_size := get_viewport_rect().size
-	var tooltip_size := _resource_tooltip.size
-	var margin := Vector2(8.0, 8.0)
-	var offset := Vector2(16.0, 18.0)
-	var tooltip_pos := pointer + offset
-	if tooltip_pos.x + tooltip_size.x > viewport_size.x - margin.x:
-		tooltip_pos.x = pointer.x - tooltip_size.x - offset.x
-	if tooltip_pos.y + tooltip_size.y > viewport_size.y - margin.y:
-		tooltip_pos.y = pointer.y - tooltip_size.y - offset.y
-	_resource_tooltip.position = Vector2(
-		clampf(tooltip_pos.x, margin.x, maxf(margin.x, viewport_size.x - tooltip_size.x - margin.x)),
-		clampf(tooltip_pos.y, margin.y, maxf(margin.y, viewport_size.y - tooltip_size.y - margin.y)))
+	_resource_tooltip.position = _resource_hover_position(pointer, _resource_tooltip.size)
 	_resource_tooltip.visible = true
 
 
@@ -978,6 +1062,14 @@ func _apply_ability_button_style(button: Button, accent: Color) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.52, 0.5))
 
 
+func _seat_crafted_build_preview(preview: Control, locked: bool) -> void:
+	# The card supplies the bronze aperture; a second portrait frame crowds
+	# the complete architectural silhouette at this compact scale.
+	if preview.has_node("PortraitFrame"):
+		preview.get_node("PortraitFrame").hide()
+	preview.modulate = Color(0.64, 0.65, 0.63) if locked else Color.WHITE
+
+
 func _fit_build_card(btn: Button, copy: Control) -> void:
 	if not is_instance_valid(btn) or not is_instance_valid(copy):
 		return
@@ -986,13 +1078,14 @@ func _fit_build_card(btn: Button, copy: Control) -> void:
 	# never goes under the standard card.
 	if copy.size.x < 60.0:
 		return
-	var need := maxf(96.0, ceilf(copy.get_combined_minimum_size().y + 5.0 + 21.0))
+	var need := maxf(100.0 if bool(btn.get("crafted_build")) else 96.0, ceilf(copy.get_combined_minimum_size().y + 5.0 + 21.0))
 	if not is_equal_approx(need, btn.custom_minimum_size.y):
 		btn.custom_minimum_size.y = need
 
 
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}, visible_effect: String = "", visible_effect_prefix: String = "Effect", hotkey_override: String = "", command_kind_override: String = "", emblem_id: String = "", unit_art_definition: Dictionary = {}) -> Button:
 	var has_preview := not preview_definition.is_empty()
+	var crafted_build := has_preview and String(preview_definition.get("command_art", "")).begins_with("res://assets/ui/construction_illustrations/r54/")
 	# The card is intentionally a scan surface. Hero abilities provide their
 	# authored hotkey explicitly; ordinary orders derive theirs from the title.
 	var ability_card := visible_effect_prefix == "Effect" and not hotkey_override.is_empty()
@@ -1009,8 +1102,11 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	btn.text = ""
 	btn.accent = accent
 	btn.command_kind = command_kind
+	btn.crafted_build = crafted_build
+	if crafted_build:
+		btn.set_meta("construction_name", title)
 	btn.command_state = state
-	var card_height := 96 if has_preview else (86 if ability_card else 60)
+	var card_height := (100 if crafted_build else 96) if has_preview else (86 if ability_card else 60)
 	btn.custom_minimum_size = Vector2(0, card_height)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1019,18 +1115,21 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
 		preview.name = "BuildingPreview"
-		preview.position = Vector2(4, 4)
-		preview.size = Vector2(84, 84)
-		preview.custom_minimum_size = Vector2(84, 84)
+		var art_size := Vector2(88, 88) if crafted_build else Vector2(84, 84)
+		preview.position = Vector2(6, 6) if crafted_build else Vector2(4, 4)
+		preview.size = art_size
+		preview.custom_minimum_size = art_size
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
-		preview.set_deferred("custom_minimum_size", Vector2(84, 84))
-		preview.set_deferred("size", Vector2(84, 84))
+		preview.set_deferred("custom_minimum_size", art_size)
+		preview.set_deferred("size", art_size)
+		if crafted_build:
+			preview.ready.connect(_seat_crafted_build_preview.bind(preview, state != "READY"), CONNECT_ONE_SHOT)
 		var text_col := VBoxContainer.new()
 		text_col.name = "BuildingCardCopy"
 		text_col.anchor_right = 1.0
-		text_col.offset_left = 95.0
+		text_col.offset_left = 100.0 if crafted_build else 95.0
 		text_col.offset_top = 7.0
 		text_col.offset_right = -7.0
 		text_col.offset_bottom = -21.0
@@ -1038,13 +1137,16 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# Narrow two-column build cards can wrap both the name and cost. Reserve
 		# the status footer by fitting those two scan lines inside the 96px card.
-		var title_label := _mk_label(title, 14, FONT_COLOR)
+		var display_title := {"Castro Forge": "Forge", "Castro Rampart": "Rampart", "Castro Quarry-Works": "Quarry-Works", "The Standing Stones": "Standing Stones"}.get(title, title) if crafted_build else title
+		var title_label := _mk_label(display_title, 14, Color(0.94, 0.87, 0.71) if crafted_build and state == "READY" else (Color(0.64, 0.64, 0.60) if crafted_build else FONT_COLOR))
+		title_label.name = "ConstructionTitle"
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_col.add_child(title_label)
-		var preview_detail_color := Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8)
+		var preview_detail_color := (Color(0.59, 0.61, 0.59) if state != "READY" else Color(0.84, 0.84, 0.77)) if crafted_build else (Color(0.82, 0.82, 0.76) if state == "LOCKED" else Color(0.9, 0.88, 0.8))
 		var detail_label := _mk_label(detail_text.replace(", ", "\n"), 12, preview_detail_color)
+		detail_label.name = "ConstructionCost"
 		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1130,7 +1232,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if not has_preview:
 		var status := state if state in ["READY", "ACTIVE", "TRAINING", "LOCKED", "COOLDOWN", "COMPLETED"] else ("UNAVAILABLE" if not disabled_reason.is_empty() else "READY")
 		# "COMPLETED" was cut to "COMPLET..." in the 75 px slot: finished work reads DONE.
-		var status_label := _mk_label("DONE" if status == "COMPLETED" else status, 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
+		var status_label := _mk_label("" if command_kind == "ORDER" and status == "READY" else ("DONE" if status == "COMPLETED" else status), 13, accent if status not in ["UNAVAILABLE", "LOCKED"] else Color(0.65, 0.69, 0.68))
 		status_label.anchor_left = 1.0
 		status_label.anchor_right = 1.0
 		status_label.offset_left = -112.0
@@ -1153,9 +1255,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	else:
 		# Keep readiness below the cost in the copy column so the structure art
 		# can fill its bay without hiding the card's current state.
-		var build_status := _mk_label(state, 13, accent if state == "READY" else COMMAND_MUTED)
+		var build_status := _mk_label(state, 11 if crafted_build else 13, Color(0.63, 0.79, 0.68) if crafted_build and state == "READY" else (Color(0.54, 0.57, 0.55) if crafted_build else (accent if state == "READY" else COMMAND_MUTED)))
 		build_status.anchor_right = 1.0
-		build_status.offset_left = 95.0
+		build_status.offset_left = 100.0 if crafted_build else 95.0
 		build_status.offset_right = -8.0
 		build_status.anchor_top = 1.0
 		build_status.anchor_bottom = 1.0
@@ -1232,25 +1334,27 @@ func _add_command_section(title: String, hint: String = "", pinned: bool = false
 	var row := HBoxContainer.new()
 	if pinned:
 		row.name = "PinnedCommandSection"
-	row.custom_minimum_size = Vector2(0, 30)
+	row.custom_minimum_size = Vector2(0, 24)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 8)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var rule := ColorRect.new()
-	rule.custom_minimum_size = Vector2(3, 18)
+	rule.custom_minimum_size = Vector2(3, 14)
 	rule.color = Color(COMMAND_GOLD.r, COMMAND_GOLD.g, COMMAND_GOLD.b, 0.55)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(rule)
 	var title_label := _mk_label(title.to_upper(), 16, COMMAND_GOLD)
-	title_label.custom_minimum_size = Vector2(132, 24)
+	title_label.custom_minimum_size = Vector2(132, 20)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(title_label)
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
-	if not hint.is_empty():
+	if not hint.is_empty() and hint not in ["Cast when ready.", "Move · attack"]:
 		var hint_label := _mk_label(hint, 13, Color(0.75, 0.77, 0.74))
-		hint_label.custom_minimum_size = Vector2(150, 24)
+		hint_label.custom_minimum_size = Vector2(150, 20)
+		hint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spacer.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(hint_label)
@@ -3486,7 +3590,7 @@ func _consume_hud_wheel(event: InputEvent) -> void:
 	# Scrollable HUD surfaces must terminate wheel input before the world
 	# controller's _unhandled_input can interpret it as camera zoom. This is
 	# event-driven and preserves the camera's existing behavior elsewhere.
-	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+	if event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
 		get_viewport().set_input_as_handled()
 
 
@@ -3688,9 +3792,11 @@ func _rebuild_command_card(single, selection: Array) -> void:
 	_clear_children(_cmd_body)
 	if is_instance_valid(_inspection_target):
 		_cmd_panel.visible = false
+		_fit_command_panel_next_frame()
 		return
 	if not is_instance_valid(_commander):
 		_cmd_panel.visible = false
+		_fit_command_panel_next_frame()
 		return
 	_add_command_context(single, selection)
 
@@ -3736,6 +3842,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 		return
 
 	_cmd_panel.visible = false
+	_fit_command_panel_next_frame()
 
 
 func _add_command_context(single, selection: Array) -> void:
@@ -3768,16 +3875,17 @@ func _add_command_context(single, selection: Array) -> void:
 			accent = COMMAND_MINT
 	var header := PanelContainer.new()
 	header.name = "CommandDeckHeader"
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.custom_minimum_size = Vector2(0, 51)
+	header.mouse_filter = Control.MOUSE_FILTER_STOP
+	header.tooltip_text = title + "\n" + subtitle
+	header.custom_minimum_size = Vector2(0, 36)
 	var header_style := StyleBoxFlat.new()
 	header_style.bg_color = Color(0.035, 0.05, 0.055, 0.31)
 	header_style.border_color = Color(accent.r, accent.g, accent.b, 0.40)
 	header_style.border_width_bottom = 1
 	header_style.content_margin_left = 2
 	header_style.content_margin_right = 3
-	header_style.content_margin_top = 5
-	header_style.content_margin_bottom = 5
+	header_style.content_margin_top = 3
+	header_style.content_margin_bottom = 3
 	header.add_theme_stylebox_override("panel", header_style)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
@@ -3787,7 +3895,7 @@ func _add_command_context(single, selection: Array) -> void:
 		var crest := TextureRect.new()
 		crest.name = "CommandFactionCrest"
 		crest.texture = load(command_crest_path)
-		crest.custom_minimum_size = Vector2(34, 34)
+		crest.custom_minimum_size = Vector2(26, 26)
 		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3800,8 +3908,7 @@ func _add_command_context(single, selection: Array) -> void:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 0)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(_mk_title_label(title, 20, FONT_COLOR))
-	info.add_child(_mk_label(subtitle, 13, Color(0.76, 0.79, 0.77)))
+	info.add_child(_mk_title_label("FIELD COMMANDS" if role in ["HERO", "MILITARY", "SQUAD"] else ("BUILD & GATHER" if role in ["WORKER", "WORKFORCE"] else "SETTLEMENT"), 20, FONT_COLOR))
 	row.add_child(info)
 	var role_badge := _mk_command_badge(role, accent, 59.0)
 	role_badge.custom_minimum_size = Vector2(59, 22)
@@ -3841,6 +3948,8 @@ func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dic
 		visual_definition["command_art"] = BARROSAN_BUILD_ART[building_id]
 	elif LIORAEN_BUILD_ART.has(building_id):
 		visual_definition["command_art"] = LIORAEN_BUILD_ART[building_id]
+	elif GRANITBORN_BUILD_ART.has(building_id):
+		visual_definition["command_art"] = GRANITBORN_BUILD_ART[building_id]
 	return visual_definition
 
 
@@ -4038,6 +4147,220 @@ func _construction_phase(value: float) -> String:
 	return "Finishing the site"
 
 
+func _research_queue_caption(building, tech_id: String) -> String:
+	for index in building.queue.size():
+		var item: Dictionary = building.queue[index]
+		if String(item.get("kind", "unit")) == "tech" and String(item.get("id", "")) == tech_id:
+			return "RESEARCHING" if index == 0 else "QUEUED"
+	# The same global technology may be underway in another producer.
+	return "RESEARCHING"
+
+
+func _organize_research_catalog(grid: GridContainer, building_key: String) -> void:
+	var stages := {"available": [], "progress": [], "future": [], "completed": []}
+	for card in grid.get_children():
+		stages[String(card.get_meta("research_stage", "future"))].append(card)
+		grid.remove_child(card)
+	var groups: Array = []
+	for stage in ["available", "progress", "future", "completed"]:
+		var cards: Array = stages[stage]
+		if cards.is_empty():
+			continue
+		var state_key: String = building_key + ":" + String(stage)
+		var open: bool = bool(_research_expanded.get(state_key, stage in ["available", "progress"]))
+		var group := VBoxContainer.new()
+		group.name = "Research_" + stage
+		group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		group.add_theme_constant_override("separation", 3)
+		grid.add_child(group)
+		var header := Button.new()
+		header.name = "Disclosure"
+		header.custom_minimum_size = Vector2(0, 40)
+		header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.toggle_mode = true
+		header.button_pressed = open
+		header.focus_mode = Control.FOCUS_ALL
+		header.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		header.add_theme_font_size_override("font_size", 16)
+		header.add_theme_color_override("font_color", COMMAND_GOLD if stage == "available" else Color(0.81, 0.83, 0.80))
+		var caption := String({"available": "UNLOCKED RESEARCH", "progress": "IN PROGRESS", "future": "FUTURE UPGRADES", "completed": "COMPLETED"}[stage])
+		header.text = "%s  ·  %d" % [caption, cards.size()]
+		header.tooltip_text = "Unlocked upgrades stay here even when resources are missing." if stage == "available" else ("Research already queued." if stage == "progress" else ("Inspect future upgrades, their costs and requirements." if stage == "future" else "Inspect completed upgrades."))
+		for mode in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+			var style := StyleBoxFlat.new()
+			style.bg_color = Color(0.065, 0.085, 0.089, 0.98) if mode not in ["hover", "hover_pressed"] else Color(0.12, 0.15, 0.15, 1.0)
+			style.border_color = Color(0.52, 0.42, 0.25, 0.85) if mode != "focus" else COMMAND_GOLD
+			style.set_border_width_all(1)
+			style.border_width_left = 3 if stage in ["available", "progress"] else 1
+			style.set_corner_radius_all(2)
+			style.content_margin_left = 12
+			style.content_margin_right = 86
+			header.add_theme_stylebox_override(mode, style)
+		group.add_child(header)
+		var cue := _mk_label("HIDE −" if open else "SHOW +", 13, COMMAND_GOLD)
+		cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cue.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+		cue.offset_left = -78
+		cue.offset_right = -10
+		cue.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		cue.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		header.add_child(cue)
+		var content := VBoxContainer.new()
+		content.name = "Entries"
+		content.add_theme_constant_override("separation", 3)
+		content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		content.visible = open
+		group.add_child(content)
+		for card in cards:
+			content.add_child(card)
+		header.toggled.connect(func(expanded: bool):
+			_research_expanded[state_key] = expanded
+			if is_instance_valid(content):
+				content.visible = expanded
+			if is_instance_valid(cue):
+				cue.text = "HIDE −" if expanded else "SHOW +"
+			_hide_command_tooltip()
+			_fit_command_panel_next_frame())
+		groups.append({"stage": stage, "header": header, "content": content, "count": cards.size()})
+	grid.set_meta("research_groups", groups)
+
+
+func _hq_action_count(node: Node) -> int:
+	var count := 1 if node is Button and node.has_meta("command_kind") else 0
+	for child in node.get_children():
+		count += _hq_action_count(child)
+	return count
+
+
+func _style_hq_exchange_button(button: Button, buying: bool) -> void:
+	button.custom_minimum_size = Vector2(0, 50)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.add_theme_font_size_override("font_size", 16)
+	button.add_theme_color_override("font_color", FONT_COLOR)
+	button.add_theme_color_override("font_disabled_color", Color(0.50, 0.54, 0.53))
+	button.set("accent", COMMAND_GOLD if buying else COMMAND_MINT)
+	button.set("command_kind", "EXCHANGE")
+	for mode in ["normal", "hover", "pressed", "disabled", "focus"]:
+		button.add_theme_stylebox_override(mode, StyleBoxEmpty.new())
+	# The forged renderer draws after Button's native text. Keep native text
+	# for accessibility and place its readable copy in the child drawing layer.
+	var caption := _mk_label(button.text, 16, FONT_COLOR if not button.disabled else Color(0.50, 0.54, 0.53))
+	caption.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	button.add_child(caption)
+
+
+func _layout_hq_exchange(content: VBoxContainer, native_rows: Array) -> void:
+	if native_rows.size() != 3 or native_rows[1].get_child_count() != 3 or native_rows[2].get_child_count() != 3:
+		return
+	var buys: Array = native_rows[1].get_children()
+	var sells: Array = native_rows[2].get_children()
+	native_rows[0].visible = false
+	var heading := _mk_label("RESOURCE EXCHANGE", 16, COMMAND_GOLD)
+	content.add_child(heading)
+	var prices := HBoxContainer.new()
+	prices.add_theme_constant_override("separation", 6)
+	content.add_child(prices)
+	var gutter := Control.new()
+	gutter.custom_minimum_size = Vector2(36, 0)
+	prices.add_child(gutter)
+	for text in ["BUY · %d GOLD" % _commander.trade_price(), "SELL · %d GOLD" % _commander.SELL_GOLD]:
+		var label := _mk_label(text, 14, Color(0.83, 0.79, 0.65))
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		prices.add_child(label)
+	for i in 3:
+		var row := HBoxContainer.new()
+		row.name = "Exchange_" + String(["food", "timber", "stone"][i])
+		row.add_theme_constant_override("separation", 6)
+		content.add_child(row)
+		var art := _mk_resource_object_icon(String(["food", "timber", "stone"][i]), 36)
+		art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(art)
+		for pair in [[buys[i], true], [sells[i], false]]:
+			var button: Button = pair[0]
+			button.get_parent().remove_child(button)
+			row.add_child(button)
+			_style_hq_exchange_button(button, bool(pair[1]))
+	for i in [1, 2]:
+		content.remove_child(native_rows[i])
+		native_rows[i].queue_free()
+
+
+func _organize_hq_workspaces(building, train_start: int, research_start: int, trade_start: int) -> void:
+	var children := _cmd_body.get_children()
+	var entries := {"train": children.slice(train_start, research_start), "research": children.slice(research_start, trade_start), "trade": children.slice(trade_start)}
+	var keys: Array[String] = []
+	for key in ["train", "research", "trade"]:
+		if not entries[key].is_empty():
+			keys.append(String(key))
+	if keys.size() < 2:
+		return
+	var building_key := String(building.building_id)
+	var selected := String(_hq_workspace_choices.get(building_key, "train"))
+	if not keys.has(selected):
+		selected = keys[0]
+	var tabs := HBoxContainer.new()
+	tabs.name = "HQWorkspaces"
+	tabs.add_theme_constant_override("separation", 3)
+	_cmd_fixed.add_child(tabs)
+	var panes: Dictionary = {}
+	var tab_buttons: Dictionary = {}
+	var button_group := ButtonGroup.new()
+	for key in keys:
+		var pane := VBoxContainer.new()
+		pane.name = "Workspace_" + key
+		pane.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		pane.add_theme_constant_override("separation", 6)
+		_cmd_body.add_child(pane)
+		panes[key] = pane
+		for node in entries[key]:
+			node.reparent(pane)
+		if key == "trade":
+			_layout_hq_exchange(pane, entries[key])
+		pane.visible = key == selected
+		var tab := Button.new()
+		tab.name = key.capitalize()
+		tab.set_meta("workspace_key", key)
+		tab.toggle_mode = true
+		tab.button_group = button_group
+		tab.button_pressed = key == selected
+		tab.custom_minimum_size = Vector2(0, 44)
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.add_theme_font_size_override("font_size", 16)
+		tab.add_theme_color_override("font_color", Color(0.70, 0.73, 0.72))
+		tab.add_theme_color_override("font_pressed_color", FONT_COLOR)
+		var count: int = 6 if key == "trade" else _hq_action_count(pane)
+		tab.text = "%s · %d" % [key.capitalize(), count]
+		tab.tooltip_text = String({"train": "Train units. Shift-click queues five when possible.", "research": "Inspect and research technologies and the next Age.", "trade": "Buy supplies for gold or sell surplus to the caravan."}[key])
+		for mode in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+			var style := StyleBoxFlat.new()
+			style.bg_color = Color(0.045, 0.06, 0.065, 1.0) if mode in ["normal", "focus"] else Color(0.13, 0.15, 0.14, 1.0)
+			style.border_color = Color(0.37, 0.39, 0.34, 0.85) if mode == "normal" else COMMAND_GOLD
+			style.set_border_width_all(1)
+			style.border_width_bottom = 3 if mode in ["pressed", "hover_pressed"] else 1
+			style.set_content_margin_all(6)
+			tab.add_theme_stylebox_override(mode, style)
+		tabs.add_child(tab)
+		tab_buttons[key] = tab
+	for key in keys:
+		var selected_key: String = key
+		var tab: Button = tab_buttons[key]
+		tab.pressed.connect(func():
+			_hq_workspace_choices[building_key] = selected_key
+			for other in panes:
+				if is_instance_valid(panes[other]):
+					panes[other].visible = other == selected_key
+			if is_instance_valid(_cmd_scroll):
+				_cmd_scroll.scroll_vertical = 0
+			_hide_command_tooltip()
+			_fit_command_panel_next_frame())
+	tabs.set_meta("workspace_panes", panes)
+	tabs.set_meta("workspace_buttons", tab_buttons)
+
+
 func _build_building_card(b) -> void:
 	if not b.is_built:
 		_add_context_hints(["BUILD SITE", "AWAIT COMPLETION"])
@@ -4102,7 +4425,7 @@ func _build_building_card(b) -> void:
 	elif research.is_empty() and not produces.is_empty():
 		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN"])
 	else:
-		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN / RESEARCH"])
+		_add_context_hints(["RMB  RALLY", "CHOOSE WORKSPACE" if bool(def.get("is_hq", false)) or String(def.get("kind", "")) == "main" else "CLICK  TRAIN / RESEARCH"])
 	var is_hq: bool = def.get("is_hq", false) or def.get("kind", "") == "main"
 
 	# Vein outpost: who works inside, what it pays, and how to grow it.
@@ -4157,6 +4480,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 		og.add_child(rb)
 		return
 
+	var workspace_train_start := _cmd_body.get_child_count()
 	# production units
 	if not produces.is_empty():
 		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Shift-click queues five.", produces.size() > 4 and research.is_empty() and not is_hq)
@@ -4203,6 +4527,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 			btn.pressed.connect(func(): _try_queue_unit(cap_b, cap_uid))
 			train_grid.add_child(btn)
 
+	var workspace_research_start := _cmd_body.get_child_count()
 	# research + tier advance
 	var tech_ids := []
 	if is_hq:
@@ -4214,6 +4539,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 
 	if not tech_ids.is_empty():
 		_add_command_section("Research", "Advance technology.")
+		var research_heading := _cmd_body.get_child(_cmd_body.get_child_count() - 1)
 		var research_grid := _mk_command_grid()
 		research_grid.columns = 1
 		_cmd_body.add_child(research_grid)
@@ -4257,11 +4583,24 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var tech_emblem: String = load(COMMAND_GLYPH_SCRIPT).research_kind(String(tid), tdef)
 			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")) + ("\nTakes %d s" % int(round(float(tdef.get("time", 0.0)))) if float(tdef.get("time", 0.0)) > 0.0 and not _commander.completed_tech.has(tid) else ""), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
 			btn.disabled = not ready_to_research
+			# Classify from the same native availability used above. A lack of
+			# resources never hides an otherwise unlocked technology.
+			btn.set_meta("research_stage", "completed" if _commander.completed_tech.has(tid) else ("progress" if _commander.researching.has(tid) else ("available" if available else "future")))
+			if _commander.researching.has(tid):
+				var queue_caption := btn.get_meta("command_status_label") as Label
+				queue_caption.text = _research_queue_caption(b, String(tid))
+				queue_caption.add_theme_color_override("font_color", COMMAND_SKY)
 			var cap_b = b
 			var cap_tid := String(tid)
 			btn.pressed.connect(func(): _try_queue_tech(cap_b, cap_tid))
 			research_grid.add_child(btn)
+		# Short catalogues remain a simple list. Dense ones reveal progression
+		# explicitly instead of giving every locked future rank a full row.
+		if research_grid.get_child_count() > 4:
+			research_heading.visible = false
+			_organize_research_catalog(research_grid, String(b.building_id))
 
+	var workspace_trade_start := _cmd_body.get_child_count()
 	# Caravan trade: spend a gold hoard on what the nodes no longer give.
 	if is_hq and _commander.has_method("trade_gold_for"):
 		var price: int = _commander.trade_price()
@@ -4270,7 +4609,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 		trade_row.add_theme_constant_override("separation", 6)
 		_cmd_body.add_child(trade_row)
 		for kind in ["food", "timber", "stone"]:
-			var tb := Button.new()
+			var tb := HUD_ACTION_SCRIPT.new()
 			tb.text = "+%d %s" % [_commander.TRADE_BATCH, String(kind).capitalize()]
 			tb.custom_minimum_size = Vector2(0, 36)
 			tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -4294,7 +4633,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 		sell_row.add_theme_constant_override("separation", 6)
 		_cmd_body.add_child(sell_row)
 		for kind in ["food", "timber", "stone"]:
-			var sb := Button.new()
+			var sb := HUD_ACTION_SCRIPT.new()
 			sb.text = "Sell %d %s" % [_commander.SELL_BATCH, String(kind).capitalize()]
 			sb.custom_minimum_size = Vector2(0, 32)
 			sb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -4313,6 +4652,8 @@ Workers inside %d / %d  ·  +%d %s a minute
 					Sfx.play("coin", -8.0)
 				_rebuild_command_card(cap_hq2, [cap_hq2]))
 			sell_row.add_child(sb)
+	if is_hq:
+		_organize_hq_workspaces(b, workspace_train_start, workspace_research_start, workspace_trade_start)
 
 
 ## The two army upgrades, named in each faction's own words.
@@ -4404,34 +4745,51 @@ func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
 	# sounds two low taps, so a click that did nothing is never silent.
 	if col.g < 0.9 or col.r > 0.9:
 		Sfx.play_limited("refuse", -10.0, 250)
-	# Toast anchored just above the command card so the player always sees the
-	# result of a train/build/research click.
+	# This confirmation must have a real text measure: a trimming Label in a
+	# zero-width anchored container collapsed the old message to its border.
 	var box := PanelContainer.new()
+	box.name = "CommandNotice"
+	box.set_meta("command_notice", true)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.z_index = 60
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.03, 0.04, 0.05, 0.92)
-	sb.set_border_width_all(2)
+	sb.bg_color = Color(0.03, 0.04, 0.05, 0.96)
+	sb.set_border_width_all(1)
+	sb.border_width_left = 3
 	sb.border_color = col
-	sb.set_corner_radius_all(6)
+	sb.set_corner_radius_all(3)
 	sb.set_content_margin_all(12)
+	sb.shadow_color = Color(0, 0, 0, 0.5)
+	sb.shadow_size = 5
 	box.add_theme_stylebox_override("panel", sb)
-	box.anchor_left = 0.5
-	box.anchor_right = 0.5
-	box.anchor_top = 1.0
-	box.anchor_bottom = 1.0
-	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	box.offset_top = -232
-	box.offset_bottom = -190
 	add_child(box)
-	var l := _mk_label(msg, 20, col)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var l := _mk_label(msg, 18, col)
+	l.custom_minimum_size = Vector2(380, 0)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	box.add_child(l)
+	box.resized.connect(func(): _place_command_notice.call_deferred(box))
+	_place_command_notice.call_deferred(box)
 	var tw := box.create_tween()
 	tw.tween_interval(1.4)
 	tw.tween_property(box, "modulate:a", 0.0, 0.6)
 	tw.tween_callback(box.queue_free)
+
+
+func _place_command_notice(box: Control) -> void:
+	if not is_instance_valid(box):
+		return
+	box.reset_size()
+	box.scale = Vector2.ONE * _panel_scale
+	var measured := box.size * _panel_scale
+	var viewport_size := get_viewport_rect().size
+	var position := Vector2((viewport_size.x - measured.x) * 0.5, viewport_size.y - measured.y - 24.0)
+	if is_instance_valid(_cmd_panel) and _cmd_panel.visible:
+		var deck := _cmd_panel.get_global_rect()
+		position = Vector2(deck.position.x + 8.0, deck.position.y - measured.y - 12.0)
+	box.position = Vector2(
+		clampf(position.x, 8.0, maxf(8.0, viewport_size.x - measured.x - 8.0)),
+		clampf(position.y, 8.0, maxf(8.0, viewport_size.y - measured.y - 8.0)))
 
 
 func _on_command_feedback_changed(feedback: Dictionary) -> void:
@@ -5301,12 +5659,47 @@ const SIGNATURE_GLYPHS := {"sig_bull": "line", "sig_spring": "heal", "sig_ashgla
 	"rally": "heal", "slam": "quake", "charge": "dash", "bolt": "strike",
 	"heal": "heal", "root": "root", "avatar": "fury"}
 
+# Original painted ability illustrations. Stable IDs select art only; native spell rules remain in SkillDefs/Unit.
+const ABILITY_PAINTINGS := {
+	"sig_bull": "res://assets/ui/ability_illustrations/r44/sig_bull.png",
+	"slam": "res://assets/ui/ability_illustrations/r44/slam.png",
+	"rally": "res://assets/ui/ability_illustrations/r44/rally.png",
+	"bolt": "res://assets/ui/ability_illustrations/r44/bolt.png",
+	"heal": "res://assets/ui/ability_illustrations/r44/heal.png",
+	"root": "res://assets/ui/ability_illustrations/r44/root.png",
+	"charge": "res://assets/ui/ability_illustrations/r44/charge.png",
+	"sig_stoneskin": "res://assets/ui/ability_illustrations/r44/sig_stoneskin.png",
+	"avatar": "res://assets/ui/ability_illustrations/r44/avatar.png",
+	"sig_spring": "res://assets/ui/ability_illustrations/r44/sig_spring.png",
+	"sig_ashglass": "res://assets/ui/ability_illustrations/r44/sig_ashglass.png",
+	"sig_chains": "res://assets/ui/ability_illustrations/r44/sig_chains.png",
+	"sig_moura": "res://assets/ui/ability_illustrations/r44/sig_moura.png",
+	"sig_pack": "res://assets/ui/ability_illustrations/r44/sig_pack.png",
+	"sig_candles": "res://assets/ui/ability_illustrations/r44/sig_candles.png",
+	"sig_entrudo": "res://assets/ui/ability_illustrations/r44/sig_entrudo.png",
+	"sig_sunfire": "res://assets/ui/ability_illustrations/r44/sig_sunfire.png",
+}
+
 func _spell_emblem(ab: Dictionary, race: String, spell_id: String = "") -> Control:
 	var e := Control.new()
 	e.name = "SpellEmblem"
 	e.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	e.position = Vector2(4, 4)
 	e.size = Vector2(68, 68)
+	if ABILITY_PAINTINGS.has(spell_id) and ResourceLoader.exists(String(ABILITY_PAINTINGS[spell_id])):
+		var painting := load(String(ABILITY_PAINTINGS[spell_id])) as Texture2D
+		if painting:
+			var picture := TextureRect.new()
+			picture.name = "AbilityPainting"
+			picture.texture = painting
+			picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			picture.size = e.size
+			picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			picture.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			e.add_child(picture)
+			e.set_meta("ability_painting_id", spell_id)
+			return e
 	var tint: Color = ab.get("tint", GameData.RACES.get(race, {}).get("color", Color(1, 0.8, 0.4)))
 	# What the spell does decides its glyph, so no two spells of a people
 	# share a picture (all three used to show the same sigil).
