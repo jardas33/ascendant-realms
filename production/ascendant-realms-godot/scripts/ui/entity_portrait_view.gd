@@ -147,19 +147,32 @@ func _build_view() -> void:
 	_pivot.name = "PortraitModel"
 	_viewport.add_child(_pivot)
 
-	var frame := TextureRect.new()
+	# Plan 422: a bronze frame drawn to match the HUD metal, in place of the
+	# ornate teal and gold painting; small cards get only a fine dark rim.
+	var frame := Control.new()
 	frame.name = "PortraitFrame"
-	if ResourceLoader.exists(FRAME_PATH):
-		frame.texture = load(FRAME_PATH)
-	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	frame.texture_filter = PORTRAIT_TEXTURE_FILTER
-	# Tiny build choices need the model silhouette more than a second ornate
-	# square. Keep the full portrait frame for the large selected-unit view.
-	frame.modulate.a = 0.22 if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else 1.0
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var compact := custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD
+	frame.draw.connect(func(): _draw_bronze_frame(frame, compact))
+	frame.resized.connect(frame.queue_redraw)
 	add_child(frame)
+
+static func _draw_bronze_frame(ci: Control, compact: bool) -> void:
+	var r := Rect2(Vector2.ZERO, ci.size)
+	if compact:
+		ci.draw_rect(r.grow(-1.0), Color(0, 0, 0, 0.55), false, 2.0)
+		return
+	# Dark bed, bronze bar, gilt inner edge, gem bosses at the corners.
+	ci.draw_rect(r.grow(-3.0), Color(0.04, 0.03, 0.02, 1.0), false, 6.0)
+	ci.draw_rect(r.grow(-3.5), Color(0.66, 0.47, 0.23, 1.0), false, 3.4)
+	ci.draw_rect(r.grow(-6.2), Color(0.98, 0.82, 0.50, 0.55), false, 1.0)
+	ci.draw_rect(r.grow(-7.5), Color(0, 0, 0, 0.6), false, 1.4)
+	for c in [r.position + Vector2(4, 4), Vector2(r.end.x - 4, r.position.y + 4), Vector2(r.position.x + 4, r.end.y - 4), r.end - Vector2(4, 4)]:
+		ci.draw_circle(c, 5.6, Color(0.05, 0.035, 0.02, 1.0))
+		ci.draw_circle(c, 4.3, Color(0.70, 0.50, 0.25, 1.0))
+		ci.draw_circle(c, 2.2, Color(0.55, 0.12, 0.07, 1.0))
+		ci.draw_circle(c + Vector2(-0.7, -0.8), 0.8, Color(1, 0.9, 0.8, 0.85))
 
 func configure_entity(entity) -> void:
 	if not is_instance_valid(entity):

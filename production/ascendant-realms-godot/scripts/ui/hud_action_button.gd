@@ -146,6 +146,9 @@ func _draw() -> void:
 		# Give the authored structure and technology art a lit recess instead of
 		# letting it disappear against the dark command deck. Cost and readiness
 		# remain on the same live controls, with disabled state still legible.
+		# Plan 422: the card is framed in bronze like the rest of the HUD; the
+		# state colour stays only in the side bar and the state word.
+		var bronze := Color(0.70, 0.51, 0.27) if enabled else Color(0.36, 0.33, 0.27)
 		var row_shape := PackedVector2Array([
 			Vector2(0, 8), Vector2(8, 0), Vector2(w - 12, 0),
 			Vector2(w, 12), Vector2(w, h - 7), Vector2(w - 7, h),
@@ -160,31 +163,31 @@ func _draw() -> void:
 			tint.a = 0.83
 		draw_colored_polygon(row_shape, tint)
 		var art_edge := 94.0 if command_kind == "BUILD" else 61.0
-		var bay_light := Color(metal.r, metal.g, metal.b, 0.24 if enabled else 0.12)
+		var bay_light := Color(bronze.r, bronze.g, bronze.b, 0.24 if enabled else 0.12)
 		draw_polygon(PackedVector2Array([
 			Vector2(5, 7), Vector2(art_edge, 4),
 			Vector2(art_edge, h - 7), Vector2(5, h - 7)]), PackedColorArray([
-			bay_light, Color(metal.r, metal.g, metal.b, 0.12 if enabled else 0.05),
-			Color(0.016, 0.026, 0.029, 0.08), Color(metal.r, metal.g, metal.b, 0.08 if enabled else 0.03)]))
-		draw_line(Vector2(art_edge, 8), Vector2(art_edge, h - 9), Color(metal.r, metal.g, metal.b, 0.29 if enabled else 0.12), 1.0, true)
+			bay_light, Color(bronze.r, bronze.g, bronze.b, 0.12 if enabled else 0.05),
+			Color(0.016, 0.026, 0.029, 0.08), Color(bronze.r, bronze.g, bronze.b, 0.08 if enabled else 0.03)]))
+		draw_line(Vector2(art_edge, 8), Vector2(art_edge, h - 9), Color(bronze.r, bronze.g, bronze.b, 0.29 if enabled else 0.12), 1.0, true)
 		draw_polygon(PackedVector2Array([
 			Vector2(6, 1), Vector2(w - 13, 1), Vector2(w - 7, 7), Vector2(5, 7)]), PackedColorArray([
-			Color(metal.r, metal.g, metal.b, 0.23),
-			Color(metal.r, metal.g, metal.b, 0.17),
-			Color(metal.r, metal.g, metal.b, 0.04),
-			Color(metal.r, metal.g, metal.b, 0.07)]))
+			Color(bronze.r, bronze.g, bronze.b, 0.23),
+			Color(bronze.r, bronze.g, bronze.b, 0.17),
+			Color(bronze.r, bronze.g, bronze.b, 0.04),
+			Color(bronze.r, bronze.g, bronze.b, 0.07)]))
 		draw_colored_polygon(PackedVector2Array([
 			Vector2(0, 8), Vector2(4, 4), Vector2(4, h - 5), Vector2(0, h - 8)]),
 			Color(metal.r, metal.g, metal.b, 0.72 if lit else (0.50 if enabled else 0.20)))
-		draw_line(Vector2(9, h - 3), Vector2(w - 9, h - 3), Color(metal.r, metal.g, metal.b, 0.37 if enabled else 0.12), 1.0, true)
+		draw_line(Vector2(9, h - 3), Vector2(w - 9, h - 3), Color(bronze.r, bronze.g, bronze.b, 0.37 if enabled else 0.12), 1.0, true)
 		# Plan 421: a recessed row with a dark rim, not a bright box; the
 		# gilt edge appears only when the row is pointed at or working.
 		var row_outline := PackedVector2Array(row_shape)
 		row_outline.append(row_shape[0])
 		draw_polyline(row_outline, Color(0, 0, 0, 0.55), 2.0, true)
-		draw_line(Vector2(10, 2), Vector2(w - 16, 2), Color(metal.r, metal.g, metal.b, 0.20 if enabled else 0.07), 1.0, true)
+		draw_line(Vector2(10, 2), Vector2(w - 16, 2), Color(bronze.r, bronze.g, bronze.b, 0.20 if enabled else 0.07), 1.0, true)
 		if lit or active:
-			draw_polyline(row_outline, Color(metal.r, metal.g, metal.b, 0.67), 1.2, true)
+			draw_polyline(row_outline, Color(bronze.r, bronze.g, bronze.b, 0.67), 1.2, true)
 		_draw_glint(w, h)
 		return
 	# A faceted silhouette and raised rail turn flat rows into tactile controls.
