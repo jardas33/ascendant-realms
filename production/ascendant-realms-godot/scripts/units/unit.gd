@@ -204,6 +204,9 @@ var _weapon_arc_cue_time := 0.0
 var _weapon_arc_target: Node
 var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
+# Plan 410: meshes that carry the x-ray overlay, which also draws the hit glow.
+var _hit_glow_meshes: Array = []
+var _hit_glow_on := false
 var _r15_damage_label: Label3D
 var _r15_damage_label_time := 0.0
 # Plan 244: each number drifts a little to one side so a flurry of blows
@@ -1046,6 +1049,14 @@ func _people_palette() -> Color:
 		return Color.WHITE
 	return PEOPLE_PALETTES[race]
 
+func _set_hit_glow(amount: float, lethal: bool) -> void:
+	_hit_glow_on = amount > 0.0
+	var col := Color(1.0, 0.45, 0.22) if lethal else Color(1.0, 0.8, 0.52)
+	for m in _hit_glow_meshes:
+		if is_instance_valid(m):
+			(m as MeshInstance3D).set_instance_shader_parameter("hit", amount)
+			(m as MeshInstance3D).set_instance_shader_parameter("hit_color", col)
+
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
 	var people_tint := _people_palette()
@@ -1082,6 +1093,8 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			mi.set_surface_override_material(surface, mat)
 		# Units behind trees or buildings show a team-coloured silhouette.
 		mi.material_overlay = _xray_overlay_material()
+		if not _hit_glow_meshes.has(mi):
+			_hit_glow_meshes.append(mi)
 		mi.set_instance_shader_parameter("xray_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
 
 ## Three models (the Ogre, which the Moon Bear also wears, the Bowcrusha and
@@ -1646,7 +1659,8 @@ func _build_r15_combat_presentation() -> void:
 	# Plan 244: a soft burst of light facing the camera. The sphere it
 	# replaced read as a flat orange ball pasted over the struck unit.
 	var flash_mesh := QuadMesh.new()
-	flash_mesh.size = Vector2.ONE * COMBAT_HIT_FLASH_HEIGHT * 2.2
+	# Plan 410: smaller; the body-outline glow now carries the hit.
+	flash_mesh.size = Vector2.ONE * COMBAT_HIT_FLASH_HEIGHT * 1.35
 	_r15_hit_flash.mesh = flash_mesh
 	_r15_hit_flash.position.y = maxf(0.6, _visual_height * 0.52)
 	_r15_hit_flash.visible = false
@@ -1735,12 +1749,15 @@ func _update_r15_combat_presentation(delta: float) -> void:
 				flash_scale = 1.08 + sin((1.0 - flash_progress) * PI) * 0.34
 				var flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if flash_material:
-					flash_material.albedo_color = Color(1.0, 0.36, 0.16, 1.0)
+					flash_material.albedo_color = Color(0.85, 0.3, 0.13, 1.0)
 			else:
 				var normal_flash_material := _r15_hit_flash.material_override as StandardMaterial3D
 				if normal_flash_material:
-					normal_flash_material.albedo_color = Color(0.95, 0.62, 0.30, 1.0)
+					normal_flash_material.albedo_color = Color(0.5, 0.33, 0.16, 1.0)
 			_r15_hit_flash.scale = Vector3.ONE * flash_scale
+			_set_hit_glow(sin((1.0 - flash_progress) * PI) * (1.0 if lethal_cue_live else 0.85), lethal_cue_live)
+		elif _hit_glow_on:
+			_set_hit_glow(0.0, false)
 	if _r15_damage_label_time > 0.0:
 		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
 	if is_instance_valid(_r15_damage_label):
