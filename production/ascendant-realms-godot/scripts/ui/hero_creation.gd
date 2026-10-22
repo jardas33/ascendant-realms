@@ -265,8 +265,18 @@ func _build() -> void:
 	var app_row := HBoxContainer.new()
 	app_row.add_theme_constant_override("separation", 10)
 	main.add_child(app_row)
+	# Gilt chevrons (the dropdown arrow turned on its side) step through
+	# looks; the name sits on a recessed plate between them.
+	var chev: Image = Sfx._gilt_chevron().get_image()
+	chev.resize(20, 13, Image.INTERPOLATE_BILINEAR)
+	var left_img: Image = chev.duplicate()
+	left_img.rotate_90(CLOCKWISE)
+	var right_img: Image = chev.duplicate()
+	right_img.rotate_90(COUNTERCLOCKWISE)
 	var app_prev := Button.new()
-	app_prev.text = "<"
+	app_prev.icon = ImageTexture.create_from_image(left_img)
+	app_prev.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	app_prev.tooltip_text = "Previous look"
 	app_prev.clip_text = false
 	app_prev.custom_minimum_size = Vector2(48, 44)
 	app_prev.focus_mode = Control.FOCUS_NONE
@@ -283,9 +293,21 @@ func _build() -> void:
 	_appear_label.add_theme_constant_override("outline_size", 3)
 	_appear_label.add_theme_font_override("font", ThemeDB.fallback_font)
 	_appear_label.add_theme_font_size_override("font_size", 17)
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.045, 0.035, 0.03, 0.92)
+	plate.border_color = Color(0.46, 0.33, 0.16)
+	plate.set_border_width_all(2)
+	plate.set_corner_radius_all(3)
+	plate.shadow_color = Color(0.0, 0.0, 0.0, 0.5)
+	plate.shadow_size = 3
+	plate.shadow_offset = Vector2(0, 2)
+	_appear_label.add_theme_stylebox_override("normal", plate)
+	_appear_label.custom_minimum_size = Vector2(200, 44)
 	app_row.add_child(_appear_label)
 	var app_next := Button.new()
-	app_next.text = ">"
+	app_next.icon = ImageTexture.create_from_image(right_img)
+	app_next.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	app_next.tooltip_text = "Next look"
 	app_next.clip_text = false
 	app_next.custom_minimum_size = Vector2(48, 44)
 	app_next.focus_mode = Control.FOCUS_NONE
