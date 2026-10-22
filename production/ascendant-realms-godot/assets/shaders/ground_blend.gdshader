@@ -379,6 +379,14 @@ void fragment() {
 	float grass_share = (1.0 - dirt_m * 0.85) * (1.0 - rock_m) * (1.0 - clamp(road, 0.0, 1.0)) * (1.0 - pad);
 	vec3 field_tone = ground * (field / max(dot(field_lush, vec3(0.333)), 0.05)) * 0.92;
 	ground = mix(ground, field_tone, clamp(field_strength * grass_share, 0.0, 1.0));
+	// Plan 414: the colour fields are about 150 m across, so at play zoom
+	// the whole screen sat in one of them and a meadow read as a flat lawn.
+	// A middle layer, 20 to 40 m across, adds darker lush hollows and paler
+	// sun-dried rises.
+	float mid_f = fbm(wxz * 0.045 + 77.0);
+	float mid_v = clamp(field_strength * 2.0, 0.0, 1.0) * grass_share;
+	ground = mix(ground, ground * vec3(0.64, 0.76, 0.6), smoothstep(0.48, 0.62, mid_f) * 0.85 * mid_v);
+	ground = mix(ground, ground * vec3(1.22, 1.12, 0.78), (1.0 - smoothstep(0.34, 0.46, mid_f)) * 0.65 * mid_v * (0.6 + 0.4 * vnoise(wxz * 0.16 + 5.0)));
 
 	// gentle macro shading for depth
 	float macro = (1.0 - surface_macro) + surface_macro * fbm2(wxz * 0.006 + 5.0);

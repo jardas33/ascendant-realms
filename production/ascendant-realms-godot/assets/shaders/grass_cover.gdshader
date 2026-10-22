@@ -70,6 +70,10 @@ varying float v_shade;
 varying float v_height;
 varying float v_head;
 varying vec4 v_custom;
+// Plan 414: the same 20 to 40 m lush and sun-dried patches the ground
+// shader paints, so tufts and ground change together.
+uniform float meadow_mid = 1.0;
+varying vec3 v_mid;
 
 void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
@@ -104,6 +108,9 @@ void vertex() {
 	v_shade = 1.0 - cloud_shadow_strength * cloud_shadow(origin.xz, TIME);
 	v_head = step(1.5, UV.x);
 	v_custom = INSTANCE_CUSTOM;
+	float mid_f = fbm(origin.xz * 0.045 + 77.0);
+	v_mid = mix(vec3(1.0), vec3(0.64, 0.76, 0.6), smoothstep(0.48, 0.62, mid_f) * 0.85 * meadow_mid);
+	v_mid *= mix(vec3(1.0), vec3(1.22, 1.12, 0.78), (1.0 - smoothstep(0.34, 0.46, mid_f)) * 0.65 * meadow_mid);
 }
 
 void fragment() {
@@ -111,7 +118,7 @@ void fragment() {
 	vec3 blade = mix(root_color, tip_color, smoothstep(0.0, 1.0, v_height));
 	blade = mix(blade, dry_color * mix(0.6, 1.0, v_height), v_custom.a * 0.85);
 	vec3 col = mix(blade, v_custom.rgb, v_head);
-	ALBEDO = col * v_shade;
+	ALBEDO = col * v_shade * mix(v_mid, vec3(1.0), v_head);
 	// Blades light like the ground they sit on, so the field reads as one
 	// surface with texture rather than a mass of dark back faces.
 	vec3 up_view = (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
