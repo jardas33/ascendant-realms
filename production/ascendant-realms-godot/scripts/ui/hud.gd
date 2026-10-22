@@ -46,7 +46,7 @@ const MINIMAP_BACKGROUND_RASTER_SIZE := 320
 const MINIMAP_GROUND_TEXTURE := "res://assets/textures/nature/highland_grass.png"
 const MINIMAP_MEADOW_TEXTURE := "res://assets/textures/nature/highland_meadow_grass.png"
 const MINIMAP_SNOW_TEXTURE := "res://assets/textures/nature/frostmere_windswept_snow_r1.png"
-const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 44.0
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 50.0
 const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.025)
 const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.58)
 const MINIMAP_WATER_SHORE := Color(0.64, 0.79, 0.72, 0.54)
@@ -953,10 +953,9 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.custom_minimum_size = Vector2(min_width, 20.0)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(color.r, color.g, color.b, 0.10)
-	sb.border_color = Color(color.r, color.g, color.b, 0.48)
-	sb.border_width_left = 1
-	sb.set_corner_radius_all(1)
+	# Plan 421: a quiet tag, coloured words over a soft wash with no box rim.
+	sb.bg_color = Color(color.r, color.g, color.b, 0.07)
+	sb.set_corner_radius_all(3)
 	sb.set_content_margin_all(3)
 	badge.add_theme_stylebox_override("panel", sb)
 	var label := _mk_label(text, 10, color)
@@ -1879,10 +1878,21 @@ func _build_minimap() -> void:
 	var title := _mk_label(map_name.to_upper(), 14, Color(0.95, 0.85, 0.55))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
-	var hint := _mk_label("FIELD OVERVIEW    ·    CLICK TO PAN", 11, HUD_TEXT_MUTED)
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(hint)
+	title.add_theme_font_size_override("font_size", 15)
+	title.custom_minimum_size = Vector2(0, 24)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# Plan 421: the how-to line moved into the tooltip; the frame carries the name only.
+	var frame_inset := StyleBoxFlat.new()
+	frame_inset.bg_color = Color.TRANSPARENT
+	frame_inset.content_margin_left = 12.0
+	frame_inset.content_margin_right = 12.0
+	frame_inset.content_margin_top = 7.0
+	frame_inset.content_margin_bottom = 12.0
+	panel.add_theme_stylebox_override("panel", frame_inset)
+	column.add_theme_constant_override("separation", 7)
 	_minimap = Control.new()
+	_minimap.tooltip_text = "The whole field. Click to look there; right-click to send the selected units."
 	_minimap.custom_minimum_size = Vector2(MINIMAP_SIZE, MINIMAP_SIZE)
 	_minimap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# Camera-footprint sights can extend past the surveyed area near map edges.
@@ -4399,11 +4409,16 @@ func _organize_hq_workspaces(building, train_start: int, research_start: int, tr
 		tab.text = "%s · %d" % [key.capitalize(), count]
 		tab.tooltip_text = String({"train": "Train units. Shift-click queues five when possible.", "research": "Inspect and research technologies and the next Age.", "trade": "Buy supplies for gold or sell surplus to the caravan."}[key])
 		for mode in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+			# Plan 421: engraved tabs, not boxes. The chosen one is lit from
+			# below with a gilt bar; the others sit on a faint bronze rule.
 			var style := StyleBoxFlat.new()
-			style.bg_color = Color(0.045, 0.06, 0.065, 1.0) if mode in ["normal", "focus"] else Color(0.13, 0.15, 0.14, 1.0)
-			style.border_color = Color(0.37, 0.39, 0.34, 0.85) if mode == "normal" else COMMAND_GOLD
-			style.set_border_width_all(1)
-			style.border_width_bottom = 3 if mode in ["pressed", "hover_pressed"] else 1
+			var chosen: bool = mode in ["pressed", "hover_pressed"]
+			style.bg_color = Color(0.30, 0.21, 0.10, 0.34) if chosen else (Color(0.30, 0.22, 0.12, 0.16) if mode == "hover" else Color(0, 0, 0, 0))
+			style.border_color = COMMAND_GOLD if chosen else Color(0.62, 0.46, 0.26, 0.45)
+			style.border_width_bottom = 3 if chosen else 1
+			style.set_corner_radius_all(0)
+			style.corner_radius_top_left = 4
+			style.corner_radius_top_right = 4
 			style.set_content_margin_all(6)
 			tab.add_theme_stylebox_override(mode, style)
 		tabs.add_child(tab)

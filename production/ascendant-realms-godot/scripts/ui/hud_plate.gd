@@ -46,6 +46,9 @@ func _draw() -> void:
 		return
 	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
 		_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
+	if plate_kind == "minimap":
+		_draw_minimap_housing()
+		return
 	if plate_kind == "objective" and position.y < 4.0:
 		# Plan 420: hung from the top edge in the same iron and bronze as the
 		# reading band, with an angled cap at its left and a bronze side rail.
@@ -265,3 +268,42 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([
 			Vector2(size.x * 0.5 - 4, -4), Vector2(size.x * 0.5, -12),
 			Vector2(size.x * 0.5 + 4, -4), Vector2(size.x * 0.5, 2)]), accent)
+
+
+## Plan 421: the minimap sits in a cast iron housing: chamfered plate, a
+## bronze hem round the outside, a bevelled bronze sill round the map, gem
+## bosses at its corners and the field's name on a lintel above it.
+func _draw_minimap_housing() -> void:
+	var w := size.x
+	var h := size.y
+	var opening := w - 24.0
+	var map_rect := Rect2(12.0, h - 12.0 - opening, opening, opening)
+	var c := 12.0
+	var outer := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h - c),
+		Vector2(w - c, h), Vector2(c, h), Vector2(0, h - c), Vector2(0, c)])
+	var drop := PackedVector2Array()
+	for p in outer:
+		drop.append(p + Vector2(0, 5))
+	draw_colored_polygon(drop, Color(0, 0, 0, 0.45))
+	var top := Color(0.105, 0.098, 0.088, 0.98)
+	var low := Color(0.040, 0.042, 0.046, 0.98)
+	draw_polygon(outer, PackedColorArray([top, top, top, low, low, low, low, top]))
+	draw_texture_rect(HUD_TOP_RIBBON.grain(), Rect2(0, 0, w, h), true, Color(1, 1, 1, 0.055))
+	var rim := PackedVector2Array(outer)
+	rim.append(outer[0])
+	var inner_rim := PackedVector2Array()
+	for p in rim:
+		inner_rim.append(p.lerp(Vector2(w, h) * 0.5, 0.012))
+	draw_polyline(rim, Color(0.05, 0.035, 0.02, 0.95), 6.0, true)
+	draw_polyline(rim, Color(0.62, 0.44, 0.22, 1.0), 3.6, true)
+	draw_polyline(inner_rim, Color(0.98, 0.82, 0.50, 0.50), 1.0, true)
+	# The sill round the map: a dark bed, a bronze bevel and a gilt edge.
+	var sill := map_rect.grow(3.0)
+	draw_rect(sill.grow(2.0), Color(0.02, 0.015, 0.01, 0.95), false, 4.0)
+	draw_rect(sill, Color(0.66, 0.47, 0.23, 1.0), false, 2.6)
+	draw_rect(sill.grow(-1.6), Color(0.98, 0.82, 0.50, 0.55), false, 1.0)
+	for corner in [sill.position, Vector2(sill.end.x, sill.position.y), Vector2(sill.position.x, sill.end.y), sill.end]:
+		draw_circle(corner, 5.5, Color(0.05, 0.035, 0.02, 1.0))
+		draw_circle(corner, 4.2, Color(0.70, 0.50, 0.25, 1.0))
+		draw_circle(corner, 2.2, Color(0.55, 0.12, 0.07, 1.0))
+		draw_circle(corner + Vector2(-0.7, -0.8), 0.8, Color(1, 0.9, 0.8, 0.85))
