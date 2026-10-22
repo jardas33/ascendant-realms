@@ -164,6 +164,22 @@ float crack_dist(vec2 p) {
 	return d2 - d1;
 }
 
+// The cell whose point lies nearest p (the plate p lies on).
+vec2 crack_cell(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	float d1 = 8.0;
+	vec2 best = i;
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 g = vec2(float(x), float(y));
+			float d = length(g + cell_point(i + g) - f);
+			if (d < d1) { d1 = d; best = i + g; }
+		}
+	}
+	return best;
+}
+
 // Mirror an authored tile at each edge so no source-image seam appears on
 // large volcanic fields; the second rotated sample hides the reflection.
 vec2 mirrored_uv(vec2 uv) {
@@ -432,6 +448,15 @@ void fragment() {
 		ash += vec3(0.95, 0.30, 0.06) * seam * smoothstep(0.55, 0.8, fbm(wxz * 0.12 + 40.0 + TIME * 0.05)) * (1.0 - smoothstep(0.1, 0.75, d)) * 1.5;
 		// Plates catch a little light at their raised centres.
 		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
+		// Plan 391: every plate was the same smooth grey, so the yard read
+		// as clean vinyl tiles. Each plate now has its own shade and a faint
+		// warm or cool cast, and the stone grain shows on its face.
+		vec2 plate = crack_cell(wxz * 0.32 + float(i) * 5.0);
+		float plate_h = hash21(plate + vec2(3.7, 9.1));
+		ash *= mix(0.64, 1.34, plate_h * plate_h * (3.0 - 2.0 * plate_h));
+		ash *= mix(vec3(1.06, 0.98, 0.93), vec3(0.94, 0.98, 1.05), hash21(plate + vec2(41.0, 7.0)));
+		float stone_grain = dot(texture(tex_rock, wxz * tile_rock * 2.6 + plate * 0.37).rgb, vec3(0.333));
+		ash *= mix(0.72, 1.26, smoothstep(0.2, 0.7, stone_grain));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
 		// Plan 375: on a snowfield the holdfast's basalt pad was bare and dark
 		// to its very edge, a cut-out on the snow. Snow lies on its outer
