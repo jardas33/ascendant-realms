@@ -470,21 +470,30 @@ void fragment() {
 		ash += vec3(0.20, 0.06, 0.02) * smoothstep(0.82, 0.95, fbm(wxz * 0.6 + 9.0)) * (1.0 - smoothstep(0.2, 0.6, d));
 		// Cracked basalt plates: dark seams, a few of which glow with embers
 		// toward the heart of the holdfast.
-		float seam = 1.0 - smoothstep(0.0, 0.07, crack_dist(wxz * 0.32 + float(i) * 5.0));
-		float fine = 1.0 - smoothstep(0.0, 0.05, crack_dist(wxz * 0.9 + 3.0));
+		// Plan 413: the plates were one size on a regular grid and read as
+		// floor tiles. The crack lines are now warped, a second, smaller
+		// plate size breaks up part of the yard, and ash drifts over them.
+		vec2 cw = wxz + (vec2(fbm(wxz * 0.11 + 2.0 + float(i)), fbm(wxz * 0.11 + 9.0 + float(i))) - 0.5) * 6.0;
+		float small_zone = smoothstep(0.45, 0.6, fbm(wxz * 0.07 + 23.0 + float(i)));
+		vec2 pc = mix(cw * 0.32 + float(i) * 5.0, cw * 0.58 + 17.0 + float(i) * 5.0, step(0.5, small_zone));
+		float seam = 1.0 - smoothstep(0.0, 0.07, crack_dist(pc));
+		float fine = 1.0 - smoothstep(0.0, 0.05, crack_dist(cw * 0.9 + 3.0)) * smoothstep(0.35, 0.6, fbm(wxz * 0.5 + 12.0));
 		ash *= 1.0 - 0.55 * seam - 0.25 * fine;
 		ash += vec3(0.95, 0.30, 0.06) * seam * smoothstep(0.55, 0.8, fbm(wxz * 0.12 + 40.0 + TIME * 0.05)) * (1.0 - smoothstep(0.1, 0.75, d)) * 1.5;
 		// Plates catch a little light at their raised centres.
-		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(wxz * 0.32 + float(i) * 5.0));
+		ash *= 0.9 + 0.2 * smoothstep(0.1, 0.45, crack_dist(pc));
 		// Plan 391: every plate was the same smooth grey, so the yard read
 		// as clean vinyl tiles. Each plate now has its own shade and a faint
 		// warm or cool cast, and the stone grain shows on its face.
-		vec2 plate = crack_cell(wxz * 0.32 + float(i) * 5.0);
+		vec2 plate = crack_cell(pc);
 		float plate_h = hash21(plate + vec2(3.7, 9.1));
 		ash *= mix(0.64, 1.34, plate_h * plate_h * (3.0 - 2.0 * plate_h));
 		ash *= mix(vec3(1.06, 0.98, 0.93), vec3(0.94, 0.98, 1.05), hash21(plate + vec2(41.0, 7.0)));
 		float stone_grain = dot(texture(tex_rock, wxz * tile_rock * 2.6 + plate * 0.37).rgb, vec3(0.333));
 		ash *= mix(0.72, 1.26, smoothstep(0.2, 0.7, stone_grain));
+		// Pale ash lies in drifts across the plates and fills some seams.
+		float ashfall = smoothstep(0.5, 0.72, fbm(wxz * 0.21 + 61.0 + float(i)) + (fbm(wxz * 1.3 + 5.0) - 0.5) * 0.25) * smoothstep(0.25, 0.7, d);
+		ash = mix(ash, vec3(0.19, 0.18, 0.17) * (0.75 + 0.5 * vnoise(wxz * 3.1 + 2.0)), ashfall * 0.45 * (0.6 + 0.4 * seam));
 		ground = mix(ground, ash, clamp(burn, 0.0, 1.0));
 		// Plan 375: on a snowfield the holdfast's basalt pad was bare and dark
 		// to its very edge, a cut-out on the snow. Snow lies on its outer
