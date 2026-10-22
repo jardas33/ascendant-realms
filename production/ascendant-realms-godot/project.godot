@@ -221,3 +221,14 @@ common/max_physics_steps_per_frame=4
 [gui]
 
 theme/custom="res://assets/ui/tooltip_theme.tres"
+
+[shader_globals]
+
+canopy_points={
+"type": "sampler2D",
+"value": ""
+}
+canopy_count={
+"type": "float",
+"value": 0.0
+}

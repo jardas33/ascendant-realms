@@ -4550,6 +4550,43 @@ func _create_building(bdef: Dictionary, team: int, pos: Vector3, prebuilt: bool)
 	_queue_ground_pads()
 	return b
 
+## Plan 401: trees dissolve where they stand between the camera and a unit
+## (foliage_wind.gdshader reads these points). Visible units only, so a tree
+## never gives away a unit hidden in the fog.
+var _canopy_img: Image = null
+var _canopy_tex: ImageTexture = null
+
+func _start_canopy_fade() -> void:
+	_canopy_img = Image.create(32, 1, false, Image.FORMAT_RGBAF)
+	_canopy_tex = ImageTexture.create_from_image(_canopy_img)
+	RenderingServer.global_shader_parameter_set("canopy_points", _canopy_tex)
+	var t := Timer.new()
+	t.wait_time = 0.1
+	add_child(t)
+	t.timeout.connect(_update_canopy_fade)
+	t.start()
+	tree_exiting.connect(func(): RenderingServer.global_shader_parameter_set("canopy_count", 0.0))
+
+func _update_canopy_fade() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null or _canopy_tex == null:
+		return
+	var cam_pos := cam.global_position
+	var seen: Array = []
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or not u.is_visible_in_tree():
+			continue
+		var p: Vector3 = u.global_position
+		if cam.is_position_in_frustum(p):
+			seen.append([cam_pos.distance_squared_to(p), p])
+	seen.sort_custom(func(a, b): return a[0] < b[0])
+	var n := mini(seen.size(), 32)
+	for i in n:
+		var p: Vector3 = seen[i][1]
+		_canopy_img.set_pixel(i, 0, Color(p.x, p.y, p.z, 1.6))
+	_canopy_tex.update(_canopy_img)
+	RenderingServer.global_shader_parameter_set("canopy_count", float(n))
+
 ## Plan 399: the ground shader wears packed earth round every standing
 ## building. Rebuilt once per frame at most, when one is raised or falls.
 var _ground_pads_queued := false
@@ -6023,6 +6060,7 @@ func _start_saga_voices() -> void:
 
 func _start_match() -> void:
 	game_running = true
+	_start_canopy_fade()
 	_prewarm_combat_presentation()
 	_bake_overview_texture()
 	_start_ambient_sound()

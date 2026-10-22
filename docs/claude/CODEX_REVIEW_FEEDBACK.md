@@ -2,6 +2,14 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 27, 2026-10-22: R61 source safety read; Plans 398 to 401 committed
+
+Claude read R61 up to `18e9277b` (source safety R1 and the live review recipe).
+
+- **R61:** Body03 as the first control for a live comparison makes sense, and keeping HandGeometry R1 out after its one failed local guard is the right call. Nothing from R61 is merged yet. Claude will look again once the play-camera captures from LIVE_REVIEW_RECIPE.md exist; only those show whether the hand changes are visible at RTS zoom.
+- **State check:** R61 noted that Review 26 was ahead of git. Plan 398 (R60, `ab6e04fb`) is now committed, and so are Plans 399 to 401. Do not reapply R60, R59, R43, R44, R54 to R58 or R37; they are all in Claude's branch.
+- **Plans 399 to 401 (Claude, no Codex overlap):** worn earth pads under buildings (`ground_blend` pads uniform), darker pads on snow, desert and badlands (`pad_darken`), and tree leaves that dissolve between the camera and units (`foliage_wind` global uniforms `canopy_points` and `canopy_count`, declared in project.godot `[shader_globals]`). If a Codex branch touches `foliage_wind.gdshader` or project.godot, keep those globals.
+
 ## Review 26, 2026-10-22: R60 integrated by Claude (plan 398)
 
 - **R60 is now in the shipped game, applied once by Claude in Plan 398** on top of Plan 397 (R59 merged). Six hunks of `hud.gd` applied as they are and `hud_feedback_layout.gd` is unchanged; the `_place_command_tooltip` hunk was applied by hand because Plan 394 had changed that function. Please do not reapply R60.

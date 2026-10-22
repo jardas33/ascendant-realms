@@ -16,6 +16,11 @@ uniform float roughness_value = 0.85;
 uniform float sway = 0.16;
 uniform float flutter = 0.035;
 uniform float tree_height = 9.0;
+// Plan 401: units the camera should see through leaves (x, y, z, radius),
+// written each tenth of a second by the game world.
+global uniform sampler2D canopy_points : filter_nearest;
+global uniform float canopy_count;
+const float CANOPY_BAYER[16] = float[16](0.0, 8.0, 2.0, 10.0, 12.0, 4.0, 14.0, 6.0, 3.0, 11.0, 1.0, 9.0, 15.0, 7.0, 13.0, 5.0);
 // Snow lying on the crown: 0 none, 1 a field under snow. It settles on
 // whatever faces the sky, heaviest toward the top.
 uniform float snow = 0.0;
@@ -131,4 +136,33 @@ void fragment() {
 	AO = leaf_ao;
 	AO_LIGHT_AFFECT = 0.15;
 	BACKLIGHT = vec3(0.16, 0.20, 0.06) * smoothstep(0.35, 0.9, v_h) * (1.0 - lying) * (1.0 - leafless) * (1.0 - withered);
+	// Plan 401: a crown between the camera and a unit hid the fighting under
+	// it. Leaves on that line of sight now dissolve in a fine dither, so the
+	// unit shows and the tree still reads. (Only for the perspective game
+	// camera: the sun's shadow pass is orthographic and keeps whole crowns.)
+	if (canopy_count > 0.5 && v_h > 0.22 && PROJECTION_MATRIX[3][3] < 0.5) {
+		vec3 cam = INV_VIEW_MATRIX[3].xyz;
+		vec3 w = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz - cam;
+		int n = int(canopy_count);
+		float hide = 0.0;
+		for (int i = 0; i < 32; i++) {
+			if (i >= n) {
+				break;
+			}
+			vec4 p = texelFetch(canopy_points, ivec2(i, 0), 0);
+			vec3 d = p.xyz + vec3(0.0, 1.25, 0.0) - cam;
+			float len = length(d);
+			vec3 dir = d / len;
+			float t = dot(w, dir);
+			if (t > 0.0 && t < len - 0.8) {
+				hide = max(hide, 1.0 - smoothstep(p.w * 0.62, p.w, length(w - dir * t)));
+			}
+		}
+		if (hide > 0.0) {
+			ivec2 q = ivec2(FRAGCOORD.xy) % 4;
+			if (hide > (CANOPY_BAYER[q.y * 4 + q.x] + 0.5) / 16.0) {
+				discard;
+			}
+		}
+	}
 }
