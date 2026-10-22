@@ -131,8 +131,8 @@ func _build_static() -> void:
 	nav.add_child(_nav_button("War Chest", func(): _goto("res://scenes/ui/inventory.tscn")))
 	nav.add_child(_nav_button("Battle!", func(): _goto("res://scenes/ui/skirmish_setup.tscn")))
 	nav.add_child(_nav_button("Back", func(): _goto("res://scenes/ui/main_menu.tscn")))
-	# The page's way out wears the title screen's forged faces; the header
-	# buttons keep the plain style, where long labels fit.
+	# The page's way out wears the title screen's forged faces, like the
+	# header buttons.
 	for b in nav.get_children():
 		FORGED_FACES.forge_button(b, b.text == "Battle!")
 
@@ -327,20 +327,60 @@ func _refresh() -> void:
 	xp_bar.min_value = 0.0
 	xp_bar.max_value = max(1.0, need)
 	xp_bar.value = clamp(xp, 0.0, need)
-	xp_bar.custom_minimum_size = Vector2(0, 19)
+	xp_bar.custom_minimum_size = Vector2(0, 24)
 	xp_bar.show_percentage = false
+	# A forged channel: dark recessed track in a bronze rim, a molten gold
+	# fill inset by the rim, and a glass sheen over both.
 	var xp_fill := StyleBoxFlat.new()
-	xp_fill.bg_color = Color(0.93, 0.72, 0.3)
-	xp_fill.set_corner_radius_all(4)
-	xp_fill.shadow_color = Color(1.0, 0.8, 0.35, 0.35)
-	xp_fill.shadow_size = 3
+	xp_fill.bg_color = Color(0.9, 0.62, 0.2)
+	xp_fill.border_color = Color(0.46, 0.33, 0.16)
+	xp_fill.set_border_width_all(3)
+	xp_fill.border_width_right = 2
+	xp_fill.set_corner_radius_all(3)
 	var xp_back := StyleBoxFlat.new()
-	xp_back.bg_color = Color(0.08, 0.07, 0.06, 0.9)
-	xp_back.border_color = Color(0.6, 0.48, 0.28, 0.8)
-	xp_back.set_border_width_all(1)
-	xp_back.set_corner_radius_all(4)
+	xp_back.bg_color = Color(0.045, 0.035, 0.03, 0.96)
+	xp_back.border_color = Color(0.46, 0.33, 0.16)
+	xp_back.set_border_width_all(3)
+	xp_back.set_corner_radius_all(3)
+	xp_back.shadow_color = Color(0.0, 0.0, 0.0, 0.55)
+	xp_back.shadow_size = 4
+	xp_back.shadow_offset = Vector2(0, 2)
 	xp_bar.add_theme_stylebox_override("fill", xp_fill)
 	xp_bar.add_theme_stylebox_override("background", xp_back)
+	var sheen_grad := Gradient.new()
+	sheen_grad.offsets = PackedFloat32Array([0.0, 0.42, 0.58, 1.0])
+	sheen_grad.colors = PackedColorArray([Color(1.0, 0.95, 0.8, 0.34), Color(1.0, 0.92, 0.7, 0.08), Color(0.0, 0.0, 0.0, 0.0), Color(0.0, 0.0, 0.0, 0.32)])
+	var sheen_tex := GradientTexture2D.new()
+	sheen_tex.gradient = sheen_grad
+	sheen_tex.fill_from = Vector2(0.0, 0.0)
+	sheen_tex.fill_to = Vector2(0.0, 1.0)
+	sheen_tex.width = 4
+	sheen_tex.height = 32
+	var sheen := TextureRect.new()
+	sheen.texture = sheen_tex
+	sheen.stretch_mode = TextureRect.STRETCH_SCALE
+	sheen.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sheen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	sheen.offset_left = 3.0
+	sheen.offset_top = 3.0
+	sheen.offset_right = -3.0
+	sheen.offset_bottom = -3.0
+	xp_bar.add_child(sheen)
+	# Quarter marks etched into the track.
+	for q in [0.25, 0.5, 0.75]:
+		var tick := ColorRect.new()
+		tick.color = Color(0.46, 0.33, 0.16, 0.85)
+		tick.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tick.anchor_left = q
+		tick.anchor_right = q
+		tick.anchor_top = 0.0
+		tick.anchor_bottom = 1.0
+		tick.offset_left = -1.0
+		tick.offset_right = 1.0
+		tick.offset_top = 3.0
+		tick.offset_bottom = -3.0
+		xp_bar.add_child(tick)
 	identity.add_child(xp_bar)
 
 	var pts := Label.new()
@@ -360,6 +400,7 @@ func _refresh() -> void:
 	var sp_waiting := int(h.get("skill_points", 0))
 	var constellation_button := _nav_button("Skill Constellation" + (" (%d)" % sp_waiting if sp_waiting > 0 else ""), func(): _goto("res://scenes/ui/skill_tree.tscn"))
 	constellation_button.custom_minimum_size = Vector2(250, 46)
+	FORGED_FACES.forge_button(constellation_button, sp_waiting > 0, 20)
 	if sp_waiting > 0:
 		_pulse(constellation_button)
 	progression_row.add_child(constellation_button)
@@ -371,6 +412,7 @@ func _refresh() -> void:
 				_scroll.ensure_control_visible(_talent_heading)
 				_scroll.scroll_vertical += 260)
 		talent_jump.custom_minimum_size = Vector2(230, 46)
+		FORGED_FACES.forge_button(talent_jump, false, 20)
 		talent_jump.add_theme_color_override("font_color", Color(0.98, 0.84, 0.42))
 		_pulse(talent_jump)
 		progression_row.add_child(talent_jump)
