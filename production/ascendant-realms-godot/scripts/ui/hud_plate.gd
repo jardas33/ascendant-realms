@@ -3,6 +3,7 @@ extends PanelContainer
 ## than a rectangular Control theme. Children remain ordinary accessible UI.
 
 const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
+const HUD_TOP_RIBBON := preload("res://scripts/ui/hud_top_ribbon.gd")
 static var _forged_trim: Texture2D = null
 
 
@@ -45,6 +46,40 @@ func _draw() -> void:
 		return
 	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
 		_forged_trim = load(FORGED_TRIM_PATH) as Texture2D
+	if plate_kind == "objective" and position.y < 4.0:
+		# Plan 420: hung from the top edge in the same iron and bronze as the
+		# reading band, with an angled cap at its left and a bronze side rail.
+		var bw := size.x
+		var bh := size.y
+		HUD_TOP_RIBBON.draw_band(self, Rect2(0, 0, bw, bh), true, false, 16.0)
+		draw_line(Vector2(bw - 1.5, 0), Vector2(bw - 1.5, bh - 3.0), Color(0.62, 0.44, 0.22, 1.0), 3.0)
+		draw_line(Vector2(bw - 3.5, 0), Vector2(bw - 3.5, bh - 5.0), Color(0.98, 0.82, 0.50, 0.55), 1.0)
+		if objective_has_crest:
+			draw_line(Vector2(79, 10), Vector2(79, 62), Color(0, 0, 0, 0.6), 1.6, true)
+			draw_line(Vector2(80.6, 10), Vector2(80.6, 62), Color(0.85, 0.66, 0.38, 0.22), 1.0, true)
+		return
+	if plate_kind == "age":
+		# Plan 420: a pendant shield hung from the reading band.
+		var pw := size.x
+		var ph := size.y
+		var shield := PackedVector2Array([Vector2(0, 0), Vector2(pw, 0), Vector2(pw, ph - 20), Vector2(pw * 0.5, ph), Vector2(0, ph - 20)])
+		var drop := PackedVector2Array()
+		for p in shield:
+			drop.append(p + Vector2(0, 5))
+		draw_colored_polygon(drop, Color(0, 0, 0, 0.40))
+		var top_c := Color(0.13, 0.10, 0.07, 0.99)
+		var low_c := Color(0.05, 0.045, 0.045, 0.99)
+		draw_polygon(shield, PackedColorArray([top_c, top_c, low_c, low_c, low_c]))
+		draw_texture_rect(HUD_TOP_RIBBON.grain(), Rect2(0, 0, pw, ph), true, Color(1, 1, 1, 0.05))
+		var rim := PackedVector2Array([Vector2(1.5, 0), Vector2(1.5, ph - 21), Vector2(pw * 0.5, ph - 1.5), Vector2(pw - 1.5, ph - 21), Vector2(pw - 1.5, 0)])
+		draw_polyline(rim, Color(0.05, 0.035, 0.02, 0.95), 6.0, true)
+		draw_polyline(rim, Color(0.66, 0.47, 0.23, 1.0), 3.6, true)
+		var inner := PackedVector2Array([Vector2(7, 0), Vector2(7, ph - 24), Vector2(pw * 0.5, ph - 8), Vector2(pw - 7, ph - 24), Vector2(pw - 7, 0)])
+		draw_polyline(inner, Color(0.98, 0.82, 0.50, 0.45), 1.0, true)
+		draw_line(Vector2(pw * 0.5 - 34, ph - 30), Vector2(pw * 0.5 + 34, ph - 30), Color(0.85, 0.66, 0.38, 0.35), 1.0, true)
+		var gem := Vector2(pw * 0.5, ph - 14)
+		draw_colored_polygon(PackedVector2Array([gem + Vector2(0, -5), gem + Vector2(4, 0), gem + Vector2(0, 5), gem + Vector2(-4, 0)]), Color(0.93, 0.72, 0.32))
+		return
 	if plate_kind == "objective":
 		# The campaign marker carries a contained heraldic seal and worked metal
 		# rails. Its text remains live and map-agnostic inside the shaped plaque.

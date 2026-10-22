@@ -18,6 +18,9 @@ const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const COMMAND_GLYPH_SCRIPT := "res://scripts/ui/command_glyph_view.gd"
 const HUD_PLATE_SCRIPT := preload("res://scripts/ui/hud_plate.gd")
 const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
+const HUD_TOP_RIBBON_SCRIPT := preload("res://scripts/ui/hud_top_ribbon.gd")
+## Plan 420: height of the iron band the top readings sit on.
+const TOP_RIBBON_H := 58.0
 const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
 const HUD_ALERT_DISPATCH_SCRIPT := preload("res://scripts/ui/hud_alert_dispatch.gd")
 const HUD_COMMAND_TOOLTIP_SCRIPT := preload("res://scripts/ui/hud_command_tooltip.gd")
@@ -152,6 +155,7 @@ var _idle_military_label: Label = null
 var _tier_label: Label = null
 var _tier_caption: Label = null
 var _top_panel: PanelContainer = null
+var _top_ribbon: Control = null
 var _force_panel: PanelContainer = null
 var _age_panel: PanelContainer = null
 var _objective_panel: PanelContainer = null
@@ -322,25 +326,45 @@ func _fit_to_viewport() -> void:
 		var tl: Label = pair[0]
 		if is_instance_valid(tl):
 			tl.add_theme_font_size_override("font_size", roundi(maxi(int(pair[1]), HUD_TEXT_MIN) * top_lift))
-	# The resource, force, age and objective instruments float independently.
-	# No opaque control spans the sky between them.
+	# Plan 420: the readings sit on one continuous iron band hung from the
+	# top edge (economy, an ornament, the army, then the age pendant), and the
+	# objective banner and menu tab hang from the same edge at the right.
+	var band_h := roundf(TOP_RIBBON_H * top_lift)
+	var run_x := 12.0
+	var group_x := -1.0
 	if is_instance_valid(_top_panel):
-		_top_panel.position = Vector2(12, 8)
-		_top_panel.size = Vector2(512, 104)
+		var economy_w := _top_panel.get_combined_minimum_size().x
+		_top_panel.position = Vector2(run_x, 0)
+		_top_panel.size = Vector2(economy_w, band_h)
+		run_x += economy_w
+		group_x = run_x + 17.0
+		run_x += 34.0
 	if is_instance_valid(_force_panel):
-		_force_panel.position = Vector2(524, 8)
-		_force_panel.size = Vector2(612, 104)
+		var force_w := _force_panel.get_combined_minimum_size().x
+		_force_panel.position = Vector2(run_x, 0)
+		_force_panel.size = Vector2(force_w, band_h)
+		run_x += force_w + 14.0
 	if is_instance_valid(_age_panel):
-		_age_panel.position = Vector2(maxf(1160.0, viewport_size.x * 0.53 - 88.0), 8)
-		_age_panel.size = Vector2(176, 78)
+		var age_w := maxf(150.0, _age_panel.get_combined_minimum_size().x)
+		_age_panel.position = Vector2(run_x, 0)
+		_age_panel.size = Vector2(age_w, maxf(band_h + 26.0, _age_panel.get_combined_minimum_size().y))
+		run_x += age_w
+	if is_instance_valid(_top_ribbon):
+		_top_ribbon.position = Vector2.ZERO
+		_top_ribbon.size = Vector2(run_x + 30.0, band_h + 14.0)
+		_top_ribbon.set("band_height", band_h)
+		_top_ribbon.set("ornaments", PackedFloat32Array([group_x]) if group_x > 0.0 else PackedFloat32Array())
+		_top_ribbon.queue_redraw()
 	if is_instance_valid(_objective_panel):
-		# The banner's lines grow on a laptop window; it widens leftward into
-		# the gap before the age medallion (30 px at most) to keep them whole.
-		_objective_panel.offset_left = -530.0 - 150.0 * (top_lift - 1.0)
-		_objective_panel.offset_right = -106.0
-		_objective_panel.offset_top = 8.0
+		# The banner's lines grow on a laptop window; it widens leftward.
+		_objective_panel.offset_left = -526.0 - 150.0 * (top_lift - 1.0)
+		_objective_panel.offset_right = -100.0
+		# Where the band and the banner would meet (a 4:3 screen), the banner
+		# drops below the age pendant instead of covering the readings.
+		var objective_drop := viewport_size.x + _objective_panel.offset_left < run_x + 42.0
+		_objective_panel.offset_top = band_h + 34.0 if objective_drop else 0.0
 		# Content height keeps the full-width objective rows readable.
-		_objective_panel.offset_bottom = 104.0
+		_objective_panel.offset_bottom = _objective_panel.offset_top + 96.0
 		call_deferred("_fit_objective_content")
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
@@ -427,8 +451,10 @@ func _fit_to_viewport() -> void:
 				plate.expand_margin_bottom = 6.0
 			_sel_panel.add_theme_stylebox_override("panel", plate)
 	if is_instance_valid(_menu_button):
-		_menu_button.offset_left = -100.0
-		_menu_button.offset_right = -12.0
+		_menu_button.offset_left = -94.0
+		_menu_button.offset_right = 0.0
+		_menu_button.offset_top = 0.0
+		_menu_button.offset_bottom = band_h
 	_layout_command_feedback()
 	queue_redraw()
 
@@ -1373,6 +1399,28 @@ func _add_command_section(title: String, hint: String = "", pinned: bool = false
 func _top_metric_surface(title: String, accent: Color, width: float, tooltip: String, instrument: bool = true) -> Dictionary:
 	# The value row contract is retained so authoritative refresh handlers do
 	# not change as the individual visual instruments replace the group slabs.
+	if instrument:
+		# Plan 420: one cell on the top band. Icon and number only; the name and
+		# meaning are in the tooltip, as on the big RTS top bars.
+		var cell: PanelContainer = HUD_TOP_METRIC_SCRIPT.new()
+		cell.accent = accent
+		cell.set("ribbon", true)
+		cell.custom_minimum_size = Vector2(width, TOP_RIBBON_H)
+		cell.tooltip_text = tooltip if tooltip.to_lower().begins_with(title.to_lower()) else "%s: %s" % [title, tooltip]
+		cell.mouse_filter = Control.MOUSE_FILTER_STOP
+		var cell_inset := StyleBoxFlat.new()
+		cell_inset.bg_color = Color.TRANSPARENT
+		cell_inset.content_margin_left = 8.0
+		cell_inset.content_margin_right = 10.0
+		cell_inset.content_margin_top = 3.0
+		cell_inset.content_margin_bottom = 11.0
+		cell.add_theme_stylebox_override("panel", cell_inset)
+		var cell_row := HBoxContainer.new()
+		cell_row.add_theme_constant_override("separation", 6)
+		cell_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		cell_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(cell_row)
+		return {"surface": cell, "value_row": cell_row}
 	var surface := VBoxContainer.new()
 	surface.custom_minimum_size = Vector2(width - 10.0 if instrument else width, 46)
 	surface.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1441,6 +1489,9 @@ func _top_group(title: String, accent: Color, width: float) -> Dictionary:
 func _build_top_bar() -> void:
 	# The top readings are independent instruments rather than one black ribbon.
 	# Their spacing is resolved against the actual viewport in _fit_to_viewport.
+	_top_ribbon = HUD_TOP_RIBBON_SCRIPT.new()
+	_top_ribbon.name = "TopRibbon"
+	add_child(_top_ribbon)
 	var panel := _mk_hud_panel("economy", COMMAND_GOLD)
 	_top_panel = panel
 	_top_panel.name = "TopResourceBar"
@@ -1449,7 +1500,7 @@ func _build_top_bar() -> void:
 	rack_inset.bg_color = Color.TRANSPARENT
 	rack_inset.set_content_margin_all(0)
 	panel.add_theme_stylebox_override("panel", rack_inset)
-	panel.custom_minimum_size = Vector2(512, 104)
+	panel.custom_minimum_size = Vector2(0, TOP_RIBBON_H)
 	add_child(panel)
 
 	var resource_accents := {
@@ -1463,9 +1514,11 @@ func _build_top_bar() -> void:
 	economy_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	economy_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for k in RES_ORDER:
-		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 125.0, "%s resource" % k.capitalize())
+		var metric := _top_metric_surface(k.capitalize(), resource_accents[k], 132.0, "%s resource" % k.capitalize())
+		if k == RES_ORDER[RES_ORDER.size() - 1]:
+			metric["surface"].set("last", true)
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_resource_object_icon(k, 48))
+		cell.add_child(_mk_resource_object_icon(k, 40))
 		var l := _mk_label("0", 28, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1483,7 +1536,7 @@ func _build_top_bar() -> void:
 	_force_panel.name = "ForceInstrument"
 	_force_panel.embedded = true
 	_force_panel.add_theme_stylebox_override("panel", rack_inset)
-	_force_panel.custom_minimum_size = Vector2(612, 104)
+	_force_panel.custom_minimum_size = Vector2(0, TOP_RIBBON_H)
 	add_child(_force_panel)
 
 	var force_metrics := HBoxContainer.new()
@@ -1491,11 +1544,11 @@ func _build_top_bar() -> void:
 	force_metrics.alignment = BoxContainer.ALIGNMENT_CENTER
 	force_metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Population remains a force metric rather than another resource number.
-	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 150.0, "Population: current units / population cap")
+	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 140.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_force_object_icon("population", 48))
+	pop_cell.add_child(_mk_force_object_icon("population", 40))
 	_pop_label = _mk_label("0/0", 27)
-	_pop_label.custom_minimum_size = Vector2(76, 0)
+	_pop_label.custom_minimum_size = Vector2(70, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
 	force_metrics.add_child(pop_metric["surface"])
@@ -1503,12 +1556,12 @@ func _build_top_bar() -> void:
 	# Strategic opposition remains visible after transient defeat alerts expire.
 	# This reads only the authoritative Commander roster and stays subordinate to
 	# the existing resource/population status language.
-	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 135.0, "Living opposing commanders")
+	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 98.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_force_object_icon("opponent", 48))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 40))
 	_opponent_count_label = _mk_label("0", 27, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
-	_opponent_count_label.custom_minimum_size = Vector2(64, 0)
+	_opponent_count_label.custom_minimum_size = Vector2(30, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	opponent_cell.add_child(_opponent_count_label)
 	force_metrics.add_child(opponent_metric["surface"])
@@ -1516,11 +1569,11 @@ func _build_top_bar() -> void:
 	# idle workers: persistent economy awareness in the existing player-status bar.
 	# The count is refreshed at the same low rate as resources/population and does
 	# not create a toast or world marker for every short worker transition.
-	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 165.0, "Workers without an active order")
+	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 98.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_force_object_icon("worker", 48))
+	worker_cell.add_child(_mk_force_object_icon("worker", 40))
 	_idle_worker_label = _mk_label("0", 27, Color(0.82, 0.94, 0.78))
-	_idle_worker_label.custom_minimum_size = Vector2(78, 0)
+	_idle_worker_label.custom_minimum_size = Vector2(30, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
 	force_metrics.add_child(worker_metric["surface"])
@@ -1528,11 +1581,12 @@ func _build_top_bar() -> void:
 
 	# Military awareness sits beside the existing worker awareness, but is kept
 	# separate so "Idle 3" can never be mistaken for an idle army count.
-	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 150.0, "Military units without an active order")
+	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 98.0, "Military units without an active order")
+	army_metric["surface"].set("last", true)
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_force_object_icon("army", 48))
+	army_cell.add_child(_mk_force_object_icon("army", 40))
 	_idle_military_label = _mk_label("0", 27, Color(0.82, 0.9, 1.0))
-	_idle_military_label.custom_minimum_size = Vector2(74, 0)
+	_idle_military_label.custom_minimum_size = Vector2(30, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
 	force_metrics.add_child(army_metric["surface"])
@@ -1541,28 +1595,32 @@ func _build_top_bar() -> void:
 
 	_age_panel = _mk_hud_panel("age", COMMAND_GOLD)
 	_age_panel.name = "AgeMedallion"
-	_age_panel.custom_minimum_size = Vector2(176, 78)
+	_age_panel.custom_minimum_size = Vector2(150, TOP_RIBBON_H + 26.0)
 	var age_inset := StyleBoxFlat.new()
 	age_inset.bg_color = Color.TRANSPARENT
-	age_inset.content_margin_left = 25.0
-	age_inset.content_margin_right = 10.0
-	age_inset.content_margin_top = 10.0
-	age_inset.content_margin_bottom = 8.0
+	age_inset.content_margin_left = 12.0
+	age_inset.content_margin_right = 12.0
+	age_inset.content_margin_top = 6.0
+	age_inset.content_margin_bottom = 22.0
 	_age_panel.add_theme_stylebox_override("panel", age_inset)
 	add_child(_age_panel)
 	# Progression is a separate medallion rather than another telemetry column.
-	var progression := _top_group("AGE", COMMAND_GOLD, 132.0)
-	var progression_metrics: HBoxContainer = progression["metrics"]
-	var tier_metric := _top_metric_surface(TIER_COUNTS[1], COMMAND_GOLD, 122.0, "The Age of Bronze, first of three. The next Age is opened at your hall.", false)
-	_tier_caption = (tier_metric["surface"] as Control).get_child(0) as Label
+	# Plan 420: a pendant hung from the band; the age's name large, its
+	# place in the three ages small above it.
+	var age_stack := VBoxContainer.new()
+	age_stack.add_theme_constant_override("separation", -3)
+	age_stack.alignment = BoxContainer.ALIGNMENT_CENTER
+	age_stack.mouse_filter = Control.MOUSE_FILTER_STOP
+	age_stack.tooltip_text = "The Age of Bronze, first of three. The next Age is opened at your hall."
+	_tier_caption = _top_small(_mk_label("AGE  " + String(TIER_COUNTS[1]).to_upper(), 14, Color(0.86, 0.72, 0.46)), 14)
 	_tier_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var tier_cell: HBoxContainer = tier_metric["value_row"]
-	_tier_label = _mk_label(TIER_NAMES[1], 29, Color(0.98, 0.88, 0.55))
-	_tier_label.custom_minimum_size = Vector2(122, 0)
+	_tier_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	age_stack.add_child(_tier_caption)
+	_tier_label = _mk_label(TIER_NAMES[1], 30, Color(0.98, 0.88, 0.55))
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tier_cell.add_child(_tier_label)
-	progression_metrics.add_child(tier_metric["surface"])
-	_age_panel.add_child(progression["group"])
+	_tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	age_stack.add_child(_tier_label)
+	_age_panel.add_child(age_stack)
 
 	# menu button (top-right corner)
 	var menu_btn: Button = HUD_ACTION_SCRIPT.new()
@@ -1582,10 +1640,10 @@ func _build_top_bar() -> void:
 	_menu_button.name = "MenuButton"
 	menu_btn.custom_minimum_size = Vector2(86, 42)
 	menu_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	menu_btn.offset_left = -100.0
-	menu_btn.offset_right = -12.0
-	menu_btn.offset_top = 17.0
-	menu_btn.offset_bottom = 59.0
+	menu_btn.offset_left = -94.0
+	menu_btn.offset_right = 0.0
+	menu_btn.offset_top = 0.0
+	menu_btn.offset_bottom = TOP_RIBBON_H
 	var menu_copy := _top_small(_mk_title_label("MENU", 16, Color(0.98, 0.91, 0.76)), 16)
 	menu_copy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	menu_copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1778,7 +1836,7 @@ func _on_tier_changed(tier: int) -> void:
 	if is_instance_valid(_tier_label):
 		_tier_label.text = TIER_NAMES.get(tier, "Age %d" % tier)
 	if is_instance_valid(_tier_caption):
-		_tier_caption.text = String(TIER_COUNTS.get(tier, "")).to_upper()
+		_tier_caption.text = "AGE  " + String(TIER_COUNTS.get(tier, "")).to_upper()
 		(_tier_caption.get_parent() as Control).tooltip_text = "The Age of %s, %s of three.%s" % [TIER_NAMES.get(tier, "?"), ["first", "second", "third"][clampi(tier, 1, 3) - 1], " The next Age is opened at your hall." if tier < 3 else ""]
 
 
@@ -3675,7 +3733,7 @@ func _fit_result_plate(plate: Control) -> void:
 
 
 func _hide_battle_chrome() -> void:
-	for panel in [_top_panel, _force_panel, _age_panel, _objective_panel, _menu_button, _alert_box, _minimap_panel, _sel_panel, _cmd_panel, _command_chassis, _command_tooltip]:
+	for panel in [_top_ribbon, _top_panel, _force_panel, _age_panel, _objective_panel, _menu_button, _alert_box, _minimap_panel, _sel_panel, _cmd_panel, _command_chassis, _command_tooltip]:
 		if is_instance_valid(panel):
 			(panel as CanvasItem).visible = false
 

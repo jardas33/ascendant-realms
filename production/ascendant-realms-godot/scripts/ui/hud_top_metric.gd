@@ -4,13 +4,20 @@ extends PanelContainer
 
 const BEZEL_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
 static var _bezel_texture: Texture2D = null
+const HUD_TOP_RIBBON := preload("res://scripts/ui/hud_top_ribbon.gd")
 
 var accent := Color(0.88, 0.68, 0.35)
+## Plan 420: a cell on the continuous top band; it draws only the engraved
+## divider after it (none after the last cell of a group).
+var ribbon := false
+var last := false
 
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	resized.connect(queue_redraw)
+	mouse_entered.connect(queue_redraw)
+	mouse_exited.connect(queue_redraw)
 	queue_redraw()
 
 
@@ -19,6 +26,12 @@ func _draw() -> void:
 		return
 	var w := size.x
 	var h := size.y
+	if ribbon:
+		if mouse_default_cursor_shape == Control.CURSOR_POINTING_HAND and get_global_rect().has_point(get_global_mouse_position()):
+			draw_rect(Rect2(2, 3, w - 4, h - 12), Color(1.0, 0.86, 0.55, 0.07))
+		if not last:
+			HUD_TOP_RIBBON.draw_divider(self, w + 1.5, h)
+		return
 	if _bezel_texture == null and ResourceLoader.exists(BEZEL_PATH):
 		_bezel_texture = load(BEZEL_PATH) as Texture2D
 	if _bezel_texture:

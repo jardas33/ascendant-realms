@@ -1,4 +1,5 @@
 extends Button
+const HUD_TOP_RIBBON := preload("res://scripts/ui/hud_top_ribbon.gd")
 ## Forged action tile with a cut silhouette and live hover/disabled states.
 
 var accent := Color(0.82, 0.64, 0.36)
@@ -85,6 +86,13 @@ func _draw() -> void:
 	var active := command_state in ["ACTIVE", "TRAINING"]
 	var enabled := not disabled
 	var metal := accent if enabled else accent.lerp(Color(0.33, 0.37, 0.38), 0.68)
+	if is_menu and position.y < 4.0:
+		# Plan 420: a short tab of the top band, hung in the corner.
+		HUD_TOP_RIBBON.draw_band(self, Rect2(0, 0, w, h), true, false, 12.0)
+		if lit:
+			draw_rect(Rect2(14, 3, w - 16, h - 13), Color(1.0, 0.86, 0.55, 0.10))
+		_draw_glint(w, h)
+		return
 	if is_menu:
 		var menu_shape := PackedVector2Array([
 			Vector2(9, 0), Vector2(w - 8, 0), Vector2(w, 8),
