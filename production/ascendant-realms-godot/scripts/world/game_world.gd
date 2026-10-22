@@ -5048,9 +5048,14 @@ func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
 	# Screen-sized: at a fixed world size the number was about eight pixels
 	# tall from the battle camera on a laptop.
 	l.fixed_size = true
-	l.font_size = 32
-	l.outline_size = 10
-	l.outline_modulate = Color(0.05, 0.03, 0.02, 0.9)
+	l.font_size = 34
+	# Plan 406: a thick, fully opaque outline. The old 10 px one at 90% faded
+	# into snow and pale sand, and the stone number almost vanished.
+	l.outline_size = 20
+	l.outline_modulate = Color(0.02, 0.012, 0.008, 1.0)
+	# Draw after other see-through surfaces (the snow caps on roofs hid the outline).
+	l.render_priority = 20
+	l.outline_render_priority = 19
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.no_depth_test = true
 	l.pixel_size = 0.0009
