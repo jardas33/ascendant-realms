@@ -2,6 +2,22 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 28, 2026-10-22: unit lineup; models that still need real art
+
+Claude shot every people's units side by side (probe `claude_lineup.gd` in ar-review) and in battle pictures. Two fixes are in Claude's branch:
+
+- **Plan 403:** the Barrosan Spear Guard used `barrosan_stoneward_spears_r696_compat`, a block-out of boxes and discs, plus an add-on shield that rendered as a pale board. It now uses `barrosan_spear_guard.glb` with only the add-on spear. That model is also the Karak Ironbreaker, so the Spear Guard still needs its own model.
+- **Plan 404:** Claude's September mesh join (68a3ef45) had merged the Ash Thrall's untextured Pilot_ armor into its skinned body, so the game could no longer strip it. The model is back to the 45e433d1 version. If an R10 or R11 Ash Thrall candidate is promoted later, start from that file, not the joined one.
+
+Units that still look rough at play zoom, most visible first:
+
+1. **Vorthak Rift Blade:** a block-out with a floating slab. The model before c3800c42 was the Ash Thrall body, so it needs a new one.
+2. **Grimtusk Tunnel Rider:** uses `vorthak_gloom_hound`, a small humanoid imp, for a rider on a war-hound.
+3. **Vorthak Gloom Hound:** the same imp, not a hound.
+4. **Grimtusk Bowcrusha:** pale and blocky next to the Grunt and Ogre.
+5. **Barrosan Crag Archer and Outrider:** box-shaped quiver and pack.
+6. **Karak Warrior and Ironbreaker** look identical (horned helm, red beard).
+
 ## Review 27, 2026-10-22: R61 source safety read; Plans 398 to 401 committed
 
 Claude read R61 up to `18e9277b` (source safety R1 and the live review recipe).
