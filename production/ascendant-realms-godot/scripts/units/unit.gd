@@ -1515,30 +1515,17 @@ func _build_health_bar() -> void:
 	_health_bar_root.name = "CombatHealthBar"
 	_health_bar_root.position.y = maxf(_visual_height, ModelUtils.measure_height(model_root)) + 0.45
 	add_child(_health_bar_root)
+	# Plan 408: one framed bar (bronze rim, shaded fill, quarter ticks) drawn
+	# by health_bar.gdshader on a camera-facing quad. It replaces two flat
+	# boxes that read as black slabs and hid behind pillars and roofs.
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
 	# Overlays cast no shadow: health bars, attack cues and the hit flash (a
 	# copy of the whole body) were each drawn into the shadow passes too.
 	_health_bar_back.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var back_mesh := BoxMesh.new()
-	back_mesh.size = Vector3(1.5, 0.2, 0.035)
-	_health_bar_back.mesh = back_mesh
-	var back_mat := StandardMaterial3D.new()
-	back_mat.albedo_color = Color(0.03, 0.04, 0.04, 0.9)
-	back_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_health_bar_back.material_override = back_mat
+	_health_bar_back.mesh = _health_bar_quad()
+	_health_bar_back.material_override = _health_bar_material()
 	_health_bar_root.add_child(_health_bar_back)
-	_health_bar_fill = MeshInstance3D.new()
-	_health_bar_fill.name = "HealthBarFill"
-	_health_bar_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(1.4, 0.14, 0.045)
-	_health_bar_fill.mesh = fill_mesh
-	var fill_mat := StandardMaterial3D.new()
-	fill_mat.albedo_color = _p1r24_health_bar_color(1.0)
-	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_health_bar_fill.material_override = fill_mat
-	_health_bar_root.add_child(_health_bar_fill)
 	_update_health_bar()
 
 func _p1r24_health_bar_color(ratio: float) -> Color:
@@ -1567,16 +1554,26 @@ func _update_health_bar() -> void:
 	if absf(ratio - _hb_last_ratio) < 0.002:
 		return
 	_hb_last_ratio = ratio
-	if is_instance_valid(_health_bar_fill):
-		_health_bar_fill.scale.x = maxf(0.02, ratio)
-		_health_bar_fill.position.x = -0.7 * (1.0 - ratio)
-		var fill_mat := _health_bar_fill.material_override as StandardMaterial3D
-		if is_instance_valid(fill_mat):
-			fill_mat.albedo_color = _p1r24_health_bar_color(ratio)
 	if is_instance_valid(_health_bar_back):
-		var back_mat := _health_bar_back.material_override as StandardMaterial3D
-		if is_instance_valid(back_mat):
-			back_mat.albedo_color = Color(0.22, 0.045, 0.018, 0.95) if team == 0 and ratio <= P1R24_CRITICAL_HEALTH_RATIO else Color(0.03, 0.04, 0.04, 0.9)
+		_health_bar_back.set_instance_shader_parameter("ratio", ratio)
+		_health_bar_back.set_instance_shader_parameter("fill_color", _p1r24_health_bar_color(ratio))
+		_health_bar_back.set_instance_shader_parameter("back_tint", Color(0.22, 0.045, 0.018, 0.95) if team == 0 and ratio <= P1R24_CRITICAL_HEALTH_RATIO else Color(0.03, 0.04, 0.04, 0.9))
+
+static var _hb_quad: QuadMesh
+static var _hb_material: ShaderMaterial
+
+static func _health_bar_quad() -> QuadMesh:
+	if _hb_quad == null:
+		_hb_quad = QuadMesh.new()
+		_hb_quad.size = Vector2(1.56, 0.24)
+	return _hb_quad
+
+static func _health_bar_material() -> ShaderMaterial:
+	if _hb_material == null:
+		_hb_material = ShaderMaterial.new()
+		_hb_material.shader = load("res://assets/shaders/health_bar.gdshader")
+		_hb_material.render_priority = 1
+	return _hb_material
 
 func _build_r15_combat_presentation() -> void:
 	# Presentation-only cues: no target, damage, timing or combat outcome is
