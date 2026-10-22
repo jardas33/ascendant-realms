@@ -59,24 +59,37 @@ float vnoise(vec2 p) {
 void fragment() {
 	vec3 world = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec2 w = world.xz;
-	vec3 cob = pebbles(w * pebble_scale);
-	vec3 grit = pebbles(w * pebble_scale * 2.7 + 7.0);
-	vec3 rock = pebbles(w * pebble_scale * 0.32 + 19.0);
-	// Each cobble its own stone: grey, buff or dark, rounded and set in a
-	// thin shadow where it meets its neighbours.
+	// Plan 412: the cells were still one size with dark joints, so the bed
+	// read as paving. The cells are now warped so each stone has its own
+	// shape, cobbles lie in patches with sand and fine gravel between them,
+	// and the joints are soft.
+	vec2 warp = vec2(vnoise(w * 0.9 + 3.0), vnoise(w * 0.9 + 11.0)) - 0.5;
+	vec2 wp = w + warp * 0.55;
+	vec3 cob = pebbles(wp * pebble_scale);
+	vec3 small = pebbles(wp * pebble_scale * 1.9 + 41.0);
+	vec3 grit = pebbles(w * pebble_scale * 4.2 + 7.0);
+	vec3 rock = pebbles(wp * pebble_scale * 0.36 + 19.0);
+	float field = vnoise(w * 0.38) * 0.65 + vnoise(w * 1.1 + 4.0) * 0.35;
+	float cobbled = smoothstep(0.42, 0.62, field);
+	float pebbly = smoothstep(0.3, 0.45, field) * (1.0 - cobbled);
+	// Each cobble its own stone: grey, buff or dark, rounded on top.
 	vec3 hue = mix(bed_dark, bed_light, cob.y);
 	hue *= mix(vec3(1.0), vec3(1.06, 0.98, 0.88), step(0.7, fract(cob.y * 5.3)));
-	vec3 stone = hue * mix(1.1, 0.74, smoothstep(0.05, 0.6, cob.x));
-	stone *= mix(0.62, 1.0, smoothstep(0.0, 0.1, cob.z));
-	vec3 gravel = mix(bed_dark, bed_light, grit.y) * mix(1.02, 0.84, smoothstep(0.0, 0.6, grit.x));
-	vec3 sand = mix(bed_dark, bed_light, 0.72) * (0.9 + 0.14 * vnoise(w * 6.0));
-	// Sand settles in drifts; cobbles stand out of it.
-	float drift = smoothstep(0.5, 0.7, vnoise(w * 0.45) * 0.7 + vnoise(w * 1.3 + 4.0) * 0.3);
-	vec3 bed = mix(stone, gravel, step(0.62, fract(cob.y * 7.0)) * 0.7);
-	bed = mix(bed, sand, drift * smoothstep(0.32, 0.6, cob.x) * 0.85);
+	vec3 stone = hue * mix(1.12, 0.8, smoothstep(0.05, 0.55, cob.x));
+	stone *= mix(0.78, 1.0, smoothstep(0.0, 0.12, cob.z));
+	vec3 pstone = mix(bed_dark, bed_light, small.y) * mix(1.08, 0.82, smoothstep(0.05, 0.5, small.x));
+	pstone *= mix(0.82, 1.0, smoothstep(0.0, 0.1, small.z));
+	vec3 sand = mix(bed_dark, bed_light, 0.7) * (0.9 + 0.14 * vnoise(w * 6.0));
+	vec3 gravel = mix(sand, mix(bed_dark, bed_light, grit.y), 0.45) * mix(1.04, 0.9, smoothstep(0.0, 0.55, grit.x));
+	vec3 bed = mix(sand, gravel, 0.55 + 0.3 * vnoise(w * 2.3 + 8.0));
+	// Stones stand in the patches; the gaps between them fill with sand.
+	float stone_cov = cobbled * (1.0 - smoothstep(0.42, 0.62, cob.x));
+	float peb_cov = pebbly * (1.0 - smoothstep(0.32, 0.5, small.x)) * step(0.35, small.y);
+	bed = mix(bed, pstone, peb_cov);
+	bed = mix(bed, stone, stone_cov);
 	// Now and then a bigger stone, darker and wet on top.
-	float big = step(0.86, fract(rock.y * 3.7)) * (1.0 - smoothstep(0.28, 0.4, rock.x));
-	bed = mix(bed, mix(bed_dark, bed_light, rock.y * 0.6) * mix(1.05, 0.7, smoothstep(0.0, 0.38, rock.x)), big);
+	float big = step(0.84, fract(rock.y * 3.7)) * (1.0 - smoothstep(0.3, 0.42, rock.x));
+	bed = mix(bed, mix(bed_dark, bed_light, rock.y * 0.6) * mix(1.08, 0.72, smoothstep(0.0, 0.4, rock.x)), big);
 	// Light through the moving surface: thin bright bands that drift.
 	float t = TIME * 0.9;
 	vec2 c = w * 1.8;
