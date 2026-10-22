@@ -365,7 +365,7 @@ func _build() -> void:
 	_detail_glyph = Glyph.new()
 	_detail_glyph.custom_minimum_size = Vector2(50.0, 50.0)
 	_detail_glyph.size = Vector2(50.0, 50.0)
-	_detail_glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_detail_glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	detail_header.add_child(_detail_glyph)
 	var detail_title_col := VBoxContainer.new()
 	detail_title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -515,7 +515,7 @@ func _add_node_button(n: Dictionary) -> void:
 	glyph.position = Vector2((NODE_SIZE.x - ORB.x) * 0.5, 0.0)
 	glyph.size = ORB
 	glyph.pivot_offset = ORB * 0.5
-	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	glyph.kind = "active" if n.get("effect", {}).has("ability") else "passive"
 	glyph.kind = "keystone" if n.get("keystone", false) else glyph.kind
 	glyph.accent = _branch_color(str(n.get("branch", "")))
