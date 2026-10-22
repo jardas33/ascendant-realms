@@ -13,7 +13,7 @@ const PORTRAIT_FRAME_INSET := 5.0
 const PORTRAIT_ARTWORK_INSET := 8.0
 const PORTRAIT_MODEL_INSET := 10.0
 const PORTRAIT_COMPACT_MODEL_INSET := 4.0
-const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR
+const PORTRAIT_TEXTURE_FILTER := CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 const LIORAEN_UNIT_PORTRAITS := {
 	"Seedkeeper": "res://assets/ui/portraits/lioraen/astra_r1/seedkeeper.png",
 	"Grove Warden": "res://assets/ui/portraits/lioraen/astra_r1/grove_warden.png",
@@ -74,6 +74,13 @@ func _build_view() -> void:
 	_viewport.size = VIEW_SIZE
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD else SubViewport.UPDATE_ALWAYS
 	_viewport.transparent_bg = true
+	# Plan 392: the build and train cards drew their models at card size with
+	# no smoothing, so roofs and beams stood in stair-stepped, shimmering
+	# edges. The model is now drawn at twice the size with 8x MSAA and
+	# filtered down, which costs little at this size.
+	_viewport.msaa_3d = Viewport.MSAA_8X
+	_viewport.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+	_viewport.scaling_3d_scale = 2.0
 	_viewport_container.add_child(_viewport)
 
 	_artwork = TextureRect.new()
