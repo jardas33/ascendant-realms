@@ -528,7 +528,7 @@ func _build_team_banner() -> void:
 	cloth_mesh.orientation = PlaneMesh.FACE_Z
 	var cloth_h := 1.9 if big else 1.45
 	cloth_mesh.size = Vector2(0.9, cloth_h)
-	cloth_mesh.subdivide_width = 3
+	cloth_mesh.subdivide_width = 14
 	cloth_mesh.subdivide_depth = 12
 	cloth.mesh = cloth_mesh
 	cloth.material_override = _banner_material
@@ -1146,12 +1146,25 @@ func _build_rally_marker() -> void:
 	cloth.name = "RallyBeaconFlag"
 	var cloth_mesh := PlaneMesh.new()
 	cloth_mesh.orientation = PlaneMesh.FACE_Z
-	cloth_mesh.size = Vector2(0.6, 0.8)
-	cloth_mesh.subdivide_width = 2
-	cloth_mesh.subdivide_depth = 8
+	cloth_mesh.size = Vector2(0.78, 0.5)
+	cloth_mesh.subdivide_width = 16
+	cloth_mesh.subdivide_depth = 4
 	cloth.mesh = cloth_mesh
-	cloth.material_override = _banner_material
-	cloth.position = Vector3(0.33, 1.55, 0.0)
+	cloth.material_override = _rally_flag_material()
+	cloth.position = Vector3(0.425, 1.72, 0.0)
+	cloth.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	# A gilt finial caps the pole.
+	var finial := MeshInstance3D.new()
+	finial.name = "RallyBeaconFinial"
+	var knob := SphereMesh.new()
+	knob.radius = 0.065
+	knob.height = 0.13
+	knob.radial_segments = 12
+	knob.rings = 6
+	finial.mesh = knob
+	finial.material_override = _rally_finial_material()
+	finial.position.y = 2.03
+	_rally_marker.add_child(finial)
 	cloth.set_instance_shader_parameter("team_color", GameData.TEAM_COLORS.get(team, Color(0.8, 0.8, 0.8)))
 	_rally_marker.add_child(cloth)
 	_rally_path = MeshInstance3D.new()
@@ -1168,6 +1181,23 @@ func _build_rally_marker() -> void:
 	add_child(_rally_path)
 
 	_update_rally_marker_position()
+
+static var _rally_flag_mat: ShaderMaterial
+static var _rally_finial_mat: StandardMaterial3D
+
+static func _rally_flag_material() -> ShaderMaterial:
+	if _rally_flag_mat == null:
+		_rally_flag_mat = ShaderMaterial.new()
+		_rally_flag_mat.shader = load("res://assets/shaders/rally_flag.gdshader")
+	return _rally_flag_mat
+
+static func _rally_finial_material() -> StandardMaterial3D:
+	if _rally_finial_mat == null:
+		_rally_finial_mat = StandardMaterial3D.new()
+		_rally_finial_mat.albedo_color = Color(0.86, 0.68, 0.32)
+		_rally_finial_mat.metallic = 0.8
+		_rally_finial_mat.roughness = 0.35
+	return _rally_finial_mat
 
 func _rally_marker_material() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()

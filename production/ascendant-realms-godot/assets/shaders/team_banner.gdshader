@@ -14,9 +14,17 @@ void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
 	float t = TIME * 2.2 + origin.x * 0.37 + origin.z * 0.23;
 	float wave = sin(t + UV.y * 4.2 - UV.x * 1.3) + 0.35 * sin(t * 1.9 + UV.y * 8.0 + UV.x * 2.0);
-	VERTEX.z += wave * 0.09 * free;
+	// Hanging pleats: the cloth gathers into soft vertical folds below the bar.
+	float pleat = sin(UV.x * 18.85);
+	float pleat_amp = 0.035 * (0.35 + 0.65 * free);
+	VERTEX.z += wave * 0.09 * free + pleat * pleat_amp;
 	VERTEX.x += sin(t * 0.7) * 0.05 * free * free;
-	v_fold = wave;
+	// Fold normals from the wave and the pleats, so the banner shades like cloth.
+	float dz_dv = (cos(t + UV.y * 4.2 - UV.x * 1.3) * 4.2 + 0.35 * cos(t * 1.9 + UV.y * 8.0 + UV.x * 2.0) * 8.0) * 0.09 * free + wave * 0.09;
+	float dz_du = (-cos(t + UV.y * 4.2 - UV.x * 1.3) * 1.3 + 0.7 * cos(t * 1.9 + UV.y * 8.0 + UV.x * 2.0)) * 0.09 * free + cos(UV.x * 18.85) * 18.85 * pleat_amp;
+	// PlaneMesh FACE_Z: UV.x runs along +X, UV.y runs down -Y.
+	NORMAL = normalize(vec3(-dz_du / 0.9, dz_dv / 1.7, 1.0));
+	v_fold = wave + pleat * 0.8;
 }
 
 void fragment() {
@@ -30,7 +38,8 @@ void fragment() {
 	float lozenge = abs(UV.x - 0.5) * 1.25 + abs(UV.y - 0.42);
 	float emblem = step(lozenge, 0.17) * step(0.12, lozenge) + step(lozenge, 0.06);
 	col = mix(col, trim_color.rgb, clamp(border + emblem, 0.0, 1.0));
-	col *= 0.82 + 0.18 * v_fold;
+	col *= 0.80 + 0.12 * v_fold;
+	col *= 0.93 + 0.07 * sin(UV.x * 160.0) * sin(UV.y * 220.0);
 	ALBEDO = col;
 	ROUGHNESS = 0.85;
 	BACKLIGHT = team_color.rgb * 0.35;
