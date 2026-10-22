@@ -431,10 +431,15 @@ void fragment() {
 	}
 
 	if (ford.z > 0.0 && abs(wxz.y - ford.x) < ford.y * 1.7) {
-		float edge_wobble = (fbm(vec2(wxz.x * 0.045, 7.0)) - 0.5) * 0.7 * ford.y + (fbm(vec2(wxz.x * 0.21, 3.0)) - 0.5) * 0.18 * ford.y;
+		// Same shore line as ford_water (plan 418, shore_swing 2.7), in metres: the water strip
+		// is 0.8 of the ford width, so its unit across is 0.8 * ford.y.
+		float edge_wobble = ((fbm(vec2(wxz.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(wxz.x * 0.21, 3.0)) - 0.5) * 0.18) * 2.7 * 0.8 * ford.y;
 		float dz = abs(wxz.y - ford.x) + edge_wobble;
 		float bank = 1.0 - smoothstep(ford.y * 0.62, ford.y * 1.25, dz);
-		vec3 wet = ground * 0.55 + vec3(0.03, 0.03, 0.02);
+		// Dark wet mud at the waterline, damp greener turf above it. (It
+		// was the ground lifted toward grey, and read as haze.)
+		float damp = 1.0 - smoothstep(ford.y * 0.8, ford.y * 1.05, dz);
+		vec3 wet = mix(ground * vec3(0.72, 0.8, 0.62), ground * vec3(0.42, 0.39, 0.33), damp);
 		// Wet, darkened bank soil; a soft sandy lip where the water meets it.
 		vec3 sand = mix(ground, vec3(0.40, 0.36, 0.28), 0.55) * (0.8 + 0.35 * fbm(wxz * 0.3));
 		float lip = smoothstep(ford.y * 0.72, ford.y * 0.9, dz) * (1.0 - smoothstep(ford.y * 0.95, ford.y * 1.2, dz));

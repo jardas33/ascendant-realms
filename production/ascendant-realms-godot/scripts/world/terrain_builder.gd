@@ -303,7 +303,9 @@ func _build_ford(map: Dictionary) -> void:
 	var water := MeshInstance3D.new()
 	water.name = "CrossingFord"
 	var pm := PlaneMesh.new()
-	pm.size = Vector2(GROUND_SIZE, width)
+	# Laid wider than the water so the wandering shore (shore_swing) can bay
+	# outward and still fade before the plane's edge.
+	pm.size = Vector2(GROUND_SIZE, width * 1.5)
 	water.mesh = pm
 	var wm := ShaderMaterial.new()
 	wm.shader = load("res://assets/shaders/ford_water.gdshader")
@@ -311,6 +313,10 @@ func _build_ford(map: Dictionary) -> void:
 	if w.get("lava", false):
 		wm.set_shader_parameter("shallow_tint", Color(0.9, 0.35, 0.08))
 		wm.set_shader_parameter("deep_tint", Color(0.55, 0.12, 0.03))
+	wm.set_shader_parameter("plane_scale", 1.5)
+	wm.set_shader_parameter("shore_swing", 2.7)
+	# A firmer waterline: the long faint margin was a teal haze over the turf.
+	wm.set_shader_parameter("bank_fade", 0.82)
 	water.material_override = wm
 	water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	water.position = Vector3(0.0, 0.07, center_z)

@@ -23,6 +23,12 @@ uniform float bank_fade = 0.62;
 // and wind-blown snow, and nothing moves. (Frostmere's "frozen river" was
 // open teal water.)
 uniform float frozen = 0.0;
+// Plan 418: the crossing ford's shore bayed in and out only about a metre,
+// so the water met the grass along a ruler line. shore_swing scales the
+// shore wobble; plane_scale says how much wider than the water the plane is
+// laid, so a far-reaching bay still fades out before the plane's edge.
+uniform float shore_swing = 1.0;
+uniform float plane_scale = 1.0;
 
 varying vec3 wpos;
 
@@ -62,9 +68,10 @@ void vertex() {
 }
 
 void fragment() {
-	float across = abs(UV.y - 0.5) * 2.0;            // 0 centre .. 1 bank
+	float plane_across = abs(UV.y - 0.5) * 2.0;
+	float across = plane_across * plane_scale;        // 0 centre .. 1 bank
 	vec2 rc = strip_width > 0.0 ? vec2(UV.x * strip_width, (UV.y - 0.5) * strip_width) : wpos.xz;
-	float wobble = (fbm(vec2(rc.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(rc.x * 0.21, 3.0)) - 0.5) * 0.18;
+	float wobble = ((fbm(vec2(rc.x * 0.045, 7.0)) - 0.5) * 0.7 + (fbm(vec2(rc.x * 0.21, 3.0)) - 0.5) * 0.18) * shore_swing;
 	// Plan 387: ice grows out from the banks in uneven shelves, so a frozen
 	// river's edge wanders far more than open water's (it read as a straight
 	// painted band), with a jagged rim where the shelf broke.
@@ -73,6 +80,9 @@ void fragment() {
 	}
 	float edge = across + wobble;
 	float body = 1.0 - smoothstep(bank_fade, 0.98, edge);   // soft, irregular banks
+	if (plane_scale > 1.0) {
+		body *= 1.0 - smoothstep(0.86, 1.0, plane_across);
+	}
 	float depth = 1.0 - smoothstep(0.0, 0.85, edge);
 	mat2 rot = strip_width > 0.0 ? mat2(vec2(0.98, 0.2), vec2(-0.2, 0.98)) : mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
 	vec2 flow = rot * vec2(rc.x * 0.16 - TIME * flow_speed, rc.y * 0.42);
