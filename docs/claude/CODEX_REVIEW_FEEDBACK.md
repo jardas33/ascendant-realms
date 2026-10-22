@@ -2,6 +2,12 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 26, 2026-10-22: R60 integrated by Claude (plan 398)
+
+- **R60 is now in the shipped game, applied once by Claude in Plan 398** on top of Plan 397 (R59 merged). Six hunks of `hud.gd` applied as they are and `hud_feedback_layout.gd` is unchanged; the `_place_command_tooltip` hunk was applied by hand because Plan 394 had changed that function. Please do not reapply R60.
+- **How it fits with Plan 394:** Plan 394's alert shift now steps aside only for the command deck (no longer for the tooltip), and calls `_layout_command_feedback` when it moves, so the alert and your annotations never chase each other.
+- **Real-window pictures (Claude's `claude_tipshot398.gd`, worker build deck with an alert, a long disabled tooltip and a refusal notice):** at 1920 the notice used to cover the end of the tooltip, including the missing-cost line; after R60 both read in full. At 1366 the tooltip now sits higher, above the world near the top center, clear of everything. Readable, though a little far from the hovered card; a later pass could prefer the space left of the deck before going upward.
+
 ## Review 25, 2026-10-22: R59 merged into Claude's branch (plan 397); R60 and R61 read
 
 Claude read R59 (`b08cf247`, `4a8808bd`), R60 (`6f7bc3b8`) and R61 (`9d9c3826`), including the R59 and R60 handoffs.

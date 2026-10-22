@@ -21,6 +21,7 @@ const HUD_TOP_METRIC_SCRIPT := preload("res://scripts/ui/hud_top_metric.gd")
 const HUD_COMMAND_RACK_SCRIPT := preload("res://scripts/ui/hud_command_rack.gd")
 const HUD_ALERT_DISPATCH_SCRIPT := preload("res://scripts/ui/hud_alert_dispatch.gd")
 const HUD_COMMAND_TOOLTIP_SCRIPT := preload("res://scripts/ui/hud_command_tooltip.gd")
+const HUD_FEEDBACK_LAYOUT := preload("res://scripts/ui/hud_feedback_layout.gd")
 const HUD_CHASSIS_SCRIPT := preload("res://scripts/ui/hud_command_chassis.gd")
 const HUD_ACTION_SCRIPT := preload("res://scripts/ui/hud_action_button.gd")
 const HUD_CONSTRUCTION_SCRIPT := preload("res://scripts/ui/hud_construction_progress.gd")
@@ -428,9 +429,7 @@ func _fit_to_viewport() -> void:
 	if is_instance_valid(_menu_button):
 		_menu_button.offset_left = -100.0
 		_menu_button.offset_right = -12.0
-	for child in get_children():
-		if child is Control and child.has_meta("command_notice"):
-			_place_command_notice(child)
+	_layout_command_feedback()
 	queue_redraw()
 
 
@@ -459,10 +458,11 @@ func _place_objective_alert() -> void:
 	_alert_box.offset_top = _objective_panel.position.y + _objective_panel.size.y + 8.0
 
 
-# Plan 394: on a small window a tall command deck, or the order tooltip over
-# it, reached up into the alert under the objective card and the two read as
-# one jumble of text. The alert now steps left, clear of the deck, while they
-# would meet, and returns under the card when they no longer do.
+# Plan 394: on a small window a tall command deck reached up into the alert
+# under the objective card and the two read as one jumble of text. The alert
+# now steps left, clear of the deck, while they would meet, and returns under
+# the card when they no longer do. Since plan 398 (Codex R60) order tooltips
+# and notices place themselves around the alert instead.
 var _alert_shift := 0.0
 
 func _keep_alert_clear() -> void:
@@ -472,9 +472,6 @@ func _keep_alert_clear() -> void:
 	var blocked := Rect2()
 	if _cmd_panel.is_visible_in_tree():
 		blocked = _cmd_panel.get_global_rect()
-	if is_instance_valid(_command_tooltip) and _command_tooltip.visible:
-		var tip := Rect2(_command_tooltip.global_position, _command_tooltip.size * _command_tooltip.scale)
-		blocked = tip if blocked.size == Vector2.ZERO else blocked.merge(tip)
 	var shift := 0.0
 	if blocked.size != Vector2.ZERO and home.grow(4.0).intersects(blocked):
 		shift = maxf(0.0, home.end.x - blocked.position.x + 12.0)
@@ -483,6 +480,7 @@ func _keep_alert_clear() -> void:
 	if absf(shift - _alert_shift) > 0.5:
 		_alert_shift = shift
 		_place_objective_alert()
+		_layout_command_feedback.call_deferred()
 
 
 func _build_resource_tooltip() -> void:
@@ -3584,6 +3582,7 @@ func _build_command_panel() -> void:
 	tooltip_style.content_margin_bottom = 12.0
 	_command_tooltip.add_theme_stylebox_override("panel", tooltip_style)
 	add_child(_command_tooltip)
+	_command_tooltip.resized.connect(func(): _layout_command_feedback.call_deferred())
 
 
 func _consume_hud_wheel(event: InputEvent) -> void:
@@ -3682,28 +3681,33 @@ func _hide_battle_chrome() -> void:
 
 
 func _place_command_tooltip() -> void:
-	if not is_instance_valid(_command_tooltip) or not is_instance_valid(_cmd_panel) or not _command_tooltip.visible:
-		return
-	_command_tooltip.reset_size()
-	# Drawn at the command deck's own scale: at 1.0 its kind word and keycaps
-	# were 14 px at 1920 and 10 px on a 1366x768 window.
-	_command_tooltip.scale = Vector2.ONE * _panel_scale
-	var deck_rect := _cmd_panel.get_global_rect()
+	_layout_command_feedback()
+
+
+func _layout_command_feedback() -> void:
 	var viewport_size := get_viewport_rect().size
-	var tooltip_size := _command_tooltip.size * _panel_scale
-	var tooltip_pos := Vector2(deck_rect.position.x + 8.0, deck_rect.position.y - tooltip_size.y - 10.0)
-	if tooltip_pos.y < 8.0:
-		tooltip_pos.y = deck_rect.end.y + 8.0
-	# Plan 394: on a small window the tooltip over a tall deck rose into the
-	# objective card. It then stands beside the deck, level with its top.
-	if is_instance_valid(_objective_panel) and Rect2(tooltip_pos, tooltip_size).intersects(_objective_panel.get_global_rect().grow(4.0)):
-		tooltip_pos = Vector2(deck_rect.position.x - tooltip_size.x - 10.0, deck_rect.position.y)
-		if is_instance_valid(_sel_panel) and _sel_panel.is_visible_in_tree():
-			tooltip_pos.y = minf(tooltip_pos.y, _sel_panel.get_global_rect().position.y - tooltip_size.y - 44.0)
-	_command_tooltip.position = Vector2(
-		clampf(tooltip_pos.x, 8.0, maxf(8.0, viewport_size.x - tooltip_size.x - 8.0)),
-		clampf(tooltip_pos.y, 8.0, maxf(8.0, viewport_size.y - tooltip_size.y - 8.0)))
-	_command_tooltip.visible = true
+	var occupied: Array[Rect2] = []
+	for panel in [_top_panel, _force_panel, _age_panel, _objective_panel,
+		_menu_button, _alert_box, _minimap_panel, _sel_panel,
+		_selection_portrait, _cmd_panel, _resource_tooltip]:
+		if is_instance_valid(panel) and panel.is_visible_in_tree():
+			occupied.append(panel.get_global_rect())
+	var annotations: Array[Control] = []
+	if is_instance_valid(_command_tooltip) and _command_tooltip.visible:
+		annotations.append(_command_tooltip)
+	for child in get_children():
+		if child is Control and child.has_meta("command_notice") and child.visible and not child.is_queued_for_deletion():
+			annotations.append(child)
+	for annotation in annotations:
+		annotation.reset_size()
+		annotation.scale = Vector2.ONE * _panel_scale
+		var measured := annotation.size * _panel_scale
+		var preferred := Vector2((viewport_size.x - measured.x) * 0.5, viewport_size.y - measured.y - 24.0)
+		if is_instance_valid(_cmd_panel) and _cmd_panel.visible:
+			var deck := _cmd_panel.get_global_rect()
+			preferred = Vector2(deck.position.x + 8.0, deck.position.y - measured.y - 12.0)
+		annotation.position = HUD_FEEDBACK_LAYOUT.place(measured, preferred, viewport_size, occupied)
+		occupied.append(annotation.get_global_rect())
 
 
 ## What a soldier is for, in two short lines under its description: what its
@@ -3746,6 +3750,7 @@ func _unit_tooltip(udef: Dictionary) -> String:
 func _hide_command_tooltip() -> void:
 	if is_instance_valid(_command_tooltip):
 		_command_tooltip.visible = false
+		_layout_command_feedback()
 
 
 func _watch_cost(cost: Dictionary, was_available: bool, pop_definition: Dictionary = {}) -> void:
@@ -4769,6 +4774,7 @@ func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	box.add_child(l)
 	box.resized.connect(func(): _place_command_notice.call_deferred(box))
+	box.tree_exiting.connect(func(): _layout_command_feedback.call_deferred())
 	_place_command_notice.call_deferred(box)
 	var tw := box.create_tween()
 	tw.tween_interval(1.4)
@@ -4779,17 +4785,7 @@ func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
 func _place_command_notice(box: Control) -> void:
 	if not is_instance_valid(box):
 		return
-	box.reset_size()
-	box.scale = Vector2.ONE * _panel_scale
-	var measured := box.size * _panel_scale
-	var viewport_size := get_viewport_rect().size
-	var position := Vector2((viewport_size.x - measured.x) * 0.5, viewport_size.y - measured.y - 24.0)
-	if is_instance_valid(_cmd_panel) and _cmd_panel.visible:
-		var deck := _cmd_panel.get_global_rect()
-		position = Vector2(deck.position.x + 8.0, deck.position.y - measured.y - 12.0)
-	box.position = Vector2(
-		clampf(position.x, 8.0, maxf(8.0, viewport_size.x - measured.x - 8.0)),
-		clampf(position.y, 8.0, maxf(8.0, viewport_size.y - measured.y - 8.0)))
+	_layout_command_feedback()
 
 
 func _on_command_feedback_changed(feedback: Dictionary) -> void:
