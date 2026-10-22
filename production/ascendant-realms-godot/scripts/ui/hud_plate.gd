@@ -10,6 +10,7 @@ var plate_kind := "selection"
 var accent := Color(0.77, 0.58, 0.30)
 var embedded := false
 var objective_has_crest := false
+var objective_compact_crest := false
 
 
 func _ready() -> void:
@@ -62,14 +63,17 @@ func _draw() -> void:
 		border.append(pennant[0])
 		draw_polyline(border, Color(0.62, 0.47, 0.27, 0.81), 1.2, true)
 		if objective_has_crest:
+			var seal_right := 76.0 if objective_compact_crest else 77.0
+			var seal_bottom := minf(62.0, h - 7.0) if objective_compact_crest else h - 7.0
+			var separator_x := 79.0 if objective_compact_crest else 80.0
 			var seal_well := PackedVector2Array([
-				Vector2(7, 15), Vector2(16, 6), Vector2(77, 6),
-				Vector2(77, h - 7), Vector2(17, h - 7), Vector2(7, h - 17)])
+				Vector2(7, 15), Vector2(16, 6), Vector2(seal_right, 6),
+				Vector2(seal_right, seal_bottom), Vector2(17, seal_bottom), Vector2(7, seal_bottom - 10)])
 			draw_colored_polygon(seal_well, Color(0.075, 0.060, 0.051, 0.58))
-			draw_line(Vector2(80, 9), Vector2(80, h - 9), Color(accent.r, accent.g, accent.b, 0.52), 1.2, true)
-			draw_line(Vector2(83, 11), Vector2(83, h - 11), Color(0.0, 0.0, 0.0, 0.66), 1.0, true)
+			draw_line(Vector2(separator_x, 9), Vector2(separator_x, seal_bottom - 2), Color(accent.r, accent.g, accent.b, 0.52), 1.2, true)
+			draw_line(Vector2(separator_x + 3, 11), Vector2(separator_x + 3, seal_bottom - 4), Color(0.0, 0.0, 0.0, 0.66), 1.0, true)
 		draw_line(Vector2(19, 2), Vector2(w - 29, 2), Color(1.0, 0.80, 0.45, 0.76), 1.5, true)
-		draw_line(Vector2(88 if objective_has_crest else 19, h - 5), Vector2(w - 19, h - 5), Color(accent.r, accent.g, accent.b, 0.44), 1.0, true)
+		draw_line(Vector2(88 if objective_has_crest and not objective_compact_crest else 19, h - 5), Vector2(w - 19, h - 5), Color(accent.r, accent.g, accent.b, 0.44), 1.0, true)
 		for boss in [Vector2(16, 4), Vector2(w - 28, 4)]:
 			draw_circle(boss, 2.6, Color(0.67, 0.48, 0.27, 0.94))
 			draw_circle(boss, 1.0, Color(0.10, 0.08, 0.06, 0.94))

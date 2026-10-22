@@ -323,8 +323,9 @@ func _fit_to_viewport() -> void:
 		_objective_panel.offset_left = -530.0 - 150.0 * (top_lift - 1.0)
 		_objective_panel.offset_right = -106.0
 		_objective_panel.offset_top = 8.0
-		# Room for a fourth line: the bounty and how it stands.
-		_objective_panel.offset_bottom = 120.0
+		# The content minimum decides height; wrapped status rows stay readable.
+		_objective_panel.offset_bottom = 104.0
+		call_deferred("_fit_objective_content")
 	var requested_selection_height := SELECTION_PANEL_HEIGHT
 	if is_instance_valid(_sel_panel) and _sel_panel.has_meta("multi_selection_height"):
 		requested_selection_height = float(_sel_panel.get_meta("multi_selection_height"))
@@ -421,6 +422,23 @@ func _fit_command_panel_next_frame() -> void:
 	await get_tree().process_frame
 	if is_inside_tree():
 		_fit_to_viewport()
+
+
+func _fit_objective_content() -> void:
+	if not is_instance_valid(_objective_panel):
+		return
+	var desired := maxf(96.0, _objective_panel.get_combined_minimum_size().y)
+	if absf(_objective_panel.size.y - desired) > 0.5:
+		_objective_panel.size.y = desired
+	_place_objective_alert()
+
+
+func _place_objective_alert() -> void:
+	if not is_instance_valid(_objective_panel) or not is_instance_valid(_alert_box):
+		return
+	_alert_box.offset_left = _objective_panel.offset_left + 2.0
+	_alert_box.offset_right = _objective_panel.offset_right - 2.0
+	_alert_box.offset_top = _objective_panel.position.y + _objective_panel.size.y + 8.0
 
 
 func _build_resource_tooltip() -> void:
@@ -1482,30 +1500,37 @@ func _build_top_bar() -> void:
 	_objective_panel = _mk_hud_panel("objective", COMMAND_GOLD)
 	_objective_panel.name = "MatchObjectiveInstrument"
 	_objective_panel.set("objective_has_crest", objective_has_crest)
-	_objective_panel.custom_minimum_size = Vector2(360, 112)
+	_objective_panel.custom_minimum_size = Vector2(360, 96)
+	_objective_panel.set("objective_compact_crest", true)
+	_objective_panel.minimum_size_changed.connect(_fit_objective_content)
+	_objective_panel.resized.connect(_place_objective_alert)
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	var objective_inset := StyleBoxFlat.new()
 	objective_inset.bg_color = Color.TRANSPARENT
-	objective_inset.content_margin_left = 11.0
-	objective_inset.content_margin_right = 12.0
-	# Four lines in a 112 px card: the bounty line sat on the bottom edge.
-	objective_inset.content_margin_top = 6.0
-	objective_inset.content_margin_bottom = 5.0
+	objective_inset.content_margin_left = 22.0
+	objective_inset.content_margin_right = 20.0
+	# A compact heraldic header sits above full-width, live objective/status rows.
+	objective_inset.content_margin_top = 8.0
+	objective_inset.content_margin_bottom = 8.0
 	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
 	add_child(_objective_panel)
 	var mission_row := HBoxContainer.new()
-	mission_row.add_theme_constant_override("separation", 9)
+	mission_row.add_theme_constant_override("separation", 12)
 	mission_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_objective_panel.add_child(mission_row)
+	var objective_stack := VBoxContainer.new()
+	objective_stack.add_theme_constant_override("separation", 2)
+	objective_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_objective_panel.add_child(objective_stack)
+	objective_stack.add_child(mission_row)
 	if not objective_has_painted_crest:
-		var drawn_crest := _drawn_faction_crest(player_race, Vector2(61, 69))
+		var drawn_crest := _drawn_faction_crest(player_race, Vector2(50, 52))
 		drawn_crest.name = "MatchFactionCrest"
 		mission_row.add_child(drawn_crest)
 	else:
 		var campaign_crest := TextureRect.new()
 		campaign_crest.name = "MatchFactionCrest"
 		campaign_crest.texture = load(objective_crest_path)
-		campaign_crest.custom_minimum_size = Vector2(61, 69)
+		campaign_crest.custom_minimum_size = Vector2(50, 52)
 		campaign_crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		campaign_crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		campaign_crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1518,6 +1543,8 @@ func _build_top_bar() -> void:
 	var saga_chapter := CampaignDefs.find(String(Match.get_config().get("campaign_chapter", "")))
 	var battlefield_label := _top_small(_mk_label((String(saga_chapter.get("title", "")) if not saga_chapter.is_empty() else map_name).to_upper(), 16, COMMAND_GOLD), 16)
 	battlefield_label.name = "MatchBattlefieldLabel"
+	battlefield_label.tooltip_text = battlefield_label.text
+	battlefield_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	battlefield_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mission_stack.add_child(battlefield_label)
 	var identity_label := _mk_title_label(short_identity, 21, Color(0.97, 0.92, 0.80))
@@ -1527,21 +1554,25 @@ func _build_top_bar() -> void:
 	identity_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	mission_stack.add_child(identity_label)
 	var victory_kind := str(identity.get("victory", "conquest")).to_lower()
-	var objective_text := "CONQUEST · Raze every enemy building" if victory_kind == "conquest" else ("DOMINATION · Hold every Lume site" if victory_kind == "domination" else victory_kind.capitalize())
+	var objective_text := "CONQUEST · Destroy buildings and workers" if victory_kind == "conquest" else ("DOMINATION · Hold every Lume site" if victory_kind == "domination" else victory_kind.capitalize())
 	var objective_label := _top_small(_mk_label(objective_text, 15, Color(0.91, 0.84, 0.66)), 15)
 	objective_label.name = "MatchObjectiveLabel"
 	_survival_label = objective_label
 	objective_label.tooltip_text = "Destroy every enemy building and worker to win." if victory_kind == "conquest" else ("Hold every Lume site at once for two and a half minutes (the count begins five minutes in), or destroy every enemy building and worker. The enemy can win the same way." if victory_kind == "domination" else objective_text)
 	objective_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	mission_stack.add_child(objective_label)
+	objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	objective_label.max_lines_visible = 2
+	objective_stack.add_child(objective_label)
 	# The bounty stays on the banner with how it stands, not just one alert.
 	_bounty_label = _top_small(_mk_label("", 15, Color(0.95, 0.82, 0.5)), 15)
 	_bounty_label.name = "MatchBountyLabel"
 	_bounty_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_bounty_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_bounty_label.tooltip_text = "Meet the bounty and win for extra spoils and +20% experience."
-	mission_stack.add_child(_bounty_label)
+	_bounty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_bounty_label.max_lines_visible = 2
+	objective_stack.add_child(_bounty_label)
 
 
 ## First word of a people's name for the compact header, skipping a leading
@@ -2823,7 +2854,7 @@ func _refresh_single_live() -> void:
 ## when the text is wider than the banner rather than cut.
 func _fit_top_line(label: Label, smallest: int) -> void:
 	label.add_theme_font_size_override("font_size", roundi(15 * _small_window_boost()))
-	if label.size.x > 40.0:
+	if label.autowrap_mode == TextServer.AUTOWRAP_OFF and label.size.x > 40.0:
 		_shrink_label_to(label, label.size.x - 4.0, smallest)
 
 

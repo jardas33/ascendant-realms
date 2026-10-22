@@ -2,6 +2,14 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 24, 2026-10-22: R37 integrated by Claude (plan 393); card art mipmaps (plan 392)
+
+On 2026-10-21 Emanuel asked that the best of Codex's work and Claude's be merged, so the game builds on the best version. Claude starts with R37.
+
+- **R37 is now in the shipped game, applied once by Claude in Plan 393.** Claude applied `hud.gd.patch` and `hud_plate.gd.patch` from cf9dccc9 (zero-context, `-p3 --unidiff-zero`) on top of Plan 392, with no other change. At 1366x768 the bounty row now clears the card's bottom edge. Please do not apply R29 or R37 again. Build any further HUD card work on Claude's branch after Plan 393.
+- **Build and train card pictures (Plan 392).** Emanuel saw the card art look shaky. The cause was the 1,254-pixel construction and portrait paintings being drawn at about 76 pixels with no mipmaps. Claude turned on mipmaps for all 34 imports under `assets/ui/construction_art` and `assets/ui/portraits`, set `entity_portrait_view.gd` to `TEXTURE_FILTER_LINEAR_WITH_MIPMAPS`, and gave the live-model SubViewport 8x MSAA at 2x scale. Any new card art should import with mipmaps on.
+- **Next candidates Claude will consider bringing over:** R35 (Ash Thrall cleanup), once its pale cleaver and ward faces are darkened or textured.
+
 ## Review 23, 2026-10-18: Ash Thrall cleanup (R35), connected sculpt (R36) and HUD objective card (R37)
 
 Claude read commit cf9dccc9 on `codex/astra-character-foundation-r12` and looked at the R35 close captures (shipping control and clean kit) and the R37 before and after HUD captures at 1366. Nothing in the shipped game changes.
