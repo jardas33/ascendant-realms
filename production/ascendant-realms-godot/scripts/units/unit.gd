@@ -335,7 +335,7 @@ const SLICE4_ACCESSORIES := {
 	],
 	"barrosan_spear_guard": [
 		{"path": "res://assets/characters/visual_convergence/barrosan_spear_guard_accessories.glb", "prefix": "Spear", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.52},
-		{"path": "res://assets/characters/visual_convergence/barrosan_spear_guard_accessories.glb", "prefix": "Shield", "bone": "LeftLowerArm", "position": Vector3(0.0, 0.0, 0.0), "rotation": Vector3(0.0, 0.0, 0.0), "scale": 0.72},
+		# Plan 403: no add-on shield; it rendered as a pale board on the Spear Guard body.
 	],
 	"barrosan_crag_archer": [
 		{"path": "res://assets/characters/visual_convergence/barrosan_crag_archer_accessories.glb", "prefix": "Bow", "bone": "RightHand", "position": Vector3(0.003, -0.134, -0.0005), "rotation": Vector3(-90.0, -90.0, 0.0), "scale": 0.72},
