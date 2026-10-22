@@ -17,6 +17,7 @@ var _depletion_status_track: MeshInstance3D
 var _depletion_status_fill: MeshInstance3D
 var _depletion_status_fill_material: StandardMaterial3D
 var _depletion_status_width := 1.8
+static var _depletion_bar_material: ShaderMaterial
 const GATHER_CUE_EXPANSION := 1.18
 const GATHER_CUE_OUT_DURATION := 0.08
 const GATHER_CUE_RETURN_DURATION := 0.18
@@ -509,45 +510,38 @@ func _build_depletion_status_visual(scale_h: float) -> void:
 	# about six pixels tall from the battle camera.
 	_depletion_status_label.fixed_size = true
 	_depletion_status_label.pixel_size = 0.0008
-	_depletion_status_label.font_size = 30
-	_depletion_status_label.outline_size = 16
+	_depletion_status_label.font_size = 24
+	_depletion_status_label.outline_size = 13
 	_depletion_status_label.outline_modulate = Color(0.02, 0.012, 0.0, 1.0)
 	_depletion_status_label.render_priority = 20
 	_depletion_status_label.outline_render_priority = 19
-	_depletion_status_label.offset = Vector2(0, 10)
+	_depletion_status_label.offset = Vector2(0, 22)
 	_depletion_status_label.position = Vector3(0, maxf(1.8, scale_h * 0.90) + 0.42, 0)
 	_depletion_status_label.visible = false
 	model_root.add_child(_depletion_status_label)
 
+	# Plan 419: the gauge is the bronze-rimmed billboard bar units and
+	# buildings use (it was two flat boxes, seen edge-on from the camera),
+	# and the word shows only when the node is nearly spent.
 	_depletion_status_width = maxf(1.6, footprint * 0.62)
+	if _depletion_bar_material == null:
+		_depletion_bar_material = ShaderMaterial.new()
+		_depletion_bar_material.shader = load("res://assets/shaders/health_bar.gdshader")
+		_depletion_bar_material.render_priority = 1
 	_depletion_status_track = MeshInstance3D.new()
 	_depletion_status_track.name = "ResourceDepletionStatusTrack"
-	var track_mesh := BoxMesh.new()
-	track_mesh.size = Vector3(_depletion_status_width, 0.08, 0.07)
-	_depletion_status_track.mesh = track_mesh
-	var track_mat := StandardMaterial3D.new()
-	track_mat.albedo_color = Color(0.06, 0.045, 0.025, 0.86)
-	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_depletion_status_track.material_override = track_mat
+	var bar_mesh := QuadMesh.new()
+	bar_mesh.size = Vector2(_depletion_status_width, 0.26)
+	_depletion_status_track.mesh = bar_mesh
+	_depletion_status_track.material_override = _depletion_bar_material
+	_depletion_status_track.set_instance_shader_parameter("aspect", _depletion_status_width / 0.26)
+	_depletion_status_track.set_instance_shader_parameter("back_tint", Color(0.07, 0.05, 0.03, 0.88))
+	_depletion_status_track.set_instance_shader_parameter("fill_color", Color(0.9, 0.62, 0.22))
+	_depletion_status_track.set_instance_shader_parameter("ratio", 1.0)
 	_depletion_status_track.position = Vector3(0, maxf(1.8, scale_h * 0.90), 0)
 	_depletion_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_depletion_status_track.visible = false
 	model_root.add_child(_depletion_status_track)
-
-	_depletion_status_fill = MeshInstance3D.new()
-	_depletion_status_fill.name = "ResourceDepletionStatusFill"
-	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(_depletion_status_width, 0.10, 0.09)
-	_depletion_status_fill.mesh = fill_mesh
-	var fill_mat := StandardMaterial3D.new()
-	fill_mat.albedo_color = Color(0.82, 0.57, 0.22, 0.94)
-	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_depletion_status_fill_material = fill_mat
-	_depletion_status_fill.material_override = fill_mat
-	_depletion_status_fill.position = Vector3(0, maxf(1.8, scale_h * 0.90), 0.05)
-	_depletion_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_depletion_status_fill.visible = false
-	model_root.add_child(_depletion_status_fill)
 
 func _update_depletion_visual() -> void:
 	if not is_instance_valid(model_root):
@@ -559,17 +553,16 @@ func _update_depletion_visual() -> void:
 	if not is_instance_valid(_depletion_status_label):
 		return
 	var show_status := ratio > 0.0 and ratio <= 0.5
-	_depletion_status_label.visible = show_status
+	var near_empty := ratio <= 0.2
+	_depletion_status_label.visible = show_status and near_empty
 	_depletion_status_track.visible = show_status
-	_depletion_status_fill.visible = show_status
 	if not show_status:
 		return
-	var near_empty := ratio <= 0.2
-	_depletion_status_label.text = "NEAR EMPTY" if near_empty else "LOW"
-	_depletion_status_label.modulate = Color(0.82, 0.70, 0.48, 1.0) if near_empty else Color(0.96, 0.78, 0.38, 1.0)
-	_depletion_status_fill_material.albedo_color = Color(0.52, 0.46, 0.34, 0.90) if near_empty else Color(0.82, 0.57, 0.22, 0.94)
-	_depletion_status_fill.scale.x = maxf(0.02, ratio)
-	_depletion_status_fill.position.x = -_depletion_status_width * 0.5 + (_depletion_status_width * ratio * 0.5)
+	_depletion_status_label.text = "NEAR EMPTY"
+	_depletion_status_label.modulate = Color(0.9, 0.74, 0.46, 1.0)
+	# The bar shows what is left of the whole node (half full at LOW).
+	_depletion_status_track.set_instance_shader_parameter("ratio", ratio)
+	_depletion_status_track.set_instance_shader_parameter("fill_color", Color(0.86, 0.42, 0.16) if near_empty else Color(0.9, 0.62, 0.22))
 
 func extract(per_tick: int) -> int:
 	if depleted or per_tick <= 0:
