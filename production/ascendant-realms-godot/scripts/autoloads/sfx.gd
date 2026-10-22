@@ -91,8 +91,38 @@ func _ready() -> void:
 		_menu_theme = load("res://assets/ui/theme.tres")
 		for type in ["OptionButton", "PopupMenu"]:
 			_menu_theme.set_font("font", type, ThemeDB.fallback_font)
+		# A gilt chevron replaces the engine's small grey dropdown arrow.
+		_menu_theme.set_icon("arrow", "OptionButton", _gilt_chevron())
+		_menu_theme.set_constant("arrow_margin", "OptionButton", 10)
 	# Every button in the game answers the pointer with a soft tick.
 	get_tree().node_added.connect(_on_node_added)
+
+# Drawn in code so no new imported image is needed: a gold chevron with a
+# dark outline and a lighter upper edge, antialiased by distance.
+static func _gilt_chevron() -> ImageTexture:
+	var w := 22
+	var h := 14
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var a := Vector2(3.0, 3.5)
+	var m := Vector2(11.0, 10.5)
+	var b := Vector2(19.0, 3.5)
+	for y in h:
+		for x in w:
+			var p := Vector2(x + 0.5, y + 0.5)
+			var d := minf(_seg_dist(p, a, m), _seg_dist(p, m, b))
+			var core := clampf(2.1 - d, 0.0, 1.0)
+			var rim := clampf(3.3 - d, 0.0, 1.0)
+			var lift := clampf(1.0 - (p.y - 3.0) / 9.0, 0.0, 1.0)
+			var gold := Color(0.78, 0.56, 0.24).lerp(Color(1.0, 0.86, 0.52), lift)
+			var c := Color(0.06, 0.035, 0.015).lerp(gold, core)
+			c.a = rim
+			img.set_pixel(x, y, c)
+	return ImageTexture.create_from_image(img)
+
+static func _seg_dist(p: Vector2, a: Vector2, b: Vector2) -> float:
+	var ab := b - a
+	var t := clampf((p - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+	return p.distance_to(a + ab * t)
 
 func _on_node_added(node: Node) -> void:
 	# The meta guard stops a button that leaves and re-enters the tree from
