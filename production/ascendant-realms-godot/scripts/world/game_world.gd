@@ -4579,9 +4579,11 @@ func _refresh_ground_pads() -> void:
 		mats.append(ground)
 	if _hill_ground != null:
 		mats.append(_hill_ground)
+	var pale := 1.0 if str(map.get("theme", "")) in ["snow", "desert", "badlands"] else 0.0
 	for m in mats:
 		m.set_shader_parameter("pads", arr)
 		m.set_shader_parameter("pad_count", pads.size())
+		m.set_shader_parameter("pad_darken", pale)
 
 func place_building(building_id: String, team: int, pos: Vector3):
 	var bdef := GameData.get_building(building_id).duplicate()

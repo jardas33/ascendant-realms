@@ -59,6 +59,8 @@ uniform float path_feather = 5.0;
 // Plan 399: packed, trodden earth round each building (x, z, radius, strength).
 uniform vec4 pads[64];
 uniform int pad_count = 0;
+// Plan 400: 1 on pale maps (snow, sand), where trodden ground darkens.
+uniform float pad_darken = 0.0;
 
 // biome grade
 uniform vec3 tint : source_color = vec3(1.0, 1.0, 1.0);
@@ -592,6 +594,13 @@ void fragment() {
 		// water and not as a patch of dark paint.
 		still = mix(still, vec3(0.24, 0.30, 0.33), 0.2 * (1.0 - weed) * deep);
 		ground = mix(ground, still, pool);
+	}
+	// Plan 400: on pale ground (snow, pale sand) the trodden earth above
+	// came out as pale as the field, so a building still stood on clean
+	// snow. Bright ground round a building is trampled darker and rutted.
+	if (pad > 0.0 && pad_darken > 0.0) {
+		float slush = pad * pad_darken * mix(0.75, 1.0, vnoise(wxz * 0.9 + 6.0));
+		ground = mix(ground, ground * vec3(0.55, 0.53, 0.51), slush * 0.75);
 	}
 	ALBEDO = ground;
 	if (relief_strength > 0.0) {
