@@ -7239,9 +7239,11 @@ func spawn_income_popup(pos: Vector3, amount: int, kind: String) -> void:
 	l.fixed_size = true
 	l.pixel_size = 0.0009
 	l.font_size = 32
-	l.outline_size = 10
+	l.outline_size = 18
 	l.modulate = INCOME_COLORS.get(kind, Color.WHITE)
-	l.outline_modulate = Color(0.05, 0.03, 0.0, 0.9)
+	l.outline_modulate = Color(0.02, 0.012, 0.0, 1.0)
+	l.render_priority = 20
+	l.outline_render_priority = 19
 	_fx_container.add_child(l)
 	l.global_position = pos
 	var t := l.create_tween().set_parallel(true)

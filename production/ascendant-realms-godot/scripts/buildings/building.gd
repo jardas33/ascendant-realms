@@ -884,8 +884,10 @@ func _build_construction_status_visual() -> void:
 	_construction_status_label.pixel_size = 0.0008
 	# Plan 322: 17 px type made capitals about seven pixels tall on a laptop.
 	_construction_status_label.font_size = 30
-	_construction_status_label.outline_size = 9
-	_construction_status_label.outline_modulate = Color(0.06, 0.035, 0.0, 0.92)
+	_construction_status_label.outline_size = 16
+	_construction_status_label.outline_modulate = Color(0.02, 0.012, 0.0, 1.0)
+	_construction_status_label.render_priority = 20
+	_construction_status_label.outline_render_priority = 19
 	_construction_status_label.modulate = Color(1.0, 0.92, 0.58, 1.0)
 	_construction_status_label.position = Vector3(0, _presentation_height() + 1.1, 0)
 	add_child(_construction_status_label)
@@ -1351,8 +1353,10 @@ func _build_damage_status_visual() -> void:
 	_damage_status_label.fixed_size = true
 	_damage_status_label.pixel_size = 0.0008
 	_damage_status_label.font_size = 30
-	_damage_status_label.outline_size = 9
-	_damage_status_label.outline_modulate = Color(0.08, 0.02, 0.0, 0.92)
+	_damage_status_label.outline_size = 16
+	_damage_status_label.outline_modulate = Color(0.03, 0.008, 0.0, 1.0)
+	_damage_status_label.render_priority = 20
+	_damage_status_label.outline_render_priority = 19
 	# Lifted on screen clear of its bar: from the battle camera the bar ran
 	# straight through the word.
 	_damage_status_label.offset = Vector2(0, 26)

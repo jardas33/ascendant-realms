@@ -1382,9 +1382,11 @@ func enter_build_mode(building_id: String) -> void:
 	_build_reason_label.font_size = 24
 	_build_reason_label.pixel_size = 0.001
 	_build_reason_label.fixed_size = true
-	_build_reason_label.outline_size = 5
+	_build_reason_label.outline_size = 12
 	_build_reason_label.modulate = Color(1.0, 0.72, 0.60, 0.96)
-	_build_reason_label.outline_modulate = Color(0.04, 0.02, 0.02, 0.94)
+	_build_reason_label.outline_modulate = Color(0.02, 0.01, 0.01, 1.0)
+	_build_reason_label.render_priority = 20
+	_build_reason_label.outline_render_priority = 19
 	_build_reason_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_build_reason_label.no_depth_test = true
 	_build_reason_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

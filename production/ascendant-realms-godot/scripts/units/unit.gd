@@ -1673,9 +1673,11 @@ func _build_r15_combat_presentation() -> void:
 	# pixels from the battle camera on a laptop, too small to read.
 	_r15_damage_label.fixed_size = true
 	_r15_damage_label.font_size = 28
-	_r15_damage_label.outline_size = 8
+	_r15_damage_label.outline_size = 15
 	# A dark outline that stays dark: the number reads on grass, water and snow.
-	_r15_damage_label.outline_modulate = Color(0.07, 0.03, 0.02, 1.0)
+	_r15_damage_label.outline_modulate = Color(0.03, 0.012, 0.008, 1.0)
+	_r15_damage_label.render_priority = 20
+	_r15_damage_label.outline_render_priority = 19
 	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_r15_damage_label.no_depth_test = true
 	_r15_damage_label.pixel_size = COMBAT_DAMAGE_LABEL_PIXEL_SIZE
@@ -4169,11 +4171,11 @@ func _show_hero_title() -> void:
 	tl.pixel_size = 0.0008
 	# Plan 322: 20 px read as a smudge over the hero on a laptop.
 	tl.font_size = 30
-	tl.outline_size = 9
+	tl.outline_size = 16
 	tl.modulate = Color(1.0, 0.86, 0.5)
-	tl.outline_modulate = Color(0.08, 0.04, 0.0, 0.9)
-	tl.render_priority = 2
-	tl.outline_render_priority = 1
+	tl.outline_modulate = Color(0.03, 0.015, 0.0, 1.0)
+	tl.render_priority = 20
+	tl.outline_render_priority = 19
 	add_child(tl)
 	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
 	# Lifted on screen too: from the battle camera the title sat over the
@@ -4238,9 +4240,11 @@ func say(text: String, col: Color = Color(1.0, 0.95, 0.82)) -> void:
 	_bark.fixed_size = true
 	_bark.pixel_size = 0.0008
 	_bark.font_size = 32
-	_bark.outline_size = 10
+	_bark.outline_size = 18
 	_bark.modulate = col
-	_bark.outline_modulate = Color(0.06, 0.03, 0.0, 0.95)
+	_bark.outline_modulate = Color(0.02, 0.01, 0.0, 1.0)
+	_bark.render_priority = 20
+	_bark.outline_render_priority = 19
 	add_child(_bark)
 	_bark.position = Vector3(0.0, _visual_height + 1.6, 0.0)
 	var b := _bark
@@ -4260,9 +4264,11 @@ func _update_rank_badge() -> void:
 		_rank_badge.fixed_size = true
 		_rank_badge.pixel_size = 0.0009
 		_rank_badge.font_size = 28
-		_rank_badge.outline_size = 8
+		_rank_badge.outline_size = 15
 		_rank_badge.modulate = Color(1.0, 0.82, 0.3)
-		_rank_badge.outline_modulate = Color(0.1, 0.05, 0.0, 0.9)
+		_rank_badge.outline_modulate = Color(0.04, 0.02, 0.0, 1.0)
+		_rank_badge.render_priority = 20
+		_rank_badge.outline_render_priority = 19
 		add_child(_rank_badge)
 		_rank_badge.position = Vector3(0.0, _visual_height + 0.55, 0.0)
 	_rank_badge.text = "★".repeat(_veterancy) if _veterancy <= 5 else "★ %d" % _veterancy
