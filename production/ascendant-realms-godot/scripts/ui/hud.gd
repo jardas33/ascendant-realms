@@ -436,9 +436,35 @@ func _fit_objective_content() -> void:
 func _place_objective_alert() -> void:
 	if not is_instance_valid(_objective_panel) or not is_instance_valid(_alert_box):
 		return
-	_alert_box.offset_left = _objective_panel.offset_left + 2.0
-	_alert_box.offset_right = _objective_panel.offset_right - 2.0
+	_alert_box.offset_left = _objective_panel.offset_left + 2.0 - _alert_shift
+	_alert_box.offset_right = _objective_panel.offset_right - 2.0 - _alert_shift
 	_alert_box.offset_top = _objective_panel.position.y + _objective_panel.size.y + 8.0
+
+
+# Plan 394: on a small window a tall command deck, or the order tooltip over
+# it, reached up into the alert under the objective card and the two read as
+# one jumble of text. The alert now steps left, clear of the deck, while they
+# would meet, and returns under the card when they no longer do.
+var _alert_shift := 0.0
+
+func _keep_alert_clear() -> void:
+	if not is_instance_valid(_alert_box) or not is_instance_valid(_cmd_panel) or _alert_box.get_child_count() == 0:
+		return
+	var home := Rect2(_alert_box.global_position + Vector2(_alert_shift, 0.0), _alert_box.size)
+	var blocked := Rect2()
+	if _cmd_panel.is_visible_in_tree():
+		blocked = _cmd_panel.get_global_rect()
+	if is_instance_valid(_command_tooltip) and _command_tooltip.visible:
+		var tip := Rect2(_command_tooltip.global_position, _command_tooltip.size * _command_tooltip.scale)
+		blocked = tip if blocked.size == Vector2.ZERO else blocked.merge(tip)
+	var shift := 0.0
+	if blocked.size != Vector2.ZERO and home.grow(4.0).intersects(blocked):
+		shift = maxf(0.0, home.end.x - blocked.position.x + 12.0)
+		# Never off the left edge of the screen.
+		shift = minf(shift, maxf(0.0, home.position.x - 8.0))
+	if absf(shift - _alert_shift) > 0.5:
+		_alert_shift = shift
+		_place_objective_alert()
 
 
 func _build_resource_tooltip() -> void:
@@ -2265,6 +2291,7 @@ func _process(delta: float) -> void:
 
 	_update_survival_label()
 	_update_bounty_label(delta)
+	_keep_alert_clear()
 	_map_accum += delta
 	if _map_accum >= (0.04 if not _map_pings.is_empty() else 0.15):
 		_map_accum = 0.0
@@ -3563,6 +3590,12 @@ func _place_command_tooltip() -> void:
 	var tooltip_pos := Vector2(deck_rect.position.x + 8.0, deck_rect.position.y - tooltip_size.y - 10.0)
 	if tooltip_pos.y < 8.0:
 		tooltip_pos.y = deck_rect.end.y + 8.0
+	# Plan 394: on a small window the tooltip over a tall deck rose into the
+	# objective card. It then stands beside the deck, level with its top.
+	if is_instance_valid(_objective_panel) and Rect2(tooltip_pos, tooltip_size).intersects(_objective_panel.get_global_rect().grow(4.0)):
+		tooltip_pos = Vector2(deck_rect.position.x - tooltip_size.x - 10.0, deck_rect.position.y)
+		if is_instance_valid(_sel_panel) and _sel_panel.is_visible_in_tree():
+			tooltip_pos.y = minf(tooltip_pos.y, _sel_panel.get_global_rect().position.y - tooltip_size.y - 44.0)
 	_command_tooltip.position = Vector2(
 		clampf(tooltip_pos.x, 8.0, maxf(8.0, viewport_size.x - tooltip_size.x - 8.0)),
 		clampf(tooltip_pos.y, 8.0, maxf(8.0, viewport_size.y - tooltip_size.y - 8.0)))
