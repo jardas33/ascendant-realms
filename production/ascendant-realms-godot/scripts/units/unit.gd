@@ -1049,6 +1049,11 @@ func _people_palette() -> Color:
 		return Color.WHITE
 	return PEOPLE_PALETTES[race]
 
+func _damage_label_base_y() -> float:
+	if is_instance_valid(_health_bar_root):
+		return _health_bar_root.position.y + 0.22
+	return maxf(0.9, _visual_height * 0.70)
+
 func _set_hit_glow(amount: float, lethal: bool) -> void:
 	_hit_glow_on = amount > 0.0
 	var col := Color(1.0, 0.45, 0.22) if lethal else Color(1.0, 0.8, 0.52)
@@ -1692,6 +1697,9 @@ func _build_r15_combat_presentation() -> void:
 	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_r15_damage_label.no_depth_test = true
 	_r15_damage_label.pixel_size = COMBAT_DAMAGE_LABEL_PIXEL_SIZE
+	# Plan 411: the number's bottom edge sits on its position, just above the
+	# health bar, so it never covers the bar at any zoom.
+	_r15_damage_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_r15_damage_label.visible = false
 	add_child(_r15_damage_label)
 
@@ -1767,7 +1775,7 @@ func _update_r15_combat_presentation(delta: float) -> void:
 			# The number punches in large and settles, rises and drifts aside,
 			# and stays fully opaque until late: a number that fades from the
 			# first frame spends most of its life half transparent and murky.
-			_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70) + (1.0 - pow(1.0 - progress, 2.0)) * 1.1
+			_r15_damage_label.position.y = _damage_label_base_y() + (1.0 - pow(1.0 - progress, 2.0)) * 0.8
 			_r15_damage_label.position.x = _damage_label_drift * progress
 			var pop := 1.0 + 0.7 * maxf(0.0, 1.0 - progress / 0.14)
 			_r15_damage_label.scale = Vector3.ONE * pop * (1.4 if _damage_label_big else 1.0)
@@ -1857,7 +1865,7 @@ func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	_r15_damage_label.modulate = Color(1.0, 0.42, 0.30, 1.0) if killing_blow else Color(1.0, 0.86, 0.40, 1.0)
 	_damage_label_drift = randf_range(-0.7, 0.7)
 	_damage_label_big = killing_blow
-	_r15_damage_label.position.y = maxf(0.9, _visual_height * 0.70)
+	_r15_damage_label.position.y = _damage_label_base_y()
 	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
 
 func _show_combat_hit_reaction(from) -> void:
