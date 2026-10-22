@@ -13,7 +13,7 @@ Units that still look rough at play zoom, most visible first:
 
 1. **Vorthak Rift Blade:** a block-out with a floating slab. The model before c3800c42 was the Ash Thrall body, so it needs a new one.
 2. **Grimtusk Tunnel Rider:** uses `vorthak_gloom_hound`, a small humanoid imp, for a rider on a war-hound.
-3. **Vorthak Gloom Hound:** the same imp, not a hound.
+3. **Vorthak Gloom Hound and Wyldkin Direwolf:** the same imp, not a hound or a wolf. Frostborn, Hollow, Sunspear and Wyldkin otherwise reuse tinted models from other peoples, which is fine for now.
 4. **Grimtusk Bowcrusha:** pale and blocky next to the Grunt and Ogre.
 5. **Barrosan Crag Archer and Outrider:** box-shaped quiver and pack.
 6. **Karak Warrior and Ironbreaker** look identical (horned helm, red beard).

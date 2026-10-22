@@ -67,6 +67,7 @@ uniform vec3 tint : source_color = vec3(1.0, 1.0, 1.0);
 uniform float dirt_bias = 0.0;
 uniform float rock_bias = 0.0;
 uniform float snow_amt = 0.0;
+uniform float snow_lift = 0.55; // Plan 405: gamma on the snow surface (1 = as authored)
 
 // Painterly terrain: large colour fields (lush, sun-dried, mossy), texture
 // anti-tiling, and lit relief. Relief only bends the shading normal; the
@@ -392,7 +393,9 @@ void fragment() {
 	if (snow_amt > 0.001) {
 		float snow_macro = fbm(wxz * 0.022 + 12.0);
 		float snow_micro = fbm(wxz * 0.085 + 41.0);
-		float snow_mask = snow_amt * (0.72 + 0.28 * snow_macro);
+		// (Plan 405: was snow_amt * (0.72 + 0.28 * macro), so about a third of
+		// the dark base ground showed through everywhere: grey slush.)
+		float snow_mask = clamp(snow_amt * (0.98 + 0.22 * snow_macro), 0.0, 1.0);
 		float snow_value = smoothstep(0.20, 0.82, snow_macro);
 		vec3 snow_surface = mix(snow_shadow_color, snow_highlight_color, snow_value);
 		snow_surface *= mix(0.92, 1.04, snow_micro) * mix(1.0, 0.94, snow_variation_strength * (1.0 - snow_value));
@@ -411,6 +414,11 @@ void fragment() {
 		snow_albedo *= mix(0.90, 1.0, drift);
 		snow_surface = mix(snow_surface, snow_albedo, 0.87);
 		snow_surface = mix(snow_surface, ground, clamp(snow_underlay_strength, 0.0, 0.7));
+		// Plan 405: fresh snow is the brightest thing in a winter scene. The
+		// field rendered as grey slush (about 0.45 in sRGB); lift the mids and
+		// pull toward the highlight so it reads as snow, keeping the scour marks.
+		snow_surface = pow(clamp(snow_surface, 0.0, 1.0), vec3(snow_lift));
+		snow_surface = mix(snow_surface, snow_highlight_color, 0.12 + 0.2 * drift);
 		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
 	}
 
