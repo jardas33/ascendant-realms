@@ -892,33 +892,11 @@ func _build_construction_status_visual() -> void:
 	_construction_status_label.position = Vector3(0, _presentation_height() + 1.1, 0)
 	add_child(_construction_status_label)
 
-	_construction_status_track = MeshInstance3D.new()
-	_construction_status_track.name = "ConstructionProgressTrack"
-	var track_mesh := BoxMesh.new()
-	track_mesh.size = Vector3(maxf(1.8, footprint * 0.85), 0.09, 0.08)
-	_construction_status_track.mesh = track_mesh
-	var track_mat := StandardMaterial3D.new()
-	track_mat.albedo_color = Color(0.08, 0.06, 0.04, 0.88)
-	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_construction_status_track.material_override = track_mat
+	# Plan 409: one framed, camera-facing bar (health_bar.gdshader) in place
+	# of two flat boxes; progress is an instance value.
+	_construction_status_track = _status_bar("ConstructionProgressTrack", maxf(1.8, footprint * 0.85), Color(0.95, 0.62, 0.18), Color(0.08, 0.06, 0.04, 0.88))
 	_construction_status_track.position = Vector3(0, _presentation_height() + 0.78, 0)
-	_construction_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_construction_status_track)
-
-	_construction_status_fill = MeshInstance3D.new()
-	_construction_status_fill.name = "ConstructionProgressFill"
-	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(maxf(1.8, footprint * 0.85), 0.11, 0.1)
-	_construction_status_fill.mesh = fill_mesh
-	var fill_mat := StandardMaterial3D.new()
-	fill_mat.albedo_color = Color(0.95, 0.62, 0.18, 0.98)
-	fill_mat.emission_enabled = true
-	fill_mat.emission = Color(0.55, 0.22, 0.04)
-	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_construction_status_fill.material_override = fill_mat
-	_construction_status_fill.position = Vector3(0, _presentation_height() + 0.78, 0.055)
-	_construction_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(_construction_status_fill)
 
 func _add_selection_pick_shape() -> void:
 	## Shared world-blocking envelope for visible-footprint coverage. Units own
@@ -1254,10 +1232,8 @@ func _set_construction_visual(p: float) -> void:
 		_construction_status_label.text = "BUILDING %d%%" % roundi(clampf(p, 0.0, 1.0) * 100.0)
 	if is_instance_valid(_construction_status_track):
 		_construction_status_track.visible = building_now
-	if is_instance_valid(_construction_status_fill):
-		_construction_status_fill.visible = building_now
-		_construction_status_fill.scale.x = maxf(0.02, clampf(p, 0.0, 1.0))
-	_construction_status_fill.position.x = (maxf(1.8, footprint * 0.85) * (clampf(p, 0.0, 1.0) - 1.0)) * 0.5
+	if is_instance_valid(_construction_status_track) and building_now:
+		_construction_status_track.set_instance_shader_parameter("ratio", clampf(p, 0.0, 1.0))
 	if is_instance_valid(_construction_stage_root):
 		var stage := clampf(p, 0.0, 1.0)
 		_construction_stage_root.visible = stage < 0.9
@@ -1371,35 +1347,30 @@ func _build_damage_status_visual() -> void:
 	add_child(_damage_status_label)
 
 	var width := maxf(2.0, footprint * 0.72)
-	_damage_status_track = MeshInstance3D.new()
-	_damage_status_track.name = "DamageStatusTrack"
-	var track_mesh := BoxMesh.new()
-	track_mesh.size = Vector3(width, 0.10, 0.09)
-	_damage_status_track.mesh = track_mesh
-	var track_mat := StandardMaterial3D.new()
-	track_mat.albedo_color = Color(0.06, 0.025, 0.02, 0.9)
-	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_damage_status_track.material_override = track_mat
+	_damage_status_track = _status_bar("DamageStatusTrack", width, Color(0.92, 0.16, 0.08), Color(0.06, 0.025, 0.02, 0.9))
 	_damage_status_track.position = Vector3(0, _presentation_height() + 0.82, 0)
-	_damage_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_damage_status_track.visible = false
 	add_child(_damage_status_track)
 
-	_damage_status_fill = MeshInstance3D.new()
-	_damage_status_fill.name = "DamageStatusFill"
-	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(width, 0.12, 0.11)
-	_damage_status_fill.mesh = fill_mesh
-	var fill_mat := StandardMaterial3D.new()
-	fill_mat.albedo_color = Color(0.92, 0.16, 0.08, 0.98)
-	fill_mat.emission_enabled = true
-	fill_mat.emission = Color(0.45, 0.04, 0.015)
-	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_damage_status_fill.material_override = fill_mat
-	_damage_status_fill.position = Vector3(0, _presentation_height() + 0.82, 0.06)
-	_damage_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_damage_status_fill.visible = false
-	add_child(_damage_status_fill)
+static var _status_bar_material: ShaderMaterial
+
+func _status_bar(node_name: String, width: float, fill: Color, back: Color) -> MeshInstance3D:
+	if _status_bar_material == null:
+		_status_bar_material = ShaderMaterial.new()
+		_status_bar_material.shader = load("res://assets/shaders/health_bar.gdshader")
+		_status_bar_material.render_priority = 1
+	var bar := MeshInstance3D.new()
+	bar.name = node_name
+	var q := QuadMesh.new()
+	q.size = Vector2(width, 0.3)
+	bar.mesh = q
+	bar.material_override = _status_bar_material
+	bar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	bar.set_instance_shader_parameter("aspect", width / 0.3)
+	bar.set_instance_shader_parameter("fill_color", fill)
+	bar.set_instance_shader_parameter("back_tint", back)
+	bar.set_instance_shader_parameter("ratio", 0.0)
+	return bar
 
 ## How many workers are at work on this building (raising or mending it)
 ## right now. Each one reports once a physics tick, so this is the number of
@@ -2113,11 +2084,8 @@ func _update_damage_visual() -> void:
 		_damage_status_label.visible = damaged and ratio < 0.3
 	if is_instance_valid(_damage_status_track):
 		_damage_status_track.visible = damaged
-	if is_instance_valid(_damage_status_fill):
-		var width := maxf(2.0, footprint * 0.72)
-		_damage_status_fill.visible = damaged
-		_damage_status_fill.scale.x = maxf(0.02, ratio)
-		_damage_status_fill.position.x = width * (clampf(ratio, 0.0, 1.0) - 1.0) * 0.5
+	if is_instance_valid(_damage_status_track) and damaged:
+		_damage_status_track.set_instance_shader_parameter("ratio", clampf(ratio, 0.0, 1.0))
 	_update_damage_fires(ratio if is_built and not is_dead else 1.0)
 	if ratio < 0.35:
 		for mi in _mesh_instances:

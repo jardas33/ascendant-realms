@@ -7,7 +7,7 @@ instance uniform float ratio = 1.0;
 instance uniform vec4 fill_color : source_color = vec4(0.3, 0.82, 0.38, 1.0);
 instance uniform vec4 back_tint : source_color = vec4(0.03, 0.04, 0.04, 0.9);
 
-const float ASPECT = 6.5;
+instance uniform float aspect = 6.5;
 
 void vertex() {
 	// Billboard that keeps the node's scale.
@@ -20,8 +20,8 @@ void vertex() {
 
 void fragment() {
 	vec2 p = UV;
-	float bx = 0.016;
-	float by = bx * ASPECT;
+	float by = 0.104;
+	float bx = by / aspect;
 	vec2 q = (p - vec2(bx, by)) / (vec2(1.0) - 2.0 * vec2(bx, by));
 	bool inside = q.x >= 0.0 && q.x <= 1.0 && q.y >= 0.0 && q.y <= 1.0;
 	vec3 col;
@@ -42,7 +42,7 @@ void fragment() {
 		a = back_tint.a;
 	}
 	// Thin dark line just inside the rim.
-	float edge = min(min(q.x, 1.0 - q.x) * ASPECT, min(q.y, 1.0 - q.y));
+	float edge = min(min(q.x, 1.0 - q.x) * aspect, min(q.y, 1.0 - q.y));
 	if (inside) col *= mix(0.45, 1.0, smoothstep(0.0, 0.09, edge));
 	ALBEDO = col;
 	ALPHA = a;
