@@ -56,6 +56,9 @@ uniform vec4 paths[8];
 uniform int path_count = 0;
 uniform float path_width = 6.5;
 uniform float path_feather = 5.0;
+// Plan 399: packed, trodden earth round each building (x, z, radius, strength).
+uniform vec4 pads[64];
+uniform int pad_count = 0;
 
 // biome grade
 uniform vec3 tint : source_color = vec3(1.0, 1.0, 1.0);
@@ -349,13 +352,28 @@ void fragment() {
 	float road_edge = smoothstep(path_width + 0.3, path_width + 2.8, pd) * (1.0 - smoothstep(path_width + 2.8, path_width + 4.0, pd));
 	ground = mix(ground, road_edge_color, clamp(road_edge * road_edge_strength, 0.0, 1.0));
 
+	// Plan 399: a building stood straight on clean lawn, as if dropped there.
+	// Feet and carts wear the ground round it to packed earth, worn most at
+	// the walls, broken into patches of surviving grass towards the edge.
+	float pad = 0.0;
+	if (pad_count > 0) {
+		float pad_wob = (fbm(wxz * 0.12 + 7.0) - 0.5) * 0.36;
+		for (int i = 0; i < pad_count; i++) {
+			float d = length(wxz - pads[i].xy) / pads[i].z;
+			pad = max(pad, (1.0 - smoothstep(0.68, 1.0, d + pad_wob)) * pads[i].w);
+		}
+		pad *= mix(0.7, 1.0, smoothstep(0.32, 0.68, fbm(wxz * 0.33 + 19.0)));
+		vec3 trod = road_col * vec3(0.84, 0.82, 0.80) * mix(0.86, 1.08, vnoise(wxz * 2.2 + 4.0));
+		ground = mix(ground, trod, clamp(pad, 0.0, 1.0));
+	}
+
 	// Painterly colour fields: broad swathes of lush, sun-dried and mossy
 	// turf, multiplied through the texture so detail survives.
 	float f1 = fbm2(wxz * 0.0065 + 3.0);
 	float f2 = fbm2(wxz * 0.011 + 17.0);
 	vec3 field = mix(field_lush, field_dry, smoothstep(0.45, 0.75, f1));
 	field = mix(field, field_moss, smoothstep(0.55, 0.8, f2) * 0.8);
-	float grass_share = (1.0 - dirt_m * 0.85) * (1.0 - rock_m) * (1.0 - clamp(road, 0.0, 1.0));
+	float grass_share = (1.0 - dirt_m * 0.85) * (1.0 - rock_m) * (1.0 - clamp(road, 0.0, 1.0)) * (1.0 - pad);
 	vec3 field_tone = ground * (field / max(dot(field_lush, vec3(0.333)), 0.05)) * 0.92;
 	ground = mix(ground, field_tone, clamp(field_strength * grass_share, 0.0, 1.0));
 

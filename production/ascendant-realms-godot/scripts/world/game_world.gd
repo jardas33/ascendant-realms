@@ -4547,7 +4547,41 @@ func _create_building(bdef: Dictionary, team: int, pos: Vector3, prebuilt: bool)
 	if team < commanders.size():
 		commanders[team].buildings.append(b)
 		commanders[team].recompute_pop()
+	_queue_ground_pads()
 	return b
+
+## Plan 399: the ground shader wears packed earth round every standing
+## building. Rebuilt once per frame at most, when one is raised or falls.
+var _ground_pads_queued := false
+
+func _queue_ground_pads() -> void:
+	if not _ground_pads_queued:
+		_ground_pads_queued = true
+		_refresh_ground_pads.call_deferred()
+
+func _refresh_ground_pads() -> void:
+	_ground_pads_queued = false
+	var pads: Array = []
+	for c in commanders:
+		for b in c.buildings:
+			if is_instance_valid(b) and not b.is_queued_for_deletion() and float(b.footprint) >= 2.0:
+				pads.append(Vector4(b.global_position.x, b.global_position.z, float(b.footprint) * 0.8 + 4.0, 1.0))
+	if pads.size() > 64:
+		pads.sort_custom(func(a, b): return a.z > b.z)
+		pads.resize(64)
+	var arr: Array = []
+	for i in 64:
+		arr.append(pads[i] if i < pads.size() else Vector4(9999, 9999, 1, 0))
+	var mats: Array = []
+	var scenery := get_node_or_null("Scenery")
+	var ground = scenery.get("_ground_material") if scenery != null else null
+	if ground is ShaderMaterial:
+		mats.append(ground)
+	if _hill_ground != null:
+		mats.append(_hill_ground)
+	for m in mats:
+		m.set_shader_parameter("pads", arr)
+		m.set_shader_parameter("pad_count", pads.size())
 
 func place_building(building_id: String, team: int, pos: Vector3):
 	var bdef := GameData.get_building(building_id).duplicate()
@@ -6575,6 +6609,7 @@ func _on_building_died(building) -> void:
 	if building.team < commanders.size():
 		commanders[building.team].buildings.erase(building)
 		commanders[building.team].recompute_pop()
+	_queue_ground_pads()
 
 ## On dark battlefields (night, dusk, storm) every finished building keeps a
 ## warm hearth-light, so a village reads as lived in. The light is a child of
