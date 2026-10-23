@@ -3125,10 +3125,16 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	# column shows the name before the comma; the command header has it whole.
 	var shown_name := uname.get_slice(", ", 0) if uname.length() > 17 else uname
 	var identity_font_size := 18 if shown_name.length() <= 13 else (16 if shown_name.length() <= 17 else 14)
-	var identity_name := _mk_label(shown_name, identity_font_size, identity_color)
+	# Plan 475: names are engraved in the title face, like the banner.
+	var identity_name := _mk_title_label(shown_name, identity_font_size + 5, identity_color.lightened(0.12))
+	identity_name.add_theme_color_override("font_outline_color", Color(0.06, 0.04, 0.02, 0.95))
+	identity_name.add_theme_constant_override("outline_size", 4)
+	identity_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	identity_name.add_theme_constant_override("shadow_offset_y", 2)
 	identity_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity_name.tooltip_text = uname
 	_shrink_label_to(identity_name, 126.0, 12)
+	_engraved_or_plain(identity_name, identity_font_size, 126.0, 12)
 	identity_header.add_child(identity_name)
 	identity_header.add_child(_mk_command_badge(role_label, role_accent, 62.0))
 	info.add_child(identity_header)
@@ -3375,6 +3381,19 @@ func _fit_top_line(label: Label, smallest: int) -> void:
 	label.add_theme_font_size_override("font_size", roundi(15 * _small_window_boost()))
 	if label.autowrap_mode == TextServer.AUTOWRAP_OFF and label.size.x > 40.0:
 		_shrink_label_to(label, label.size.x - 4.0, smallest)
+
+
+## Plan 475: the thin title face is never drawn under 18 px (readable_text.gd
+## would swap it for the body face at the shrunken size). A name that only
+## fits smaller goes back to the plain face at its old, readable size.
+func _engraved_or_plain(label: Label, plain_size: int, width: float, smallest: int) -> void:
+	if label.get_theme_font_size("font_size") >= 18:
+		return
+	if _body_font:
+		label.add_theme_font_override("font", _body_font)
+	label.add_theme_font_size_override("font_size", plain_size)
+	label.add_theme_constant_override("outline_size", 0)
+	_shrink_label_to(label, width, smallest)
 
 
 func _shrink_label_to(label: Label, width: float, smallest: int) -> void:
@@ -3625,7 +3644,11 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var building_header := HBoxContainer.new()
 	building_header.add_theme_constant_override("separation", 6)
 	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var building_name := _mk_label(identity_text, 18, identity_color)
+	var building_name := _mk_title_label(identity_text, 23, identity_color.lightened(0.12))
+	building_name.add_theme_color_override("font_outline_color", Color(0.06, 0.04, 0.02, 0.95))
+	building_name.add_theme_constant_override("outline_size", 4)
+	building_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	building_name.add_theme_constant_override("shadow_offset_y", 2)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
 	# Plan 441: the tag names the building's job ("BUILDING" said nothing and
@@ -3635,6 +3658,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var building_badge_w := maxf(70.0, 9.0 * building_badge_text.length() + 12.0)
 	# The name and the tag share one line (168 + 70 before the tags named jobs).
 	_shrink_label_to(building_name, 238.0 - building_badge_w, 13)
+	_engraved_or_plain(building_name, 18, 238.0 - building_badge_w, 13)
 	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, building_badge_w))
 	identity_info.add_child(building_header)
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
