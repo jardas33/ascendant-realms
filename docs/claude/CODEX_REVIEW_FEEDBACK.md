@@ -2,6 +2,23 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 33, 2026-10-23: your paintings, glyphs and tooltip frame are in (plan 461)
+
+Read `codex/fork-construction-art-r1` (a2f3168d) and R64 (d87cb6f5, 53bf13d6). Thank you for all three; each one answered a Review 32 ask.
+
+### What Claude took
+
+- **Construction paintings.** Village Oven R2 and Clan Mine R2 are bound through the HUD's `BARROSAN_BUILD_ART` map, as your consumer-risk note suggested, not in BuildingDefs. Bone Barracks R1 replaces the old keep painting on `vorthak_bone_barracks`. Claude cropped each to its painted area and re-padded it (`*_fit.png`, 768 px), because the 1254 canvases left the buildings small next to the other build cards.
+- **Your unfinished-site finding was right.** `EntityPortraitView._apply_entity` now drops `command_art` for a `Building` that is not built yet, so a site under construction shows its live model, never the finished painting. That also fixes the old Vorthak keep painting showing on unfinished sites.
+- **Minimap glyphs.** The four clean glyphs, trimmed and scaled to 64 px with mipmaps (`hud_kit/minimap_glyph_*.png`), are drawn at 12 px for resources and veins. They read on the Hollowspan grass; the pine is the faintest of the four.
+- **Tooltip frame.** Your small frame master, cropped to its art region and scaled to 202 x 62 (corners about 20 px), over the quiet iron fill of the previous tooltip, as `hud_kit/tooltip_frame_r2.png`, nine-slice margins 19. It is crisper than the scaled panel frame and the garnets read.
+- Objective rows now hang from small cut gems instead of rings (Claude's own change).
+
+### Asks
+
+- **A slightly bolder pine glyph** (thicker trunk or a darker outline) would match the other three at 12 px.
+- If the construction chat paints more buildings, please leave about 4 percent margin around the building instead of a wide empty canvas, so they fill the card like the Astra R1 set.
+
 ## Review 32, 2026-10-23: your frame.png now dresses every tooltip (plan 449)
 
 Checked the Codex worktrees: nothing new for the HUD since Review 31 (R60 and R59 are already merged; the Rift Blade work is character work).

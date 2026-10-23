@@ -117,6 +117,9 @@ const BARROSAN_BUILD_ART := {
 	"barrosan_war_hall": "res://assets/ui/construction_art/astra_r1/war_hall.png",
 	"barrosan_iron_forge": "res://assets/ui/construction_art/astra_r1/iron_forge.png",
 	"barrosan_watchtower": "res://assets/ui/construction_art/astra_r1/watchtower.png",
+	# Plan 461: Codex's paintings of the adopted Oven and Clan Mine models.
+	"barrosan_village_oven": "res://assets/ui/construction_art/codex_fork_r1/village_oven_r2_fit.png",
+	"barrosan_outpost": "res://assets/ui/construction_art/codex_fork_r1/clan_mine_r2_fit.png",
 }
 const LIORAEN_BUILD_ART := {
 	"lioraen_groveheart": "res://assets/ui/construction_art/lioraen_r1/groveheart.png",
@@ -1908,10 +1911,23 @@ func _objective_bullet_row(label: Label) -> HBoxContainer:
 	ring.custom_minimum_size = Vector2(12, 12)
 	ring.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Plan 461: the plain rings read as form bullets. Each goal now hangs from
+	# a small cut gem: hollow while open, lit and filled once it is done.
 	ring.draw.connect(func():
 		var c := Vector2(6, 11)
-		ring.draw_arc(c, 5.0, 0.0, TAU, 20, Color(0.0, 0.0, 0.0, 0.7), 3.4, true)
-		ring.draw_arc(c, 5.0, 0.0, TAU, 20, label.get_theme_color("font_color"), 1.6, true))
+		var d := 5.6
+		var gem := PackedVector2Array([c + Vector2(0, -d), c + Vector2(d, 0), c + Vector2(0, d), c + Vector2(-d, 0), c + Vector2(0, -d)])
+		var col: Color = label.get_theme_color("font_color")
+		var done := label.text.ends_with("done")
+		ring.draw_colored_polygon(gem.slice(0, 4), Color(0.05, 0.04, 0.03, 0.9))
+		if done:
+			ring.draw_colored_polygon(gem.slice(0, 4), col)
+			ring.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -d + 1.5), c + Vector2(d - 1.5, 0), c]), Color(1, 1, 0.9, 0.55))
+		else:
+			ring.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -2.0), c + Vector2(2.0, 0), c + Vector2(0, 2.0), c + Vector2(-2.0, 0)]), Color(col.r, col.g, col.b, 0.75))
+		ring.draw_polyline(gem, Color(0.0, 0.0, 0.0, 0.75), 3.0, true)
+		ring.draw_polyline(gem, col, 1.4, true))
+	label.draw.connect(ring.queue_redraw)
 	row.add_child(ring)
 	row.add_child(label)
 	return row
@@ -2415,6 +2431,13 @@ func _draw_minimap_resource(p: Vector2, col: Color, kind: String = "") -> void:
 	# Plan 448: each store has its own little shape (a tree for timber, a
 	# block for stone, a nugget for gold, a round sheaf for food), so a field
 	# of resources reads without telling four yellows and greens apart.
+	# Plan 462: Codex's painted glyphs (a pine, a grey stone, a gold nugget,
+	# a wheat sheaf) replace the flat shapes where they exist.
+	var glyph := _minimap_glyph(kind)
+	if glyph:
+		var gs := 12.0
+		_minimap.draw_texture_rect(glyph, Rect2(p - Vector2(gs, gs) * 0.5, Vector2(gs, gs)), false)
+		return
 	var ink := Color(0.03, 0.04, 0.04, 0.85)
 	match kind:
 		"timber":
@@ -2435,6 +2458,15 @@ func _draw_minimap_resource(p: Vector2, col: Color, kind: String = "") -> void:
 			_minimap.draw_circle(p, 3.8, ink)
 			_minimap.draw_circle(p, 2.5, col)
 			_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
+
+
+var _minimap_glyphs := {}
+
+func _minimap_glyph(kind: String) -> Texture2D:
+	if not _minimap_glyphs.has(kind):
+		var path := "res://assets/ui/hud_kit/minimap_glyph_%s.png" % kind
+		_minimap_glyphs[kind] = load(path) if kind != "" and ResourceLoader.exists(path) else null
+	return _minimap_glyphs[kind]
 
 
 func _minimap_resource_color(kind: String) -> Color:

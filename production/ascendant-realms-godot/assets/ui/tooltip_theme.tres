@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=12 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/ui/hud_kit/tooltip_frame.png" id="tip_frame"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud_kit/tooltip_frame_r2.png" id="tip_frame"]
 
 [sub_resource type="StyleBoxFlat" id="tip_panel"]
 content_margin_left = 12.0
@@ -56,10 +56,10 @@ content_margin_top = 11.0
 content_margin_right = 15.0
 content_margin_bottom = 12.0
 texture = ExtResource("tip_frame")
-texture_margin_left = 14.0
-texture_margin_top = 14.0
-texture_margin_right = 14.0
-texture_margin_bottom = 14.0
+texture_margin_left = 19.0
+texture_margin_top = 19.0
+texture_margin_right = 19.0
+texture_margin_bottom = 19.0
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 

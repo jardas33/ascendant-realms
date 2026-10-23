@@ -221,6 +221,11 @@ func _apply_entity(entity) -> void:
 	_pending_entity = null
 	_pending_definition = {}
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
+	# Plan 461 (Codex construction review): a site still being raised shows its
+	# live model, never the painting of the finished hall from its data.
+	if entity is Building and not entity.is_built and definition.has("command_art"):
+		definition = definition.duplicate()
+		definition.erase("command_art")
 	_apply_definition(definition, entity is Building, String(entity.unit_id) if entity is Unit else "")
 
 

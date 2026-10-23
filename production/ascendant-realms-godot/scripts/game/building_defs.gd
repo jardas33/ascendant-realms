@@ -121,7 +121,7 @@ static func get_all() -> Dictionary:
 	"vorthak_bone_barracks": {
 		# Plan 445: Codex's bone-ribbed hall; the old model's glossy roof read as a mirror.
 		"race": "vorthak", "name": "Bone Barracks", "kind": "barracks", "model": "res://assets/environment/buildings/visual_candidates/astra_bone_barracks_r1/astra_bone_barracks_r1.gltf",
-		"command_art": "res://assets/ui/construction_art/vorthak_r1/bone_barracks.png",
+		"command_art": "res://assets/ui/construction_art/codex_fork_r1/bone_barracks_r1_fit.png",
 		"hp": 800, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 140, "stone": 40}, "build_time": 28, "grants_pop": 0,
 		"produces": ["vorthak_ash_thrall", "vorthak_cinder_spitter", "vorthak_gloom_hound", "vorthak_rift_blade"],
