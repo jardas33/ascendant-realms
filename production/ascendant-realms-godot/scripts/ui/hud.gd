@@ -786,6 +786,19 @@ func _mk_button(text: String, size: int = 15) -> Button:
 	return b
 
 
+func _mk_menu_button(text: String, size: int) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
+	var theme_res = load("res://assets/ui/theme.tres")
+	if theme_res is Theme:
+		b.theme = theme_res
+	b.add_theme_font_size_override("font_size", size)
+	b.add_theme_color_override("font_color", Color(0.96, 0.92, 0.82))
+	b.add_theme_color_override("font_hover_color", Color(1, 1, 0.9))
+	return b
+
+
 func _mk_title_label(text: String, size: int, col: Color) -> Label:
 	var l := _mk_label(text, size, col)
 	if _font:
@@ -5831,12 +5844,14 @@ func _on_game_over(victory: bool) -> void:
 	btn_row.add_theme_constant_override("separation", 24)
 	box.add_child(btn_row)
 
-	var continue_btn := _mk_button("Continue", 22)
+	# Plan 457: the result buttons are the game's menu buttons (title face,
+	# forged frame), like the pause menu's, not the HUD's plain body text.
+	var continue_btn := _mk_menu_button("Continue", 22)
 	continue_btn.custom_minimum_size = Vector2(200, 56)
 	continue_btn.pressed.connect(func(): emit_signal("return_to_menu"))
 	btn_row.add_child(continue_btn)
 
-	var replay_btn := _mk_button("Play Again", 22)
+	var replay_btn := _mk_menu_button("Play Again", 22)
 	replay_btn.custom_minimum_size = Vector2(200, 56)
 	replay_btn.pressed.connect(func(): emit_signal("replay"))
 	btn_row.add_child(replay_btn)
