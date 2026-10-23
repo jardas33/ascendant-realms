@@ -65,6 +65,9 @@ func _ready() -> void:
 	var opps: Array = cfg.get("opponents", [])
 	var ai_stage := _m20_begin("GAMEROOT_AI", "GAMEROOT_READY", 1)
 	for i in range(1, world.commanders.size()):
+		# Plan 479: a Map Editor test keeps the other side at home, idle.
+		if bool(cfg.get("sandbox", false)):
+			break
 		var ai = EnemyAIScript.new()
 		add_child(ai)
 		var diff := "normal"
@@ -306,6 +309,8 @@ func _return_to_menu() -> void:
 	Engine.time_scale = 1.0
 	# Campaign battles return to the saga map so the next chapter is one click away.
 	var back_to := "res://scenes/ui/campaign_map.tscn" if String(Match.get_config().get("mode", "")) in ["campaign", "endless"] else "res://scenes/ui/main_menu.tscn"
+	if bool(Match.get_config().get("sandbox", false)):
+		back_to = "res://scenes/ui/map_editor.tscn"
 	get_tree().change_scene_to_file(back_to)
 
 func _replay() -> void:

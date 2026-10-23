@@ -27,7 +27,7 @@ const TOOLS := [
 	["", "", ""],
 	["start", "Camp", "Click to place a camp. Two to four camps."],
 	["lume", "Lume Site", "A Lume site: holds pay income."],
-	["ruin", "Healing Shrine", "A shrine site: heals units near it."],
+	["ruin", "Shrine", "A shrine site: heals units near it."],
 	["watch", "Watchtower", "A watch site: gives sight around it."],
 	["vein", "Vein", "A vein: an outpost can be built on it."],
 	["deposit", "Deposit", "A loose deposit workers gather from."],
@@ -40,7 +40,12 @@ const TOOLS := [
 	["river", "River", "Click points, right-click to finish."],
 	["ford", "Ford", "Click on a river to make a crossing."],
 	["road", "Road", "Click points, right-click to finish."],
+	["", "", ""],
+	["asset", "Assets", "Pick a building, unit or model below, then click the map to place it. Test in 3D to see it in the game's light."],
 ]
+const ASSET_KINDS := ["building", "unit", "scenery"]
+const ASSET_KIND_NAMES := ["Buildings", "Units", "Scenery and models"]
+const SCENERY_DIRS := ["res://assets/environment", "res://assets/props", "res://assets/characters"]
 const LINE_TOOLS := ["ridge", "wall", "river", "road"]
 const BLOB_TOOLS := ["wood", "hill", "lake"]
 const MIRRORS := ["point", "flip_x", "flip_z", "none"]
@@ -71,6 +76,18 @@ var _status: Label
 var _problems: Label
 var _list: ItemList
 var _delete_button: Button
+var _asset_box: VBoxContainer
+var _asset_kind_opt: OptionButton
+var _asset_race_opt: OptionButton
+var _asset_list: ItemList
+var _asset_team := 0
+var _asset_yaw := 0.0
+var _asset_scale := 1.0
+var _asset_turn_label: Label
+var _asset_size_label: Label
+var _asset_size_slider: HSlider
+var _race_ids: Array = []
+var _scenery_cache: Array = []
 var _delete_armed := false
 
 var _draft: Array = []           # points of the line being drawn, [x, z]
@@ -82,6 +99,16 @@ var _next_group := 100
 
 func _ready() -> void:
 	doc = CM.new_doc()
+	# Back from Test in 3D: carry on with the same map.
+	var cfg: Dictionary = Match.get_config()
+	if bool(cfg.get("sandbox", false)):
+		var back := CM.load_doc(CM.path_for(String(cfg.get("map", ""))))
+		if not back.is_empty():
+			doc = back
+			for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "ridges", "rivers", "roads", "showcase"]:
+				for item in doc[list_name]:
+					_next_group = maxi(_next_group, int(item.get("g", 0)))
+		Match.set_config(Match.default_config())
 	_build()
 	_refresh_all()
 
@@ -156,19 +183,24 @@ func _build() -> void:
 	left.add_child(tools)
 	tools.add_child(_label("TOOLS", 18, GOLD, true))
 	var group := ButtonGroup.new()
+	# Two columns, so the asset list below has room.
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 4)
+	grid.add_theme_constant_override("v_separation", 4)
+	tools.add_child(grid)
 	for t in TOOLS:
 		if String(t[0]).is_empty():
-			var gap := Control.new()
-			gap.custom_minimum_size = Vector2(0, 6)
-			tools.add_child(gap)
 			continue
 		var b := _button(String(t[1]), _set_tool.bind(String(t[0])))
 		b.toggle_mode = true
 		b.button_group = group
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.custom_minimum_size = Vector2(0, 34)
+		b.custom_minimum_size = Vector2(128, 34)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.add_theme_font_size_override("font_size", 16)
+		b.clip_text = true
 		b.tooltip_text = String(t[2])
-		tools.add_child(b)
+		grid.add_child(b)
 		_tool_buttons[String(t[0])] = b
 	_kind_row = HBoxContainer.new()
 	_kind_row.add_theme_constant_override("separation", 4)
@@ -187,6 +219,7 @@ func _build() -> void:
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_hint.custom_minimum_size = Vector2(250, 0)
 	tools.add_child(_hint)
+	_build_asset_box(tools)
 
 	# The board, in the middle.
 	var right_w := 360.0
@@ -272,14 +305,140 @@ func _build() -> void:
 	_status = _label("", 16, GOLD_BRIGHT)
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(_status)
+	var play_row := HBoxContainer.new()
+	play_row.add_theme_constant_override("separation", 6)
 	var play := _button("Play in Skirmish", _on_play)
 	play.custom_minimum_size = Vector2(0, 46)
-	play.add_theme_font_size_override("font_size", 20)
-	col.add_child(play)
+	play.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	play.add_theme_font_size_override("font_size", 18)
+	play_row.add_child(play)
+	var test := _button("Test in 3D", _on_test)
+	test.custom_minimum_size = Vector2(0, 46)
+	test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	test.add_theme_font_size_override("font_size", 18)
+	test.tooltip_text = "Opens this map with no fog and the enemy staying home, to look at what you placed. Nothing is won or recorded."
+	play_row.add_child(test)
+	col.add_child(play_row)
 	col.add_child(_button("Back to Menu", _on_back))
 
 	_tool_buttons[tool].button_pressed = true
 	_kind_buttons[kind].button_pressed = true
+
+
+func _build_asset_box(parent: Control) -> void:
+	_asset_box = VBoxContainer.new()
+	_asset_box.add_theme_constant_override("separation", 4)
+	_asset_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parent.add_child(_asset_box)
+	_asset_kind_opt = OptionButton.new()
+	_asset_kind_opt.focus_mode = Control.FOCUS_NONE
+	_asset_kind_opt.add_theme_font_size_override("font_size", 16)
+	for n in ASSET_KIND_NAMES:
+		_asset_kind_opt.add_item(n)
+	_asset_kind_opt.item_selected.connect(func(_i: int): _refresh_assets())
+	_asset_box.add_child(_asset_kind_opt)
+	_asset_race_opt = OptionButton.new()
+	_asset_race_opt.focus_mode = Control.FOCUS_NONE
+	_asset_race_opt.add_theme_font_size_override("font_size", 16)
+	for rid in GameData.RACES:
+		if GameData.buildings_for_race(rid).is_empty() and GameData.units_for_race(rid).is_empty():
+			continue
+		_race_ids.append(rid)
+		_asset_race_opt.add_item(String(GameData.RACES[rid].get("name", rid)))
+	_asset_race_opt.item_selected.connect(func(_i: int): _refresh_assets())
+	_asset_box.add_child(_asset_race_opt)
+	_asset_list = ItemList.new()
+	_asset_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_asset_list.custom_minimum_size = Vector2(0, 120)
+	_asset_list.add_theme_font_size_override("font_size", 16)
+	_asset_box.add_child(_asset_list)
+	var team_row := HBoxContainer.new()
+	team_row.add_theme_constant_override("separation", 4)
+	var tgroup := ButtonGroup.new()
+	for i in 2:
+		var tb := _button(["Your side", "Enemy side"][i], func(): _asset_team = i)
+		tb.toggle_mode = true
+		tb.button_group = tgroup
+		tb.button_pressed = i == 0
+		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tb.add_theme_font_size_override("font_size", 15)
+		tb.custom_minimum_size = Vector2(0, 32)
+		team_row.add_child(tb)
+	_asset_box.add_child(team_row)
+	_asset_turn_label = _label("", 15, PARCHMENT)
+	_asset_box.add_child(_asset_turn_label)
+	_slider(_asset_box, 0.0, 345.0, 0.0, func(v: float):
+		_asset_yaw = v
+		_refresh_asset_labels()).step = 15.0
+	_asset_size_label = _label("", 15, PARCHMENT)
+	_asset_box.add_child(_asset_size_label)
+	_asset_size_slider = _slider(_asset_box, 0.25, 4.0, 1.0, func(v: float):
+		_asset_scale = v
+		_refresh_asset_labels())
+	_asset_size_slider.step = 0.25
+	_refresh_assets()
+	_refresh_asset_labels()
+
+
+func _refresh_asset_labels() -> void:
+	_asset_turn_label.text = "Turn: %d degrees (units and models)" % int(_asset_yaw)
+	_asset_size_label.text = "Size: %.2fx (models only)" % _asset_scale
+
+
+func _asset_kind() -> String:
+	return ASSET_KINDS[maxi(0, _asset_kind_opt.selected)]
+
+
+func _refresh_assets() -> void:
+	_asset_list.clear()
+	var kind := _asset_kind()
+	_asset_race_opt.visible = kind != "scenery"
+	_asset_size_label.visible = kind == "scenery"
+	_asset_size_slider.visible = kind == "scenery"
+	var rows: Array = []
+	if kind == "scenery":
+		for path in _scenery_paths():
+			rows.append([_model_name(path), path])
+	else:
+		var race: String = _race_ids[maxi(0, _asset_race_opt.selected)] if not _race_ids.is_empty() else "barrosan"
+		var ids: Array = GameData.buildings_for_race(race) if kind == "building" else GameData.units_for_race(race)
+		for id in ids:
+			var d: Dictionary = GameData.get_building(id) if kind == "building" else GameData.get_unit(id)
+			rows.append([String(d.get("name", id)), String(id)])
+	rows.sort_custom(func(a, b): return String(a[0]) < String(b[0]))
+	for r in rows:
+		_asset_list.add_item(String(r[0]))
+		_asset_list.set_item_metadata(_asset_list.item_count - 1, String(r[1]))
+		_asset_list.set_item_tooltip(_asset_list.item_count - 1, String(r[1]))
+	if _asset_list.item_count > 0:
+		_asset_list.select(0)
+
+
+## Every model file in the art folders (an exported game lists .import files).
+func _scenery_paths() -> Array:
+	if not _scenery_cache.is_empty():
+		return _scenery_cache
+	var found := {}
+	var stack: Array = SCENERY_DIRS.duplicate()
+	while not stack.is_empty():
+		var d: String = stack.pop_back()
+		var dir := DirAccess.open(d)
+		if dir == null:
+			continue
+		for sub in dir.get_directories():
+			stack.append(d + "/" + sub)
+		for f in dir.get_files():
+			var f2: String = f.trim_suffix(".import").trim_suffix(".remap")
+			if f2.ends_with(".glb") or f2.ends_with(".gltf"):
+				found[d + "/" + f2] = true
+	_scenery_cache = found.keys()
+	_scenery_cache.sort()
+	return _scenery_cache
+
+
+func _model_name(path: String) -> String:
+	var folder := path.get_base_dir().get_file()
+	return "%s  (%s)" % [path.get_file().get_basename().replace("_", " ").capitalize(), folder.replace("_", " ")]
 
 
 func _option(parent: Control, caption: String, items: Array) -> OptionButton:
@@ -358,6 +517,7 @@ func _refresh_tool() -> void:
 		if String(t[0]) == tool:
 			_hint.text = String(t[2])
 	_kind_row.visible = tool in ["vein", "deposit"]
+	_asset_box.visible = tool == "asset"
 	_draft.clear()
 	_overlay.queue_redraw()
 
@@ -477,7 +637,10 @@ func _press(w: Vector2) -> void:
 				hit = _pick_line(w)
 			if not hit.is_empty():
 				_push_undo()
-				_remove_group(String(hit["list"]), int(hit["g"]))
+				if hit["list"] == "fords":
+					_remove_ford(hit["item"])
+				else:
+					_remove_group(String(hit["list"]), int(hit["g"]))
 				_refresh_board()
 		"start":
 			var n: int = (doc["starts"] as Array).size()
@@ -526,6 +689,17 @@ func _press(w: Vector2) -> void:
 			_overlay.queue_redraw()
 		"ford":
 			_add_ford(w)
+		"asset":
+			var sel := _asset_list.get_selected_items()
+			if sel.is_empty():
+				_status.text = "Pick something from the list first."
+				return
+			_push_undo()
+			var kind := _asset_kind()
+			doc["showcase"].append({"kind": kind, "id": String(_asset_list.get_item_metadata(sel[0])),
+				"name": _asset_list.get_item_text(sel[0]), "x": w.x, "z": w.y, "yaw": _asset_yaw,
+				"scale": _asset_scale if kind == "scenery" else 1.0, "team": _asset_team, "g": _new_group()})
+			_overlay.queue_redraw()
 
 
 func _release(_w: Vector2) -> void:
@@ -669,7 +843,7 @@ func _pick(w: Vector2) -> Dictionary:
 	var reach := maxf(8.0, _half() * 0.05)
 	var best := {}
 	var best_d := INF
-	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes"]:
+	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "showcase"]:
 		for item in doc[list_name]:
 			var p := Vector2(float(item.get("x", 0.0)), float(item.get("z", 0.0)))
 			var r := reach
@@ -702,6 +876,21 @@ func _pick_line(w: Vector2) -> Dictionary:
 			if Vector2(float(f["x"]), float(f["z"])).distance_to(w) < float(f.get("half", 10.0)):
 				return {"list": "fords", "g": -1, "item": f, "river": river}
 	return best
+
+
+## Removes a ford and, when mirroring, the ford nearest its twin spot.
+func _remove_ford(f: Dictionary) -> void:
+	var p := Vector2(float(f["x"]), float(f["z"]))
+	for river in doc["rivers"]:
+		river["fords"].erase(f)
+	if not _has_twin(p):
+		return
+	var t := _twin(p)
+	for river in doc["rivers"]:
+		for g in river["fords"]:
+			if Vector2(float(g["x"]), float(g["z"])).distance_to(t) < 6.0:
+				river["fords"].erase(g)
+				return
 
 
 func _remove_group(list_name: String, g: int) -> void:
@@ -741,6 +930,34 @@ func _draw_overlay() -> void:
 		var p := _to_px(Vector2(float(s["x"]), float(s["z"])))
 		var col := Color(0.75, 0.6, 1.0) if s.get("type") == "lume" else (Color(0.5, 1.0, 0.6) if s.get("type") == "ruin" else Color(0.6, 0.85, 1.0))
 		_overlay.draw_arc(p, 11.0, 0.0, TAU, 20, col, 2.0, true)
+	# Assets placed for testing: a square for a building, a dot for a unit, a
+	# diamond for a model, with a tick for the way it faces and its name.
+	var labelled: Array = []
+	for s in doc.get("showcase", []):
+		var p := _to_px(Vector2(float(s["x"]), float(s["z"])))
+		var kind := String(s.get("kind", ""))
+		var col: Color = CAMP_COLORS[clampi(int(s.get("team", 0)), 0, 3)] if kind != "scenery" else Color(0.55, 0.9, 0.6)
+		match kind:
+			"building":
+				_overlay.draw_rect(Rect2(p - Vector2(8, 8), Vector2(16, 16)), col)
+				_overlay.draw_rect(Rect2(p - Vector2(8, 8), Vector2(16, 16)), Color(0, 0, 0, 0.8), false, 2.0)
+			"unit":
+				_overlay.draw_circle(p, 6.5, Color(0, 0, 0, 0.8))
+				_overlay.draw_circle(p, 5.0, col)
+			_:
+				_overlay.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -8), p + Vector2(8, 0), p + Vector2(0, 8), p + Vector2(-8, 0)]), col)
+		var yaw := deg_to_rad(float(s.get("yaw", 0.0)))
+		_overlay.draw_line(p, p + Vector2(sin(yaw), cos(yaw)) * 14.0, Color.WHITE, 2.0, true)
+		var nm := String(s.get("name", "")).get_slice("  (", 0)
+		# A group of the same piece is named once.
+		var crowded := false
+		for q in labelled:
+			if q[0] == nm and (q[1] as Vector2).distance_to(p) < 60.0:
+				crowded = true
+		if crowded:
+			continue
+		labelled.append([nm, p])
+		_overlay.draw_string(get_theme_default_font(), p + Vector2(11, 5), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1, 1, 1, 0.92))
 	# Line being drawn.
 	if not _draft.is_empty():
 		var pts := PackedVector2Array()
@@ -761,6 +978,33 @@ func _draw_overlay() -> void:
 				_overlay.draw_polyline(tw, Color(col, 0.4), wpx, true)
 		for p in pts:
 			_overlay.draw_circle(p, 3.5, Color.WHITE)
+	# What Move or Erase would take, and its mirror twin.
+	if _hover != Vector2.INF and _drag.is_empty() and tool in ["move", "erase"]:
+		var hit := _pick(_hover)
+		if hit.is_empty() and tool == "erase":
+			hit = _pick_line(_hover)
+		var mark := Color(1.0, 0.42, 0.32, 0.95) if tool == "erase" else Color(1.0, 0.86, 0.45, 0.95)
+		for it in [hit.get("item"), hit.get("twin")]:
+			if not (it is Dictionary):
+				continue
+			if it.has("points"):
+				var pts := PackedVector2Array()
+				for q in it["points"]:
+					pts.append(_to_px(Vector2(float(q[0]), float(q[1]))))
+				_overlay.draw_polyline(pts, mark, 3.0, true)
+			else:
+				var r := 14.0
+				if it.has("rx"):
+					r = _m_to_px(maxf(float(it["rx"]), float(it["rz"]))) + 4.0
+				_overlay.draw_arc(_to_px(Vector2(float(it["x"]), float(it["z"]))), r, 0.0, TAU, 36, mark, 2.5, true)
+		if hit.get("list") == "rivers" or hit.get("list") == "ridges" or hit.get("list") == "roads":
+			# A drawn line's twin shares its group.
+			for line in doc[hit["list"]]:
+				if line != hit["item"] and int(line.get("g", -2)) == int(hit["g"]):
+					var pts := PackedVector2Array()
+					for q in line["points"]:
+						pts.append(_to_px(Vector2(float(q[0]), float(q[1]))))
+					_overlay.draw_polyline(pts, mark, 3.0, true)
 	# Cursor ghost.
 	if _hover != Vector2.INF and _drag.is_empty():
 		var hp := _to_px(_hover)
@@ -794,7 +1038,7 @@ func _on_size(i: int) -> void:
 	var new_half: float = CM.SIZES[i]
 	var k := new_half / old
 	# Everything keeps its place relative to the field.
-	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes"]:
+	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "showcase"]:
 		for item in doc[list_name]:
 			item["x"] = float(item["x"]) * k
 			item["z"] = float(item["z"]) * k
@@ -868,7 +1112,7 @@ func _on_load() -> void:
 	_push_undo()
 	doc = loaded
 	# Groups in the file continue from the highest one used.
-	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "ridges", "rivers", "roads"]:
+	for list_name in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "ridges", "rivers", "roads", "showcase"]:
 		for item in doc[list_name]:
 			_next_group = maxi(_next_group, int(item.get("g", 0)))
 	_status.text = "Loaded \"%s\"." % String(doc.get("name", id))
@@ -906,6 +1150,27 @@ func _on_play() -> void:
 		get_tree().change_scene_to_file("res://scenes/ui/hero_creation.tscn")
 		return
 	get_tree().change_scene_to_file("res://scenes/ui/skirmish_setup.tscn")
+
+
+## The map as a quiet test ground: no fog, the enemy idle at home, plenty of
+## resources, and nothing paid or recorded. Leaving the match comes back here.
+func _on_test() -> void:
+	var p: Array = CM.problems(doc)
+	if not p.is_empty():
+		_status.text = "Fix the problems above first."
+		return
+	if not _on_save():
+		return
+	var cfg: Dictionary = Match.default_config()
+	cfg["map"] = String(doc["id"])
+	cfg["player_race"] = String(ProfileManager.hero().get("race", "barrosan")) if ProfileManager.has_hero() else "barrosan"
+	cfg["opponents"] = [{"race": "vorthak", "difficulty": "easy"}]
+	cfg["start_resources"] = "rich"
+	cfg["no_fog"] = true
+	cfg["sandbox"] = true
+	Match.set_config(cfg)
+	Sfx.play("select")
+	get_tree().change_scene_to_file("res://scenes/game_world.tscn")
 
 
 func _on_back() -> void:

@@ -2,7 +2,7 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
-## Review 35, 2026-10-23: Pithold, Careto Hall and Candle Chapel are in (plan 478)
+## Review 35, 2026-10-23: Pithold, Careto Hall and Candle Chapel are in (plan 479)
 
 Read `codex/fork-construction-art-r1` (274272de Pithold, 7823c4b0 Careto Hall, 0bca1244 audit, c63c54a9 Candle Chapel). Thank you; all three match their models closely and add nothing the models lack.
 

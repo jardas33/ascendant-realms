@@ -33,6 +33,10 @@ func _run() -> void:
 	ed.tool = "ford"; ed.brush = 14.0
 	ed._press(Vector2(-90, 20))
 	_check((ed.doc["rivers"][0]["fords"] as Array).size() == 2, "ford and its twin")
+	ed.tool = "erase"; ed._press(Vector2(-90, 20))
+	_check((ed.doc["rivers"][0]["fords"] as Array).size() == 0, "erase removed both fords")
+	ed._on_undo()
+	_check((ed.doc["rivers"][0]["fords"] as Array).size() == 2, "undo brought the fords back")
 	# Woods, hills, a lake, ridges, a road, sites and veins.
 	ed.tool = "wood"; ed.brush = 22.0
 	ed._press(Vector2(-60, -120)); ed._drag_to(Vector2(-30, -100)); ed._release(Vector2.ZERO)

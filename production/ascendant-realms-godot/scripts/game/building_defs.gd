@@ -147,6 +147,7 @@ static func get_all() -> Dictionary:
 	# ---------------- GRIMTUSK HORDE ----------------
 	"grimtusk_stronghold": {
 		"race": "grimtusk", "name": "Ironmaw Pithold", "kind": "main", "model": _b("grimtusk_stronghold"),
+		"command_art": "res://assets/ui/construction_art/codex_fork_r1/grimtusk_pithold_r2_fit.png",  # plan 478: Codex painting
 		"hp": 2000, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 340, "stone": 190}, "build_time": 58, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["grimtusk_peon"], "drop_off": true, "is_hq": true,
@@ -350,6 +351,7 @@ static func get_all() -> Dictionary:
 	# ---------------- HOLLOW LEGION ----------------
 	"hollow_necropolis": {
 		"race": "hollow", "name": "Candle Chapel", "kind": "main", "model": _b("hollow_necropolis"),
+		"command_art": "res://assets/ui/construction_art/codex_fork_r1/candle_chapel_r1_fit.png",  # plan 478: Codex painting
 		"hp": 1950, "armor_class": "fortified", "armor": 8, "footprint": 7.0,
 		"cost": {"timber": 330, "stone": 185}, "build_time": 56, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["hollow_gravedigger"], "drop_off": true, "is_hq": true,
@@ -393,6 +395,7 @@ static func get_all() -> Dictionary:
 	# ---------------- FROSTBORN JARLS ----------------
 	"frostborn_mead_hall": {
 		"race": "frostborn", "name": "Careto Hall", "kind": "main", "model": _b("frostborn_mead_hall"),
+		"command_art": "res://assets/ui/construction_art/codex_fork_r1/careto_hall_r1_fit.png",  # plan 478: Codex painting
 		"hp": 2200, "armor_class": "fortified", "armor": 10, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["frostborn_thrall"], "drop_off": true, "is_hq": true,

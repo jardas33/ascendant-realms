@@ -158,7 +158,7 @@ func _tick_lume_surge(elapsed: int) -> void:
 			var cmd = commanders[team]
 			cmd.add_resources("gold", 200)
 			cmd.add_resources("food", 200)
-			if team == player_team:
+			if team == player_team and not bool(Match.get_config().get("sandbox", false)):
 				ProfileManager.add_xp(80.0 + float(ProfileManager.hero().get("level", 1)) * 6.0)
 				emit_signal("alert", "The Lume's gift is yours: 200 gold, 200 food and your hero grows wiser.", _surge_pos)
 				Sfx.play("levelup", -4.0)
@@ -172,7 +172,7 @@ func _pick_bounty() -> void:
 	# "How to Play" has no bounty: six seconds into the first lesson (move the
 	# camera) it told a new player to win losing no more than twelve units,
 	# and the lesson ends at the Lume Spire, not with a victory to pay it on.
-	if String(Match.get_config().get("mode", "")) == "tutorial":
+	if String(Match.get_config().get("mode", "")) == "tutorial" or bool(Match.get_config().get("sandbox", false)):
 		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sim_seed_for(4242)
@@ -4380,10 +4380,46 @@ func _setup_commanders() -> void:
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
 	_apply_start_twists()
+	_place_showcase()
 	for b in all_buildings():
 		_light_hearth(b)
 	Unit.damage_numbers_on = bool(ProfileManager.settings().get("damage_numbers", true))
 	_m20_end(stage)
+
+## Plan 479: pieces a Map Editor map asks for, to look at in the game's own
+## light. Buildings and units are real (they animate, can be selected and
+## ordered); scenery is a plain model. Buildings keep the game's facing.
+func _place_showcase() -> void:
+	var items: Array = map.get("showcase", [])
+	if items.is_empty():
+		return
+	var holder := Node3D.new()
+	holder.name = "Showcase"
+	add_child(holder)
+	for s in items:
+		var pos: Vector3 = s.get("pos", Vector3.ZERO)
+		var team := clampi(int(s.get("team", 0)), 0, commanders.size() - 1)
+		var yaw := deg_to_rad(float(s.get("yaw", 0.0)))
+		var id := String(s.get("id", ""))
+		match String(s.get("kind", "")):
+			"building":
+				var bdef := GameData.get_building(id).duplicate()
+				if bdef.is_empty():
+					continue
+				bdef["id"] = id
+				_create_building(bdef, team, pos, true)
+			"unit":
+				var u = spawn_unit(id, team, pos)
+				if u:
+					u.rotation.y = yaw
+			"scenery":
+				if not ResourceLoader.exists(id):
+					continue
+				var inst = load(id).instantiate()
+				holder.add_child(inst)
+				inst.position = pos
+				inst.rotation.y = yaw
+				inst.scale = Vector3.ONE * clampf(float(s.get("scale", 1.0)), 0.1, 10.0)
 
 ## Enemy heroes used to be bare stat blocks with no spells. They now get a
 ## race-flavoured spell kit by difficulty (none on Easy, up to three on
@@ -6417,7 +6453,8 @@ func _end_game(victory: bool, reason: String = "Conquest") -> void:
 	if bounty_won:
 		xp *= 1.2
 	var level_before := int(ProfileManager.hero().get("level", 1)) if ProfileManager.has_hero() else 0
-	if not _profile_recorded and ProfileManager.has_hero():
+	# Plan 479: a Map Editor test (sandbox) never pays out or counts as a battle.
+	if not _profile_recorded and ProfileManager.has_hero() and not bool(Match.get_config().get("sandbox", false)):
 		_profile_recorded = true
 		_record_retinue(victory)
 		profile_record_count += 1

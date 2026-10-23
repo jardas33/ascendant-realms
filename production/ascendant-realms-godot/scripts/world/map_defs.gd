@@ -372,6 +372,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"ruins": a.get("ruins", []),
 		"farmsteads": a.get("farmsteads", []),
 		"dam_works": a.get("dam_works", []),
+		"showcase": a.get("showcase", []),
 		"roads": a["roads"],
 		"authored": true,
 	}

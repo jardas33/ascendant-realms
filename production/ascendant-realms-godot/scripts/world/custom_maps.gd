@@ -43,6 +43,7 @@ static func new_doc(name: String = "New Battlefield") -> Dictionary:
 		"ridges": [],
 		"rivers": [],
 		"roads": [],
+		"showcase": [],
 	}
 
 
@@ -115,7 +116,7 @@ static func load_doc(path: String) -> Dictionary:
 		doc["id"] = path.get_file().get_basename()
 	if not String(doc["id"]).begins_with(ID_PREFIX):
 		doc["id"] = ID_PREFIX + String(doc["id"])
-	for key in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "ridges", "rivers", "roads"]:
+	for key in ["starts", "sites", "veins", "deposits", "woods", "hills", "lakes", "ridges", "rivers", "roads", "showcase"]:
 		if not (doc.get(key) is Array):
 			doc[key] = []
 	var size := float(doc.get("size", 220.0))
@@ -215,9 +216,14 @@ static func to_authored(doc: Dictionary) -> Dictionary:
 		var pts := _points(r)
 		for i in pts.size() - 1:
 			roads.append(Vector4(pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y))
+	var showcase: Array = []
+	for s in doc.get("showcase", []):
+		showcase.append({"kind": String(s.get("kind", "")), "id": String(s.get("id", "")), "pos": _v3(s),
+			"yaw": float(s.get("yaw", 0.0)), "scale": float(s.get("scale", 1.0)), "team": int(s.get("team", 0))})
 	return {
 		"size": size,
 		"starts": starts,
+		"showcase": showcase,
 		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
 		"bridges": [], "ruins": [], "farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
