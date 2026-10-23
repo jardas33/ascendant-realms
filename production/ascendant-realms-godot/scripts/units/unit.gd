@@ -4186,13 +4186,15 @@ func _show_hero_title() -> void:
 		return
 	var tl := Label3D.new()
 	tl.name = "HeroTitle"
-	tl.text = "%s, %s" % [String(ProfileManager.hero().get("name", "")), title]
+	# Plan 436: the name alone over the field, as in Codex's composition R2;
+	# the earned title is shown over the hero's portrait in the HUD.
+	tl.text = String(ProfileManager.hero().get("name", ""))
 	tl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	tl.no_depth_test = true
 	tl.fixed_size = true
 	tl.pixel_size = 0.0008
 	# Plan 322: 20 px read as a smudge over the hero on a laptop.
-	tl.font_size = 30
+	tl.font_size = 28
 	tl.outline_size = 16
 	tl.modulate = Color(1.0, 0.86, 0.5)
 	tl.outline_modulate = Color(0.03, 0.015, 0.0, 1.0)

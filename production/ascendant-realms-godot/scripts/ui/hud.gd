@@ -2876,6 +2876,12 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 	portrait_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_plinth.add_child(portrait_stack)
 	var portrait_role := "ASCENDANT" if u.is_hero else ("WORKFORCE" if u.is_worker else "WAR HOST")
+	# Plan 436: the player's own hero wears its earned title here; over the
+	# field it goes by its name alone.
+	if u.is_hero and is_instance_valid(_commander) and u.commander == _commander and ProfileManager.has_hero():
+		var earned := String(ProfileManager.hero().get("title", ""))
+		if earned != "":
+			portrait_role = earned.to_upper()
 	var portrait_overline := _mk_title_label(portrait_role, 11, role_accent.lightened(0.14))
 	portrait_overline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_stack.add_child(portrait_overline)
