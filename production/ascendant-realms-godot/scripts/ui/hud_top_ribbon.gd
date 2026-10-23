@@ -98,8 +98,14 @@ static func draw_band(ci: CanvasItem, rect: Rect2, left_cap: bool, right_cap: bo
 
 static func _finial(ci: CanvasItem, c: Vector2) -> void:
 	var gem := PackedVector2Array([c + Vector2(0, -7), c + Vector2(5, 0), c + Vector2(0, 7), c + Vector2(-5, 0)])
-	ci.draw_colored_polygon(gem, Color(0.36, 0.08, 0.05, 1.0))
-	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -7), c + Vector2(5, 0), c + Vector2(0, -1), c + Vector2(-5, 0)]), Color(0.78, 0.22, 0.12, 0.85))
+	var deep := Color(0.36, 0.08, 0.05, 1.0)
+	var lit := Color(0.78, 0.22, 0.12, 0.85)
+	var hue: float = load("res://scripts/ui/hud_painted_rim.gd").gem_hue
+	if hue >= 0.0:
+		deep = Color.from_hsv(hue, deep.s, deep.v)
+		lit = Color.from_hsv(hue, lit.s, lit.v, lit.a)
+	ci.draw_colored_polygon(gem, deep)
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -7), c + Vector2(5, 0), c + Vector2(0, -1), c + Vector2(-5, 0)]), lit)
 	var rim := PackedVector2Array(gem)
 	rim.append(gem[0])
 	ci.draw_polyline(rim, Color(0.92, 0.72, 0.40, 1.0), 1.4, true)
