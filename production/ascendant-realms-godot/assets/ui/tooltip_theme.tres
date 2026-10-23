@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3]
+[gd_resource type="Theme" load_steps=12 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/ui/hud_kit/tooltip_frame.png" id="tip_frame"]
 
@@ -63,6 +63,82 @@ texture_margin_bottom = 14.0
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 
+[sub_resource type="StyleBoxFlat" id="sbar_track"]
+content_margin_left = 3.0
+content_margin_top = 4.0
+content_margin_right = 3.0
+content_margin_bottom = 4.0
+bg_color = Color(0.035, 0.032, 0.03, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.42, 0.31, 0.17, 0.75)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sbar_grab"]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.55, 0.40, 0.20, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.68, 0.38, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="sbar_grab_hi"]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.68, 0.51, 0.26, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.84, 0.52, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="sbar_grab_down"]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.78, 0.60, 0.30, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.90, 0.62, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 2
+
 [resource]
 TooltipLabel/colors/font_color = Color(0.94, 0.9, 0.8, 1)
 TooltipLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
@@ -78,3 +154,13 @@ PopupMenu/colors/font_hover_color = Color(1, 0.93, 0.72, 1)
 PopupMenu/colors/font_separator_color = Color(0.86, 0.68, 0.36, 1)
 PopupMenu/colors/font_disabled_color = Color(0.5, 0.48, 0.44, 0.8)
 PopupMenu/constants/v_separation = 6
+VScrollBar/styles/scroll = SubResource("sbar_track")
+VScrollBar/styles/scroll_focus = SubResource("sbar_track")
+VScrollBar/styles/grabber = SubResource("sbar_grab")
+VScrollBar/styles/grabber_highlight = SubResource("sbar_grab_hi")
+VScrollBar/styles/grabber_pressed = SubResource("sbar_grab_down")
+HScrollBar/styles/scroll = SubResource("sbar_track")
+HScrollBar/styles/scroll_focus = SubResource("sbar_track")
+HScrollBar/styles/grabber = SubResource("sbar_grab")
+HScrollBar/styles/grabber_highlight = SubResource("sbar_grab_hi")
+HScrollBar/styles/grabber_pressed = SubResource("sbar_grab_down")
