@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=5 format=3]
+[gd_resource type="Theme" load_steps=7 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/hud_kit/tooltip_frame.png" id="tip_frame"]
 
 [sub_resource type="StyleBoxFlat" id="tip_panel"]
 content_margin_left = 12.0
@@ -48,11 +50,24 @@ color = Color(0.78, 0.62, 0.34, 0.55)
 grow_begin = -6.0
 grow_end = -6.0
 
+[sub_resource type="StyleBoxTexture" id="tip_forged"]
+content_margin_left = 15.0
+content_margin_top = 11.0
+content_margin_right = 15.0
+content_margin_bottom = 12.0
+texture = ExtResource("tip_frame")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+
 [resource]
 TooltipLabel/colors/font_color = Color(0.94, 0.9, 0.8, 1)
 TooltipLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
 TooltipLabel/font_sizes/font_size = 16
-TooltipPanel/styles/panel = SubResource("tip_panel")
+TooltipPanel/styles/panel = SubResource("tip_forged")
 PopupMenu/styles/panel = SubResource("menu_panel")
 PopupMenu/styles/hover = SubResource("menu_hover")
 PopupMenu/styles/separator = SubResource("menu_rule")

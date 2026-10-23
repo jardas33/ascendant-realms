@@ -2053,8 +2053,7 @@ func _draw_minimap() -> void:
 		if overview is Texture2D:
 			# The real battlefield, rendered top-down at match start, dimmed a
 			# touch so live markers stay the brightest thing on the map.
-			_minimap.draw_texture_rect(overview, Rect2(Vector2.ZERO, size), false, Color(0.86, 0.86, 0.84))
-			_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.03, 0.03, 0.10), true)
+			_minimap.draw_texture_rect(overview, Rect2(Vector2.ZERO, size), false, Color(0.94, 0.94, 0.91))
 		else:
 			_ensure_minimap_background()
 			if is_instance_valid(_minimap_background):
@@ -2070,6 +2069,7 @@ func _draw_minimap() -> void:
 		_minimap.draw_line(bridge_p - Vector2(12, 0), bridge_p + Vector2(12, 0), Color(0.92, 0.72, 0.30, 1.0), 5.0, true)
 		_minimap.draw_line(bridge_p - Vector2(9, -3), bridge_p + Vector2(9, -3), Color(0.30, 0.20, 0.10, 0.95), 1.0, true)
 		_minimap.draw_line(bridge_p - Vector2(9, 3), bridge_p + Vector2(9, 3), Color(0.30, 0.20, 0.10, 0.95), 1.0, true)
+	_draw_minimap_inset(size)
 	_draw_minimap_frame(size)
 
 	if not is_instance_valid(world):
@@ -2126,7 +2126,7 @@ func _draw_minimap() -> void:
 	for resource in world.get_tree().get_nodes_in_group("resources"):
 		if not is_instance_valid(resource) or bool(resource.get("depleted")) or (world.has_method("is_player_visible") and not world.is_player_visible(resource)):
 			continue
-		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)))
+		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)), str(resource.resource_kind))
 
 	# Veins: a ring in the resource's colour, filled when someone holds it,
 	# pulsing gold during a Lume flare.
@@ -2140,8 +2140,8 @@ func _draw_minimap() -> void:
 			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 180.0)
 			_minimap.draw_arc(vp, 8.0 + pulse * 3.0, 0.0, TAU, 20, Color(1.0, 0.85, 0.35, 0.9), 2.0, true)
 		# A small pip, not a big ring: twelve rings crowded the whole field.
-		_minimap.draw_circle(vp, 3.6, Color(0.02, 0.02, 0.03, 0.85))
-		_minimap.draw_circle(vp, 2.6, Color(vcol, 0.9))
+		# Plan 448: drawn in its store's shape (tree, block, nugget, sheaf).
+		_draw_minimap_resource(vp, vcol, String(vein.kind))
 		if not vein.is_free():
 			_minimap.draw_arc(vp, 4.6, 0.0, TAU, 12, GameData.TEAM_COLORS.get(int(vein.outpost.team), Color.WHITE), 1.4, true)
 
@@ -2287,6 +2287,19 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 			_minimap.draw_line(Vector2(7.0, shore_y), Vector2(size.x - 7.0, shore_y), MINIMAP_WATER_SHORE, 1.25, true)
 	# Roads are baked into the background at the terrain shader's actual width.
 
+## Plan 448: the map sits recessed in its housing. A soft shade along the
+## edges (deeper at the top, where the housing lip overhangs) and a thin lit
+## line at the bottom give it depth instead of a flat picture pasted in.
+func _draw_minimap_inset(size: Vector2) -> void:
+	for i in 7:
+		var t := float(i)
+		var a := 0.20 * pow(1.0 - t / 7.0, 1.6)
+		_minimap.draw_rect(Rect2(0.0, t * 1.5, size.x, 1.5), Color(0.0, 0.0, 0.0, a * 1.3), true)
+		_minimap.draw_rect(Rect2(t * 1.5, 0.0, 1.5, size.y), Color(0.0, 0.0, 0.0, a), true)
+		_minimap.draw_rect(Rect2(size.x - (t + 1.0) * 1.5, 0.0, 1.5, size.y), Color(0.0, 0.0, 0.0, a), true)
+		_minimap.draw_rect(Rect2(0.0, size.y - (t + 1.0) * 1.5, size.x, 1.5), Color(0.0, 0.0, 0.0, a * 0.7), true)
+	_minimap.draw_line(Vector2(2.0, size.y - 0.5), Vector2(size.x - 2.0, size.y - 0.5), Color(0.95, 0.80, 0.50, 0.22), 1.0)
+
 func _draw_minimap_frame(size: Vector2) -> void:
 	# The forged housing is the frame. A quiet compass mark gives orientation
 	# without putting another bright rectangle over the terrain.
@@ -2344,10 +2357,30 @@ func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero
 		army_points.append(army_points[0])
 		_minimap.draw_polyline(army_points, Color(1, 1, 1, 0.76), 1.0, true)
 
-func _draw_minimap_resource(p: Vector2, col: Color) -> void:
-	_minimap.draw_circle(p, 3.8, Color(0.03, 0.04, 0.04, 0.82))
-	_minimap.draw_circle(p, 2.5, col)
-	_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
+func _draw_minimap_resource(p: Vector2, col: Color, kind: String = "") -> void:
+	# Plan 448: each store has its own little shape (a tree for timber, a
+	# block for stone, a nugget for gold, a round sheaf for food), so a field
+	# of resources reads without telling four yellows and greens apart.
+	var ink := Color(0.03, 0.04, 0.04, 0.85)
+	match kind:
+		"timber":
+			var tree := PackedVector2Array([p + Vector2(0, -3.6), p + Vector2(3.2, 2.6), p + Vector2(-3.2, 2.6)])
+			_minimap.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -5.4), p + Vector2(4.8, 3.8), p + Vector2(-4.8, 3.8)]), ink)
+			_minimap.draw_colored_polygon(tree, col)
+			_minimap.draw_line(p + Vector2(0, -2.0), p + Vector2(-1.4, 1.4), Color(1, 1, 1, 0.35), 0.8, true)
+		"stone":
+			_minimap.draw_rect(Rect2(p - Vector2(3.8, 3.4), Vector2(7.6, 6.8)), ink, true)
+			_minimap.draw_rect(Rect2(p - Vector2(2.6, 2.2), Vector2(5.2, 4.4)), col, true)
+			_minimap.draw_line(p + Vector2(-2.2, -1.8), p + Vector2(2.2, -1.8), Color(1, 1, 1, 0.45), 0.8)
+		"gold":
+			var d := PackedVector2Array([p + Vector2(0, -3.0), p + Vector2(3.0, 0), p + Vector2(0, 3.0), p + Vector2(-3.0, 0)])
+			_minimap.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -4.6), p + Vector2(4.6, 0), p + Vector2(0, 4.6), p + Vector2(-4.6, 0)]), ink)
+			_minimap.draw_colored_polygon(d, col)
+			_minimap.draw_line(p + Vector2(-1.2, -1.0), p + Vector2(0.4, -2.0), Color(1, 1, 1, 0.7), 0.8, true)
+		_:
+			_minimap.draw_circle(p, 3.8, ink)
+			_minimap.draw_circle(p, 2.5, col)
+			_minimap.draw_line(p + Vector2(-1.0, -1.0), p + Vector2(1.0, 1.0), Color(1, 1, 1, 0.48), 0.8, true)
 
 
 func _minimap_resource_color(kind: String) -> Color:

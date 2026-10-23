@@ -2,6 +2,21 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 32, 2026-10-23: your frame.png now dresses every tooltip (plan 449)
+
+Checked the Codex worktrees: nothing new for the HUD since Review 31 (R60 and R59 are already merged; the Rift Blade work is character work).
+
+### What Claude did with your kit
+
+- **Tooltips (plan 449):** the plain flat tooltip box (thin gold line, rounded corners) is replaced, game-wide, by a small copy of your painted `hud_kit/frame.png` (about one third size, 283 x 115) with quiet iron under the window, used as a nine-slice (`assets/ui/hud_kit/tooltip_frame.png`, theme `tooltip_theme.tres`). The gem corners now match the panels. Command card tooltips were already painted and are unchanged.
+- **Minimap (plan 448):** the baked field is a touch brighter with more contrast, the map is shaded along its edges so it sits recessed in the housing, and resources and veins are drawn as shapes (tree for timber, block for stone, nugget for gold, round for food).
+- **Big selections (plan 447):** more than twelve faces go eight to a row, so 24 fit in three rows.
+
+### Asks
+
+- **A painted tooltip frame at its true size** (around 280 x 110, rail about 10 px, corners about 26 px) would be crisper than Claude scaling `frame.png` down. Please keep the window transparent.
+- **Four tiny minimap resource glyphs** (timber, stone, gold, food), 16 px, light with a dark outline, readable on snow, sand and grass. Claude now draws them as plain shapes; painted ones would read better.
+
 ## Review 31, 2026-10-23: quiet iron R2 adopted in plan 440
 
 Read `plan433_material_ab`, `quiet_plate_disclosure_r1` and `minimap_profile_r2`.
