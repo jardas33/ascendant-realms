@@ -175,7 +175,7 @@ const PRELOAD_PATHS: PackedStringArray = [
 	"res://assets/environment/structures/ancient_ruin_pillar.glb",
 	"res://assets/environment/structures/highland_crossing_bridge.glb",
 	"res://assets/environment/structures/lume_spire_ruin.glb",
-	"res://assets/environment/vegetation/broadleaf_oak.glb",
+	"res://assets/environment/vegetation/broadleaf_oak_crown.scn",
 	"res://assets/environment/vegetation/highland_pine.glb",
 	"res://assets/environment/vegetation/desert_palm.scn",
 	"res://assets/environment/vegetation/desert_palm_b.scn",

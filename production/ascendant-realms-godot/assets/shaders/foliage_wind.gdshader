@@ -39,6 +39,8 @@ uniform vec3 withered_color : source_color = vec3(0.42, 0.36, 0.30);
 // the roots of the broadleaf trees bright green.
 uniform vec3 bark_color : source_color = vec3(0.50, 0.40, 0.31);
 uniform float bark_top = 0.34;
+// Plan 420: leaf cards cut from a painted spray; 1 discards the cut-outs.
+uniform float alpha_cut = 0.0;
 
 varying float v_h;
 varying float v_seed;
@@ -73,7 +75,11 @@ void vertex() {
 }
 
 void fragment() {
-	vec3 base = has_texture ? texture(albedo_tex, UV).rgb : vec3(1.0);
+	vec4 tex_sample = has_texture ? texture(albedo_tex, UV) : vec4(1.0);
+	if (alpha_cut > 0.5 && tex_sample.a < 0.45) {
+		discard;
+	}
+	vec3 base = tex_sample.rgb;
 	if (use_vertex_color) {
 		base *= COLOR.rgb;
 	}

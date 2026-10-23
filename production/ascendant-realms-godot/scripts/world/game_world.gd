@@ -328,7 +328,7 @@ var _theme := {}
 var _decor_material_cache := {}
 # The Tripo foliage bakes are pale sage; deepen them toward highland greens.
 const DECOR_FOLIAGE_TINTS := {
-	"broadleaf_oak.glb": Color(0.58, 0.74, 0.46),
+	"broadleaf_oak_crown.scn": Color(0.76, 0.86, 0.64),
 	"highland_pine.glb": Color(0.78, 0.90, 0.68),
 }
 
@@ -799,7 +799,7 @@ func _scatter_environment() -> void:
 
 	var trees := []
 	for p in ["res://assets/environment/vegetation/highland_pine.glb",
-			"res://assets/environment/vegetation/broadleaf_oak.glb"]:
+			"res://assets/environment/vegetation/broadleaf_oak_crown.scn"]:
 		if ResourceLoader.exists(p):
 			trees.append(p)
 	trees = _theme_tree_paths(trees)
@@ -2205,7 +2205,7 @@ func _build_reeds(layer: Node3D, lakes: Array) -> void:
 ## How far a lone oak is set into the ground, as a share of its height.
 const OAK_SINK := 0.065
 const WOOD_OAK_SINK := 0.12
-const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak.glb"]
+const WOOD_TREES := ["res://assets/environment/vegetation/highland_pine.glb", "res://assets/environment/vegetation/broadleaf_oak_crown.scn"]
 const PALM_TREES := ["res://assets/environment/vegetation/desert_palm.scn", "res://assets/environment/vegetation/desert_palm_b.scn"]
 
 ## The trees a battlefield grows. Sand country grows date palms (pines and
@@ -3020,7 +3020,8 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	if not source is StandardMaterial3D:
 		return _dielectric_decor_material(source, tint)
 	var standard := source as StandardMaterial3D
-	if standard.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+	var cut := standard.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	if standard.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED and not cut:
 		return _dielectric_decor_material(source, tint)
 	var still := tree_height < 0.0
 	var band := maxf(snappedf(absf(tree_height), 1.0), 1.0)
@@ -3037,6 +3038,7 @@ func _foliage_wind_material(source: Material, tint: Color, tree_height: float) -
 	m.set_shader_parameter("uv_scale", standard.uv1_scale)
 	m.set_shader_parameter("roughness_value", maxf(standard.roughness, 0.82))
 	m.set_shader_parameter("tree_height", band)
+	m.set_shader_parameter("alpha_cut", 1.0 if cut else 0.0)
 	# Under snow the crowns carry it (the material cache is rebuilt for each
 	# battle, so one field's snow does not follow into the next).
 	m.set_shader_parameter("snow", 1.0 if str(map.get("theme", "")) == "snow" else 0.0)
