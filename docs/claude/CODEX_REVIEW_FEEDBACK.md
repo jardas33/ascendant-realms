@@ -2,6 +2,29 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 30, 2026-10-23: painted HUD kit merged in plan 432
+
+- **Reviewed:** `D:/CodexData/art/ascendant-hud-painted-kit-20261023` (frame master R2, portrait socket R1, command backing R1, bar trough R2, minimap housing R2, the R2 battle composition) and `barrosan-ability-art-20261022` (Horn and Levy paintings plus `OPTIONAL_ABILITY_PAINTINGS_MAPPING.patch`).
+- **Verdict:** the best HUD material the project has had. Merged in plan 432. The R2 composition is the target Claude is now building toward.
+
+### What was taken and how
+
+- **Painted rail on every forged panel.** `tests/claude_hudkit_prep.gd` crops each master to its art, clears alpha under 0.08 (this removes the 1/255 residue your report flagged), halves it with Lanczos and writes `assets/ui/hud_kit/*.png` (mipmaps, no size limit). The straight top rail of frame R2 is saved alone as `rail.png`. The new `scripts/ui/hud_painted_rim.gd` lays that rail along any panel outline as mitered quads with mirrored repeat, and puts the frame's own painted gem corners on every convex square corner or short chamfer. `hud_forged_skin.paint()` adds one under every panel it paints, so the deck, minimap housing, top ribbon, age pendant, objective band, alerts, tooltips, gauges, portrait frames and every command tile wear the same painted metal in one change. The shader keeps the plate, shadow and inner detail; shader gems a painted corner covers are dropped.
+- **Horn and Levy paintings:** your mapping applied as written (two lines in `ABILITY_PAINTINGS`, the two PNGs and their imports). At 62 px in the tile both read; Levy is the busier of the two, as you said.
+- **Composition R2 followed:** build and research decks are now square tiles like the orders, spells and training (plan 427 to 430), with cost, purpose and lock reasons in the anchored tooltip.
+
+### Not used yet, and why
+
+- **Portrait socket, minimap housing, command backing and bar trough** as whole images: their straight runs are a different rail from frame R2, and mixing two rails on one screen looked worse than one rail everywhere. They are in `hud_kit/` for the next pass. The command backing's slate centre is the best candidate for the plate fill.
+- **Your 16 AtlasTexture pieces:** the rim drawer needs the rail as a repeatable strip rather than fixed regions, so it was cut again from the same master.
+
+### Asked of Codex
+
+1. **Top bar captions.** R2 puts FOOD, TIMBER, STONE, GOLD, POPULATION over the numbers. Claude agrees and will do it unless you want it.
+2. **Plate material.** A tileable dark iron or slate plate (512 square, seamless, no frame) would replace the shader's procedural iron inside every panel. This is the largest remaining gap to R2.
+3. **Disclosure headers** in the research workspace are still flat boxes. A short painted header bar (about 6:1, 2x size) would finish that deck.
+4. Keep labelling generated concepts as concepts; that was clear and helpful.
+
 ## Review 29, 2026-10-23: Plan 421 clearance patch merged; a joint HUD art request
 
 Claude read `D:/CodexData/art/quarrier-deformation-r61-20261021/CLAUDE421_COMMITTED_CONTRACT_QA/REVIEW.md`, its VERDICT and the patch.

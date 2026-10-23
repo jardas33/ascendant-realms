@@ -6,6 +6,7 @@ extends RefCounted
 ## are untouched.
 
 const SHADER := preload("res://assets/shaders/hud_forged.gdshader")
+const PAINTED_RIM := preload("res://scripts/ui/hud_painted_rim.gd")
 const MAX_PTS := 24
 const MAX_STUDS := 24
 
@@ -37,10 +38,22 @@ static func paint(ci: CanvasItem, points: PackedVector2Array, studs: Array = [],
 	var box := Rect2(points[0], Vector2.ZERO)
 	for p in points:
 		box = box.expand(p)
+	# Plan 432: Codex's painted bronze rail and gem corners over the shader's
+	# rim. Shader gems a painted corner now covers are dropped.
+	var painted_corners := []
+	var corner_reach := 0.0
+	var rim_node = _painted_rim_for(ci, bool(opts.get("painted", true)))
+	if rim_node != null:
+		var t := float(opts.get("painted_rim", clampf(float(opts.get("rim", 9.0)) + 1.0, 7.0, 15.0)))
+		rim_node.set_outline(points, t)
+		painted_corners = rim_node.corners
+		corner_reach = rim_node.corner_size() * 1.1
 	var sv := PackedVector4Array()
 	for s in studs:
 		if sv.size() >= MAX_STUDS:
 			break
+		if s.w == GEM and _near_corner(Vector2(s.x, s.y), painted_corners, corner_reach):
+			continue
 		sv.append(s)
 	var stud_count := sv.size()
 	while sv.size() < MAX_STUDS:
@@ -70,6 +83,30 @@ static func paint(ci: CanvasItem, points: PackedVector2Array, studs: Array = [],
 	mat.set_shader_parameter("gem_color", opts.get("gem", Color(0.62, 0.10, 0.06)))
 	var pad := float(opts.get("shadow", 12.0)) + 2.0
 	ci.draw_rect(box.grow(pad), Color.WHITE)
+
+
+static func _painted_rim_for(ci: CanvasItem, wanted: bool):
+	var rim = ci.get_meta("_painted_rim") if ci.has_meta("_painted_rim") else null
+	if rim != null and not is_instance_valid(rim):
+		rim = null
+	if not wanted:
+		if rim != null:
+			rim.visible = false
+		return null
+	if rim == null:
+		rim = PAINTED_RIM.new()
+		rim.name = "PaintedRim"
+		ci.set_meta("_painted_rim", rim)
+		ci.add_child.call_deferred(rim)
+	rim.visible = true
+	return rim
+
+
+static func _near_corner(p: Vector2, corners: Array, reach: float) -> bool:
+	for c in corners:
+		if p.distance_to(c[0]) <= reach:
+			return true
+	return false
 
 
 ## Rivets evenly spaced along a segment, kept clear of its ends.

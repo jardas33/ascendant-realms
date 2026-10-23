@@ -29,7 +29,9 @@ func _profile(inset: float) -> PackedVector2Array:
 	var bottom := maxf(selection_rect.end.y, command_rect.end.y) + 5.0 - inset
 	var command_left := command_rect.position.x
 	var command_top := command_rect.position.y - 9.0 + inset
-	var selection_top := selection_rect.position.y - 11.0 + inset
+	# Without a portrait crown the selection caption sits right under the
+	# top edge, so the painted rail (plan 432) needs a little more air there.
+	var selection_top := selection_rect.position.y - (11.0 if has_portrait else 27.0) + inset
 	var crown_top := (portrait_rect.position.y - 8.0 if has_portrait else selection_top) + inset
 	var crown_right := (portrait_rect.end.x + 7.0 if has_portrait else left + 110.0) - inset
 	return PackedVector2Array([

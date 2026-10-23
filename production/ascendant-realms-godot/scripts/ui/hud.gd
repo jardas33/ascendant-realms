@@ -4141,13 +4141,26 @@ func _build_worker_card() -> void:
 		var grants_pop := int(bdef.get("grants_pop", 0))
 		if grants_pop > 0:
 			tooltip_detail += "\nProvides: +%d population" % grants_pop
-		var card_text := tooltip_detail
 		if float(bdef.get("tower_dmg", 0.0)) > 0.0:
 			tooltip_detail += "\nShoots %s for %d, reach %d" % [String(bdef.get("tower_type", "pierce")), int(bdef.get("tower_dmg", 0)), int(round(float(bdef.get("tower_range", 0.0))))]
 		if float(bdef.get("build_time", 0.0)) > 0.0:
 			tooltip_detail += "\nOne worker raises it in %d s" % int(round(float(bdef.get("build_time", 0.0))))
 		var preview_definition := _building_portrait_definition(bdef, String(bid))
-		var btn := _mk_command_button(str(bdef.get("name", bid)), build_detail, tooltip_detail, reason, "LOCKED" if not affordable else "READY", preview_definition, card_text, "Purpose")
+		# Plan 432: a square tile like the train and order decks. The full
+		# structure is the art; name, cost, purpose and lock reason are in
+		# the anchored tooltip.
+		var build_tip := "Cost: %s
+%s" % [build_detail, tooltip_detail]
+		var btn := _mk_command_tile(str(bdef.get("name", bid)), build_tip, "LOCKED" if not affordable else "READY", "", "BUILD", reason)
+		btn.set_meta("build_detail", build_detail)
+		btn.set_meta("construction_name", str(bdef.get("name", bid)))
+		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+			var build_art = load(ENTITY_PORTRAIT_SCRIPT).new()
+			build_art.name = "BuildingPreview"
+			_tile_set_art(btn, build_art)
+			build_art.configure_definition(preview_definition)
+			build_art.ready.connect(_seat_crafted_build_preview.bind(build_art, not affordable), CONNECT_ONE_SHOT)
+		(btn.get_meta("command_status_label") as Label).text = ""
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
@@ -4155,60 +4168,11 @@ func _build_worker_card() -> void:
 				rts.enter_build_mode(cap_id))
 		build_buttons.append(btn)
 		build_definitions.append(bdef)
-	var gallery := VBoxContainer.new()
+	var gallery := _add_field_order_grid()
 	gallery.name = "BuildGallery"
-	gallery.add_theme_constant_override("separation", 3)
-	gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_cmd_body.add_child(gallery)
-	for index in range(0, build_buttons.size(), 2):
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 5)
-		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		gallery.add_child(row)
-		if index + 1 < build_buttons.size():
-			row.add_child(build_buttons[index])
-			row.add_child(build_buttons[index + 1])
-		else:
-			# A single final structure spans the gallery instead of leaving a
-			# conspicuous empty slot in the construction deck.
-			var featured_card := build_buttons[index]
-			row.add_child(featured_card)
-			var copy := featured_card.get_node_or_null("BuildingCardCopy") as Control
-			if is_instance_valid(copy):
-				copy.anchor_right = 0.57
-				copy.offset_right = -6.0
-			var featured_status := featured_card.get_meta("command_status_label") as Control
-			if is_instance_valid(featured_status):
-				featured_status.anchor_right = 0.57
-				featured_status.offset_right = -6.0
-			var divider := ColorRect.new()
-			divider.color = Color(0.72, 0.56, 0.27, 0.55)
-			divider.anchor_left = 0.57
-			divider.anchor_right = 0.57
-			divider.offset_right = 1.0
-			divider.offset_top = 13.0
-			divider.anchor_bottom = 1.0
-			divider.offset_bottom = -13.0
-			divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			featured_card.add_child(divider)
-			var role := VBoxContainer.new()
-			role.anchor_left = 0.59
-			role.anchor_right = 1.0
-			role.anchor_bottom = 1.0
-			role.offset_top = 12.0
-			role.offset_right = -11.0
-			role.offset_bottom = -8.0
-			role.add_theme_constant_override("separation", 2)
-			role.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			var role_heading := _mk_label(String({"main": "hall", "house": "dwelling"}.get(String(build_definitions[index].get("kind", "structure")), String(build_definitions[index].get("kind", "structure")))).to_upper(), 11, Color(0.89, 0.70, 0.35))
-			role.add_child(role_heading)
-			var first_sentence := String(build_definitions[index].get("desc", "")).get_slice(".", 0).strip_edges()
-			var role_description := _mk_label(first_sentence + "." if not first_sentence.is_empty() else "", 13, Color(0.86, 0.84, 0.76))
-			role_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			role_description.max_lines_visible = 3
-			role_description.size_flags_vertical = Control.SIZE_EXPAND_FILL
-			role.add_child(role_description)
-			featured_card.add_child(role)
+	gallery.columns = 5
+	for build_button in build_buttons:
+		gallery.add_child(build_button)
 
 
 func _build_hero_command_card(u) -> void:
@@ -4325,6 +4289,9 @@ func _research_queue_caption(building, tech_id: String) -> String:
 
 func _organize_research_catalog(grid: GridContainer, building_key: String) -> void:
 	var stages := {"available": [], "progress": [], "future": [], "completed": []}
+	# The stage groups stack; their tiles sit five to a row inside them.
+	grid.columns = 1
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for card in grid.get_children():
 		stages[String(card.get_meta("research_stage", "future"))].append(card)
 		grid.remove_child(card)
@@ -4372,9 +4339,11 @@ func _organize_research_catalog(grid: GridContainer, building_key: String) -> vo
 		cue.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		cue.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		header.add_child(cue)
-		var content := VBoxContainer.new()
+		var content := GridContainer.new()
 		content.name = "Entries"
-		content.add_theme_constant_override("separation", 3)
+		content.columns = 5
+		content.add_theme_constant_override("h_separation", 8)
+		content.add_theme_constant_override("v_separation", 6)
 		content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		content.visible = open
 		group.add_child(content)
@@ -4729,9 +4698,10 @@ Workers inside %d / %d  ·  +%d %s a minute
 	if not tech_ids.is_empty():
 		_add_command_section("Research", "Advance technology.")
 		var research_heading := _cmd_body.get_child(_cmd_body.get_child_count() - 1)
-		var research_grid := _mk_command_grid()
-		research_grid.columns = 1
-		_cmd_body.add_child(research_grid)
+		# Plan 432: research as square tiles, five to a row, like the
+		# train and build decks. Dense catalogues still group by stage.
+		var research_grid := _add_field_order_grid()
+		research_grid.columns = 5
 		for tid in tech_ids:
 			var tdef := GameData.get_tech(tid)
 			if tdef.is_empty():
@@ -4770,14 +4740,22 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var research_state := "COMPLETED" if _commander.completed_tech.has(tid) else ("LOCKED" if not ready_to_research else "READY")
 			# Each research wears an emblem of what it does (sword, shield, pick...).
 			var tech_emblem: String = load(COMMAND_GLYPH_SCRIPT).research_kind(String(tid), tdef)
-			var btn := _mk_command_button(_tech_display_name(tid, str(tdef.get("name", tid))), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")) + ("\nTakes %d s" % int(round(float(tdef.get("time", 0.0)))) if float(tdef.get("time", 0.0)) > 0.0 and not _commander.completed_tech.has(tid) else ""), reason, research_state, {}, str(tdef.get("desc", "")), "Effect", "", "RESEARCH", tech_emblem)
+			var research_tip := "Cost: %s\n%s" % [_cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")) + ("\nTakes %d s" % int(round(float(tdef.get("time", 0.0)))) if float(tdef.get("time", 0.0)) > 0.0 and not _commander.completed_tech.has(tid) else "")]
+			var btn := _mk_command_tile(_tech_display_name(tid, str(tdef.get("name", tid))), research_tip, research_state, "", "RESEARCH", reason)
+			var tech_art := _mk_command_icon(tech_emblem, btn.accent, COMMAND_TILE - 18.0)
+			tech_art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			_tile_set_art(btn, tech_art)
+			var research_status := btn.get_meta("command_status_label") as Label
+			research_status.text = "DONE" if research_state == "COMPLETED" else ""
+			if research_state != "READY":
+				tech_art.modulate = Color(0.55, 0.57, 0.60, 0.85)
 			btn.disabled = not ready_to_research
 			# Classify from the same native availability used above. A lack of
 			# resources never hides an otherwise unlocked technology.
 			btn.set_meta("research_stage", "completed" if _commander.completed_tech.has(tid) else ("progress" if _commander.researching.has(tid) else ("available" if available else "future")))
 			if _commander.researching.has(tid):
 				var queue_caption := btn.get_meta("command_status_label") as Label
-				queue_caption.text = _research_queue_caption(b, String(tid))
+				queue_caption.text = "NOW" if _research_queue_caption(b, String(tid)) == "RESEARCHING" else "NEXT"
 				queue_caption.add_theme_color_override("font_color", COMMAND_SKY)
 			var cap_b = b
 			var cap_tid := String(tid)
@@ -5845,6 +5823,8 @@ const SIGNATURE_GLYPHS := {"sig_bull": "line", "sig_spring": "heal", "sig_ashgla
 
 # Original painted ability illustrations. Stable IDs select art only; native spell rules remain in SkillDefs/Unit.
 const ABILITY_PAINTINGS := {
+	"bar_horn": "res://assets/ui/ability_illustrations/barrosan_candidate_r1/bar_horn_r1.png",
+	"bar_levy": "res://assets/ui/ability_illustrations/barrosan_candidate_r1/bar_levy_r2.png",
 	"sig_bull": "res://assets/ui/ability_illustrations/r44/sig_bull.png",
 	"slam": "res://assets/ui/ability_illustrations/r44/slam.png",
 	"rally": "res://assets/ui/ability_illustrations/r44/rally.png",
