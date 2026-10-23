@@ -4675,16 +4675,22 @@ func _organize_hq_workspaces(building, train_start: int, research_start: int, tr
 		for mode in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
 			# Plan 421: engraved tabs, not boxes. The chosen one is lit from
 			# below with a gilt bar; the others sit on a faint bronze rule.
+			# Plan 450: the tab itself is forged metal (a Backing behind the
+			# text); the style only lights a hover and keeps the gilt bar.
 			var style := StyleBoxFlat.new()
 			var chosen: bool = mode in ["pressed", "hover_pressed"]
-			style.bg_color = Color(0.30, 0.21, 0.10, 0.34) if chosen else (Color(0.30, 0.22, 0.12, 0.16) if mode == "hover" else Color(0, 0, 0, 0))
-			style.border_color = COMMAND_GOLD if chosen else Color(0.62, 0.46, 0.26, 0.45)
-			style.border_width_bottom = 3 if chosen else 1
+			# The open tab glows warm over its metal; closed tabs sit in shade.
+			style.bg_color = Color(1.0, 0.78, 0.42, 0.13 if mode == "hover_pressed" else 0.09) if chosen else (Color(1.0, 0.86, 0.55, 0.05) if mode == "hover" else Color(0.0, 0.0, 0.0, 0.30))
 			style.set_corner_radius_all(0)
-			style.corner_radius_top_left = 4
-			style.corner_radius_top_right = 4
+			style.corner_radius_top_left = 7
+			style.corner_radius_top_right = 7
+			style.content_margin_top = 6.0
+			style.border_color = COMMAND_GOLD if chosen else Color(0, 0, 0, 0)
+			style.border_width_bottom = 3 if chosen else 0
+			style.expand_margin_bottom = 0.0
 			style.set_content_margin_all(6)
 			tab.add_theme_stylebox_override(mode, style)
+		_forge_workspace_tab(tab)
 		tabs.add_child(tab)
 		tab_buttons[key] = tab
 	for key in keys:
@@ -4701,6 +4707,32 @@ func _organize_hq_workspaces(building, train_start: int, research_start: int, tr
 			_fit_command_panel_next_frame())
 	tabs.set_meta("workspace_panes", panes)
 	tabs.set_meta("workspace_buttons", tab_buttons)
+
+
+## Plan 450: a workspace tab (Train, Research, Trade) as a forged metal tab
+## with chamfered top corners. The open tab is the bright one with the painted
+## rail and a gem; the others sit back, darker and slimmer.
+func _forge_workspace_tab(tab: Button) -> void:
+	var backing = load("res://scripts/ui/hud_forged_skin.gd").Backing.new()
+	backing.name = "ForgedTab"
+	backing.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	tab.add_child(backing)
+	var reshape := func():
+		if not is_instance_valid(backing) or not is_instance_valid(tab):
+			return
+		var w := tab.size.x
+		var h := tab.size.y
+		if w < 20.0 or h < 10.0:
+			return
+		var chosen := tab.button_pressed
+		var c := 8.0
+		var pts := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h), Vector2(0, h), Vector2(0, c)])
+		var studs: Array = [Vector4(w * 0.5, 4.5, 3.2, 1.0)] if chosen else []
+		backing.set_shape(pts, studs, {"rim": 5.0 if chosen else 3.5, "groove": 1.2, "inlay": 0.0, "shadow": 4.0 if chosen else 2.0,
+			"plate_top": 0.0, "plate_bottom": h * (1.0 if chosen else 1.6), "alpha": 0.97 if chosen else 0.72, "painted": chosen, "painted_rim": 7.0})
+		tab.add_theme_color_override("font_color", Color(0.74, 0.74, 0.70) if not chosen else FONT_COLOR)
+	tab.resized.connect(reshape)
+	tab.toggled.connect(func(_on: bool): reshape.call())
 
 
 func _build_building_card(b) -> void:
