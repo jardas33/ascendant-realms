@@ -730,6 +730,10 @@ func hide_field_hover() -> void:
 
 
 func _place_resource_tooltip(pointer: Vector2) -> void:
+	# Plan 482: never over the result screen (it covered a loot name).
+	if is_instance_valid(_gameover_layer):
+		hide_field_hover()
+		return
 	_resource_tooltip.reset_size()
 	_resource_tooltip.position = _resource_hover_position(pointer, _resource_tooltip.size)
 	_resource_tooltip.visible = true
@@ -5659,6 +5663,7 @@ func _push_alert(message: String, col: Color) -> void:
 func _on_game_over(victory: bool) -> void:
 	if is_instance_valid(_gameover_layer):
 		return
+	hide_field_hover()
 	# Before the ledger, the camera glides to the last building that fell and
 	# the field holds for a breath: the win or the loss is seen, not just read.
 	_result_hold = 0.0

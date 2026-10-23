@@ -6705,21 +6705,56 @@ func _on_building_died(building) -> void:
 ## On dark battlefields (night, dusk, storm) every finished building keeps a
 ## warm hearth-light, so a village reads as lived in. The light is a child of
 ## the building, so it hides with it in the fog.
+var _hearth_basket_mesh: Mesh = null
+var _hearth_post_mesh: Mesh = null
+
 func _light_hearth(b) -> void:
 	if not is_instance_valid(b) or not b.is_built or b.has_node("HearthLight"):
 		return
 	if not battle_mood() in ["night", "dusk", "storm"]:
 		return
-	var l := OmniLight3D.new()
-	l.name = "HearthLight"
-	l.light_color = Color(1.0, 0.68, 0.36)
-	l.light_energy = 3.2 if battle_mood() == "night" else 2.0
-	l.omni_range = float(b.def.get("footprint", 4.0)) * 0.8 + 6.0
-	l.omni_attenuation = 1.6
-	l.shadow_enabled = false
-	b.add_child(l)
-	# At the doorstep, just outside the walls, so the glow spills on the yard.
-	l.position = Vector3(0.0, 2.2, float(b.def.get("footprint", 4.0)) * 0.6 + 0.6)
+	# Plan 481: the glow comes from a fire basket standing in the yard. A bare
+	# light hung against the front wall made a bright patch with no lamp
+	# (seen up close in the Map Editor's Test in 3D).
+	var fp := float(b.def.get("footprint", 4.0))
+	var hearth := Node3D.new()
+	hearth.name = "HearthLight"
+	b.add_child(hearth)
+	hearth.position = Vector3(fp * 0.35, 0.0, fp * 0.6 + 1.6)
+	if _hearth_basket_mesh == null:
+		var cm := CylinderMesh.new()
+		cm.top_radius = 0.42
+		cm.bottom_radius = 0.16
+		cm.height = 0.55
+		cm.radial_segments = 10
+		var iron := StandardMaterial3D.new()
+		iron.albedo_color = Color(0.13, 0.11, 0.10)
+		iron.metallic = 0.6
+		iron.roughness = 0.55
+		cm.material = iron
+		var pm := CylinderMesh.new()
+		pm.top_radius = 0.07
+		pm.bottom_radius = 0.10
+		pm.height = 0.5
+		pm.radial_segments = 6
+		pm.material = iron
+		_hearth_basket_mesh = cm
+		_hearth_post_mesh = pm
+	var post := MeshInstance3D.new()
+	post.mesh = _hearth_post_mesh
+	post.position.y = 0.25
+	hearth.add_child(post)
+	var basket := MeshInstance3D.new()
+	basket.mesh = _hearth_basket_mesh
+	basket.position.y = 0.75
+	hearth.add_child(basket)
+	var fire = BrazierFire.new()
+	fire.light_energy = 3.2 if battle_mood() == "night" else 2.0
+	fire.light_range = fp * 0.8 + 6.0
+	fire.fire_color = Color(1.0, 0.68, 0.36)
+	fire.flame_scale = 1.1
+	fire.position.y = 0.98
+	hearth.add_child(fire)
 
 func on_building_completed(building) -> void:
 	_light_hearth(building)
