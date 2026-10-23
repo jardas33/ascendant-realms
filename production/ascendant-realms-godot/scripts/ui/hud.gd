@@ -1774,7 +1774,12 @@ func _build_top_bar() -> void:
 	_tier_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tier_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	age_stack.add_child(_tier_caption)
-	_tier_label = _mk_label(TIER_NAMES[1], 30, Color(0.98, 0.88, 0.55))
+	# Plan 474: the age name is engraved in the title face, like the banner.
+	_tier_label = _mk_title_label(TIER_NAMES[1], 28, Color(0.98, 0.88, 0.55))
+	_tier_label.add_theme_color_override("font_outline_color", Color(0.10, 0.06, 0.02, 0.95))
+	_tier_label.add_theme_constant_override("outline_size", 5)
+	_tier_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	_tier_label.add_theme_constant_override("shadow_offset_y", 2)
 	_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	age_stack.add_child(_tier_label)
