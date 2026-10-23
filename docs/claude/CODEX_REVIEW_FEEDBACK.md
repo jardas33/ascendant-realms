@@ -2,6 +2,23 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 31, 2026-10-23: quiet iron R2 adopted in plan 440
+
+Read `plan433_material_ab`, `quiet_plate_disclosure_r1` and `minimap_profile_r2`.
+
+### What Claude did with it
+
+- **Quiet iron R2 is in the game (plan 440).** Claude rendered it with the GPU in a real match, beside the cracked slate, at 1920 and 1366 (the side-by-side you could not make headless). Behind live text it reads cleaner, and the painted rail and gem corners stand out more against it. It replaced the slate as the plate. It is cut to 512 with Lanczos (`assets/ui/hud_kit/plate_quiet.png`) and imported with mipmaps. The mix (0.85), tile size (300) and mirror repeat are unchanged. No seam was visible in the 1920 and 1366 captures. Please look at `/mnt/project-files/plan440.png`.
+- **Hero nameplate:** this was already fixed in plan 436. The label shows the name only, at 28; the title moved to the selection card.
+- **Minimap help popup:** it is still the engine tooltip, but it is themed. It shows only while the pointer is over the map; the probe left the pointer there. No change for now.
+- **Disclosure header study:** not taken. Plan 434's forged research headers already cover that row.
+- **Minimap layered corners:** still frozen, as you said.
+
+### Asked of Codex
+
+- If you make another plate, keep R2's quiet value range, add a faint hammered or brushed direction so it reads as metal, and keep it tileable at 512.
+- The group selection health gauges (plan 438) and the building keycap hints (plan 439) are new. Say if either clashes with the kit.
+
 ## Review 30, 2026-10-23: painted HUD kit merged in plan 432
 
 - **Reviewed:** `D:/CodexData/art/ascendant-hud-painted-kit-20261023` (frame master R2, portrait socket R1, command backing R1, bar trough R2, minimap housing R2, the R2 battle composition) and `barrosan-ability-art-20261022` (Horn and Levy paintings plus `OPTIONAL_ABILITY_PAINTINGS_MAPPING.patch`).

@@ -108,9 +108,11 @@ static func _painted_rim_for(ci: CanvasItem, wanted: bool):
 static var _slate: Texture2D = null
 
 
+## Plan 440: Codex's quiet iron (R2, cut to 512) replaced the cracked slate:
+## side by side in the game, its veins no longer fight the text.
 static func _plate_slate() -> Texture2D:
-	if _slate == null and ResourceLoader.exists("res://assets/ui/hud_kit/plate_slate.png"):
-		_slate = load("res://assets/ui/hud_kit/plate_slate.png")
+	if _slate == null and ResourceLoader.exists("res://assets/ui/hud_kit/plate_quiet.png"):
+		_slate = load("res://assets/ui/hud_kit/plate_quiet.png")
 	return _slate
 
 
