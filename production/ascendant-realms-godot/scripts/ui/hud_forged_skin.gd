@@ -81,6 +81,9 @@ static func paint(ci: CanvasItem, points: PackedVector2Array, studs: Array = [],
 	mat.set_shader_parameter("shadow_size", float(opts.get("shadow", 12.0)))
 	mat.set_shader_parameter("plate_alpha", float(opts.get("alpha", 0.975)))
 	mat.set_shader_parameter("gem_color", opts.get("gem", Color(0.62, 0.10, 0.06)))
+	var slate := _plate_slate()
+	mat.set_shader_parameter("plate_tex", slate)
+	mat.set_shader_parameter("plate_tex_mix", float(opts.get("slate", 0.85)) if slate != null else 0.0)
 	var pad := float(opts.get("shadow", 12.0)) + 2.0
 	ci.draw_rect(box.grow(pad), Color.WHITE)
 
@@ -100,6 +103,15 @@ static func _painted_rim_for(ci: CanvasItem, wanted: bool):
 		ci.add_child.call_deferred(rim)
 	rim.visible = true
 	return rim
+
+
+static var _slate: Texture2D = null
+
+
+static func _plate_slate() -> Texture2D:
+	if _slate == null and ResourceLoader.exists("res://assets/ui/hud_kit/plate_slate.png"):
+		_slate = load("res://assets/ui/hud_kit/plate_slate.png")
+	return _slate
 
 
 static func _near_corner(p: Vector2, corners: Array, reach: float) -> bool:

@@ -29,6 +29,10 @@ uniform vec3 bronze : source_color = vec3(0.70, 0.50, 0.26);
 uniform vec3 gem_color : source_color = vec3(0.62, 0.10, 0.06);
 uniform float plate_top = 0.0;          // local y where the plate's gradient starts
 uniform float plate_bottom = 200.0;
+// Plan 433: Codex's painted slate as the plate, mirrored so it never seams.
+uniform sampler2D plate_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform float plate_tex_mix = 0.0;
+uniform float plate_tex_size = 300.0;
 
 varying vec2 local_pos;
 
@@ -144,6 +148,13 @@ vec4 shade(vec2 p) {
 		float mott = fbm(p * 0.045 + vec2(3.0, 7.0));
 		albedo *= 0.80 + 0.42 * mott;
 		albedo += vec3(0.020, 0.012, 0.004) * smoothstep(0.55, 0.9, fbm(p * 0.02));
+		if (plate_tex_mix > 0.0) {
+			vec2 tuv = p / plate_tex_size;
+			tuv = 1.0 - abs(mod(tuv, 2.0) - 1.0);
+			vec3 slate = texture(plate_tex, tuv).rgb;
+			vec3 lit = slate * mix(1.12, 0.72, smoothstep(0.0, 1.0, yt));
+			albedo = mix(albedo, lit, plate_tex_mix);
+		}
 		ao = mix(0.42, 1.0, smoothstep(0.0, 16.0, inner));
 		spec_k = 0.16;
 		rough = 10.0;

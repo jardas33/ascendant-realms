@@ -24,6 +24,11 @@ func _init():
 		c.resize(c.get_width() / 2, c.get_height() / 2, Image.INTERPOLATE_LANCZOS)
 		c.save_png(out + p[2] + ".png")
 		print("KIT ", p[2], " ", c.get_size())
+		if p[2] == "command_backing":
+			# The slate inside the command backing: the plate of every panel.
+			var slate: Image = c.get_region(Rect2i(60, 60, 400, 388))
+			slate.save_png(out + "plate_slate.png")
+			print("KIT plate_slate ", slate.get_size())
 		if p[2] == "frame":
 			# The straight top rail alone (outer bronze, iron, inner bronze),
 			# drawn along any HUD outline by hud_painted_rim.gd.

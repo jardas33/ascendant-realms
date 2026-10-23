@@ -1468,8 +1468,8 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 	# The value row contract is retained so authoritative refresh handlers do
 	# not change as the individual visual instruments replace the group slabs.
 	if instrument:
-		# Plan 420: one cell on the top band. Icon and number only; the name and
-		# meaning are in the tooltip, as on the big RTS top bars.
+		# Plan 420: one cell on the top band. Plan 433: a small name over the
+		# icon and number (Codex composition R2); the meaning is in the tooltip.
 		var cell: PanelContainer = HUD_TOP_METRIC_SCRIPT.new()
 		cell.accent = accent
 		cell.set("ribbon", true)
@@ -1480,14 +1480,25 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 		cell_inset.bg_color = Color.TRANSPARENT
 		cell_inset.content_margin_left = 8.0
 		cell_inset.content_margin_right = 10.0
-		cell_inset.content_margin_top = 3.0
-		cell_inset.content_margin_bottom = 11.0
+		cell_inset.content_margin_top = 2.0
+		cell_inset.content_margin_bottom = 9.0
 		cell.add_theme_stylebox_override("panel", cell_inset)
+		var cell_stack := VBoxContainer.new()
+		cell_stack.add_theme_constant_override("separation", -3)
+		cell_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(cell_stack)
+		var caption := _mk_label(String({"Opponents": "Rivals", "Idle Workers": "Idle Crew"}.get(title, title)).to_upper(), 12, accent.lerp(Color(0.94, 0.90, 0.79), 0.45))
+		caption.name = "TopMetricCaption"
+		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		caption.add_theme_constant_override("outline_size", 3)
+		caption.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+		caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell_stack.add_child(caption)
 		var cell_row := HBoxContainer.new()
 		cell_row.add_theme_constant_override("separation", 6)
 		cell_row.alignment = BoxContainer.ALIGNMENT_CENTER
 		cell_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		cell.add_child(cell_row)
+		cell_stack.add_child(cell_row)
 		return {"surface": cell, "value_row": cell_row}
 	var surface := VBoxContainer.new()
 	surface.custom_minimum_size = Vector2(width - 10.0 if instrument else width, 46)
@@ -1586,8 +1597,8 @@ func _build_top_bar() -> void:
 		if k == RES_ORDER[RES_ORDER.size() - 1]:
 			metric["surface"].set("last", true)
 		var cell: HBoxContainer = metric["value_row"]
-		cell.add_child(_mk_resource_object_icon(k, 40))
-		var l := _mk_label("0", 28, FONT_COLOR)
+		cell.add_child(_mk_resource_object_icon(k, 32))
+		var l := _mk_label("0", 25, FONT_COLOR)
 		l.custom_minimum_size = Vector2(54, 0)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_res_labels[k] = l
@@ -1614,8 +1625,8 @@ func _build_top_bar() -> void:
 	# Population remains a force metric rather than another resource number.
 	var pop_metric := _top_metric_surface("Population", COMMAND_GOLD, 140.0, "Population: current units / population cap")
 	var pop_cell: HBoxContainer = pop_metric["value_row"]
-	pop_cell.add_child(_mk_force_object_icon("population", 40))
-	_pop_label = _mk_label("0/0", 27)
+	pop_cell.add_child(_mk_force_object_icon("population", 32))
+	_pop_label = _mk_label("0/0", 25)
 	_pop_label.custom_minimum_size = Vector2(70, 0)
 	_pop_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pop_cell.add_child(_pop_label)
@@ -1626,8 +1637,8 @@ func _build_top_bar() -> void:
 	# the existing resource/population status language.
 	var opponent_metric := _top_metric_surface("Opponents", COMMAND_FLAME, 98.0, "Living opposing commanders")
 	var opponent_cell: HBoxContainer = opponent_metric["value_row"]
-	opponent_cell.add_child(_mk_force_object_icon("opponent", 40))
-	_opponent_count_label = _mk_label("0", 27, Color(0.92, 0.84, 0.74))
+	opponent_cell.add_child(_mk_force_object_icon("opponent", 32))
+	_opponent_count_label = _mk_label("0", 25, Color(0.92, 0.84, 0.74))
 	_opponent_count_label.name = "OpponentCountLabel"
 	_opponent_count_label.custom_minimum_size = Vector2(30, 0)
 	_opponent_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1639,8 +1650,8 @@ func _build_top_bar() -> void:
 	# not create a toast or world marker for every short worker transition.
 	var worker_metric := _top_metric_surface("Idle Workers", COMMAND_MINT, 98.0, "Workers without an active order")
 	var worker_cell: HBoxContainer = worker_metric["value_row"]
-	worker_cell.add_child(_mk_force_object_icon("worker", 40))
-	_idle_worker_label = _mk_label("0", 27, Color(0.82, 0.94, 0.78))
+	worker_cell.add_child(_mk_force_object_icon("worker", 32))
+	_idle_worker_label = _mk_label("0", 25, Color(0.82, 0.94, 0.78))
 	_idle_worker_label.custom_minimum_size = Vector2(30, 0)
 	_idle_worker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	worker_cell.add_child(_idle_worker_label)
@@ -1652,8 +1663,8 @@ func _build_top_bar() -> void:
 	var army_metric := _top_metric_surface("Idle Army", COMMAND_SKY, 98.0, "Military units without an active order")
 	army_metric["surface"].set("last", true)
 	var army_cell: HBoxContainer = army_metric["value_row"]
-	army_cell.add_child(_mk_force_object_icon("army", 40))
-	_idle_military_label = _mk_label("0", 27, Color(0.82, 0.9, 1.0))
+	army_cell.add_child(_mk_force_object_icon("army", 32))
+	_idle_military_label = _mk_label("0", 25, Color(0.82, 0.9, 1.0))
 	_idle_military_label.custom_minimum_size = Vector2(30, 0)
 	_idle_military_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	army_cell.add_child(_idle_military_label)
