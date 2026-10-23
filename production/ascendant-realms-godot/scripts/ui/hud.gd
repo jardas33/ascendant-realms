@@ -5728,26 +5728,13 @@ func _on_game_over(victory: bool) -> void:
 		var xp_cap := _mk_label("Level %d  ·  %d / %d experience" % [int(hh.get("level", 1)), int(now_xp), int(need)], 15, Color(0.88, 0.82, 0.68))
 		xp_cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		xp_row.add_child(xp_cap)
-		var xbar := ProgressBar.new()
-		xbar.show_percentage = false
-		xbar.custom_minimum_size = Vector2(420, 12)
+		# Plan 458: the same forged gold gauge as the hero's battle experience
+		# on the HUD (it was a flat rounded bar).
+		var xbar := _mk_bar(Color(0.95, 0.74, 0.3))
+		xbar.custom_minimum_size = Vector2(440, 18)
 		xbar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		xbar.max_value = need
 		xbar.value = start_xp
-		var xfill := StyleBoxFlat.new()
-		xfill.bg_color = Color(0.95, 0.74, 0.3)
-		xfill.set_corner_radius_all(3)
-		# A lit top edge and a darker underside give the fill a bevel.
-		xfill.border_color = Color(1.0, 0.93, 0.66)
-		xfill.border_width_top = 2
-		xfill.border_blend = true
-		var xback := StyleBoxFlat.new()
-		xback.bg_color = Color(0.04, 0.04, 0.05, 0.95)
-		xback.border_color = Color(0.7, 0.55, 0.3, 0.8)
-		xback.set_border_width_all(1)
-		xback.set_corner_radius_all(3)
-		xbar.add_theme_stylebox_override("fill", xfill)
-		xbar.add_theme_stylebox_override("background", xback)
 		xp_row.add_child(xbar)
 		box.add_child(xp_row)
 		xbar.create_tween().tween_property(xbar, "value", now_xp, 1.4).set_delay(_result_hold + 1.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
