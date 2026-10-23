@@ -4342,6 +4342,18 @@ func _organize_research_catalog(grid: GridContainer, building_key: String) -> vo
 			style.content_margin_right = 86
 			header.add_theme_stylebox_override(mode, style)
 		group.add_child(header)
+		# Plan 434: the stage header is a small forged bar like the rest of
+		# the deck instead of a flat box.
+		for mode in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+			header.add_theme_stylebox_override(mode, _research_header_inset(stage))
+		var header_backing = load("res://scripts/ui/hud_forged_skin.gd").Backing.new()
+		header_backing.name = "ForgedBacking"
+		header.add_child(header_backing)
+		header.resized.connect(func():
+			if is_instance_valid(header_backing):
+				var hw := header.size.x
+				var hh := header.size.y
+				header_backing.set_shape(PackedVector2Array([Vector2(0, 0), Vector2(hw, 0), Vector2(hw, hh), Vector2(0, hh)]), [], {"rim": 6.0, "groove": 1.2, "inlay": 0.0, "shadow": 5.0, "plate_top": 0.0, "plate_bottom": hh}))
 		var cue := _mk_label("HIDE −" if open else "SHOW +", 13, COMMAND_GOLD)
 		cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cue.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
@@ -4370,6 +4382,14 @@ func _organize_research_catalog(grid: GridContainer, building_key: String) -> vo
 			_fit_command_panel_next_frame())
 		groups.append({"stage": stage, "header": header, "content": content, "count": cards.size()})
 	grid.set_meta("research_groups", groups)
+
+
+func _research_header_inset(stage: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color.TRANSPARENT
+	style.content_margin_left = 16 if stage in ["available", "progress"] else 14
+	style.content_margin_right = 86
+	return style
 
 
 func _hq_action_count(node: Node) -> int:
