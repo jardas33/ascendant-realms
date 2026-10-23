@@ -161,7 +161,7 @@ func _build_view() -> void:
 static func _draw_bronze_frame(ci: Control, compact: bool) -> void:
 	var r := Rect2(Vector2.ZERO, ci.size)
 	if compact:
-		ci.draw_rect(r.grow(-1.0), Color(0, 0, 0, 0.55), false, 2.0)
+		_draw_compact_bevel(ci, r)
 		return
 	# Plan 425: a lit forged bezel (hud_forged.gdshader) with the picture
 	# seen through its opening, a soft inner shadow and gem bosses.
@@ -171,6 +171,34 @@ static func _draw_bronze_frame(ci: Control, compact: bool) -> void:
 	var g := 4.6
 	var studs := [Vector4(5, 5, g, 1.0), Vector4(r.end.x - 5, 5, g, 1.0), Vector4(5, r.end.y - 5, g, 1.0), Vector4(r.end.x - 5, r.end.y - 5, g, 1.0)]
 	load("res://scripts/ui/hud_forged_skin.gd").paint(ci, pts, studs, r.grow(-8.0), {"rim": 7.0, "groove": 1.2, "inlay": 0.0, "shadow": 4.0})
+
+# Plan 460: small portraits had only a dark hairline, so the paintings
+# looked pasted onto the panel. They now sit in a thin bronze bevel with
+# clipped corners, a lit top edge and a darker foot for the health bar.
+static func _draw_compact_bevel(ci: Control, r: Rect2) -> void:
+	var w := r.size.x
+	var h := r.size.y
+	if w < 8.0 or h < 8.0:
+		return
+	var foot := minf(h * 0.34, 18.0)
+	ci.draw_polygon(PackedVector2Array([Vector2(0, h - foot), Vector2(w, h - foot), Vector2(w, h), Vector2(0, h)]),
+		PackedColorArray([Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.55), Color(0, 0, 0, 0.55)]))
+	var c := clampf(minf(w, h) * 0.12, 3.0, 7.0)
+	var corner := Color(0.045, 0.04, 0.035, 1.0)
+	ci.draw_colored_polygon(PackedVector2Array([Vector2(0, 0), Vector2(c + 1.0, 0), Vector2(0, c + 1.0)]), corner)
+	ci.draw_colored_polygon(PackedVector2Array([Vector2(w, 0), Vector2(w, c + 1.0), Vector2(w - c - 1.0, 0)]), corner)
+	ci.draw_colored_polygon(PackedVector2Array([Vector2(w, h), Vector2(w - c - 1.0, h), Vector2(w, h - c - 1.0)]), corner)
+	ci.draw_colored_polygon(PackedVector2Array([Vector2(0, h), Vector2(0, h - c - 1.0), Vector2(c + 1.0, h)]), corner)
+	var i := 1.0
+	var ring := PackedVector2Array([Vector2(c + i, i), Vector2(w - c - i, i), Vector2(w - i, c + i), Vector2(w - i, h - c - i),
+		Vector2(w - c - i, h - i), Vector2(c + i, h - i), Vector2(i, h - c - i), Vector2(i, c + i), Vector2(c + i, i)])
+	ci.draw_polyline(ring, Color(0.02, 0.015, 0.01, 0.9), 3.0, true)
+	ci.draw_polyline(ring, Color(0.62, 0.47, 0.28, 1.0), 1.4, true)
+	var j := 2.6
+	ci.draw_polyline(PackedVector2Array([Vector2(j, h - c - j), Vector2(j, c + j), Vector2(c + j, j), Vector2(w - c - j, j)]),
+		Color(1.0, 0.86, 0.58, 0.45), 1.0, true)
+	ci.draw_polyline(PackedVector2Array([Vector2(w - j, c + j), Vector2(w - j, h - c - j), Vector2(w - c - j, h - j), Vector2(c + j, h - j)]),
+		Color(0.0, 0.0, 0.0, 0.5), 1.0, true)
 
 func configure_entity(entity) -> void:
 	if not is_instance_valid(entity):
