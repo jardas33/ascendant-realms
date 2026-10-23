@@ -1526,6 +1526,10 @@ func _top_metric_surface(title: String, accent: Color, width: float, tooltip: St
 		cell.add_child(cell_stack)
 		var caption := _mk_label(String({"Opponents": "Rivals", "Idle Workers": "Idle Crew"}.get(title, title)).to_upper(), 12, accent.lerp(Color(0.94, 0.90, 0.79), 0.45))
 		caption.name = "TopMetricCaption"
+		# Plan 456: the captions grow with the rest of the top band on a small
+		# window (at 1366 they were about 9 px tall).
+		_top_small(caption, 13)
+		caption.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caption.add_theme_constant_override("outline_size", 3)
 		caption.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
