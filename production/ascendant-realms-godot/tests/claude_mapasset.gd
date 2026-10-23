@@ -50,11 +50,15 @@ func _run() -> void:
 	ed._refresh_board()
 	await create_timer(0.5).timeout
 	await _shot("editor")
+	ed._mood_opt.select(1)
+	ed._mood_opt.item_selected.emit(1)
+	_check(String(ed.doc.get("mood", "")) == "dusk", "light set to dusk")
 	ed._on_test()
 	await create_timer(10.0).timeout
 	var gw = current_scene
 	var world = gw.get("world")
 	_check(world != null and world.has_node("Showcase"), "match built the showcase")
+	_check(world != null and world.battle_mood() == "dusk", "the test plays at dusk")
 	_check(world != null and world.get_node("Showcase").get_child_count() == 1, "one model placed")
 	var ais := 0
 	for c in gw.get_children():

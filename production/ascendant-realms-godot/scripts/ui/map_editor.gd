@@ -63,6 +63,7 @@ var _overlay: Control
 var _name_edit: LineEdit
 var _theme_opt: OptionButton
 var _size_opt: OptionButton
+var _mood_opt: OptionButton
 var _mirror_opt: OptionButton
 var _brush_slider: HSlider
 var _width_slider: HSlider
@@ -262,6 +263,10 @@ func _build() -> void:
 		_push_undo()
 		doc["theme"] = CM.THEMES[i]
 		_refresh_all())
+	_mood_opt = _option(col, "Light", CM.MOOD_NAMES)
+	_mood_opt.tooltip_text = "The hour and weather of this battlefield, in Skirmish and in Test in 3D."
+	_mood_opt.item_selected.connect(func(i: int):
+		doc["mood"] = CM.MOODS[i])
 	_size_opt = _option(col, "Size", CM.SIZE_NAMES)
 	_size_opt.item_selected.connect(_on_size)
 	_mirror_opt = _option(col, "Mirror", MIRROR_NAMES)
@@ -478,6 +483,7 @@ func _refresh_all() -> void:
 	_name_edit.text = String(doc.get("name", ""))
 	_theme_opt.select(maxi(0, CM.THEMES.find(String(doc.get("theme", "highland")))))
 	_size_opt.select(maxi(0, CM.SIZES.find(float(doc.get("size", 220.0)))))
+	_mood_opt.select(maxi(0, CM.MOODS.find(String(doc.get("mood", "")))))
 	_refresh_board()
 	_refresh_list()
 	_refresh_tool()

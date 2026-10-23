@@ -4437,7 +4437,11 @@ const AI_HERO_KITS := {
 func battle_mood() -> String:
 	var cfg := Match.get_config()
 	var chapter_mood := String(CampaignDefs.CHAPTER_MOODS.get(String(cfg.get("campaign_chapter", "")), ""))
-	return chapter_mood if chapter_mood != "" else String(cfg.get("mood", ""))
+	if chapter_mood != "":
+		return chapter_mood
+	# Plan 481: a Map Editor map can carry its own hour and weather.
+	var m := String(cfg.get("mood", ""))
+	return m if m != "" else String(map.get("mood", ""))
 
 ## What HeroProgression gave the player's hero this battle (see _ai_hero_stats).
 var _player_hero_bonus := {}

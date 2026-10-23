@@ -14,6 +14,9 @@ const SIZES := [140.0, 180.0, 220.0]
 const SIZE_NAMES := ["Small (280 m)", "Medium (360 m)", "Large (440 m)"]
 const THEMES := ["highland", "verdant", "autumn", "snow", "wetland", "ashen", "volcanic", "desert", "badlands", "tropical"]
 const KINDS := ["gold", "stone", "timber", "food"]
+## Hour and weather a map can carry ("" is the land's own daylight).
+const MOODS := ["", "dusk", "night", "storm", "ember"]
+const MOOD_NAMES := ["Daylight", "Dusk", "Night", "Storm", "Firelight"]
 const SITE_MODELS := {
 	"lume": "res://assets/environment/structures/lume_spire_ruin.glb",
 	"ruin": "composed:ruin_chapel",
@@ -224,6 +227,7 @@ static func to_authored(doc: Dictionary) -> Dictionary:
 		"size": size,
 		"starts": starts,
 		"showcase": showcase,
+		"mood": String(doc.get("mood", "")) if String(doc.get("mood", "")) in MOODS else "",
 		"rivers": rivers, "ridges": ridges, "woods": woods, "lakes": lakes, "hills": hills,
 		"bridges": [], "ruins": [], "farmsteads": [],
 		"veins": veins, "deposits": deposits, "sites": sites, "roads": roads,
