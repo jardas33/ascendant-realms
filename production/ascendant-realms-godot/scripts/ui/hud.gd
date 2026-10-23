@@ -4835,12 +4835,12 @@ func _build_building_card(b) -> void:
 		site_name.size = Vector2(190, 27)
 		site_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		site.add_child(site_name)
-		var stage_label := _mk_label(_construction_phase(float(b.build_progress)), 13, Color(0.75, 0.89, 0.82))
+		var stage_label := _mk_label(_construction_phase(float(b.build_progress)), 13, Color(0.90, 0.84, 0.70))
 		stage_label.position = Vector2(112, 44)
 		stage_label.size = Vector2(240, 21)
 		stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		site.add_child(stage_label)
-		var rail_caption := _mk_label("SITE PROGRESS", 10, COMMAND_MINT)
+		var rail_caption := _mk_label("SITE PROGRESS", 10, Color(0.96, 0.74, 0.38))
 		rail_caption.position = Vector2(112, 70)
 		rail_caption.size = Vector2(140, 17)
 		rail_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -2,7 +2,9 @@ extends Control
 ## Blueprint scaffold and segmented build rail for a selected unfinished site.
 
 var progress := 0.0
-var accent := Color(0.44, 0.87, 0.69)
+# Plan 467: bronze and amber like the rest of the HUD (it was a teal
+# blueprint card, the last mint-green panel in the command area).
+var accent := Color(0.96, 0.74, 0.38)
 
 
 func _ready() -> void:
@@ -26,7 +28,7 @@ func _draw() -> void:
 		Vector2(0, 8), Vector2(8, 0), Vector2(w - 14, 0),
 		Vector2(w, 14), Vector2(w, h - 7), Vector2(w - 7, h),
 		Vector2(7, h), Vector2(0, h - 7)])
-	draw_colored_polygon(plate, Color(0.043, 0.073, 0.078, 0.96))
+	draw_colored_polygon(plate, Color(0.0, 0.0, 0.0, 0.34))
 	var rim := PackedVector2Array(plate)
 	rim.append(plate[0])
 	draw_polyline(rim, edge, 1.0, true)
@@ -34,7 +36,7 @@ func _draw() -> void:
 	draw_line(Vector2(10, 1), Vector2(w - 16, 1), Color(accent.r, accent.g, accent.b, 0.33), 1.0, true)
 	# An unfinished structure reads as a plan being assembled, not a generic bar.
 	var plan_rect := Rect2(12, 10, 86, 74)
-	draw_rect(plan_rect, Color(0.08, 0.15, 0.15, 0.54), true)
+	draw_rect(plan_rect, Color(0.11, 0.08, 0.04, 0.70), true)
 	draw_rect(plan_rect, Color(accent.r, accent.g, accent.b, 0.26), false, 1.0)
 	for i in 4:
 		var gy := 24.0 + i * 15.0

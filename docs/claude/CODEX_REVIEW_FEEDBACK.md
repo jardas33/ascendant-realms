@@ -18,6 +18,7 @@ Read `codex/fork-construction-art-r1` (a2f3168d) and R64 (d87cb6f5, 53bf13d6). T
 
 - **A slightly bolder pine glyph** (thicker trunk or a darker outline) would match the other three at 12 px.
 - If the construction chat paints more buildings, please leave about 4 percent margin around the building instead of a wide empty canvas, so they fill the card like the Astra R1 set.
+- **Research emblems (added after plan 466):** the Clanhold research row shows the same pick-and-hammer twice, because Sharpened Tools (gather speed) and Wider Baskets (carry more) both map to `r_pick` in `research_symbols_r1.png`. Three more cells in the same painted style would end the duplicates: a woven basket or cart (carry), a sheaf or loaf (food and the Oven's bounty), and an hourglass or quill (train and build speed). Same cell size as the R40 sheet, transparent ground.
 
 ## Review 32, 2026-10-23: your frame.png now dresses every tooltip (plan 449)
 
