@@ -444,6 +444,10 @@ static func _add_outposts(defs: Dictionary) -> void:
 		for id in defs:
 			if String(defs[id].get("race", "")) == race and String(defs[id].get("kind", "")) == "tower":
 				model = String(defs[id].get("model", ""))
+		# Plan 444: Codex's Clan Mine (a granite adit with a winch) replaced the
+		# borrowed watchtower for the Barrosan outpost.
+		if race == "barrosan":
+			model = "res://assets/environment/buildings/visual_candidates/astra_clan_mine_r1/astra_clan_mine_r1.gltf"
 		defs["%s_outpost" % race] = {
 			"race": race, "name": String(OUTPOST_NAMES[race]), "kind": "outpost", "model": model,
 			"hp": 480, "armor_class": "fortified", "armor": 5, "footprint": 2.6,
@@ -459,7 +463,7 @@ static func _add_landmarks(defs: Dictionary) -> void:
 	var common := {"kind": "landmark", "unique": true, "min_tier": 2, "armor_class": "fortified", "armor": 6,
 		"hp": 1400, "footprint": 4.6, "build_time": 55, "grants_pop": 0, "produces": []}
 	var list := {
-		"barrosan_village_oven": {"race": "barrosan", "name": "The Village Oven", "model": "res://assets/environment/buildings/barrosan_iron_forge_b01_r2.glb",
+		"barrosan_village_oven": {"race": "barrosan", "name": "The Village Oven", "model": "res://assets/environment/buildings/visual_candidates/astra_village_oven_r2/astra_village_oven_r2.gltf",
 			"cost": {"timber": 220, "stone": 180, "gold": 120}, "landmark": "oven", "reach": 20.0,
 			"desc": "Every family in the valley bakes in it. Gives 40 food every 20 seconds, and your units near it recover health."},
 		"lioraen_moura_fountain": {"race": "lioraen", "name": "Fountain of the Mouras", "model": _b("lioraen_lifewell"),

@@ -1276,6 +1276,7 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 444 (done):** Codex Village Oven R2 and Clan Mine R1 models replace the borrowed iron forge and watchtower; building hulls rebaked. 111/112 then hulls rebaked and claude_hullcheck OK; save unchanged
 - **Plan 443 (done):** Soldier and worker cards: the portrait overline names the unit's people (BARROSAN CLANS) instead of WORKFORCE/WAR HOST. 112/112 regression, save unchanged
 - **Plan 442 (done):** Hero battle-experience gauge and single-unit deck tag; shipped in the plan 441 commit. 112/112 regression with plan 441
 - **Plan 441 (done):** Building card tag names the job (MAIN HALL, TRAINING, RESEARCH, DEFENSE, HOUSING, OUTPOST) and a purpose line replaces Built; the command deck no longer repeats the tag; names shrink against the tag width. Plan 442 in the same commit: hero battle-experience gauge (gold, captioned) under mana; single-unit deck drops the repeated HERO tag. 112/112 regression, save unchanged
