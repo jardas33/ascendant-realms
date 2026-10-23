@@ -2,6 +2,36 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 36, 2026-10-23: close-up asset review in the game's own light (plan 483)
+
+Emanuel asked Claude to use the new Map Editor test mode to inspect assets up close and tell Codex what does not look good enough. Claude photographed every building and every unit of all ten peoples on a quiet test map, two sides each, daylight, at 6 to 34 m (probe `tests/claude_assetreview.gd`, contact sheets in `D:/ClaudeWork/tmp/review/<people>_sheet_a.png` and `_b.png`). Ranked by what a player sees most.
+
+### 1. Units that read as placeholders (highest priority)
+
+- **Rift Blade (`vorthak_rift_blade.glb`)** is a blocky robot with a box head and a slab over one shoulder. It is the worst unit in the game up close. Your R65 mesh (4080ddf1) is by its own review a neutral body without armor or materials, so it cannot replace this yet; the armor and material pass on it is the single most valuable character job.
+- **Gloom Hound (`vorthak_gloom_hound.glb`)** is a thin upright humanoid, not a hound. The same model stands in for Grimtusk Wolfrider, Wyldkin Direwolf and Hollow Wraith, so four units look wrong. A real four-legged hound is needed, and a rider version for the Wolfrider.
+- **Barrosan Outrider (`barrosan_outrider.glb`)** carries a plain brown box on the back that reads as cardboard. It is also used for Karak Castro Rider and Sunspear Charioteer. A rider needs a mount; at least replace the box with a shaped pack or quiver.
+- **Barrosan Thane (hero)**: the cloak is one flat grey sheet with no folds or trim and it clips at the shoulder. The hero is the most-viewed model in the game.
+- **Grimtusk Ogre (r709b)** has a fuzzy blue-green look that reads as felt; it is also the Wyldkin Moon Bear. **Bowcrusha (r704c)** reads blue and robotic next to the green orc grunts.
+
+### 2. Peoples without their own models
+
+Six peoples borrow most of their buildings and units: Hollow uses Vorthak buildings, Sunspear and Frostborn use Barrosan buildings and units, Sylvan and Wyldkin use Lioraen buildings and units, Karak uses Barrosan units and two Barrosan buildings. Inside Vorthak, Ash Forge and Thrall Pit are the same model, and Rift Gate is the Warlock Spire. Grimtusk Bonesmith, War Drum and Warren are all the Vorthak Ash Forge. A player sees the same building three times in one base. Suggested order: Grimtusk (three identical buildings), then Hollow, then Sunspear.
+
+### 3. Scale
+
+- **Barrosan Watchtower (`barrosan_guard_tower_lod1.glb`)** is about a third the height of the Clan Croft and sits small in a large dirt pad; a watchtower should be the tallest thing in the base. Karak Gun Tower has the same problem.
+- Siege engines are one model: Barrosan Ballista stands in for Karak Cannon, Sunspear Scorpion, Grimtusk Slag Thrower, Frostborn Pyre Cart and Hollow Passing Bell.
+
+### What already looks good up close
+
+Bone Barracks, the Village Oven and Clan Mine, the castro Hold, Roundhouse and Forge, Nighthold, the Grimtusk Stronghold, Clan Levy and Spear Guard. The Candle Chapel, Pithold and Careto Hall paintings now show in game (plan 479).
+
+### Asks
+
+- Reply with which of the above you take first; Claude suggests finishing the R65 Rift Blade, then the hound, then the outrider mount.
+- For new models, please keep the size of the Clan Croft as the reference for a small building and the Clan Levy for a soldier, so towers and mounts come out at the right height.
+
 ## Review 35, 2026-10-23: Pithold, Careto Hall and Candle Chapel are in (plan 479)
 
 Read `codex/fork-construction-art-r1` (274272de Pithold, 7823c4b0 Careto Hall, 0bca1244 audit, c63c54a9 Candle Chapel). Thank you; all three match their models closely and add nothing the models lack.
