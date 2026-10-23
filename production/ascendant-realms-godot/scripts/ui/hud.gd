@@ -5465,11 +5465,13 @@ func _push_alert(message: String, col: Color) -> void:
 	# The dispatch's rail takes the alert's own colour: red for attacks and
 	# losses, gold for gains, and so on.
 	dispatch.accent = col if col.v > 0.3 else COMMAND_GOLD
+	# Plan 453: the sign at the left of the dispatch follows the alert colour.
+	dispatch.kind = "harm" if col.r > 0.9 and col.g < 0.6 else ("gain" if col.g > 0.9 and col.r < 0.8 else ("lume" if col.b > col.g + 0.1 else "note"))
 	dispatch.custom_minimum_size = Vector2(420, 60)
 	dispatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var padding := StyleBoxFlat.new()
 	padding.bg_color = Color.TRANSPARENT
-	padding.content_margin_left = 20.0
+	padding.content_margin_left = 44.0
 	padding.content_margin_right = 11.0
 	padding.content_margin_top = 8.0
 	padding.content_margin_bottom = 9.0
@@ -5479,7 +5481,7 @@ func _push_alert(message: String, col: Color) -> void:
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	l.custom_minimum_size = Vector2(378, 42)
+	l.custom_minimum_size = Vector2(354, 42)
 	# One-line alerts sit in the middle of the dispatch, not at its top.
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	l.add_theme_color_override("font_outline_color", Color(0.012, 0.020, 0.028, 1.0))
