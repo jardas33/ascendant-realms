@@ -128,6 +128,12 @@ func setup(p_world, p_rts) -> void:
 	_skip_button.text = "Skip Tutorial"
 	_skip_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	_skip_button.focus_mode = Control.FOCUS_NONE
+	# Plan 459: a framed menu button in the title face, like every other
+	# button that leaves a screen (it was bare text on the plate).
+	var menu_theme = load("res://assets/ui/theme.tres")
+	if menu_theme is Theme:
+		_skip_button.theme = menu_theme
+	_skip_button.add_theme_font_size_override("font_size", 15)
 	_panel.add_child(_skip_button)
 	_skip_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	_skip_button.offset_left = -132.0
