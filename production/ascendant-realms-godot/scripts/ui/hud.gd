@@ -1830,7 +1830,9 @@ func _build_top_bar() -> void:
 	objective_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	objective_label.max_lines_visible = 2
-	objective_stack.add_child(objective_label)
+	objective_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Plan 437: each goal hangs from a small bronze ring (Codex composition R2).
+	objective_stack.add_child(_objective_bullet_row(objective_label))
 	# The bounty stays on the banner with how it stands, not just one alert.
 	_bounty_label = _top_small(_mk_label("", 15, Color(0.95, 0.82, 0.5)), 15)
 	_bounty_label.name = "MatchBountyLabel"
@@ -1839,7 +1841,26 @@ func _build_top_bar() -> void:
 	_bounty_label.tooltip_text = "Meet the bounty and win for extra spoils and +20% experience."
 	_bounty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_bounty_label.max_lines_visible = 2
-	objective_stack.add_child(_bounty_label)
+	_bounty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	objective_stack.add_child(_objective_bullet_row(_bounty_label))
+
+
+func _objective_bullet_row(label: Label) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ring := Control.new()
+	ring.name = "ObjectiveRing"
+	ring.custom_minimum_size = Vector2(12, 12)
+	ring.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ring.draw.connect(func():
+		var c := Vector2(6, 11)
+		ring.draw_arc(c, 5.0, 0.0, TAU, 20, Color(0.0, 0.0, 0.0, 0.7), 3.4, true)
+		ring.draw_arc(c, 5.0, 0.0, TAU, 20, label.get_theme_color("font_color"), 1.6, true))
+	row.add_child(ring)
+	row.add_child(label)
+	return row
 
 
 ## First word of a people's name for the compact header, skipping a leading
@@ -5159,6 +5180,9 @@ func _update_bounty_label(delta: float) -> void:
 	_bounty_accum = 0.0
 	var bp: Dictionary = world.bounty_progress()
 	_bounty_label.visible = not bp.is_empty()
+	# Its ring row (plan 437) goes with it.
+	if _bounty_label.get_parent() is HBoxContainer:
+		_bounty_label.get_parent().visible = _bounty_label.visible
 	if bp.is_empty():
 		return
 	_bounty_label.text = String(bp["text"])
