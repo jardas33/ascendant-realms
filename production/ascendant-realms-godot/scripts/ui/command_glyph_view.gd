@@ -35,6 +35,14 @@ const RESEARCH_CELLS := {
     "r_crown": Rect2(836, 816, 418, 438),
 }
 
+# Plan 476: Codex's separate painted research emblems (review 33 ask).
+# Transparent masters, drawn whole with a small inset; never cropped.
+const RESEARCH_SINGLES := {
+	"r_basket": "res://assets/ui/research_emblems/source_r1/carrying_basket_r1.png",
+	"r_wheat": "res://assets/ui/research_emblems/source_r1/food_wheat_r1.png",
+	"r_hourglass": "res://assets/ui/research_emblems/source_r1/training_hourglass_r1.png",
+}
+
 static var _emblem_cache: Dictionary = {}
 
 ## Which drawn emblem a research wears, read from what it does: every research
@@ -54,7 +62,14 @@ static func research_kind(tech_id: String, tdef: Dictionary) -> String:
 	var joined := " ".join(PackedStringArray(keys.map(func(k): return String(k)))) + " " + tech_id
 	if "brazier" in tech_id:
 		return "r_flame"
-	if "gather" in joined or "carry" in joined:
+	if "oven" in tech_id:
+		return "r_wheat"
+	if "carry" in joined:
+		return "r_basket"
+	# Faster training is time, not marching speed (it showed a boot).
+	if "train_speed" in joined and not ("dmg" in joined or "armor" in joined):
+		return "r_hourglass"
+	if "gather" in joined:
 		return "r_pick"
 	if "building_hp" in joined or "walls" in joined or "tower" in joined:
 		return "r_wall"
@@ -84,6 +99,15 @@ func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if RESEARCH_SINGLES.has(icon_kind):
+		var single: Texture2D = _load_emblem(RESEARCH_SINGLES[icon_kind])
+		if single:
+			var box := Rect2(size * 0.04, size * 0.92)
+			var fit := minf(box.size.x / single.get_width(), box.size.y / single.get_height())
+			var drawn := single.get_size() * fit
+			draw_texture_rect(single, Rect2(box.position + (box.size - drawn) * 0.5, drawn), false)
+			return
+		icon_kind = "r_pick" if icon_kind == "r_basket" else ("r_boot" if icon_kind == "r_hourglass" else "r_heart")
 	if RESEARCH_CELLS.has(icon_kind):
 		var atlas: Texture2D = _load_emblem(RESEARCH_ATLAS)
 		if atlas:

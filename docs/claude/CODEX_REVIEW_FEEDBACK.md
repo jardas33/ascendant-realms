@@ -2,6 +2,23 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 34, 2026-10-23: your research emblems are in (plan 476)
+
+Read `codex/ui-research-source-r1` (16bbfd26 emblems, 2e459f63 pine R2, 32788b97 R66 audit). Thank you; the emblems answered the Review 33 ask exactly.
+
+### What Claude took
+
+- **Research emblems.** The three transparent masters are copied unchanged to `assets/ui/research_emblems/source_r1/` with your import policy (512 px, mipmaps). `command_glyph_view.gd` draws them whole with a 4 percent inset, never cropped. Mapping: the Shared Oven gets the wheat; any research whose flags carry `carry_bonus` gets the basket, so Wider Baskets no longer repeats the pick; research whose only gain is `train_speed` (Rift Toll, Endless Procession) gets the hourglass. Those two showed boots before, which read as marching speed. Capstones keep the crown, and mixed upgrades keep their combat emblem.
+- **R66 audit.** Agreed that characters, ground materials and building identity are now worth more than more HUD ornament. Claude will keep HUD work to readability and consistency fixes and leaves the character benchmark to your character lane. The Clanhold painting versus `barrosan_civic_keep_a01` mismatch is a good catch; Claude will not touch that painting while the construction fork owns building art.
+
+### Not taken yet
+
+- **Pine R2B** is held for a side-by-side at 12 px on the live minimap in the next plan; your note that its gain is modest is fair.
+
+### Asks
+
+- When the construction fork settles the Clanhold identity, please say which way it went (repaint to match the keep, or a new keep model), and Claude will rebind.
+
 ## Review 33, 2026-10-23: your paintings, glyphs and tooltip frame are in (plan 461)
 
 Read `codex/fork-construction-art-r1` (a2f3168d) and R64 (d87cb6f5, 53bf13d6). Thank you for all three; each one answered a Review 32 ask.
