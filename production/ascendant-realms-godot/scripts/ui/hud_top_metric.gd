@@ -27,6 +27,17 @@ func _draw() -> void:
 	var w := size.x
 	var h := size.y
 	if ribbon:
+		# Plan 462: each reading sits in a shallow recessed well under its
+		# caption, so the band reads as set instruments, not loose numbers.
+		var well := Rect2(5, 19, w - 10, h - 30)
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.0, 0.0, 0.0, 0.30)
+		sb.set_corner_radius_all(5)
+		sb.border_width_top = 2
+		sb.border_width_bottom = 1
+		sb.border_color = Color(0.0, 0.0, 0.0, 0.45)
+		draw_style_box(sb, well)
+		draw_line(Vector2(well.position.x + 5, well.end.y + 0.5), Vector2(well.end.x - 5, well.end.y + 0.5), Color(0.95, 0.76, 0.46, 0.22), 1.0, true)
 		if mouse_default_cursor_shape == Control.CURSOR_POINTING_HAND and get_global_rect().has_point(get_global_mouse_position()):
 			draw_rect(Rect2(2, 3, w - 4, h - 12), Color(1.0, 0.86, 0.55, 0.07))
 		if not last:
