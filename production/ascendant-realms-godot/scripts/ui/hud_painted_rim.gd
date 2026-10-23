@@ -13,6 +13,48 @@ const RAIL_BAND := 33.0     # rail.png rows that hold the rail
 const CORNER_SRC := 80.0    # corner piece size in frame.png
 const CORNER_REACH := 46.0  # longest chamfer still treated as one corner
 
+## Plan 469: the garnets in the painted corners take the player's people's
+## colour (violet for the Vorthak, green for the Lioraen ...). -1 keeps the
+## painted red. The recoloured corners are one small atlas built once.
+static var gem_hue := -1.0
+static var _corner_atlas: Texture2D = null
+static var _corner_atlas_hue := -2.0
+
+static func set_people_color(race: String, col: Color) -> void:
+	var hue := -1.0
+	if race != "barrosan" and col.s >= 0.25:
+		hue = col.h
+	gem_hue = hue
+
+
+static func _tinted_corners(frame: Texture2D) -> Texture2D:
+	if _corner_atlas != null and is_equal_approx(_corner_atlas_hue, gem_hue):
+		return _corner_atlas
+	var src := frame.get_image()
+	if src == null:
+		return null
+	if src.is_compressed():
+		src.decompress()
+	src.convert(Image.FORMAT_RGBA8)
+	var fw := src.get_width()
+	var fh := src.get_height()
+	var c := int(CORNER_SRC)
+	var atlas := Image.create(c * 2, c * 2, false, Image.FORMAT_RGBA8)
+	var origins := [Vector2i(0, 0), Vector2i(fw - c, 0), Vector2i(fw - c, fh - c), Vector2i(0, fh - c)]
+	var dests := [Vector2i(0, 0), Vector2i(c, 0), Vector2i(c, c), Vector2i(0, c)]
+	for k in 4:
+		atlas.blit_rect(src, Rect2i(origins[k], Vector2i(c, c)), dests[k])
+	for y in c * 2:
+		for x in c * 2:
+			var p := atlas.get_pixel(x, y)
+			if p.a > 0.05 and p.s > 0.45 and p.v > 0.18 and (p.h < 0.045 or p.h > 0.93):
+				atlas.set_pixel(x, y, Color.from_hsv(gem_hue, minf(1.0, p.s * 0.9), minf(1.0, p.v * 1.08), p.a))
+	atlas.generate_mipmaps()
+	_corner_atlas = ImageTexture.create_from_image(atlas)
+	_corner_atlas_hue = gem_hue
+	return _corner_atlas
+
+
 var outline := PackedVector2Array()
 var thickness := 12.0
 var tint := Color.WHITE
@@ -135,13 +177,20 @@ func _draw() -> void:
 	var src_rects := [Rect2(0, 0, CORNER_SRC, CORNER_SRC), Rect2(fw - CORNER_SRC, 0, CORNER_SRC, CORNER_SRC),
 		Rect2(fw - CORNER_SRC, fh - CORNER_SRC, CORNER_SRC, CORNER_SRC), Rect2(0, fh - CORNER_SRC, CORNER_SRC, CORNER_SRC)]
 	var offsets := [Vector2(0, 0), Vector2(-1, 0), Vector2(-1, -1), Vector2(0, -1)]
+	var corner_tex: Texture2D = _frame
+	if gem_hue >= 0.0:
+		var atlas := _tinted_corners(_frame)
+		if atlas != null:
+			corner_tex = atlas
+			src_rects = [Rect2(0, 0, CORNER_SRC, CORNER_SRC), Rect2(CORNER_SRC, 0, CORNER_SRC, CORNER_SRC),
+				Rect2(CORNER_SRC, CORNER_SRC, CORNER_SRC, CORNER_SRC), Rect2(0, CORNER_SRC, CORNER_SRC, CORNER_SRC)]
 	# The frame art keeps a few pixels of air round its outside rail.
 	var air := 5.0 * size / CORNER_SRC
 	var nudges := [Vector2(-air, -air), Vector2(air, -air), Vector2(air, air), Vector2(-air, air)]
 	for c in corners:
 		var q: int = c[1]
 		var pos: Vector2 = c[0] + offsets[q] * size + nudges[q]
-		draw_texture_rect_region(_frame, Rect2(pos, Vector2(size, size)), src_rects[q], tint)
+		draw_texture_rect_region(corner_tex, Rect2(pos, Vector2(size, size)), src_rects[q], tint)
 
 
 func _inward(a: Vector2, b: Vector2) -> Vector2:

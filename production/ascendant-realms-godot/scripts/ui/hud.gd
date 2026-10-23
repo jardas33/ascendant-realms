@@ -278,6 +278,9 @@ func setup(p_world, p_rts) -> void:
 	if world and world.map is Dictionary:
 		MAP_HALF = float(world.map.get("size", MAP_HALF))
 	_commander = world.player_commander if world else null
+	if is_instance_valid(_commander):
+		var people := str(_commander.race)
+		load("res://scripts/ui/hud_painted_rim.gd").set_people_color(people, GameData.RACES.get(people, {}).get("color", Color(0.72, 0.66, 0.52)))
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var recorder = _m20_recorder()
