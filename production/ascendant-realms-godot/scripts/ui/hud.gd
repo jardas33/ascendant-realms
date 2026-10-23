@@ -2862,19 +2862,21 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		info.add_child(vet)
 	# A hero carries a mana bar under its health: the heading would push the
 	# status line out of the panel, and two bars read as vitals on their own.
-	if not u.is_hero:
-		info.add_child(_mk_label("VITALS", 12, Color(0.77, 0.81, 0.78)))
-
-	# hp bar + text
+	# Plan 426: no VITALS caption; the reading sits inside a taller gauge
+	# (the label is kept, hidden, for anything that reads it).
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
+	_single_hp_bar.custom_minimum_size = Vector2(0, 22)
 	info.add_child(_single_hp_bar)
 	_single_hp_text = _mk_label("", 15)
+	_single_hp_text.visible = false
 	info.add_child(_single_hp_text)
 
 	if not read_only and u.is_hero and u.max_mana > 0.0:
 		_single_mana_text = _mk_label("", 13, Color(0.78, 0.86, 1.0))
+		_single_mana_text.visible = false
 		info.add_child(_single_mana_text)
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
+		_single_mana_bar.custom_minimum_size = Vector2(0, 20)
 		info.add_child(_single_mana_bar)
 
 	if not read_only and not u.is_worker and u.has_method("cur_dmg"):
@@ -2960,7 +2962,7 @@ func _refresh_single_live() -> void:
 		_rebuild_selection([])
 		return
 	if is_instance_valid(_single_activity_label) and u is Unit and not _single_read_only:
-		_single_activity_label.text = "STATUS  ·  " + _unit_activity_label(u)
+		_single_activity_label.text = _unit_activity_label(u)
 	var unavailable_reason := _hero_unavailable_reason(u) if u is Unit and u.is_hero else ""
 	if not unavailable_reason.is_empty():
 		for w in _ability_widgets:
@@ -2976,10 +2978,12 @@ func _refresh_single_live() -> void:
 		return
 	if is_instance_valid(_single_hp_bar):
 		_single_hp_bar.value = clamp(u.get_hp_ratio(), 0.0, 1.0)
+		_single_hp_bar.set("caption", "%d / %d" % [int(max(0.0, u.hp)), int(u.max_hp)])
 	if is_instance_valid(_single_hp_text):
 		_single_hp_text.text = "HP %d / %d" % [int(max(0.0, u.hp)), int(u.max_hp)]
 	if is_instance_valid(_single_mana_bar) and "max_mana" in u and u.max_mana > 0.0:
 		_single_mana_bar.value = clamp(u.mana / u.max_mana, 0.0, 1.0)
+		_single_mana_bar.set("caption", "%d / %d mana" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))])
 	if is_instance_valid(_single_mana_text) and "max_mana" in u:
 		_single_mana_text.text = "MANA %d / %d" % [int(maxf(0.0, u.mana)), int(maxf(0.0, u.max_mana))]
 	if u is Unit and not _single_stat_cards.is_empty() and u.has_method("cur_dmg"):
@@ -3294,13 +3298,14 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	var building_badge_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.93, 0.72, 0.32)
 	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, 70.0 if b.is_built else 85.0))
 	identity_info.add_child(building_header)
-	identity_info.add_child(_mk_label("VITALS", 9, Color(0.62, 0.67, 0.65)))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
+	_single_hp_bar.custom_minimum_size = Vector2(0, 22)
 	identity_info.add_child(_single_hp_bar)
 	_single_hp_text = _mk_label("", 15)
+	_single_hp_text.visible = false
 	identity_info.add_child(_single_hp_text)
 	if not read_only:
-		_single_activity_label = _mk_label("STATUS  ·  " + ("Built" if b.is_built else "Under Construction"), 12, Color(0.82, 0.86, 0.78))
+		_single_activity_label = _mk_label("Built" if b.is_built else "Under construction", 13, Color(0.82, 0.86, 0.78))
 		identity_info.add_child(_single_activity_label)
 	if read_only:
 		_single_stat_label = _mk_label("Hostile · Built structure", 15, Color(0.88, 0.85, 0.75))
@@ -3356,7 +3361,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		queue_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# Untrimmed: with the default ellipsis trim the expanding status label
 		# squeezed this caption to nothing and a lone "Idle" was left.
-		var queue_caption := _mk_label("QUEUE  ·", 11, Color(0.8, 0.78, 0.7))
+		var queue_caption := _mk_label("Queue", 12, Color(0.66, 0.64, 0.58))
 		queue_caption.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		queue_row.add_child(queue_caption)
 		_production_status_label = _mk_label("Idle", 12, Color(0.95, 0.82, 0.42))

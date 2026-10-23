@@ -1,13 +1,40 @@
 extends ProgressBar
 ## A recessed field-instrument gauge. The filled region is value-driven; this
 ## replaces the flat default ProgressBar without changing any health logic.
+## Plan 426: the gauge sits in a forged bronze trough (hud_forged.gdshader,
+## through a backing child) and can carry its reading inside the bar.
+
+const HUD_SKIN := preload("res://scripts/ui/hud_forged_skin.gd")
 
 var fill_color := Color(0.40, 0.78, 0.42)
+## Text drawn centred inside the gauge ("2200 / 2200"); empty for none.
+var caption := "":
+	set(value):
+		if caption != value:
+			caption = value
+			queue_redraw()
+
+var _backing: Control = null
 
 
 func _ready() -> void:
 	value_changed.connect(func(_new_value: float): queue_redraw())
-	resized.connect(queue_redraw)
+	resized.connect(_reshape)
+	_backing = HUD_SKIN.Backing.new()
+	_backing.name = "ForgedTrough"
+	add_child(_backing)
+	_reshape()
+
+
+func _reshape() -> void:
+	if is_instance_valid(_backing):
+		var w := size.x
+		var h := size.y
+		var c := 4.0
+		var pts := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h - c),
+			Vector2(w - c, h), Vector2(c, h), Vector2(0, h - c), Vector2(0, c)])
+		_backing.window = Rect2(4, 4, w - 8, h - 8)
+		_backing.set_shape(pts, [], {"rim": 4.0, "groove": 0.0, "inlay": 0.0, "shadow": 3.0})
 	queue_redraw()
 
 
@@ -16,18 +43,27 @@ func _draw() -> void:
 	var height := size.y
 	if width < 12.0 or height < 8.0:
 		return
-	var rim := PackedVector2Array([
-		Vector2(4, 0), Vector2(width - 4, 0), Vector2(width, 4),
-		Vector2(width - 4, height), Vector2(4, height), Vector2(0, height - 4), Vector2(0, 4)])
-	draw_colored_polygon(rim, Color(0.42, 0.36, 0.27, 0.98))
-	draw_rect(Rect2(3, 3, width - 6, height - 6), Color(0.035, 0.042, 0.044, 0.99), true)
+	var inner := Rect2(4, 4, width - 8, height - 8)
+	draw_rect(inner, Color(0.025, 0.028, 0.030, 0.96), true)
 	var progress := clampf((value - min_value) / maxf(0.001, max_value - min_value), 0.0, 1.0)
-	var fill_width := maxf(0.0, (width - 8.0) * progress)
+	var fill_width := maxf(0.0, inner.size.x * progress)
 	if fill_width > 1.0:
-		draw_rect(Rect2(4, 4, fill_width, height - 8), fill_color.darkened(0.30), true)
-		draw_rect(Rect2(4, 4, fill_width, maxf(2.0, (height - 8.0) * 0.45)), fill_color.lightened(0.13), true)
-		draw_line(Vector2(4 + fill_width, 3), Vector2(4 + fill_width, height - 3), fill_color.lightened(0.34), 1.3, true)
+		var fr := Rect2(inner.position, Vector2(fill_width, inner.size.y))
+		var top := fill_color.lightened(0.22)
+		var low := fill_color.darkened(0.42)
+		draw_polygon(PackedVector2Array([fr.position, Vector2(fr.end.x, fr.position.y), fr.end, Vector2(fr.position.x, fr.end.y)]),
+			PackedColorArray([top, top, low, low]))
+		draw_rect(Rect2(fr.position + Vector2(0, 1), Vector2(fill_width, maxf(1.0, inner.size.y * 0.28))), Color(1, 1, 1, 0.16), true)
+		draw_line(Vector2(fr.end.x, inner.position.y), Vector2(fr.end.x, inner.end.y), fill_color.lightened(0.5), 1.4, true)
 	for segment in [0.25, 0.5, 0.75]:
-		var tick_x: float = 4.0 + (width - 8.0) * float(segment)
-		draw_line(Vector2(tick_x, 4), Vector2(tick_x, height - 4), Color(0.015, 0.025, 0.024, 0.46), 1.0, true)
-	draw_line(Vector2(5, 2), Vector2(width - 5, 2), Color(0.94, 0.84, 0.61, 0.31), 1.0, true)
+		var tick_x: float = inner.position.x + inner.size.x * float(segment)
+		draw_line(Vector2(tick_x, inner.position.y), Vector2(tick_x, inner.end.y), Color(0.0, 0.0, 0.0, 0.40), 1.0, true)
+	# Inner shade so the fill sits below the bronze lip.
+	draw_rect(Rect2(inner.position, Vector2(inner.size.x, 2.0)), Color(0, 0, 0, 0.45), true)
+	if not caption.is_empty():
+		var font := ThemeDB.fallback_font
+		var fs := clampi(int(inner.size.y) + 1, 11, 15)
+		var tw := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var pos := Vector2((width - tw) * 0.5, inner.position.y + (inner.size.y + fs * 0.72) * 0.5)
+		draw_string_outline(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.85))
+		draw_string(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.97, 0.95, 0.88))
