@@ -53,6 +53,7 @@ func setup() -> void:
 	add_child(_panel)
 	# Near-opaque, so battle text behind it does not show through the keys.
 	_panel.set("surface_alpha", 0.96)
+	_panel.set("forged", true)
 	_panel.set("surface_alpha_bottom", 0.96)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color.TRANSPARENT

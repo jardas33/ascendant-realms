@@ -7,6 +7,9 @@ extends PanelContainer
 
 var surface_alpha := 0.87
 var surface_alpha_bottom := 0.87
+## Plan 464: plates shown over the battle (pause, result, field manual) are
+## painted as the battle HUD's forged metal instead of navy vellum.
+var forged := false
 
 
 func _ready() -> void:
@@ -24,6 +27,14 @@ func _draw() -> void:
 		Vector2(cut, 0), Vector2(w - cut, 0), Vector2(w, cut),
 		Vector2(w, h - cut), Vector2(w - cut, h), Vector2(cut, h),
 		Vector2(0, h - cut), Vector2(0, cut)])
+	if forged:
+		var g := 6.0
+		var studs := [Vector4(cut * 0.55, cut * 0.55, g, 1.0), Vector4(w - cut * 0.55, cut * 0.55, g, 1.0),
+			Vector4(w - cut * 0.55, h - cut * 0.55, g, 1.0), Vector4(cut * 0.55, h - cut * 0.55, g, 1.0),
+			Vector4(w * 0.5, 6.0, 5.0, 1.0)]
+		load("res://scripts/ui/hud_forged_skin.gd").paint(self, shape, studs, Rect2(),
+			{"rim": 11.0, "groove": 2.0, "inlay": 0.0, "shadow": 14.0, "alpha": surface_alpha})
+		return
 	var top_ink := Color(0.018, 0.027, 0.039, surface_alpha)
 	var bottom_ink := Color(0.018, 0.027, 0.039, surface_alpha_bottom)
 	draw_polygon(shape, PackedColorArray([

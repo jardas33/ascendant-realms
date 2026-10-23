@@ -5618,6 +5618,7 @@ func _on_game_over(victory: bool) -> void:
 	# do not show through the result ledger.
 	plate.set("surface_alpha", 0.97)
 	plate.set("surface_alpha_bottom", 0.97)
+	plate.set("forged", true)
 	for side in ["left", "right"]:
 		plate_style.set("content_margin_" + side, 56.0)
 	plate_style.content_margin_top = 34.0
@@ -6072,6 +6073,7 @@ func toggle_key_card() -> void:
 	var plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
 	plate.surface_alpha = 0.95
 	plate.surface_alpha_bottom = 0.92
+	plate.forged = true
 	var pad := StyleBoxEmpty.new()
 	pad.content_margin_left = 36.0
 	pad.content_margin_right = 36.0
