@@ -2160,13 +2160,7 @@ func _draw_minimap() -> void:
 		if hidden_enemy_objective:
 			continue
 		var col: Color = GameData.TEAM_COLORS.get(team_owner, Color(0.85, 0.85, 0.85)) if team_owner >= 0 else Color(0.85, 0.85, 0.85)
-		var r := 6.0
-		var diamond := PackedVector2Array([
-			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)])
-		_minimap.draw_colored_polygon(diamond, col.darkened(0.18))
-		_minimap.draw_polyline(PackedVector2Array([
-			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r),
-			p + Vector2(-r, 0), p + Vector2(0, -r)]), Color(0, 0, 0, 0.8), 1.0)
+		_minimap_cut_diamond(p, 6.5, col, Color(0.90, 0.72, 0.40))
 
 	# Buildings use a footprint, wall face, and roof notch so structures read
 	# differently from units at a glance.
@@ -2396,6 +2390,11 @@ func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_e
 		points = PackedVector2Array([
 			p + Vector2(0, -radius), p + Vector2(radius, 0),
 			p + Vector2(0, radius), p + Vector2(-radius, 0)])
+	if not is_enemy:
+		_minimap_cut_diamond(p, radius, col.darkened(0.10), col.lightened(0.25))
+		if is_major:
+			_minimap.draw_rect(Rect2(p - Vector2(2.0, 2.0), Vector2(4.0, 4.0)), col.lightened(0.45), true)
+		return
 	_minimap.draw_colored_polygon(points, col.darkened(0.20 if is_major else 0.30))
 	var outline := PackedVector2Array(points)
 	outline.append(points[0])
@@ -2404,6 +2403,24 @@ func _draw_minimap_building(p: Vector2, col: Color, is_major: bool = false, is_e
 		_minimap.draw_rect(Rect2(p - Vector2(2.2, 2.2), Vector2(4.4, 4.4)), col.lightened(0.30), true)
 	elif not is_major:
 		_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), col.lightened(0.12), 0.8, true)
+
+## Plan 471: a marker cut like a gem. Drop shadow, bezel, four facets lit
+## from the top left and a glint, so markers read as objects on the map.
+func _minimap_cut_diamond(p: Vector2, r: float, col: Color, rim: Color) -> void:
+	var top := p + Vector2(0, -r)
+	var right := p + Vector2(r, 0)
+	var bottom := p + Vector2(0, r)
+	var left := p + Vector2(-r, 0)
+	var off := Vector2(1.0, 1.6)
+	_minimap.draw_colored_polygon(PackedVector2Array([top + off, right + off, bottom + off, left + off]), Color(0, 0, 0, 0.55))
+	var b := r + 1.7
+	_minimap.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -b), p + Vector2(b, 0), p + Vector2(0, b), p + Vector2(-b, 0)]), Color(0.05, 0.04, 0.03, 0.95))
+	_minimap.draw_colored_polygon(PackedVector2Array([p, left, top]), col.lightened(0.32))
+	_minimap.draw_colored_polygon(PackedVector2Array([p, top, right]), col.lightened(0.08))
+	_minimap.draw_colored_polygon(PackedVector2Array([p, right, bottom]), col.darkened(0.34))
+	_minimap.draw_colored_polygon(PackedVector2Array([p, bottom, left]), col.darkened(0.14))
+	_minimap.draw_polyline(PackedVector2Array([top, right, bottom, left, top]), rim, 1.2, true)
+	_minimap.draw_circle(p + Vector2(-r * 0.32, -r * 0.30), maxf(0.9, r * 0.14), Color(1, 1, 1, 0.75))
 
 func _draw_minimap_unit(p: Vector2, col: Color, is_worker: bool = false, is_hero: bool = false) -> void:
 	# Role shapes make the minimap answer "what is there?" without changing the
