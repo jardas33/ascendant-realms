@@ -1313,10 +1313,9 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 ## anchored tooltip, the way a strategy game's command grid reads.
 const COMMAND_TILE := 78.0
 
-func _mk_command_tile(title: String, tooltip: String, state: String = "READY") -> Button:
-	var command_kind := "ORDER"
+func _mk_command_tile(title: String, tooltip: String, state: String = "READY", hotkey_override: String = "", command_kind: String = "ORDER", disabled_reason: String = "") -> Button:
 	var accent := _command_accent(title, state, command_kind)
-	var hotkey := _command_hotkey(title)
+	var hotkey := hotkey_override if not hotkey_override.is_empty() else (_command_hotkey(title) if command_kind == "ORDER" else "")
 	var btn = HUD_ACTION_SCRIPT.new()
 	btn.text = ""
 	btn.accent = accent
@@ -1332,7 +1331,7 @@ func _mk_command_tile(title: String, tooltip: String, state: String = "READY") -
 	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	btn.add_child(glyph)
 	if not hotkey.is_empty():
-		var key := _mk_label(hotkey, 13, Color(1.0, 0.92, 0.72))
+		var key := _mk_label(hotkey, 15, Color(1.0, 0.92, 0.72))
 		key.name = "TileHotkey"
 		key.position = Vector2(COMMAND_TILE - 22.0, COMMAND_TILE - 24.0)
 		key.size = Vector2(16, 18)
@@ -1340,12 +1339,22 @@ func _mk_command_tile(title: String, tooltip: String, state: String = "READY") -
 		key.add_theme_constant_override("outline_size", 4)
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(key)
+	# Readiness word, shown only when it says something (cooldown, mana).
+	var status := _mk_label("" if state == "READY" else ("CD" if state == "COOLDOWN" else state), 15, Color(1.0, 0.93, 0.78))
+	status.name = "TileStatus"
+	status.position = Vector2(0, COMMAND_TILE * 0.5 - 11.0)
+	status.size = Vector2(COMMAND_TILE, 22)
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status.add_theme_constant_override("outline_size", 5)
+	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(status)
+	btn.set_meta("command_status_label", status)
 	btn.set_meta("command_kind", command_kind)
 	btn.set_meta("emblem_id", "")
 	var tooltip_text := tooltip + (("\n" + "Hotkey: " + hotkey) if not hotkey.is_empty() else "")
 	btn.tooltip_text = ""
 	btn.set_meta("command_tooltip_text", tooltip_text)
-	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, "", accent))
+	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, disabled_reason, accent))
 	btn.mouse_exited.connect(_hide_command_tooltip)
 	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
 		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
@@ -3085,6 +3094,9 @@ func _refresh_single_live() -> void:
 			btn.set_command_state("READY" if mana_ok else "LOCKED")
 			if is_instance_valid(overlay):
 				overlay.text = "READY" if mana_ok else "MANA"
+		# Plan 428: a spell tile shows only cooldown seconds or MANA.
+		if bool(btn.get("tile")) and is_instance_valid(overlay):
+			overlay.text = ("%d" % int(ceil(cd))) if cd > 0.05 else ("" if mana_ok else "MANA")
 		# A people spell that is ready glows softly on its card.
 		var emblem := btn.get_node_or_null("SpellEmblem") as Control
 		if is_instance_valid(emblem):
@@ -4188,9 +4200,9 @@ func _build_worker_card() -> void:
 func _build_hero_command_card(u) -> void:
 	if not u.abilities.is_empty():
 		_add_command_section("Abilities", "Cast when ready.")
-		var ability_grid := _mk_command_grid()
-		ability_grid.columns = 1
-		_cmd_body.add_child(ability_grid)
+		# Plan 428: spells are square tiles in one row, like the field orders.
+		var ability_grid := _add_field_order_grid()
+		ability_grid.columns = 5
 		var abilities: Dictionary = SkillDefs.get_abilities()
 		for id in u.abilities:
 			var cap_id := String(id)
@@ -4205,14 +4217,23 @@ func _build_hero_command_card(u) -> void:
 			var ready: bool = remaining <= 0.05 and mana_ready
 			var state := "READY" if ready else ("COOLDOWN" if remaining > 0.05 else "LOCKED")
 			var reason := "Cooldown: %.1fs remaining" % remaining if remaining > 0.05 else ("Need %d mana" % mana_cost if not mana_ready else "")
-			var detail := "%d mana  /  %.0fs CD" % [mana_cost, cooldown]
-			var ability_emblem := ""
-			var btn := _mk_command_button(String(ab.get("name", cap_id)), detail, "%s\n%s\nMana %d · cooldown %d s" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, int(round(cooldown))], reason, state, {}, "", "Effect", key_label, "", ability_emblem)
+			var btn := _mk_command_tile(String(ab.get("name", cap_id)), "%s\n%s\nMana %d · cooldown %d s" % [ab.get("name", cap_id), ab.get("desc", ""), mana_cost, int(round(cooldown))], state, key_label, "ABILITY", reason)
 			btn.disabled = not ready
 			# People and signature spells wear their own emblem: the people's
 			# sigil in the spell's colour, marked by what the spell does.
 			if ab.has("tint") or bool(ab.get("sig", false)) or SIGNATURE_GLYPHS.has(cap_id):
-				btn.add_child(_spell_emblem(ab, String(u.commander.race) if u.commander else "", String(cap_id)))
+				var old_glyph := btn.get_node_or_null("CommandEmblem")
+				if old_glyph:
+					btn.remove_child(old_glyph)
+					old_glyph.queue_free()
+				var spell_art := _spell_emblem(ab, String(u.commander.race) if u.commander else "", String(cap_id))
+				spell_art.position = Vector2(9, 9)
+				spell_art.size = Vector2(COMMAND_TILE - 18.0, COMMAND_TILE - 18.0)
+				for art_child in spell_art.get_children():
+					if art_child is Control:
+						art_child.size = spell_art.size
+				btn.add_child(spell_art)
+				btn.move_child(spell_art, 0)
 			var cap_u = u
 			var aimed: bool = cap_id in ["root", "bolt", "charge"] or (float(ab.get("range", 0.0)) > 0.0 and String(ab.get("use", "enemy")) == "enemy" and (ab.has("fx") or bool(ab.get("sig", false))) and not cap_id in ["sig_chains", "sig_stoneskin", "sig_entrudo"])
 			btn.pressed.connect(func():
