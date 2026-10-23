@@ -1387,10 +1387,29 @@ func _mk_command_tile(title: String, tooltip: String, state: String = "READY", h
 	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	btn.add_child(glyph)
 	if not hotkey.is_empty():
-		var key := _mk_label(hotkey, 15, Color(1.0, 0.92, 0.72))
+		# Plan 472: the letter sits on a small dark keycap with a bronze edge,
+		# so it reads over bright painted art.
+		var cap := Panel.new()
+		cap.name = "TileKeycap"
+		var cap_style := StyleBoxFlat.new()
+		cap_style.bg_color = Color(0.05, 0.04, 0.03, 0.88)
+		cap_style.border_color = Color(0.62, 0.47, 0.28, 0.95)
+		cap_style.set_border_width_all(1)
+		cap_style.border_width_top = 2
+		cap_style.border_color = Color(0.70, 0.54, 0.32, 0.95)
+		cap_style.set_corner_radius_all(3)
+		cap_style.shadow_color = Color(0, 0, 0, 0.55)
+		cap_style.shadow_size = 2
+		cap.add_theme_stylebox_override("panel", cap_style)
+		cap.position = Vector2(COMMAND_TILE - 27.0, COMMAND_TILE - 27.0)
+		cap.size = Vector2(19, 19)
+		cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(cap)
+		var key := _mk_label(hotkey, 14, Color(1.0, 0.92, 0.72))
 		key.name = "TileHotkey"
-		key.position = Vector2(COMMAND_TILE - 22.0, COMMAND_TILE - 24.0)
-		key.size = Vector2(16, 18)
+		key.position = Vector2(COMMAND_TILE - 27.0, COMMAND_TILE - 27.5)
+		key.size = Vector2(19, 19)
+		key.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		key.add_theme_constant_override("outline_size", 4)
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
