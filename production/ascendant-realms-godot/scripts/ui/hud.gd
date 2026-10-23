@@ -3293,14 +3293,21 @@ func _build_multi(units: Array) -> void:
 		# (22: with 14-point captions the sixth cell stood 9 px out at 10.)
 		var room := floorf((_sel_body.size.x - 5.0 * 4.0 - 22.0) / 6.0)
 		var cell_w := clampf(room, 54.0, 74.0) if get_viewport_rect().size.x >= 1800.0 else 54.0
-		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, 64)
+		# One row of faces (up to six) gets taller cards so the wing is not half
+		# empty below them (plan 438).
+		var tall := row_count == 1 and not expanded_pair
+		if tall:
+			# The body can still be unsized while it is built; 440 is its width at 1366.
+			var body_w := _sel_body.size.x if _sel_body.size.x > 100.0 else 440.0
+			cell_w = clampf(floorf((body_w - 5.0 * 4.0 - 22.0) / 6.0), 54.0, 74.0)
+		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, cell_w + 16.0 if tall else 64.0)
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# The six-column grid shows faces, not names: a name squeezed into a
 		# 54-74 px cell was drawn at 10 to 12 px. The line of kinds above names
 		# the group and each card's tooltip names the soldier; the portrait
 		# takes the name's room.
-		var portrait_size := Vector2(64, 64) if expanded_pair else Vector2(minf(cell_w, 62.0), 55)
+		var portrait_size := Vector2(64, 64) if expanded_pair else (Vector2(cell_w, cell_w) if tall else Vector2(minf(cell_w, 62.0), 55))
 		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
 			portrait.custom_minimum_size = portrait_size
@@ -3331,7 +3338,7 @@ func _build_multi(units: Array) -> void:
 			nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 			details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
-		bar.custom_minimum_size = Vector2(70, 8) if expanded_pair else Vector2(50, 8)
+		bar.custom_minimum_size = Vector2(70, 10) if expanded_pair else Vector2((cell_w if tall else minf(cell_w, 62.0)) - 4.0, 10)
 		if not expanded_pair:
 			bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		details.add_child(bar)

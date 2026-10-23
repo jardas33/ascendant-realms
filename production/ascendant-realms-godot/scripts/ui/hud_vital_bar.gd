@@ -30,20 +30,26 @@ func _reshape() -> void:
 	if is_instance_valid(_backing):
 		var w := size.x
 		var h := size.y
-		var c := 4.0
+		# Plan 438: a slim gauge (unit cards, 10 px) keeps a thin lip and no
+		# painted rail: at 8 px the rail's gem corners drew as broken spikes and
+		# the 4 px lip left no room for the fill.
+		var lip := _lip()
+		var c := 2.0 if lip < 4.0 else 4.0
 		var pts := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h - c),
 			Vector2(w - c, h), Vector2(c, h), Vector2(0, h - c), Vector2(0, c)])
-		_backing.window = Rect2(4, 4, w - 8, h - 8)
-		_backing.set_shape(pts, [], {"rim": 4.0, "groove": 0.0, "inlay": 0.0, "shadow": 3.0})
+		_backing.window = Rect2(lip, lip, w - lip * 2.0, h - lip * 2.0)
+		_backing.set_shape(pts, [], {"rim": lip, "groove": 0.0, "inlay": 0.0, "shadow": 3.0 if lip >= 4.0 else 1.5,
+			"painted": lip >= 4.0})
 	queue_redraw()
 
 
 func _draw() -> void:
 	var width := size.x
 	var height := size.y
-	if width < 12.0 or height < 8.0:
+	if width < 12.0 or height < 6.0:
 		return
-	var inner := Rect2(4, 4, width - 8, height - 8)
+	var lip := _lip()
+	var inner := Rect2(lip, lip, width - lip * 2.0, height - lip * 2.0)
 	draw_rect(inner, Color(0.025, 0.028, 0.030, 0.96), true)
 	var progress := clampf((value - min_value) / maxf(0.001, max_value - min_value), 0.0, 1.0)
 	var fill_width := maxf(0.0, inner.size.x * progress)
@@ -59,7 +65,7 @@ func _draw() -> void:
 		var tick_x: float = inner.position.x + inner.size.x * float(segment)
 		draw_line(Vector2(tick_x, inner.position.y), Vector2(tick_x, inner.end.y), Color(0.0, 0.0, 0.0, 0.40), 1.0, true)
 	# Inner shade so the fill sits below the bronze lip.
-	draw_rect(Rect2(inner.position, Vector2(inner.size.x, 2.0)), Color(0, 0, 0, 0.45), true)
+	draw_rect(Rect2(inner.position, Vector2(inner.size.x, minf(2.0, inner.size.y * 0.3))), Color(0, 0, 0, 0.45), true)
 	if not caption.is_empty():
 		var font := ThemeDB.fallback_font
 		var fs := clampi(int(inner.size.y) + 1, 11, 15)
@@ -67,3 +73,8 @@ func _draw() -> void:
 		var pos := Vector2((width - tw) * 0.5, inner.position.y + (inner.size.y + fs * 0.72) * 0.5)
 		draw_string_outline(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.85))
 		draw_string(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.97, 0.95, 0.88))
+
+
+## Bronze lip width: 4 px on full gauges, 2 px on slim ones.
+func _lip() -> float:
+	return 2.0 if size.y < 14.0 else 4.0
