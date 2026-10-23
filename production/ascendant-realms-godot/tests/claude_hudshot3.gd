@@ -29,6 +29,15 @@ func _run() -> void:
 		if u.is_hero and hero == null: hero = u
 		if u.is_worker and worker == null: worker = u
 	if hero: await _shot(rts, [hero], "hero")
+	# Point at the first spell or order so its anchored tooltip shows.
+	if hero:
+		for n in current_scene.find_children("*", "Button", true, false):
+			if n.is_visible_in_tree() and n.has_meta("command_kind") and String(n.get_meta("command_kind")) in ["ABILITY", "ORDER"]:
+				n.emit_signal("mouse_entered")
+				break
+		await create_timer(0.6).timeout
+		await RenderingServer.frame_post_draw
+		root.get_viewport().get_texture().get_image().save_png("D:/ClaudeWork/tmp/b422/sel_tip_%s.png" % OS.get_environment("CLAUDE_SIZE"))
 	if worker: await _shot(rts, [worker], "worker")
 	for c in world.commanders:
 		if c != world.player_commander and is_instance_valid(c):

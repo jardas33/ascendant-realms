@@ -67,6 +67,7 @@ static func paint(ci: CanvasItem, points: PackedVector2Array, studs: Array = [],
 	mat.set_shader_parameter("inlay", float(opts.get("inlay", 9.0)))
 	mat.set_shader_parameter("shadow_size", float(opts.get("shadow", 12.0)))
 	mat.set_shader_parameter("plate_alpha", float(opts.get("alpha", 0.975)))
+	mat.set_shader_parameter("gem_color", opts.get("gem", Color(0.62, 0.10, 0.06)))
 	var pad := float(opts.get("shadow", 12.0)) + 2.0
 	ci.draw_rect(box.grow(pad), Color.WHITE)
 
