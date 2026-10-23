@@ -5201,6 +5201,10 @@ func _on_game_over(victory: bool) -> void:
 	var plate: PanelContainer = load("res://scripts/ui/hero_sheet_plate.gd").new()
 	var plate_style := StyleBoxFlat.new()
 	plate_style.bg_color = Color.TRANSPARENT
+	# Plan 424: near-opaque like the pause plate, so name plates in the field
+	# do not show through the result ledger.
+	plate.set("surface_alpha", 0.97)
+	plate.set("surface_alpha_bottom", 0.97)
 	for side in ["left", "right"]:
 		plate_style.set("content_margin_" + side, 56.0)
 	plate_style.content_margin_top = 34.0
