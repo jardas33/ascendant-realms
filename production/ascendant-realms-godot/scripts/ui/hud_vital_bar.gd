@@ -74,8 +74,12 @@ func _draw() -> void:
 		var fs := clampi(int(inner.size.y) + 1, 11, 15)
 		var tw := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var pos := Vector2((width - tw) * 0.5, inner.position.y + (inner.size.y + fs * 0.72) * 0.5)
-		draw_string_outline(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.85))
-		draw_string(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.97, 0.95, 0.88))
+		# Plan 468: on the bright green and blue fills the numbers washed out at
+		# 1366 x 768; a soft dark band behind them and a full outline fix it.
+		var band := Rect2(Vector2((width - tw) * 0.5 - 6.0, inner.position.y), Vector2(tw + 12.0, inner.size.y))
+		draw_rect(band, Color(0, 0, 0, 0.40), true)
+		draw_string_outline(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 1.0))
+		draw_string(font, pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1.0, 0.98, 0.92))
 
 
 ## Bronze lip width: 4 px on full gauges, 2 px on slim ones.
