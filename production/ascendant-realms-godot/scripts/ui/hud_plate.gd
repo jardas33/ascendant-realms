@@ -59,7 +59,9 @@ func _draw() -> void:
 		var pts := PackedVector2Array([Vector2(0, -30), Vector2(bw, -30), Vector2(bw, bh), Vector2(16, bh), Vector2(0, 4)])
 		var lines := []
 		if objective_has_crest:
-			lines.append(Vector4(80, 12, 80, bh - 14))
+			# Plan 473: the compact crest only spans the header, so the line
+			# stops there instead of cutting through the goal rows below.
+			lines.append(Vector4(80, 12, 80, minf(58.0, bh - 14) if objective_compact_crest else bh - 14))
 		HUD_SKIN.paint(self, pts, [Vector4(10, bh * 0.5 + 4.0, 5.0, HUD_SKIN.GEM)], Rect2(), {"rim": 8.0, "inlay": 0.0, "lines": lines, "plate_top": 0.0, "plate_bottom": bh})
 		return
 	if plate_kind == "age":

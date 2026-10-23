@@ -1276,6 +1276,7 @@ Last updated: 2026-10-10. Claude updates this file after every pass. (Earlier en
   - **Checks:** map check OK (facing starts 416 against 438 m apart on foot, the side pairs 305 against 303 and 321 against 322), all 18 veins claimable, 80 base walks with none failed, three AI matches (six peoples) finished in 14 to 24 minutes with no stuck units. Both authored maps are in the suite: 56 regression checks pass.
   - **Not done:** the dam is two ridges of rock, not a model of a dam; the chapter itself still plays on the old Sunspire Delta. Pointing chapters at the new maps waits for Emanuel's verdict on the direction.
 
+- **Plan 473 (done):** Plan 473: the engraved line beside the objective crest stops at the header, so it no longer cuts between the goal markers and the CONQUEST and BOUNTY text. Regression 112 of 112 pass, save unchanged.
 - **Plan 472 (done):** Plan 472: command tile hotkey letters sit on small dark keycaps with a bronze edge and a soft shadow, so J, K, H and P stay readable over the painted icons. Regression 112 of 112 pass, save unchanged.
 - **Plan 471 (done):** Plan 471: minimap capture points and your buildings are drawn as cut gems, with a drop shadow, a gold or bronze bezel, four shaded facets and a glint, instead of flat grey diamonds. Regression 112 of 112 pass, save unchanged.
 - **Plan 470 (done):** Plan 470: the people color now reaches the forged shader gems on every panel and the top-bar finials, so a Vorthak HUD has no stray red garnets left. Regression 112 of 112 pass, save unchanged.
