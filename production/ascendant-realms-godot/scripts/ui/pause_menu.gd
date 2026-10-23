@@ -159,10 +159,17 @@ func setup() -> void:
 	vb.add_child(_make_section_header("CONTROLS"))
 	var controls_panel := PanelContainer.new()
 	var controls_style := StyleBoxFlat.new()
-	controls_style.bg_color = Color(0.03, 0.035, 0.045, 0.72)
-	controls_style.set_border_width_all(1)
-	controls_style.border_color = Color(0.55, 0.44, 0.26, 0.55)
-	controls_style.set_corner_radius_all(8)
+	# Plan 466: a recessed well in the forged plate (it was a navy box).
+	controls_style.bg_color = Color(0.0, 0.0, 0.0, 0.34)
+	controls_style.border_width_top = 2
+	controls_style.border_width_left = 1
+	controls_style.border_width_right = 1
+	controls_style.border_width_bottom = 1
+	controls_style.border_color = Color(0.0, 0.0, 0.0, 0.5)
+	controls_style.set_corner_radius_all(6)
+	controls_style.shadow_color = Color(0.95, 0.76, 0.46, 0.10)
+	controls_style.shadow_size = 1
+	controls_style.shadow_offset = Vector2(0, 1)
 	controls_panel.add_theme_stylebox_override("panel", controls_style)
 	controls_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	controls_panel.custom_minimum_size = Vector2(0, 212)
