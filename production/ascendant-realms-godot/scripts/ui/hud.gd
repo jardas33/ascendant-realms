@@ -2989,6 +2989,18 @@ func _build_single_unit(u, read_only: bool = false) -> void:
 		_single_mana_bar = _mk_bar(Color(0.35, 0.55, 0.95))
 		_single_mana_bar.custom_minimum_size = Vector2(0, 20)
 		info.add_child(_single_mana_bar)
+	# Plan 442: the hero's battle experience as a slim gold gauge (it was a
+	# number under the portrait only).
+	_single_xp_bar = null
+	if not read_only and u.is_hero:
+		_single_xp_bar = _mk_bar(Color(0.93, 0.72, 0.32))
+		_single_xp_bar.name = "BattleXpGauge"
+		_single_xp_bar.custom_minimum_size = Vector2(0, 20)
+		_single_xp_bar.tooltip_text = "Battle experience toward the next level"
+		_single_xp_bar.mouse_filter = Control.MOUSE_FILTER_PASS
+		info.add_child(_single_xp_bar)
+		_single_xp_bar.value = _battle_xp_fraction(u)
+		_single_xp_bar.set("caption", _battle_xp_caption(u))
 
 	if not read_only and not u.is_worker and u.has_method("cur_dmg"):
 		var stat_row := HBoxContainer.new()
@@ -3051,6 +3063,25 @@ func _hero_unavailable_reason(u) -> String:
 
 
 var _single_battle_level_label: Label = null
+var _single_xp_bar: ProgressBar = null
+
+
+func _battle_xp_caption(u) -> String:
+	var level := int(u.field_level)
+	var steps: Array = u.FIELD_LEVEL_XP
+	if level >= steps.size():
+		return "Top battle level"
+	return "%d / %d xp" % [int(u.field_xp), int(steps[level])]
+
+
+## Share of the way to the next battle level (1.0 at the top level).
+func _battle_xp_fraction(u) -> float:
+	var level := int(u.field_level)
+	var steps: Array = u.FIELD_LEVEL_XP
+	if level >= steps.size():
+		return 1.0
+	var floor_xp := float(steps[level - 1]) if level >= 1 and level - 1 < steps.size() and float(steps[level - 1]) < float(steps[level]) else 0.0
+	return clampf((float(u.field_xp) - floor_xp) / maxf(1.0, float(steps[level]) - floor_xp), 0.0, 1.0)
 
 func _battle_level_text(u) -> String:
 	var level := int(u.field_level)
@@ -3058,7 +3089,8 @@ func _battle_level_text(u) -> String:
 	if level >= steps.size():
 		return "Battle level %d" % level
 	# One line: at 14 points a second line stood below the portrait plinth.
-	return "Level %d  ·  %d / %d" % [level, int(u.field_xp), int(steps[level])]
+	# Plan 442: the numbers moved into the experience gauge.
+	return "Battle level %d" % level
 
 func _refresh_single_live() -> void:
 	var u = _tracked_single
@@ -3066,6 +3098,9 @@ func _refresh_single_live() -> void:
 		return
 	if is_instance_valid(_single_battle_level_label) and is_instance_valid(u) and u is Unit and u.is_hero:
 		_single_battle_level_label.text = _battle_level_text(u)
+		if is_instance_valid(_single_xp_bar):
+			_single_xp_bar.value = _battle_xp_fraction(u)
+			_single_xp_bar.set("caption", _battle_xp_caption(u))
 	if not is_instance_valid(u):
 		_rebuild_selection([])
 		return
@@ -3412,12 +3447,16 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	building_header.add_theme_constant_override("separation", 6)
 	building_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var building_name := _mk_label(identity_text, 18, identity_color)
-	_shrink_label_to(building_name, 168.0, 13)
 	building_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	building_header.add_child(building_name)
-	var building_badge_text := "BUILDING" if b.is_built else "BUILD SITE"
+	# Plan 441: the tag names the building's job ("BUILDING" said nothing and
+	# was repeated on the command deck beside it).
+	var building_badge_text := _building_role_tag(b.def) if b.is_built else "BUILD SITE"
 	var building_badge_color := Color(1.0, 0.55, 0.45) if read_only else Color(0.93, 0.72, 0.32)
-	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, 70.0 if b.is_built else 85.0))
+	var building_badge_w := maxf(70.0, 9.0 * building_badge_text.length() + 12.0)
+	# The name and the tag share one line (168 + 70 before the tags named jobs).
+	_shrink_label_to(building_name, 238.0 - building_badge_w, 13)
+	building_header.add_child(_mk_command_badge(building_badge_text, building_badge_color, building_badge_w))
 	identity_info.add_child(building_header)
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
 	_single_hp_bar.custom_minimum_size = Vector2(0, 22)
@@ -3426,7 +3465,7 @@ func _build_single_building(b, read_only: bool = false) -> void:
 	_single_hp_text.visible = false
 	identity_info.add_child(_single_hp_text)
 	if not read_only:
-		_single_activity_label = _mk_label("Built" if b.is_built else "Under construction", 13, Color(0.82, 0.86, 0.78))
+		_single_activity_label = _mk_label(_building_purpose(b.def) if b.is_built else "Under construction", 13, Color(0.82, 0.86, 0.78))
 		identity_info.add_child(_single_activity_label)
 	if read_only:
 		_single_stat_label = _mk_label("Hostile · Built structure", 15, Color(0.88, 0.85, 0.75))
@@ -3505,6 +3544,42 @@ func _build_single_building(b, read_only: bool = false) -> void:
 		_refresh_queue()
 
 	_refresh_single_live()
+
+
+## A built structure's job in one or two words, for its card tag.
+func _building_role_tag(def: Dictionary) -> String:
+	if bool(def.get("vein_outpost", false)):
+		return "OUTPOST"
+	if bool(def.get("is_hq", false)) or String(def.get("kind", "")) == "main":
+		return "MAIN HALL"
+	if def.has("tower_dmg"):
+		return "DEFENSE"
+	if String(def.get("kind", "")) == "house":
+		return "HOUSING"
+	if not def.get("produces", []).is_empty():
+		return "TRAINING"
+	if not def.get("research", []).is_empty():
+		return "RESEARCH"
+	return "STRUCTURE"
+
+
+## What a built structure does for the player, one short line.
+func _building_purpose(def: Dictionary) -> String:
+	if bool(def.get("vein_outpost", false)):
+		return "Workers inside gather in safety"
+	var trains: bool = not def.get("produces", []).is_empty()
+	var studies: bool = not def.get("research", []).is_empty() or bool(def.get("is_hq", false)) or String(def.get("kind", "")) == "main"
+	if trains and studies:
+		return "Trains workers and researches" if bool(def.get("is_hq", false)) or String(def.get("kind", "")) == "main" else "Trains soldiers and researches"
+	if trains:
+		return "Trains soldiers"
+	if studies:
+		return "Researches upgrades"
+	if String(def.get("kind", "")) == "house":
+		return "Houses your people"
+	if def.has("tower_dmg"):
+		return "Guards the ground around it"
+	return "Ready"
 
 
 func _unit_activity_label(u) -> String:
@@ -4117,9 +4192,12 @@ func _add_command_context(single, selection: Array) -> void:
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	info.add_child(_mk_title_label("FIELD COMMANDS" if role in ["HERO", "MILITARY", "SQUAD"] else ("BUILD & GATHER" if role in ["WORKER", "WORKFORCE"] else "SETTLEMENT"), 20, FONT_COLOR))
 	row.add_child(info)
-	var role_badge := _mk_command_badge(role, accent, 59.0)
-	role_badge.custom_minimum_size = Vector2(59, 22)
-	row.add_child(role_badge)
+	# Plans 441-442: one selected unit or building is tagged on its card beside
+	# this deck, so the deck does not repeat it.
+	if single == null:
+		var role_badge := _mk_command_badge(role, accent, 59.0)
+		role_badge.custom_minimum_size = Vector2(59, 22)
+		row.add_child(role_badge)
 	header.add_child(row)
 	_cmd_fixed.add_child(header)
 
