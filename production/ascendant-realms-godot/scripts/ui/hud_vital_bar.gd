@@ -51,6 +51,9 @@ func _draw() -> void:
 	var lip := _lip()
 	var inner := Rect2(lip, lip, width - lip * 2.0, height - lip * 2.0)
 	draw_rect(inner, Color(0.025, 0.028, 0.030, 0.96), true)
+	# Plan 463: the empty part of a gauge keeps a dim trace of its colour, so
+	# an empty bar (no experience yet) reads as a gauge, not a black slot.
+	draw_rect(inner, Color(fill_color.r * 0.22, fill_color.g * 0.22, fill_color.b * 0.22, 0.85), true)
 	var progress := clampf((value - min_value) / maxf(0.001, max_value - min_value), 0.0, 1.0)
 	var fill_width := maxf(0.0, inner.size.x * progress)
 	if fill_width > 1.0:

@@ -34,10 +34,17 @@ class Sign extends Control:
 		# in, after the padding); the sign sits in the padding left of it.
 		var c := Vector2(-23.0, size.y * 0.5)
 		var col: Color = dispatch.accent
+		if String(dispatch.kind) == "note" and col.s < 0.25:
+			col = Color(0.98, 0.82, 0.50)
 		# A dark round socket with a fine rim in the alert's colour.
-		draw_circle(c, 13.0, Color(0.02, 0.02, 0.025, 0.92))
-		draw_arc(c, 13.0, 0.0, TAU, 32, Color(col, 0.85), 1.6, true)
-		draw_arc(c, 10.5, 0.0, TAU, 32, Color(0, 0, 0, 0.6), 1.0, true)
+		# Plan 463: the rim is bronze like the slip it sits in (a white rim on
+		# plain notes looked like a system icon); the alert colour is an inner
+		# ring and the sign itself.
+		draw_circle(c, 14.0, Color(0.02, 0.02, 0.025, 0.92))
+		draw_arc(c, 13.6, 0.0, TAU, 36, Color(0, 0, 0, 0.8), 3.2, true)
+		draw_arc(c, 13.4, PI * 1.05, PI * 1.95, 18, Color(0.98, 0.82, 0.52, 0.95), 1.6, true)
+		draw_arc(c, 13.4, -PI * 0.05, PI * 1.05, 18, Color(0.62, 0.46, 0.26, 0.95), 1.6, true)
+		draw_arc(c, 11.0, 0.0, TAU, 32, Color(col, 0.45), 1.0, true)
 		match String(dispatch.kind):
 			"harm":
 				# Crossed blades.
