@@ -281,6 +281,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _toggle_pause() -> void:
 	var paused := not get_tree().paused
 	get_tree().paused = paused
+	# Plan 454: the field hover card does not stay up over the pause screen.
+	if paused and is_instance_valid(hud) and hud.has_method("hide_field_hover"):
+		hud.hide_field_hover()
 	if pause_menu:
 		pause_menu.set_shown(paused)
 

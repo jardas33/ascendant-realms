@@ -536,7 +536,12 @@ func _build_resource_tooltip() -> void:
 	tree_exiting.connect(_restore_resource_hover_title)
 
 
-func _resource_tooltip_stylebox() -> StyleBoxFlat:
+func _resource_tooltip_stylebox() -> StyleBox:
+	# Plan 454: the hover card over veins, resources and buildings in the
+	# field uses the same forged frame as every other tooltip (plan 449).
+	var theme_res = load("res://assets/ui/tooltip_theme.tres")
+	if theme_res is Theme and theme_res.has_stylebox("panel", "TooltipPanel"):
+		return theme_res.get_stylebox("panel", "TooltipPanel")
 	var sb := _hud_stylebox()
 	sb.bg_color = Color(0.05, 0.06, 0.075, 0.96)
 	sb.border_color = Color(0.82, 0.65, 0.30, 0.98)
@@ -634,6 +639,13 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 	_restore_resource_hover_title()
 	if not is_instance_valid(_resource_tooltip) or not is_instance_valid(rts):
 		return
+	# Plan 454: no field hover card over the pause screen or other overlays.
+	if get_tree().paused:
+		if _resource_tooltip.visible:
+			_set_resource_hover(false)
+			_hovered_resource = null
+			_resource_tooltip.visible = false
+		return
 	var hovered_control := get_viewport().gui_get_hovered_control()
 	if is_instance_valid(hovered_control):
 		_set_resource_hover(false)
@@ -700,6 +712,15 @@ func _update_resource_tooltip(pointer_override: Vector2 = Vector2(-1.0, -1.0)) -
 		_resource_tooltip.visible = false
 		return
 	_place_resource_tooltip(pointer)
+
+
+## Plan 454: hide the field hover card (the pause screen calls this).
+func hide_field_hover() -> void:
+	if is_instance_valid(_resource_tooltip) and _resource_tooltip.visible:
+		_set_resource_hover(false)
+		_hovered_resource = null
+		_resource_tooltip.visible = false
+		_restore_resource_hover_title()
 
 
 func _place_resource_tooltip(pointer: Vector2) -> void:
