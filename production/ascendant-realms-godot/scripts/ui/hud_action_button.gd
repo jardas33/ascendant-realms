@@ -7,6 +7,9 @@ var command_kind := "ORDER"
 var command_state := "READY"
 var is_menu := false
 var crafted_build := false
+## Plan 427: a square command tile on a forged backing (hud_forged.gdshader).
+var tile := false
+var _tile_backing: Control = null
 ## A light glint that sweeps once across the tile when the pointer arrives.
 var _glint := -1.0
 
@@ -103,6 +106,9 @@ func _draw() -> void:
 		outline.append(menu_shape[0])
 		draw_polyline(outline, Color(metal.r, metal.g, metal.b, 0.72 if lit else 0.43), 1.2, true)
 		_draw_glint(w, h)
+		return
+	if tile:
+		_draw_tile(w, h, lit, active, enabled)
 		return
 	if command_kind == "ORDER":
 		# Four independent hit targets sit in a single cast command well. A
@@ -222,3 +228,25 @@ func _draw() -> void:
 	if active:
 		draw_line(Vector2(12, h - 2), Vector2(w * 0.52, h - 2), Color(metal.r, metal.g, metal.b, 0.82), 2.0, true)
 	_draw_glint(w, h)
+
+
+func _draw_tile(w: float, h: float, lit: bool, active: bool, enabled: bool) -> void:
+	var c := 9.0
+	var pts := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h - c),
+		Vector2(w - c, h), Vector2(c, h), Vector2(0, h - c), Vector2(0, c)])
+	if not is_instance_valid(_tile_backing):
+		_tile_backing = load("res://scripts/ui/hud_forged_skin.gd").Backing.new()
+		_tile_backing.name = "ForgedTile"
+		add_child.call_deferred(_tile_backing)
+	_tile_backing.set_shape(pts, [], {"rim": 6.0, "groove": 1.5, "inlay": 0.0, "shadow": 6.0})
+	# The art well: a dark recess the emblem sits in.
+	draw_rect(Rect2(8, 8, w - 16, h - 16), Color(0.02, 0.022, 0.024, 0.85))
+	if not enabled:
+		return
+	var ring := PackedVector2Array(pts)
+	ring.append(pts[0])
+	if active:
+		draw_polyline(ring, Color(1.0, 0.80, 0.40, 0.95), 2.4, true)
+	elif lit:
+		draw_polyline(ring, Color(1.0, 0.90, 0.66, 0.85), 1.6, true)
+

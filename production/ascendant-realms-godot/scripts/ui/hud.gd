@@ -1308,6 +1308,50 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	return btn
 
 
+## Plan 427: a field order as a square forged tile: the painted emblem fills
+## it, the hotkey sits in its corner and the name and help move to the
+## anchored tooltip, the way a strategy game's command grid reads.
+const COMMAND_TILE := 78.0
+
+func _mk_command_tile(title: String, tooltip: String, state: String = "READY") -> Button:
+	var command_kind := "ORDER"
+	var accent := _command_accent(title, state, command_kind)
+	var hotkey := _command_hotkey(title)
+	var btn = HUD_ACTION_SCRIPT.new()
+	btn.text = ""
+	btn.accent = accent
+	btn.command_kind = command_kind
+	btn.command_state = state
+	btn.set("tile", true)
+	btn.custom_minimum_size = Vector2(COMMAND_TILE, COMMAND_TILE)
+	btn.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	btn.focus_mode = Control.FOCUS_NONE
+	var glyph := _mk_command_icon(_command_icon_kind(title, command_kind), accent, COMMAND_TILE - 18.0)
+	glyph.name = "CommandEmblem"
+	glyph.position = Vector2(9, 9)
+	glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	btn.add_child(glyph)
+	if not hotkey.is_empty():
+		var key := _mk_label(hotkey, 13, Color(1.0, 0.92, 0.72))
+		key.name = "TileHotkey"
+		key.position = Vector2(COMMAND_TILE - 22.0, COMMAND_TILE - 24.0)
+		key.size = Vector2(16, 18)
+		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		key.add_theme_constant_override("outline_size", 4)
+		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(key)
+	btn.set_meta("command_kind", command_kind)
+	btn.set_meta("emblem_id", "")
+	var tooltip_text := tooltip + (("\n" + "Hotkey: " + hotkey) if not hotkey.is_empty() else "")
+	btn.tooltip_text = ""
+	btn.set_meta("command_tooltip_text", tooltip_text)
+	btn.mouse_entered.connect(func(): _show_command_tooltip(title, command_kind, hotkey, tooltip, "", accent))
+	btn.mouse_exited.connect(_hide_command_tooltip)
+	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
+		btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
+	return btn
+
+
 func _command_card_summary(detail: String) -> String:
 	var lines := detail.split("\n", false)
 	if lines.is_empty():
@@ -1347,8 +1391,10 @@ func _add_field_order_grid() -> GridContainer:
 	rack.add_theme_stylebox_override("panel", inset)
 	_cmd_body.add_child(rack)
 	var grid := _mk_command_grid()
-	grid.add_theme_constant_override("h_separation", 3)
-	grid.add_theme_constant_override("v_separation", 3)
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 6)
+	grid.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	rack.add_child(grid)
 	return grid
 
@@ -4202,7 +4248,7 @@ func _build_military_card() -> void:
 
 func _add_military_command_button(grid: GridContainer, title: String, detail: String, tooltip: String, action: String) -> void:
 	var state := "ACTIVE" if (action == "attack_move" and bool(rts.get("_attack_move_mode"))) or (action == "patrol" and bool(rts.get("_patrol_mode"))) else "READY"
-	var btn := _mk_command_button(title, detail, tooltip, "", state)
+	var btn := _mk_command_tile(title, tooltip, state)
 	btn.pressed.connect(func(): _invoke_military_command(action))
 	grid.add_child(btn)
 

@@ -6,6 +6,7 @@ const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel
 static var _forged_trim: Texture2D = null
 
 var accent := Color(0.81, 0.62, 0.35)
+var tiles_own_frame := true
 
 
 func _ready() -> void:
@@ -14,6 +15,10 @@ func _ready() -> void:
 
 
 func _draw() -> void:
+	# Plan 427: field orders are square forged tiles now; each carries its own
+	# frame, so the shared well under them is no longer drawn.
+	if tiles_own_frame:
+		return
 	if size.x < 80.0 or size.y < 60.0:
 		return
 	if _forged_trim == null and ResourceLoader.exists(FORGED_TRIM_PATH):
