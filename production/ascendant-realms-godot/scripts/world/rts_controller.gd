@@ -22,6 +22,11 @@ const DEFAULT_ZOOM := 40.0
 const DEFAULT_CAMERA_PITCH := -55.0
 var _zoom := DEFAULT_ZOOM
 const ZOOM_MIN := 25.0
+## Plan 480: a Map Editor test (sandbox) zooms in much closer, tilting toward
+## eye level, so a model can be studied up close.
+const INSPECT_ZOOM_MIN := 6.0
+const INSPECT_PITCH := -18.0
+var _zoom_min := ZOOM_MIN
 const ZOOM_MAX := 95.0
 const CAMERA_SAFE_FOCUS_MARGIN := 8.0
 var cam_speed := 42.0
@@ -100,6 +105,8 @@ func setup(p_world, p_team: int) -> void:
 	load("res://scripts/game/key_binds.gd").ensure_actions()
 	world = p_world
 	player_team = p_team
+	if bool(Match.get_config().get("sandbox", false)):
+		_zoom_min = INSPECT_ZOOM_MIN
 	_apply_settings()
 	_build_camera()
 	_build_select_box()
@@ -288,6 +295,9 @@ func _update_camera(delta: float) -> void:
 	# smooth zoom
 	cam_arm.spring_length = lerp(cam_arm.spring_length, _zoom, 0.2)
 	camera.position = Vector3(0.0, 0.0, cam_arm.spring_length)
+	if _zoom_min < ZOOM_MIN:
+		var t := clampf((cam_arm.spring_length - _zoom_min) / (ZOOM_MIN - _zoom_min), 0.0, 1.0)
+		cam_arm.rotation_degrees.x = lerpf(INSPECT_PITCH, DEFAULT_CAMERA_PITCH, t)
 	_apply_camera_shake(delta)
 
 var _shake := 0.0
@@ -423,9 +433,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _handle_mouse_button(event: InputEventMouseButton) -> void:
 	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-		_zoom = clamp(_zoom - 5.0 * zoom_sens, ZOOM_MIN, ZOOM_MAX)
+		# Close in, the steps get finer.
+		_zoom = clamp(_zoom - (5.0 if _zoom > ZOOM_MIN else 2.5) * zoom_sens, _zoom_min, ZOOM_MAX)
 	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-		_zoom = clamp(_zoom + 5.0 * zoom_sens, ZOOM_MIN, ZOOM_MAX)
+		_zoom = clamp(_zoom + (5.0 if _zoom >= ZOOM_MIN else 2.5) * zoom_sens, _zoom_min, ZOOM_MAX)
 	elif event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			if _build_id != "":

@@ -4823,6 +4823,10 @@ func _organize_hq_workspaces(building, train_start: int, research_start: int, tr
 		tab.custom_minimum_size = Vector2(0, 44)
 		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tab.add_theme_font_size_override("font_size", 16)
+		# Plan 480: always the plain face at this size. The readable-text pass
+		# sometimes ran before the tab joined the tree, leaving thin capitals
+		# on some peoples' halls.
+		tab.add_theme_font_override("font", ThemeDB.fallback_font)
 		tab.add_theme_color_override("font_color", Color(0.70, 0.73, 0.72))
 		tab.add_theme_color_override("font_pressed_color", FONT_COLOR)
 		var count: int = 6 if key == "trade" else _hq_action_count(pane)

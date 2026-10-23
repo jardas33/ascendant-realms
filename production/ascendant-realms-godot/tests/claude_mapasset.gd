@@ -74,6 +74,13 @@ func _run() -> void:
 	gw.get("rts").focus_on(Vector3(-90, 0, -90))
 	await create_timer(1.5).timeout
 	await _shot("test3d")
+	var rts = gw.get("rts")
+	_check(float(rts._zoom_min) < 10.0, "test camera can zoom in close")
+	for target in [[Vector3(-88, 0, -95), "closeup_units"], [Vector3(-110, 0, -60), "closeup_hall"]]:
+		rts.focus_on(target[0])
+		rts._zoom = 9.0 if target[1] == "closeup_units" else 16.0
+		await create_timer(2.0).timeout
+		await _shot(target[1])
 	gw._return_to_menu()
 	await create_timer(1.5).timeout
 	_check(String(current_scene.doc.get("name", "")) == "Probe Asset Yard", "came back to the same map in the editor")
