@@ -4124,29 +4124,34 @@ func _add_command_context(single, selection: Array) -> void:
 	_cmd_fixed.add_child(header)
 
 
+## Plan 439: hints are "KEY|What it does" pairs drawn as a forged keycap and
+## a plain sentence ("RMB  RALLY / CHOOSE WORKSPACE" read like a debug strip).
+## A hint with no key is a quiet note.
 func _add_context_hints(hints: Array[String]) -> void:
-	var strip := PanelContainer.new()
-	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	strip.custom_minimum_size = Vector2(0, 20)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.03, 0.04, 0.05, 0.20)
-	sb.border_color = Color(0.34, 0.4, 0.4, 0.24)
-	sb.border_width_bottom = 1
-	sb.content_margin_left = 2
-	sb.content_margin_right = 2
-	sb.content_margin_top = 2
-	sb.content_margin_bottom = 2
-	strip.add_theme_stylebox_override("panel", sb)
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
+	row.name = "ContextHints"
+	row.custom_minimum_size = Vector2(0, 26)
+	row.add_theme_constant_override("separation", 18)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for hint in hints:
-		var label := _mk_label(hint, 11, Color(0.82, 0.87, 0.84))
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		row.add_child(label)
-	strip.add_child(row)
-	_cmd_fixed.add_child(strip)
+		var parts := hint.split("|")
+		var key := parts[0] if parts.size() > 1 else ""
+		var words := parts[parts.size() - 1]
+		var pair := HBoxContainer.new()
+		pair.add_theme_constant_override("separation", 6)
+		pair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if not key.is_empty():
+			var cap := _mk_command_keycap(key, COMMAND_GOLD)
+			cap.custom_minimum_size = Vector2(maxf(29.0, 10.0 + 9.0 * key.length()), 22)
+			cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			pair.add_child(cap)
+		var label := _mk_label(words, 14, Color(0.80, 0.82, 0.78))
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		# A trimming label asks for no width, so the box gave it none.
+		label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		pair.add_child(label)
+		row.add_child(pair)
+	_cmd_fixed.add_child(row)
 
 
 func _building_portrait_definition(bdef: Dictionary, building_id: String) -> Dictionary:
@@ -4573,7 +4578,7 @@ func _organize_hq_workspaces(building, train_start: int, research_start: int, tr
 
 func _build_building_card(b) -> void:
 	if not b.is_built:
-		_add_context_hints(["BUILD SITE", "AWAIT COMPLETION"])
+		_add_context_hints(["Workers raise it; more workers build faster"])
 		_add_command_section("Construction", "SITE IN PROGRESS")
 		var site = HUD_CONSTRUCTION_SCRIPT.new()
 		site.name = "ConstructionProgress"
@@ -4629,13 +4634,13 @@ func _build_building_card(b) -> void:
 	var research: Array = GameData.research_for(def, String(_commander.race)) if is_instance_valid(_commander) else def.get("research", [])
 	# Say only what this building does: a research hall has no troops to rally.
 	if bool(def.get("vein_outpost", false)):
-		_add_context_hints(["RMB WORKERS  SEND IN", "EXPAND  MORE OUTPUT"])
+		_add_context_hints(["RMB|Send workers in", "Expand it for more output"])
 	elif produces.is_empty() and not research.is_empty():
-		_add_context_hints(["ARMY-WIDE  UPGRADES", "CLICK  RESEARCH"])
+		_add_context_hints(["Upgrades here help the whole army"])
 	elif research.is_empty() and not produces.is_empty():
-		_add_context_hints(["RMB  RALLY", "CLICK  TRAIN"])
+		_add_context_hints(["RMB|Set rally point", "SHIFT|Queue five"])
 	else:
-		_add_context_hints(["RMB  RALLY", "CHOOSE WORKSPACE" if bool(def.get("is_hq", false)) or String(def.get("kind", "")) == "main" else "CLICK  TRAIN / RESEARCH"])
+		_add_context_hints(["RMB|Set rally point", "SHIFT|Queue five"])
 	var is_hq: bool = def.get("is_hq", false) or def.get("kind", "") == "main"
 
 	# Vein outpost: who works inside, what it pays, and how to grow it.
@@ -4693,7 +4698,7 @@ Workers inside %d / %d  ·  +%d %s a minute
 	var workspace_train_start := _cmd_body.get_child_count()
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Shift-click queues five.", produces.size() > 4 and research.is_empty() and not is_hq)
+		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "", produces.size() > 4 and research.is_empty() and not is_hq)
 		# Plan 430: units to train are square tiles with the unit's picture;
 		# cost, age, housing and role move to the tooltip.
 		var train_grid := _add_field_order_grid()
