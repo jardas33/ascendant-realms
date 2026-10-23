@@ -982,7 +982,11 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	sb.border_width_bottom = 1
 	sb.border_width_left = 1
 	sb.border_width_right = 1
-	sb.skew = Vector2(0.22, 0.0)
+	sb.skew = Vector2(0.16, 0.0)
+	# The slant leans the top past the right edge; draw it a little inside
+	# the tag's box so a neighbor or a clipping column never cuts it.
+	sb.expand_margin_left = -2.0
+	sb.expand_margin_right = -2.0
 	sb.set_corner_radius_all(0)
 	sb.set_content_margin_all(3)
 	sb.content_margin_left = 5
