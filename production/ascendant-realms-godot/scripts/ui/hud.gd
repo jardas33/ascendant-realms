@@ -1772,11 +1772,13 @@ func _build_top_bar() -> void:
 	_objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	var objective_inset := StyleBoxFlat.new()
 	objective_inset.bg_color = Color.TRANSPARENT
-	objective_inset.content_margin_left = 22.0
+	# Plan 435: a little more air under the last line; the sides stay tight
+	# because "Granitborn  vs  Granitborn" needs nearly the whole width.
+	objective_inset.content_margin_left = 23.0
 	objective_inset.content_margin_right = 20.0
 	# A compact heraldic header sits above full-width, live objective/status rows.
 	objective_inset.content_margin_top = 8.0
-	objective_inset.content_margin_bottom = 8.0
+	objective_inset.content_margin_bottom = 13.0
 	_objective_panel.add_theme_stylebox_override("panel", objective_inset)
 	add_child(_objective_panel)
 	var mission_row := HBoxContainer.new()
@@ -1972,7 +1974,9 @@ func _build_minimap() -> void:
 	panel.add_theme_stylebox_override("panel", frame_inset)
 	column.add_theme_constant_override("separation", 7)
 	_minimap = Control.new()
-	_minimap.tooltip_text = "The whole field. Click to look there; right-click to send the selected units."
+	# Plan 435: two short lines, so the tip stays over the map instead of
+	# running across the selection portrait.
+	_minimap.tooltip_text = "Click: look there\nRight-click: send the selected units"
 	_minimap.custom_minimum_size = Vector2(MINIMAP_SIZE, MINIMAP_SIZE)
 	_minimap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# Camera-footprint sights can extend past the surveyed area near map edges.
