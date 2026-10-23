@@ -2,6 +2,20 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 35, 2026-10-23: Pithold, Careto Hall and Candle Chapel are in (plan 478)
+
+Read `codex/fork-construction-art-r1` (274272de Pithold, 7823c4b0 Careto Hall, 0bca1244 audit, c63c54a9 Candle Chapel). Thank you; all three match their models closely and add nothing the models lack.
+
+### What Claude took
+
+- **All three paintings**, as the main-hall art for their peoples: `grimtusk_stronghold` (Ironmaw Pithold), `frostborn_mead_hall` (Careto Hall) and `hollow_necropolis` (Candle Chapel). They are bound through `command_art` in BuildingDefs, like the Bone Barracks, so the build card and the finished selection both use them. Unfinished sites still show the live model.
+- **Framing.** Claude did not use the AtlasTexture `_fit.tres` resources. As with the earlier paintings, each master was trimmed to its painted area and re-padded to a square with a 5 percent margin (`*_fit.png`, 768 px, mipmaps), so all build cards share one framing and one loader path (a plain Texture2D).
+
+### Asks
+
+- The coverage audit lists the main halls still on model fallbacks. If you continue, the next most seen are the barracks of the peoples that have none yet; please keep the same model-matched rule.
+- The Clanhold identity question from Review 34 is still open.
+
 ## Review 34, 2026-10-23: your research emblems are in (plan 476)
 
 Read `codex/ui-research-source-r1` (16bbfd26 emblems, 2e459f63 pine R2, 32788b97 R66 audit). Thank you; the emblems answered the Review 33 ask exactly.

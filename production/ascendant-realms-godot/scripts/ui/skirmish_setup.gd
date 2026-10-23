@@ -420,11 +420,19 @@ func _build_battle_panel() -> Control:
 	# of the saga come first under their own heading, then the open fields.
 	# Each item's id is its place in _map_infos plus one, so the headings
 	# (which take a row each) do not shift what a row means.
-	for group in [true, false]:
-		map_opt.add_separator("Battlefields of the saga" if group else "Open fields")
+	# Plan 478: maps made in the Map Editor get a third heading.
+	for group in ["saga", "open", "custom"]:
+		var rows: Array = []
 		for i in _map_infos.size():
-			if (bool(_map_infos[i].get("authored", false)) and not bool(_map_infos[i].get("open", false))) == group:
-				map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
+			var m: Dictionary = _map_infos[i]
+			var g := "custom" if bool(m.get("custom", false)) else ("saga" if bool(m.get("authored", false)) and not bool(m.get("open", false)) else "open")
+			if g == group:
+				rows.append(i)
+		if rows.is_empty():
+			continue
+		map_opt.add_separator({"saga": "Battlefields of the saga", "open": "Open fields", "custom": "Made in the Map Editor"}[group])
+		for i in rows:
+			map_opt.add_item(str(_map_infos[i]["name"]), i + 1)
 	var default_index := 0
 	var map_known: bool = _map_id == "__random__"
 	for i in _map_infos.size():
@@ -620,6 +628,7 @@ func _rebuild_opponents() -> void:
 func _refresh_map_preview() -> void:
 	if not is_instance_valid(_map_preview):
 		return
+	_fit_opponents_to_map()
 	var player_col: Color = GameData.RACES.get(_player_race, {}).get("color", GOLD)
 	var opp_cols: Array = []
 	for i in _num_opponents:
@@ -638,10 +647,35 @@ func _refresh_map_preview() -> void:
 
 func _pick_map() -> String:
 	if _map_id == "__random__":
-		if _map_infos.is_empty():
+		# A random draw keeps to the game's own four-camp battlefields.
+		var pool: Array = []
+		for m in _map_infos:
+			if not bool(m.get("custom", false)):
+				pool.append(m)
+		if pool.is_empty():
 			return "hollowspan"
-		return str(_map_infos[randi() % _map_infos.size()]["id"])
+		return str(pool[randi() % pool.size()]["id"])
 	return _map_id
+
+## A map from the Map Editor can have two or three camps: no more opponents
+## than it has camps for, and the count buttons it cannot hold are dimmed.
+func _fit_opponents_to_map() -> void:
+	var most := 3
+	for m in _map_infos:
+		if str(m["id"]) == _map_id:
+			most = clampi(int(m.get("players", 4)) - 1, 1, 3)
+	if not is_instance_valid(_count_row):
+		return
+	for b in _count_row.get_children():
+		if b is Button:
+			b.disabled = int(b.get_meta("count", 0)) > most
+	if _num_opponents > most:
+		_num_opponents = most
+		for b in _count_row.get_children():
+			if b is Button:
+				b.button_pressed = (b.get_meta("count", 0) == most)
+		if is_instance_valid(_opp_container):
+			_rebuild_opponents()
 
 func _update_speed() -> void:
 	_speed_label.text = "%.1fx" % _game_speed

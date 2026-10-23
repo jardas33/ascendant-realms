@@ -53,6 +53,10 @@ static func stage(depth: int, player_race: String, salt: int = 0) -> Dictionary:
 		# alike (a keep ringed by three camps; a wall with attacker and defender).
 		if bool(info.get("uneven", false)):
 			continue
+		# Map Editor fields are the player's own; the Endless Road keeps to
+		# the built-in ones.
+		if bool(info.get("custom", false)):
+			continue
 		# Only the hand-built fields: half the stages used to fall on the
 		# small generated maps, which are kept for quick skirmishes.
 		if not bool(info.get("authored", false)):

@@ -74,11 +74,16 @@ func _build() -> void:
 	if ProfileManager.has_hero() and not ProfileManager.saga()["cleared"].is_empty():
 		col.add_child(_make_button("Endless Road  ·  Stage %d" % (ProfileManager.endless_best() + 1), _on_endless))
 	col.add_child(_make_button("Skirmish", _on_skirmish))
+	col.add_child(_make_button("Map Editor", _on_map_editor))
 	col.add_child(_make_button("Hero", _on_hero))
 	col.add_child(_make_button("How to Play", _on_tutorial))
 	col.add_child(_make_button("Settings", _on_settings))
 	if not OS.has_feature("web"):
 		col.add_child(_make_button("Quit", _on_quit))
+	# Plan 478: with eight choices the column rises so it clears the footer.
+	var extra := maxi(0, col.get_child_count() - 6)
+	col.offset_top -= extra * 64.0
+	col.offset_bottom -= extra * 64.0
 
 	# A dark gilt plate behind the column so the choices read over any part
 	# of the painting.
@@ -351,6 +356,10 @@ func _on_skirmish() -> void:
 		return
 	Match.clear_pending_hero_origin()
 	_goto("res://scenes/ui/skirmish_setup.tscn")
+
+func _on_map_editor() -> void:
+	Match.clear_pending_hero_origin()
+	_goto("res://scenes/ui/map_editor.tscn")
 
 func _on_hero() -> void:
 	Match.clear_pending_hero_origin()

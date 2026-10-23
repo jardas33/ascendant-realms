@@ -27,6 +27,11 @@ static func all() -> Array:
 		out.append(_assemble(s))
 	return out
 
+## Plan 478: builds a map from any spec, including a Map Editor draft that
+## is not saved yet (the editor's preview and its checks use this).
+static func assemble_spec(s: Dictionary) -> Dictionary:
+	return _assemble(s)
+
 static func get_map(id: String) -> Dictionary:
 	for s in _specs():
 		if s["id"] == id:
@@ -91,8 +96,9 @@ static func list_infos() -> Array:
 		# battlefield of its own in skirmish or on the Endless Road.
 		if bool(s.get("saga", false)):
 			continue
+		var custom := bool(s.get("custom", false))
 		out.append({"id": s["id"], "name": s["name"], "theme": s["theme"],
-			"players": s.get("players", 4), "desc": String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false)), "authored": s.has("authored"), "open": String(s.get("authored", "")) == "open"})
+			"players": s.get("players", 4), "desc": "A battlefield made in the Map Editor." if custom else String(AUTHORED_BLURBS.get(s["id"], _theme_blurb(s["theme"]))), "uneven": bool(s.get("uneven", false)), "authored": s.has("authored"), "open": String(s.get("authored", "")) == "open", "custom": custom})
 	return out
 
 ## Back-compat: original default map.
@@ -103,6 +109,10 @@ static func hollowspan() -> Dictionary:
 # Specs — 24 battlefields
 # ---------------------------------------------------------------------------
 static func _specs() -> Array:
+	# Plan 478: battlefields made in the Map Editor follow the built-in ones.
+	return _builtin_specs() + load("res://scripts/world/custom_maps.gd").specs()
+
+static func _builtin_specs() -> Array:
 	return [
 		{"id":"hollowspan","name":"Hollowspan Crossing","theme":"highland","layout":"corners","spread":100,"rich":1.0,"cap":"triple","bridge":true,"crags":"gates"},
 		{"id":"ashen_vale","name":"Ashen Vale","theme":"ashen","authored":"open","seed":21,"base":"edges","places":["The Ember Lume","Cinder Chapel","Gravekeeper's House","Ash Cairn","Smoke Watch"]},
@@ -252,6 +262,7 @@ static func _assemble_authored(s: Dictionary) -> Dictionary:
 		"fojo": a = _fojo()
 		"junias": a = _junias()
 		"open": a = _open_field(s)
+		"custom": a = s["data"]
 	var size: float = float(a["size"])
 	var starts: Array = a["starts"]
 	# A hold-out chapter wants its enemies near: a spec may seat the players in
