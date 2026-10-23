@@ -4,6 +4,7 @@ extends Control
 ## compact/full-HD windows keep the same physical join.
 
 const HUD_TOP_RIBBON := preload("res://scripts/ui/hud_top_ribbon.gd")
+const HUD_SKIN := preload("res://scripts/ui/hud_forged_skin.gd")
 const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
 static var _forged_trim: Texture2D = null
 
@@ -58,51 +59,25 @@ func _closed(points: PackedVector2Array) -> PackedVector2Array:
 func _draw() -> void:
 	if not visible or selection_rect.size.x < 80.0 or command_rect.size.x < 80.0:
 		return
-	# Plan 421: the same cast iron and bronze as the top band and the minimap
-	# housing. One body, a bronze hem round its outside, an engraved seam
-	# where the selection hands off to the orders, and no boxed trim inside.
+	# Plan 425: lit forged metal (hud_forged.gdshader) instead of flat fills
+	# and drawn lines: a raised bronze rim, a groove, hammered iron, an
+	# engraved seam where the selection hands off to the orders, gem bosses
+	# at the corners and on the joint, rivets along the foot.
 	var outer := _profile(0.0)
-	var shadow := PackedVector2Array()
-	for point in outer:
-		shadow.append(point + Vector2(0, 6))
-	draw_colored_polygon(shadow, Color(0, 0, 0, 0.50))
-	var top_y := outer[0].y
 	var bottom := maxf(selection_rect.end.y, command_rect.end.y) + 5.0
-	var colors := PackedColorArray()
-	for point in outer:
-		var t := clampf((point.y - top_y) / maxf(1.0, bottom - top_y), 0.0, 1.0)
-		colors.append(Color(0.105, 0.098, 0.088, 0.985).lerp(Color(0.040, 0.042, 0.046, 0.985), t))
-	draw_polygon(outer, colors)
-	var box := Rect2(outer[0], Vector2.ZERO)
-	for point in outer:
-		box = box.expand(point)
-	draw_texture_rect(HUD_TOP_RIBBON.grain(), box, true, Color(1, 1, 1, 0.05))
-	# Bronze hem: dark bed, bronze bar, gilt inner edge.
-	var rim := _closed(outer)
-	draw_polyline(rim, Color(0.05, 0.035, 0.02, 0.95), 7.0, true)
-	draw_polyline(rim, Color(0.62, 0.44, 0.22, 1.0), 4.2, true)
-	draw_polyline(_closed(_profile(4.0)), Color(0.98, 0.82, 0.50, 0.42), 1.0, true)
-	# A faint warm light on the selection wing, a cooler one on the orders.
 	var seam_x := command_rect.position.x - 13.0
-	draw_polygon(PackedVector2Array([
-		Vector2(selection_rect.position.x, selection_rect.position.y - 6.0), Vector2(seam_x - 4.0, selection_rect.position.y - 6.0),
-		Vector2(seam_x - 4.0, bottom - 8.0), Vector2(selection_rect.position.x, bottom - 8.0)]),
-		PackedColorArray([Color(0.40, 0.27, 0.12, 0.16), Color(0.40, 0.27, 0.12, 0.05), Color(0, 0, 0, 0), Color(0, 0, 0, 0)]))
-	# The seam between the two wings.
-	draw_line(Vector2(seam_x, selection_rect.position.y - 20.0), Vector2(seam_x, bottom - 10.0), Color(0, 0, 0, 0.6), 2.0, true)
-	draw_line(Vector2(seam_x + 1.6, selection_rect.position.y - 20.0), Vector2(seam_x + 1.6, bottom - 10.0), Color(0.85, 0.66, 0.38, 0.22), 1.0, true)
-	# A channel under the orders header, and one along the foot.
 	var header_y := command_rect.position.y + 31.0
-	draw_line(Vector2(command_rect.position.x + 14.0, header_y), Vector2(command_rect.end.x - 14.0, header_y), Color(0, 0, 0, 0.5), 1.0, true)
-	draw_line(Vector2(command_rect.position.x + 14.0, header_y + 1.2), Vector2(command_rect.end.x - 14.0, header_y + 1.2), Color(0.85, 0.66, 0.38, 0.16), 1.0, true)
-	# Gem bosses at the outer corners and on the joint.
-	for corner in [outer[0] + Vector2(-2, 9), outer[9] + Vector2(-9, 2), outer[10] + Vector2(-9, -2), outer[13] + Vector2(9, -2)]:
-		_boss(corner)
-	HUD_TOP_RIBBON._finial(self, Vector2(seam_x, selection_rect.position.y - 22.0))
-
-
-func _boss(c: Vector2) -> void:
-	draw_circle(c, 5.0, Color(0.05, 0.035, 0.02, 1.0))
-	draw_circle(c, 3.8, Color(0.70, 0.50, 0.25, 1.0))
-	draw_circle(c, 1.9, Color(0.55, 0.12, 0.07, 1.0))
-	draw_circle(c + Vector2(-0.6, -0.7), 0.7, Color(1, 0.9, 0.8, 0.85))
+	var studs := [
+		Vector4(outer[0].x - 3.0, outer[0].y + 11.0, 7.5, HUD_SKIN.GEM),
+		Vector4(outer[9].x - 11.0, outer[9].y + 3.0, 7.5, HUD_SKIN.GEM),
+		Vector4(outer[10].x - 11.0, outer[10].y - 3.0, 7.5, HUD_SKIN.GEM),
+		Vector4(outer[13].x + 11.0, outer[13].y - 3.0, 7.5, HUD_SKIN.GEM),
+		Vector4(seam_x, selection_rect.position.y - 22.0, 9.0, HUD_SKIN.GEM),
+	]
+	studs.append_array(HUD_SKIN.rivets_along(Vector2(outer[12].x, bottom - 5.5), Vector2(outer[11].x, bottom - 5.5), 150.0, 2.4, 40.0))
+	HUD_SKIN.paint(self, outer, studs, Rect2(), {
+		"rim": 14.0, "inlay": 0.0,
+		"lines": [
+			Vector4(seam_x, selection_rect.position.y - 10.0, seam_x, bottom - 16.0),
+			Vector4(command_rect.position.x + 14.0, header_y, command_rect.end.x - 14.0, header_y),
+		]})

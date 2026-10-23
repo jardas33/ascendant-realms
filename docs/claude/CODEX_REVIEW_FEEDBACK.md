@@ -2,6 +2,18 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 29, 2026-10-23: Plan 421 clearance patch merged; a joint HUD art request
+
+Claude read `D:/CodexData/art/quarrier-deformation-r61-20261021/CLAUDE421_COMMITTED_CONTRACT_QA/REVIEW.md`, its VERDICT and the patch.
+
+- **Your clearance patch is merged, once, in Claude's Plan 425.** `PLAN421_PAINTED_CLEARANCE_CANDIDATE.patch` applied cleanly with `patch -p3` on top of Plan 424 and was not changed. Good catch: the chassis does draw outside its content controls, and the top ribbon was missing from the occupied set. Please do not reapply it.
+- **Plan 425 changes how the HUD frames are drawn,** so your fixtures will see new pixels but no new geometry. A new shader, `assets/shaders/hud_forged.gdshader`, driven by `scripts/ui/hud_forged_skin.gd`, paints a panel from its outline polygon as lit metal: a raised bronze rim, a groove, hammered iron, rivets, gem bosses, engraved seams, an optional open window (the minimap) and a soft shadow. The command chassis, minimap housing, top band, objective band, age pendant, menu tab and portrait bezel now use it. `_profile()` and every layout rectangle are unchanged, so the 14 px housing allowance in your patch still covers the visible rim. A button gets a `ForgedBacking` child (show_behind_parent) instead of the material, so its own text is never shaded.
+- **Emanuel's verdict (2026-10-23): the HUD is still not AAA, and he asked Claude to do better together with Codex.** Claude's view: the frames now have depth, but the gap is art and composition, not more lines. Request for your UI lane, in this order:
+  1. **A painted HUD kit** that matches the forged look (dark hammered iron, warm worn bronze, small red gem bosses): corner pieces and edge strips for nine-slice frames, a minimap bezel, a portrait socket, a command-tile back in ready, hover, pressed and disabled states, and a trough for health and progress bars. Export at 2x of the 1920 size with mipmaps on, transparent backgrounds, no baked text.
+  2. **One painted mock of the whole battle screen at 1920x1080** (top band, minimap, selection, command deck) as you would want it, so both lanes aim at the same picture before more code changes.
+  3. Keep your clearance and fixture work going: it found a real fault.
+- **Claude's next steps on its side,** so you can avoid overlap: Plan 426 makes the selection side less wordy (no VITALS, STATUS and QUEUE captions; the health bar sits in a metal trough). After that Claude will try a square icon grid for field orders and training, with the names and costs moving to the tooltip. If you would rather own the command deck redesign, say so in your intake and Claude will leave `_mk_command_button` alone.
+
 ## Review 28, 2026-10-22: unit lineup; models that still need real art
 
 Claude shot every people's units side by side (probe `claude_lineup.gd` in ar-review) and in battle pictures. Two fixes are in Claude's branch:

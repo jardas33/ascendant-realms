@@ -4,6 +4,7 @@ extends PanelContainer
 
 const FORGED_TRIM_PATH := "res://assets/ui/hud_instruments/astra_r1/metric_bezel.png"
 const HUD_TOP_RIBBON := preload("res://scripts/ui/hud_top_ribbon.gd")
+const HUD_SKIN := preload("res://scripts/ui/hud_forged_skin.gd")
 static var _forged_trim: Texture2D = null
 
 
@@ -50,38 +51,23 @@ func _draw() -> void:
 		_draw_minimap_housing()
 		return
 	if plate_kind == "objective" and position.y < 4.0:
-		# Plan 420: hung from the top edge in the same iron and bronze as the
-		# reading band, with an angled cap at its left and a bronze side rail.
+		# Plan 420/425: hung from the top edge in the same forged metal as the
+		# reading band, with an angled cap at its left; the crest sits behind
+		# an engraved line.
 		var bw := size.x
 		var bh := size.y
-		HUD_TOP_RIBBON.draw_band(self, Rect2(0, 0, bw, bh), true, false, 16.0)
-		draw_line(Vector2(bw - 1.5, 0), Vector2(bw - 1.5, bh - 3.0), Color(0.62, 0.44, 0.22, 1.0), 3.0)
-		draw_line(Vector2(bw - 3.5, 0), Vector2(bw - 3.5, bh - 5.0), Color(0.98, 0.82, 0.50, 0.55), 1.0)
+		var pts := PackedVector2Array([Vector2(0, -30), Vector2(bw, -30), Vector2(bw, bh), Vector2(16, bh), Vector2(0, 4)])
+		var lines := []
 		if objective_has_crest:
-			draw_line(Vector2(79, 10), Vector2(79, 62), Color(0, 0, 0, 0.6), 1.6, true)
-			draw_line(Vector2(80.6, 10), Vector2(80.6, 62), Color(0.85, 0.66, 0.38, 0.22), 1.0, true)
+			lines.append(Vector4(80, 12, 80, bh - 14))
+		HUD_SKIN.paint(self, pts, [Vector4(10, bh * 0.5 + 4.0, 5.0, HUD_SKIN.GEM)], Rect2(), {"rim": 8.0, "inlay": 0.0, "lines": lines, "plate_top": 0.0, "plate_bottom": bh})
 		return
 	if plate_kind == "age":
-		# Plan 420: a pendant shield hung from the reading band.
+		# Plan 420/425: a pendant shield of forged metal hung from the band.
 		var pw := size.x
 		var ph := size.y
-		var shield := PackedVector2Array([Vector2(0, 0), Vector2(pw, 0), Vector2(pw, ph - 20), Vector2(pw * 0.5, ph), Vector2(0, ph - 20)])
-		var drop := PackedVector2Array()
-		for p in shield:
-			drop.append(p + Vector2(0, 5))
-		draw_colored_polygon(drop, Color(0, 0, 0, 0.40))
-		var top_c := Color(0.13, 0.10, 0.07, 0.99)
-		var low_c := Color(0.05, 0.045, 0.045, 0.99)
-		draw_polygon(shield, PackedColorArray([top_c, top_c, low_c, low_c, low_c]))
-		draw_texture_rect(HUD_TOP_RIBBON.grain(), Rect2(0, 0, pw, ph), true, Color(1, 1, 1, 0.05))
-		var rim := PackedVector2Array([Vector2(1.5, 0), Vector2(1.5, ph - 21), Vector2(pw * 0.5, ph - 1.5), Vector2(pw - 1.5, ph - 21), Vector2(pw - 1.5, 0)])
-		draw_polyline(rim, Color(0.05, 0.035, 0.02, 0.95), 6.0, true)
-		draw_polyline(rim, Color(0.66, 0.47, 0.23, 1.0), 3.6, true)
-		var inner := PackedVector2Array([Vector2(7, 0), Vector2(7, ph - 24), Vector2(pw * 0.5, ph - 8), Vector2(pw - 7, ph - 24), Vector2(pw - 7, 0)])
-		draw_polyline(inner, Color(0.98, 0.82, 0.50, 0.45), 1.0, true)
-		draw_line(Vector2(pw * 0.5 - 34, ph - 30), Vector2(pw * 0.5 + 34, ph - 30), Color(0.85, 0.66, 0.38, 0.35), 1.0, true)
-		var gem := Vector2(pw * 0.5, ph - 14)
-		draw_colored_polygon(PackedVector2Array([gem + Vector2(0, -5), gem + Vector2(4, 0), gem + Vector2(0, 5), gem + Vector2(-4, 0)]), Color(0.93, 0.72, 0.32))
+		var shield := PackedVector2Array([Vector2(0, -30), Vector2(pw, -30), Vector2(pw, ph - 22), Vector2(pw * 0.5, ph), Vector2(0, ph - 22)])
+		HUD_SKIN.paint(self, shield, [Vector4(pw * 0.5, ph - 15, 5.5, HUD_SKIN.GEM)], Rect2(), {"rim": 8.0, "inlay": 0.0, "lines": [Vector4(pw * 0.5 - 34, ph - 31, pw * 0.5 + 34, ph - 31)], "plate_top": 0.0, "plate_bottom": ph})
 		return
 	if plate_kind == "objective":
 		# The campaign marker carries a contained heraldic seal and worked metal
@@ -270,40 +256,18 @@ func _draw() -> void:
 			Vector2(size.x * 0.5 + 4, -4), Vector2(size.x * 0.5, 2)]), accent)
 
 
-## Plan 421: the minimap sits in a cast iron housing: chamfered plate, a
-## bronze hem round the outside, a bevelled bronze sill round the map, gem
-## bosses at its corners and the field's name on a lintel above it.
+## Plan 425: the minimap housing is lit forged metal (hud_forged.gdshader):
+## a raised bronze rim, hammered iron, a bronze sill round the map opening,
+## gem bosses at the corners and an engraved line under the field's name.
 func _draw_minimap_housing() -> void:
 	var w := size.x
 	var h := size.y
 	var opening := w - 24.0
 	var map_rect := Rect2(12.0, h - 12.0 - opening, opening, opening)
-	var c := 12.0
+	var c := 14.0
 	var outer := PackedVector2Array([Vector2(c, 0), Vector2(w - c, 0), Vector2(w, c), Vector2(w, h - c),
 		Vector2(w - c, h), Vector2(c, h), Vector2(0, h - c), Vector2(0, c)])
-	var drop := PackedVector2Array()
-	for p in outer:
-		drop.append(p + Vector2(0, 5))
-	draw_colored_polygon(drop, Color(0, 0, 0, 0.45))
-	var top := Color(0.105, 0.098, 0.088, 0.98)
-	var low := Color(0.040, 0.042, 0.046, 0.98)
-	draw_polygon(outer, PackedColorArray([top, top, top, low, low, low, low, top]))
-	draw_texture_rect(HUD_TOP_RIBBON.grain(), Rect2(0, 0, w, h), true, Color(1, 1, 1, 0.055))
-	var rim := PackedVector2Array(outer)
-	rim.append(outer[0])
-	var inner_rim := PackedVector2Array()
-	for p in rim:
-		inner_rim.append(p.lerp(Vector2(w, h) * 0.5, 0.012))
-	draw_polyline(rim, Color(0.05, 0.035, 0.02, 0.95), 6.0, true)
-	draw_polyline(rim, Color(0.62, 0.44, 0.22, 1.0), 3.6, true)
-	draw_polyline(inner_rim, Color(0.98, 0.82, 0.50, 0.50), 1.0, true)
-	# The sill round the map: a dark bed, a bronze bevel and a gilt edge.
-	var sill := map_rect.grow(3.0)
-	draw_rect(sill.grow(2.0), Color(0.02, 0.015, 0.01, 0.95), false, 4.0)
-	draw_rect(sill, Color(0.66, 0.47, 0.23, 1.0), false, 2.6)
-	draw_rect(sill.grow(-1.6), Color(0.98, 0.82, 0.50, 0.55), false, 1.0)
-	for corner in [sill.position, Vector2(sill.end.x, sill.position.y), Vector2(sill.position.x, sill.end.y), sill.end]:
-		draw_circle(corner, 5.5, Color(0.05, 0.035, 0.02, 1.0))
-		draw_circle(corner, 4.2, Color(0.70, 0.50, 0.25, 1.0))
-		draw_circle(corner, 2.2, Color(0.55, 0.12, 0.07, 1.0))
-		draw_circle(corner + Vector2(-0.7, -0.8), 0.8, Color(1, 0.9, 0.8, 0.85))
+	var studs := [
+		Vector4(11, 11, 6.0, HUD_SKIN.GEM), Vector4(w - 11, 11, 6.0, HUD_SKIN.GEM),
+		Vector4(11, h - 11, 6.0, HUD_SKIN.GEM), Vector4(w - 11, h - 11, 6.0, HUD_SKIN.GEM)]
+	HUD_SKIN.paint(self, outer, studs, map_rect.grow(-1.0), {"rim": 11.0, "inlay": 0.0})

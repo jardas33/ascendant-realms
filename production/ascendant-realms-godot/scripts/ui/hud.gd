@@ -3755,11 +3755,19 @@ func _place_command_tooltip() -> void:
 func _layout_command_feedback() -> void:
 	var viewport_size := get_viewport_rect().size
 	var occupied: Array[Rect2] = []
-	for panel in [_top_panel, _force_panel, _age_panel, _objective_panel,
+	var chassis_visible := is_instance_valid(_command_chassis) and _command_chassis.is_visible_in_tree()
+	for panel in [_top_ribbon, _top_panel, _force_panel, _age_panel, _objective_panel,
 		_menu_button, _alert_box, _minimap_panel, _sel_panel,
 		_selection_portrait, _cmd_panel, _resource_tooltip]:
 		if is_instance_valid(panel) and panel.is_visible_in_tree():
-			occupied.append(panel.get_global_rect())
+			var occupied_rect: Rect2 = panel.get_global_rect()
+			if chassis_visible and panel in [_sel_panel, _selection_portrait, _cmd_panel]:
+				# The forged body extends beyond its content controls: up to
+				# 13 px at the command join and 11 px for the bottom shadow.
+				# Reserve the painted housing before the layout helper adds
+				# its 10 px gap, without reserving the full-screen chassis Control.
+				occupied_rect = occupied_rect.grow(14.0)
+			occupied.append(occupied_rect)
 	var annotations: Array[Control] = []
 	if is_instance_valid(_command_tooltip) and _command_tooltip.visible:
 		annotations.append(_command_tooltip)

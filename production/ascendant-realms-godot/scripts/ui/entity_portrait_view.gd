@@ -163,16 +163,14 @@ static func _draw_bronze_frame(ci: Control, compact: bool) -> void:
 	if compact:
 		ci.draw_rect(r.grow(-1.0), Color(0, 0, 0, 0.55), false, 2.0)
 		return
-	# Dark bed, bronze bar, gilt inner edge, gem bosses at the corners.
-	ci.draw_rect(r.grow(-3.0), Color(0.04, 0.03, 0.02, 1.0), false, 6.0)
-	ci.draw_rect(r.grow(-3.5), Color(0.66, 0.47, 0.23, 1.0), false, 3.4)
-	ci.draw_rect(r.grow(-6.2), Color(0.98, 0.82, 0.50, 0.55), false, 1.0)
-	ci.draw_rect(r.grow(-7.5), Color(0, 0, 0, 0.6), false, 1.4)
-	for c in [r.position + Vector2(4, 4), Vector2(r.end.x - 4, r.position.y + 4), Vector2(r.position.x + 4, r.end.y - 4), r.end - Vector2(4, 4)]:
-		ci.draw_circle(c, 5.6, Color(0.05, 0.035, 0.02, 1.0))
-		ci.draw_circle(c, 4.3, Color(0.70, 0.50, 0.25, 1.0))
-		ci.draw_circle(c, 2.2, Color(0.55, 0.12, 0.07, 1.0))
-		ci.draw_circle(c + Vector2(-0.7, -0.8), 0.8, Color(1, 0.9, 0.8, 0.85))
+	# Plan 425: a lit forged bezel (hud_forged.gdshader) with the picture
+	# seen through its opening, a soft inner shadow and gem bosses.
+	var c := 7.0
+	var pts := PackedVector2Array([Vector2(c, 0), Vector2(r.end.x - c, 0), Vector2(r.end.x, c), Vector2(r.end.x, r.end.y - c),
+		Vector2(r.end.x - c, r.end.y), Vector2(c, r.end.y), Vector2(0, r.end.y - c), Vector2(0, c)])
+	var g := 4.6
+	var studs := [Vector4(5, 5, g, 1.0), Vector4(r.end.x - 5, 5, g, 1.0), Vector4(5, r.end.y - 5, g, 1.0), Vector4(r.end.x - 5, r.end.y - 5, g, 1.0)]
+	load("res://scripts/ui/hud_forged_skin.gd").paint(ci, pts, studs, r.grow(-8.0), {"rim": 7.0, "groove": 1.2, "inlay": 0.0, "shadow": 4.0})
 
 func configure_entity(entity) -> void:
 	if not is_instance_valid(entity):
