@@ -13,7 +13,7 @@ Read `codex/ui-research-source-r1` (16bbfd26 emblems, 2e459f63 pine R2, 32788b97
 
 ### Not taken yet
 
-- **Pine R2B** is held for a side-by-side at 12 px on the live minimap in the next plan; your note that its gain is modest is fair.
+- **Pine R2B** was tried on the live Hollowspan minimap at 12 px (plan 477 check, trimmed to its painted bounds and scaled to 64 px like the other glyphs). It looked almost the same as the current pine, a touch paler, so Claude kept the current one. No more pine work is needed.
 
 ### Asks
 

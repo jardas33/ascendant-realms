@@ -1095,8 +1095,10 @@ func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: St
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.055, 0.07, 0.082, 0.28)
-	sb.border_color = Color(accent.r, accent.g, accent.b, 0.40)
+	# Plan 477: bronze rules and gold captions like the top bar; the team
+	# colour stays on the role badge and the portrait title.
+	sb.bg_color = Color(0.0, 0.0, 0.0, 0.22)
+	sb.border_color = Color(0.62, 0.47, 0.28, 0.55)
 	sb.border_width_right = 0 if kind == "range" else 1
 	sb.set_corner_radius_all(0)
 	sb.content_margin_left = 2
@@ -1107,7 +1109,7 @@ func _add_stat_chip(row: HBoxContainer, caption: String, value: String, kind: St
 	var stack := VBoxContainer.new()
 	stack.add_theme_constant_override("separation", -3)
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var title_label := _mk_label(caption, 12, accent.lerp(Color(0.88, 0.89, 0.85), 0.48))
+	var title_label := _mk_label(caption, 12, Color(0.86, 0.72, 0.46))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title_label)
 	var value_label := _mk_label(value, 18, FONT_COLOR)
