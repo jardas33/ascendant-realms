@@ -27,6 +27,11 @@ func _build(title: String, question: String, action: String, destructive: bool) 
 	var plate: PanelContainer = PLATE_SCRIPT.new()
 	plate.surface_alpha = 0.97
 	plate.surface_alpha_bottom = 0.95
+	# Plan 465: asked from the battle's pause menu, the dialog is forged
+	# metal like the plate under it.
+	var host_script = get_parent().get_script() if get_parent() else null
+	if host_script is Script and String(host_script.resource_path).ends_with("pause_menu.gd"):
+		plate.set("forged", true)
 	var pad := StyleBoxEmpty.new()
 	pad.content_margin_left = 44.0
 	pad.content_margin_right = 44.0

@@ -53,6 +53,8 @@ func setup(p_world, p_rts) -> void:
 	plate.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	plate.surface_alpha = 0.95
 	plate.surface_alpha_bottom = 0.9
+	# Plan 465: forged metal like the battle HUD, not navy vellum.
+	plate.forged = true
 	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_panel.add_child(plate)
 	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -136,10 +138,10 @@ func setup(p_world, p_rts) -> void:
 	_skip_button.add_theme_font_size_override("font_size", 15)
 	_panel.add_child(_skip_button)
 	_skip_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_skip_button.offset_left = -132.0
-	_skip_button.offset_right = -12.0
-	_skip_button.offset_top = 10.0
-	_skip_button.offset_bottom = 44.0
+	_skip_button.offset_left = -140.0
+	_skip_button.offset_right = -20.0
+	_skip_button.offset_top = 16.0
+	_skip_button.offset_bottom = 50.0
 	# The button's last words are longer than its first ("Return to Main
 	# Menu"): it grows to the left, into the panel, not out of its right edge.
 	_skip_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
