@@ -1361,6 +1361,20 @@ func _mk_command_tile(title: String, tooltip: String, state: String = "READY", h
 	return btn
 
 
+## Puts a picture in a command tile's art well in place of its emblem.
+func _tile_set_art(btn: Button, art: Control) -> void:
+	var old := btn.get_node_or_null("CommandEmblem")
+	if old:
+		btn.remove_child(old)
+		old.queue_free()
+	art.position = Vector2(9, 9)
+	art.size = Vector2(COMMAND_TILE - 18.0, COMMAND_TILE - 18.0)
+	art.custom_minimum_size = art.size
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(art)
+	btn.move_child(art, 0)
+
+
 func _command_card_summary(detail: String) -> String:
 	var lines := detail.split("\n", false)
 	if lines.is_empty():
@@ -4642,9 +4656,10 @@ Workers inside %d / %d  ·  +%d %s a minute
 	# production units
 	if not produces.is_empty():
 		_add_command_section("Train", "SCROLL · %d UNITS" % produces.size() if produces.size() > 4 else "Shift-click queues five.", produces.size() > 4 and research.is_empty() and not is_hq)
-		var train_grid := _mk_command_grid()
-		train_grid.columns = 1
-		_cmd_body.add_child(train_grid)
+		# Plan 430: units to train are square tiles with the unit's picture;
+		# cost, age, housing and role move to the tooltip.
+		var train_grid := _add_field_order_grid()
+		train_grid.columns = 5
 		for uid in produces:
 			var udef := GameData.get_unit(uid)
 			if udef.is_empty():
@@ -4678,7 +4693,23 @@ Workers inside %d / %d  ·  +%d %s a minute
 			var train_state := "LOCKED" if not reason.is_empty() else ("TRAINING" if queued_for_training else "READY")
 			var unit_emblem := String(uid) if String(uid) == "barrosan_worker" else ""
 			var unit_card_art := {} if not unit_emblem.is_empty() else udef
-			var btn := _mk_command_button(str(udef.get("name", uid)), train_detail, _unit_tooltip(udef), reason, train_state, {}, str(udef.get("desc", "")), "Role", "", "TRAIN", unit_emblem, unit_card_art)
+			var train_tip := "Cost: %s  ·  %d pop  ·  Age %d\n%s" % [_cost_string(cost).trim_prefix("  (").trim_suffix(")"), int(udef.get("pop", 1)), tier, _unit_tooltip(udef)]
+			var btn := _mk_command_tile(str(udef.get("name", uid)), train_tip, train_state, "", "TRAIN", reason)
+			btn.set_meta("train_detail", train_detail)
+			var unit_art: Control
+			if not unit_card_art.is_empty() and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+				unit_art = load(ENTITY_PORTRAIT_SCRIPT).new()
+				unit_art.name = "UnitCommandPortrait"
+			else:
+				unit_art = _mk_command_icon(unit_emblem, btn.accent, COMMAND_TILE - 18.0)
+				unit_art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			_tile_set_art(btn, unit_art)
+			if unit_art.has_method("configure_definition"):
+				unit_art.configure_definition(unit_card_art, false)
+			if train_state == "LOCKED":
+				unit_art.modulate = Color(0.55, 0.57, 0.60, 0.85)
+			var tile_status := btn.get_meta("command_status_label") as Label
+			tile_status.text = ("%d" % queued_count) if queued_count > 0 else ""
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
