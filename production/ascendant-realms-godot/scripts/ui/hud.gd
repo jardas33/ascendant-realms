@@ -953,10 +953,22 @@ func _mk_command_badge(text: String, color: Color, min_width: float = 30.0) -> P
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.custom_minimum_size = Vector2(min_width, 20.0)
 	var sb := StyleBoxFlat.new()
-	# Plan 421: a quiet tag, coloured words over a soft wash with no box rim.
-	sb.bg_color = Color(color.r, color.g, color.b, 0.07)
-	sb.set_corner_radius_all(3)
+	# Plan 451: an enamelled plaque, slanted like a pennant: dark enamel in
+	# the tag's colour, a fine metal line above and below, and lit ends.
+	sb.bg_color = Color(color.r * 0.16, color.g * 0.14, color.b * 0.12, 0.92)
+	sb.border_color = Color(color.r, color.g, color.b, 0.62)
+	sb.border_width_top = 1
+	sb.border_width_bottom = 1
+	sb.border_width_left = 1
+	sb.border_width_right = 1
+	sb.skew = Vector2(0.22, 0.0)
+	sb.set_corner_radius_all(0)
 	sb.set_content_margin_all(3)
+	sb.content_margin_left = 5
+	sb.content_margin_right = 5
+	sb.shadow_color = Color(0, 0, 0, 0.45)
+	sb.shadow_size = 2
+	sb.shadow_offset = Vector2(0, 1)
 	badge.add_theme_stylebox_override("panel", sb)
 	var label := _mk_label(text, 10, color)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
