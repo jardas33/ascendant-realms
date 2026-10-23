@@ -3269,7 +3269,12 @@ func _compact_combat_stat(value: float) -> String:
 
 func _build_multi(units: Array) -> void:
 	var displayed_count := mini(units.size(), 24)
-	var row_count := ceili(float(displayed_count) / 6.0)
+	# Plan 447: more than twelve faces go eight to a row on smaller cards, so a
+	# big army fits the wing (at six a row the third row was cut off under the
+	# panel and a bare scroll bar showed).
+	var dense := displayed_count > 12
+	var columns := 8 if dense else 6
+	var row_count := ceili(float(displayed_count) / float(columns))
 	# A small formation needs a short selection wing. Dense formations keep the
 	# existing scrollable grid and gain height according to their row count.
 	if is_instance_valid(_sel_panel):
@@ -3309,13 +3314,14 @@ func _build_multi(units: Array) -> void:
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scroll.offset_top = 46
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	_sel_body.add_child(scroll)
 
 	var grid := GridContainer.new()
 	var expanded_pair := displayed_count <= 2
-	grid.columns = 2 if expanded_pair else 6
-	grid.add_theme_constant_override("h_separation", 4)
+	grid.columns = 2 if expanded_pair else columns
+	grid.add_theme_constant_override("h_separation", 3 if dense else 4)
 	grid.add_theme_constant_override("v_separation", 4)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
@@ -3337,18 +3343,22 @@ func _build_multi(units: Array) -> void:
 		# One row of faces (up to six) gets taller cards so the wing is not half
 		# empty below them (plan 438).
 		var tall := row_count == 1 and not expanded_pair
+		if dense:
+			# The body is unsized while it is built; it is about 380 wide (the
+			# selection panel is 410), so eight 44 px cards with 3 px gaps fit.
+			cell_w = 44.0
 		if tall:
 			# The body can still be unsized while it is built; 440 is its width at 1366.
 			var body_w := _sel_body.size.x if _sel_body.size.x > 100.0 else 440.0
 			cell_w = clampf(floorf((body_w - 5.0 * 4.0 - 22.0) / 6.0), 54.0, 74.0)
-		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, cell_w + 16.0 if tall else 64.0)
+		cell.custom_minimum_size = Vector2(157, 78) if expanded_pair else Vector2(cell_w, cell_w + 16.0 if tall else (56.0 if dense else 64.0))
 		cell.add_theme_constant_override("separation", 5 if expanded_pair else 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# The six-column grid shows faces, not names: a name squeezed into a
 		# 54-74 px cell was drawn at 10 to 12 px. The line of kinds above names
 		# the group and each card's tooltip names the soldier; the portrait
 		# takes the name's room.
-		var portrait_size := Vector2(64, 64) if expanded_pair else (Vector2(cell_w, cell_w) if tall else Vector2(minf(cell_w, 62.0), 55))
+		var portrait_size := Vector2(64, 64) if expanded_pair else (Vector2(cell_w, cell_w) if tall else (Vector2(cell_w, 42) if dense else Vector2(minf(cell_w, 62.0), 55)))
 		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
 			portrait.custom_minimum_size = portrait_size
@@ -3379,7 +3389,7 @@ func _build_multi(units: Array) -> void:
 			nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 			details.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
-		bar.custom_minimum_size = Vector2(70, 10) if expanded_pair else Vector2((cell_w if tall else minf(cell_w, 62.0)) - 4.0, 10)
+		bar.custom_minimum_size = Vector2(70, 10) if expanded_pair else Vector2((cell_w if tall or dense else minf(cell_w, 62.0)) - 4.0, 10)
 		if not expanded_pair:
 			bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		details.add_child(bar)
