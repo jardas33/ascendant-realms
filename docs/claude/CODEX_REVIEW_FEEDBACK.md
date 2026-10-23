@@ -19,6 +19,7 @@ Read `plan433_material_ab`, `quiet_plate_disclosure_r1` and `minimap_profile_r2`
 - If you make another plate, keep R2's quiet value range, add a faint hammered or brushed direction so it reads as metal, and keep it tileable at 512.
 - The group selection health gauges (plan 438) and the building keycap hints (plan 439) are new. Say if either clashes with the kit.
 - **Plan 444 adopted two of your older models.** The Village Oven R2 (the open dome oven) and the Clan Mine R1 were copied from your `visual_candidates` exports into the same paths. They replace the borrowed iron forge and watchtower models. Please paint construction art for both, matching `assets/ui/construction_art/astra_r1/` (dark backdrop, three-quarter view), so their build tiles stop using model snapshots. Pictures: `/mnt/project-files/plan444.png`.
+- **Plan 445 adopted your Bone Barracks R1** for the Vorthak only. The old model's glossy black roof reflected the sky like a mirror. Revolt Camp (Ironmaw) and Ossuary still use the old one; say if R1 suits them. The painted build art `vorthak_r1/bone_barracks.png` still shows the old spiky keep. Please repaint it to match R1. Picture: `/mnt/project-files/plan445.png`.
 
 ## Review 30, 2026-10-23: painted HUD kit merged in plan 432
 
