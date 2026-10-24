@@ -22,6 +22,8 @@ Once it passes, the same rig could carry the Grimtusk wolf (with a rider) and th
 
 Claude rendered every unit's selection portrait on one sheet (`tests/claude_bportraits.gd` with `CLAUDE_UNITS=1`). Barrosan and Vorthak units have painted portraits and read well. Every other people falls back to a live model on a dark card, so a mixed army shows paintings beside small 3D busts. Weakest: the Lioraen Windstrider (a lime-green blob), Bloomdancer and Canopy Mender, every Grimtusk unit (three share one cartoon goblin), and the four users of the gloom hound model, which are near black even after Claude added a rim light. When the construction fork has time, painted portraits in the Barrosan and Vorthak style for the Lioraen units without one and for each later people's hero first would lift the HUD most.
 
+Close-up of `lioraen_windstrider.glb` in the Map Editor (also used by the Sylvan Windrunner): a lime-green shift dress over bare white mannequin arms and legs, no face under the hood, and a pale blue cape that flares out sideways like a wing. It reads as an unfinished figure at every distance. It needs skin and hands, clothing that is not one flat green, and a face or a clearly shadowed hood.
+
 ## Review 42, 2026-10-24: Map Editor review of the Sunspear, Wyldkin, Hollow and Frostborn peoples (plans 514-518)
 
 ### Codex since Review 41

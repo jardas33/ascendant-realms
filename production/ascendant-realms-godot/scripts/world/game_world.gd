@@ -5526,12 +5526,62 @@ func _spawn_capture_points() -> void:
 		add_child(cp)
 		cp.global_position = c["pos"]
 		cp.configure(c["name"], c["benefit"], c.get("model", ""), self)
+		if in_ford(cp.global_position):
+			_add_ford_islet(cp.global_position)
 		clear_ground_cover(cp.global_position, 6.0)
 		cp.captured.connect(_on_point_captured_signal)
 	var recorder = _m20_recorder()
 	if recorder:
 		recorder.record_population("capture_points", map.get("capture_points", []).size(), 0.0, 0.0, "game_world._spawn_capture_points")
 	_m20_end(stage)
+
+## Plan 529: a shrine at a middle ford stood in the open water, the roads
+## running into the river on both sides, and read as a misplaced model. It
+## now stands on a paved islet just clear of the water, boulders round its
+## edge. It is kept low: units stand on it to take the shrine.
+func _add_ford_islet(at: Vector3) -> void:
+	var islet := Node3D.new()
+	islet.name = "FordIslet"
+	add_child(islet)
+	islet.global_position = Vector3(at.x, 0.0, at.z)
+	var stone := StandardMaterial3D.new()
+	var rock_path := "res://assets/textures/stone/highland_rock.png"
+	if ResourceLoader.exists(rock_path):
+		stone.albedo_texture = load(rock_path)
+		stone.uv1_triplanar = true
+		stone.uv1_world_triplanar = true
+		stone.uv1_scale = Vector3.ONE * 0.35
+	stone.albedo_color = Color(0.86, 0.84, 0.76)
+	stone.roughness = 0.95
+	var disc := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 6.0
+	cyl.bottom_radius = 6.6
+	cyl.height = 0.26
+	cyl.radial_segments = 14
+	cyl.rings = 1
+	disc.mesh = cyl
+	disc.material_override = stone
+	disc.position.y = 0.0
+	islet.add_child(disc)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(absf(at.x) * 31.0 + absf(at.z) * 17.0)
+	for i in 15:
+		var a := TAU * float(i) / 15.0 + rng.randf_range(-0.15, 0.15)
+		var boulder := MeshInstance3D.new()
+		var rock := CylinderMesh.new()
+		var h := rng.randf_range(0.45, 0.9)
+		rock.top_radius = rng.randf_range(0.25, 0.4)
+		rock.bottom_radius = rng.randf_range(0.5, 0.75)
+		rock.height = h
+		rock.radial_segments = 5
+		rock.rings = 1
+		boulder.mesh = rock
+		boulder.material_override = stone
+		var r := rng.randf_range(6.2, 6.9)
+		boulder.position = Vector3(cos(a) * r, h * 0.5 - 0.05, sin(a) * r)
+		boulder.rotation = Vector3(rng.randf_range(-0.2, 0.2), rng.randf() * TAU, rng.randf_range(-0.2, 0.2))
+		islet.add_child(boulder)
 
 func on_point_captured(point, team: int, previous_owner: int = -1) -> void:
 	if team == player_team:
