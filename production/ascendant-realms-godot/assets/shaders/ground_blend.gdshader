@@ -427,7 +427,16 @@ void fragment() {
 		// pull toward the highlight so it reads as snow, keeping the scour marks.
 		snow_surface = pow(clamp(snow_surface, 0.0, 1.0), vec3(snow_lift));
 		snow_surface = mix(snow_surface, snow_highlight_color, 0.12 + 0.2 * drift);
-		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.48 * road), 0.0, 1.0));
+		// Plan 521: the brown road showing through half the snow came out as a
+		// flat grey smear with ruled edges. Roads on snow are packed snow now,
+		// a little blue and churned in patches, with dark slush in the ruts.
+		float rs = clamp(road, 0.0, 1.0);
+		ground = mix(ground, snow_surface, clamp(snow_mask * (1.0 - 0.1 * rs), 0.0, 1.0));
+		vec3 packed_snow = snow_surface * vec3(0.70, 0.75, 0.85);
+		float churn = smoothstep(0.45, 0.78, vnoise(wxz * 1.7 + 23.0)) * smoothstep(0.3, 0.6, fbm(wxz * 0.11 + 41.0));
+		ground = mix(ground, packed_snow, rs * 0.9 * snow_mask);
+		ground = mix(ground, packed_snow * 0.84, churn * rs * 0.5 * snow_mask);
+		ground = mix(ground, packed_snow * vec3(0.66, 0.66, 0.68), rut * rs * 0.4 * snow_mask);
 	}
 
 	if (ford.z > 0.0 && abs(wxz.y - ford.x) < ford.y * 1.7) {
