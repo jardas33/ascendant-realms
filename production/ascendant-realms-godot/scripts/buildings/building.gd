@@ -164,7 +164,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 	_build_model()
 	_build_team_banner()
 	_build_visual_convergence_identity_dressing()
-	_build_construction_stage_visual()
+	_build_construction_stage_visual(prebuilt)
 	_build_damage_status_visual()
 	_build_selection_ring()
 	_build_hover_ring()
@@ -857,45 +857,127 @@ func _is_a01_model_path(path: String) -> bool:
 	return path == "res://assets/environment/buildings/barrosan_civic_keep_a01.glb"
 
 
-func _build_construction_stage_visual() -> void:
+func _build_construction_stage_visual(prebuilt: bool = false) -> void:
 	# Non-colliding presentation geometry only. Existing gameplay building
-	# models remain authoritative; these timber frames make foundation/early
-	# construction legible before the model becomes opaque.
+	# models remain authoritative; the scaffold makes construction legible
+	# around the rising model.
 	_construction_stage_root = Node3D.new()
 	_construction_stage_root.name = "ConstructionStageVisual"
 	_construction_stage_root.position.y = 0.04
 	add_child(_construction_stage_root)
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.55, 0.34, 0.16, 0.82)
-	mat.roughness = 0.92
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	var span := maxf(1.3, footprint * 0.44)
-	var post_height := maxf(1.1, _presentation_height() * 0.72)
-	for x in [-span, span]:
-		for z in [-span, span]:
-			var post := MeshInstance3D.new()
-			var cm := CylinderMesh.new()
-			cm.top_radius = 0.10
-			cm.bottom_radius = 0.14
-			cm.height = post_height
-			post.mesh = cm
-			post.position = Vector3(x, post_height * 0.5, z)
-			post.material_override = mat
-			post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-			_construction_stage_root.add_child(post)
-			_construction_stage_meshes.append(post)
-	for z in [-span, span]:
-		var beam := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = Vector3(span * 2.0, 0.16, 0.16)
-		beam.mesh = bm
-		beam.position = Vector3(0, post_height, z)
-		beam.material_override = mat
-		beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		_construction_stage_root.add_child(beam)
-		_construction_stage_meshes.append(beam)
+	_scaffold_done = prebuilt
 	_build_construction_status_visual()
+
+# Plan 498: the scaffold was four thin see-through poles and two beams inside
+# the footprint, which read as orange door frames. It is now a timber
+# scaffold around the model's real outline: posts every few metres, ledgers
+# at each lift, a brace on every side, plank walks, and a stack of dressed
+# stone and timber at one corner. Merged into two meshes (two draw calls).
+static var _scaffold_timber: StandardMaterial3D
+static var _scaffold_stone: StandardMaterial3D
+var _scaffold_done := false
+
+## Built on the first construction update after the model has loaded (models
+## load in the background, so at configure time there is nothing to measure).
+## Returns false while the model is not there yet.
+func _build_scaffold() -> bool:
+	if _scaffold_timber == null:
+		_scaffold_timber = StandardMaterial3D.new()
+		var tp := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-aged-timber-albedo.jpg"
+		if ResourceLoader.exists(tp):
+			_scaffold_timber.albedo_texture = load(tp)
+			_scaffold_timber.uv1_triplanar = true
+			_scaffold_timber.uv1_scale = Vector3(0.8, 0.8, 0.8)
+		_scaffold_timber.albedo_color = Color(0.86, 0.74, 0.6)
+		_scaffold_timber.roughness = 0.9
+		_scaffold_stone = StandardMaterial3D.new()
+		var sp := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-granite-albedo.jpg"
+		if ResourceLoader.exists(sp):
+			_scaffold_stone.albedo_texture = load(sp)
+			_scaffold_stone.uv1_triplanar = true
+			_scaffold_stone.uv1_scale = Vector3(1.2, 1.2, 1.2)
+		_scaffold_stone.albedo_color = Color(0.85, 0.83, 0.78)
+		_scaffold_stone.roughness = 0.95
+	# The model's outline in this building's space, with a working margin.
+	var box := AABB()
+	var first := true
+	var to_local := global_transform.affine_inverse()
+	for mi in _mesh_instances:
+		if is_instance_valid(mi) and mi.mesh and mi.is_inside_tree():
+			var part: AABB = to_local * mi.global_transform * mi.get_aabb()
+			box = part if first else box.merge(part)
+			first = false
+	if first or box.size.x < 0.5 or box.size.z < 0.5:
+		return false
+	var cx := box.get_center().x
+	var cz := box.get_center().z
+	var hx := minf(box.size.x * 0.5, footprint * 1.4) + 0.7
+	var hz := minf(box.size.z * 0.5, footprint * 1.4) + 0.7
+	var top := clampf(box.size.y * 0.8, 2.2, 9.0)
+	var lift := 1.9
+	var timber := SurfaceTool.new()
+	timber.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var stone := SurfaceTool.new()
+	stone.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var beam := func(st: SurfaceTool, from: Vector3, to: Vector3, w: float) -> void:
+		var d := to - from
+		var len := d.length()
+		if len < 0.01:
+			return
+		var bm := BoxMesh.new()
+		bm.size = Vector3(w, w, len)
+		var basis := Basis.looking_at(d.normalized(), Vector3.UP if absf(d.normalized().y) < 0.95 else Vector3.RIGHT)
+		st.append_from(bm, 0, Transform3D(basis, (from + to) * 0.5))
+	var corners := [Vector2(-hx, -hz), Vector2(hx, -hz), Vector2(hx, hz), Vector2(-hx, hz)]
+	for side in 4:
+		var a2: Vector2 = corners[side]
+		var b2: Vector2 = corners[(side + 1) % 4]
+		var span := a2.distance_to(b2)
+		var bays := maxi(1, int(round(span / 2.8)))
+		for k in bays:
+			var p2: Vector2 = a2.lerp(b2, float(k) / float(bays))
+			beam.call(timber, Vector3(cx + p2.x, 0.0, cz + p2.y), Vector3(cx + p2.x, top + 0.4, cz + p2.y), 0.2)
+		var h := lift
+		while h <= top + 0.01:
+			var aa := Vector3(cx + a2.x, h, cz + a2.y)
+			var bb := Vector3(cx + b2.x, h, cz + b2.y)
+			beam.call(timber, aa, bb, 0.14)
+			# The plank walk on the inner side of this lift.
+			var inward := (Vector3(cx, h, cz) - (aa + bb) * 0.5)
+			inward.y = 0.0
+			inward = inward.normalized() * 0.38
+			beam.call(timber, aa + inward + Vector3(0, 0.1, 0), bb + inward + Vector3(0, 0.1, 0), 0.06)
+			var plank_a := aa + inward * 2.0 + Vector3(0, 0.1, 0)
+			var plank_b := bb + inward * 2.0 + Vector3(0, 0.1, 0)
+			beam.call(timber, plank_a, plank_b, 0.06)
+			h += lift
+		# One long brace per side.
+		beam.call(timber, Vector3(cx + a2.x, 0.2, cz + a2.y), Vector3(cx + a2.lerp(b2, minf(1.0, 2.6 / span)).x, minf(top, lift * 1.6), cz + a2.lerp(b2, minf(1.0, 2.6 / span)).y), 0.12)
+	# Materials waiting at one corner: dressed stone blocks and sawn timber.
+	var yard := Vector3(cx + hx + 1.1, 0.0, cz + hz - 0.6)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(absf(global_position.x) * 31.0 + absf(global_position.z) * 17.0)
+	for i in 5:
+		var bm := BoxMesh.new()
+		bm.size = Vector3(0.7, 0.42, 0.5)
+		var at := yard + Vector3(rng.randf_range(-0.6, 0.6), 0.21 + (0.42 if i == 4 else 0.0), float(i % 4) * 0.55 - 0.8)
+		stone.append_from(bm, 0, Transform3D(Basis(Vector3.UP, rng.randf_range(-0.2, 0.2)), at))
+	for i in 4:
+		var y := 0.14 + 0.26 * float(i / 2)
+		beam.call(timber, yard + Vector3(1.1 + float(i % 2) * 0.3, y, -1.4), yard + Vector3(1.1 + float(i % 2) * 0.3, y, 1.4), 0.24)
+	for st_mat in [[timber, _scaffold_timber, "ScaffoldTimber"], [stone, _scaffold_stone, "ScaffoldStone"]]:
+		var st: SurfaceTool = st_mat[0]
+		var mesh := st.commit()
+		if mesh.get_surface_count() == 0:
+			continue
+		var mi := MeshInstance3D.new()
+		mi.name = String(st_mat[2])
+		mi.mesh = mesh
+		mi.material_override = st_mat[1]
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		_construction_stage_root.add_child(mi)
+		_construction_stage_meshes.append(mi)
+	return true
 
 func _build_construction_status_visual() -> void:
 	# Keep construction progress readable from the battlefield, not only from the
@@ -1268,6 +1350,8 @@ func _set_construction_visual(p: float) -> void:
 	if is_instance_valid(_construction_status_track) and building_now:
 		_construction_status_track.set_instance_shader_parameter("ratio", clampf(p, 0.0, 1.0))
 	if is_instance_valid(_construction_stage_root):
+		if building_now and not _scaffold_done:
+			_scaffold_done = _build_scaffold()
 		var stage := clampf(p, 0.0, 1.0)
 		_construction_stage_root.visible = stage < 0.9
 		_construction_stage_root.scale.y = lerpf(0.28, 1.0, clampf(stage / 0.72, 0.0, 1.0))

@@ -2,6 +2,21 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 41, 2026-10-24: R68B, R69 and R70 studies; Claude's play-space fixes (plans 491-498)
+
+### Codex since Review 40
+
+- R68B (Ash Thrall hands and boots), R69 (Rift Blade identity and PBR) and R70 (Rift Blade head and hand anatomy) were all preserved as studies and rejected by Codex itself. Claude agrees with the rejections and has nothing to merge from them.
+- Request: three rejected studies in a row on single parts. Please aim the next pass at one full character that passes at the normal game camera (silhouette, readable weapon, clean hands at that distance), then refine close-up anatomy after. A finished family member in play is worth more than a perfect hand in a study.
+
+### Fixed by Claude since Review 40
+
+- Grass: no more half-grown blades at patch edges, calmer highland and dry tints (491).
+- HUD: command notices no longer cover the selected unit's portrait (492). Hero name plates are larger with stronger outlines (493).
+- Units get a soft daylight edge light so they read on bright ground (494).
+- Placeholder objects replaced: Lume jar is a tilted amphora with shards (495), the bell tower uses Barrosan granite with quoins (496), the Lume spring has a stone curb and darker water (497).
+- Construction: the thin orange frame is now a timber scaffold with walkways, braces and a stone pile, sized to each building (498). Codex's building art does not need to change for this.
+
 ## Review 40, 2026-10-24: firelight and storm, the R66 audit and the Clanhold decision (plan 490)
 
 ### Fixed by Claude
