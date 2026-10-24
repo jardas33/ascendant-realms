@@ -647,6 +647,47 @@ func navigation_watchdog_snapshot() -> Dictionary:
 # --------------------------------------------------------------------------
 # Environment
 # --------------------------------------------------------------------------
+## Plan 488: in Map Editor test mode, L steps the light through daylight,
+## dusk, night, storm and firelight, so an asset can be judged in every hour
+## without leaving the battle. Sun, sky light, fog, grade and the unit edge
+## change; weather, sound and hearth fires keep the map's own hour.
+func cycle_sandbox_light() -> String:
+	var moods := ["", "dusk", "night", "storm", "ember"]
+	_live_mood_index = (_live_mood_index + 1) % moods.size()
+	var mood: String = moods[_live_mood_index]
+	_theme = MapDefs.theme(map.get("theme", "highland")).duplicate(true)
+	if mood != "":
+		_theme.merge(CampaignDefs.MOODS[mood], true)
+	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.0)), _theme.get("unit_rim_color", Color(0.62, 0.74, 1.0)))
+	var we := get_node_or_null("WorldEnvironment") as WorldEnvironment
+	var sun := get_node_or_null("Sun") as DirectionalLight3D
+	if we and we.environment:
+		var env := we.environment
+		env.ambient_light_energy = float(_theme.get("ambient_energy", 0.42))
+		env.fog_light_color = _theme.get("fog_color", Color(0.72, 0.78, 0.85))
+		env.fog_density = float(_theme.get("fog_density", 0.00045))
+		env.adjustment_enabled = _theme.has("grade_contrast")
+		env.adjustment_contrast = float(_theme.get("grade_contrast", 1.0))
+		env.adjustment_saturation = float(_theme.get("grade_saturation", 1.0))
+		env.adjustment_brightness = float(_theme.get("grade_brightness", 1.0))
+	if sun:
+		sun.rotation_degrees = Vector3(float(_theme.get("sun_pitch", -52.0)), float(_theme.get("sun_yaw", 40.0)), 0)
+		sun.light_energy = float(_theme.get("sun_energy", 1.0))
+		sun.light_color = _theme.get("sun_color", Color(0.96, 0.94, 0.88))
+	var label := String(CustomMapsScript.MOOD_NAMES[_live_mood_index])
+	emit_signal("alert", "Light: %s" % label, Vector3.ZERO)
+	return label
+
+var _live_mood_index := -1
+const CustomMapsScript := preload("res://scripts/world/custom_maps.gd")
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_L and bool(Match.get_config().get("sandbox", false)):
+		if _live_mood_index < 0:
+			_live_mood_index = maxi(0, ["", "dusk", "night", "storm", "ember"].find(battle_mood()))
+		cycle_sandbox_light()
+		get_viewport().set_input_as_handled()
+
 func _setup_environment() -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY

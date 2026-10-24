@@ -41,7 +41,7 @@ const TOOLS := [
 	["ford", "Ford", "Click on a river to make a crossing."],
 	["road", "Road", "Click points, right-click to finish."],
 	["", "", ""],
-	["asset", "Assets", "Pick a building, unit or model below, then click the map to place it. Test in 3D to see it in the game's light."],
+	["asset", "Assets", "Pick a building, unit or model below, then click the map to place it. Test in 3D to see it in the game's light; press L there to try every hour."],
 ]
 const ASSET_KINDS := ["building", "unit", "scenery"]
 const ASSET_KIND_NAMES := ["Buildings", "Units", "Scenery and models"]
@@ -321,7 +321,7 @@ func _build() -> void:
 	test.custom_minimum_size = Vector2(0, 46)
 	test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	test.add_theme_font_size_override("font_size", 18)
-	test.tooltip_text = "Opens this map with no fog and the enemy staying home, to look at what you placed. Nothing is won or recorded."
+	test.tooltip_text = "Opens this map with no fog and the enemy staying home, to look at what you placed. Press L there to change the light. Nothing is won or recorded."
 	play_row.add_child(test)
 	col.add_child(play_row)
 	col.add_child(_button("Back to Menu", _on_back))

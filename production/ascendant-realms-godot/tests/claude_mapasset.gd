@@ -85,6 +85,24 @@ func _run() -> void:
 		rts._zoom = 9.0 if target[1] == "closeup_units" else 16.0
 		await create_timer(2.0).timeout
 		await _shot(target[1])
+	# Plan 488: L steps the light through every hour.
+	rts.focus_on(Vector3(-88, 0, -95))
+	rts._zoom = 9.0
+	var sun := world.get_node("Sun") as DirectionalLight3D
+	var energies := []
+	for i in 5:
+		var ev := InputEventKey.new()
+		ev.keycode = KEY_L
+		ev.pressed = true
+		Input.parse_input_event(ev)
+		await create_timer(1.2).timeout
+		energies.append(snappedf(sun.light_energy, 0.01))
+		await _shot("light_%d" % i)
+	print("MAPASSET light energies ", energies)
+	var distinct := {}
+	for e in energies:
+		distinct[e] = true
+	_check(distinct.size() >= 4, "L changes the light")
 	gw._return_to_menu()
 	await create_timer(1.5).timeout
 	_check(String(current_scene.doc.get("name", "")) == "Probe Asset Yard", "came back to the same map in the editor")
