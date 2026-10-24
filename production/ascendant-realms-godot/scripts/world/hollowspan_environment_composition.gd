@@ -613,6 +613,13 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 		# Retain the wall's X/Z route footprint while lowering its parapet so the
 		# opening view is not dominated by a block taller than nearby buildings.
 		instance.scale.y *= 0.52
+	if asset_key == "logs":
+		# The two slate chocks under the fallen logs stood out over them from
+		# the camera as pale grey blobs stuck on the wood. The logs lie on the
+		# ground without them (removed after sizing, which counts them, and before grounding).
+		for chock in instance.find_children("LogChock*", "", true, false):
+			chock.get_parent().remove_child(chock)
+			chock.free()
 	ModelUtils.ground_model(instance)
 	if asset_key in ["wall", "cairn"]:
 		_finish_stonework(instance)
