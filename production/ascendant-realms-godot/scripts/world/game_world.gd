@@ -5211,6 +5211,7 @@ func _deposit_float(drop: Node3D, kind: String, amount: int) -> void:
 		var shown: Label3D = live["label"]
 		shown.text = "+%d %s" % [int(live["amount"]), kind]
 		shown.modulate.a = 1.0
+		shown.outline_modulate.a = 1.0
 		if live.get("tween") != null and (live["tween"] as Tween).is_valid():
 			(live["tween"] as Tween).kill()
 		live["tween"] = _deposit_float_fade(shown)
@@ -5242,6 +5243,8 @@ func _deposit_float_fade(l: Label3D) -> Tween:
 	var tw := l.create_tween().set_parallel(true)
 	tw.tween_property(l, "global_position:y", l.global_position.y + 0.6, 1.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tw.tween_property(l, "modulate:a", 0.0, 0.5).set_delay(0.9)
+	# Plan 513: the outline fades with the text (it stayed, a dark smudge).
+	tw.tween_property(l, "outline_modulate:a", 0.0, 0.5).set_delay(0.9)
 	tw.chain().tween_callback(l.queue_free)
 	return tw
 
@@ -7460,6 +7463,7 @@ func spawn_income_popup(pos: Vector3, amount: int, kind: String) -> void:
 	var t := l.create_tween().set_parallel(true)
 	t.tween_property(l, "global_position:y", pos.y + 2.2, 1.6)
 	t.tween_property(l, "modulate:a", 0.0, 1.6).set_delay(0.6)
+	t.tween_property(l, "outline_modulate:a", 0.0, 1.6).set_delay(0.6)
 	t.chain().tween_callback(l.queue_free)
 
 func spawn_hit_fx(pos: Vector3, kind: String) -> void:

@@ -1811,6 +1811,9 @@ func _update_r15_combat_presentation(delta: float) -> void:
 			var pop := 1.0 + 0.7 * maxf(0.0, 1.0 - progress / 0.14)
 			_r15_damage_label.scale = Vector3.ONE * pop * (1.4 if _damage_label_big else 1.0)
 			_r15_damage_label.modulate.a = 1.0 if progress < 0.6 else 1.0 - (progress - 0.6) / 0.4
+			# Plan 513: the outline fades with the text. It stayed opaque, so a
+			# fading number turned into a dark smudge with olive digits in it.
+			_r15_damage_label.outline_modulate.a = _r15_damage_label.modulate.a
 
 static var damage_numbers_on := true
 
