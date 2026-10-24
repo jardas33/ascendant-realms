@@ -412,6 +412,7 @@ func _swap_gold_shards(dressing: Node3D) -> void:
 	veins.free()
 
 func _add_food_dressing() -> void:
+	_reshape_sheaves()
 	var dressing := Node3D.new()
 	dressing.name = "FoodProvisionDressing"
 	model_root.add_child(dressing)
@@ -457,6 +458,63 @@ func _add_food_dressing() -> void:
 		tie_mat.roughness = 0.98
 		tie.material_override = tie_mat
 		dressing.add_child(tie)
+
+## The grain sheaves were cones, wide at the top and pointed at the ground,
+## like ice-cream cones standing in the field. A real sheaf is tied at the
+## waist: stalk ends flare at the foot and the ears fan out on top. Each one is
+## rebuilt to that shape inside its old box, and its twine moved to the waist.
+const SHEAF_WAIST := 0.44
+const SHEAF_PROFILE := [[0.0, 0.0], [0.80, 0.0], [0.95, 0.04], [0.74, 0.18], [0.47, 0.38], [0.43, SHEAF_WAIST], [0.50, 0.52], [0.78, 0.68], [1.0, 0.82], [0.92, 0.92], [0.55, 0.98], [0.0, 1.0]]
+
+func _reshape_sheaves() -> void:
+	if not is_instance_valid(_authored_visual_model):
+		return
+	var by_name := {}
+	for mi in _authored_visual_model.find_children("*", "MeshInstance3D", true, false):
+		by_name[String(mi.name)] = mi
+	for nm in by_name:
+		if not String(nm).begins_with("Sheaf") or by_name[nm].mesh == null:
+			continue
+		var sheaf: MeshInstance3D = by_name[nm]
+		var box: AABB = sheaf.mesh.get_aabb()
+		var shade := false
+		var src: Material = sheaf.mesh.surface_get_material(0)
+		if src and src.resource_name == "GrainShade":
+			shade = true
+		var radius := minf(box.size.x, box.size.z) * 0.5
+		var centre := box.get_center()
+		sheaf.mesh = _sheaf_mesh(Vector3(centre.x, box.position.y, centre.z), radius, box.size.y, int(abs(hash(nm))) % 7)
+		sheaf.set_surface_override_material(0, straw_material(Color(0.62, 0.48, 0.23) if shade else Color(0.74, 0.58, 0.28)))
+		var twine: MeshInstance3D = by_name.get(String(nm).replace("Sheaf", "Twine"), null)
+		if twine and twine.mesh and twine.get_parent() == sheaf.get_parent():
+			var waist := sheaf.transform * Vector3(centre.x, box.position.y + box.size.y * SHEAF_WAIST, centre.z)
+			var now := twine.transform * twine.mesh.get_aabb().get_center()
+			twine.position += waist - now
+
+static func _sheaf_mesh(base: Vector3, radius: float, height: float, seed: int) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var seg := 14
+	var rows: Array = []
+	for p in SHEAF_PROFILE:
+		var ring: Array = []
+		for k in seg:
+			var a := TAU * float(k) / float(seg)
+			# Ragged ears on top and stalk ends at the foot.
+			var rag := 1.0 + 0.10 * sin(a * 5.0 + float(seed)) + 0.06 * sin(a * 9.0 + float(seed) * 2.0)
+			var r: float = float(p[0]) * radius * (rag if float(p[1]) < 0.2 or float(p[1]) > 0.62 else 1.0)
+			ring.append(base + Vector3(cos(a) * r, float(p[1]) * height, sin(a) * r))
+		rows.append(ring)
+	for i in rows.size() - 1:
+		for k in seg:
+			var a: Vector3 = rows[i][k]
+			var b: Vector3 = rows[i][(k + 1) % seg]
+			var c: Vector3 = rows[i + 1][k]
+			var d: Vector3 = rows[i + 1][(k + 1) % seg]
+			st.add_vertex(a); st.add_vertex(c); st.add_vertex(b)
+			st.add_vertex(b); st.add_vertex(c); st.add_vertex(d)
+	st.generate_normals()
+	return st.commit()
 
 func _add_stone_quarry_dressing() -> void:
 	# A low, non-colliding quarry apron and three faceted fragments turn the
