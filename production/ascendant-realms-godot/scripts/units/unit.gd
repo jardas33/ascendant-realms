@@ -213,6 +213,11 @@ var _r15_damage_label_time := 0.0
 # fans out instead of stacking, and a killing blow's number is drawn larger.
 var _damage_label_drift := 0.0
 var _damage_label_big := false
+# Plan 509: two units hit in the same instant put their numbers on the same
+# spot, and "-11" over "-16" read as one huge "-1116". A new number is lifted
+# above any number started close by in the last moment.
+var _damage_label_lift := 0.0
+static var _recent_damage_labels: Array = []
 var _r15_lethal_cue_time := 0.0
 var _combat_reaction_tween: Tween
 ## The model's size and lean when it is not flinching. A second hit inside
@@ -1055,6 +1060,26 @@ func _people_palette() -> Color:
 		return Color.WHITE
 	return PEOPLE_PALETTES[race]
 
+func _claim_damage_label_lift() -> float:
+	var now := Time.get_ticks_msec()
+	var here := global_position
+	var kept: Array = []
+	var taken: Array = []
+	for e in _recent_damage_labels:
+		if now - int(e[1]) > 450:
+			continue
+		kept.append(e)
+		if e[2] != get_instance_id():
+			var d: Vector3 = e[0]
+			if Vector2(d.x - here.x, d.z - here.z).length() < 2.2:
+				taken.append(float(e[3]))
+	var lift := 0.0
+	while taken.has(lift):
+		lift += 0.55
+	kept.append([here, now, get_instance_id(), lift])
+	_recent_damage_labels = kept
+	return lift
+
 func _damage_label_base_y() -> float:
 	if is_instance_valid(_health_bar_root):
 		return _health_bar_root.position.y + 0.22
@@ -1781,7 +1806,7 @@ func _update_r15_combat_presentation(delta: float) -> void:
 			# The number punches in large and settles, rises and drifts aside,
 			# and stays fully opaque until late: a number that fades from the
 			# first frame spends most of its life half transparent and murky.
-			_r15_damage_label.position.y = _damage_label_base_y() + (1.0 - pow(1.0 - progress, 2.0)) * 0.8
+			_r15_damage_label.position.y = _damage_label_base_y() + _damage_label_lift + (1.0 - pow(1.0 - progress, 2.0)) * 0.8
 			_r15_damage_label.position.x = _damage_label_drift * progress
 			var pop := 1.0 + 0.7 * maxf(0.0, 1.0 - progress / 0.14)
 			_r15_damage_label.scale = Vector3.ONE * pop * (1.4 if _damage_label_big else 1.0)
@@ -1871,7 +1896,8 @@ func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	_r15_damage_label.modulate = Color(1.0, 0.42, 0.30, 1.0) if killing_blow else Color(1.0, 0.86, 0.40, 1.0)
 	_damage_label_drift = randf_range(-0.7, 0.7)
 	_damage_label_big = killing_blow
-	_r15_damage_label.position.y = _damage_label_base_y()
+	_damage_label_lift = _claim_damage_label_lift()
+	_r15_damage_label.position.y = _damage_label_base_y() + _damage_label_lift
 	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
 
 func _show_combat_hit_reaction(from) -> void:
