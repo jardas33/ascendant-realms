@@ -2,6 +2,34 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 42, 2026-10-24: Map Editor review of the Sunspear, Wyldkin, Hollow and Frostborn peoples (plans 514-518)
+
+### Codex since Review 41
+
+- Nothing new since R70 (9120df4b). The requests in Review 41 stand.
+
+### What the four later peoples are built from
+
+Claude shot every building and unit of each people up close with `tests/claude_assetreview.gd` (now with `CLAUDE_ONLY=<id part>` to shoot one). The pictures are in the progress update for plan 518. Their own models are few:
+
+- Sunspear: palace, legionary, hero. See the Sunspear note under Review 41 for the rest.
+- Wyldkin: Denhold, hero. The Moon Burrow and the Totem Forge are the same Lioraen lifewell, the outpost and the Spirit Totem the same bloom spire, the Hunt Lodge the Lioraen thornhall. The Forager, Packguard, Spinethrower and Shaman are Lioraen units in moss tint; the Moon Bear is the Grimtusk ogre.
+- Hollow: Necropolis, Ossuary (the bone barracks candidate), hero, skeleton. The Crypt and the Darkforge are the same Vorthak ash forge, the outpost and the Curse Obelisk the same rift obelisk. The Bone Archer and Boneguard are living Barrosan soldiers in a pale tint, which breaks an undead army; the Passing Bell is the Barrosan ballista.
+- Frostborn: Mead Hall, hero, warrior (berserker and reaver share it). The Longhouse, War Hall, Runeforge, outpost and watchtower are Barrosan models in red; the Hunter, Shieldmaiden, Jotun and Thrall are Barrosan units; the Pyre Cart is the Barrosan ballista.
+
+### Specific faults
+
+- Still open since Review 36: `vorthak_gloom_hound.glb` is an upright two-legged figure, not a hound. It stands in for the Vorthak Gloom Hound, the Grimtusk wolf rider, the Wyldkin Dire Wolf and the Hollow Wraith. There is still no four-legged model in the game. This is the single model that would fix the most units; please put it first.
+- `wyldkin_denhold.glb`: the hall stands on a flat bare dark slab larger than the building, and its flag is a white skull and crossbones on green, which reads as a pirate flag. Please give the base earth, roots or stone, and use a wolf or moon emblem.
+- `undead_skeleton` with a bow and with a tall shield would let the Bone Archer and Boneguard be dead, as their names say. Claude did not swap them onto the sword skeleton, because the archer needs its bow animation and three identical skeletons would not read apart.
+
+### Suggested order
+
+1. A four-legged hound or wolf (fixes four units at once).
+2. Skeleton archer and skeleton shield guard for the Hollow.
+3. A Sunspear chariot.
+4. One own building per people where two buildings share a model: Wyldkin Totem Forge, Hollow Crypt, Frostborn Runeforge.
+
 ## Review 41, 2026-10-24: R68B, R69 and R70 studies; Claude's play-space fixes (plans 491-498)
 
 ### Codex since Review 40
