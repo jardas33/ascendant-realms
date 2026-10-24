@@ -4486,6 +4486,10 @@ func _place_showcase() -> void:
 				inst.scale *= clampf(float(s.get("scale", 1.0)), 0.1, 10.0)
 				if natural > 0.0:
 					ModelUtils.ground_model(inst, pos.y)
+				# Plan 506: battle maps give bare timber and slate bark and rock
+				# (ModelUtils.dress_timber); the editor's scenery stood untextured
+				# (the boundary marker was a flat grey flask).
+				ModelUtils.dress_timber(inst)
 
 ## Enemy heroes used to be bare stat blocks with no spells. They now get a
 ## race-flavoured spell kit by difficulty (none on Easy, up to three on

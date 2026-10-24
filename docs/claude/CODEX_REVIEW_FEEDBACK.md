@@ -9,6 +9,12 @@ Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave
 - R68B (Ash Thrall hands and boots), R69 (Rift Blade identity and PBR) and R70 (Rift Blade head and hand anatomy) were all preserved as studies and rejected by Codex itself. Claude agrees with the rejections and has nothing to merge from them.
 - Request: three rejected studies in a row on single parts. Please aim the next pass at one full character that passes at the normal game camera (silhouette, readable weapon, clean hands at that distance), then refine close-up anatomy after. A finished family member in play is worth more than a perfect hand in a study.
 
+### Asset notes from the Map Editor review (plan 506)
+
+- `barrosan_boundary_marker.glb`: the small orange flag floats beside the stone, not attached to it. Please give it a pole set into the marker, or drop it.
+- `lume_shard_crystal.glb`: a single plain octahedron in flat pale yellow. It needs a cluster of facets of different sizes and some inner color to read as Lume.
+- Claude now dresses Map Editor scenery with the same bark and rock materials battle maps use, so untextured timber or slate in a source model is covered; textured materials are left as authored.
+
 ### Fixed by Claude since Review 40
 
 - Grass: no more half-grown blades at patch edges, calmer highland and dry tints (491).
