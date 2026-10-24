@@ -402,7 +402,7 @@ func _ready() -> void:
 	if mood != "":
 		_theme = _theme.duplicate(true)
 		_theme.merge(CampaignDefs.MOODS[mood], true)
-	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.0)), _theme.get("unit_rim_color", Color(0.62, 0.74, 1.0)))
+	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.16)), _theme.get("unit_rim_color", Color(1.0, 0.95, 0.84)))
 	if mood != "":
 		# Dark ground under a dark hour: the three darkest chapters opened at a
 		# quarter of a daytime chapter's brightness and workers could hardly be
@@ -658,7 +658,7 @@ func cycle_sandbox_light() -> String:
 	_theme = MapDefs.theme(map.get("theme", "highland")).duplicate(true)
 	if mood != "":
 		_theme.merge(CampaignDefs.MOODS[mood], true)
-	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.0)), _theme.get("unit_rim_color", Color(0.62, 0.74, 1.0)))
+	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.16)), _theme.get("unit_rim_color", Color(1.0, 0.95, 0.84)))
 	var we := get_node_or_null("WorldEnvironment") as WorldEnvironment
 	var sun := get_node_or_null("Sun") as DirectionalLight3D
 	if we and we.environment:
