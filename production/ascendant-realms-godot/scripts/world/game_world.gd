@@ -4432,6 +4432,15 @@ func _setup_commanders() -> void:
 ## Plan 479: pieces a Map Editor map asks for, to look at in the game's own
 ## light. Buildings and units are real (they animate, can be selected and
 ## ordered); scenery is a plain model. Buildings keep the game's facing.
+## The height each token-sized model has on a real battlefield.
+const SHOWCASE_HEIGHTS := {
+	"highland_pine": 6.0, "broadleaf_oak": 7.0, "broadleaf_oak_crown": 7.0, "desert_palm": 7.0, "desert_palm_b": 7.0, "mossy_boulder": 1.4,
+	"highland_rock_cluster": 3.0, "ancient_ruin_pillar": 4.2, "lume_spire_ruin": 6.0,
+	"gold_mine_lumevein": 2.4, "resource_timber_pile": 1.0, "lume_shard_crystal": 1.4,
+	"barrosan_ballista": 2.4, "lioraen_thornthrower": 2.4, "vorthak_fracture_engine": 2.4,
+	"highland_crossing_bridge": 8.0, "barrosan_boundary_marker": 2.7,
+}
+
 func _place_showcase() -> void:
 	var items: Array = map.get("showcase", [])
 	if items.is_empty():
@@ -4462,7 +4471,21 @@ func _place_showcase() -> void:
 				holder.add_child(inst)
 				inst.position = pos
 				inst.rotation.y = yaw
-				inst.scale = Vector3.ONE * clampf(float(s.get("scale", 1.0)), 0.1, 10.0)
+				# Plan 489: some source models are authored at a token size (a
+				# 2.5 m pine, a 0.6 m ruin pillar, a 50 m rock); the battlefield
+				# always sizes them, so the showcase gives them their in-game height.
+				var base_name := id.get_file().get_basename()
+				var natural := float(SHOWCASE_HEIGHTS.get(base_name, 0.0))
+				if base_name == "barrosan_boundary_marker":
+					# Authored Z-up (it lay on its side), as on Hollowspan.
+					inst.rotation.x = PI * 0.5
+				elif base_name == "highland_crossing_bridge":
+					_tint_hollowspan_bridge(inst)
+				if natural > 0.0:
+					ModelUtils.scale_to_height(inst, natural)
+				inst.scale *= clampf(float(s.get("scale", 1.0)), 0.1, 10.0)
+				if natural > 0.0:
+					ModelUtils.ground_model(inst, pos.y)
 
 ## Enemy heroes used to be bare stat blocks with no spells. They now get a
 ## race-flavoured spell kit by difficulty (none on Easy, up to three on

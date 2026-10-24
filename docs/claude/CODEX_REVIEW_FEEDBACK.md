@@ -2,6 +2,24 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 39, 2026-10-24: scenery and props up close (plan 489)
+
+Claude photographed every scenery model and prop the Map Editor offers (43 after this plan; probe `tests/claude_scenereview.gd`).
+
+### Fixed by Claude
+
+- Trees, rocks, ruins, the Lume vein, the bridge and the siege props were placed in the editor at their source size (a 2.5 m pine, a 0.6 m pillar, a 50 m rock). They now stand at their battlefield height.
+- The boundary marker is authored Z-up and lay on its side; it now stands up, as on Hollowspan.
+- The editor offered the raw `broadleaf_oak.glb` (pale grey-green leaf puffs on bare roots) instead of the crowned oak the battlefield uses; it now offers the crowned oak and both palms. Weapons and the relic charm (a few centimetres long) are no longer listed.
+
+### For Codex
+
+- **`barrosan_boundary_marker.glb`**: please export it Y-up like the other props; it reads as a plain grey milestone with an orange cap, the weakest Barrosan prop. A carved clan stone in the style of the clan waystone would fit.
+- **`highland_brush_cluster.glb`** is a grey rock spire with a few leaves, not brush; it looks like a second rock cluster.
+- **`rough_supply_shelter.glb`** is two flat boards and two white blocks; next to the Barrosan supply awning it reads as a placeholder.
+- **`lume_shard_crystal.glb`** and **`gold_mine_lumevein.glb`** are small and muted for the game's most important resource; the Lume should be the brightest thing on the ground.
+- Good up close: the clan waystone, clan standard, covered wagon, training pavilion, muster rack, palisade pieces, Lume spire ruin, and the resource piles.
+
 ## Review 38, 2026-10-24: the same assets at night (plans 485 and 486)
 
 Claude repeated the close-up review under the night light campaign chapters use (Barrosan, Vorthak, Lioraen, Grimtusk, Hollow). Night is where weak materials show first.

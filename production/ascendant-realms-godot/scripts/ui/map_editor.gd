@@ -434,8 +434,18 @@ func _scenery_paths() -> Array:
 			stack.append(d + "/" + sub)
 		for f in dir.get_files():
 			var f2: String = f.trim_suffix(".import").trim_suffix(".remap")
-			if f2.ends_with(".glb") or f2.ends_with(".gltf"):
+			# Plan 489: hand-held weapons and the relic charm are a few
+			# centimetres long and not scenery.
+			if (f2.ends_with(".glb") or f2.ends_with(".gltf")) and not d.ends_with("/weapons") and not f2.begins_with("hero_relic"):
 				found[d + "/" + f2] = true
+	# The battlefield's oak is the crowned scene, not the raw pale model.
+	const OAK := "res://assets/environment/vegetation/broadleaf_oak.glb"
+	const OAK_CROWN := "res://assets/environment/vegetation/broadleaf_oak_crown.scn"
+	if found.has(OAK) and ResourceLoader.exists(OAK_CROWN):
+		found.erase(OAK)
+	for tree in [OAK_CROWN, "res://assets/environment/vegetation/desert_palm.scn", "res://assets/environment/vegetation/desert_palm_b.scn"]:
+		if ResourceLoader.exists(tree):
+			found[tree] = true
 	_scenery_cache = found.keys()
 	_scenery_cache.sort()
 	return _scenery_cache
