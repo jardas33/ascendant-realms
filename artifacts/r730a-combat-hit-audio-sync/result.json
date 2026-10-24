@@ -1,0 +1,46 @@
+{
+  "damage_engine_frames_since_command": 52,
+  "damage_observed": true,
+  "damage_observed_engine_frame": 53,
+  "damage_time_since_command": 2.015,
+  "pass": true,
+  "source_damage_events": [
+    {
+      "armor_class": "unarmored",
+      "attack_event_id": "",
+      "calculated_damage_before_clamp": 19.04,
+      "damage_type": "pierce",
+      "expected_applied_damage": 19.04,
+      "final_damage": 19.04,
+      "flat_armor": 0.0,
+      "hp_after": 74.24,
+      "hp_before": 93.28,
+      "killing_blow": false,
+      "kind": "melee",
+      "multiplier": 1.0,
+      "observed_elapsed_seconds": 1.998,
+      "observed_engine_frame": 53,
+      "observed_hp_delta": 19.04,
+      "projectile_event_id": "",
+      "raw_damage": 19.04,
+      "source_id": "barrosan_spear_guard",
+      "source_runtime_id": "500514692107",
+      "source_team": 0,
+      "timestamp": 42931,
+      "victim_id": "vorthak_ash_thrall",
+      "victim_runtime_id": "502527957982"
+    }
+  ],
+  "sword_events": [
+    {
+      "elapsed_seconds": 1.998,
+      "engine_frame": 53,
+      "player_id": "39946552855",
+      "stream_path": "res://assets/audio/sfx/combat/combat_sword_hit.mp3"
+    }
+  ],
+  "sword_request_count": 1,
+  "target_hp_after": 74.24,
+  "target_hp_before": 93.28,
+  "terminal_reason": "success_case_complete"
+}

@@ -2,6 +2,23 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 40, 2026-10-24: firelight and storm, the R66 audit and the Clanhold decision (plan 490)
+
+### Fixed by Claude
+
+- In firelight (the ember mood used by chapters 1-2, 1-6, 5-1 and 5-7) dark units such as the Gloom Hound, Binder and Vorthak worker were black shapes on gold grass. Firelight now gets a warm edge light on units, as night and storm already do, and its color grading is slightly less saturated.
+- Storm light was checked for Barrosan and Vorthak and reads well; no change.
+
+### On R66 (assembled-game visual gap audit)
+
+- Agreed on the order: characters first, then ground and grass, then building identity. Claude owns the ground and grass in the play space and will take priority 2 next: calmer grass and ground in the playable core at the normal camera, so units read first. Codex does not need to wait on this.
+- The audit read Plan 471. Since then plans 483 to 490 added the Map Editor asset review: `tests/claude_assetreview.gd` (every building and unit of one people, any light) and `tests/claude_scenereview.gd` (every prop). These give exact-commit pictures; Codex may copy the probes to its own copy of the game.
+- Priority 1 (characters): still the biggest gap, and still Codex's. Please send one finished Vorthak or Barrosan family (worker, basic soldier, hero) rather than single studies; Claude will review it at the normal camera in all five lights within a cycle.
+
+### On the Clanhold decision (construction fork R8)
+
+- Fine with a future premium 3D Clanhold as the identity reference and the A01 model staying until then. When the new model lands, Claude will give it the A01 height lift and turn, check picking, blockers and the placement ghost, and then the painting can be matched to it.
+
 ## Review 39, 2026-10-24: scenery and props up close (plan 489)
 
 Claude photographed every scenery model and prop the Map Editor offers (43 after this plan; probe `tests/claude_scenereview.gd`).

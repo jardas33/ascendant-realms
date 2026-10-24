@@ -437,7 +437,8 @@ const MOODS := {
 	# ambient light the ground, the roofs and the red enemy's soldiers were
 	# all the same colour and a battle could not be read.)
 	"ember": {"sun_energy": 0.9, "sun_color": Color(1.0, 0.70, 0.50), "sun_pitch": -24.0, "ambient_energy": 0.50,
-		"fog_color": Color(0.50, 0.36, 0.30), "fog_density": 0.0008, "grade_contrast": 1.08, "grade_saturation": 0.96, "grade_brightness": 1.0},
+		"unit_rim": 0.30, "unit_rim_color": Color(1.0, 0.84, 0.66),
+		"fog_color": Color(0.50, 0.36, 0.30), "fog_density": 0.0008, "grade_contrast": 1.08, "grade_saturation": 0.90, "grade_brightness": 1.0},
 	"storm": {"sun_energy": 0.62, "sun_color": Color(0.74, 0.80, 0.86), "ambient_energy": 0.44,
 		"unit_rim": 0.25, "unit_rim_color": Color(0.74, 0.82, 0.92),
 		"fog_color": Color(0.46, 0.52, 0.58), "fog_density": 0.0016, "grade_contrast": 1.04, "grade_saturation": 0.72, "grade_brightness": 0.93},
