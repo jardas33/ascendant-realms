@@ -4205,22 +4205,30 @@ var _rank_badge: Label3D
 
 ## The player's hero carries the title its deeds earned, over its head.
 func _show_hero_title() -> void:
-	if not is_hero or world == null or team != int(world.get("player_team")) or not ProfileManager.has_hero() or commander == null or String(ProfileManager.hero().get("race", "")) != String(commander.race):
+	if not is_hero or world == null or team != int(world.get("player_team")):
 		return
-	# The player's own hero goes by its own name in every panel, not the
-	# generic "Jardas" of the unit list.
-	var hero_name := String(ProfileManager.hero().get("name", ""))
-	if hero_name != "":
-		def = def.duplicate()
-		def["name"] = hero_name
-	var title := String(ProfileManager.hero().get("title", ""))
-	if title == "":
+	# Plan 512: only the saved hero of the profile's own people had a name
+	# plate; playing any other people, the player's hero had none and was
+	# hard to find in a crowd. Those heroes now carry their unit name.
+	var plate_name := String(def.get("name", ""))
+	if ProfileManager.has_hero() and commander != null and String(ProfileManager.hero().get("race", "")) == String(commander.race):
+		# The player's own hero goes by its own name in every panel, not the
+		# generic "Jardas" of the unit list.
+		var hero_name := String(ProfileManager.hero().get("name", ""))
+		if hero_name != "":
+			def = def.duplicate()
+			def["name"] = hero_name
+		var title := String(ProfileManager.hero().get("title", ""))
+		if title == "":
+			return
+		plate_name = hero_name
+	if plate_name == "":
 		return
 	var tl := Label3D.new()
 	tl.name = "HeroTitle"
 	# Plan 436: the name alone over the field, as in Codex's composition R2;
 	# the earned title is shown over the hero's portrait in the HUD.
-	tl.text = String(ProfileManager.hero().get("name", ""))
+	tl.text = plate_name
 	tl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	tl.no_depth_test = true
 	tl.fixed_size = true
