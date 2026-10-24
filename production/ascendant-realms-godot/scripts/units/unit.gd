@@ -4200,8 +4200,10 @@ func _show_hero_title() -> void:
 	tl.fixed_size = true
 	tl.pixel_size = 0.0008
 	# Plan 322: 20 px read as a smudge over the hero on a laptop.
-	tl.font_size = 28
-	tl.outline_size = 16
+	# Plan 493: 28 px on a 50 px plate hid the hero's head and shoulders
+	# at the normal camera; 24 px on a slimmer plate, set higher, labels it.
+	tl.font_size = 24
+	tl.outline_size = 12
 	tl.modulate = Color(1.0, 0.86, 0.5)
 	tl.outline_modulate = Color(0.03, 0.015, 0.0, 1.0)
 	tl.render_priority = 20
@@ -4210,13 +4212,13 @@ func _show_hero_title() -> void:
 	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
 	# Lifted on screen too: from the battle camera the title sat over the
 	# hero's legs, and with its plate it hid them.
-	tl.offset = Vector2(0, 64)
+	tl.offset = Vector2(0, 110)
 	# A dark nameplate with gilt edges behind the title (plan 342): bare
 	# outlined text over grass and armies read as a caption, not a banner.
 	var text_w := (tl.font if tl.font else ThemeDB.fallback_font).get_string_size(tl.text, HORIZONTAL_ALIGNMENT_LEFT, -1, tl.font_size).x
 	var plate := Sprite3D.new()
 	plate.name = "HeroTitlePlate"
-	plate.texture = _title_plate_texture(int(text_w) + 56, 50)
+	plate.texture = _title_plate_texture(int(text_w) + 48, 40)
 	plate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	plate.no_depth_test = true
 	plate.fixed_size = true
