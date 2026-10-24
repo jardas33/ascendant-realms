@@ -34,11 +34,17 @@ func _profile(inset: float) -> PackedVector2Array:
 	var selection_top := selection_rect.position.y - (11.0 if has_portrait else 27.0) + inset
 	var crown_top := (portrait_rect.position.y - 8.0 if has_portrait else selection_top) + inset
 	var crown_right := (portrait_rect.end.x + 7.0 if has_portrait else left + 110.0) - inset
+	# Without a portrait the crown had nothing to hold, and its corner dipped
+	# into the panel right where the SELECTED caption ends, cutting the D. The
+	# top is now one straight edge (the same 15 points, in a line).
+	var crown := [Vector2(left + 18.0, crown_top), Vector2(crown_right - 27.0, crown_top), Vector2(crown_right, crown_top + 27.0), Vector2(crown_right, selection_top)]
+	if not has_portrait:
+		crown = [Vector2(left + 18.0, selection_top), Vector2(left + 60.0, selection_top), Vector2(left + 100.0, selection_top), Vector2(left + 140.0, selection_top)]
 	return PackedVector2Array([
-		Vector2(left + 18.0, crown_top),
-		Vector2(crown_right - 27.0, crown_top),
-		Vector2(crown_right, crown_top + 27.0),
-		Vector2(crown_right, selection_top),
+		crown[0],
+		crown[1],
+		crown[2],
+		crown[3],
 		Vector2(command_left - 39.0, selection_top),
 		Vector2(command_left - 13.0, selection_top - 24.0),
 		Vector2(command_left - 13.0, command_top + 29.0),
