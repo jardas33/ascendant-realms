@@ -14,7 +14,7 @@ const START_CLEAR := 30.0
 
 ## Per-theme look: tip/root/dry colours, density 0..1, flower share, flower palette.
 const THEMES := {
-	"highland": {"tip": Color(0.70, 0.72, 0.32), "root": Color(0.15, 0.21, 0.07), "dry": Color(0.72, 0.62, 0.34), "density": 1.0, "dryness": 0.35, "flowers": 0.10,
+	"highland": {"tip": Color(0.60, 0.65, 0.29), "root": Color(0.15, 0.21, 0.07), "dry": Color(0.62, 0.57, 0.32), "density": 1.0, "dryness": 0.35, "flowers": 0.10,
 		"palette": [Color(0.95, 0.86, 0.35), Color(0.92, 0.92, 0.88), Color(0.62, 0.48, 0.86), Color(0.90, 0.46, 0.52)]},
 	"verdant": {"tip": Color(0.50, 0.68, 0.26), "root": Color(0.11, 0.22, 0.06), "dry": Color(0.62, 0.62, 0.30), "density": 1.0, "dryness": 0.15, "flowers": 0.12,
 		"palette": [Color(0.98, 0.90, 0.40), Color(0.95, 0.95, 0.92), Color(0.86, 0.40, 0.55)]},
@@ -121,7 +121,9 @@ func build(map: Dictionary, theme_name: String, density_scale: float = 1.0) -> v
 					# Clumped: dense meadow swathes, bare-ish patches between.
 					var c := clumps.get_noise_2dv(p) * 0.5 + 0.5
 					var m := meadows.get_noise_2dv(p) * 0.5 + 0.5
-					var chance := density * smoothstep(0.40, 0.56, c * 0.55 + m * 0.45)
+					# Plan 491: a narrower edge, so meadows are full patches with clean
+					# edges instead of lone tufts sprinkled over the open ground.
+					var chance := density * smoothstep(0.45, 0.52, c * 0.55 + m * 0.45)
 					if patch_floor > -1.0:
 						chance = 0.95 * smoothstep(patch_floor - 0.015, patch_floor + 0.025, c * 0.55 + m * 0.45)
 					var road := 1e9

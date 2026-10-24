@@ -95,6 +95,9 @@ void vertex() {
 		float drift_n = 0.5 * vnoise(dp) + 0.25 * vnoise(dp * 2.03) + 0.1875;
 		grow *= 1.0 - smoothstep(0.44, 0.56, drift_n + (fbm(origin.xz * 0.2 + 4.0) - 0.5) * 0.12) * ash_surface;
 	}
+	// Plan 491: a tuft shrunk below a third of its size read as a lone
+	// yellow speck on bare ground; those are now dropped, not shrunk.
+	grow *= smoothstep(0.22, 0.45, grow);
 	VERTEX *= grow;
 	float h = UV.y;
 	// Travelling gusts plus a quick flutter; the tip moves, the root stays.
@@ -110,7 +113,7 @@ void vertex() {
 	v_custom = INSTANCE_CUSTOM;
 	float mid_f = fbm(origin.xz * 0.045 + 77.0);
 	v_mid = mix(vec3(1.0), vec3(0.64, 0.76, 0.6), smoothstep(0.48, 0.62, mid_f) * 0.85 * meadow_mid);
-	v_mid *= mix(vec3(1.0), vec3(1.22, 1.12, 0.78), (1.0 - smoothstep(0.34, 0.46, mid_f)) * 0.65 * meadow_mid);
+	v_mid *= mix(vec3(1.0), vec3(1.10, 1.04, 0.80), (1.0 - smoothstep(0.34, 0.46, mid_f)) * 0.65 * meadow_mid);
 }
 
 void fragment() {
