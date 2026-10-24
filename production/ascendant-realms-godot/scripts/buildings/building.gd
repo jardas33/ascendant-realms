@@ -261,6 +261,32 @@ func _lift_dark_slate(m: Node) -> void:
 				_slate_materials[key] = lifted
 			mesh_instance.set_surface_override_material(i, _slate_materials[key])
 
+## Plan 524: the Groveheart's heartlight pods glowed cyan at 1.6 over a near
+## white cyan albedo, so in daylight they clipped to flat white teardrops that
+## read as stray paper scraps round the hall. They now glow a soft sea green
+## that keeps its colour and still reads as light at night.
+static var _heartlight_materials := {}
+
+func _tame_heartlight(m: Node) -> void:
+	for mi in m.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mi as MeshInstance3D
+		if mesh_instance.mesh == null:
+			continue
+		for i in mesh_instance.mesh.get_surface_count():
+			var mat = mesh_instance.get_active_material(i)
+			if not (mat is BaseMaterial3D) or not (mat as BaseMaterial3D).emission_enabled:
+				continue
+			if not String(mat.resource_name).to_lower().contains("lioraen heartlight"):
+				continue
+			var key := mat.get_instance_id()
+			if not _heartlight_materials.has(key):
+				var soft := (mat as BaseMaterial3D).duplicate() as BaseMaterial3D
+				soft.albedo_color = Color(0.16, 0.52, 0.50, 1.0)
+				soft.emission = Color(0.30, 0.85, 0.78)
+				soft.emission_energy_multiplier = 0.55
+				_heartlight_materials[key] = soft
+			mesh_instance.set_surface_override_material(i, _heartlight_materials[key])
+
 func _apply_faction_palette(m: Node, path: String) -> void:
 	var race := String(def.get("race", ""))
 	if GranitbornBuildingPresentation.owns_model(path):
@@ -427,6 +453,7 @@ func _build_model() -> void:
 		_apply_slice7_barrosan_surface_material(m, path)
 		_apply_faction_palette(m, path)
 		_lift_dark_slate(m)
+		_tame_heartlight(m)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
