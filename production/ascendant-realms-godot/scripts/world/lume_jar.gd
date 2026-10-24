@@ -18,50 +18,68 @@ var _light: OmniLight3D
 
 func _ready() -> void:
 	add_to_group("lume_jars")
-	# Fresh-turned earth where the jar has pushed up.
-	var mound := MeshInstance3D.new()
-	var mm := CylinderMesh.new()
-	mm.top_radius = 1.5
-	mm.bottom_radius = 2.1
-	mm.height = 0.35
-	mm.radial_segments = 18
-	mound.mesh = mm
+	# Plan 494: the jar was three stacked cylinders on a flat disc and read as
+	# an orange traffic cone. It is now a turned clay amphora with painted
+	# bands, tipped and half sunk in a rounded mound of fresh earth, with
+	# broken shards of its neighbours around it.
 	var earth := StandardMaterial3D.new()
-	earth.albedo_color = Color(0.3, 0.2, 0.13)
+	earth.albedo_color = Color(0.27, 0.19, 0.12)
 	earth.roughness = 1.0
+	var mound := MeshInstance3D.new()
+	var mm := SphereMesh.new()
+	mm.radius = 2.2
+	mm.height = 4.4
+	mm.radial_segments = 20
+	mm.rings = 8
+	mound.mesh = mm
 	mound.material_override = earth
-	mound.position.y = 0.1
+	mound.scale = Vector3(1.0, 0.13, 0.85)
 	add_child(mound)
-	# A big amphora-shaped clay jar, half sunk in the earth: a wide belly, a
-	# narrower shoulder and neck, sealed with red wax.
 	var clay := StandardMaterial3D.new()
-	clay.albedo_color = Color(0.62, 0.36, 0.22)
-	clay.roughness = 0.85
-	for part in [[0.85, 1.05, 1.1, 0.75], [0.55, 0.85, 0.5, 1.55], [0.4, 0.45, 0.45, 2.0]]:
-		var piece := MeshInstance3D.new()
-		var cm := CylinderMesh.new()
-		cm.top_radius = float(part[0])
-		cm.bottom_radius = float(part[1])
-		cm.height = float(part[2])
-		cm.radial_segments = 16
-		piece.mesh = cm
-		piece.material_override = clay
-		piece.position.y = float(part[3])
-		add_child(piece)
-	var seal := MeshInstance3D.new()
-	var sm := CylinderMesh.new()
-	sm.top_radius = 0.34
-	sm.bottom_radius = 0.46
-	sm.height = 0.18
-	seal.mesh = sm
+	clay.vertex_color_use_as_albedo = true
+	clay.vertex_color_is_srgb = true
+	clay.albedo_color = Color(1, 1, 1)
+	clay.roughness = 0.82
+	var jar := MeshInstance3D.new()
+	jar.name = "Jar"
+	jar.mesh = _amphora_mesh()
+	jar.material_override = clay
+	jar.position = Vector3(0.15, -0.35, 0.0)
+	jar.rotation = Vector3(0.12, 0.6, 0.32)
+	add_child(jar)
 	var wax := StandardMaterial3D.new()
 	wax.albedo_color = Color(0.6, 0.12, 0.1)
 	wax.emission_enabled = true
 	wax.emission = Color(0.8, 0.5, 1.0)
 	wax.emission_energy_multiplier = 0.6
+	var seal := MeshInstance3D.new()
+	var sm := CylinderMesh.new()
+	sm.top_radius = 0.24
+	sm.bottom_radius = 0.33
+	sm.height = 0.14
+	sm.radial_segments = 14
+	seal.mesh = sm
 	seal.material_override = wax
-	seal.position.y = 2.3
-	add_child(seal)
+	seal.position.y = 2.42
+	jar.add_child(seal)
+	var mouth := jar.transform * Vector3(0.0, 2.45, 0.0)
+	# Shards of jars that broke on the way up.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4401
+	var shard_mat := StandardMaterial3D.new()
+	shard_mat.albedo_color = Color(0.58, 0.32, 0.19)
+	shard_mat.roughness = 0.85
+	for i in 5:
+		var shard := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(rng.randf_range(0.25, 0.5), 0.05, rng.randf_range(0.18, 0.35))
+		shard.mesh = bm
+		shard.material_override = shard_mat
+		var a := TAU * float(i) / 5.0 + rng.randf_range(-0.4, 0.4)
+		var d := rng.randf_range(1.5, 2.4)
+		shard.position = Vector3(cos(a) * d, 0.06, sin(a) * d)
+		shard.rotation = Vector3(rng.randf_range(-0.5, 0.5), rng.randf() * TAU, rng.randf_range(-0.4, 0.4))
+		add_child(shard)
 	# The Lume escaping through the cracked seal: a faint violet shaft.
 	var shaft := MeshInstance3D.new()
 	var shm := CylinderMesh.new()
@@ -75,14 +93,14 @@ func _ready() -> void:
 	glow.albedo_color = Color(0.82, 0.62, 1.0, 0.35)
 	shaft.material_override = glow
 	shaft.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	shaft.position.y = 5.8
+	shaft.position = mouth + Vector3(0.0, 3.5, 0.0)
 	add_child(shaft)
 	# Lume seeping out: a violet-gold glow and a slow claim ring.
 	_light = OmniLight3D.new()
 	_light.light_color = Color(0.85, 0.7, 1.0)
 	_light.light_energy = 1.6
 	_light.omni_range = 7.0
-	_light.position.y = 2.8
+	_light.position = mouth + Vector3(0.0, 0.5, 0.0)
 	add_child(_light)
 	_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
@@ -122,3 +140,45 @@ func tick_claim(teams_present: Array, step: float) -> int:
 	if is_instance_valid(_ring_mat):
 		_ring_mat.albedo_color = Color(GameData.TEAM_COLORS.get(t, Color.WHITE), 0.75)
 	return t if progress >= OPEN_TIME else -1
+
+## A lathe-turned amphora about 2.4 m tall: foot, wide belly, shoulder,
+## narrow neck and a rolled lip. Terracotta with two dark painted bands
+## and a lighter slip on the neck, as vertex colours.
+static func _amphora_mesh() -> ArrayMesh:
+	# x radius, y height, z paint: 0 clay, 1 dark band, 2 pale slip. A band
+	# edge is two rings at one height, so the paint ends sharply.
+	var prof := [Vector3(0.0, 0.0, 0), Vector3(0.32, 0.0, 0), Vector3(0.42, 0.06, 0), Vector3(0.6, 0.28, 0), Vector3(0.86, 0.68, 0),
+		Vector3(1.0, 1.08, 0), Vector3(0.975, 1.34, 0), Vector3(0.975, 1.34, 1), Vector3(0.94, 1.48, 1), Vector3(0.94, 1.48, 0),
+		Vector3(0.88, 1.6, 0), Vector3(0.88, 1.6, 1), Vector3(0.83, 1.68, 1), Vector3(0.83, 1.68, 0), Vector3(0.8, 1.74, 0),
+		Vector3(0.5, 2.0, 0), Vector3(0.38, 2.12, 0), Vector3(0.38, 2.12, 2), Vector3(0.34, 2.18, 2),
+		Vector3(0.33, 2.3, 2), Vector3(0.4, 2.36, 2), Vector3(0.39, 2.43, 2), Vector3(0.28, 2.44, 2)]
+	var segs := 24
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var base := Color(0.66, 0.37, 0.22)
+	var band := Color(0.16, 0.08, 0.05)
+	var slip := Color(0.8, 0.6, 0.42)
+	for i in prof.size():
+		var y: float = prof[i].y
+		var c := base.darkened(0.12 * (1.0 - clampf(y / 1.2, 0.0, 1.0)))
+		if int(prof[i].z) == 1:
+			c = band
+		elif int(prof[i].z) == 2:
+			c = slip
+		for k in segs + 1:
+			var a := TAU * float(k) / float(segs)
+			st.set_color(c)
+			st.set_uv(Vector2(float(k) / float(segs), y / 2.44))
+			st.add_vertex(Vector3(cos(a) * prof[i].x, y, sin(a) * prof[i].x))
+	for i in prof.size() - 1:
+		for k in segs:
+			var a0 := i * (segs + 1) + k
+			var b0 := a0 + segs + 1
+			st.add_index(a0)
+			st.add_index(a0 + 1)
+			st.add_index(b0)
+			st.add_index(a0 + 1)
+			st.add_index(b0 + 1)
+			st.add_index(b0)
+	st.generate_normals()
+	return st.commit()
