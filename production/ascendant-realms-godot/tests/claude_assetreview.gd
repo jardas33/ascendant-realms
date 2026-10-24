@@ -29,6 +29,10 @@ func _run() -> void:
 	buildings.sort()
 	var units: Array = gd.units_for_race(race)
 	units.sort()
+	var only := OS.get_environment("CLAUDE_ONLY")
+	if only != "":
+		buildings = buildings.filter(func(x): return String(x).contains(only))
+		units = units.filter(func(x): return String(x).contains(only))
 	var spots := {}
 	var i := 0
 	for bid in buildings:

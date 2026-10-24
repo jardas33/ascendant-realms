@@ -300,7 +300,7 @@ static func get_all() -> Dictionary:
 		"produces": [], "desc": "A surveyor's obelisk marking land for the reservoirs. It turns the sun on anyone who pulls up the stakes.",
 	},
 	"sunspear_temple": {
-		"race": "sunspear", "name": "Temple of the Still Water", "kind": "arcane", "model": _b("barrosan_iron_forge"),
+		"race": "sunspear", "name": "Temple of the Still Water", "kind": "arcane", "model": _b("lioraen_spirit_glade"),
 		"hp": 720, "armor_class": "light", "armor": 2, "footprint": 4.2,
 		"cost": {"timber": 120, "gold": 80}, "build_time": 34, "grants_pop": 0,
 		"produces": ["sunspear_sunpriest"],

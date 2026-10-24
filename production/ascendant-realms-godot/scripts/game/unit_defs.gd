@@ -488,7 +488,7 @@ static func get_all() -> Dictionary:
 	},
 	"sunspear_sunpriest": {
 		"race": "sunspear", "name": "Sun Priest", "role": "healer", "tier": 2,
-		"model": _char("lioraen_canopy_mender"), "height": 1.8,
+		"model": _char("vorthak_veil_warlock"), "height": 1.8,
 		"hp": 95, "dmg": 8, "dmg_type": "arcane", "armor_class": "light", "armor": 0,
 		"range": 14.0, "attack_cd": 1.5, "speed": 3.6, "vision": 24.0, "projectile": "lume_bolt",
 		"heal": 11.0, "heal_range": 13.0, "heal_cd": 1.2,

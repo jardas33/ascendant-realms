@@ -32,7 +32,7 @@ const EXPECTED_STATS := {
 	"research": ["tech_weapons", "tech_armor"],
 }
 const SHARED_FORGE_CONSUMERS := [
-	"karak_anvil", "sunspear_bazaar", "sunspear_temple", "frostborn_runeforge",
+	"karak_anvil", "sunspear_bazaar", "frostborn_runeforge",
 ]
 
 var output_root := ""
