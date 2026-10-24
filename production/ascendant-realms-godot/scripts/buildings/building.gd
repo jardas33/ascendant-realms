@@ -2292,6 +2292,18 @@ func _add_landmark_centrepiece() -> void:
 	inlay.ring_segments = 6
 	_lm_piece(root, inlay, tint.lerp(Color(0.62, 0.45, 0.22), 0.6), Vector3(0, 0.17, 0), Vector3(1, 0.3, 1), 0.25, "bronze")
 	var front := Vector3(0, 0, r * 0.95)
+	# Plan 514: the Standing Stones, the Sun Dial and the Entrudo Bonfire
+	# stood beside a borrowed Barrosan forge tower, so all three read as a
+	# forge (and as each other). The forge is hidden once the landmark
+	# stands, and the landmark itself takes the middle of the plaza, larger.
+	var standalone := kind in ["stones", "sundial", "bonfire"]
+	var grow := 1.0
+	var first_piece := root.get_child_count()
+	if standalone:
+		if is_instance_valid(model_root):
+			model_root.visible = false
+		front = Vector3.ZERO
+		grow = 1.0 if kind == "stones" else (1.55 if kind == "sundial" else 1.5)
 	match kind:
 		"stones":
 			# Rough-hewn menhirs, leaning a little, each with its own height
@@ -2309,6 +2321,13 @@ func _add_landmark_centrepiece() -> void:
 				slab.rotation = Vector3(0.05 * float((i % 3) - 1), -a + PI * 0.5 + 0.3 * float(i % 2), 0.07 * float((i % 3) - 1))
 			var lintel := _lm_piece(root, _lm_box(Vector3(2.8, 0.55, 0.7)), stone, Vector3(r * 1.15, 3.95, 0.0), Vector3.ONE, 0.0, "rock")
 			lintel.rotation = Vector3(0.0, PI * 0.5, 0.04)
+			# The heart of the circle: a dolmen, two uprights under a broad
+			# tilted capstone, where the forge stood.
+			for s in [-1.0, 1.0]:
+				var upright := _lm_piece(root, _lm_box(Vector3(0.75, 2.2, 1.5)), stone.darkened(0.04), Vector3(1.0 * s, 1.05, 0.0), Vector3.ONE, 0.0, "rock")
+				upright.rotation = Vector3(0.0, 0.12 * s, 0.05 * s)
+			var cap := _lm_piece(root, _lm_box(Vector3(3.4, 0.6, 2.4)), stone.lightened(0.03), Vector3(0.0, 2.45, 0.0), Vector3.ONE, 0.0, "rock")
+			cap.rotation = Vector3(0.06, 0.25, -0.08)
 		"sundial":
 			# A stepped stone drum carrying a bronze dial face with raised hour
 			# marks and a tall bronze gnomon.
@@ -2321,6 +2340,10 @@ func _add_landmark_centrepiece() -> void:
 			var gnomon := _lm_piece(root, _lm_box(Vector3(0.16, 2.6, 1.1)), Color(0.78, 0.56, 0.24), front + Vector3(0, 1.45, -0.3), Vector3.ONE, 0.25, "bronze")
 			gnomon.rotation.x = -0.55
 		"bonfire":
+			# A kerb of fieldstones round the pyre.
+			for i in 14:
+				var a := TAU * float(i) / 14.0
+				_lm_piece(root, _lm_box(Vector3(0.7, 0.45, 0.5)), stone.darkened(0.15), Vector3(cos(a) * 1.75, 0.2, sin(a) * 1.75), Vector3.ONE, 0.0, "rock").rotation.y = -a + 0.2 * float(i % 3)
 			for i in 8:
 				var a := TAU * float(i) / 8.0
 				var lg := _lm_piece(root, _lm_cyl(0.22, 0.28, 3.8), Color(0.32, 0.21, 0.12), front + Vector3(cos(a) * 0.8, 1.5, sin(a) * 0.8), Vector3.ONE, 0.0, "wood")
@@ -2437,7 +2460,12 @@ func _add_landmark_centrepiece() -> void:
 			glow.light_range = 6.0
 			glow.position = front + Vector3(0, 0.75, 1.5)
 			root.add_child(glow)
-
+	if grow != 1.0:
+		for i in range(first_piece, root.get_child_count()):
+			var piece := root.get_child(i) as Node3D
+			if piece:
+				piece.position *= grow
+				piece.scale *= grow
 
 func _lm_cyl(top: float, bottom: float, h: float) -> CylinderMesh:
 	var c := CylinderMesh.new()

@@ -13,6 +13,7 @@ Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave
 
 - `barrosan_boundary_marker.glb`: the small orange flag floats beside the stone, not attached to it. Please give it a pole set into the marker, or drop it.
 - `weathered_fence_module.glb` (plan 510): the part heights were exported into -Z, so the posts stand but both rails lie on the ground behind them. In farmsteads it read as giant logs fallen in a cross. Claude moves the parts back at placement; please re-export with heights in Y so the source is right.
+- Landmarks (plan 514): all ten people landmarks still borrow a building model. The Standing Stones, Sun Dial and Entrudo Bonfire used the Barrosan forge tower; Claude now hides it and builds them from stone and timber pieces at placement. The Rift Gate and Ossuary Bell still use the warlock spire, the Golden Loom and Howling Stone the spirit glade, the War Drum the ash forge. A real model for each landmark would help, starting with the Rift Gate and the War Drum.
 - `lume_shard_crystal.glb`: a single plain octahedron in flat pale yellow. It needs a cluster of facets of different sizes and some inner color to read as Lume.
 - Claude now dresses Map Editor scenery with the same bark and rock materials battle maps use, so untextured timber or slate in a source model is covered; textured materials are left as authored.
 
