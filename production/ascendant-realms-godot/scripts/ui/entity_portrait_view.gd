@@ -319,6 +319,17 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 		_camera.position = Vector3(distance * (0.34 if narrow_structure else 0.48), target_height * (1.05 if narrow_structure else 1.48), distance)
 		_camera.fov = 50.0 if narrow_structure else 58.0
 		_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+		if not compact_card and not narrow_structure:
+			# Plan 525: on the large selection card every building filled only
+			# about half its frame, a small model in a dark box. Bring the
+			# camera in until the building's bounding sphere just fits.
+			var reach := minf(model_radius, target_height * 1.4)
+			var sphere := 0.5 * sqrt(4.0 * reach * reach * 2.0 + target_height * target_height)
+			var fit := sphere / tan(deg_to_rad(_camera.fov * 0.5)) * 0.92
+			var aim_l := Vector3(0.0, target_height * 0.48, 0.0)
+			var now := (_camera.position - aim_l).length()
+			if now > 0.01:
+				_camera.position = aim_l + (_camera.position - aim_l) * clampf(fit / now, 0.62, 1.0)
 		if compact_card:
 			# The same view from closer: at card size the model must fill the frame.
 			var aim := Vector3(0.0, target_height * 0.48, 0.0)
