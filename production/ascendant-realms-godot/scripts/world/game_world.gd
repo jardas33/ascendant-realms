@@ -2935,6 +2935,56 @@ func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 			return true
 	return false
 
+## The wetland ground shader paints its peat pools from noise
+## (ground_blend.gdshader, bog_surface); this is the same noise, so trees and
+## boulders can keep out of the water. margin lowers the threshold a little
+## to keep them off the pool's edge too.
+func in_bog_pool(pos: Vector3, margin: float = 0.012) -> bool:
+	if str(map.get("theme", "")) != "wetland":
+		return false
+	for s in map.get("start_positions", []):
+		if Vector2(pos.x - s.x, pos.z - s.z).length() < 34.0:
+			return false
+	var p := Vector2(pos.x, pos.z)
+	var patch_m := _bog_fbm2(p * 0.03 + Vector2(71.0, 71.0))
+	var detail := _bog_fbm(p * 0.15 + Vector2(3.0, 3.0))
+	return patch_m + (detail - 0.5) * 0.08 > 0.665 - margin
+
+static func _bog_mul32(a: int, b: int) -> int:
+	return (a * (b & 0xFFFF) + (((a * (b >> 16)) & 0xFFFF) << 16)) & 0xFFFFFFFF
+
+static func _bog_hash21(x: float, y: float) -> float:
+	var qx := (int(floor(x)) + 65536) & 0xFFFFFFFF
+	var qy := (int(floor(y)) + 65536) & 0xFFFFFFFF
+	var h := _bog_mul32(qx, 1597334677) ^ _bog_mul32(qy, 3812015801)
+	h = _bog_mul32(h ^ (h >> 16), 2246822519)
+	h ^= h >> 13
+	h = _bog_mul32(h, 3266489917)
+	h ^= h >> 16
+	return float(h) / 4294967295.0
+
+static func _bog_vnoise(p: Vector2) -> float:
+	var i := p.floor()
+	var f := p - i
+	f = f * f * (Vector2(3.0, 3.0) - 2.0 * f)
+	var a := _bog_hash21(i.x, i.y)
+	var b := _bog_hash21(i.x + 1.0, i.y)
+	var c := _bog_hash21(i.x, i.y + 1.0)
+	var d := _bog_hash21(i.x + 1.0, i.y + 1.0)
+	return lerpf(lerpf(a, b, f.x), lerpf(c, d, f.x), f.y)
+
+static func _bog_fbm2(p: Vector2) -> float:
+	return 0.5 * _bog_vnoise(p) + 0.25 * _bog_vnoise(p * 2.03) + 0.1875
+
+static func _bog_fbm(p: Vector2) -> float:
+	var v := 0.0
+	var amp := 0.5
+	for i in 4:
+		v += amp * _bog_vnoise(p)
+		p *= 2.03
+		amp *= 0.5
+	return v
+
 ## `discard`: draw the same random numbers but leave nothing standing. Used
 ## for the ring just outside a start's yard, where the houses of a faction's
 ## village stand (a pine grew through a cottage roof); every other tree and
@@ -2984,6 +3034,16 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	if not discard:
 		for v in map.get("veins", []):
 			if pos.distance_to(v["pos"]) < 8.5:
+				discard = true
+				break
+	# Plan 511: nor in a lake or a bog pool. Pines stood in the open water
+	# of Furna's meres; only crags, roads and fords were kept clear.
+	if not discard and in_bog_pool(pos):
+		discard = true
+	if not discard:
+		for lake in map.get("lakes", []):
+			var grown := {"at": lake["at"], "radii": (lake["radii"] as Vector2) + Vector2(2.5, 2.5), "seed": lake.get("seed", 0.0)}
+			if MapDefs.in_wood(grown, pos.x, pos.z):
 				discard = true
 				break
 	if discard:
