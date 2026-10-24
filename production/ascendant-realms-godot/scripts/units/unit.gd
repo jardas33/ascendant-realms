@@ -1081,6 +1081,11 @@ func _claim_damage_label_lift() -> float:
 	return lift
 
 func _damage_label_base_y() -> float:
+	# Plan 520: a hero's number starts from its name plate (and is lifted
+	# clear of it on screen), so the two never overlap at any zoom.
+	var plate_label := get_node_or_null("HeroTitle") as Label3D
+	if plate_label:
+		return plate_label.position.y
 	if is_instance_valid(_health_bar_root):
 		return _health_bar_root.position.y + 0.22
 	return maxf(0.9, _visual_height * 0.70)
@@ -1901,6 +1906,9 @@ func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
 	_damage_label_big = killing_blow
 	_damage_label_lift = _claim_damage_label_lift()
 	_r15_damage_label.position.y = _damage_label_base_y() + _damage_label_lift
+	# Plan 520: on a hero with a name plate the number was printed across
+	# the plate; it now rises from just above it.
+	_r15_damage_label.offset = Vector2(0, 112) if has_node("HeroTitle") else Vector2.ZERO
 	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
 
 func _show_combat_hit_reaction(from) -> void:
