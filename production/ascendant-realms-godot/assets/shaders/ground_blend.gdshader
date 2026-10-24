@@ -541,7 +541,18 @@ void fragment() {
 		float drift = smoothstep(0.50, 0.68, fbm2(dp + 31.0) + (fbm(wxz * 0.2 + 4.0) - 0.5) * 0.12);
 		float streak = 0.88 + 0.12 * fbm(vec2(wind.x * 0.05, wind.y * 0.6) + 12.0);
 		vec3 ash_col = vec3(0.45, 0.43, 0.40) * (0.9 + 0.2 * fbm(wxz * 0.6 + 8.0)) * streak;
-		ground = mix(ground, ash_col, drift * keep * 0.5 * ash_surface);
+		// Plan 522: a drift was one flat pale sheet that stopped in a ruled
+		// line at every road, so the open ground read as rectangles of fog.
+		// Drifts now thin out unevenly before a road, and carry wind ripples
+		// across the wind and flecks of soot and cinder.
+		float shore = path_width + 3.0 + (fbm(wxz * 0.13 + 71.0) - 0.5) * 12.0;
+		float ash_keep = keep * smoothstep(path_width + 0.5, shore + 5.0, pd);
+		float ripple = 0.5 + 0.5 * sin(wind.y * 1.9 + (fbm(wxz * 0.09 + 3.0) - 0.5) * 9.0);
+		ash_col *= mix(0.86, 1.06, ripple);
+		float fleck = step(0.83, vnoise(wxz * 4.3 + 17.0)) * smoothstep(0.35, 0.65, fbm(wxz * 0.4 + 23.0));
+		ash_col = mix(ash_col, vec3(0.16, 0.15, 0.14), fleck * 0.55);
+		float thin = smoothstep(0.3, 0.7, fbm(wxz * 0.21 + 37.0));
+		ground = mix(ground, ash_col, drift * ash_keep * mix(0.32, 0.55, thin) * ash_surface);
 		// Burn scars: charred cores, a scorched brown ring around them.
 		float scar_n = fbm2(wxz * 0.022 + 57.0) + (fbm(wxz * 0.14 + 6.0) - 0.5) * 0.1;
 		float ring = smoothstep(0.57, 0.63, scar_n) * keep * ash_surface * (1.0 - drift);
