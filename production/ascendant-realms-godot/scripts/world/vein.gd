@@ -48,6 +48,17 @@ func configure(p_kind: String, p_amount: int) -> void:
 							mesh_node.set_surface_override_material(surface, ResourceNode.bark_material(toned.albedo_color, Vector3(0, 0, 1)))
 						else:
 							mesh_node.set_surface_override_material(surface, toned)
+		# The same fixes the base deposits got (plans 500-501): nuggets for the
+		# paper gold blades, tied sheaves for the grain cones.
+		if kind == "gold":
+			ResourceNode.swap_gold_shards(m, m, m, 1.0 / maxf(m.scale.x, 0.001))
+		elif kind == "food":
+			ResourceNode.reshape_sheaves(m)
+			for mesh_node in m.find_children("*", "MeshInstance3D", true, false):
+				for surface in (mesh_node.mesh.get_surface_count() if mesh_node.mesh else 0):
+					var src: Material = mesh_node.mesh.surface_get_material(surface)
+					if src and src.resource_name == "TilledSoil":
+						mesh_node.set_surface_override_material(surface, ResourceNode.tilled_soil_material())
 		_model = m
 		if is_inside_tree():
 			_join_model()

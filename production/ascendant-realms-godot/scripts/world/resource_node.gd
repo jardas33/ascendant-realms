@@ -335,7 +335,8 @@ func _add_gold_dressing() -> void:
 		ore_mat.roughness = 0.82
 		ore.material_override = ore_mat
 		dressing.add_child(ore)
-	_swap_gold_shards(dressing)
+	if is_instance_valid(_authored_visual_model):
+		swap_gold_shards(_authored_visual_model, model_root, dressing, 1.0)
 
 ## The vein model's gold was a set of flat blades sticking out of the rock,
 ## which read as orange paper. They are replaced by faceted nuggets seated
@@ -343,18 +344,19 @@ func _add_gold_dressing() -> void:
 static var _nugget_mesh: SphereMesh
 static var _nugget_mat: StandardMaterial3D
 
-func _swap_gold_shards(dressing: Node3D) -> void:
-	if not is_instance_valid(_authored_visual_model):
-		return
+## model: the vein model; space: the node the nugget positions are measured
+## in; dressing: where they go (it must sit at space's origin); size_mul
+## undoes any scale between space and the world (outpost veins, vein.gd).
+static func swap_gold_shards(model: Node, space: Node, dressing: Node3D, size_mul: float) -> void:
 	var veins: MeshInstance3D = null
-	for mi in _authored_visual_model.find_children("*", "MeshInstance3D", true, false):
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
 		if String(mi.name) == "GoldVeins":
 			veins = mi
 	if veins == null or veins.mesh == null:
 		return
 	var xf := Transform3D()
 	var n: Node = veins
-	while n != null and n != model_root:
+	while n != null and n != space:
 		if n is Node3D:
 			xf = (n as Node3D).transform * xf
 		n = n.get_parent()
@@ -401,7 +403,7 @@ func _swap_gold_shards(dressing: Node3D) -> void:
 		var nug := MeshInstance3D.new()
 		nug.name = "GoldNugget%d" % i
 		nug.mesh = _nugget_mesh
-		var sz := 0.42 + 0.14 * float(i % 3)
+		var sz := (0.42 + 0.14 * float(i % 3)) * size_mul
 		nug.position = p
 		nug.rotation = Vector3(0.4 * float(i % 4), 1.1 * float(i), 0.3 * float(i % 3))
 		nug.scale = Vector3(sz, sz * 0.8, sz * 0.9)
@@ -412,7 +414,8 @@ func _swap_gold_shards(dressing: Node3D) -> void:
 	veins.free()
 
 func _add_food_dressing() -> void:
-	_reshape_sheaves()
+	if is_instance_valid(_authored_visual_model):
+		reshape_sheaves(_authored_visual_model)
 	var dressing := Node3D.new()
 	dressing.name = "FoodProvisionDressing"
 	model_root.add_child(dressing)
@@ -466,11 +469,9 @@ func _add_food_dressing() -> void:
 const SHEAF_WAIST := 0.44
 const SHEAF_PROFILE := [[0.0, 0.0], [0.80, 0.0], [0.95, 0.04], [0.74, 0.18], [0.47, 0.38], [0.43, SHEAF_WAIST], [0.50, 0.52], [0.78, 0.68], [1.0, 0.82], [0.92, 0.92], [0.55, 0.98], [0.0, 1.0]]
 
-func _reshape_sheaves() -> void:
-	if not is_instance_valid(_authored_visual_model):
-		return
+static func reshape_sheaves(model: Node) -> void:
 	var by_name := {}
-	for mi in _authored_visual_model.find_children("*", "MeshInstance3D", true, false):
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
 		by_name[String(mi.name)] = mi
 	for nm in by_name:
 		if not String(nm).begins_with("Sheaf") or by_name[nm].mesh == null:
