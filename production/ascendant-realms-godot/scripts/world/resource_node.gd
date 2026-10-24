@@ -335,6 +335,81 @@ func _add_gold_dressing() -> void:
 		ore_mat.roughness = 0.82
 		ore.material_override = ore_mat
 		dressing.add_child(ore)
+	_swap_gold_shards(dressing)
+
+## The vein model's gold was a set of flat blades sticking out of the rock,
+## which read as orange paper. They are replaced by faceted nuggets seated
+## where the blades met the rock, one per patch of blades.
+static var _nugget_mesh: SphereMesh
+static var _nugget_mat: StandardMaterial3D
+
+func _swap_gold_shards(dressing: Node3D) -> void:
+	if not is_instance_valid(_authored_visual_model):
+		return
+	var veins: MeshInstance3D = null
+	for mi in _authored_visual_model.find_children("*", "MeshInstance3D", true, false):
+		if String(mi.name) == "GoldVeins":
+			veins = mi
+	if veins == null or veins.mesh == null:
+		return
+	var xf := Transform3D()
+	var n: Node = veins
+	while n != null and n != model_root:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	var rock_centre := xf * veins.mesh.get_aabb().get_center()
+	rock_centre.y = 0.0
+	# Base of each blade: the triangle corner nearest the rock's middle axis.
+	var cells := {}
+	for s in veins.mesh.get_surface_count():
+		var arr: Array = veins.mesh.surface_get_arrays(s)
+		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var idx = arr[Mesh.ARRAY_INDEX]
+		var count: int = idx.size() if idx != null and idx.size() > 0 else verts.size()
+		for t in range(0, count - 2, 3):
+			var best := Vector3.ZERO
+			var bd := 1e9
+			for k in 3:
+				var p: Vector3 = xf * verts[idx[t + k] if idx != null and idx.size() > 0 else t + k]
+				var d := Vector2(p.x - rock_centre.x, p.z - rock_centre.z).length()
+				if d < bd:
+					bd = d
+					best = p
+			var key := Vector3i(floori(best.x / 0.55), floori(best.y / 0.55), floori(best.z / 0.55))
+			if not cells.has(key):
+				cells[key] = [Vector3.ZERO, 0]
+			cells[key][0] += best
+			cells[key][1] += 1
+	if cells.is_empty():
+		return
+	if _nugget_mesh == null:
+		_nugget_mesh = SphereMesh.new()
+		_nugget_mesh.radius = 0.5
+		_nugget_mesh.height = 0.8
+		_nugget_mesh.radial_segments = 5
+		_nugget_mesh.rings = 3
+		_nugget_mat = StandardMaterial3D.new()
+		_nugget_mat.albedo_color = Color(0.86, 0.62, 0.24)
+		_nugget_mat.metallic = 1.0
+		_nugget_mat.metallic_specular = 0.6
+		_nugget_mat.roughness = 0.36
+	var i := 0
+	for key in cells:
+		var c: Array = cells[key]
+		var p: Vector3 = c[0] / float(c[1])
+		var nug := MeshInstance3D.new()
+		nug.name = "GoldNugget%d" % i
+		nug.mesh = _nugget_mesh
+		var sz := 0.42 + 0.14 * float(i % 3)
+		nug.position = p
+		nug.rotation = Vector3(0.4 * float(i % 4), 1.1 * float(i), 0.3 * float(i % 3))
+		nug.scale = Vector3(sz, sz * 0.8, sz * 0.9)
+		nug.material_override = _nugget_mat
+		dressing.add_child(nug)
+		i += 1
+	veins.get_parent().remove_child(veins)
+	veins.free()
 
 func _add_food_dressing() -> void:
 	var dressing := Node3D.new()
