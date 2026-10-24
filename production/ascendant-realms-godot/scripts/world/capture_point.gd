@@ -202,31 +202,39 @@ func _build_seven_mouths(root: Node3D) -> void:
 	disc.radial_segments = 28
 	pool.mesh = disc
 	var water := StandardMaterial3D.new()
-	water.albedo_color = Color(0.16, 0.42, 0.44)
-	water.roughness = 0.12
-	water.metallic = 0.2
+	# Plan 497: the pool read as flat candy cyan and its rim as a smooth grey
+	# ring. Deeper, darker water now, inside a curb of dressed granite blocks.
+	water.albedo_color = Color(0.06, 0.2, 0.22)
+	water.roughness = 0.06
+	water.metallic = 0.3
 	water.emission_enabled = true
-	water.emission = Color(0.20, 0.75, 0.55)
-	water.emission_energy_multiplier = 0.22
+	water.emission = Color(0.16, 0.62, 0.48)
+	water.emission_energy_multiplier = 0.14
 	pool.material_override = water
 	pool.position.y = 0.06
 	pool.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(pool)
-	var rim := MeshInstance3D.new()
-	rim.name = "SpringRim"
-	var ring := TorusMesh.new()
-	ring.inner_radius = 5.3
-	ring.outer_radius = 6.3
-	ring.rings = 28
-	ring.ring_segments = 6
-	rim.mesh = ring
 	var stone := StandardMaterial3D.new()
-	stone.albedo_color = Color(0.42, 0.42, 0.40)
+	var stone_path := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-granite-albedo.jpg"
+	if ResourceLoader.exists(stone_path):
+		stone.albedo_texture = load(stone_path)
+		stone.uv1_triplanar = true
+		stone.uv1_scale = Vector3(0.9, 0.9, 0.9)
+	stone.albedo_color = Color(0.82, 0.8, 0.76)
 	stone.roughness = 0.95
-	rim.material_override = stone
-	rim.scale.y = 0.55
-	rim.position.y = 0.1
-	root.add_child(rim)
+	var curb := 26
+	for i in curb:
+		var ca := TAU * (float(i) + 0.5) / float(curb)
+		var block := MeshInstance3D.new()
+		block.name = "SpringCurb%d" % i
+		var bm := BoxMesh.new()
+		bm.size = Vector3(1.0, rng.randf_range(0.42, 0.52), 1.36)
+		block.mesh = bm
+		block.material_override = stone
+		block.position = Vector3(cos(ca), 0.0, sin(ca)) * 5.8
+		block.position.y = bm.size.y * 0.5 - 0.04
+		block.rotation = Vector3(rng.randf_range(-0.03, 0.03), -ca, rng.randf_range(-0.03, 0.03))
+		root.add_child(block)
 	for i in 7:
 		var a := TAU * float(i) / 7.0 + 0.22
 		# The carved spring waystones, one for each mouth.
@@ -240,7 +248,7 @@ func _build_seven_mouths(root: Node3D) -> void:
 			body.queue_free()
 	var glow := OmniLight3D.new()
 	glow.light_color = Color(0.45, 1.0, 0.75)
-	glow.light_energy = 2.0
+	glow.light_energy = 1.4
 	glow.omni_range = 9.0
 	glow.shadow_enabled = false
 	glow.position = Vector3(0, 1.4, 0)
