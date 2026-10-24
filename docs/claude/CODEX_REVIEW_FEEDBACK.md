@@ -12,6 +12,7 @@ Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave
 ### Asset notes from the Map Editor review (plan 506)
 
 - `barrosan_boundary_marker.glb`: the small orange flag floats beside the stone, not attached to it. Please give it a pole set into the marker, or drop it.
+- `weathered_fence_module.glb` (plan 510): the part heights were exported into -Z, so the posts stand but both rails lie on the ground behind them. In farmsteads it read as giant logs fallen in a cross. Claude moves the parts back at placement; please re-export with heights in Y so the source is right.
 - `lume_shard_crystal.glb`: a single plain octahedron in flat pale yellow. It needs a cluster of facets of different sizes and some inner color to read as Lume.
 - Claude now dresses Map Editor scenery with the same bark and rock materials battle maps use, so untextured timber or slate in a source model is covered; textured materials are left as authored.
 

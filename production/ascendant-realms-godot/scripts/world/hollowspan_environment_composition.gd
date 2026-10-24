@@ -88,7 +88,7 @@ const BARROSAN_SETTLEMENT_ASSEMBLY_YAW := PI
 
 const ASSET_SCALE := {
 	"wall": 1.9,
-	"fence": 3.6,
+	"fence": 2.2,
 	"cairn": 2.1,
 	"logs": 2.4,
 	"marker": 2.7,
@@ -607,6 +607,15 @@ func _place_asset(parent: Node3D, asset_key: String, position: Vector3, yaw: flo
 	if asset_key == "marker":
 		# The marker GLB is authored Z-up and lay on its side; stand it upright.
 		instance.rotation.x = PI * 0.5
+	if asset_key == "fence":
+		# Plan 509: the fence GLB has its part heights written into -Z: the
+		# posts stood but the two rails lay on the ground behind them, so from
+		# the camera the fence read as giant logs fallen in a cross. Height
+		# goes back to Y, and the rails sit between the posts. It was also
+		# sized to 3.6 m, twice a person; 2.2 m with the posts' tops.
+		for part in instance.get_children():
+			if part is Node3D and absf(part.position.y) < 0.001 and part.position.z < 0.0:
+				part.position = Vector3(part.position.x, -part.position.z, 0.0)
 	var target_height := height_override if height_override > 0.0 else float(ASSET_SCALE.get(asset_key, 2.0))
 	ModelUtils.scale_to_height(instance, target_height)
 	if asset_key == "wall":
