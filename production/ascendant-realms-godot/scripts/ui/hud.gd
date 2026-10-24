@@ -5416,6 +5416,18 @@ func _show_command_feedback(message: String, col: Color) -> void:
 	# interaction modules instead of covering the selected-entity card.
 	_command_feedback_box.offset_top = -292
 	_command_feedback_box.offset_bottom = -256
+	# Plan 492: a tall selection portrait (worker or soldier at compact
+	# heights) reached into that band, and the notice covered its people
+	# name. Lift the notice clear of the portrait when they share columns.
+	if is_instance_valid(_selection_portrait) and _selection_portrait.is_visible_in_tree():
+		var own := get_global_rect()
+		var pr := _selection_portrait.get_global_rect()
+		var mid := own.position.x + own.size.x * 0.5
+		if pr.position.x < mid + 150.0 and pr.end.x > mid - 150.0:
+			var lift := pr.position.y - 6.0 - (own.end.y - 256.0)
+			if lift < 0.0:
+				_command_feedback_box.offset_top += lift
+				_command_feedback_box.offset_bottom += lift
 	add_child(_command_feedback_box)
 	var label := _mk_label(message, 16, col)
 	label.custom_minimum_size = Vector2(270, 20)
