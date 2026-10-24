@@ -2298,14 +2298,15 @@ func _add_landmark_centrepiece() -> void:
 	# stands, and the landmark itself takes the middle of the plaza, larger.
 	# Plan 515: the Rift Gate, the Ossuary Bell and the War Drum stood
 	# beside a borrowed spire or forge the same way.
-	var standalone := kind in ["stones", "sundial", "bonfire", "rift", "bell", "drum"]
+	# Plan 516: and the Golden Loom and Howling Stone beside a spirit glade.
+	var standalone := kind in ["stones", "sundial", "bonfire", "rift", "bell", "drum", "loom", "howl"]
 	var grow := 1.0
 	var first_piece := root.get_child_count()
 	if standalone:
 		if is_instance_valid(model_root):
 			model_root.visible = false
 		front = Vector3.ZERO
-		grow = float({"stones": 1.0, "sundial": 1.55, "bonfire": 1.5, "rift": 1.45, "bell": 1.4, "drum": 1.45}.get(kind, 1.0))
+		grow = float({"stones": 1.0, "sundial": 1.55, "bonfire": 1.5, "rift": 1.45, "bell": 1.4, "drum": 1.45, "loom": 1.6, "howl": 1.15}.get(kind, 1.0))
 	match kind:
 		"stones":
 			# Rough-hewn menhirs, leaning a little, each with its own height
@@ -2405,6 +2406,21 @@ func _add_landmark_centrepiece() -> void:
 			_lm_piece(root, _lm_box(Vector3(3.4, 0.3, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(0, 0.5, 0), Vector3.ONE, 0.0, "wood", Vector3(1, 0, 0))
 			for i in 9:
 				_lm_piece(root, _lm_box(Vector3(0.05, 2.6, 0.05)), Color(1.0, 0.82, 0.3), front + Vector3(-1.2 + 0.3 * float(i), 1.85, 0), Vector3.ONE, 1.5)
+			# Woven cloth on the lower warp, carved finials, feet braced
+			# front and back, a bench and baskets of golden spools.
+			_lm_piece(root, _lm_box(Vector3(2.7, 0.9, 0.07)), Color(0.78, 0.55, 0.18), front + Vector3(0, 1.1, 0.03), Vector3.ONE, 0.35, "hide")
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.36, 0.24, 1.6)), Color(0.45, 0.32, 0.17), front + Vector3(1.5 * s, 0.12, 0), Vector3.ONE, 0.0, "wood")
+				var fin := SphereMesh.new()
+				fin.radius = 0.24
+				fin.height = 0.48
+				_lm_piece(root, fin, Color(0.85, 0.66, 0.28), front + Vector3(1.5 * s, 3.4, 0), Vector3.ONE, 0.2, "bronze")
+			_lm_piece(root, _lm_box(Vector3(2.2, 0.16, 0.5)), Color(0.45, 0.32, 0.17), front + Vector3(0, 0.62, 1.15), Vector3.ONE, 0.0, "wood")
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.14, 0.55, 0.4)), Color(0.40, 0.28, 0.15), front + Vector3(0.9 * s, 0.28, 1.15), Vector3.ONE, 0.0, "wood")
+			for sp in [[-1.7, 1.3], [1.8, 1.0], [-1.95, 0.75]]:
+				_lm_piece(root, _lm_cyl(0.32, 0.26, 0.4), Color(0.52, 0.38, 0.20), front + Vector3(float(sp[0]), 0.2, float(sp[1])), Vector3.ONE, 0.0, "wood")
+				_lm_piece(root, _lm_cyl(0.2, 0.2, 0.22), Color(1.0, 0.80, 0.30), front + Vector3(float(sp[0]), 0.48, float(sp[1])), Vector3.ONE, 0.6)
 		"howl":
 			# A tapered six-sided menhir between two lesser stones, with a moon
 			# ring cut into its face. The plain box with a white ball on top read
@@ -2434,6 +2450,19 @@ func _add_landmark_centrepiece() -> void:
 			moon.ring_segments = 6
 			var ring_piece := _lm_piece(root, moon, Color(0.7, 0.8, 1.0), front + Vector3(0, 3.9, 0.78), Vector3(1, 0.5, 1), 2.0)
 			ring_piece.rotation.x = PI * 0.5 - 0.09
+			# A broken ring of low stones round the menhir, where the pack
+			# gathers to howl.
+			for i in 11:
+				if i == 4:
+					continue
+				var a := TAU * float(i) / 11.0
+				var low := CylinderMesh.new()
+				low.top_radius = 0.22
+				low.bottom_radius = 0.42
+				low.height = 0.7 + 0.35 * float(i % 3)
+				low.radial_segments = 5
+				low.rings = 1
+				_lm_piece(root, low, rock.darkened(0.08), front + Vector3(cos(a) * 3.0, low.height * 0.5 - 0.05, sin(a) * 3.0), Vector3.ONE, 0.0, "rock").rotation = Vector3(0.08 * float((i % 3) - 1), a, 0.06)
 		"rift":
 			# A ring of black basalt standing on its edge, its inner lip
 			# burning violet around a dark veil.
