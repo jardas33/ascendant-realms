@@ -426,7 +426,12 @@ const ORIGIN_OPENINGS := {
 ## Light and weather a chapter lays over its map: the night of the
 ## Ascension, burning villages, the flood, the Regent's dusk.
 const MOODS := {
+	# (Plan 485: dark armor went pure black at night, and the Vorthak hero,
+	# hounds and workers were silhouettes; more ambient light did not help,
+	# metal takes its light from the dark sky. unit_rim lays a thin moonlit
+	# edge on every unit instead.)
 	"night": {"sun_energy": 0.62, "sun_color": Color(0.62, 0.70, 0.98), "sun_pitch": -42.0, "ambient_energy": 0.46,
+		"unit_rim": 0.42, "unit_rim_color": Color(0.62, 0.74, 1.0),
 		"fog_color": Color(0.24, 0.30, 0.46), "fog_density": 0.0007, "grade_contrast": 1.06, "grade_saturation": 0.8, "grade_brightness": 1.0},
 	# (Firelight, but not one shade of red: at sun 1.0/0.56/0.32 with little
 	# ambient light the ground, the roofs and the red enemy's soldiers were
@@ -434,6 +439,7 @@ const MOODS := {
 	"ember": {"sun_energy": 0.9, "sun_color": Color(1.0, 0.70, 0.50), "sun_pitch": -24.0, "ambient_energy": 0.50,
 		"fog_color": Color(0.50, 0.36, 0.30), "fog_density": 0.0008, "grade_contrast": 1.08, "grade_saturation": 0.96, "grade_brightness": 1.0},
 	"storm": {"sun_energy": 0.62, "sun_color": Color(0.74, 0.80, 0.86), "ambient_energy": 0.44,
+		"unit_rim": 0.25, "unit_rim_color": Color(0.74, 0.82, 0.92),
 		"fog_color": Color(0.46, 0.52, 0.58), "fog_density": 0.0016, "grade_contrast": 1.04, "grade_saturation": 0.72, "grade_brightness": 0.93},
 	"dusk": {"sun_energy": 0.84, "sun_color": Color(1.0, 0.77, 0.58), "sun_pitch": -18.0, "ambient_energy": 0.47,
 		"fog_color": Color(0.72, 0.60, 0.54), "fog_density": 0.0007, "grade_contrast": 1.06, "grade_saturation": 0.95, "grade_brightness": 1.0},

@@ -402,6 +402,8 @@ func _ready() -> void:
 	if mood != "":
 		_theme = _theme.duplicate(true)
 		_theme.merge(CampaignDefs.MOODS[mood], true)
+	Unit.set_unit_rim(float(_theme.get("unit_rim", 0.0)), _theme.get("unit_rim_color", Color(0.62, 0.74, 1.0)))
+	if mood != "":
 		# Dark ground under a dark hour: the three darkest chapters opened at a
 		# quarter of a daytime chapter's brightness and workers could hardly be
 		# picked out. On volcanic and ashen ground the hour keeps its colour

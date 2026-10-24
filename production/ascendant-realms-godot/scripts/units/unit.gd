@@ -1022,6 +1022,12 @@ func _apply_m_initial_facing() -> void:
 
 static var _xray_material: ShaderMaterial
 
+## Plan 485: the moonlit unit edge for this battle's hour (0 in daylight).
+static func set_unit_rim(strength: float, color: Color) -> void:
+	var mat := _xray_overlay_material()
+	mat.set_shader_parameter("rim_strength", strength)
+	mat.set_shader_parameter("rim_color", color)
+
 static func _xray_overlay_material() -> ShaderMaterial:
 	if _xray_material == null:
 		_xray_material = ShaderMaterial.new()

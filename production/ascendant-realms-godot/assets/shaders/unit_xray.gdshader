@@ -14,6 +14,10 @@ instance uniform vec4 xray_color : source_color = vec4(0.35, 0.62, 1.0, 1.0);
 // draws it, so the glow follows the body instead of a blob over the belly.
 instance uniform float hit = 0.0;
 instance uniform vec4 hit_color : source_color = vec4(1.0, 0.8, 0.52, 1.0);
+// Plan 485: on a dark battlefield every unit wears a thin moonlit edge, so
+// dark armor keeps its shape instead of reading as a black cut-out.
+uniform float rim_strength = 0.0;
+uniform vec3 rim_color : source_color = vec3(0.62, 0.74, 1.0);
 
 void fragment() {
 	float d = texture(depth_tex, SCREEN_UV).r;
@@ -22,11 +26,13 @@ void fragment() {
 	float frag_z = -VERTEX.z;
 	float rim = 1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0);
 	if (frag_z < scene_z + min_gap) {
-		if (hit <= 0.001 || frag_z > scene_z + 0.08) {
+		float hr = hit * (0.04 + 0.6 * rim * rim * rim);
+		float mr = rim_strength * rim * rim * rim;
+		if (hr + mr <= 0.002 || frag_z > scene_z + 0.08) {
 			discard;
 		}
-		ALBEDO = hit_color.rgb;
-		ALPHA = hit * (0.04 + 0.6 * rim * rim * rim);
+		ALBEDO = (hit_color.rgb * hr + rim_color * mr) / (hr + mr);
+		ALPHA = clamp(hr + mr, 0.0, 1.0);
 	} else {
 		ALBEDO = xray_color.rgb;
 		// A faint body with a brighter rim reads as a silhouette, not a paint blob.
