@@ -236,6 +236,31 @@ const FACTION_PALETTES := {
 }
 static var _palette_materials: Dictionary = {}
 
+## Plan 487: the Barrosan dark slate averages 54 of 255, darker than real
+## slate. By day the roofs read as flat dark shapes and at night as black
+## holes with no edge against the sky. Roofs that use it are lifted a little.
+const SLATE_LIFT := 1.22
+static var _slate_materials: Dictionary = {}
+
+func _lift_dark_slate(m: Node) -> void:
+	for mi in m.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mi as MeshInstance3D
+		if mesh_instance.mesh == null:
+			continue
+		for i in mesh_instance.mesh.get_surface_count():
+			var mat = mesh_instance.get_active_material(i)
+			if not (mat is BaseMaterial3D) or (mat as BaseMaterial3D).albedo_texture == null:
+				continue
+			if not String((mat as BaseMaterial3D).albedo_texture.resource_path).contains("dark-slate"):
+				continue
+			var key := mat.get_instance_id()
+			if not _slate_materials.has(key):
+				var lifted := (mat as BaseMaterial3D).duplicate() as BaseMaterial3D
+				var c := lifted.albedo_color
+				lifted.albedo_color = Color(minf(c.r * SLATE_LIFT, 1.6), minf(c.g * SLATE_LIFT, 1.6), minf(c.b * SLATE_LIFT, 1.6), c.a)
+				_slate_materials[key] = lifted
+			mesh_instance.set_surface_override_material(i, _slate_materials[key])
+
 func _apply_faction_palette(m: Node, path: String) -> void:
 	var race := String(def.get("race", ""))
 	if GranitbornBuildingPresentation.owns_model(path):
@@ -401,6 +426,7 @@ func _build_model() -> void:
 		_normalize_a02_imported_materials(m, path)
 		_apply_slice7_barrosan_surface_material(m, path)
 		_apply_faction_palette(m, path)
+		_lift_dark_slate(m)
 		if _is_a01_model_path(path):
 			m.rotation.y = deg_to_rad(TASK604_A01_R1_YAW_DEGREES)
 		# scale building to a sensible footprint-based size
