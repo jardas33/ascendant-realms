@@ -45,7 +45,9 @@ func configure(p_kind: String, p_amount: int) -> void:
 						toned.albedo_color = toned.albedo_color.lerp(Color(0.36, 0.23, 0.13, 1.0), 0.58)
 						toned.roughness = maxf(toned.roughness, 0.78)
 						if source.resource_name.to_lower().contains("bark"):
-							mesh_node.set_surface_override_material(surface, ResourceNode.bark_material(toned.albedo_color, Vector3(0, 0, 1)))
+							mesh_node.set_surface_override_material(surface, ResourceNode.bark_material(ResourceNode.TIMBER_BARK, (mesh_node.transform.basis * Vector3.UP).normalized().snapped(Vector3.ONE * 0.01)))
+						elif source.resource_name == "EndGrain":
+							mesh_node.set_surface_override_material(surface, ResourceNode.end_grain_material(source))
 						else:
 							mesh_node.set_surface_override_material(surface, toned)
 		# The same fixes the base deposits got (plans 500-501): nuggets for the

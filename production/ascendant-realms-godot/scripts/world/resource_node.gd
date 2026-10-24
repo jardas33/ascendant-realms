@@ -187,11 +187,37 @@ func _apply_p1r14_resource_readability(n: Node) -> void:
 				elif resource_kind == "food" and source_mat and source_mat.resource_name == "Sackcloth":
 					n.set_surface_override_material(surface, sackcloth_material(surface_copy.albedo_color))
 				elif resource_kind == "timber" and source_mat and source_mat.resource_name.to_lower().contains("bark"):
-					n.set_surface_override_material(surface, bark_material(surface_copy.albedo_color, Vector3(0, 0, 1)))
+					n.set_surface_override_material(surface, bark_material(TIMBER_BARK, (n.transform.basis * Vector3.UP).normalized().snapped(Vector3.ONE * 0.01)))
+				elif resource_kind in ["timber", "food"] and source_mat and source_mat.resource_name == "EndGrain":
+					n.set_surface_override_material(surface, end_grain_material(source_mat))
 				else:
 					n.set_surface_override_material(surface, surface_copy)
 	for child in n.get_children():
 		_apply_p1r14_resource_readability(child)
+
+## Logs read orange-red, like painted plastic: the bark took the toned
+## albedo (a saturated red-brown) and the cut ends the same. Bark is now a
+## grey-brown and the cut ends pale fresh wood, as felled timber looks.
+const TIMBER_BARK := Color(0.26, 0.21, 0.17, 1.0)
+static var _end_grain_mat: Material
+
+static func end_grain_material(source: Material) -> Material:
+	if _end_grain_mat == null:
+		var tex: Texture2D = (source as StandardMaterial3D).albedo_texture if source is StandardMaterial3D else null
+		if tex:
+			# The painted end-grain rings are orange; keep the rings, recolour
+			# them as fresh-cut wood (end_grain.gdshader).
+			var sm := ShaderMaterial.new()
+			sm.shader = load("res://assets/shaders/end_grain.gdshader")
+			sm.set_shader_parameter("grain_tex", tex)
+			sm.set_meta("batch_safe", true)
+			_end_grain_mat = sm
+		else:
+			var plain := StandardMaterial3D.new()
+			plain.albedo_color = Color(0.72, 0.57, 0.38)
+			plain.roughness = 0.9
+			_end_grain_mat = plain
+	return _end_grain_mat
 
 ## Furrowed bark for the logs of a timber pile or vein (log_bark.gdshader).
 ## One material per colour and lie, so a joined stack stays one draw.

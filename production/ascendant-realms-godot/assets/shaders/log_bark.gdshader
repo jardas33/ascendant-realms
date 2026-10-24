@@ -13,6 +13,7 @@ uniform float furrow_spacing = 0.075;
 
 varying vec3 wpos;
 varying vec3 wnrm;
+varying vec3 wax;
 
 vec2 hash2(vec2 p) {
 	vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
@@ -34,10 +35,14 @@ float vnoise(vec2 p) {
 void vertex() {
 	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	wnrm = normalize(MODEL_NORMAL_MATRIX * NORMAL);
+	// `axis` is given in the joined stack's own space and turned with it:
+	// taken as a world direction, a deposit placed at any other angle got
+	// its furrows across the logs, which then read as flat planks.
+	wax = normalize((MODEL_MATRIX * vec4(axis, 0.0)).xyz);
 }
 
 void fragment() {
-	vec3 a = normalize(axis);
+	vec3 a = wax;
 	vec3 p1 = normalize(cross(a, abs(a.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : vec3(0.0, 1.0, 0.0)));
 	vec3 p2 = cross(a, p1);
 	float along = dot(wpos, a);
