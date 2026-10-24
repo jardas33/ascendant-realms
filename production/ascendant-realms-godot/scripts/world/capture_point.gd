@@ -98,19 +98,35 @@ func _build_ruin_chapel(root: Node3D) -> void:
 ## the old waterline, an open belfry of four piers under a broken slate cap,
 ## and the bell still hanging in it.
 func _build_bell_tower(root: Node3D) -> void:
+	# Plan 496: the tower was a field-rock texture with stones half a metre
+	# across and a bare grey cap. It now uses the Barrosan granite and dark
+	# slate of the clan halls, at their building scale, with dressed corners.
 	var stone := StandardMaterial3D.new()
-	var stone_path := "res://assets/textures/stone/highland_rock.png"
+	var stone_path := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-granite-albedo.jpg"
+	if not ResourceLoader.exists(stone_path):
+		stone_path = "res://assets/textures/stone/highland_rock.png"
 	if ResourceLoader.exists(stone_path):
 		stone.albedo_texture = load(stone_path)
-	stone.albedo_color = Color(0.74, 0.72, 0.68)
-	stone.roughness = 1.0
+	stone.albedo_color = Color(0.86, 0.84, 0.8)
+	stone.roughness = 0.95
 	stone.uv1_triplanar = true
-	stone.uv1_scale = Vector3(0.22, 0.22, 0.22)
+	stone.uv1_scale = Vector3(0.42, 0.42, 0.42)
 	var stained := stone.duplicate() as StandardMaterial3D
-	stained.albedo_color = Color(0.36, 0.40, 0.36)
+	stained.albedo_color = Color(0.42, 0.47, 0.40)
+	var dressed := stone.duplicate() as StandardMaterial3D
+	dressed.albedo_color = Color(0.96, 0.93, 0.87)
+	dressed.uv1_scale = Vector3(0.7, 0.7, 0.7)
 	var slate := StandardMaterial3D.new()
-	slate.albedo_color = Color(0.20, 0.22, 0.26)
-	slate.roughness = 0.9
+	var slate_path := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-dark-slate-albedo.jpg"
+	if ResourceLoader.exists(slate_path):
+		slate.albedo_texture = load(slate_path)
+		slate.uv1_triplanar = true
+		slate.uv1_scale = Vector3(0.6, 0.6, 0.6)
+	slate.albedo_color = Color(0.62, 0.64, 0.7)
+	slate.roughness = 0.8
+	var timber := StandardMaterial3D.new()
+	timber.albedo_color = Color(0.24, 0.16, 0.1)
+	timber.roughness = 0.9
 	var bronze := StandardMaterial3D.new()
 	bronze.albedo_color = Color(0.42, 0.30, 0.14)
 	bronze.metallic = 0.7
@@ -124,9 +140,22 @@ func _build_bell_tower(root: Node3D) -> void:
 		root.add_child(drawn)
 		return drawn
 	# The shaft: the lower third was under water for seventy-seven years.
+	var plinth := BoxMesh.new()
+	plinth.size = Vector3(5.0, 0.7, 5.0)
+	piece.call(plinth, stained, Vector3(0, 0.35, 0), "TowerPlinth")
 	var foot := BoxMesh.new()
 	foot.size = Vector3(4.4, 3.4, 4.4)
 	piece.call(foot, stained, Vector3(0, 1.7, 0), "TowerFoot")
+	# Dressed quoins up the corners of the shaft.
+	for corner in 4:
+		var sx := 1.0 if corner < 2 else -1.0
+		var sz := 1.0 if corner % 2 == 0 else -1.0
+		for course in 5:
+			var quoin := BoxMesh.new()
+			var long := course % 2 == 0
+			quoin.size = Vector3(1.0 if long else 0.6, 0.6, 0.6 if long else 1.0)
+			var off := Vector3((1.56 if long else 1.76) * sx, 3.95 + course * 1.25, (1.76 if long else 1.56) * sz)
+			piece.call(quoin, dressed, off, "Quoin%d_%d" % [corner, course])
 	var shaft := BoxMesh.new()
 	shaft.size = Vector3(4.0, 6.4, 4.0)
 	piece.call(shaft, stone, Vector3(0, 6.6, 0), "TowerShaft")
@@ -144,7 +173,7 @@ func _build_bell_tower(root: Node3D) -> void:
 	# A four-sided cap, with one face fallen in.
 	var cap := CylinderMesh.new()
 	cap.top_radius = 0.0
-	cap.bottom_radius = 3.3
+	cap.bottom_radius = 3.45
 	cap.height = 3.0
 	cap.radial_segments = 4
 	var roof: MeshInstance3D = piece.call(cap, slate, Vector3(0.25, 15.0, 0.0), "TowerCap")
@@ -152,7 +181,7 @@ func _build_bell_tower(root: Node3D) -> void:
 	# The bell and its beam.
 	var beam := BoxMesh.new()
 	beam.size = Vector3(3.4, 0.3, 0.3)
-	piece.call(beam, slate, Vector3(0, 12.7, 0), "BellBeam")
+	piece.call(beam, timber, Vector3(0, 12.7, 0), "BellBeam")
 	var bell := CylinderMesh.new()
 	bell.top_radius = 0.35
 	bell.bottom_radius = 0.85
