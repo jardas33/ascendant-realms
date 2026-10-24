@@ -13,21 +13,23 @@ func _run() -> void:
 		root.add_child(holder)
 		var bg := ColorRect.new(); bg.color = Color(0.1, 0.1, 0.1); bg.size = Vector2(1600, 1000); holder.add_child(bg)
 		var i := 0
-		for bid in gd.buildings_for_race(race):
-			var d: Dictionary = gd.get_building(bid).duplicate()
-			d.erase("command_art")
+		var units := OS.get_environment("CLAUDE_UNITS") == "1"
+		for bid in (gd.units_for_race(race) if units else gd.buildings_for_race(race)):
+			var d: Dictionary = (gd.get_unit(bid) if units else gd.get_building(bid)).duplicate()
+			if not units:
+				d.erase("command_art")
 			var p = load("res://scripts/ui/entity_portrait_view.gd").new()
 			p.custom_minimum_size = Vector2(150, 150)
 			p.size = Vector2(150, 150)
 			p.position = Vector2(10 + (i % 9) * 175, 10 + (i / 9) * 195)
 			holder.add_child(p)
 			var l := Label.new(); l.text = String(bid).replace(race + "_", ""); l.position = p.position + Vector2(0, 155); holder.add_child(l)
-			p.configure_definition(d, true)
+			p.configure_definition(d, not units)
 			i += 1
 		for f in 12:
 			await process_frame
 		await RenderingServer.frame_post_draw
-		root.get_texture().get_image().save_png("D:/ClaudeWork/tmp/bport/%s.png" % race)
+		root.get_texture().get_image().save_png("D:/ClaudeWork/tmp/bport/%s%s.png" % [("u_" if OS.get_environment("CLAUDE_UNITS") == "1" else ""), race])
 		holder.queue_free()
 		await process_frame
 	quit(0)

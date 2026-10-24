@@ -132,6 +132,15 @@ func _build_view() -> void:
 	fill.light_energy = 0.42
 	fill.rotation_degrees = Vector3(-20.0, 145.0, 0.0)
 	_viewport.add_child(fill)
+	# Plan 528: models without a painted portrait stood as dark shapes on the
+	# dark card (the hound, wraith and wolf rider were near black). A cool rim
+	# from behind and above outlines every figure against the background.
+	var rim := DirectionalLight3D.new()
+	rim.name = "PortraitRim"
+	rim.light_color = Color(0.78, 0.86, 1.0)
+	rim.light_energy = 1.35
+	rim.rotation_degrees = Vector3(-30.0, 200.0, 0.0)
+	_viewport.add_child(rim)
 	# Small building previews need a front-facing bounce light. Their dark
 	# authored timber otherwise disappears at command-card thumbnail size.
 	_compact_building_fill = OmniLight3D.new()

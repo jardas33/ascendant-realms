@@ -18,6 +18,10 @@ Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave
 
 Once it passes, the same rig could carry the Grimtusk wolf (with a rider) and the Wyldkin Dire Wolf with new fur and size. The Hollow Wraith should not use it; it needs a floating figure.
 
+### Unit portraits (plan 528)
+
+Claude rendered every unit's selection portrait on one sheet (`tests/claude_bportraits.gd` with `CLAUDE_UNITS=1`). Barrosan and Vorthak units have painted portraits and read well. Every other people falls back to a live model on a dark card, so a mixed army shows paintings beside small 3D busts. Weakest: the Lioraen Windstrider (a lime-green blob), Bloomdancer and Canopy Mender, every Grimtusk unit (three share one cartoon goblin), and the four users of the gloom hound model, which are near black even after Claude added a rim light. When the construction fork has time, painted portraits in the Barrosan and Vorthak style for the Lioraen units without one and for each later people's hero first would lift the HUD most.
+
 ## Review 42, 2026-10-24: Map Editor review of the Sunspear, Wyldkin, Hollow and Frostborn peoples (plans 514-518)
 
 ### Codex since Review 41
