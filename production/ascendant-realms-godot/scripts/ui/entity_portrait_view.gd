@@ -330,6 +330,9 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 			var now := (_camera.position - aim_l).length()
 			if now > 0.01:
 				_camera.position = aim_l + (_camera.position - aim_l) * clampf(fit / now, 0.62, 1.0)
+		elif not compact_card:
+			# A slim tower stood at two thirds of the frame height: narrow the lens.
+			_camera.fov = 41.0
 		if compact_card:
 			# The same view from closer: at card size the model must fill the frame.
 			var aim := Vector3(0.0, target_height * 0.48, 0.0)
