@@ -5,7 +5,7 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_sc
 // can be joined with the rest of its deposit into one mesh. (It was one flat
 // dark-brown plate.)
 
-uniform vec3 soil_color : source_color = vec3(0.30, 0.20, 0.12);
+uniform vec3 soil_color : source_color = vec3(0.35, 0.26, 0.16);
 uniform float row_spacing = 0.42;
 
 varying vec3 wpos;

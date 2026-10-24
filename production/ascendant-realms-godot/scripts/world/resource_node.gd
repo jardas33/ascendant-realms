@@ -212,13 +212,13 @@ static func bark_material(col: Color, lie: Vector3) -> Material:
 ## metal), so the shards read as paper cut-outs. Now it is polished metal
 ## that catches the light, with only a faint warm glow left in it.
 func _dress_gold(m: StandardMaterial3D) -> void:
-	m.albedo_color = Color(1.0, 0.80, 0.36)
+	m.albedo_color = Color(0.90, 0.68, 0.30)
 	m.metallic = 1.0
 	m.metallic_specular = 0.7
 	m.roughness = 0.32
 	if m.emission_enabled:
 		m.emission = Color(1.0, 0.55, 0.12)
-		m.emission_energy_multiplier = 0.18
+		m.emission_energy_multiplier = 0.08
 
 ## Ploughed rows for a grain patch's soil: it was one flat dark-brown plate.
 static var _soil_material: Material
@@ -343,7 +343,11 @@ func _add_food_dressing() -> void:
 	# Food deliberately reads as compact, upright provisions rather than a
 	# second horizontal log pile. These are presentation-only children: they
 	# carry no collision, gathering, or targeting semantics.
-	var positions := [Vector3(-0.46, 1.02, 0.20), Vector3(0.46, 0.96, 0.30), Vector3(0.02, 1.12, -0.28)]
+	# The sacks stood a metre up in the middle of the grain and read as giant
+	# eggs. Now they rest on the ground at the edge of the patch, a filled
+	# harvest waiting to be carried off.
+	var edge := clampf(footprint * 0.62, 0.9, 2.2)
+	var positions := [Vector3(edge, 0.40, edge * 0.55), Vector3(edge + 0.62, 0.36, edge * 0.55 - 0.32), Vector3(edge + 0.28, 0.40, edge * 0.55 + 0.56)]
 	for i in positions.size():
 		var sack := MeshInstance3D.new()
 		sack.name = "ProvisionSack%d" % (i + 1)
@@ -354,11 +358,11 @@ func _add_food_dressing() -> void:
 		sack_mesh.rings = 5
 		sack.mesh = sack_mesh
 		sack.position = positions[i]
-		sack.rotation.y = -0.16 + 0.18 * float(i)
-		sack.scale = Vector3(0.90 + 0.04 * float(i), 1.10, 0.80)
+		sack.rotation = Vector3(0.10 * float(i - 1), -0.16 + 0.5 * float(i), 0.08 * float(1 - i))
+		sack.scale = Vector3(0.82 + 0.04 * float(i), 0.78, 0.74)
 		sack.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		# Woven, creased and dusty: in flat colour they were smooth blobs.
-		sack.material_override = sackcloth_material([Color(0.68, 0.52, 0.27, 1.0), Color(0.78, 0.63, 0.34, 1.0), Color(0.58, 0.42, 0.20, 1.0)][i])
+		sack.material_override = sackcloth_material([Color(0.55, 0.44, 0.28, 1.0), Color(0.62, 0.51, 0.34, 1.0), Color(0.48, 0.38, 0.23, 1.0)][i])
 		dressing.add_child(sack)
 
 		var tie := MeshInstance3D.new()
@@ -369,7 +373,8 @@ func _add_food_dressing() -> void:
 		tie_mesh.rings = 8
 		tie_mesh.ring_segments = 6
 		tie.mesh = tie_mesh
-		tie.position = positions[i] + Vector3(0.0, 0.46, 0.0)
+		tie.position = positions[i] + sack.basis * Vector3(0.0, 0.46, 0.0)
+		tie.rotation = sack.rotation
 		tie.scale = Vector3(0.88, 1.0, 0.74)
 		tie.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		var tie_mat := StandardMaterial3D.new()
