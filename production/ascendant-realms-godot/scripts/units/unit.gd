@@ -4209,10 +4209,12 @@ func _show_hero_title() -> void:
 	tl.render_priority = 20
 	tl.outline_render_priority = 19
 	add_child(tl)
-	tl.position = Vector3(0.0, _visual_height + 0.8, 0.0)
-	# Lifted on screen too: from the battle camera the title sat over the
-	# hero's legs, and with its plate it hid them.
-	tl.offset = Vector2(0, 110)
+	# Plan 508: the title is made before the model (hero stats come first),
+	# when _visual_height is still 0, so it hung at the hero's waist and the
+	# 110 px lift below only hid that at the normal camera; zoomed in, the
+	# plate covered the head. It now stands over the head at every zoom.
+	tl.position = Vector3(0.0, maxf(_visual_height, _visual_target_height()) + 0.35, 0.0)
+	tl.offset = Vector2(0, 82)
 	# A dark nameplate with gilt edges behind the title (plan 342): bare
 	# outlined text over grass and armies read as a caption, not a banner.
 	var text_w := (tl.font if tl.font else ThemeDB.fallback_font).get_string_size(tl.text, HORIZONTAL_ALIGNMENT_LEFT, -1, tl.font_size).x
