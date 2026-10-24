@@ -226,10 +226,39 @@ func _apply_entity(entity) -> void:
 	if entity is Building and not entity.is_built and definition.has("command_art"):
 		definition = definition.duplicate()
 		definition.erase("command_art")
-	_apply_definition(definition, entity is Building, String(entity.unit_id) if entity is Unit else "")
+	_apply_definition(definition, entity is Building, String(entity.unit_id) if entity is Unit else "", _landmark_likeness(entity))
 
 
-func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "") -> void:
+## Plan 527: a standing landmark (the Bonfire, the War Drum, the Loom...) is
+## built from pieces round a borrowed base model, which it hides. Its card
+## showed that borrowed forge or spire. Show what stands on the map instead.
+var _whole_focus := false
+
+func _landmark_likeness(entity) -> Node3D:
+	if not (entity is Building) or not entity.is_built or not entity.has_node("LandmarkCentrepiece"):
+		return null
+	var holder := Node3D.new()
+	var base := entity.get_node_or_null("MeshRoot") as Node3D
+	if base and base.visible:
+		holder.add_child(base.duplicate())
+	var piece := entity.get_node("LandmarkCentrepiece").duplicate() as Node3D
+	# The first two pieces are the plaza disc and its inlay ring; on a card
+	# they only made the landmark small. Frame the landmark itself.
+	for k in mini(2, piece.get_child_count()):
+		var plaza := piece.get_child(0)
+		piece.remove_child(plaza)
+		plaza.free()
+	holder.add_child(piece)
+	for body in holder.find_children("*", "CollisionObject3D", true, false):
+		body.get_parent().remove_child(body)
+		body.free()
+	# Pieces made in code have no owner, and the model helpers only measure owned meshes.
+	for n in holder.find_children("*", "", true, false):
+		n.owner = holder
+	return holder
+
+
+func _apply_definition(definition: Dictionary, is_building: bool, unit_id: String = "", likeness: Node3D = null) -> void:
 	if not is_instance_valid(_pivot):
 		return
 	if custom_minimum_size.x < PORTRAIT_COMPACT_THRESHOLD:
@@ -255,7 +284,14 @@ func _apply_definition(definition: Dictionary, is_building: bool, unit_id: Strin
 	var target_height: float = 2.45 if is_building else 1.95
 	var model: Node3D = null
 	var model_radius := 0.0
-	if not path.is_empty() and ResourceLoader.exists(path):
+	_whole_focus = false
+	if likeness != null and _active_portrait_path.is_empty():
+		model = likeness
+		_whole_focus = true
+	elif likeness != null:
+		likeness.free()
+		likeness = null
+	if model == null and not path.is_empty() and ResourceLoader.exists(path):
 		var packed = load(path)
 		if packed:
 			model = packed.instantiate()
@@ -369,6 +405,11 @@ func _building_focus(model: Node3D, target_height: float) -> AABB:
 	if boxes.is_empty():
 		return AABB(Vector3(-0.5, 0.0, -0.5), Vector3(1.0, target_height, 1.0))
 	var body: AABB = boxes[0]
+	if _whole_focus:
+		# A landmark is a ring or row of separate pieces: frame them all.
+		for box in boxes:
+			body = body.merge(box)
+		return body
 	for box in boxes:
 		if box.get_volume() > body.get_volume():
 			body = box
