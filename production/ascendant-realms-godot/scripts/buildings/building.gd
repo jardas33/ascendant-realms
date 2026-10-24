@@ -2296,14 +2296,16 @@ func _add_landmark_centrepiece() -> void:
 	# stood beside a borrowed Barrosan forge tower, so all three read as a
 	# forge (and as each other). The forge is hidden once the landmark
 	# stands, and the landmark itself takes the middle of the plaza, larger.
-	var standalone := kind in ["stones", "sundial", "bonfire"]
+	# Plan 515: the Rift Gate, the Ossuary Bell and the War Drum stood
+	# beside a borrowed spire or forge the same way.
+	var standalone := kind in ["stones", "sundial", "bonfire", "rift", "bell", "drum"]
 	var grow := 1.0
 	var first_piece := root.get_child_count()
 	if standalone:
 		if is_instance_valid(model_root):
 			model_root.visible = false
 		front = Vector3.ZERO
-		grow = 1.0 if kind == "stones" else (1.55 if kind == "sundial" else 1.5)
+		grow = float({"stones": 1.0, "sundial": 1.55, "bonfire": 1.5, "rift": 1.45, "bell": 1.4, "drum": 1.45}.get(kind, 1.0))
 	match kind:
 		"stones":
 			# Rough-hewn menhirs, leaning a little, each with its own height
@@ -2364,6 +2366,17 @@ func _add_landmark_centrepiece() -> void:
 				_lm_piece(root, _lm_cyl(1.6, 1.6, 0.14), Color(0.22, 0.20, 0.19), front + Vector3(0, 1.15, 0.6 * s), Vector3.ONE, 0.0, "iron").rotation.x = PI * 0.5
 			for s in [-1.0, 1.0]:
 				_lm_piece(root, _lm_box(Vector3(0.36, 0.55, 1.7)), Color(0.30, 0.19, 0.10), front + Vector3(1.05 * s, 0.28, 0), Vector3.ONE, 0.0, "wood", Vector3(0, 0, 1))
+			# Two great tusks arching over the drum, and the beaters leant
+			# against its cradle.
+			for s in [-1.0, 1.0]:
+				var tusk := _lm_piece(root, _lm_cyl(0.13, 0.3, 3.6), Color(0.86, 0.82, 0.70), front + Vector3(2.0 * s, 1.6, -0.2), Vector3.ONE, 0.0, "bone")
+				tusk.rotation = Vector3(0.0, 0.0, 0.5 * s)
+				var tip := _lm_piece(root, _lm_cyl(0.02, 0.13, 0.9), Color(0.86, 0.82, 0.70), front + Vector3(0.74 * s, 3.38, -0.2), Vector3.ONE, 0.0, "bone")
+				tip.rotation = Vector3(0.0, 0.0, 1.1 * s)
+			for s in [-1.0, 1.0]:
+				var stick := _lm_piece(root, _lm_cyl(0.07, 0.08, 1.9), Color(0.36, 0.24, 0.13), front + Vector3(0.6 * s, 0.85, 1.25), Vector3.ONE, 0.0, "wood")
+				stick.rotation = Vector3(-0.35, 0.0, 0.25 * s)
+				_lm_piece(root, _lm_cyl(0.2, 0.2, 0.32), Color(0.62, 0.50, 0.36), front + Vector3(0.6 * s + 0.22 * s, 1.72, 0.95), Vector3.ONE, 0.0, "hide").rotation = Vector3(-0.35, 0.0, 0.25 * s)
 		"bell":
 			# A frame of great bones lashed with iron, the bronze bell hung
 			# from its crossbeam.
@@ -2378,6 +2391,13 @@ func _add_landmark_centrepiece() -> void:
 			bell.radial_segments = 32
 			_lm_piece(root, bell, Color(0.50, 0.38, 0.20), front + Vector3(0, 2.7, 0), Vector3.ONE, 0.0, "bronze")
 			_lm_piece(root, _lm_cyl(1.04, 1.04, 0.12), Color(0.42, 0.31, 0.16), front + Vector3(0, 2.06, 0), Vector3.ONE, 0.0, "bronze")
+			# A dark stone footing under each post and a skull capping it.
+			for s in [-1.0, 1.0]:
+				_lm_piece(root, _lm_box(Vector3(0.8, 0.45, 0.8)), Color(0.30, 0.29, 0.30), front + Vector3(1.4 * s, 0.22, 0), Vector3.ONE, 0.0, "rock")
+				var skull := SphereMesh.new()
+				skull.radius = 0.3
+				skull.height = 0.55
+				_lm_piece(root, skull, Color(0.84, 0.80, 0.70), front + Vector3(1.4 * s, 3.95, 0), Vector3.ONE, 0.0, "bone")
 		"loom":
 			for s in [-1.0, 1.0]:
 				_lm_piece(root, _lm_box(Vector3(0.3, 3.2, 0.3)), Color(0.55, 0.40, 0.22), front + Vector3(1.5 * s, 1.6, 0), Vector3.ONE, 0.0, "wood")
@@ -2434,6 +2454,16 @@ func _add_landmark_centrepiece() -> void:
 			veil.rotation.x = PI * 0.5
 			for s in [-1.0, 1.0]:
 				_lm_piece(root, _lm_box(Vector3(0.9, 0.5, 0.9)), Color(0.22, 0.20, 0.24), front + Vector3(0.95 * s, 0.25, 0), Vector3.ONE, 0.0, "rock")
+			# Jagged basalt shards torn up on either side of the gate.
+			for sh in [[-2.35, 3.1, 0.25], [2.3, 2.5, -0.3], [-1.6, 1.4, -0.5], [1.75, 1.2, 0.55]]:
+				var spike := CylinderMesh.new()
+				spike.top_radius = 0.05
+				spike.bottom_radius = 0.5
+				spike.height = float(sh[1])
+				spike.radial_segments = 5
+				spike.rings = 1
+				var shard := _lm_piece(root, spike, Color(0.16, 0.14, 0.18), front + Vector3(float(sh[0]), float(sh[1]) * 0.45, 0.35 * float(sh[2])), Vector3.ONE, 0.0, "rock")
+				shard.rotation = Vector3(0.2 * float(sh[2]), float(sh[2]) * 3.0, -0.18 * signf(float(sh[0])))
 		"fountain":
 			_lm_piece(root, _lm_cyl(1.9, 2.0, 0.6), stone.lightened(0.08), front + Vector3(0, 0.3, 0), Vector3.ONE, 0.0, "masonry")
 			_lm_piece(root, _lm_cyl(1.65, 1.65, 0.08), Color(0.10, 0.30, 0.38), front + Vector3(0, 0.63, 0), Vector3.ONE, 0.12, "water")
