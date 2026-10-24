@@ -160,7 +160,9 @@ static func get_all() -> Dictionary:
 		"produces": [], "desc": "The old slave barracks, their doors torn off. Room for more of the freed.",
 	},
 	"grimtusk_warcamp": {
-		"race": "grimtusk", "name": "Revolt Camp", "kind": "barracks", "model": _b("vorthak_bone_barracks"),
+		# Plan 486: the old bone barracks was a near-black mirror (worse at
+		# night); the Revolt Camp and the Ossuary now wear the bone-ribbed hall.
+		"race": "grimtusk", "name": "Revolt Camp", "kind": "barracks", "model": "res://assets/environment/buildings/visual_candidates/astra_bone_barracks_r1/astra_bone_barracks_r1.gltf",
 		"hp": 820, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 140, "stone": 45}, "build_time": 28, "grants_pop": 0,
 		"produces": ["grimtusk_grunt", "grimtusk_bowcrusha", "grimtusk_wolfrider", "grimtusk_berserker", "grimtusk_ogre", "grimtusk_slag_thrower"],
@@ -364,7 +366,7 @@ static func get_all() -> Dictionary:
 		"produces": [], "desc": "A grave at the crossroads, left open. Makes room for more of the procession.",
 	},
 	"hollow_ossuary": {
-		"race": "hollow", "name": "Ossuary", "kind": "barracks", "model": _b("vorthak_bone_barracks"),
+		"race": "hollow", "name": "Ossuary", "kind": "barracks", "model": "res://assets/environment/buildings/visual_candidates/astra_bone_barracks_r1/astra_bone_barracks_r1.gltf",
 		"hp": 800, "armor_class": "medium", "armor": 3, "footprint": 5.0,
 		"cost": {"timber": 140, "stone": 40}, "build_time": 28, "grants_pop": 0,
 		"produces": ["hollow_skeleton", "hollow_boneguard", "hollow_bonearcher", "hollow_wraith"],

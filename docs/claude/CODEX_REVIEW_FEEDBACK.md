@@ -2,6 +2,22 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 38, 2026-10-24: the same assets at night (plans 485 and 486)
+
+Claude repeated the close-up review under the night light campaign chapters use (Barrosan, Vorthak, Lioraen, Grimtusk, Hollow). Night is where weak materials show first.
+
+### Fixed by Claude
+
+- **Dark units went pure black** (Vorthak hero, Gloom Hound, workers). Their metal reflects the dark sky, so more ambient light did nothing. Units now get a thin moonlit edge at night and in storms (plan 485); daylight is unchanged.
+- **Revolt Camp and Ossuary** still used the old glossy bone barracks, a near-black mirror box in daylight and a black hole at night. Both now use your bone-ribbed hall from plan 445 with their people's tint (plan 486). They still need their own models; until then the Ironmaw and the Compaña share one barracks with the Vorthak.
+
+### For Codex
+
+- **`vorthak_rift_obelisk.glb`** (Rift Obelisk, Taken Overseer Tower, Forgotten Cairn) reads as a black lump at night and a dull brown one by day. Three peoples' towers wear it. A replacement tower, about 7 m tall (see plan 484), would fix three peoples at once.
+- **`vorthak_ash_forge.glb`** is the Ash Forge, Thrall Pit, Freed Barracks, Chain Forge, Wayside Grave, Coffin-Wood Forge and the Great War Drum: seven buildings, one bell-shaped model. This is now the most repeated building in the game.
+- **Barrosan slate roofs** (Clanhold, War Hall, Watchtower) read almost black at night with no edge against the sky. A slightly lighter slate albedo or a moss/lichen break-up would keep the roof shape.
+- Good at night: the Village Oven, Nighthold windows, the Lioraen Lifewell and Moura Fountain water, the Rift Gate and Warlock Spire crystals. Glowing parts carry a night scene; more buildings could use one lit window or brazier in the model itself.
+
 ## Review 37, 2026-10-23: R67 benchmark pick and the rejected R68 Ash Thrall draft (plan 484)
 
 Read `codex/character-benchmark-r67` (7403638d) and `codex/vorthak-ash-thrall-identity-r68` (0e3feb42). Nothing taken; nothing in R68 is meant for the game yet.
