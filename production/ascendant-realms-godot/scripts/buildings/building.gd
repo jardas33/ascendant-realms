@@ -903,6 +903,8 @@ func _add_selection_pick_shape() -> void:
 	## the opposing mask; navigation detours are registered by GameWorld.
 	var extents := _measure_selection_visual_extents()
 	var height := maxf(1.0, footprint * 1.4)
+	if String(def.get("kind", "")) == "tower":
+		height = maxf(height, _presentation_height())
 	var shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = Vector3(extents.x * 2.0, height, extents.y * 2.0)
@@ -911,6 +913,11 @@ func _add_selection_pick_shape() -> void:
 	add_child(shape)
 
 func _presentation_height() -> float:
+	# Plan 484: a watchtower on a 3 m plot came out 3.7 m, shorter than a
+	# cottage. Towers stand about twice their plot so they read as the tallest
+	# thing in a base.
+	if String(def.get("kind", "")) == "tower":
+		return clampf(footprint * 2.3, 6.5, PRESENTATION_HEIGHT_MAX)
 	return clampf(footprint * PRESENTATION_HEIGHT_MULTIPLIER, PRESENTATION_HEIGHT_MIN, PRESENTATION_HEIGHT_MAX)
 
 func _build_selection_ring() -> void:
@@ -1958,7 +1965,7 @@ func _tower_tick(delta: float) -> void:
 	var e = world.find_enemy_near(global_position, float(def.get("tower_range", 18.0)), team)
 	if e:
 		_tower_cd = float(def.get("tower_cd", 1.2))
-		world.spawn_projectile(global_position + Vector3.UP * footprint,
+		world.spawn_projectile(global_position + Vector3.UP * maxf(footprint, _presentation_height() * 0.85),
 			e, float(def.get("tower_dmg", 20)) * (1.0 + (float(commander.build_flags.get("tower_dmg", 0.0)) if commander else 0.0)), def.get("tower_type", "pierce"),
 			team, def.get("projectile", "bolt"), 0.0, self)
 

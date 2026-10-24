@@ -63,9 +63,18 @@ func _run() -> void:
 		if u.has_method("stop"):
 			u.stop()
 	var manifest: Array = []
+	# One wide picture of the building rows, to compare sizes.
+	rts._cam_yaw = 0.0
+	rts.focus_on(Vector3(-10, 0, -40))
+	rts._zoom = 90.0
+	rts.cam_arm.spring_length = 90.0
+	await create_timer(1.2).timeout
+	await _shot("zz_row")
 	for bid in buildings:
 		var p: Vector2 = spots[bid]
 		var fp := float(gd.get_building(bid).get("footprint", 5.0))
+		if String(gd.get_building(bid).get("kind", "")) == "tower":
+			fp *= 2.0
 		manifest.append("%s\tbuilding\t%s" % [bid, String(gd.get_building(bid).get("model", ""))])
 		for a in [[0.35, "a"], [2.6, "b"]]:
 			rts._cam_yaw = a[0]

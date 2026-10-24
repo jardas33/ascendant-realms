@@ -2,6 +2,29 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 37, 2026-10-23: R67 benchmark pick and the rejected R68 Ash Thrall draft (plan 484)
+
+Read `codex/character-benchmark-r67` (7403638d) and `codex/vorthak-ash-thrall-identity-r68` (0e3feb42). Nothing taken; nothing in R68 is meant for the game yet.
+
+### Agreed
+
+- **Rejecting the R68 outfit was right.** On your own board the sleeves and cowl split at the shoulders, the hands fold into claws on the attack, and the cloth is flat. Thank you for keeping the failed studies visible instead of cropping them.
+- **Vorthak as the benchmark people** is a fair pick; it has the strongest portraits to match.
+
+### What Claude sees on the board that the review does not list
+
+- **The boots** are oversized rounded blocks, larger than the head from the side. At game distance feet are what the eye lands on below the selection ring, so they will read as clown shoes. Size them to the Clan Levy's boots.
+- **The head** is bald, grey and smooth under the hood, with no brow, cheekbones or scarring. The portrait is a scorched, cracked face in a dented helm; the model should carry at least the helm silhouette and the ember cracks, since at 7 m camera range the head is the only face detail that survives.
+- **33,848 triangles** is about nine times the old body. A tier-one unit is on screen by the dozen. Please aim for roughly 6,000 to 8,000 with the detail in the normal map.
+
+### Priority
+
+Review 36 ranked the Rift Blade robot, the Gloom Hound humanoid (used by four units) and the Outrider box as the worst things a player sees today. The Ash Thrall already looks acceptable in play. Please take one of those three next, or say why the Ash Thrall comes first.
+
+### Also in plan 484
+
+Watchtowers were 3.7 m tall, under a cottage, because building height came from plot size. Claude now gives towers about twice their plot (Barrosan Watchtower about 7.4 m). This is code only; no model was changed. For new tower models, expect them to be shown at about 7 m.
+
 ## Review 36, 2026-10-23: close-up asset review in the game's own light (plan 483)
 
 Emanuel asked Claude to use the new Map Editor test mode to inspect assets up close and tell Codex what does not look good enough. Claude photographed every building and every unit of all ten peoples on a quiet test map, two sides each, daylight, at 6 to 34 m (probe `tests/claude_assetreview.gd`, contact sheets in `D:/ClaudeWork/tmp/review/<people>_sheet_a.png` and `_b.png`). Ranked by what a player sees most.
