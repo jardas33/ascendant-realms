@@ -233,16 +233,27 @@ func _make_tuft_mesh(with_flowers: bool) -> ArrayMesh:
 		var last: Array = pts[rows.size() - 1]
 		_tri(st, last[0], last[1], tip, last[2], last[2], 1.0)
 		if with_flowers and b % 2 == 0:
-			var hs := rng.randf_range(0.035, 0.05)
+			# Plan 519: five cupped petals round a golden eye. The flat
+			# square head read as a pink tile lying on the grass.
+			var hs := rng.randf_range(0.04, 0.055)
 			var hc := tip + Vector3.UP * 0.01
-			var h0 := hc + Vector3(-hs, 0, -hs)
-			var h1 := hc + Vector3(hs, 0, -hs)
-			var h2 := hc + Vector3(hs, 0, hs)
-			var h3 := hc + Vector3(-hs, 0, hs)
-			_tri(st, h0, h1, h2, 1.0, 1.0, 1.0, true)
-			_tri(st, h0, h2, h3, 1.0, 1.0, 1.0, true)
+			var turn := rng.randf_range(0.0, TAU)
+			for k in 5:
+				var pa := turn + TAU * float(k) / 5.0
+				var l := hc + Vector3(cos(pa - 0.42), 0.0, sin(pa - 0.42)) * hs * 0.5 + Vector3.UP * 0.004
+				var r := hc + Vector3(cos(pa + 0.42), 0.0, sin(pa + 0.42)) * hs * 0.5 + Vector3.UP * 0.004
+				var pt := hc + Vector3(cos(pa), 0.0, sin(pa)) * hs * 1.25 + Vector3.UP * 0.014
+				_head_tri(st, hc, l, pt, 1.0, 0.25, 0.0)
+				_head_tri(st, hc, pt, r, 1.0, 0.0, 0.25)
 	st.generate_normals()
 	return st.commit()
+
+
+func _head_tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, ea: float, eb: float, ec: float) -> void:
+	# Flower-head vertices: UV.x = 2 + how close to the eye (1 at the centre).
+	st.set_uv(Vector2(2.0 + ea, 1.0)); st.add_vertex(a)
+	st.set_uv(Vector2(2.0 + eb, 1.0)); st.add_vertex(b)
+	st.set_uv(Vector2(2.0 + ec, 1.0)); st.add_vertex(c)
 
 
 func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, ha: float, hb: float, hc: float, head := false) -> void:

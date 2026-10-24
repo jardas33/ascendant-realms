@@ -69,6 +69,7 @@ uniform float ash_surface = 0.0;
 varying float v_shade;
 varying float v_height;
 varying float v_head;
+varying float v_eye;
 varying vec4 v_custom;
 // Plan 414: the same 20 to 40 m lush and sun-dried patches the ground
 // shader paints, so tufts and ground change together.
@@ -110,6 +111,7 @@ void vertex() {
 	v_height = h;
 	v_shade = 1.0 - cloud_shadow_strength * cloud_shadow(origin.xz, TIME);
 	v_head = step(1.5, UV.x);
+	v_eye = clamp(UV.x - 2.0, 0.0, 1.0) * v_head;
 	v_custom = INSTANCE_CUSTOM;
 	float mid_f = fbm(origin.xz * 0.045 + 77.0);
 	v_mid = mix(vec3(1.0), vec3(0.64, 0.76, 0.6), smoothstep(0.48, 0.62, mid_f) * 0.85 * meadow_mid);
@@ -120,7 +122,10 @@ void fragment() {
 	// INSTANCE_CUSTOM: rgb flower colour (heads) / a = dryness 0..1 (blades).
 	vec3 blade = mix(root_color, tip_color, smoothstep(0.0, 1.0, v_height));
 	blade = mix(blade, dry_color * mix(0.6, 1.0, v_height), v_custom.a * 0.85);
-	vec3 col = mix(blade, v_custom.rgb, v_head);
+	// Plan 519: petals pale toward their tips and darken into a golden eye.
+	vec3 petal = mix(v_custom.rgb * 1.08, v_custom.rgb * 0.78, smoothstep(0.0, 0.6, v_eye));
+	petal = mix(petal, vec3(0.92, 0.70, 0.18), smoothstep(0.62, 0.86, v_eye));
+	vec3 col = mix(blade, petal, v_head);
 	ALBEDO = col * v_shade * mix(v_mid, vec3(1.0), v_head);
 	// Blades light like the ground they sit on, so the field reads as one
 	// surface with texture rather than a mass of dark back faces.
