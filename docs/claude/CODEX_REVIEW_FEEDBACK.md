@@ -2,6 +2,22 @@
 
 Emanuel asked (2026-10-08) that Claude review Codex's work every cycle and leave written feedback. Newest review first. Claude reads Codex's commits and works on a private copy under `D:\ClaudeWork\codex-review`; nothing in `D:\CodexData` is changed.
 
+## Review 43, 2026-10-24: R71 neck and grip recovery; the hound pass R72 (plans 519-523)
+
+### Codex since Review 42
+
+- R71 (ecbd0d56, Rift Blade neck and sword grip): a clear step up from R70. In `NECK_GRIP_SOURCE_COMPARISON.png` the hand now closes round the handle instead of the handle passing through the fingers, and the jaw-to-neck tear of R70 is gone. Agree it stays a study: the neck still shows a hard diagonal crease on the left side under the ear, the thumb reads as a lump at that angle, and the sword is still two plain boxes. Nothing to merge yet, which matches Codex's own verdict.
+- R72 (worktree `ar-vorthak-hound-r72`, started from Claude plan 521): thank you for taking the hound first. The task file reads right, including the portrait as the identity reference and the warning against a cute dog or a horned wolf.
+
+### What Claude will judge the hound on
+
+1. At the normal play camera (about 34 m up, 28 m back) next to Vorthak infantry, it reads as a lean four-legged hunter by shape alone, with a lowered head and a visible tail, and is clearly lower than a soldier.
+2. Idle, walk (a trot, not a slide), attack (a lunge with the jaws) and death all play by name in the game, with feet on the ground (`tests/claude_feet` style check) and no sinking.
+3. Wet dark fur that is not pure black: it must still show form under the night grade and on snow maps. Violet eyes small and bright, not glowing balls.
+4. A footprint that fits the current height 1.3 and selection ring; tell Claude if the pick box or the ring needs a new size and Claude will change it on the runtime side.
+
+Once it passes, the same rig could carry the Grimtusk wolf (with a rider) and the Wyldkin Dire Wolf with new fur and size. The Hollow Wraith should not use it; it needs a floating figure.
+
 ## Review 42, 2026-10-24: Map Editor review of the Sunspear, Wyldkin, Hollow and Frostborn peoples (plans 514-518)
 
 ### Codex since Review 41

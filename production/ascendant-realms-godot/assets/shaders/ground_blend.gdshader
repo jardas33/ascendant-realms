@@ -336,6 +336,8 @@ void fragment() {
 	}
 	// wobble the road edge with noise so it isn't a clean stripe
 	float wob = (fbm(wxz * 0.08) - 0.5) * 3.0;
+	// Plan 523: a finer fray on top, so the edge is not a smooth ruled curve from afar.
+	wob += (fbm(wxz * 0.33 + 19.0) - 0.5) * 1.6;
 	float road = 1.0 - smoothstep(path_width - path_feather, path_width + wob, pd);
 	vec3 road_col = mix(road_base, volcanic_surface > 0.5 ? dirt : texture(tex_dirt, wxz * tile_dirt * 0.62).rgb, clamp(road_detail, 0.0, 1.0));
 	ground = mix(ground, road_col, clamp(road, 0.0, 1.0));
@@ -352,7 +354,13 @@ void fragment() {
 	ground = mix(ground, road_col * mix(0.68, 1.32, vnoise(wxz * 5.0 + 2.0)), gravel * 0.55 * rm);
 	// A low-contrast worn edge makes routes legible without creating a
 	// gameplay-zone outline or a floating strip.
-	float road_edge = smoothstep(path_width + 0.3, path_width + 2.8, pd) * (1.0 - smoothstep(path_width + 2.8, path_width + 4.0, pd));
+	// Plan 523: the worn edge ran at a fixed distance from the road's centre
+	// line with a sharp outer fade, so every road was flanked by two ruled
+	// dark bands. It now wanders with the road's own edge, fades out
+	// softly, and comes and goes along the road.
+	float ewob = wob + (fbm(wxz * 0.31 + 5.0) - 0.5) * 1.6;
+	float road_edge = smoothstep(path_width + 0.3, path_width + 2.8, pd - ewob * 0.5) * (1.0 - smoothstep(path_width + 2.4, path_width + 6.5, pd - ewob));
+	road_edge *= mix(0.35, 1.0, smoothstep(0.3, 0.7, fbm(wxz * 0.07 + 11.0)));
 	ground = mix(ground, road_edge_color, clamp(road_edge * road_edge_strength, 0.0, 1.0));
 
 	// Plan 399: a building stood straight on clean lawn, as if dropped there.
