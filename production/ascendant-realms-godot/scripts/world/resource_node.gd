@@ -568,23 +568,40 @@ func _add_stone_quarry_dressing() -> void:
 	var fragments := Node3D.new()
 	fragments.name = "StoneQuarryFragments"
 	model_root.add_child(fragments)
-	var fragment_positions := [Vector3(-1.00, 0.34, 0.16), Vector3(0.92, 0.28, 0.28), Vector3(0.12, 0.25, -1.02), Vector3(-0.46, 0.20, 0.92), Vector3(0.56, 0.18, 0.78)]
-	var fragment_scales := [Vector3(0.58, 0.42, 0.48), Vector3(0.48, 0.36, 0.62), Vector3(0.46, 0.34, 0.44), Vector3(0.34, 0.28, 0.42), Vector3(0.30, 0.24, 0.36)]
+	# Plan 507: the loose pieces were round pebbles, so the deposit read as a
+	# boulder, not a quarry. Now they are blocks already cut from it: two
+	# squared ashlars stacked, one on edge, and rough-split pieces.
+	var fragment_positions := [Vector3(-1.15, 0.22, 0.30), Vector3(-1.10, 0.62, 0.34), Vector3(1.02, 0.30, 0.38), Vector3(0.18, 0.18, -1.12), Vector3(-0.42, 0.14, 1.02), Vector3(0.64, 0.12, 0.92)]
+	var fragment_sizes := [Vector3(0.80, 0.38, 0.52), Vector3(0.68, 0.32, 0.46), Vector3(0.40, 0.52, 0.58), Vector3(0.52, 0.30, 0.42), Vector3(0.36, 0.24, 0.30), Vector3(0.30, 0.20, 0.26)]
+	var fragment_turns := [Vector3(0.0, 0.25, 0.0), Vector3(0.0, 0.42, 0.03), Vector3(0.0, -0.3, 0.12), Vector3(0.08, 0.7, 0.0), Vector3(0.1, 1.1, -0.08), Vector3(-0.1, 0.4, 0.12)]
 	for i in fragment_positions.size():
 		var fragment := MeshInstance3D.new()
 		fragment.name = "QuarryFragment%d" % (i + 1)
-		var fragment_mesh := SphereMesh.new()
-		fragment_mesh.radius = 0.55
-		fragment_mesh.height = 0.78
-		fragment_mesh.radial_segments = 6
-		fragment_mesh.rings = 3
+		var fragment_mesh := BoxMesh.new()
+		fragment_mesh.size = fragment_sizes[i]
 		fragment.mesh = fragment_mesh
 		fragment.position = fragment_positions[i]
-		fragment.scale = fragment_scales[i]
-		fragment.rotation.y = 0.35 * float(i)
+		fragment.rotation = fragment_turns[i]
 		fragment.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		fragment.material_override = _fragment_material()
+		fragment.material_override = _ashlar_material()
 		fragments.add_child(fragment)
+
+## Cut faces of dressed granite for the quarried blocks (plan 507); the
+## cobbled rock texture made them read as crates of rubble.
+static var _ashlar_mat: StandardMaterial3D
+
+static func _ashlar_material() -> StandardMaterial3D:
+	if _ashlar_mat == null:
+		_ashlar_mat = StandardMaterial3D.new()
+		_ashlar_mat.albedo_color = Color(0.74, 0.73, 0.70, 1.0)
+		var granite := "res://assets/environment/buildings/barrosan_war_hall_a02_barrosan-granite-albedo.jpg"
+		if ResourceLoader.exists(granite):
+			_ashlar_mat.albedo_texture = load(granite)
+			_ashlar_mat.uv1_triplanar = true
+			_ashlar_mat.uv1_world_triplanar = true
+			_ashlar_mat.uv1_scale = Vector3.ONE * 0.2
+		_ashlar_mat.roughness = 0.92
+	return _ashlar_mat
 
 ## Rock-textured stone for the loose quarry fragments. In flat grey they lit
 ## up as smooth white lumps beside the textured quarry; one shared material
